@@ -16,4 +16,15 @@ git clone https://github.com/jhipster
 git clone https://github.com/IBM-Blockchain/generator-fabric
 ```
 
-##Development :  
+##Development :
+To use generator locally type :
+```
+npm link
+```
+
+##Commands:
+```
+yo fabric-network 
+yo fabric-network:create
+yo fabric-network:environment
+```
