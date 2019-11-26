@@ -13,9 +13,9 @@ module.exports = class extends Generator {
            name: 'subgenerator',
            message: 'Select asset to create',
            choices: [
-               {name: 'Network', value: 'network'},
-               {name: 'Organisation', value: 'organisation'},
-               {name: 'Peer', value: 'peer'}
+               {name: 'Network', value: 'create-network'},
+               {name: 'Organisation', value: 'create-organisation'},
+               {name: 'Peer', value: 'create-peer'}
            ]
         }];
         const answers = await this.prompt(questions);
@@ -23,7 +23,9 @@ module.exports = class extends Generator {
     }
 
     async configuring() {
-        this.log(`All for now. Sorry !`);
+        const { subgenerator } = this.options;
+        this.log(`This generator can also be run with: yo fabric-network:${subgenerator}`);
+        this.composeWith(require.resolve(`../${subgenerator}`), this.options);
     }
 
 };
