@@ -1,5 +1,6 @@
 module.exports = {
   updateNamespace,
+  tab: '\t  - ',
 };
 
 async function updateNamespace(config, orgNamespace, key, value) {

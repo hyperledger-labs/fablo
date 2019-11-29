@@ -14,12 +14,12 @@ module.exports = class extends Generator {
     const questions = [{
       type: 'input',
       name: 'prefix',
-      message: `[${orgNamespace}] Peer hostname prefix`,
+      message: `[${orgNamespace}] Peer:\n${utils.tab}hostname prefix`,
       default: defaultPeerPrefix,
     }, {
       type: 'number',
       name: 'instances',
-      message: `[${orgNamespace}] Number of instances`,
+      message: `${utils.tab}number of instances`,
       default: defaultNumberOfInstances,
     }];
     const answers = await this.prompt(questions);
