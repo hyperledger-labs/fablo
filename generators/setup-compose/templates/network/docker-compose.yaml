@@ -23,12 +23,12 @@ services:
     volumes:
       - ./config/:/etc/hyperledger/configtx
       - ./crypto-config/ordererOrganizations/<%= rootDomain %>/orderers/orderer.<%= rootDomain %>/:/etc/hyperledger/msp/orderer
-      - ./crypto-config/peerOrganizations/org1.<%= rootDomain %>/peers/peer0.org1.<%= rootDomain %>/:/etc/hyperledger/msp/peerOrg1
+      - ./crypto-config/peerOrganizations/org1.<%= rootDomain %>/peers/peer0.org1.<%= rootDomain %>/:/etc/hyperledger/msp/peerOrg1 #??? Po co to ?
     networks:
       - basic
 
   ca.<%= rootDomain %>:
-    container_name: ca.s<%= rootDomain %>
+    container_name: ca.<%= rootDomain %>
     image: hyperledger/fabric-ca:${FABRIC_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -39,7 +39,7 @@ services:
       - 7054:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/org1.<%= rootDomain %>/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/<%= rootDomain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - basic
 
