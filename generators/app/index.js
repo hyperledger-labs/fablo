@@ -26,7 +26,7 @@ module.exports = class extends Generator {
         {name: 'Export (create config.json file)', value: 'export'},
         {name: 'Update (update saved config)', value: 'update'},
         {name: 'Import (import config.json file)', value: 'import'},
-        {name: 'Environment (run it as docker-compose or helm)', value: 'environment'}
+        {name: 'Setup environment (translate config.json to docker-compose or helm)', value: 'setup'}
       ],
       when: () => !this.options.subgenerator
     }];
