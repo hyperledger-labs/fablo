@@ -22,7 +22,7 @@ module.exports = class extends Generator {
   }
 
     async writing() {
-      const root = await this.config.get('root')
+      const root = await this.config.get(utils.rootKey)
         this.fs.copyTpl(
             this.templatePath('docker-compose/fabric-compose.yaml'),
             this.destinationPath('docker-out/fabric-compose.yaml'),
