@@ -4,24 +4,8 @@ const Generator = require('yeoman-generator');
 
 module.exports = class extends Generator {
 
-  async prompting() {
-    // const questions = [{
-    //   type: 'list',
-    //   name: 'subgenerator',
-    //   message: 'Select asset to create',
-    //   choices: [
-    //     {name: 'Network', value: 'create-network'},
-    //     {name: 'Organisation', value: 'create-organisation'},
-    //     {name: 'Peer', value: 'create-peer'}
-    //   ]
-    // }];
-    // const answers = await this.prompt(questions);
-    // Object.assign(this.options, answers);
-
-  }
-
   async configuring() {
-    await this.config.save();
+    await this.config.save(); // TODO how to remove the initial file??
 
     const OrgGenerator = require.resolve('../create-org');
     const CAGenerator = require.resolve('../create-ca');
@@ -29,12 +13,12 @@ module.exports = class extends Generator {
     const PeerGenerator = require.resolve('../create-peer');
 
     this
-      .composeWith(OrgGenerator, {isRoot: true})
-      .composeWith(CAGenerator, {isRoot: true})
-      .composeWith(OrdererGenerator, {isRoot: true})
-      .composeWith(OrgGenerator)
-      .composeWith(CAGenerator)
-      .composeWith(PeerGenerator);
+      .composeWith(OrgGenerator, {orgNamespace: 'root'})
+      .composeWith(CAGenerator, {orgNamespace: 'root'})
+      .composeWith(OrdererGenerator, {orgNamespace: 'root'})
+      .composeWith(OrgGenerator, {orgNamespace: 'org1'})
+      .composeWith(CAGenerator, {orgNamespace: 'org1'})
+      .composeWith(PeerGenerator, {orgNamespace: 'org1'});
   }
 
 };
