@@ -21,17 +21,19 @@ module.exports = class extends Generator {
   }
 
   async configuring() {
+    await this.config.save();
+
     const OrgGenerator = require.resolve('../create-org');
     const CAGenerator = require.resolve('../create-ca');
     const OrdererGenerator = require.resolve('../create-orderer');
     const PeerGenerator = require.resolve('../create-peer');
 
-    console.log(OrgGenerator)
-
     this
+      .composeWith(OrgGenerator, {isRoot: true})
+      .composeWith(CAGenerator, {isRoot: true})
+      .composeWith(OrdererGenerator, {isRoot: true})
       .composeWith(OrgGenerator)
       .composeWith(CAGenerator)
-      .composeWith(OrdererGenerator)
       .composeWith(PeerGenerator);
   }
 
