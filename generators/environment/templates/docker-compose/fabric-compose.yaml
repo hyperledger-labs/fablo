@@ -1,0 +1,148 @@
+version: '2'
+
+networks:
+  basic:
+
+services:
+
+  orderer.<%= organisation %>:
+    container_name: orderer.<%= organisation %>
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+      - GODEBUG=netdns=go
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+      - ./network-config/config/:/etc/hyperledger/configtx
+      - ./network-config/crypto-config/ordererOrganizations/<%= organisation %>/orderers/orderer.<%= organisation %>/:/etc/hyperledger/msp/orderer
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/peers/peer0.org1.<%= organisation %>/:/etc/hyperledger/msp/peerOrg1
+    networks:
+      - basic
+
+  peer0.org1.softwaremill.com:
+    container_name: peer0.org1.<%= organisation %>
+    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.org1.softwaremill.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=debug
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.org1.<%= organisation %>:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      #
+#      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.softwaremill.com:7051
+#      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.softwaremill.com:7051
+#      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.softwaremill.com:7051
+#      - CORE_PEER_ENDORSER_ENABLED=true
+#      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+#      - CORE_PEER_GOSSIP_ORGLEADER=false
+#      - CORE_PEER_CHANNELSERVICE_ENABLED=true
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      #
+      - GODEBUG=netdns=go
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/peers/peer0.org1.softwaremill.com/msp:/etc/hyperledger/msp/peer
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/users:/etc/hyperledger/msp/users
+      - ./network-config/config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.<%= organisation %>
+    networks:
+      - basic
+
+  peer1.org1.softwaremill.com:
+    container_name: peer1.org1.<%= organisation %>
+    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.org1.<%= organisation %>m
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=debug
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.org1.<%= organisation %>:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      #
+#      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.softwaremill.com:7051
+#      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.softwaremill.com:7051
+#      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.softwaremill.com:7051
+#      - CORE_PEER_ENDORSER_ENABLED=true
+#      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+#      - CORE_PEER_GOSSIP_ORGLEADER=false
+#      - CORE_PEER_CHANNELSERVICE_ENABLED=true
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      #
+      - GODEBUG=netdns=go
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 7061:7051
+      - 7063:7053
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/peers/peer1.org1.<%= organisation %>/msp:/etc/hyperledger/msp/peer
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/users:/etc/hyperledger/msp/users
+      - ./network-config/config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.<%= organisation %>
+    networks:
+      - basic
+
+  ca.softwaremill.com:
+    image: hyperledger/fabric-ca:${FABRIC_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.<%= organisation %>
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.<%= organisation %>-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+    ports:
+      - 7054:7054
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./network-config/crypto-config/peerOrganizations/org1.<%= organisation %>/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.s<%= organisation %>
+    networks:
+      - basic
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_ID=cli
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CHANNEL_NAME=sml-channel
+      - CORE_PEER_ADDRESS=peer0.org1.<%= organisation %>:7051
+      - ORDERER_URL=orderer.softwaremill.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.<%= organisation %>/users/Admin@org1.<%= organisation %>/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./network-config/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ # certs
+      - ./network-config:/var/hyperledger/config/ # configtx.yaml, crypto-config.yaml
+      - ./network-config/scripts:/scripts/
+      - ./chaincodes/java:/opt/gopath/src/github.com/chaincode/
+    networks:
+      - basic
+
+#https://stackoverflow.com/questions/56415570/failed-to-invoke-chaincode-namelscc-error-container-exited-with-1-chainco:
