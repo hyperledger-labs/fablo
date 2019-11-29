@@ -7,12 +7,12 @@
 const Generator = require('yeoman-generator');
 module.exports = class extends Generator {
 
-    desc() {
-        this.log('Updates already existing config');
-    }
+  desc() {
+    this.log('Updates already existing config');
+  }
 
-    splash() {
-        this.log('Nothing there yet... Sorry !');
-    }
+  splash() {
+    this.log('Nothing there yet... Sorry !');
+  }
 
 };
