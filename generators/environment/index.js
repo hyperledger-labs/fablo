@@ -7,26 +7,37 @@
 const Generator = require('yeoman-generator');
 module.exports = class extends Generator {
 
-  async prompting() {
-    const questions = [{
-      type: 'list',
-      name: 'env-type',
-      message: 'Select type of environment to create',
-      choices: [
-        {name: 'docker-compose', value: 'docker-compose'},
-        {name: 'Helm', value: 'helm'}
-      ]
-    }];
-    const answers = await this.prompt(questions);
-    Object.assign(this.options, answers);
-  }
+    async prompting() {
+        const questions = [{
+            type: 'list',
+            name: 'env-type',
+            message: 'Select type of environment to create',
+            choices: [
+                {name: 'docker-compose', value: 'docker-compose'},
+                {name: 'Helm', value: 'helm'}
+            ]
+        }];
+        const answers = await this.prompt(questions);
+        Object.assign(this.options, answers);
+    }
 
     async writing() {
-      const root = await this.config.get('root')
+        const rootGenerator = await this.config.get('root');
         this.fs.copyTpl(
-            this.templatePath('docker-compose/fabric-compose.yaml'),
-            this.destinationPath('docker-out/fabric-compose.yaml'),
-            { organisation: root.organization.name } // user answer `title` used
+            this.templatePath('network/docker-compose.yaml'),
+            this.destinationPath('network-compose/docker-compose.yaml'),
+            {
+                "rootDomain": rootGenerator.organization.domain,
+                "rootName": rootGenerator.organization.name
+            }
+        );
+        this.fs.copyTpl(
+            this.templatePath('network/.env'),
+            this.destinationPath('network-compose/.env'),
+            {
+                "rootDomain": rootGenerator.organization.domain,
+                "rootName": rootGenerator.organization.name
+            }
         );
     }
 };
