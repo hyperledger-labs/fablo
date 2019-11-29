@@ -1,0 +1,63 @@
+orderer.softwaremill.com:
+  container_name: orderer.softwaremill.com
+  image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+  environment:
+    - ORDERER_GENERAL_LOGLEVEL=debug
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_GENESISMETHOD=file
+    - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+    - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+    - GODEBUG=netdns=go
+  working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+  command: orderer
+  ports:
+    - 7050:7050
+  volumes:
+    - ./network-config/config/:/etc/hyperledger/configtx
+    - ./network-config/crypto-config/ordererOrganizations/softwaremill.com/orderers/orderer.softwaremill.com/:/etc/hyperledger/msp/orderer
+    - ./network-config/crypto-config/peerOrganizations/org1.softwaremill.com/peers/peer0.org1.softwaremill.com/:/etc/hyperledger/msp/peerOrg1
+  networks:
+    - basic
+
+ca.softwaremill.com:
+  image: hyperledger/fabric-ca:${FABRIC_VERSION}
+  environment:
+    - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+    - FABRIC_CA_SERVER_CA_NAME=ca.softwaremill.com
+    - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.softwaremill.com-cert.pem
+    - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+  ports:
+    - 7054:7054
+  command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+  volumes:
+    - ./network-config/crypto-config/peerOrganizations/org1.softwaremill.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  container_name: ca.softwaremill.com
+  networks:
+    - basic
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_PEER_ID=cli
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CHANNEL_NAME=sml-channel
+      - CORE_PEER_ADDRESS=peer0.org1.softwaremill.com:7051
+      - ORDERER_URL=orderer.softwaremill.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.softwaremill.com/users/Admin@org1.softwaremill.com/msp
+      - CORE_CHAINCODE_KEEPALIVE=10
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./network-config/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ # certs
+      - ./network-config:/var/hyperledger/config/ # configtx.yaml, crypto-config.yaml
+      - ./network-config/scripts:/scripts/
+      - ./chaincodes/java:/opt/gopath/src/github.com/chaincode/
+    networks:
+      - basic
