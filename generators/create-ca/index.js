@@ -16,11 +16,6 @@ module.exports = class extends Generator {
       name: 'prefix',
       message: `[${orgNamespace}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
       default: defaultCAPrefix,
-    }, {
-      type: 'number',
-      name: 'instances',
-      message: `${utils.tab}number of instances`,
-      default: defaultNumberOfInstances,
     }];
     const answers = await this.prompt(questions);
     await utils.updateNamespace(this.config, orgNamespace, 'ca', answers);
