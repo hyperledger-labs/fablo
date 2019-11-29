@@ -14,12 +14,12 @@ module.exports = class extends Generator {
     const questions = [{
       type: 'input',
       name: 'prefix',
-      message: `[${orgNamespace}] Certificate Authority (CA) hostname prefix`,
+      message: `[${orgNamespace}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
       default: defaultCAPrefix,
     }, {
       type: 'number',
       name: 'instances',
-      message: `[${orgNamespace}] Number of instances`,
+      message: `${utils.tab}number of instances`,
       default: defaultNumberOfInstances,
     }];
     const answers = await this.prompt(questions);

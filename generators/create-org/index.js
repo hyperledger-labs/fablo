@@ -14,12 +14,12 @@ module.exports = class extends Generator {
     const questions = [{
       type: 'input',
       name: 'name',
-      message: `[${orgNamespace}] Organization name`,
+      message: `[${orgNamespace}] Organization:\n${utils.tab}name`,
       default: defaultOrgName,
     }, {
       type: 'input',
       name: 'domain',
-      message: `[${orgNamespace}] Organization domain`,
+      message: `${utils.tab}domain`,
       default: defaultOrgDomain(orgNamespace),
     }];
 
