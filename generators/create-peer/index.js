@@ -9,21 +9,21 @@ const defaultNumberOfInstances = 3;
 module.exports = class extends Generator {
 
   async prompting() {
-    const namespace = utils.getNamespace(this.options);
+    const orgNamespace = this.options.orgNamespace;
 
     const questions = [{
       type: 'input',
       name: 'prefix',
-      message: `[${namespace}] Peer hostname prefix`,
+      message: `[${orgNamespace}] Peer hostname prefix`,
       default: defaultPeerPrefix,
     }, {
       type: 'number',
       name: 'instances',
-      message: `[${namespace}] Number of instances`,
+      message: `[${orgNamespace}] Number of instances`,
       default: defaultNumberOfInstances,
     }];
     const answers = await this.prompt(questions);
-    await utils.updateNamespace(this.config, namespace, 'peer', answers);
+    await utils.updateNamespace(this.config, orgNamespace, 'peer', answers);
   }
 
 };

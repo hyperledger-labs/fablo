@@ -3,28 +3,28 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 
-const defaultOrgName = (namespace) => `My ${namespace === 'root' ? 'Root ' : ''}Organization`;
-const defaultOrgDomain = (namespace) => `${namespace}.example.com`;
+const defaultOrgName = (orgNamespace) => `My ${orgNamespace === 'root' ? 'Root ' : ''}Organization`;
+const defaultOrgDomain = (orgNamespace) => `${orgNamespace}.example.com`;
 
 module.exports = class extends Generator {
 
   async prompting() {
-    const namespace = utils.getNamespace(this.options);
+    const orgNamespace = this.options.orgNamespace;
 
     const questions = [{
       type: 'input',
       name: 'name',
-      message: `[${namespace}] Organization name`,
+      message: `[${orgNamespace}] Organization name`,
       default: defaultOrgName,
     }, {
       type: 'input',
       name: 'domain',
-      message: `[${namespace}] Organization domain`,
-      default: defaultOrgDomain(namespace),
+      message: `[${orgNamespace}] Organization domain`,
+      default: defaultOrgDomain(orgNamespace),
     }];
 
     const answers = await this.prompt(questions);
-    await utils.updateNamespace(this.config, namespace, 'organization', answers);
+    await utils.updateNamespace(this.config, orgNamespace, 'organization', answers);
   }
 
 };
