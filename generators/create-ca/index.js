@@ -2,8 +2,8 @@
 
 const Generator = require('yeoman-generator');
 
-const defaultPeerPrefix = 'peer';
-const defaultNumberOfInstances = 3;
+const defaultCAPrefix = 'ca';
+const defaultNumberOfInstances = 1;
 
 module.exports = class extends Generator {
 
@@ -11,8 +11,8 @@ module.exports = class extends Generator {
     const questions = [{
       type: 'input',
       name: 'prefix',
-      message: 'Peer hostname prefix',
-      default: defaultPeerPrefix,
+      message: 'Certificate Authority (CA) hostname prefix',
+      default: defaultCAPrefix,
     }, {
       type: 'number',
       name: 'instances',
@@ -20,7 +20,7 @@ module.exports = class extends Generator {
       default: defaultNumberOfInstances,
     }];
     const answers = await this.prompt(questions);
-    this.config.set('peers', answers);
+    this.config.set('ca', answers);
   }
 
 };
