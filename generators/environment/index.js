@@ -21,8 +21,12 @@ module.exports = class extends Generator {
     Object.assign(this.options, answers);
   }
 
-  async configuring() {
-    this.log(`All for now. Sorry !`);
-  }
-
+    async writing() {
+      const root = await this.config.get('root')
+        this.fs.copyTpl(
+            this.templatePath('docker-compose/fabric-compose.yaml'),
+            this.destinationPath('docker-out/fabric-compose.yaml'),
+            { organisation: root.organization.name } // user answer `title` used
+        );
+    }
 };
