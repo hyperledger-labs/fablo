@@ -7,8 +7,8 @@
 const Generator = require('yeoman-generator');
 module.exports = class extends Generator {
 
-    splash() {
-        this.log('Nothing there yet... Sorry !');
-    }
+  splash() {
+    this.log('Nothing there yet... Sorry !');
+  }
 
 };
