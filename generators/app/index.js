@@ -22,7 +22,7 @@ module.exports = class extends Generator {
       name: 'subgenerator',
       message: 'What you gonna do today ?',
       choices: [
-        {name: 'Create (network, organisation, peer)', value: 'create'},
+        {name: 'Create new HLF network', value: 'create'},
         {name: 'Export (create config.json file)', value: 'export'},
         {name: 'Update (update saved config)', value: 'update'},
         {name: 'Import (import config.json file)', value: 'import'},
