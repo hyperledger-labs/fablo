@@ -19,13 +19,7 @@ async function saveConfig(config, orgKey, key, value) {
     return await config.set(root, updated);
   } else {
     const current = (await config.get(otherOrgs)) || [{[key]: value}];
-    const updated = current.map((o) => {
-      if (o && o.organization && o.organization.key === orgKey) {
-        return {...o, [key]: value};
-      } else {
-        return o;
-      }
-    });
+    const updated = current.map((o) => o && o.organization && o.organization.key === orgKey ? {...o, [key]: value} : o);
     return await config.set(otherOrgs, updated);
   }
 }
@@ -50,4 +44,5 @@ module.exports = {
   loadConfig,
   tab: '\t  - ',
   rootKey: root,
+  otherOrgsKey: otherOrgs,
 };
