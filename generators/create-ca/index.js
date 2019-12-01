@@ -4,21 +4,23 @@ const Generator = require('yeoman-generator');
 const utils = require('../utils');
 
 const defaultCAPrefix = 'ca';
-const defaultNumberOfInstances = 1;
+const configKey = 'ca';
 
 module.exports = class extends Generator {
 
   async prompting() {
-    const orgNamespace = this.options.orgNamespace;
+    const orgKey = this.options.orgKey;
+    const {prefix} = await utils.loadConfig(this.config, orgKey, configKey);
 
     const questions = [{
       type: 'input',
       name: 'prefix',
-      message: `[${orgNamespace}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
-      default: defaultCAPrefix,
+      message: `[${orgKey}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
+      default: prefix || defaultCAPrefix,
     }];
+
     const answers = await this.prompt(questions);
-    await utils.updateNamespace(this.config, orgNamespace, 'ca', answers);
+    await utils.saveConfig(this.config, orgKey, configKey, answers);
   }
 
 };
