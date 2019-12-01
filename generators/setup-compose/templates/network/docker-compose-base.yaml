@@ -5,15 +5,15 @@ networks:
 
 services:
 
-  orderer.<%= rootDomain %>:
-    container_name: orderer.<%= rootDomain %>
+  <%= root.orderer.name %>.<%= root.domain %>:
+    container_name: orderer.<%= root.domain %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=<%= rootName %>MSP
+      - ORDERER_GENERAL_LOCALMSPID=<%= root.name %>MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
       - GODEBUG=netdns=go
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
@@ -22,28 +22,28 @@ services:
       - 7050:7050
     volumes:
       - ./config/:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/<%= rootDomain %>/orderers/orderer.<%= rootDomain %>/:/etc/hyperledger/msp/orderer
-      - ./crypto-config/peerOrganizations/org1.<%= rootDomain %>/peers/peer0.org1.<%= rootDomain %>/:/etc/hyperledger/msp/peerOrg1 #??? Po co to ?
+      - ./crypto-config/ordererOrganizations/<%= root.domain %>/orderers/orderer.<%= root.domain %>/:/etc/hyperledger/msp/orderer
+      - ./crypto-config/peerOrganizations/org1.<%= root.domain %>/peers/peer0.org1.<%= root.domain %>/:/etc/hyperledger/msp/peerOrg1 #??? Po co to ?
     networks:
       - basic
 
-  ca.<%= rootDomain %>:
-    container_name: ca.<%= rootDomain %>
+  <%= root.ca.name %>.<%= root.domain %>:
+    container_name: ca.<%= root.domain %>
     image: hyperledger/fabric-ca:${FABRIC_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.<%= rootDomain %>
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.<%= rootDomain %>-cert.pem
+      - FABRIC_CA_SERVER_CA_NAME=ca.<%= root.domain %>
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.<%= root.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
     ports:
       - 7054:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-config/peerOrganizations/<%= rootDomain %>/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/<%= root.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - basic
 
-  cli:
+  cli-<%= root.domain %>:
     container_name: cli
     image: hyperledger/fabric-tools:${FABRIC_VERSION}
     tty: true
@@ -54,9 +54,9 @@ services:
       - CORE_PEER_ID=cli
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CHANNEL_NAME=sml-channel
-      - CORE_PEER_ADDRESS=peer0.org1.<%= rootDomain %>:7051
-      - ORDERER_URL=orderer.<%= rootDomain %>:7050
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.<%= rootDomain %>/users/Admin@org1.<%= rootDomain %>/msp
+      - CORE_PEER_ADDRESS=peer0.org1.<%= root.domain %>:7051
+      - ORDERER_URL=orderer.<%= root.domain %>:7050
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.<%= root.domain %>/users/Admin@org1.<%= root.domain %>/msp
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
@@ -68,3 +68,7 @@ services:
       - ./chaincodes/java:/opt/gopath/src/github.com/chaincode/
     networks:
       - basic
+
+<% orgs.forEach(function(org){ %><%-
+include('rowek-organizacji', {org: org});
+%><% }); %>
