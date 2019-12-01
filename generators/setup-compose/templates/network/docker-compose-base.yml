@@ -37,7 +37,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
     ports:
       - 7054:7054
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ./crypto-config/peerOrganizations/<%= root.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
@@ -68,7 +68,6 @@ services:
       - ./chaincodes/java:/opt/gopath/src/github.com/chaincode/
     networks:
       - basic
-
 <% orgs.forEach(function(org){ %><%-
-include('rowek-organizacji', {org: org});
+include('docker-compose-org.yml.ejs', {org: org});
 %><% }); %>
