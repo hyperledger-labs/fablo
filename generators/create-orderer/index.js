@@ -3,7 +3,7 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 
-const defaultOrdererPrefix = 'ord';
+const defaultOrdererPrefix = 'orderer';
 const defaultNumberOfInstances = 1;
 const configKey = 'orderer';
 
