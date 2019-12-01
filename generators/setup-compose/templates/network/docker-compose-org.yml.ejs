@@ -11,7 +11,7 @@
       - 7054:7054 #!!! To się wywali bo takie same porty
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./network-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - basic
 <% } %>

@@ -19,9 +19,9 @@
       - 7053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./network-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= org.peer.prefix %><%= count %>.<%= org.organization.domain %>/msp:/etc/hyperledger/msp/peer
-      - ./network-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/msp/users
-      - ./network-config/config:/etc/hyperledger/configtx
+      - ./crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= org.peer.prefix %><%= count %>.<%= org.organization.domain %>/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.softwaremill.com
     networks:
