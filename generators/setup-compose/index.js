@@ -8,38 +8,23 @@ const Generator = require('yeoman-generator');
 module.exports = class extends Generator {
 
     async writing() {
-        const rootOrganization = await this.config.get('root');
+        const rootOrg = await this.config.get('root');
+        const orgs = await this.config.get('orgs');
         this.fs.copyTpl(
             this.templatePath('network/docker-compose-base.yml'),
             this.destinationPath('network-compose/docker-compose.yml'),
             {
                 root: {
-                    name: rootOrganization.organization.name,
-                    domain: rootOrganization.organization.domain,
+                    name: rootOrg.organization.name,
+                    domain: rootOrg.organization.domain,
                     ca: {
-                        name: rootOrganization.ca.prefix
+                        name: rootOrg.ca.prefix
                     },
                     orderer: {
-                        name: rootOrganization.orderer.prefix,
+                        name: rootOrg.orderer.prefix,
                     }
                 },
-                orgs: [
-                    {
-                        organization: {
-                            key: "org1",
-                            name: "Org1",
-                            domain: "org1.com"
-                        },
-                        ca: {
-                            generate: true,
-                            prefix: "ca"
-                        },
-                        peer: {
-                            prefix: "peer",
-                            instances: 3
-                        }
-                    }
-                ]
+                orgs: orgs
             }
         );
         this.fs.copyTpl(
@@ -47,23 +32,7 @@ module.exports = class extends Generator {
             this.destinationPath('network-compose/.env'),
             {
                 fabricVersion: "1.4.2",
-                orgs: [
-                    {
-                        organization: {
-                            key: "org1",
-                            name: "Org1",
-                            domain: "org1.com"
-                        },
-                        ca: {
-                            generate: true,
-                            prefix: "ca"
-                        },
-                        peer: {
-                            prefix: "peer",
-                            instances: 3
-                        }
-                    }
-                ]
+                orgs: orgs
             }
         );
     }

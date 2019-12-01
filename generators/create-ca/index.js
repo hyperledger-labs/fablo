@@ -17,7 +17,13 @@ module.exports = class extends Generator {
       name: 'prefix',
       message: `[${orgKey}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
       default: prefix || defaultCAPrefix,
-    }];
+    }, {
+        type: 'confirm',
+        name: 'generate',
+        message: `${utils.tab}Generate CA for this organization ?`,
+        default: true,
+      }
+      ];
 
     const answers = await this.prompt(questions);
     await utils.saveConfig(this.config, orgKey, configKey, answers);
