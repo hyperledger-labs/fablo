@@ -15,27 +15,27 @@ async function loadConfig(config, orgKey, key) {
 async function saveConfig(config, orgKey, key, value) {
   if (orgKey === root) {
     const current = await config.get(root);
-    const updated = {...current, [key]: value};
-    return await config.set(root, updated);
-  } else {
-    const current = (await config.get(otherOrgs)) || [{[key]: value}];
-    const updated = current.map((o) => o && o.organization && o.organization.key === orgKey ? {...o, [key]: value} : o);
-    return await config.set(otherOrgs, updated);
+    const updated = { ...current, [key]: value };
+    return config.set(root, updated);
   }
+  const current = (await config.get(otherOrgs)) || [{ [key]: value }];
+  const updated = current.map((o) => {
+    const theSameKey = o && o.organization && o.organization.key === orgKey;
+    return theSameKey ? { ...o, [key]: value } : o;
+  });
+  return config.set(otherOrgs, updated);
 }
 
 async function deleteConfig(config, orgKey) {
   if (orgKey === root) {
-    return await config.delete(orgKey);
-  } else {
-    const current = (await config.get(otherOrgs)) || [];
-    const updated = current.filter((o) => !isOrganizationWithKey(orgKey)(o));
-    if (!!updated.length) {
-      return await config.set(otherOrgs, updated);
-    } else {
-      return await config.delete(otherOrgs);
-    }
+    return config.delete(orgKey);
   }
+  const current = (await config.get(otherOrgs)) || [];
+  const updated = current.filter((o) => !isOrganizationWithKey(orgKey)(o));
+  if (updated.length) {
+    return config.set(otherOrgs, updated);
+  }
+  return config.delete(otherOrgs);
 }
 
 module.exports = {

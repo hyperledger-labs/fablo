@@ -1,4 +1,3 @@
-'use strict';
 
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
@@ -8,10 +7,9 @@ const defaultOrgDomain = (orgKey) => `${orgKey}.example.com`;
 const configKey = 'organization';
 
 module.exports = class extends Generator {
-
   async prompting() {
-    const orgKey = this.options.orgKey;
-    const {name, domain} = await utils.loadConfig(this.config, orgKey, configKey);
+    const { orgKey } = this.options;
+    const { name, domain } = await utils.loadConfig(this.config, orgKey, configKey);
 
     const questions = [{
       type: 'input',
@@ -25,8 +23,7 @@ module.exports = class extends Generator {
       default: domain || defaultOrgDomain(orgKey),
     }];
 
-    const answers = {key: orgKey, ...await this.prompt(questions)};
+    const answers = { key: orgKey, ...await this.prompt(questions) };
     await utils.saveConfig(this.config, orgKey, configKey, answers);
   }
-
 };
