@@ -11,7 +11,7 @@ describe(':create-ca', () => {
     expect(file.toString()).toMatchSnapshot();
   });
 
-  it('should create CA', async () => {
+  it('should create CA with custom options', async () => {
     const dir = await helpers.run(__dirname)
       .withOptions({ orgKey: 'black-pearl' })
       .withPrompts({ prefix: 'black-org-', generate: true })
