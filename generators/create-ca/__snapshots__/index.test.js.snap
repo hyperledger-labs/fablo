@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`:create-ca should create CA 1`] = `
+"{
+  \\"generator-fabric-network\\": {
+    \\"orgs\\": [
+      {
+        \\"ca\\": {
+          \\"prefix\\": \\"black-org-\\",
+          \\"generate\\": true
+        }
+      }
+    ]
+  }
+}
+"
+`;
+
+exports[`:create-ca should create CA with defaults 1`] = `
+"{
+  \\"generator-fabric-network\\": {
+    \\"orgs\\": [
+      {
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"generate\\": true
+        }
+      }
+    ]
+  }
+}
+"
+`;
