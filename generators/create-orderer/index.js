@@ -1,4 +1,3 @@
-'use strict';
 
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
@@ -8,10 +7,9 @@ const defaultNumberOfInstances = 1;
 const configKey = 'orderer';
 
 module.exports = class extends Generator {
-
   async prompting() {
-    const orgKey = this.options.orgKey;
-    const {prefix, instances} = await utils.loadConfig(this.config, orgKey, configKey);
+    const { orgKey } = this.options;
+    const { prefix, instances } = await utils.loadConfig(this.config, orgKey, configKey);
 
     const questions = [{
       type: 'input',
@@ -28,5 +26,4 @@ module.exports = class extends Generator {
     const answers = await this.prompt(questions);
     await utils.saveConfig(this.config, orgKey, configKey, answers);
   }
-
 };

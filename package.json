@@ -8,7 +8,16 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "scripts": {
+    "lint": "eslint --fix ."
+  },
   "dependencies": {
+    "jest": "^25.1.0",
     "yeoman-generator": "^1.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
   }
 }

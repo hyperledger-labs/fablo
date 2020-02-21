@@ -1,14 +1,11 @@
-'use strict';
 
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 
 module.exports = class extends Generator {
-
   async prompting() {
-
     const ogranizationInfo = (o) => {
-      const {key, name, domain} = (o || {}).organization || {};
+      const { key, name, domain } = (o || {}).organization || {};
       return `\n${utils.tab}${name} (${key}, ${domain})`;
     };
 
@@ -25,8 +22,8 @@ module.exports = class extends Generator {
         message: 'Do you want to delete the current config?',
         name: 'deleteConfig',
         choices: [
-          {name: 'Yes', value: 'delete'},
-          {name: 'No', value: 'abort'},
+          { name: 'Yes', value: 'delete' },
+          { name: 'No', value: 'abort' },
         ],
       }];
 
@@ -35,7 +32,7 @@ module.exports = class extends Generator {
       if (answers.deleteConfig === 'delete') {
         await Promise.all(Object.keys(all).map((key) => this.config.delete(key)));
       } else {
-        Object.assign(this.options, {oldConfigExists: true});
+        Object.assign(this.options, { oldConfigExists: true });
       }
     }
   }
