@@ -13,6 +13,7 @@ async function loadConfig(config, orgKey, key) {
 }
 
 async function saveConfig(config, orgKey, key, value) {
+  console.log('saving', config, orgKey, key, value)
   if (orgKey === root) {
     const current = await config.get(root);
     const updated = { ...current, [key]: value };
