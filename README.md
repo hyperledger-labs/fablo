@@ -4,6 +4,9 @@
 2. generowanie docker-compose -> Piotrek
 3. Jakie dane potrzebujemy -> Hejwo
 
+TODO
+* przyda się walidacja, że org name nie ma spacji
+
 ###Taski:
 - Stan pośredni  
 - Mechanika Yeomana. 

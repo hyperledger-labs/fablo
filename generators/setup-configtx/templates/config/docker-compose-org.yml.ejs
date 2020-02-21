@@ -1,0 +1,20 @@
+<% if (org.ca.generate) { %>
+  <%= org.ca.prefix %>.<%= org.organization.domain %>:
+    container_name: <%= org.ca.prefix %>.<%= org.organization.domain %>
+    image: hyperledger/fabric-ca:${FABRIC_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.prefix %>.<%= org.organization.domain %>
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/<%= org.ca.prefix %>.<%= org.organization.domain %>.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+    ports:
+      - 7054:7054 #!!! To się wywali bo takie same porty
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - basic
+<% } %>
+<% var i; for (i = 0; i < org.peer.instances; i++) { %><%-
+include('docker-compose-org-peer.yml.ejs', {org: org, count: i});
+%><% }; %>
