@@ -1,0 +1,41 @@
+{
+  "generator-fabric-network": {
+    "network-settings": {
+      "version": "1.4.3",
+      "tls": false
+    },
+    "root-org": {
+      "organization": {
+        "key": "root",
+        "id": "OrdererMSP",
+        "name": "Orderer",
+        "domain": "example.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "orderer": {
+        "prefix": "orderer",
+        "instances": 1,
+        "consensus": "solo"
+      }
+    },
+    "orgs": [
+      {
+        "organization": {
+          "key": "org1",
+          "id": "Org1",
+          "name": "Org1",
+          "domain": "org1.com"
+        },
+        "ca": {
+          "prefix": "ca"
+        },
+        "peer": {
+          "prefix": "peer",
+          "instances": 3
+        }
+      }
+    ]
+  }
+}
