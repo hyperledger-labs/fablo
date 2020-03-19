@@ -1,0 +1,23 @@
+OrdererOrgs:
+  - Name: <%= rootOrg.organization.key %>
+    Domain: <%= rootOrg.organization.domain %>
+    Specs:
+      - Hostname: <%= rootOrg.organization.key %>
+
+#TODO orderer count
+#TODO Name
+#TODO Domain
+
+#{
+#  root: {
+#    name: rootOrg.organization.name,
+#    domain: rootOrg.organization.domain,
+#    ca: {
+#      name: rootOrg.ca.prefix,
+#    },
+#    orderer: {
+#      name: rootOrg.orderer.prefix,
+#      instances: rootOrg.orderer.instances,
+#    },
+#  },
+#},
