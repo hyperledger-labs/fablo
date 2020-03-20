@@ -33,11 +33,11 @@ Organizations:
     - &OrdererOrg
         Name: OrdererOrg
         ID: OrdererMSP
-        MSPDir: ../fabric-config/ordererOrganizations/example.com/msp
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
     - &Org1
         Name: Org1MSP
         ID: Org1MSP
-        MSPDir: ../fabric-config/peerOrganizations/org1.com/msp
+        MSPDir: crypto-config/peerOrganizations/org1.com/msp
         AnchorPeers:
             - Host: peer0.org1.com
               Port: 7051
@@ -71,9 +71,10 @@ Orderer: &OrdererDefaults
 ################################################################################
 #   Profile
 ################################################################################
+# https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
+
 Profiles:
-    OneOrgOrdererGenesis:
-        #        <<: *ChannelDefaults
+    SoloOrdererGenesis:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
@@ -86,7 +87,6 @@ Profiles:
                     - *Org1
     OneOrgChannel:
         Consortium: SampleConsortium
-        #        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
