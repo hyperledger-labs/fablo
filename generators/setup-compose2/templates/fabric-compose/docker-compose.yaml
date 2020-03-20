@@ -27,8 +27,8 @@ services:
       - 7050:7050
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/softwaremill.com/orderers/orderer.softwaremill.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/softwaremill.com/orderers/orderer.softwaremill.com/tls/:/var/hyperledger/orderer/tls
+      - ../fabric-config/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
 
@@ -46,7 +46,7 @@ services:
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_PEER_ADDRESS=peer0.org1.softwaremill.com:7051
+      - CORE_PEER_ADDRESS=peer0.org1.com:7051
       # enabled TLS
       # - CORE_PEER_TLS_ENABLED=true
       # - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -54,7 +54,7 @@ services:
       # - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0.couchdb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0.couchdb.org1.com:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=very-stong-pass
     working_dir: /etc/hyperledger/fabric/peer/
@@ -93,7 +93,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/private-key.pem
     ports:
       - 7054:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -119,18 +119,18 @@ services:
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
       - ORDERER_URL=orderer.example.com:7050
       # enabled TLS
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.crt
-      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.softwaremill.com-cert.pem
+      # - CORE_PEER_TLS_ENABLED=true
+      # - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.crt
+      # - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.key
+      # - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/ca.crt
+      # - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/:/host/var/run/
       - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # certs
       - ../fabric-config/config:/var/hyperledger/cli/channel-artifacts/ # configtx.yaml, crypto-config.yaml
-      - ../fabric-config/scripts/cli:/scripts/
-      - ../chaincode/:/var/hyperledger/cli/chaincode/
+      # - ../scripts/cli:/scripts/
+      # - ../chaincode/:/var/hyperledger/cli/chaincode/
     networks:
       - basic
