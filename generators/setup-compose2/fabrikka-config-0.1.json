@@ -1,8 +1,12 @@
 {
   "generator-fabric-network": {
+    "file-version": "0.1",
+    "fabrikka-version": "0.0.1-proto",
     "network-settings": {
-      "version": "1.4.3",
-      "tls": false
+      "fabric-version": "1.4.3",
+      "tls": false,
+      "single-ca": true,
+      "single-cli": true
     },
     "root-org": {
       "organization": {
@@ -12,7 +16,7 @@
         "domain": "example.com"
       },
       "ca": {
-        "prefix": "ca"
+        "prefix": "root-ca"
       },
       "orderer": {
         "prefix": "orderer",
@@ -33,8 +37,27 @@
         },
         "peer": {
           "prefix": "peer",
-          "instances": 3
+          "instances": 3,
+          "db": "CouchDB"
         }
+      }
+    ],
+    "channel-consortium": {
+      "orgs": [
+        "root-org",
+        "org1"
+      ]
+    },
+    "channels": [
+      {
+        "key": "channel1",
+        "name": "myChannel",
+        "orgs": [
+          {
+            "key": "org1",
+            "peers": ["peer0", "peer1"]
+          }
+        ]
       }
     ]
   }
