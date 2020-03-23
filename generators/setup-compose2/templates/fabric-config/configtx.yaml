@@ -53,7 +53,8 @@ Application: &ApplicationDefaults
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
-Orderer: &OrdererDefaults
+Orderer:
+  - &OrdererDefaultsSolo
     OrdererType: solo
     Addresses:
         - orderer.example.com:7050
@@ -63,10 +64,19 @@ Orderer: &OrdererDefaults
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Kafka:
-        Brokers:
-            - 127.0.0.1:9092
-    Organizations:
+
+  - &OrdererDefaultsKafka
+      OrdererType: kafka
+      Addresses:
+          - orderer.example.com:7050
+      BatchTimeout: 2s
+      BatchSize:
+          MaxMessageCount: 10
+          AbsoluteMaxBytes: 99 MB
+          PreferredMaxBytes: 512 KB
+      Kafka:
+          Brokers:
+              - 127.0.0.1:9092
 
 ################################################################################
 #   Profile
@@ -76,7 +86,7 @@ Orderer: &OrdererDefaults
 Profiles:
     SoloOrdererGenesis:
         Orderer:
-            <<: *OrdererDefaults
+            <<: *OrdererDefaultsSolo
             Organizations:
                 - *OrdererOrg
             Capabilities:
@@ -84,7 +94,8 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Org1
+                    - *OrdererOrg
+
     OneOrgChannel:
         Consortium: SampleConsortium
         Application:
