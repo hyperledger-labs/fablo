@@ -10,8 +10,10 @@ function certsGenerate() {
   local OUTPUT_PATH=$2
 
   if [ -d "$OUTPUT_PATH" ]; then
-    echo "Won't genere certs, directory already exists : $OUTPUT_PATH"
-    echo "Remove it or regenerate project"
+    printf "\U1F910 \n"
+    echo "  Error: Won't genere certs, directory already exists : $OUTPUT_PATH"
+    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
+    printf "\U1F912 \n"
     exit 1
   fi
 
@@ -35,8 +37,10 @@ function genesisBlockCreate() {
   local OUTPUT_PATH=$2
 
     if [ -d "$OUTPUT_PATH" ]; then
-    echo "Won't generate genesis block, directory already exists : $OUTPUT_PATH"
-    echo "Remove it or regenerate project"
+    printf "\U1F910 \n"
+    echo "  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH"
+    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
+    printf "\U1F912 \n"
     exit 1
   fi
 
