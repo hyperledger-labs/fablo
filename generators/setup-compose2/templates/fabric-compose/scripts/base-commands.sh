@@ -17,7 +17,7 @@ function networkDown() {
   docker-compose down
   cd ..
 
-  printf "\nRemoving generated configs ... \U1F5D1 \n"
+  printf "\nRemoving generated configs (base-commands)... \U1F5D1 \n"
   rm -rf fabric-config/config
   rm -rf fabric-config/crypto-config
 
