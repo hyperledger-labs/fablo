@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
