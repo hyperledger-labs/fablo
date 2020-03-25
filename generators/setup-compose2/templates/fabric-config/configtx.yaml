@@ -1,16 +1,16 @@
 ################################################################################
 #   SECTION: Capabilities
 ################################################################################
-Capabilities:
-    Channel: &ChannelCapabilities
-        V1_4_3: true
-    Orderer: &OrdererCapabilities
-        V1_4_2: true
-    Application: &ApplicationCapabilities
-        V1_4_2: true
+#Capabilities:
+#    Channel: &ChannelCapabilities
+#        V1_4_3: true
+#    Orderer: &OrdererCapabilities
+#        V1_4_2: true
+#    Application: &ApplicationCapabilities
+#        V1_4_2: true
 
 ################################################################################
-#   CHANNEL
+#   CHANNEL Defaults
 ################################################################################
 Channel: &ChannelDefaults
     Policies:
@@ -23,8 +23,8 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-    Capabilities:
-        <<: *ChannelCapabilities
+#    Capabilities:
+#        <<: *ChannelCapabilities
 
 ################################################################################
 #   Section: Organizations
@@ -47,13 +47,13 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
-    Capabilities:
-        <<: *ApplicationCapabilities
+#    Capabilities:
+#        <<: *ApplicationCapabilities
 
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
-Orderer: &OrdererDefaultsSolo
+Orderer: &OrdererDefaults
     OrdererType: solo
     Addresses:
         - orderer.example.com:7050
@@ -62,6 +62,10 @@ Orderer: &OrdererDefaultsSolo
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
 
 #  - &OrdererDefaultsKafka
 #      OrdererType: kafka
@@ -84,22 +88,21 @@ Orderer: &OrdererDefaultsSolo
 Profiles:
     SoloOrdererGenesis:
         Orderer:
-            <<: *OrdererDefaultsSolo
+            <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
+#            Capabilities:
+#                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *OrdererOrg
-
+                    - *Org1
     OneOrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-            Capabilities:
-                <<: *ApplicationCapabilities
+#            Capabilities:
+#                <<: *ApplicationCapabilities
 
