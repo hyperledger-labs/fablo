@@ -1,13 +1,13 @@
 ################################################################################
 #   SECTION: Capabilities
 ################################################################################
-#Capabilities:
-#    Channel: &ChannelCapabilities
-#        V1_4_3: true
-#    Orderer: &OrdererCapabilities
-#        V1_4_2: true
-#    Application: &ApplicationCapabilities
-#        V1_4_2: true
+Capabilities:
+    Channel: &ChannelCapabilities
+        V1_4_3: true
+    Orderer: &OrdererCapabilities
+        V1_4_2: true
+    Application: &ApplicationCapabilities
+        V1_4_2: true
 
 ################################################################################
 #   CHANNEL Defaults
@@ -23,8 +23,6 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-#    Capabilities:
-#        <<: *ChannelCapabilities
 
 ################################################################################
 #   Section: Organizations
@@ -47,8 +45,8 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
-#    Capabilities:
-#        <<: *ApplicationCapabilities
+    Capabilities:
+        <<: *ApplicationCapabilities
 
 ################################################################################
 #   SECTION: Orderer
@@ -87,22 +85,24 @@ Orderer: &OrdererDefaults
 
 Profiles:
     SoloOrdererGenesis:
+        <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-#            Capabilities:
-#                <<: *OrdererCapabilities
+            Capabilities:
+                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
     OneOrgChannel:
+        <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-#            Capabilities:
-#                <<: *ApplicationCapabilities
+            Capabilities:
+                <<: *ApplicationCapabilities
 
