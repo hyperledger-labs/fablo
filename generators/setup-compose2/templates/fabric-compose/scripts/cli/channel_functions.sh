@@ -15,6 +15,7 @@ function createChannelTls() {
 function createChannel() {
   local CHANNEL_NAME=$1
   local ORDERER=$2
+  local ORDERER_URL=$2
 
   local CORE_PEER_LOCALMSPID=$3
   local CORE_PEER_ADDRESS=$4
@@ -39,7 +40,7 @@ function createChannel() {
 }
 
 #touch scripts/channel_functions.sh && \
-createChannel "channel1" "orderer.example.com:7050" "Org1MSP" "peer0.org1.com:7051" "crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp"
+createChannel "channel" "orderer.example.com:7050" "Org1MSP" "peer0.org1.com:7051" "crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp"
 
 # TODO 1 - wyciągnąć zmienne
 # TODO 2 - jak podawać channel.tx
