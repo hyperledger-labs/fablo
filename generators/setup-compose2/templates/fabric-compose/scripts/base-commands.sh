@@ -3,6 +3,9 @@ function networkUp() {
   certsGenerate "fabric-config" "./fabric-config/crypto-config"
   genesisBlockCreate "fabric-config" "./fabric-config/config"
 
+  printf "============ \U1F913 Generating channel config \U1F913 =============== \n"
+  createChannelTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config" "Org1MSP"
+
   printf "============ \U1F680 Starting network \U1F680 ======================= \n"
   cd fabric-compose
   docker-compose up -d
