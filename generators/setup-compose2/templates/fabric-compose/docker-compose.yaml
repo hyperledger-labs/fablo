@@ -93,7 +93,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/private-key.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
     ports:
       - 7054:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -113,10 +113,11 @@ services:
       - CORE_PEER_ID=cli
       - CORE_CHAINCODE_KEEPALIVE=10
       #
-      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/ordererOrganizations/example.com/users/Admin@org1.example.com/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
-      - CHANNEL_NAME=sml-channel
+#      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/org1.softwaremill.com/users/Admin@org1.softwaremill.com/msp
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
+      - CHANNEL_NAME=channel1
       - ORDERER_URL=orderer.example.com:7050
       # enabled TLS
       # - CORE_PEER_TLS_ENABLED=true
@@ -128,9 +129,9 @@ services:
     command: /bin/bash
     volumes:
       - /var/run/:/host/var/run/
-      - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # certs
-      - ../fabric-config/config:/var/hyperledger/cli/channel-artifacts/ # configtx.yaml, crypto-config.yaml
-      # - ../scripts/cli:/scripts/
+      - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # all certs TODO should be done per organization...
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ./scripts/cli:/var/hyperledger/cli/scripts/
       # - ../chaincode/:/var/hyperledger/cli/chaincode/
     networks:
       - basic
