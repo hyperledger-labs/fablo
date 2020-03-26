@@ -27,7 +27,7 @@ function certsGenerate() {
   docker cp $CONTAINER_NAME:/crypto-config $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
 
-  for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/key.pem; done
+  for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
 }
 
 function genesisBlockCreate() {
@@ -67,7 +67,7 @@ function createChannelTx() {
 
   if [ -f "$CHANNEL_TX_PATH" ]; then
     printf "\U1F910 \n"
-    echo "  Error: Won't channel configuration, it already exists : $OUTPUT_FILE"
+    echo "  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH"
     echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
     printf "\U1F912 \n"
     exit 1
@@ -95,7 +95,7 @@ function createAnchorPeerUpdateTx() {
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
     printf "\U1F910 \n"
-    echo "  Error: Won't channel configuration, it already exists : $OUTPUT_FILE"
+    echo "  Error: Won't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
     echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
     printf "\U1F912 \n"
     exit 1

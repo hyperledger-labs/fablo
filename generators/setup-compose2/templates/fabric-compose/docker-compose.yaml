@@ -1,4 +1,4 @@
-version: '2'
+version: '2.2'
 
 networks:
   basic:
@@ -93,7 +93,7 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/key.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
     ports:
       - 7054:7054
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
@@ -102,21 +102,20 @@ services:
     networks:
       - basic
 
-  cli:
-    container_name: cli
+  cli.org1:
+    container_name: cli.org1
     image: hyperledger/fabric-tools:${FABRIC_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-      - CORE_PEER_ID=cli
+      - CORE_PEER_ID=cli.org1
       - CORE_CHAINCODE_KEEPALIVE=10
       #
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-#      - ORDERER_URL=orderer.example.com:7050
       # enabled TLS
       # - CORE_PEER_TLS_ENABLED=true
       # - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.crt
