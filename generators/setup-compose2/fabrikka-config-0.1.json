@@ -1,64 +1,67 @@
 {
-  "generator-fabric-network": {
-    "file-version": "0.1",
-    "fabrikka-version": "0.0.1-proto",
-    "network-settings": {
-      "fabric-version": "1.4.3",
-      "tls": false,
-      "single-ca": true,
-      "single-cli": true
+  "fabrikka-version": "0.0.1-proto",
+  "file-version": "0.1",
+  "network-settings": {
+    "fabric-version": "1.4.3",
+    "tls": false,
+    "single-ca": true,
+    "single-cli": true
+  },
+  "root-org": {
+    "organization": {
+      "key": "root",
+      "id": "OrdererMSP",
+      "name": "Orderer",
+      "domain": "example.com"
     },
-    "root-org": {
+    "ca": {
+      "prefix": "root-ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "consensus": "solo",
+      "instances": 1
+    }
+  },
+  "orgs": [
+    {
       "organization": {
-        "key": "root",
-        "id": "OrdererMSP",
-        "name": "Orderer",
-        "domain": "example.com"
+        "key": "org1",
+        "id": "Org1",
+        "name": "Org1",
+        "domain": "org1.com"
       },
       "ca": {
-        "prefix": "root-ca"
+        "prefix": "ca"
       },
-      "orderer": {
-        "prefix": "orderer",
-        "instances": 1,
-        "consensus": "solo"
+      "peer": {
+        "prefix": "peer",
+        "instances": 3,
+        "db": "CouchDB"
       }
-    },
-    "orgs": [
-      {
-        "organization": {
-          "key": "org1",
-          "id": "Org1",
-          "name": "Org1",
-          "domain": "org1.com"
-        },
-        "ca": {
-          "prefix": "ca"
-        },
-        "peer": {
-          "prefix": "peer",
-          "instances": 3,
-          "db": "CouchDB"
-        }
-      }
-    ],
-    "channel-consortium": {
+    }
+  ],
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "myChannel",
       "orgs": [
-        "root-org",
-        "org1"
+        {
+          "key": "org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
       ]
-    },
-    "channels": [
-      {
-        "key": "channel1",
-        "name": "myChannel",
-        "orgs": [
-          {
-            "key": "org1",
-            "peers": ["peer0", "peer1"]
-          }
-        ]
-      }
-    ]
-  }
+    }
+  ],
+  "chaincodes": [
+    {
+      "channel": "channel1",
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "java"
+    }
+  ]
 }
