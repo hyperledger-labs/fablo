@@ -110,3 +110,78 @@ function createAnchorPeerUpdateTx() {
   docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
   docker rm -f $CONTAINER_NAME
 }
+
+function chaincodeInstall() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_VERSION=$2
+  local CHAINCODE_LANG=$3
+
+  local CHANNEL_NAME=$4
+
+  local PEER_ADDRESS=$5
+  local ORDERER_URL=$6
+  local CLI_NAME=$7
+
+  local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+
+  if [ -d "$CHAINCODE_DIR_PATH" ]; then
+    echo "Installing chaincode '$CHAINCODE_NAME' from directory '$CHAINCODE_DIR_PATH' on '$CHANNEL_NAME'"
+    docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+      $CLI_NAME peer chaincode install \
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
+      -o $ORDERER_URL
+  else
+    echo "Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
+    echo "Looked for dir: '$CHAINCODE_DIR_PATH'"
+  fi
+}
+
+function chaincodeInstantiate() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_VERSION=$2
+  local CHAINCODE_LANG=$3
+
+  local CHANNEL_NAME=$4
+
+  local PEER_ADDRESS=$5
+  local ORDERER_URL=$6
+  local CLI_NAME=$7
+
+  local INIT_PARAMS=$8
+  local ENDORSMENT=$9
+
+  local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+
+  if [ -d "$CHAINCODE_DIR_PATH" ]; then
+    docker exec \
+        -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+        $CLI_NAME peer chaincode instantiate \
+        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c $INIT_PARAMS -C $CHANNEL_NAME -P $ENDORSMENT \
+        -o $ORDERER_URL
+        #--collections-config $COLLECTION_CONIFG_PATH \
+        #--tls --cafile $TLS_CA_CERT_PATH
+  else
+    echo "No chaincode to instantiate"
+  fi
+}
+
+function chaincodeInstallTls() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_VERSION=$2
+  local CHAINCODE_LANG=$3
+
+  local CHANNEL_NAME=$4
+
+  local PEER_ADDRESS=$5
+  local ORDERER_URL=$6
+  local CLI_NAME=$7
+  local CA_CERT=$8
+
+  docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+    $CLI_NAME peer chaincode install \
+    -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
+    -o $ORDERER_URL --tls --cafile $CA_CERT
+
+#  /tmp/hyperledger/$ORG1/admin/msp/tlscacerts/tls-ca-cert.pem
+
+}
