@@ -4,30 +4,51 @@
 
 
 const Generator = require('yeoman-generator');
+
 const utils = require('../utils');
 
-const defaultCAPrefix = 'ca';
-const configKey = 'ca';
-
 module.exports = class extends Generator {
-  async prompting() {
-    const { orgKey } = this.options;
-    const { prefix } = await utils.loadConfig(this.config, orgKey, configKey);
 
-    const questions = [{
-      type: 'input',
-      name: 'prefix',
-      message: `[${orgKey}] Certificate Authority (CA):\n${utils.tab}hostname prefix`,
-      default: prefix || defaultCAPrefix,
-    }, {
-      type: 'confirm',
-      name: 'generate',
-      message: `${utils.tab}Generate CA for this organization ?`,
-      default: true,
-    },
-    ];
+    constructor(args, opts) {
+        super(args, opts);
+        this.argument("fabrikkaConfig", {
+            type: String,
+            required: true,
+            description: "Name of fabrikka config file in current dir"
+        });
 
-    const answers = await this.prompt(questions);
-    await utils.saveConfig(this.config, orgKey, configKey, answers);
-  }
+        const configFilePath = this.getConfigsFullPath(this.options.fabrikkaConfig);
+        const fileExists = this.fs.exists(configFilePath);
+
+        if (!fileExists) {
+            this.emit('error', new Error(`No file under path: ${configFilePath}`));
+        } else {
+            this.options.fabrikkaConfigPath = configFilePath;
+        }
+    }
+
+    async writing() {
+        const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
+        const prettyResult = JSON.stringify(networkConfig, undefined, 2);
+
+        this.log(prettyResult);
+
+        this.log("Fabric version is: "+ networkConfig.networkSettings.fabricVersion);
+    }
+
+    getConfigsFullPath(configFile) {
+        const currentPath = this.env.cwd;
+        return currentPath + "/" + configFile;
+    }
+
 };
+
+// https://yeoman.io/authoring/file-system.html
+// fabrikkaConfig-0.1.json
+
+
+// parsedOpts[config.name] = value;
+// });
+//
+// // Make the parsed options available to the instance
+// Object.assign(this.options, parsedOpts);
