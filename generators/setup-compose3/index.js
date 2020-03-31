@@ -38,6 +38,7 @@ module.exports = class extends Generator {
         this._validateOrderer(networkConfig.rootOrg.orderer);
 
         this.log("Fabric version is: " + networkConfig.networkSettings.fabricVersion);
+        const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
 
         this.fs.copyTpl(
             this.templatePath('fabric-config/crypto-config-root.yaml'),
@@ -67,6 +68,7 @@ module.exports = class extends Generator {
             this.templatePath('fabric-config/configtx.yaml'),
             this.destinationPath('fabric-config/configtx.yaml'),
             {
+                capabilities: capabilities,
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: networkConfig.rootOrg,
                 orgs: networkConfig.orgs,
@@ -94,6 +96,15 @@ module.exports = class extends Generator {
             (orderer.consensus === "solo" && orderer.instances > 1),
             `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only one instance is needed :).`
         )
+    }
+
+    _getNetworkCapabilities(fabricVersion) {
+        switch(fabricVersion) {
+            case '1.4.3':
+                return {channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2"};
+            default:
+                return {channel: "V1_4_2", orderer: "V1_4_2", application: "V1_4_2"};
+        }
     }
 
     _getConfigsFullPath(configFile) {
