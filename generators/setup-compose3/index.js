@@ -53,6 +53,15 @@ module.exports = class extends Generator {
                 orgs: networkConfig.orgs,
             },
         );
+
+        const generator = this;
+        networkConfig.orgs.forEach(function (org) {
+            generator.fs.copyTpl(
+                generator.templatePath('fabric-config/crypto-config-org.yaml'),
+                generator.destinationPath(`fabric-config/crypto-config-${org.organization.name.toLowerCase()}.yaml`),
+                { org },
+            );
+        });
     }
 
     _validateFabrikkaVersion(fabrikkaVersion) {
