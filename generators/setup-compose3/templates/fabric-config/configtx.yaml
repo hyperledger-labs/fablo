@@ -3,11 +3,11 @@
 ################################################################################
 Capabilities:
     Channel: &ChannelCapabilities
-        V1_4_3: true
+        <%=  capabilities.channel %>: true
     Orderer: &OrdererCapabilities
-        V1_4_2: true
+        <%=  capabilities.orderer %>: true
     Application: &ApplicationCapabilities
-        V1_4_2: true
+        <%=  capabilities.application %>: true
 
 ################################################################################
 #   CHANNEL Defaults
