@@ -62,6 +62,17 @@ module.exports = class extends Generator {
                 { org },
             );
         });
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-config/configtx.yaml'),
+            this.destinationPath('fabric-config/configtx.yaml'),
+            {
+                networkSettings: networkConfig.networkSettings,
+                rootOrg: networkConfig.rootOrg,
+                orgs: networkConfig.orgs,
+            },
+        );
+
     }
 
     _validateFabrikkaVersion(fabrikkaVersion) {

@@ -29,16 +29,16 @@ Channel: &ChannelDefaults
 ################################################################################
 Organizations:
     - &OrdererOrg
-        Name: OrdererOrg
-        ID: OrdererMSP
-        MSPDir: crypto-config/ordererOrganizations/example.com/msp
-    - &Org1
-        Name: Org1MSP
-        ID: Org1MSP
-        MSPDir: crypto-config/peerOrganizations/org1.com/msp
+        Name: <%= rootOrg.organization.name %>
+        ID: <%= rootOrg.organization.mspName %>
+        MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
+    - &<%= org.organization.name %>
+        Name: <%= org.organization.name %>
+        ID: <%= org.organization.mspName %>
+        MSPDir: crypto-config/peerOrganizations/<%= org.organization.domain %>/msp
         AnchorPeers:
-            - Host: peer0.org1.com
-              Port: 7051
+            - Host: peer0.<%= org.organization.domain %>
+              Port: 7051<% }) %>
 
 ################################################################################
 #   SECTION: Application
@@ -52,17 +52,14 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: solo
-    Addresses:
-        - orderer.example.com:7050
+    OrdererType: <%= rootOrg.orderer.consensus %>
+    Addresses: <% for(var i=0; i<rootOrg.orderer.instances; i++) {%>
+        - <%= rootOrg.orderer.prefix %><%= i %>.<%= rootOrg.organization.domain %>:7050<% } %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Kafka:
-        Brokers:
-            - 127.0.0.1:9092
     Organizations:
 
 #  - &OrdererDefaultsKafka
@@ -94,15 +91,15 @@ Profiles:
                 <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
-                Organizations:
-                    - *Org1
+                Organizations: <% orgs.forEach(function(org){ %>
+                    - *<%= org.organization.name %><% }) %>
     OneOrgChannel:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
-            Organizations:
-                - *Org1
+            Organizations: <% orgs.forEach(function(org){ %>
+                - *<%= org.organization.name %><% }) %>
             Capabilities:
                 <<: *ApplicationCapabilities
 
