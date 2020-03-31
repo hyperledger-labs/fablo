@@ -36,7 +36,7 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.organization.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      <% if(!networkSettings.tls) { -%>
+      <% if(networkSettings.tls) { -%>
       #enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -54,13 +54,51 @@ services:
     networks:
       - basic
   <% } -%>
-
-  peer0.org1.com:
-    container_name: peer0.org1.com
+  <% for (i in orgs) {
+    var org = orgs[i]
+  %>
+  cli.<%= org.organization.domain %>:
+    container_name: cli.<%= org.organization.domain %>
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.<%= org.organization.domain %>
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/msp
+      - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
+      <% if(networkSettings.tls) { -%>
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/orderer0.<%= rootOrg.organization.domain %>/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem
+      <% } %>
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # all certs TODO should be done per organization...
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ./scripts/cli:/var/hyperledger/cli/scripts/
+      # - ../chaincode/:/var/hyperledger/cli/chaincode/
+    networks:
+      - basic
+  <% for(var i=0; i<org.peer.instances; i++) {
+    var peerFullName=`peer${i}.${org.organization.domain}`
+    var couchDB=org.peer.db==="CouchDB"
+  %>
+  <%= peerFullName %>.<%=  couchDB %>:
+    container_name: <%= peerFullName %>
     image: hyperledger/fabric-peer:${FABRIC_VERSION}
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_PEER_ID=peer0.org1.com
+      - CORE_PEER_ID=<%= peerFullName %>
       - CORE_LOGGING_PEER=${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
@@ -68,13 +106,15 @@ services:
       - GODEBUG=netdns=go
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_PEER_ADDRESS=peer0.org1.com:7051
+      - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
+      - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
+      <% if(networkSettings.tls) { -%>
       # enabled TLS
-      # - CORE_PEER_TLS_ENABLED=true
-      # - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
-      # - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
-      # - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      <% } %>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0.couchdb.org1.com:5984
@@ -108,34 +148,5 @@ services:
       - "5984:5984"
     networks:
       - basic
-
-  cli.org1:
-    container_name: cli.org1
-    image: hyperledger/fabric-tools:${FABRIC_VERSION}
-    tty: true
-    environment:
-      - GOPATH=/opt/gopath
-      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-      - CORE_PEER_ID=cli.org1
-      - CORE_CHAINCODE_KEEPALIVE=10
-      #
-      - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp
-      - CORE_PEER_ADDRESS=peer0.org1.com:7051
-      # enabled TLS
-      # - CORE_PEER_TLS_ENABLED=true
-      # - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.crt
-      # - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/client.key
-      # - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/org1.com/users/Admin@org1.com/tls/ca.crt
-      # - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    working_dir: /var/hyperledger/cli/
-    command: /bin/bash
-    volumes:
-      - /var/run/:/host/var/run/
-      - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # all certs TODO should be done per organization...
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ./scripts/cli:/var/hyperledger/cli/scripts/
-      # - ../chaincode/:/var/hyperledger/cli/chaincode/
-    networks:
-      - basic
+  <% } // end of peer loop %>
+  <% } // end of org loop %>
