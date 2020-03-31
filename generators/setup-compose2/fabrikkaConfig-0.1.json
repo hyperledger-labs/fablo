@@ -10,8 +10,8 @@
   "rootOrg": {
     "organization": {
       "key": "root",
-      "id": "OrdererMSP",
       "name": "Orderer",
+      "mspName": "OrdererMSP",
       "domain": "example.com"
     },
     "ca": {
@@ -27,8 +27,8 @@
     {
       "organization": {
         "key": "org1",
-        "id": "Org1",
         "name": "Org1",
+        "mspName": "Org1MSP",
         "domain": "org1.com"
       },
       "ca": {
