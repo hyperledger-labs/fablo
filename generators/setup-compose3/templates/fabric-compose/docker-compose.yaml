@@ -4,33 +4,40 @@ networks:
   basic:
 
 services:
-
-  orderer.example.com:
-    container_name: orderer.example.com
+  <% for(var i=0; i<rootOrg.orderer.instances; i++) {
+    var ordererName=rootOrg.orderer.prefix+i
+    var ordererFullName=ordererName+"."+rootOrg.organization.domain
+    var hostPortToUse=7030+i
+  %>
+  <%= ordererFullName %>:
+    container_name: <%= ordererFullName %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.organization.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      # enabled TLS
-      # - ORDERER_GENERAL_TLS_ENABLED=false
-      # - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      # - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      # - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      <% if(!networkSettings.tls) { -%>
+      #enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      <% } %>
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - 7050:7050
+      - <%= hostPortToUse %>:7050
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= ordererFullName %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= ordererFullName %>/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
+  <% } -%>
 
   peer0.org1.com:
     container_name: peer0.org1.com

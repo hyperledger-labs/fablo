@@ -5,7 +5,7 @@
 
 const Generator = require('yeoman-generator');
 
-const utils = require('../utils');
+// const utils = require('../utils');
 
 const supportedFabricVersions = ['1.4.3'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
@@ -46,15 +46,6 @@ module.exports = class extends Generator {
             {rootOrg: networkConfig.rootOrg}
         );
 
-        this.fs.copyTpl(
-            this.templatePath('fabric-compose/.env'),
-            this.destinationPath('fabric-compose/.env'),
-            {
-                networkSettings: networkConfig.networkSettings,
-                orgs: networkConfig.orgs,
-            },
-        );
-
         const generator = this;
         networkConfig.orgs.forEach(function (org) {
             generator.fs.copyTpl(
@@ -69,6 +60,25 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-config/configtx.yaml'),
             {
                 capabilities: capabilities,
+                networkSettings: networkConfig.networkSettings,
+                rootOrg: networkConfig.rootOrg,
+                orgs: networkConfig.orgs,
+            },
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/.env'),
+            this.destinationPath('fabric-compose/.env'),
+            {
+                networkSettings: networkConfig.networkSettings,
+                orgs: networkConfig.orgs,
+            },
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/docker-compose.yaml'),
+            this.destinationPath('fabric-compose/docker-compose.yaml'),
+            {
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: networkConfig.rootOrg,
                 orgs: networkConfig.orgs,
