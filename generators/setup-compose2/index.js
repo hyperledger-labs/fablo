@@ -7,6 +7,9 @@ const Generator = require('yeoman-generator');
 
 const utils = require('../utils');
 
+const supportedFabricVersions = ['1.4.3'];
+const supportFabrikkaVersions = ['alpha-0.0.1'];
+
 module.exports = class extends Generator {
 
     constructor(args, opts) {
@@ -17,7 +20,7 @@ module.exports = class extends Generator {
             description: "Name of fabrikka config file in current dir"
         });
 
-        const configFilePath = this.getConfigsFullPath(this.options.fabrikkaConfig);
+        const configFilePath = this._getConfigsFullPath(this.options.fabrikkaConfig);
         const fileExists = this.fs.exists(configFilePath);
 
         if (!fileExists) {
@@ -29,26 +32,35 @@ module.exports = class extends Generator {
 
     async writing() {
         const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
-        const prettyResult = JSON.stringify(networkConfig, undefined, 2);
 
-        this.log(prettyResult);
+        this._validateFabrikkaVersion(networkConfig.fabrikkaVersion);
+        this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
         this.log("Fabric version is: "+ networkConfig.networkSettings.fabricVersion);
     }
 
-    getConfigsFullPath(configFile) {
+    _validateFabrikkaVersion(fabrikkaVersion) {
+        this._validationBase(
+            !supportFabrikkaVersions.includes(fabrikkaVersion),
+            `Fabrikka's ${fabrikkaVersion} version is not supported. Supported versions are: ${supportFabrikkaVersions}`
+        );
+    }
+
+    _validateFabricVersion(fabricVersion) {
+        this._validationBase(
+            !supportedFabricVersions.includes(fabricVersion),
+            `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`
+        );
+    }
+
+    _getConfigsFullPath(configFile) {
         const currentPath = this.env.cwd;
         return currentPath + "/" + configFile;
     }
 
+    _validationBase(condition, errorMessage) {
+        if(condition) {
+            this.emit('error', new Error(errorMessage));
+        }
+    }
 };
-
-// https://yeoman.io/authoring/file-system.html
-// fabrikkaConfig-0.1.json
-
-
-// parsedOpts[config.name] = value;
-// });
-//
-// // Make the parsed options available to the instance
-// Object.assign(this.options, parsedOpts);
