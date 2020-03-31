@@ -1,17 +1,10 @@
 
 const Generator = require('yeoman-generator');
+const utils = require('../utils');
 
 module.exports = class extends Generator {
   async initializing() {
-    this.log('\n'
-      + 'Powered by :\n'
-      + ' _____        __ _                         ___  ____ _ _ \n'
-      + '/  ___|      / _| |                        |  \\/  (_) | |\n'
-      + '\\ `--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |\n'
-      + ' `--. \\/ _ \\|  _| __\\ \\ /\\ / / _` | \'__/ _ \\ |\\/| | | | |\n'
-      + '/\\__/ / (_) | | | |_ \\ V  V / (_| | | |  __/ |  | | | | |\n'
-      + '\\____/ \\___/|_|  \\__| \\_/\\_/ \\__,_|_|  \\___\\_|  |_/_|_|_|\n'
-      + '=========================================================== 0.0.1    ');
+    this.log(utils.splashScreen());
   }
 
   async prompting() {

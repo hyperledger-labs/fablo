@@ -2,15 +2,17 @@
  * License-Identifier: Apache-2.0
  */
 
-
 const Generator = require('yeoman-generator');
-
-// const utils = require('../utils');
+const utils = require('../utils');
 
 const supportedFabricVersions = ['1.4.3'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
 
 module.exports = class extends Generator {
+
+    async initializing() {
+        this.log(utils.splashScreen());
+    }
 
     constructor(args, opts) {
         super(args, opts);
@@ -37,7 +39,10 @@ module.exports = class extends Generator {
         this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
         this._validateOrderer(networkConfig.rootOrg.orderer);
 
+        this.log("Used network config: " + this.options.fabrikkaConfigPath);
         this.log("Fabric version is: " + networkConfig.networkSettings.fabricVersion);
+        this.log("Generating docker-compose network...");
+
         const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
 
         this.fs.copyTpl(
@@ -51,7 +56,7 @@ module.exports = class extends Generator {
             generator.fs.copyTpl(
                 generator.templatePath('fabric-config/crypto-config-org.yaml'),
                 generator.destinationPath(`fabric-config/crypto-config-${org.organization.name.toLowerCase()}.yaml`),
-                { org },
+                {org},
             );
         });
 
@@ -109,7 +114,7 @@ module.exports = class extends Generator {
     }
 
     _getNetworkCapabilities(fabricVersion) {
-        switch(fabricVersion) {
+        switch (fabricVersion) {
             case '1.4.3':
                 return {channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2"};
             default:
