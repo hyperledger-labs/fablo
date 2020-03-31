@@ -35,8 +35,24 @@ module.exports = class extends Generator {
 
         this._validateFabrikkaVersion(networkConfig.fabrikkaVersion);
         this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
+        this._validateOrderer(networkConfig.rootOrg.orderer);
 
-        this.log("Fabric version is: "+ networkConfig.networkSettings.fabricVersion);
+        this.log("Fabric version is: " + networkConfig.networkSettings.fabricVersion);
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-config/crypto-config-root.yaml'),
+            this.destinationPath('fabric-config/crypto-config-root.yaml'),
+            {rootOrg: networkConfig.rootOrg}
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/.env'),
+            this.destinationPath('fabric-compose/.env'),
+            {
+                networkSettings: networkConfig.networkSettings,
+                orgs: networkConfig.orgs,
+            },
+        );
     }
 
     _validateFabrikkaVersion(fabrikkaVersion) {
@@ -53,13 +69,20 @@ module.exports = class extends Generator {
         );
     }
 
+    _validateOrderer(orderer) {
+        this._validationBase(
+            (orderer.consensus === "solo" && orderer.instances > 1),
+            `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only one instance is needed :).`
+        )
+    }
+
     _getConfigsFullPath(configFile) {
         const currentPath = this.env.cwd;
         return currentPath + "/" + configFile;
     }
 
     _validationBase(condition, errorMessage) {
-        if(condition) {
+        if (condition) {
             this.emit('error', new Error(errorMessage));
         }
     }
