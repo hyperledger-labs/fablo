@@ -1,0 +1,8 @@
+PeerOrgs:
+  - Name: <%= org.organization.name %>
+    Domain: <%= org.organization.domain %>
+    Template:
+      Count: <%= org.peer.instances %>
+    Users:
+      Count: 1
+
