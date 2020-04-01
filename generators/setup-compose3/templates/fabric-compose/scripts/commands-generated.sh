@@ -2,7 +2,7 @@ function networkUp() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   certsGenerate "fabric-config" "crypto-config-root.yaml" "./fabric-config/crypto-config"
   <% orgs.forEach(function(org){  %>
-  certsGenerate "fabric-config" "crypto-config-<%= org.organization.name.toLowerCase() %>.yaml" "./fabric-config/crypto-config"
+  certsGenerate "fabric-config" "crypto-config-<%= org.organization.name.toLowerCase() %>.yaml" "./fabric-config/crypto-config/"
   <% }) %>
   genesisBlockCreate "fabric-config" "./fabric-config/config"
 
