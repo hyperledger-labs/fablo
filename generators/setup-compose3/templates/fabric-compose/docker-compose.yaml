@@ -15,7 +15,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
     ports:
       - 7030:7054
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
@@ -41,8 +41,7 @@ services:
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      <% } %>
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]<% } %>
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -77,8 +76,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/orderer0.<%= rootOrg.organization.domain %>/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem
-      <% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/orderer0.<%= rootOrg.organization.domain %>/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -150,7 +148,6 @@ services:
     ports:
       - "5984:5984"
     networks:
-      - basic
-  <% } // end of CouchDB if %>
+      - basic<% } // end of CouchDB if %>
   <% } // end of peer loop %>
   <% } // end of org loop %>

@@ -5,7 +5,7 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 
-const supportedFabricVersions = ['1.4.3'];
+const supportedFabricVersions = ['1.4.3', '1.4.4'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
 
 module.exports = class extends Generator {
