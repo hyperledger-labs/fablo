@@ -80,7 +80,6 @@ module.exports = class extends Generator {
             },
         );
 
-        this.log("aa: "+networkConfig.orgs.length);
         this.fs.copyTpl(
             this.templatePath('fabric-compose/docker-compose.yaml'),
             this.destinationPath('fabric-compose/docker-compose.yaml'),

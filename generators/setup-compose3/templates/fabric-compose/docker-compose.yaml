@@ -90,10 +90,11 @@ services:
     networks:
       - basic
   <% for(var i=0; i<org.peer.instances; i++) {
-    var peerFullName=`peer${i}.${org.organization.domain}`
-    var couchDB=org.peer.db==="CouchDB"
+    var peerName="peer"+i
+    var peerFullName=`${peerName}.${org.organization.domain}`
+    var couchDdEnabled=org.peer.db==="CouchDB"
   %>
-  <%= peerFullName %>.<%=  couchDB %>:
+  <%= peerFullName %>:
     container_name: <%= peerFullName %>
     image: hyperledger/fabric-peer:${FABRIC_VERSION}
     environment:
@@ -107,19 +108,21 @@ services:
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
-      - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
+      - CORE_PEER_ADDRESS=<%= peerFullName %>:7051
       <% if(networkSettings.tls) { -%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      <% } %>
+      <% } -%>
+      <% if(couchDdEnabled) { -%>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0.couchdb.org1.com:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=very-stong-pass
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=<%= peerName %>.couchdb.<%= org.organization.domain %>:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=<%= peerName %>
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=<%= peerName %>Password
+      <% } %>
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -127,26 +130,27 @@ services:
       - 7053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
-      - orderer.example.com
+      - orderer0.<%= rootOrg.organization.domain %>
     networks:
       - basic
-
-  peer0.couchdb.org1.com:
-    container_name: peer0.couchdb.org1.com
+  <% if(couchDdEnabled) { %>
+  <%= peerName %>.couchdb.<%= org.organization.domain %>:
+    container_name: <%= peerName %>.couchdb.<%= org.organization.domain %>
     image: hyperledger/fabric-couchdb:0.4.18
     environment:
-      - COUCHDB_USER=peer
-      - COUCHDB_PASSWORD=very-stong-pass
+      - COUCHDB_USER=<%= peerName %>
+      - COUCHDB_PASSWORD=<%= peerName %>Password
     # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
     # for example map it to utilize Fauxton User Interface in dev environments.
     ports:
       - "5984:5984"
     networks:
       - basic
+  <% } // end of CouchDB if %>
   <% } // end of peer loop %>
   <% } // end of org loop %>
