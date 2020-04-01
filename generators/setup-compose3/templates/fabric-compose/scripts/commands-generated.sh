@@ -1,6 +1,9 @@
 function networkUp() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
-  certsGenerate "fabric-config" "./fabric-config/crypto-config"
+  certsGenerate "fabric-config" "crypto-config-root.yaml" "./fabric-config/crypto-config"
+  <% orgs.forEach(function(org){  %>
+  certsGenerate "fabric-config" "crypto-config-<%= org.organization.name.toLowerCase() %>.yaml" "./fabric-config/crypto-config"
+  <% }) %>
   genesisBlockCreate "fabric-config" "./fabric-config/config"
 
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
@@ -14,23 +17,23 @@ function networkUp() {
   createAnchorPeerUpdateTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config" "Org1MSP"
 
   printf "============ \U1F63B Creating 'channel1' on org1's anchor peer \U1F63B ================== \n"
-  docker exec -it cli.org1 bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoin 'channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer.example.com:7050';"
+  docker exec -it cli.org1.com bash -c \
+    "source scripts/channel_fns.sh; createChannelAndJoin 'channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer0.example.com:7050';"
 
   #docker exec -it cli bash -c \
-  #  "source scripts/channel_fns.sh; fetchChannelAndJoin 'channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer.example.com:7050';"
+  #  "source scripts/channel_fns.sh; fetchChannelAndJoin 'channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer0.example.com:7050';"
 
   printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer.example.com:7050" "cli.org1"
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer.example.com:7050" "cli.org1" '{"Args":[]}' "AND ('Org1MSP.member')"
+  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com"
+  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
 
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
 
 function installChaincodes() {
   printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer.example.com:7050" "cli.org1"
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer.example.com:7050" "cli.org1" '{"Args":[]}' "AND ('Org1MSP.member')"
+  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com"
+  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
 }
 
 function networkDown() {
