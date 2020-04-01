@@ -87,10 +87,12 @@ services:
       # - ../chaincode/:/var/hyperledger/cli/chaincode/
     networks:
       - basic
-  <% for(var i=0; i<org.peer.instances; i++) {
-    var peerName="peer"+i
+  <% for(var k=0; k<org.peer.instances; k++) {
+    var peerName="peer"+k
     var peerFullName=`${peerName}.${org.organization.domain}`
     var couchDdEnabled=org.peer.db==="CouchDB"
+    var peerHostPortToUse=7051+i*10+k
+    var dbHostPortToUse=5984+i*10+k
   %>
   <%= peerFullName %>:
     container_name: <%= peerFullName %>
@@ -124,8 +126,8 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - 7051:7051
-      - 7053:7053
+      - <%= peerHostPortToUse %>:7051
+     #- 7053:7053
     volumes:
       - /var/run/:/host/var/run/
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp
@@ -143,10 +145,8 @@ services:
     environment:
       - COUCHDB_USER=<%= peerName %>
       - COUCHDB_PASSWORD=<%= peerName %>Password
-    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
-    # for example map it to utilize Fauxton User Interface in dev environments.
     ports:
-      - "5984:5984"
+      - <%= dbHostPortToUse %>:5984
     networks:
       - basic<% } // end of CouchDB if %>
   <% } // end of peer loop %>
