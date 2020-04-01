@@ -128,7 +128,12 @@ module.exports = class extends Generator {
 
         this.fs.copyTpl(
             this.templatePath('fabric-compose/scripts/commands-generated.sh'),
-            this.destinationPath('fabric-compose/scripts/commands-generated.sh')
+            this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
+            {
+                networkSettings: networkConfig.networkSettings,
+                rootOrg: networkConfig.rootOrg,
+                orgs: networkConfig.orgs,
+            },
         );
 
     }

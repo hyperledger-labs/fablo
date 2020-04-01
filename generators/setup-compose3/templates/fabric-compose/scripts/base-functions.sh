@@ -7,7 +7,8 @@ function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
   local CONFIG_PATH=$1
-  local OUTPUT_PATH=$2
+  local CRYPTO_CONFIG_FILE_NAME=$2
+  local OUTPUT_PATH=$3
 
   if [ -d "$OUTPUT_PATH" ]; then
     printf "\U1F910 \n"
@@ -20,9 +21,9 @@ function certsGenerate() {
   echo "=== Generating crypto material (base-functions) ==="
 
   docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH/$CRYPTO_CONFIG_FILE_NAME $CONTAINER_NAME:/fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/crypto-config.yaml
+  docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
   docker cp $CONTAINER_NAME:/crypto-config $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
