@@ -10,22 +10,22 @@ function certsGenerate() {
   local CRYPTO_CONFIG_FILE_NAME=$2
   local OUTPUT_PATH=$3
 
-  if [ -d "$OUTPUT_PATH" ]; then
-    printf "\U1F910 \n"
-    echo "  Error: Won't genere certs, directory already exists : $OUTPUT_PATH"
-    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-    printf "\U1F912 \n"
-    exit 1
-  fi
+#  if [ -d "$OUTPUT_PATH" ]; then
+#    printf "\U1F910 \n"
+#    echo "  Error: Won't genere certs, directory already exists : $OUTPUT_PATH"
+#    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
+#    printf "\U1F912 \n"
+#    exit 1
+#  fi
 
   echo "=== Generating crypto material (base-functions) ==="
 
   docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH/$CRYPTO_CONFIG_FILE_NAME $CONTAINER_NAME:/fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
   docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config $OUTPUT_PATH
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
