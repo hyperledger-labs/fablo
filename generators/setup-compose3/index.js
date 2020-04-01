@@ -45,6 +45,8 @@ module.exports = class extends Generator {
 
         const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
 
+        // ======= fabric-config =======================================================================================
+
         this.fs.copyTpl(
             this.templatePath('fabric-config/crypto-config-root.yaml'),
             this.destinationPath('fabric-config/crypto-config-root.yaml'),
@@ -72,6 +74,13 @@ module.exports = class extends Generator {
         );
 
         this.fs.copyTpl(
+            this.templatePath('fabric-config/.gitignore'),
+            this.destinationPath('fabric-config/.gitignore')
+        );
+
+        // ======= fabric-compose ======================================================================================
+
+        this.fs.copyTpl(
             this.templatePath('fabric-compose/.env'),
             this.destinationPath('fabric-compose/.env'),
             {
@@ -88,6 +97,38 @@ module.exports = class extends Generator {
                 rootOrg: networkConfig.rootOrg,
                 orgs: networkConfig.orgs,
             },
+        );
+
+        // ======= scripts =============================================================================================
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose.sh'),
+            this.destinationPath('fabric-compose.sh')
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/cli/channel_fns.sh'),
+            this.destinationPath('fabric-compose/scripts/cli/channel_fns.sh')
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/cli/channel_fns.sh'),
+            this.destinationPath('fabric-compose/scripts/cli/channel_fns.sh')
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/base-functions.sh'),
+            this.destinationPath('fabric-compose/scripts/base-functions.sh')
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/base-help.sh'),
+            this.destinationPath('fabric-compose/scripts/base-help.sh')
+        );
+
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/commands-generated.sh'),
+            this.destinationPath('fabric-compose/scripts/commands-generated.sh')
         );
 
     }
