@@ -93,7 +93,7 @@ Profiles:
             SampleConsortium:
                 Organizations: <% orgs.forEach(function(org){ %>
                     - *<%= org.organization.name %><% }) %>
-    OneOrgChannel:
+    AllOrgChannel:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
