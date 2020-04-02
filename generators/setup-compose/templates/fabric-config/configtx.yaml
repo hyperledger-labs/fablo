@@ -33,7 +33,7 @@ Organizations:
         ID: <%= rootOrg.organization.mspName %>
         MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
     - &<%= org.organization.name %>
-        Name: <%= org.organization.name %>
+        Name: <%= org.organization.mspName %>
         ID: <%= org.organization.mspName %>
         MSPDir: crypto-config/peerOrganizations/<%= org.organization.domain %>/msp
         AnchorPeers:
