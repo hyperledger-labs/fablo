@@ -133,6 +133,7 @@ module.exports = class extends Generator {
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: networkConfig.rootOrg,
                 orgs: networkConfig.orgs,
+                channels: networkConfig.channels,
             },
         );
 

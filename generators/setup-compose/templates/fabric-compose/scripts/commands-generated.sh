@@ -12,16 +12,18 @@ function networkUp() {
   cd ..
   sleep 4
 
-  printf "============ \U1F913 Generating config for 'channel1' \U1F913 =========================== \n"
-  createChannelTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config"
-  createAnchorPeerUpdateTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config" "Org1MSP"
+  <% channels.forEach(function(channel){  %>
+  printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
+  createChannelTx "<%= channel.name %>" "fabric-config" "AllOrgChannel" "./fabric-config/config"
+  # createAnchorPeerUpdateTx "channel1" "fabric-config" "AllOrgChannel" "./fabric-config/config" "Org1MSP"
 
-  printf "============ \U1F63B Creating 'channel1' on org1's anchor peer \U1F63B ================== \n"
+  printf "============ \U1F63B Creating '<%= channel.name %>' on org1's anchor peer \U1F63B ================== \n"
   docker exec -it cli.org1.com bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoin 'channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer0.example.com:7050';"
+    "source scripts/channel_fns.sh; createChannelAndJoin <%= channel.name %>' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer0.example.com:7050';"
 
   #docker exec -it cli bash -c \
   #  "source scripts/channel_fns.sh; fetchChannelAndJoin 'channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/peerOrganizations/org1.com/users/Admin@org1.com/msp' 'orderer0.example.com:7050';"
+  <% }) %>
 
   printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
   chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com"
