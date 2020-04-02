@@ -13,7 +13,7 @@ function networkUp() {
   sleep 4
 
   printf "============ \U1F913 Generating config for 'channel1' \U1F913 =========================== \n"
-  createChannelTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config" "Org1MSP"
+  createChannelTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config"
   createAnchorPeerUpdateTx "channel1" "fabric-config" "OneOrgChannel" "./fabric-config/config" "Org1MSP"
 
   printf "============ \U1F63B Creating 'channel1' on org1's anchor peer \U1F63B ================== \n"
