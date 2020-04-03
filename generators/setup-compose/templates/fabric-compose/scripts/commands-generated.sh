@@ -28,11 +28,11 @@ function networkUp() {
   <% if(orgNo==0 && peerNo==0) { -%>
   printf "============ \U1F63B Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %> \U1F63B ================== \n"
   docker exec -it cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/peerOrganizations/<%= org.domain %>/users/Admin@<%= org.domain %>/msp' 'orderer0.example.com:7050';"
+    "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/peerOrganizations/<%= org.domain %>/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } else { -%>
   printf "====== \U1F638 Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %> \U1F638 ====== \n"
   docker exec -it cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/peerOrganizations/<%= org.domain %>/users/Admin@<%= org.domain %>/msp' 'orderer0.example.com:7050';"
+    "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/peerOrganizations/<%= org.domain %>/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } -%>
   <% } -%>
   <% } -%>

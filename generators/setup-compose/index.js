@@ -147,7 +147,7 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
             {
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: networkConfig.rootOrg,
+                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
                 channels: transformedChannels,
             },
@@ -155,8 +155,30 @@ module.exports = class extends Generator {
 
         this.on('end', function () {
             this.log("Done & done !!! Try the network out: ");
-            this.log(" ./fabric-compose.sh up - to start network");
-            this.log(" ./fabric-compose.sh help - to view all commands");
+            this.log("-> fabric-compose.sh up - to start network");
+            this.log("-> fabric-compose.sh help - to view all commands");
+        });
+    }
+
+    _transformRootOrg(rootOrg) {
+        const orderersExtended = this._extendOrderers(rootOrg.orderer, rootOrg.organization.domain);
+        const ordererHead = orderersExtended.slice(0, 1).reduce(this._flatten);
+        return {
+            organization: rootOrg.organization,
+            ca: rootOrg.ca,
+            orderer: rootOrg.orderer,
+            orderers: orderersExtended,
+            ordererHead: ordererHead
+        }
+    }
+
+    _extendOrderers(orderer, domain) {
+        return Array(orderer.instances).fill().map((x, i) => i).map(function (i) {
+            const name = `${orderer.prefix}` + i;
+            return {
+                name: name,
+                address: `${name}.${domain}`
+            };
         });
     }
 
