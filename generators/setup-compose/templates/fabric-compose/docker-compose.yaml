@@ -68,22 +68,23 @@ services:
       - CORE_CHAINCODE_KEEPALIVE=10
       #
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
-      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/msp
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/msp
       - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
       <% if(networkSettings.tls) { -%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.crt
-      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/client.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/peerOrganizations/<%= org.organization.domain %>/users/Admin@<%= org.organization.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/orderer0.<%= rootOrg.organization.domain %>/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/ca.crt
+      - TLS_CA_CERT_PATH=:/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/:/host/var/run/
-      - ../fabric-config/crypto-config:/var/hyperledger/cli/crypto/ # all certs TODO should be done per organization...
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ./scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/orderer0.<%= rootOrg.organization.domain %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.
       # - ../chaincode/:/var/hyperledger/cli/chaincode/
     networks:
       - basic
