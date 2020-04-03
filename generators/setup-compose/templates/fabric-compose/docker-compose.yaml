@@ -90,7 +90,7 @@ services:
   <% for(var k=0; k<org.peer.instances; k++) {
     var peerName="peer"+k
     var peerFullName=`${peerName}.${org.organization.domain}`
-    var couchDdEnabled=org.peer.db==="CouchDB"
+    var couchDdEnabled=org.peer.db==="CouchDb"
     var peerHostPortToUse=7051+i*10+k
     var dbHostPortToUse=5984+i*10+k
   %>

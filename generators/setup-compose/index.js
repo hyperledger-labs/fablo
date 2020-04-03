@@ -33,6 +33,7 @@ module.exports = class extends Generator {
     }
 
     async writing() {
+        const thisGenerator = this;
         const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
         this._validateFabrikkaVersion(networkConfig.fabrikkaVersion);
@@ -126,6 +127,21 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-compose/scripts/base-help.sh')
         );
 
+        const transformedChannels = networkConfig.channels.map(function (channel) {
+            const orgKeys = channel.orgs.map(o => o.key);
+            const orgPeers = channel.orgs.map(o => o.peers).reduce(thisGenerator._flatten);
+            const orgsForChannel = networkConfig.orgs
+                .filter(o => orgKeys.includes(o.organization.key))
+                .map(o => thisGenerator._transformToShortened(o))
+                .map(o => thisGenerator._filterToAvailablePeers(o, orgPeers));
+
+            return {
+                key: channel.key,
+                name: channel.name,
+                orgs: orgsForChannel
+            }
+        });
+
         this.fs.copyTpl(
             this.templatePath('fabric-compose/scripts/commands-generated.sh'),
             this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
@@ -133,10 +149,43 @@ module.exports = class extends Generator {
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: networkConfig.rootOrg,
                 orgs: networkConfig.orgs,
-                channels: networkConfig.channels,
+                channels: transformedChannels,
             },
         );
 
+        this.on('end', function () {
+            this.log("Done & done !!! Try the network out: ");
+            this.log(" ./fabric-compose.sh up - to start network");
+            this.log(" ./fabric-compose.sh help - to view all commands");
+        });
+    }
+
+    _transformToShortened(org) {
+        return {
+            name: org.organization.name,
+            mspName: org.organization.mspName,
+            domain: org.organization.domain,
+            peers: this._extendPeers(org.peer, org.organization.domain)
+        }
+    }
+
+    _filterToAvailablePeers(shortenedOrg, availablePeers) {
+        const filteredPeers = shortenedOrg.peers.filter(p => availablePeers.includes(p.name));
+        return {
+            name: shortenedOrg.name,
+            mspName: shortenedOrg.mspName,
+            domain: shortenedOrg.domain,
+            peers: filteredPeers
+        }
+    }
+
+    _extendPeers(peer, domain) {
+        return Array(peer.instances).fill().map((x, i) => i).map(function (i) {
+            return {
+                name: "peer" + i,
+                address: `peer${i}.${domain}`
+            };
+        });
     }
 
     _validateFabrikkaVersion(fabrikkaVersion) {
@@ -178,5 +227,9 @@ module.exports = class extends Generator {
         if (condition) {
             this.emit('error', new Error(errorMessage));
         }
+    }
+
+    _flatten(prev, curr) {
+        return prev.concat(curr);
     }
 };
