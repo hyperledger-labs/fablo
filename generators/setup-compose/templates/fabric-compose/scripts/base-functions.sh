@@ -18,8 +18,6 @@ function certsGenerate() {
 #    exit 1
 #  fi
 
-  echo "=== Generating crypto material (base-functions) ==="
-
   docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
@@ -44,8 +42,6 @@ function genesisBlockCreate() {
     printf "\U1F912 \n"
     exit 1
   fi
-
-  echo "=== Generating genesis block (base-functions) ==="
 
   docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config

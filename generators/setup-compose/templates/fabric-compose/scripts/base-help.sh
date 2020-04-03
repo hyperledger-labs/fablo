@@ -8,7 +8,7 @@ function printHelp() {
   echo "Commands: "
   echo ""
   echo "./fabric-compose.sh up"
-  echo -e "\t Use for first run. Creates all needed aritfacts (certs, genesis block) and starts network for the first time."
+  echo -e "\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time."
   echo -e "\t After 'up' commands start/stop are used to manage network and rerun to rerun it"
   echo ""
   echo "./fabric-compose.sh down"
