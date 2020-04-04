@@ -95,7 +95,7 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-compose/docker-compose.yaml'),
             {
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: networkConfig.rootOrg,
+                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
             },
         );
@@ -166,7 +166,6 @@ module.exports = class extends Generator {
         return {
             organization: rootOrg.organization,
             ca: rootOrg.ca,
-            orderer: rootOrg.orderer,
             orderers: orderersExtended,
             ordererHead: ordererHead
         }
