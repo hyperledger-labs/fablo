@@ -52,9 +52,9 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: <%= rootOrg.orderer.consensus %>
-    Addresses: <% for(var i=0; i<rootOrg.orderer.instances; i++) {%>
-        - <%= rootOrg.orderer.prefix %><%= i %>.<%= rootOrg.organization.domain %>:7050<% } %>
+    OrdererType: <%= rootOrg.ordererHead.consensus %>
+    Addresses: <% rootOrg.orderers.forEach(function(ordrer) { %>
+        - <%= ordrer.address %>:7050<% }) %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10

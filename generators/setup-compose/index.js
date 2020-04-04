@@ -69,7 +69,7 @@ module.exports = class extends Generator {
             {
                 capabilities: capabilities,
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: networkConfig.rootOrg,
+                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
             },
         );
@@ -176,7 +176,8 @@ module.exports = class extends Generator {
             const name = `${orderer.prefix}` + i;
             return {
                 name: name,
-                address: `${name}.${domain}`
+                address: `${name}.${domain}`,
+                consensus: orderer.consensus
             };
         });
     }
