@@ -8,15 +8,17 @@ function certsGenerate() {
 
   local CONFIG_PATH=$1
   local CRYPTO_CONFIG_FILE_NAME=$2
-  local OUTPUT_PATH=$3
+  local ORG_PATH=$3
+  local OUTPUT_PATH=$4
+  local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
 
-#  if [ -d "$OUTPUT_PATH" ]; then
-#    printf "\U1F910 \n"
-#    echo "  Error: Won't genere certs, directory already exists : $OUTPUT_PATH"
-#    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-#    printf "\U1F912 \n"
-#    exit 1
-#  fi
+  if [ -d "$FULL_CERT_PATH" ]; then
+    printf "\U1F910 \n"
+    echo "  Error: Won't genere certs, directory already exists : $FULL_CERT_PATH"
+    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
+    printf "\U1F912 \n"
+    exit 1
+  fi
 
   docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
