@@ -22,7 +22,7 @@ services:
       - basic
   <% for (ordrerNo in rootOrg.orderers) {
     var orderer=rootOrg.orderers[ordrerNo]
-    var ordrerHostPortToUse=7040+ordrerNo
+    var ordrerHostPortToUse=7040+parseInt(ordrerNo,10)
   %>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>

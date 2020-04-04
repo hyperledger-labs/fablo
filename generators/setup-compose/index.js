@@ -51,7 +51,7 @@ module.exports = class extends Generator {
         this.fs.copyTpl(
             this.templatePath('fabric-config/crypto-config-root.yaml'),
             this.destinationPath('fabric-config/crypto-config-root.yaml'),
-            {rootOrg: networkConfig.rootOrg}
+            {rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg)}
         );
 
         const generator = this;
