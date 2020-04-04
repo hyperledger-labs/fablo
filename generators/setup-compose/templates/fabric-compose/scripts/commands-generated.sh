@@ -1,6 +1,6 @@
 function networkUp() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
-  printf "===== \U1F512 Generating crypto material for root org <%= rootOrg.organization.name %> \U1F512 ===== \n"
+  printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printf "===== \U1F512 Generating crypto material for <%= org.organization.name %> \U1F512 ===== \n"
@@ -40,16 +40,16 @@ function networkUp() {
   <% }) -%>
 
   printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
+  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
 
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
 
 function installChaincodes() {
   printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com"
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "orderer0.example.com:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
+  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com"
+  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
 }
 
 function networkDown() {
