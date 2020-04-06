@@ -41,7 +41,7 @@ function createChannelAndJoinTls() {
 
   local DIR_NAME=step-createChannelAndJoinTls
 
-  echo "Creating channel with name (via TLS): ${CHANNEL_NAME}"
+  echo "Creating channel with name (TLS): ${CHANNEL_NAME}"
   echo "   Orderer: $ORDERER_URL"
   echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
   echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
@@ -101,9 +101,9 @@ function fetchChannelAndJoinTls() {
   local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
   local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
 
-  local DIR_NAME=step-fetchChannelAndJoin
+  local DIR_NAME=step-fetchChannelAndJoinTls
 
-  echo "Fetching channel with name: ${CHANNEL_NAME}"
+  echo "Fetching channel with name (TLS): ${CHANNEL_NAME}"
   echo "   Orderer: $ORDERER_URL"
   echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
   echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
