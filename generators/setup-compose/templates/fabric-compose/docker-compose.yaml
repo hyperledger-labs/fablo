@@ -52,9 +52,32 @@ services:
     networks:
       - basic
   <% } -%>
-  <% for (i in orgs) {
-    var org = orgs[i]
+  <% for (orgNo in orgs) {
+    var org = orgs[orgNo]
   %>
+  <% if(!networkSettings.rootCaOnly) {
+     var orgCaFullName=org.ca.prefix+"."+org.organization.domain
+     var caUserVariable=org.organization.name.toUpperCase()+"_CA_ADMIN_NAME"
+     var caPassVariable=org.organization.name.toUpperCase()+"_CA_ADMIN_PASSWORD"
+     var orgCaHostPort=7031+parseInt(orgNo,10)
+  %>
+  <%= orgCaFullName %>:
+    container_name: <%= orgCaFullName %>
+    image: hyperledger/fabric-ca:${FABRIC_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=<%= orgCaFullName %>
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.<%= org.organization.domain %>-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+    ports:
+      - <%= orgCaHostPort %>:7054
+    command: sh -c 'fabric-ca-server start -b ${<%= caUserVariable %>}:${<%= caPassVariable %>} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - basic
+  <% } -%>
+
   cli.<%= org.organization.domain %>:
     container_name: cli.<%= org.organization.domain %>
     image: hyperledger/fabric-tools:${FABRIC_VERSION}
@@ -87,12 +110,12 @@ services:
       # - ../chaincode/:/var/hyperledger/cli/chaincode/
     networks:
       - basic
-  <% for(var k=0; k<org.peer.instances; k++) {
-    var peerName="peer"+k
+  <% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
+    var peerName="peer"+peerNo
     var peerFullName=`${peerName}.${org.organization.domain}`
     var couchDdEnabled=org.peer.db==="CouchDb"
-    var peerHostPortToUse=7051+i*10+k
-    var dbHostPortToUse=5984+i*10+k
+    var peerHostPortToUse=7051+orgNo*10+peerNo
+    var dbHostPortToUse=5984+orgNo*10+peerNo
   %>
   <%= peerFullName %>:
     container_name: <%= peerFullName %>
