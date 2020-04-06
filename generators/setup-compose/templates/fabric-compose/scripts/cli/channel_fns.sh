@@ -25,6 +25,43 @@ function createChannelAndJoin() {
   rm -rf $DIR_NAME
 }
 
+function createChannelAndJoinTls() {
+  local CHANNEL_NAME=$1
+
+  local CORE_PEER_LOCALMSPID=$2
+  local CORE_PEER_ADDRESS=$3
+  local CORE_PEER_MSPCONFIGPATH=$(realpath $4)
+  local CORE_PEER_TLS_MSPCONFIGPATH=$(realpath $5)
+  local TLS_CA_CERT_PATH=$(realpath $6)
+  local ORDERER_URL=$7
+
+  local CORE_PEER_TLS_CERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.crt
+  local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
+  local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
+
+  local DIR_NAME=step-createChannelAndJoinTls
+
+  echo "Creating channel with name (via TLS): ${CHANNEL_NAME}"
+  echo "   Orderer: $ORDERER_URL"
+  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
+  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
+  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+  echo ""
+  echo "   TLS_CA_CERT_PATH is: $TLS_CA_CERT_PATH"
+  echo "   CORE_PEER_TLS_CERT_FILE: $CORE_PEER_TLS_CERT_FILE"
+  echo "   CORE_PEER_TLS_KEY_FILE: $CORE_PEER_TLS_KEY_FILE"
+  echo "   CORE_PEER_TLS_ROOTCERT_FILE: $CORE_PEER_TLS_ROOTCERT_FILE"
+
+  mkdir $DIR_NAME && cd $DIR_NAME
+
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
+
+  peer channel create -o ${ORDERER_URL} -c ${CHANNEL_NAME} -f ./"$CHANNEL_NAME".tx --tls --cafile $TLS_CA_CERT_PATH
+  peer channel join -b ${CHANNEL_NAME}.block --tls --cafile $TLS_CA_CERT_PATH
+
+  rm -rf $DIR_NAME
+}
+
 function fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
 
@@ -50,44 +87,19 @@ function fetchChannelAndJoin() {
   rm -rf $DIR_NAME
 }
 
-function createChannelAndJoinTls() {
-  local CHANNEL_NAME=$1
-
-  local CORE_PEER_LOCALMSPID=$2
-  local CORE_PEER_ADDRESS=$3
-  local CORE_PEER_MSPCONFIGPATH=$(realpath $4)
-
-  local TLS_CA_CERT_PATH=$(realpath $5)
-  local ORDERER_URL=$6
-
-  local DIR_NAME=step-createChannelAndJoinTls
-
-  echo "Creating channel with name (via TLS): ${CHANNEL_NAME}"
-  echo "   Orderer: $ORDERER_URL"
-  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
-  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
-  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
-  echo "   TLS_CA_CERT_PATH is : $TLS_CA_CERT_PATH"
-
-  mkdir $DIR_NAME && cd $DIR_NAME
-
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-
-  peer channel create -o ${ORDERER_URL} -c ${CHANNEL_NAME} -f ./"$CHANNEL_NAME".tx --tls --cafile $TLS_CA_CERT_PATH
-  peer channel join -b ${CHANNEL_NAME}.block --tls --cafile $TLS_CA_CERT_PATH
-
-  rm -rf $DIR_NAME
-}
-
 function fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath $4)
+  local CORE_PEER_TLS_MSPCONFIGPATH=$(realpath $5)
+  local TLS_CA_CERT_PATH=$(realpath $6)
+  local ORDERER_URL=$7
 
-  local TLS_CA_CERT_PATH=$(realpath $5)
-  local ORDERER_URL=$6
+  local CORE_PEER_TLS_CERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.crt
+  local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
+  local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
 
   local DIR_NAME=step-fetchChannelAndJoin
 
@@ -96,6 +108,11 @@ function fetchChannelAndJoinTls() {
   echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
   echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
   echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+  echo ""
+  echo "   TLS_CA_CERT_PATH is: $TLS_CA_CERT_PATH"
+  echo "   CORE_PEER_TLS_CERT_FILE: $CORE_PEER_TLS_CERT_FILE"
+  echo "   CORE_PEER_TLS_KEY_FILE: $CORE_PEER_TLS_KEY_FILE"
+  echo "   CORE_PEER_TLS_ROOTCERT_FILE: $CORE_PEER_TLS_ROOTCERT_FILE"
 
   mkdir $DIR_NAME && cd $DIR_NAME
 
