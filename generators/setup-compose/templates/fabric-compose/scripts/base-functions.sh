@@ -122,16 +122,25 @@ function chaincodeInstall() {
   local CLI_NAME=$7
 
   local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
-  if [ -d "$CHAINCODE_DIR_PATH" ]; then
-    echo "Installing chaincode '$CHAINCODE_NAME' from directory '$CHAINCODE_DIR_PATH' on '$CHANNEL_NAME'"
+  echo "Installing chaincode on $CHANNEL_NAME..."
+  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
+  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
+  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  echo ""
+  echo "   PEER_ADDRESS: $PEER_ADDRESS"
+  echo "   ORDERER_URL: $ORDERER_URL"
+  echo "   CLI_NAME: $CLI_NAME"
+
+  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
       $CLI_NAME peer chaincode install \
       -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
       -o $ORDERER_URL
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
-    echo "Looked for dir: '$CHAINCODE_DIR_PATH'"
   fi
 }
 
@@ -150,17 +159,32 @@ function chaincodeInstantiate() {
   local ENDORSMENT=$9
 
   local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
-  if [ -d "$CHAINCODE_DIR_PATH" ]; then
+  echo "Installing chaincode on $CHANNEL_NAME..."
+  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
+  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
+  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  echo ""
+  echo "   INIT_PARAMS: $INIT_PARAMS"
+  echo "   ENDORSMENT: $ENDORSMENT"
+  echo ""
+  echo "   PEER_ADDRESS: $PEER_ADDRESS"
+  echo "   ORDERER_URL: $ORDERER_URL"
+  echo "   CLI_NAME: $CLI_NAME"
+
+  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec \
         -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
         $CLI_NAME peer chaincode instantiate \
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c $INIT_PARAMS -C $CHANNEL_NAME -P $ENDORSMENT \
+        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSMENT" \
         -o $ORDERER_URL
         #--collections-config $COLLECTION_CONIFG_PATH \
         #--tls --cafile $TLS_CA_CERT_PATH
   else
-    echo "No chaincode to instantiate"
+    echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
+    echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }
 
