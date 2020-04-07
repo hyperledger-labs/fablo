@@ -4,6 +4,7 @@
 
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
+const mkdirp = require('mkdirp');
 
 const supportedFabricVersions = ['1.4.3', '1.4.4'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
@@ -97,6 +98,7 @@ module.exports = class extends Generator {
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
+                chaincodes: networkConfig.chaincodes
             },
         );
 
@@ -142,6 +144,8 @@ module.exports = class extends Generator {
             }
         });
 
+        const chaincodes = thisGenerator._extendChaincodes(networkConfig.chaincodes, transformedChannels);
+
         this.fs.copyTpl(
             this.templatePath('fabric-compose/scripts/commands-generated.sh'),
             this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
@@ -150,13 +154,39 @@ module.exports = class extends Generator {
                 rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
                 channels: transformedChannels,
+                chaincodes: chaincodes
             },
         );
+
+        networkConfig.chaincodes.forEach(function(chaincode) {
+            mkdirp.sync(chaincode.name);
+        });
+        // TODO outbox pattern
+        // TODO transaction outbox pattern
 
         this.on('end', function () {
             this.log("Done & done !!! Try the network out: ");
             this.log("-> fabric-compose.sh up - to start network");
             this.log("-> fabric-compose.sh help - to view all commands");
+        });
+    }
+
+    _extendChaincodes(chaincodes, transformedChannels) {
+        const thisClass = this;
+        return chaincodes.map(function (chaincode) {
+            const stringedInit = JSON.parse(chaincode.init);
+            const matchingChannel = transformedChannels
+                .filter(c => c.key === chaincode.channel)
+                .slice(0, 1)
+                .reduce(thisClass._flatten);
+            return {
+                name: chaincode.name,
+                version: chaincode.version,
+                lang: chaincode.lang,
+                channel: matchingChannel,
+                endorsment: chaincode.endorsment,
+                init: stringedInit
+            }
         });
     }
 

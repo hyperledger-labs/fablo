@@ -49,17 +49,30 @@ function networkUp() {
   <% } -%>
   <% }) -%>
 
-  printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
+  <% chaincodes.forEach(function(chaincode) {
+     chaincode.channel.orgs.forEach(function (org) {
+       org.peers.forEach(function (peer) {
+  %>
+  printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
+  chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
+  printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
+  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '{"Args":[]}' "AND ('Org1.member')"
+  <% })})}) -%>
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
 
 function installChaincodes() {
-  printf "============ \U1F60E Installing 'chaincode1' on channel1/org1/peer \U1F60E ============== \n"
-  chaincodeInstall "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com"
-  chaincodeInstantiate "chaincode1" "0.0.1" "java" "channel1" "peer0.org1.com:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.org1.com" '{"Args":[]}' "AND ('Org1MSP.member')"
+  <% chaincodes.forEach(function(chaincode) {
+     chaincode.channel.orgs.forEach(function (org) {
+       org.peers.forEach(function (peer) {
+  %>
+  printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
+  chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
+  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%= chaincode.init %>' "<%= chaincode.endorsment %>"
+  <% })})}) -%>
 }
 
 function networkDown() {
