@@ -174,7 +174,6 @@ module.exports = class extends Generator {
     _extendChaincodes(chaincodes, transformedChannels) {
         const thisClass = this;
         return chaincodes.map(function (chaincode) {
-            const stringedInit = JSON.parse(chaincode.init);
             const matchingChannel = transformedChannels
                 .filter(c => c.key === chaincode.channel)
                 .slice(0, 1)
@@ -184,8 +183,8 @@ module.exports = class extends Generator {
                 version: chaincode.version,
                 lang: chaincode.lang,
                 channel: matchingChannel,
-                endorsment: chaincode.endorsment,
-                init: stringedInit
+                init: chaincode.init,
+                endorsment: chaincode.endorsment
             }
         });
     }
