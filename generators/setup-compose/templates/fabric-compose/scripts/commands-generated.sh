@@ -57,7 +57,7 @@ function networkUp() {
   chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
-  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '{"Args":[]}' "AND ('Org1.member')"
+  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
   <% })})}) -%>
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
@@ -71,7 +71,7 @@ function installChaincodes() {
   chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
-  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%= chaincode.init %>' "<%= chaincode.endorsment %>"
+  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
   <% })})}) -%>
 }
 
@@ -81,7 +81,21 @@ function networkDown() {
   docker-compose down
   cd ..
 
-  printf "\nRemoving generated configs (base-commands)... \U1F5D1 \n"
+  printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
+   <% chaincodes.forEach(function(chaincode) {
+     chaincode.channel.orgs.forEach(function (org) {
+       org.peers.forEach(function (peer) {
+        var chaincodeContainerName="dev-"+peer.address+"-"+chaincode.name+"-"+chaincode.version
+  %>
+  docker rm -f $(docker ps -a | grep <%= chaincodeContainerName %>-* | awk '{print $1}') || {
+    echo "docker rm failed, Check if all fabric dockers properly was deleted"
+  }
+  docker rmi $(docker images <%= chaincodeContainerName %>-* -q) || {
+    echo "docker rm failed, Check if all fabric dockers properly was deleted"
+  }
+  <% })})}) -%>
+
+  printf "\nRemoving generated configs... \U1F5D1 \n"
   rm -rf fabric-config/config
   rm -rf fabric-config/crypto-config
 
@@ -94,9 +108,5 @@ function networkRerun() {
 }
 
 # TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pamiętaj żeby skorzystać z odpowiedniego cli w przypadku organizacji
-# TODO 3 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 4 - try/catch w bashu
-
-# TODO 1 - kiedy skrypt będzie generyczny ?
-# TODO 2 - fajnie to by było mieć channel.tx jako "bloba"
+# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
+# TODO 3 - try/catch w bashu
