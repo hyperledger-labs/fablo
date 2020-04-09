@@ -1,3 +1,16 @@
+function installChaincodes() {
+  <% chaincodes.forEach(function(chaincode) {
+     chaincode.channel.orgs.forEach(function (org) {
+       org.peers.forEach(function (peer) {
+  %>
+  printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
+  chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
+  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
+  <% })})}) -%>
+}
+
 function networkUp() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
@@ -49,30 +62,8 @@ function networkUp() {
   <% } -%>
   <% }) -%>
 
-  <% chaincodes.forEach(function(chaincode) {
-     chaincode.channel.orgs.forEach(function (org) {
-       org.peers.forEach(function (peer) {
-  %>
-  printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
-  chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-
-  printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
-  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
-  <% })})}) -%>
+  installChaincodes
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
-}
-
-function installChaincodes() {
-  <% chaincodes.forEach(function(chaincode) {
-     chaincode.channel.orgs.forEach(function (org) {
-       org.peers.forEach(function (peer) {
-  %>
-  printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
-  chaincodeInstall "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-
-  printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
-  chaincodeInstantiate "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
-  <% })})}) -%>
 }
 
 function networkDown() {
