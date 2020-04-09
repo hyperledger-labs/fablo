@@ -5,6 +5,7 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 const mkdirp = require('mkdirp');
+const fs = require("fs");
 
 const supportedFabricVersions = ['1.4.3', '1.4.4'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
@@ -23,7 +24,7 @@ module.exports = class extends Generator {
             description: "Name of fabrikka config file in current dir"
         });
 
-        const configFilePath = this._getConfigsFullPath(this.options.fabrikkaConfig);
+        const configFilePath = this._getFullPathOf(this.options.fabrikkaConfig);
         const fileExists = this.fs.exists(configFilePath);
 
         if (!fileExists) {
@@ -165,6 +166,9 @@ module.exports = class extends Generator {
         // TODO transaction outbox pattern
 
         this.on('end', function () {
+            chaincodes.filter(c => !c.chaincodePathExists).forEach(function(chaincode) {
+                thisGenerator.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+            });
             this.log("Done & done !!! Try the network out: ");
             this.log("-> fabric-compose.sh up - to start network");
             this.log("-> fabric-compose.sh help - to view all commands");
@@ -178,13 +182,16 @@ module.exports = class extends Generator {
                 .filter(c => c.key === chaincode.channel)
                 .slice(0, 1)
                 .reduce(thisClass._flatten);
+            const chaincodePath = thisClass._getFullPathOf(chaincode.name);
+            const chaincodePathExists = fs.existsSync(chaincodePath);
             return {
                 name: chaincode.name,
                 version: chaincode.version,
                 lang: chaincode.lang,
                 channel: matchingChannel,
                 init: chaincode.init,
-                endorsment: chaincode.endorsment
+                endorsment: chaincode.endorsment,
+                chaincodePathExists: chaincodePathExists
             }
         });
     }
@@ -269,7 +276,7 @@ module.exports = class extends Generator {
         }
     }
 
-    _getConfigsFullPath(configFile) {
+    _getFullPathOf(configFile) {
         const currentPath = this.env.cwd;
         return currentPath + "/" + configFile;
     }
