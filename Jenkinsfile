@@ -75,7 +75,7 @@ try {
       slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
   }
   runOnNewPod("front", uuid, {
-    container('npm') {
+    container('dind') {
       stage('NPM') {
           sh "apk add --no-cache nodejs npm"
           sh "npm install"
