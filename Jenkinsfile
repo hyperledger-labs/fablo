@@ -84,6 +84,8 @@ try {
     container('npm') {
       stage('NPM') {
           sh "npm install"
+          sh "npm install -g yo"
+          sh "npm link"
       }
       stage('Test') {
           sh "CI=true npm test"
