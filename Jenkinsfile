@@ -32,18 +32,12 @@ spec:
     operator: "Equal"
     value: "true"
     effect: "NoSchedule"
-  volumes:
-  - name: artifacts
-    emptyDir: {}
   containers:
-  - name: npm
-    image: node:8-jessie
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: /artifacts
-      name: artifacts
+  - name: dind
+    image: docker:18.09-dind
+    securityContext:
+        privileged: true
+        runAsUser: 0
 """
 }
 
@@ -83,6 +77,7 @@ try {
   runOnNewPod("front", uuid, {
     container('npm') {
       stage('NPM') {
+          sh "apk add --no-cache nodejs npm"
           sh "npm install"
           sh "npm install -g yo"
           sh "npm link"
