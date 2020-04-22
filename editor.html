@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>CSS Integration JSON Editor Example</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+
+    <script>
+      // Set the default CSS theme and icon library globally
+      JSONEditor.defaults.theme = 'spectre';
+      JSONEditor.defaults.iconlib = 'spectre';
+    </script>
+    <style>
+        .container {
+            max-width:960px;
+            margin: 0 auto
+        }
+    </style>
+</head>
+<body>
+<div class='container'>
+    <div class='columns'>
+        <h1 class='col-md-12'>CSS Integration JSON Editor Example</h1>
+    </div>
+    <div class='columns'>
+        <div class='column col-md-6'>
+            <p>JSON Editor supports these popular CSS frameworks:</p>
+            <ul>
+                <li>bootstrap 4</li>
+                <li>spectre.css (shown here)</li>
+                <li>tailwind</li>
+            </ul>
+        </div>
+        <div class='column col-md-6'>
+            <p>JSON Editor supports these popular icon libraries:</p>
+            <ul>
+                <li>jQueryUI</li>
+                <li>Font Awesome 3</li>
+                <li>Font Awesome 4</li>
+                <li>Font Awesome 5</li>
+                <li>spectre.css (shown here)</li>
+            </ul>
+        </div>
+    </div>
+    <div class='columns'>
+        <div class='column col-md-12'>
+            <button id='submit' class='tiny'>Submit (console.log)</button>
+            <button id='restore' class='secondary tiny'>Restore to Default</button>
+            <span id='valid_indicator' class='label'></span>
+        </div>
+    </div>
+    <div class='columns'>
+        <div class='column col-md-12' id='editor_holder'></div>
+    </div>
+</div>
+
+<script>
+  // This is the starting value for the editor
+  // We will use this to seed the initial editor
+  // and to provide a "Restore to Default" button.
+  var starting_value = {
+      "fabrikkaVersion": "alpha-0.0.1",
+      "fileVersion": "0.1",
+      "networkSettings": {
+        "fabricVersion": "1.4.3",
+        "tls": false,
+        "rootCaOnly": true
+      },
+      "rootOrg": {
+        "organization": {
+          "key": "root",
+          "name": "Orderer",
+          "mspName": "OrdererMSP",
+          "domain": "root.com"
+        },
+        "ca": {
+          "prefix": "ca"
+        },
+        "orderer": {
+          "prefix": "orderer",
+          "consensus": "solo",
+          "instances": 1
+        }
+      },
+      "orgs": [
+        {
+          "organization": {
+            "key": "org1",
+            "name": "Org1",
+            "mspName": "Org1MSP",
+            "domain": "org1.com"
+          },
+          "ca": {
+            "prefix": "ca"
+          },
+          "peer": {
+            "prefix": "peer",
+            "instances": 2,
+            "db": "LevelDb"
+          }
+        },
+        {
+          "organization": {
+            "key": "org2",
+            "name": "Org2",
+            "mspName": "Org2MSP",
+            "domain": "org2.com"
+          },
+          "ca": {
+            "prefix": "ca"
+          },
+          "peer": {
+            "prefix": "peer",
+            "instances": 2,
+            "db": "LevelDb"
+          }
+        }
+      ],
+      "channels": [
+        {
+          "key": "channel1",
+          "name": "my-channel1",
+          "orgs": [
+            {
+              "key": "org1",
+              "peers": [
+                "peer0"
+              ]
+            },
+            {
+              "key": "org2",
+              "peers": [
+                "peer0"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "channel2",
+          "name": "my-channel2",
+          "orgs": [
+            {
+              "key": "org1",
+              "peers": [
+                "peer1"
+              ]
+            },
+            {
+              "key": "org2",
+              "peers": [
+                "peer1"
+              ]
+            }
+          ]
+        }
+      ],
+      "chaincodes": [
+        {
+          "name": "chaincode1",
+          "version": "0.0.1",
+          "lang": "java",
+          "channel": "channel1",
+          "init": "{'Args':[]}",
+          "endorsment": "AND ('Org1.member')"
+        }
+      ]
+    }
+  ;
+
+  // Initialize the editor
+  var editor = new JSONEditor(document.getElementById('editor_holder'),{
+    // Enable fetching schemas via ajax
+    ajax: true,
+
+    // The schema for the editor
+    schema: {
+      $ref: "schema.json",
+      format: "grid"
+    },
+
+    // Seed the form with a starting value
+    startval: starting_value
+  });
+
+  // Hook up the submit button to log to the console
+  document.getElementById('submit').addEventListener('click',function() {
+    // Get the value from the editor
+    console.log(editor.getValue());
+  });
+
+  // Hook up the Restore to Default button
+  document.getElementById('restore').addEventListener('click',function() {
+    editor.setValue(starting_value);
+  });
+
+  // Hook up the validation indicator to update its
+  // status whenever the editor changes
+  editor.on('change',function() {
+    // Get an array of errors from the validator
+    var errors = editor.validate();
+
+    var indicator = document.getElementById('valid_indicator');
+
+    // Not valid
+    if(errors.length) {
+      indicator.className = 'label alert';
+      indicator.textContent = 'not valid';
+    }
+    // Valid
+    else {
+      indicator.className = 'label success';
+      indicator.textContent = 'valid';
+    }
+  });
+</script>
+</body>
+</html>
