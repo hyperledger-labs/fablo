@@ -121,7 +121,7 @@ function chaincodeInstall() {
   local ORDERER_URL=$6
   local CLI_NAME=$7
 
-  local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+  local CHAINCODE_DIR_PATH=$(pwd)"/"$CHAINCODE_NAME
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME..."
@@ -158,7 +158,7 @@ function chaincodeInstantiate() {
   local INIT_PARAMS=$8
   local ENDORSMENT=$9
 
-  local CHAINCODE_DIR_PATH=$(realpath $CHAINCODE_NAME)
+  local CHAINCODE_DIR_PATH=$(pwd)"/"$CHAINCODE_NAME
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME..."
@@ -180,8 +180,6 @@ function chaincodeInstantiate() {
         $CLI_NAME peer chaincode instantiate \
         -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSMENT" \
         -o $ORDERER_URL
-        #--collections-config $COLLECTION_CONIFG_PATH \
-        #--tls --cafile $TLS_CA_CERT_PATH
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -204,7 +202,4 @@ function chaincodeInstallTls() {
     $CLI_NAME peer chaincode install \
     -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
     -o $ORDERER_URL --tls --cafile $CA_CERT
-
-#  /tmp/hyperledger/$ORG1/admin/msp/tlscacerts/tls-ca-cert.pem
-
 }
