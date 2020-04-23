@@ -81,7 +81,7 @@ try {
         sh "npm install"
       }
       stage("Yeoman") {
-        sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$PWD\":/fabrikka e2e-generate"
+        sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$(pwd):/fabrikka\"" e2e-generate"
       }
       stage('Test') {
         sh "CI=true npm test"
