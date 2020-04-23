@@ -1,9 +1,9 @@
 @Library('sml-common')
 
 def podTemplateYaml() {
-    def serviceAccount = "jenkins"
+  def serviceAccount = "jenkins"
 
-    return """
+  return """
 apiVersion: v1
 kind: Pod
 spec:
@@ -42,51 +42,52 @@ spec:
 }
 
 def runOnNewPod(String labelBase, String uuid, Closure closure) {
-    def label = "${labelBase}-${uuid}"
-    podTemplate(label: label, yaml: podTemplateYaml()) {
-        timeout(10) {
-            node(label) {
-                try {
-                    ansiColor('xterm') {
-                        stage("Initialize") {
-                            checkout scm
-                            dockerTag = getDockerTag()
-                        }
-
-                        closure()
-                    }
-                } catch (e) {
-                    currentBuild.result = 'FAILED'
-                    throw e
-                }
+  def label = "${labelBase}-${uuid}"
+  podTemplate(label: label, yaml: podTemplateYaml()) {
+    timeout(10) {
+      node(label) {
+        try {
+          ansiColor('xterm') {
+            stage("Initialize") {
+              checkout scm
+              dockerTag = getDockerTag()
             }
+
+            closure()
+          }
+        } catch (e) {
+          currentBuild.result = 'FAILED'
+          throw e
         }
+      }
     }
+  }
 }
 
 String getDockerTag() {
-    return sh(script: 'git describe --always --tags', returnStdout: true)?.trim()
+  return sh(script: 'git describe --always --tags', returnStdout: true)?.trim()
 }
 
 def uuid = UUID.randomUUID().toString()
 
 try {
   node ('master') {
-      slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
+    slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
   }
-  runOnNewPod("front", uuid, {
+  runOnNewPod("fabrikka", uuid, {
     container('dind') {
       stage('NPM') {
-          sh "apk add --no-cache nodejs npm"
-          sh "npm install"
-          sh "npm install -g yo"
-          sh "npm link"
+        sh "apk add --no-cache nodejs npm"
+        sh "npm install"
+      }
+      stage("Yeoman") {
+        sh "docker build --tag e2e-generate e2e-generate && docker run -v "$PWD":/fabrikka e2e-generate"
       }
       stage('Test') {
-          sh "CI=true npm test"
+        sh "CI=true npm test"
       }
       stage('Lint') {
-          sh "CI=true npm lint"
+        sh "CI=true npm lint"
       }
     }
   })
