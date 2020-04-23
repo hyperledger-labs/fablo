@@ -12,5 +12,8 @@ generate() {
     )
 }
 
+pwd
+ls -l
+
 sudo npm link &&
   generate "sample-01.json"
