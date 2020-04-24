@@ -6,7 +6,7 @@ const configFileName = 'sample-01.json';
 const tmpDirPath = `e2e/__tmp__/${configFileName}`;
 
 describe(configFileName, () => {
-  const listFilesOutput = executeCommand(`find ${tmpDirPath}/* -type f`);
+  const listFilesOutput = executeCommand(`find ${tmpDirPath}/* -type f | sort`);
   const files = listFilesOutput.split('\n').filter((s) => !!s.length);
 
   it('should create proper files', () => {
