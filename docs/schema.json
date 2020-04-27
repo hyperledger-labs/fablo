@@ -19,21 +19,13 @@
       "$id": "#/properties/fabrikkaVersion",
       "type": "string",
       "title": "Fabrikka version",
-      "description": "An explanation about the purpose of this instance.",
-      "default": "",
-      "examples": [
-        "alpha-0.0.1"
-      ]
+      "default": "alpha-0.0.1"
     },
     "fileVersion": {
       "$id": "#/properties/fileVersion",
       "type": "string",
       "title": "File version",
-      "description": "An explanation about the purpose of this instance.",
-      "default": "",
-      "examples": [
-        "0.1"
-      ]
+      "default": "0.1"
     },
     "networkSettings": {
       "$id": "#/properties/networkSettings",
@@ -128,7 +120,7 @@
             "domain": {
               "$id": "#/properties/rootOrg/properties/organization/properties/domain",
               "type": "string",
-              "title": "Root domain",
+              "title": "Domain",
               "default": "root.com"
             }
           }
@@ -136,14 +128,7 @@
         "ca": {
           "$id": "#/properties/rootOrg/properties/ca",
           "type": "object",
-          "title": "The Ca Schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": {},
-          "examples": [
-            {
-              "prefix": "ca"
-            }
-          ],
+          "title": "Root Certificate Authority (CA)",
           "additionalProperties": true,
           "required": [
             "prefix"
@@ -152,28 +137,15 @@
             "prefix": {
               "$id": "#/properties/rootOrg/properties/ca/properties/prefix",
               "type": "string",
-              "title": "The Prefix Schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "ca"
-              ]
+              "title": "Domain prefix",
+              "default": "ca"
             }
           }
         },
         "orderer": {
           "$id": "#/properties/rootOrg/properties/orderer",
           "type": "object",
-          "title": "The Orderer Schema",
-          "description": "An explanation about the purpose of this instance.",
-          "default": {},
-          "examples": [
-            {
-              "prefix": "orderer",
-              "instances": 1.0,
-              "consensus": "solo"
-            }
-          ],
+          "title": "Orderer",
           "additionalProperties": true,
           "required": [
             "prefix",
@@ -184,32 +156,27 @@
             "prefix": {
               "$id": "#/properties/rootOrg/properties/orderer/properties/prefix",
               "type": "string",
-              "title": "The Prefix Schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "orderer"
-              ]
+              "title": "Domain prefix",
+              "default": "orderer"
             },
             "consensus": {
               "$id": "#/properties/rootOrg/properties/orderer/properties/consensus",
               "type": "string",
-              "title": "The Consensus Schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": "",
-              "examples": [
-                "solo"
-              ]
+              "enum": [
+                "solo",
+                "raft"
+              ],
+              "title": "Consensus type",
+              "default": "solo",
+              "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production."
             },
             "instances": {
               "$id": "#/properties/rootOrg/properties/orderer/properties/instances",
               "type": "integer",
-              "title": "The Instances Schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": 0,
-              "examples": [
-                1.0
-              ]
+              "minimum": 1,
+              "maximum": 10,
+              "title": "Number of instances",
+              "default": 1
             }
           }
         }
@@ -218,86 +185,30 @@
     "orgs": {
       "$id": "#/properties/orgs",
       "type": "array",
-      "title": "The Orgs Schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": [],
-      "examples": [
-        [
-          {
-            "ca": {
-              "prefix": "ca"
-            },
-            "peer": {
-              "instances": 2.0,
-              "prefix": "peer",
-              "db": "LevelDb"
-            },
-            "organization": {
-              "domain": "org1.com",
-              "mspName": "Org1MSP",
-              "key": "org1",
-              "name": "Org1"
-            }
+      "title": "Organizations",
+      "default": [
+        {
+          "ca": {
+            "prefix": "ca"
           },
-          {
-            "ca": {
-              "prefix": "ca"
-            },
-            "peer": {
-              "prefix": "peer",
-              "db": "LevelDb",
-              "instances": 2.0
-            },
-            "organization": {
-              "domain": "org2.com",
-              "mspName": "Org2MSP",
-              "key": "org2",
-              "name": "Org2"
-            }
+          "peer": {
+            "instances": 2.0,
+            "prefix": "peer",
+            "db": "LevelDb"
+          },
+          "organization": {
+            "domain": "org1.com",
+            "mspName": "Org1MSP",
+            "key": "org1",
+            "name": "Org1"
           }
-        ]
+        }
       ],
       "additionalItems": true,
       "items": {
         "$id": "#/properties/orgs/items",
         "type": "object",
-        "title": "The Items Schema",
-        "description": "An explanation about the purpose of this instance.",
-        "default": {},
-        "examples": [
-          {
-            "ca": {
-              "prefix": "ca"
-            },
-            "peer": {
-              "instances": 2.0,
-              "prefix": "peer",
-              "db": "LevelDb"
-            },
-            "organization": {
-              "mspName": "Org1MSP",
-              "key": "org1",
-              "name": "Org1",
-              "domain": "org1.com"
-            }
-          },
-          {
-            "ca": {
-              "prefix": "ca"
-            },
-            "peer": {
-              "instances": 2.0,
-              "prefix": "peer",
-              "db": "LevelDb"
-            },
-            "organization": {
-              "key": "org2",
-              "name": "Org2",
-              "domain": "org2.com",
-              "mspName": "Org2MSP"
-            }
-          }
-        ],
+        "title": "Organization",
         "additionalProperties": true,
         "required": [
           "organization",
@@ -308,17 +219,7 @@
           "organization": {
             "$id": "#/properties/orgs/items/properties/organization",
             "type": "object",
-            "title": "The Organization Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-              {
-                "mspName": "Org1MSP",
-                "key": "org1",
-                "name": "Org1",
-                "domain": "org1.com"
-              }
-            ],
+            "title": "Basic information",
             "additionalProperties": true,
             "required": [
               "key",
@@ -330,56 +231,33 @@
               "key": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/key",
                 "type": "string",
-                "title": "The Key Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "org1"
-                ]
+                "title": "Key",
+                "default": "org1"
               },
               "name": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/name",
                 "type": "string",
-                "title": "The Name Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "Org1"
-                ]
+                "title": "Name",
+                "default": "Organization 1"
               },
               "mspName": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/mspName",
                 "type": "string",
-                "title": "The Mspname Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "Org1MSP"
-                ]
+                "title": "MSP Name",
+                "default": "Organiztion 1 MSP"
               },
               "domain": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/domain",
                 "type": "string",
-                "title": "The Domain Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "org1.com"
-                ]
+                "title": "Domain",
+                "default": "org1.com"
               }
             }
           },
           "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
             "type": "object",
-            "title": "The Ca Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-              {
-                "prefix": "ca"
-              }
-            ],
+            "title": "Organization Certificate Authority (CA)",
             "additionalProperties": true,
             "required": [
               "prefix"
@@ -388,28 +266,15 @@
               "prefix": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
                 "type": "string",
-                "title": "The Prefix Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "ca"
-                ]
+                "title": "Domain prefix",
+                "default": "ca"
               }
             }
           },
           "peer": {
             "$id": "#/properties/orgs/items/properties/peer",
             "type": "object",
-            "title": "The Peer Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-              {
-                "prefix": "peer",
-                "db": "LevelDb",
-                "instances": 2.0
-              }
-            ],
+            "title": "Peer",
             "additionalProperties": true,
             "required": [
               "prefix",
@@ -420,32 +285,26 @@
               "prefix": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/prefix",
                 "type": "string",
-                "title": "The Prefix Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "peer"
-                ]
+                "title": "Domain prefix",
+                "default": "peer"
               },
               "instances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/instances",
                 "type": "integer",
-                "title": "The Instances Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": 0,
-                "examples": [
-                  2.0
-                ]
+                "minimum": 1,
+                "maximum": 100,
+                "title": "Number of instances",
+                "default": 2
               },
               "db": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/db",
                 "type": "string",
-                "title": "The Db Schema",
-                "description": "An explanation about the purpose of this instance.",
-                "default": "",
-                "examples": [
-                  "LevelDb"
-                ]
+                "enum": [
+                  "LevelDb",
+                  "CouchDb"
+                ],
+                "title": "Database Type",
+                "default": "LevelDb"
               }
             }
           }
@@ -455,94 +314,50 @@
     "channels": {
       "$id": "#/properties/channels",
       "type": "array",
-      "title": "The Channels Schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": [],
-      "examples": [
-        [
-          {
-            "key": "channel1",
-            "name": "my-channel1",
-            "orgs": [
-              {
-                "peers": [
-                  "peer0"
-                ],
-                "key": "org1"
-              },
-              {
-                "peers": [
-                  "peer0"
-                ],
-                "key": "org2"
-              }
-            ]
-          },
-          {
-            "orgs": [
-              {
-                "key": "org1",
-                "peers": [
-                  "peer1"
-                ]
-              },
-              {
-                "peers": [
-                  "peer1"
-                ],
-                "key": "org2"
-              }
-            ],
-            "key": "channel2",
-            "name": "my-channel2"
-          }
-        ]
+      "title": "Channels",
+      "default": [
+        {
+          "key": "channel1",
+          "name": "my-channel1",
+          "orgs": [
+            {
+              "peers": [
+                "peer0"
+              ],
+              "key": "org1"
+            },
+            {
+              "peers": [
+                "peer0"
+              ],
+              "key": "org2"
+            }
+          ]
+        },
+        {
+          "orgs": [
+            {
+              "key": "org1",
+              "peers": [
+                "peer1"
+              ]
+            },
+            {
+              "peers": [
+                "peer1"
+              ],
+              "key": "org2"
+            }
+          ],
+          "key": "channel2",
+          "name": "my-channel2"
+        }
       ],
       "additionalItems": true,
       "items": {
         "$id": "#/properties/channels/items",
         "type": "object",
-        "title": "The Items Schema",
-        "description": "An explanation about the purpose of this instance.",
-        "default": {},
-        "examples": [
-          {
-            "key": "channel1",
-            "name": "my-channel1",
-            "orgs": [
-              {
-                "peers": [
-                  "peer0"
-                ],
-                "key": "org1"
-              },
-              {
-                "peers": [
-                  "peer0"
-                ],
-                "key": "org2"
-              }
-            ]
-          },
-          {
-            "key": "channel2",
-            "name": "my-channel2",
-            "orgs": [
-              {
-                "key": "org1",
-                "peers": [
-                  "peer1"
-                ]
-              },
-              {
-                "peers": [
-                  "peer1"
-                ],
-                "key": "org2"
-              }
-            ]
-          }
-        ],
+        "title": "Channel",
         "additionalProperties": true,
         "required": [
           "key",
@@ -553,28 +368,19 @@
           "key": {
             "$id": "#/properties/channels/items/properties/key",
             "type": "string",
-            "title": "The Key Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "channel1"
-            ]
+            "title": "Key",
+            "default": "channel1"
           },
           "name": {
             "$id": "#/properties/channels/items/properties/name",
             "type": "string",
-            "title": "The Name Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "my-channel1"
-            ]
+            "title": "Name",
+            "default": "My Channel 1"
           },
           "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",
             "type": "array",
-            "title": "The Orgs Schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "Organizations in the channel",
             "default": [],
             "examples": [
               [
@@ -596,23 +402,7 @@
             "items": {
               "$id": "#/properties/channels/items/properties/orgs/items",
               "type": "object",
-              "title": "The Items Schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": {},
-              "examples": [
-                {
-                  "peers": [
-                    "peer0"
-                  ],
-                  "key": "org1"
-                },
-                {
-                  "peers": [
-                    "peer0"
-                  ],
-                  "key": "org2"
-                }
-              ],
+              "title": "Organization",
               "additionalProperties": true,
               "required": [
                 "key",
@@ -622,34 +412,17 @@
                 "key": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
                   "type": "string",
-                  "title": "The Key Schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": "",
-                  "examples": [
-                    "org1"
-                  ]
+                  "title": "Organization key"
                 },
                 "peers": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
                   "type": "array",
-                  "title": "The Peers Schema",
-                  "description": "An explanation about the purpose of this instance.",
-                  "default": [],
-                  "examples": [
-                    [
-                      "peer0"
-                    ]
-                  ],
+                  "title": "Peers for ogranization",
                   "additionalItems": true,
                   "items": {
                     "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
                     "type": "string",
-                    "title": "The Items Schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                      "peer0"
-                    ]
+                    "title": "Peer"
                   }
                 }
               }
@@ -661,38 +434,22 @@
     "chaincodes": {
       "$id": "#/properties/chaincodes",
       "type": "array",
-      "title": "The Chaincodes Schema",
-      "description": "An explanation about the purpose of this instance.",
-      "default": [],
-      "examples": [
-        [
-          {
-            "channel": "channel1",
-            "endorsment": "AND ('Org1.member')",
-            "version": "0.0.1",
-            "lang": "java",
-            "init": "{'Args':[]}",
-            "name": "chaincode1"
-          }
-        ]
+      "title": "Chaincodes",
+      "default": [
+        {
+          "channel": "channel1",
+          "endorsment": "AND ('Org1.member')",
+          "version": "0.0.1",
+          "lang": "java",
+          "init": "{'Args':[]}",
+          "name": "chaincode1"
+        }
       ],
       "additionalItems": true,
       "items": {
         "$id": "#/properties/chaincodes/items",
         "type": "object",
-        "title": "The Items Schema",
-        "description": "An explanation about the purpose of this instance.",
-        "default": {},
-        "examples": [
-          {
-            "channel": "channel1",
-            "endorsment": "AND ('Org1.member')",
-            "lang": "java",
-            "version": "0.0.1",
-            "init": "{'Args':[]}",
-            "name": "chaincode1"
-          }
-        ],
+        "title": "Chaincode",
         "additionalProperties": true,
         "required": [
           "name",
@@ -706,62 +463,38 @@
           "name": {
             "$id": "#/properties/chaincodes/items/properties/name",
             "type": "string",
-            "title": "The Name Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "chaincode1"
-            ]
+            "title": "Name",
+            "default": "Chaincode 1"
           },
           "version": {
             "$id": "#/properties/chaincodes/items/properties/version",
             "type": "string",
-            "title": "The Version Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "0.0.1"
-            ]
+            "title": "Version",
+            "default": "0.0.1"
           },
           "lang": {
             "$id": "#/properties/chaincodes/items/properties/lang",
             "type": "string",
-            "title": "The Lang Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "java"
-            ]
+            "title": "Language",
+            "default": "java"
           },
           "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
             "type": "string",
-            "title": "The Channel Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "channel1"
-            ]
+            "title": "Channel",
+            "default": "channel1"
           },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
             "type": "string",
-            "title": "The Init Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "{'Args':[]}"
-            ]
+            "title": "Initialization arguments",
+            "default": "{'Args':[]}"
           },
           "endorsment": {
             "$id": "#/properties/chaincodes/items/properties/endorsment",
             "type": "string",
-            "title": "The Endorsment Schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-              "AND ('Org1.member')"
-            ]
+            "title": "Endorsment configuration",
+            "default": "AND ('Org1.member')"
           }
         }
       }
