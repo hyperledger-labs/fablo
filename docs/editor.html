@@ -126,7 +126,7 @@
 <script>
 
   // Initialize the editor
-  var editor = new JSONEditor(document.getElementById('editor_holder'), {
+  const editor = new JSONEditor(document.getElementById('editor_holder'), {
     // Enable fetching schemas via ajax
     ajax: true,
 
@@ -147,19 +147,13 @@
   // status whenever the editor changes
   editor.on('change', function () {
     // Get an array of errors from the validator
-    var errors = editor.validate();
-
-    var indicator = document.getElementById('valid_indicator');
+    const errors = editor.validate();
 
     // Not valid
     if (errors.length) {
-      indicator.className = 'label alert';
-      indicator.textContent = 'not valid';
-    }
-    // Valid
-    else {
-      indicator.className = 'label success';
-      indicator.textContent = 'valid';
+      errors.forEach(err => {
+        console.error(err);
+      })
     }
   });
 </script>
