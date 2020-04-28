@@ -76,6 +76,9 @@ try {
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
+      stage("Install NPM") {
+        sh "apk add --no-cache nodejs npm"
+      }
       parallel(
         failFast: false,
         'Install docker-compose': {
@@ -86,7 +89,6 @@ try {
         },
         'JS Tests': {
           stage('NPM') {
-            sh "apk add --no-cache nodejs npm"
             sh "npm install"
           }
           stage("Yeoman") {
