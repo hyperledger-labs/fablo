@@ -109,9 +109,9 @@ try {
           sh "cd e2e/__tmp__/sample-01/"
           sh "./fabric-compose.sh up"
         },
-        'Test network': {
+        'Test network 01': {
           stage('Wait for services') {
-            sh "./wait-for-docker-compose.sh"
+            sh "e2e/wait-for-network.sh"
           }
           stage('Down network') {
             sh "cd e2e/__tmp__/sample-01.json/"
