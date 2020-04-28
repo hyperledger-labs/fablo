@@ -111,17 +111,17 @@ function createAnchorPeerUpdateTx() {
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_NAME=$1
-  local CHAINCODE_VERSION=$2
-  local CHAINCODE_LANG=$3
+  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_NAME=$2
+  local CHAINCODE_VERSION=$3
+  local CHAINCODE_LANG=$4
 
-  local CHANNEL_NAME=$4
+  local CHANNEL_NAME=$5
 
-  local PEER_ADDRESS=$5
-  local ORDERER_URL=$6
-  local CLI_NAME=$7
+  local PEER_ADDRESS=$6
+  local ORDERER_URL=$7
+  local CLI_NAME=$8
 
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$CHAINCODE_NAME
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME..."
@@ -145,20 +145,20 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_NAME=$1
-  local CHAINCODE_VERSION=$2
-  local CHAINCODE_LANG=$3
+  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_NAME=$2
+  local CHAINCODE_VERSION=$3
+  local CHAINCODE_LANG=$4
 
-  local CHANNEL_NAME=$4
+  local CHANNEL_NAME=$5
 
-  local PEER_ADDRESS=$5
-  local ORDERER_URL=$6
-  local CLI_NAME=$7
+  local PEER_ADDRESS=$6
+  local ORDERER_URL=$7
+  local CLI_NAME=$8
 
-  local INIT_PARAMS=$8
-  local ENDORSMENT=$9
+  local INIT_PARAMS=$9
+  local ENDORSMENT=${10}
 
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$CHAINCODE_NAME
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME..."
@@ -187,16 +187,17 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_NAME=$1
-  local CHAINCODE_VERSION=$2
-  local CHAINCODE_LANG=$3
+  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_NAME=$2
+  local CHAINCODE_VERSION=$3
+  local CHAINCODE_LANG=$4
 
-  local CHANNEL_NAME=$4
+  local CHANNEL_NAME=$5
 
-  local PEER_ADDRESS=$5
-  local ORDERER_URL=$6
-  local CLI_NAME=$7
-  local CA_CERT=$8
+  local PEER_ADDRESS=$6
+  local ORDERER_URL=$7
+  local CLI_NAME=$8
+  local CA_CERT=$9
 
   docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
     $CLI_NAME peer chaincode install \
