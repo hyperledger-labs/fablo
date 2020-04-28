@@ -3,8 +3,7 @@
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
-    "tls": false,
-    "rootCaOnly": true
+    "tls": false
   },
   "rootOrg": {
     "organization": {
@@ -101,7 +100,8 @@
       "lang": "java",
       "channel": "channel1",
       "init": "{'Args':[]}",
-      "endorsment": "AND ('Org1.member')"
+      "endorsment": "AND ('Org1.member')",
+      "directory": "chaincode1"
     }
   ]
 }
