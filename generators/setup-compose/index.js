@@ -5,10 +5,9 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils');
 const mkdirp = require('mkdirp');
-const fs = require("fs");
 
-const supportedFabricVersions = ['1.4.3', '1.4.4'];
-const supportFabrikkaVersions = ['alpha-0.0.1'];
+const configTransformers = require('./configTransformers');
+const validationFunctions = require('./validationFunctions');
 
 module.exports = class extends Generator {
 
@@ -38,9 +37,9 @@ module.exports = class extends Generator {
         const thisGenerator = this;
         const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
-        this._validateFabrikkaVersion(networkConfig.fabrikkaVersion);
-        this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
-        this._validateOrderer(networkConfig.rootOrg.orderer);
+        validationFunctions.validateFabrikkaVersion(networkConfig.fabrikkaVersion, this.emit);
+        validationFunctions.validateFabricVersion(networkConfig.networkSettings.fabricVersion, this.emit);
+        validationFunctions.validateOrderer(networkConfig.rootOrg.orderer, this.emit);
 
         this.log("Used network config: " + this.options.fabrikkaConfigPath);
         this.log("Fabric version is: " + networkConfig.networkSettings.fabricVersion);
@@ -53,7 +52,7 @@ module.exports = class extends Generator {
         this.fs.copyTpl(
             this.templatePath('fabric-config/crypto-config-root.yaml'),
             this.destinationPath('fabric-config/crypto-config-root.yaml'),
-            {rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg)}
+            {rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg)}
         );
 
         const generator = this;
@@ -71,7 +70,7 @@ module.exports = class extends Generator {
             {
                 capabilities: capabilities,
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
+                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
             },
         );
@@ -97,7 +96,7 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-compose/docker-compose.yaml'),
             {
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
+                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
                 chaincodes: networkConfig.chaincodes
             },
@@ -130,29 +129,16 @@ module.exports = class extends Generator {
             this.destinationPath('fabric-compose/scripts/base-help.sh')
         );
 
-        const transformedChannels = networkConfig.channels.map(function (channel) {
-            const orgKeys = channel.orgs.map(o => o.key);
-            const orgPeers = channel.orgs.map(o => o.peers).reduce(thisGenerator._flatten);
-            const orgsForChannel = networkConfig.orgs
-                .filter(o => orgKeys.includes(o.organization.key))
-                .map(o => thisGenerator._transformToShortened(o))
-                .map(o => thisGenerator._filterToAvailablePeers(o, orgPeers));
+        const transformedChannels = networkConfig.channels.map(channel => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
 
-            return {
-                key: channel.key,
-                name: channel.name,
-                orgs: orgsForChannel
-            }
-        });
-
-        const chaincodes = thisGenerator._extendChaincodes(networkConfig.chaincodes, transformedChannels);
+        const chaincodes = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, transformedChannels, this.env);
 
         this.fs.copyTpl(
             this.templatePath('fabric-compose/scripts/commands-generated.sh'),
             this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
             {
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
+                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
                 orgs: networkConfig.orgs,
                 channels: transformedChannels,
                 chaincodes: chaincodes
@@ -162,8 +148,6 @@ module.exports = class extends Generator {
         networkConfig.chaincodes.forEach(function(chaincode) {
             mkdirp.sync(chaincode.directory);
         });
-        // TODO outbox pattern
-        // TODO transaction outbox pattern
 
         this.on('end', function () {
             chaincodes.filter(c => !c.chaincodePathExists).forEach(function(chaincode) {
@@ -173,99 +157,6 @@ module.exports = class extends Generator {
             this.log("-> fabric-compose.sh up - to start network");
             this.log("-> fabric-compose.sh help - to view all commands");
         });
-    }
-
-    _extendChaincodes(chaincodes, transformedChannels) {
-        const thisClass = this;
-        return chaincodes.map(function (chaincode) {
-            const matchingChannel = transformedChannels
-                .filter(c => c.key === chaincode.channel)
-                .slice(0, 1)
-                .reduce(thisClass._flatten);
-            const chaincodePath = thisClass._getFullPathOf(chaincode.name);
-            const chaincodePathExists = fs.existsSync(chaincodePath);
-            return {
-                directory: chaincode.directory,
-                name: chaincode.name,
-                version: chaincode.version,
-                lang: chaincode.lang,
-                channel: matchingChannel,
-                init: chaincode.init,
-                endorsment: chaincode.endorsment,
-                chaincodePathExists: chaincodePathExists
-            }
-        });
-    }
-
-    _transformRootOrg(rootOrg) {
-        const orderersExtended = this._extendOrderers(rootOrg.orderer, rootOrg.organization.domain);
-        const ordererHead = orderersExtended.slice(0, 1).reduce(this._flatten);
-        return {
-            organization: rootOrg.organization,
-            ca: rootOrg.ca,
-            orderers: orderersExtended,
-            ordererHead: ordererHead
-        }
-    }
-
-    _extendOrderers(orderer, domain) {
-        return Array(orderer.instances).fill().map((x, i) => i).map(function (i) {
-            const name = `${orderer.prefix}` + i;
-            return {
-                name: name,
-                address: `${name}.${domain}`,
-                consensus: orderer.consensus
-            };
-        });
-    }
-
-    _transformToShortened(org) {
-        return {
-            name: org.organization.name,
-            mspName: org.organization.mspName,
-            domain: org.organization.domain,
-            peers: this._extendPeers(org.peer, org.organization.domain)
-        }
-    }
-
-    _filterToAvailablePeers(shortenedOrg, availablePeers) {
-        const filteredPeers = shortenedOrg.peers.filter(p => availablePeers.includes(p.name));
-        return {
-            name: shortenedOrg.name,
-            mspName: shortenedOrg.mspName,
-            domain: shortenedOrg.domain,
-            peers: filteredPeers
-        }
-    }
-
-    _extendPeers(peer, domain) {
-        return Array(peer.instances).fill().map((x, i) => i).map(function (i) {
-            return {
-                name: "peer" + i,
-                address: `peer${i}.${domain}`
-            };
-        });
-    }
-
-    _validateFabrikkaVersion(fabrikkaVersion) {
-        this._validationBase(
-            !supportFabrikkaVersions.includes(fabrikkaVersion),
-            `Fabrikka's ${fabrikkaVersion} version is not supported. Supported versions are: ${supportFabrikkaVersions}`
-        );
-    }
-
-    _validateFabricVersion(fabricVersion) {
-        this._validationBase(
-            !supportedFabricVersions.includes(fabricVersion),
-            `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`
-        );
-    }
-
-    _validateOrderer(orderer) {
-        this._validationBase(
-            (orderer.consensus === "solo" && orderer.instances > 1),
-            `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only one instance is needed :).`
-        )
     }
 
     _getNetworkCapabilities(fabricVersion) {
@@ -284,13 +175,4 @@ module.exports = class extends Generator {
         return currentPath + "/" + configFile;
     }
 
-    _validationBase(condition, errorMessage) {
-        if (condition) {
-            this.emit('error', new Error(errorMessage));
-        }
-    }
-
-    _flatten(prev, curr) {
-        return prev.concat(curr);
-    }
 };
