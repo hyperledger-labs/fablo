@@ -46,64 +46,133 @@ module.exports = class extends Generator {
         this.log("Generating docker-compose network...");
 
         const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
+        const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
 
         // ======= fabric-config =======================================================================================
-
-        this.fs.copyTpl(
-            this.templatePath('fabric-config/crypto-config-root.yaml'),
-            this.destinationPath('fabric-config/crypto-config-root.yaml'),
-            {rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg)}
+        this._copyRootOrgCryptoConfig(
+            {
+                rootOrg: rootOrgTransformed
+            }
         );
 
-        const generator = this;
-        networkConfig.orgs.forEach(function (org) {
-            generator.fs.copyTpl(
-                generator.templatePath('fabric-config/crypto-config-org.yaml'),
-                generator.destinationPath(`fabric-config/crypto-config-${org.organization.name.toLowerCase()}.yaml`),
-                {org},
-            );
-        });
-
-        this.fs.copyTpl(
-            this.templatePath('fabric-config/configtx.yaml'),
-            this.destinationPath('fabric-config/configtx.yaml'),
+        this._copyOrgCryptoConfig(networkConfig.orgs);
+        this._copyConfigTx(
             {
                 capabilities: capabilities,
                 networkSettings: networkConfig.networkSettings,
-                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
+                rootOrg: rootOrgTransformed,
                 orgs: networkConfig.orgs,
-            },
+            }
+        );
+        this._copyGitIgnore();
+
+        // ======= fabric-compose ======================================================================================
+        this._copyDockerComposeEnv(
+            {
+                networkSettings: networkConfig.networkSettings,
+                orgs: networkConfig.orgs,
+            }
+        );
+        this._copyDockerCompose(
+            {
+                networkSettings: networkConfig.networkSettings,
+                rootOrg: rootOrgTransformed,
+                orgs: networkConfig.orgs,
+                chaincodes: networkConfig.chaincodes
+            }
         );
 
+        // ======= scripts =============================================================================================
+        const channelsTransformed = networkConfig.channels.map(channel => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
+        const chaincodesTransformed = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, channelsTransformed, this.env);
+
+        this._copyCommandsGeneratedScript(
+            {
+                networkSettings: networkConfig.networkSettings,
+                rootOrg: rootOrgTransformed,
+                orgs: networkConfig.orgs,
+                channels: channelsTransformed,
+                chaincodes: chaincodesTransformed
+            }
+        );
+
+        this._copyUtilityScripts();
+
+        networkConfig.chaincodes.forEach(function (chaincode) {
+            mkdirp.sync(chaincode.directory);
+        });
+
+        this.on('end', function () {
+            chaincodesTransformed.filter(c => !c.chaincodePathExists).forEach(function (chaincode) {
+                thisGenerator.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+            });
+            this.log("Done & done !!! Try the network out: ");
+            this.log("-> fabric-compose.sh up - to start network");
+            this.log("-> fabric-compose.sh help - to view all commands");
+        });
+    }
+
+    _copyConfigTx(settings) {
+        this.fs.copyTpl(
+            this.templatePath('fabric-config/configtx.yaml'),
+            this.destinationPath('fabric-config/configtx.yaml'),
+            settings,
+        );
+    }
+
+    _copyGitIgnore() {
         this.fs.copyTpl(
             this.templatePath('fabric-config/.gitignore'),
             this.destinationPath('fabric-config/.gitignore')
         );
+    }
 
-        // ======= fabric-compose ======================================================================================
+    _copyRootOrgCryptoConfig(settings) {
+        this.fs.copyTpl(
+            this.templatePath('fabric-config/crypto-config-root.yaml'),
+            this.destinationPath('fabric-config/crypto-config-root.yaml'),
+            settings
+        );
+    }
 
+    _copyOrgCryptoConfig(orgs) {
+        const thisGenerator = this;
+        orgs.forEach(function (org) {
+            //TODO nazwa powinna byc wykorzystywana w commands-generated.sh.
+            const orgsCryptoConfigFileName = `crypto-config-${org.organization.name.toLowerCase()}`;
+            thisGenerator.fs.copyTpl(
+                thisGenerator.templatePath('fabric-config/crypto-config-org.yaml'),
+                thisGenerator.destinationPath(`fabric-config/${orgsCryptoConfigFileName}.yaml`),
+                {org},
+            );
+        });
+    }
+
+    _copyDockerComposeEnv(settings) {
         this.fs.copyTpl(
             this.templatePath('fabric-compose/.env'),
             this.destinationPath('fabric-compose/.env'),
-            {
-                networkSettings: networkConfig.networkSettings,
-                orgs: networkConfig.orgs,
-            },
+            settings,
         );
+    }
 
+    _copyDockerCompose(settings) {
         this.fs.copyTpl(
             this.templatePath('fabric-compose/docker-compose.yaml'),
             this.destinationPath('fabric-compose/docker-compose.yaml'),
-            {
-                networkSettings: networkConfig.networkSettings,
-                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
-                orgs: networkConfig.orgs,
-                chaincodes: networkConfig.chaincodes
-            },
+            settings,
+        )
+    }
+
+    _copyCommandsGeneratedScript(settings) {
+        this.fs.copyTpl(
+            this.templatePath('fabric-compose/scripts/commands-generated.sh'),
+            this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
+            settings
         );
+    }
 
-        // ======= scripts =============================================================================================
-
+    _copyUtilityScripts() {
         this.fs.copyTpl(
             this.templatePath('fabric-compose.sh'),
             this.destinationPath('fabric-compose.sh')
@@ -128,35 +197,6 @@ module.exports = class extends Generator {
             this.templatePath('fabric-compose/scripts/base-help.sh'),
             this.destinationPath('fabric-compose/scripts/base-help.sh')
         );
-
-        const transformedChannels = networkConfig.channels.map(channel => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
-
-        const chaincodes = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, transformedChannels, this.env);
-
-        this.fs.copyTpl(
-            this.templatePath('fabric-compose/scripts/commands-generated.sh'),
-            this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
-            {
-                networkSettings: networkConfig.networkSettings,
-                rootOrg: configTransformers.transformRootOrgConfig(networkConfig.rootOrg),
-                orgs: networkConfig.orgs,
-                channels: transformedChannels,
-                chaincodes: chaincodes
-            },
-        );
-
-        networkConfig.chaincodes.forEach(function(chaincode) {
-            mkdirp.sync(chaincode.directory);
-        });
-
-        this.on('end', function () {
-            chaincodes.filter(c => !c.chaincodePathExists).forEach(function(chaincode) {
-                thisGenerator.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
-            });
-            this.log("Done & done !!! Try the network out: ");
-            this.log("-> fabric-compose.sh up - to start network");
-            this.log("-> fabric-compose.sh help - to view all commands");
-        });
     }
 
     _getNetworkCapabilities(fabricVersion) {
