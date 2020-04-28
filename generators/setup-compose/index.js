@@ -160,7 +160,7 @@ module.exports = class extends Generator {
         );
 
         networkConfig.chaincodes.forEach(function(chaincode) {
-            mkdirp.sync(chaincode.name);
+            mkdirp.sync(chaincode.directory);
         });
         // TODO outbox pattern
         // TODO transaction outbox pattern
@@ -185,6 +185,7 @@ module.exports = class extends Generator {
             const chaincodePath = thisClass._getFullPathOf(chaincode.name);
             const chaincodePathExists = fs.existsSync(chaincodePath);
             return {
+                directory: chaincode.directory,
                 name: chaincode.name,
                 version: chaincode.version,
                 lang: chaincode.lang,
@@ -269,10 +270,12 @@ module.exports = class extends Generator {
 
     _getNetworkCapabilities(fabricVersion) {
         switch (fabricVersion) {
+            case '1.4.4':
+                return {channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2"};
             case '1.4.3':
                 return {channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2"};
             default:
-                return {channel: "V1_4_2", orderer: "V1_4_2", application: "V1_4_2"};
+                return {channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2"};
         }
     }
 
