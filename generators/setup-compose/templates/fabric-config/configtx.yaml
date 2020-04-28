@@ -62,19 +62,6 @@ Orderer: &OrdererDefaults
         PreferredMaxBytes: 512 KB
     Organizations:
 
-#  - &OrdererDefaultsKafka
-#      OrdererType: kafka
-#      Addresses:
-#          - orderer.example.com:7050
-#      BatchTimeout: 2s
-#      BatchSize:
-#          MaxMessageCount: 10
-#          AbsoluteMaxBytes: 99 MB
-#          PreferredMaxBytes: 512 KB
-#      Kafka:
-#          Brokers:
-#              - 127.0.0.1:9092
-
 ################################################################################
 #   Profile
 ################################################################################
