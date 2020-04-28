@@ -1,0 +1,73 @@
+{
+  "fabrikkaVersion": "alpha-0.0.1",
+  "fileVersion": "0.1",
+  "networkSettings": {
+    "fabricVersion": "1.4.3",
+    "tls": false
+  },
+  "rootOrg": {
+    "organization": {
+      "key": "root",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
+      "domain": "root.com"
+    },
+    "ca": {
+      "prefix": "ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "consensus": "solo",
+      "instances": 1
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "key": "org1",
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "java",
+      "channel": "channel1",
+      "init": "{'Args':[]}",
+      "endorsment": "AND ('Org1.member')"
+    }
+  ]
+}
