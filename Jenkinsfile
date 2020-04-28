@@ -96,7 +96,7 @@ try {
             sh "CI=true npm test"
           }
           stage('Lint') {
-            sh "CI=true npm lint"
+//             sh "CI=true npm lint"
           }
         }
       )
