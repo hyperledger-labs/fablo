@@ -76,19 +76,47 @@ try {
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
-      stage('NPM') {
-        sh "apk add --no-cache nodejs npm"
-        sh "npm install"
-      }
-      stage("Yeoman") {
-        sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$WORKSPACE:/fabrikka\" e2e-generate"
-      }
-      stage('Test') {
-        sh "CI=true npm test"
-      }
-      stage('Lint') {
-        sh "CI=true npm lint"
-      }
+      parallel(
+        failFast: false,
+        'Install docker-compose': {
+          stage('Install docker-compose') {
+            sh "apk add --no-cache python python-dev py-pip build-base libffi-dev openssl-dev"
+            sh "pip install docker-compose"
+          }
+        },
+        'JS Tests': {
+          stage('NPM') {
+            sh "apk add --no-cache nodejs npm"
+            sh "npm install"
+          }
+          stage("Yeoman") {
+            sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$WORKSPACE:/fabrikka\" e2e-generate"
+          }
+          stage('Test') {
+            sh "CI=true npm test"
+          }
+          stage('Lint') {
+            sh "CI=true npm lint"
+          }
+        }
+      )
+
+      parallel(
+        failFast: true,
+        'Start network': {
+          sh "cd e2e/__tmp__/sample-01.json/"
+          sh "./fabric-compose.sh up"
+        },
+        'Test network': {
+          stage('Wait for services') {
+            sh "./wait-for-docker-compose.sh"
+          }
+          stage('Down network') {
+            sh "cd e2e/__tmp__/sample-01.json/"
+            sh "./fabric-compose.sh down"
+          }
+        }
+      )
     }
   })
 } catch (e) {
