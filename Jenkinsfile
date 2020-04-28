@@ -105,8 +105,8 @@ try {
 
       parallel(
         failFast: true,
-        'Start network': {
-          sh "cd e2e/__tmp__/sample-01.json/"
+        'Start network 01': {
+          sh "cd e2e/__tmp__/sample-01/"
           sh "./fabric-compose.sh up"
         },
         'Test network': {
