@@ -43,8 +43,7 @@
       "additionalProperties": true,
       "required": [
         "fabricVersion",
-        "tls",
-        "rootCaOnly"
+        "tls"
       ],
       "properties": {
         "fabricVersion": {
@@ -62,13 +61,6 @@
           "type": "boolean",
           "title": "Use TLS",
           "default": true
-        },
-        "rootCaOnly": {
-          "$id": "#/properties/networkSettings/properties/rootCaOnly",
-          "type": "boolean",
-          "title": "Create Root CA only",
-          "description": "You can create the root Certificate Authority (CA) node only, what might be useful for the dev purposes. It is recommended, however, to have additional CA nodes for each organization.",
-          "default": false
         }
       }
     },
@@ -467,7 +459,8 @@
           "lang",
           "channel",
           "init",
-          "endorsment"
+          "endorsment",
+          "directory"
         ],
         "properties": {
           "name": {
@@ -515,6 +508,12 @@
             "type": "string",
             "title": "Endorsment configuration",
             "default": "AND ('Org1.member')"
+          },
+          "directory": {
+            "$id": "#/properties/chaincodes/items/properties/directory",
+            "type": "string",
+            "title": "Chaincode directory",
+            "default": "chaincode1"
           }
         }
       }
