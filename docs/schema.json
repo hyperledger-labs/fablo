@@ -412,7 +412,17 @@
                 "key": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
                   "type": "string",
-                  "title": "Organization key"
+                  "title": "Organization key",
+                  "watch": {
+                    "orgs": "orgs"
+                  },
+                  "enumSource": [
+                    [],
+                    {
+                      "source": "orgs",
+                      "value": "{{item.organization.key}}"
+                    }
+                  ]
                 },
                 "peers": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
@@ -481,8 +491,18 @@
           "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
             "type": "string",
-            "title": "Channel",
-            "default": "channel1"
+            "title": "Channel key",
+            "default": "channel1",
+            "watch": {
+              "channels": "channels"
+            },
+            "enumSource": [
+              [],
+              {
+                "source": "channels",
+                "value": "{{item.key}}"
+              }
+            ]
           },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
