@@ -23,6 +23,8 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
 
 ################################################################################
 #   Section: Organizations
