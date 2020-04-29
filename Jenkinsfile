@@ -1,9 +1,9 @@
 @Library('sml-common')
 
 def podTemplateYaml() {
-    def serviceAccount = "jenkins"
+  def serviceAccount = "jenkins"
 
-    return """
+  return """
 apiVersion: v1
 kind: Pod
 spec:
@@ -32,61 +32,59 @@ spec:
     operator: "Equal"
     value: "true"
     effect: "NoSchedule"
-  volumes:
-  - name: artifacts
-    emptyDir: {}
   containers:
-  - name: npm
-    image: node:8-jessie
-    command:
-    - cat
-    tty: true
-    volumeMounts:
-    - mountPath: /artifacts
-      name: artifacts
+  - name: dind
+    image: docker:18.09-dind
+    securityContext:
+        privileged: true
+        runAsUser: 0
 """
 }
 
 def runOnNewPod(String labelBase, String uuid, Closure closure) {
-    def label = "${labelBase}-${uuid}"
-    podTemplate(label: label, yaml: podTemplateYaml()) {
-        timeout(10) {
-            node(label) {
-                try {
-                    ansiColor('xterm') {
-                        stage("Initialize") {
-                            checkout scm
-                            dockerTag = getDockerTag()
-                        }
-
-                        closure()
-                    }
-                } catch (e) {
-                    currentBuild.result = 'FAILED'
-                    throw e
-                }
+  def label = "${labelBase}-${uuid}"
+  podTemplate(label: label, yaml: podTemplateYaml()) {
+    timeout(10) {
+      node(label) {
+        try {
+          ansiColor('xterm') {
+            stage("Initialize") {
+              checkout scm
+              dockerTag = getDockerTag()
             }
+
+            closure()
+          }
+        } catch (e) {
+          currentBuild.result = 'FAILED'
+          throw e
         }
+      }
     }
+  }
 }
 
 String getDockerTag() {
-    return sh(script: 'git describe --always --tags', returnStdout: true)?.trim()
+  return sh(script: 'git describe --always --tags', returnStdout: true)?.trim()
 }
 
 def uuid = UUID.randomUUID().toString()
 
 try {
   node ('master') {
-      slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
+    slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
   }
-  runOnNewPod("front", uuid, {
-    container('npm') {
+  runOnNewPod("fabrikka", uuid, {
+    container('dind') {
       stage('NPM') {
-          sh "npm install"
+        sh "apk add --no-cache nodejs npm"
+        sh "npm install"
+      }
+      stage("Yeoman") {
+        sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$WORKSPACE:/fabrikka\" e2e-generate"
       }
       stage('Test') {
-          sh "CI=true npm test"
+        sh "CI=true npm test"
       }
       stage('Lint') {
           sh "npm run lint"
