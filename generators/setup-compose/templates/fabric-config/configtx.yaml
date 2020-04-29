@@ -1,0 +1,94 @@
+################################################################################
+#   SECTION: Capabilities
+################################################################################
+Capabilities:
+    Channel: &ChannelCapabilities
+        <%=  capabilities.channel %>: true
+    Orderer: &OrdererCapabilities
+        <%=  capabilities.orderer %>: true
+    Application: &ApplicationCapabilities
+        <%=  capabilities.application %>: true
+
+################################################################################
+#   CHANNEL Defaults
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#   Section: Organizations
+################################################################################
+Organizations:
+    - &OrdererOrg
+        Name: <%= rootOrg.organization.name %>
+        ID: <%= rootOrg.organization.mspName %>
+        MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
+    - &<%= org.name %>
+        Name: <%= org.mspName %>
+        ID: <%= org.mspName %>
+        MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
+        AnchorPeers:
+            - Host: peer0.<%= org.domain %>
+              Port: 7051<% }) %>
+
+################################################################################
+#   SECTION: Application
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#   SECTION: Orderer
+################################################################################
+Orderer: &OrdererDefaults
+    OrdererType: <%= rootOrg.ordererHead.consensus %>
+    Addresses: <% rootOrg.orderers.forEach(function(ordrer) { %>
+        - <%= ordrer.address %>:7050<% }) %>
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+
+################################################################################
+#   Profile
+################################################################################
+# https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
+
+Profiles:
+    SoloOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations: <% orgs.forEach(function(org){ %>
+                    - *<%= org.name %><% }) %>
+    AllOrgChannel:
+        <<: *ChannelDefaults
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations: <% orgs.forEach(function(org){ %>
+                - *<%= org.name %><% }) %>
+            Capabilities:
+                <<: *ApplicationCapabilities
+
