@@ -42,19 +42,19 @@ function networkUp() {
   <% if(orgNo==0 && peerNo==0) { -%>
   printf "============ \U1F63B Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %> \U1F63B ================== \n"
   <% if(!networkSettings.tls) { -%>
-  docker exec -it cli.<%= org.domain %> bash -c \
+  docker exec -i cli.<%= org.domain %> bash -c \
     "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } else { -%>
-  docker exec -it cli.<%= org.domain %> bash -c \
+  docker exec -i cli.<%= org.domain %> bash -c \
     "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } %>
   <% } else { -%>
   printf "====== \U1F638 Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %> \U1F638 ====== \n"
   <% if(!networkSettings.tls) { -%>
-  docker exec -it cli.<%= org.domain %> bash -c \
+  docker exec -i cli.<%= org.domain %> bash -c \
     "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } else { -%>
-  docker exec -it cli.<%= org.domain %> bash -c \
+  docker exec -i cli.<%= org.domain %> bash -c \
     "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.address %>:7051' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.address %>:7050';"
   <% } %>
   <% } -%>
