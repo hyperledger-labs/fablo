@@ -47,6 +47,9 @@ module.exports = class extends Generator {
 
         const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
         const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
+        const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
+        const channelsTransformed = networkConfig.channels.map(channel => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
+        const chaincodesTransformed = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, channelsTransformed, this.env);
 
         // ======= fabric-config =======================================================================================
         this._copyRootOrgCryptoConfig(
@@ -55,13 +58,13 @@ module.exports = class extends Generator {
             }
         );
 
-        this._copyOrgCryptoConfig(networkConfig.orgs);
+        this._copyOrgCryptoConfig(orgsTransformed);
         this._copyConfigTx(
             {
                 capabilities: capabilities,
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: rootOrgTransformed,
-                orgs: networkConfig.orgs,
+                orgs: orgsTransformed,
             }
         );
         this._copyGitIgnore();
@@ -70,7 +73,7 @@ module.exports = class extends Generator {
         this._copyDockerComposeEnv(
             {
                 networkSettings: networkConfig.networkSettings,
-                orgs: networkConfig.orgs,
+                orgs: orgsTransformed,
             }
         );
         this._copyDockerCompose(
@@ -83,14 +86,11 @@ module.exports = class extends Generator {
         );
 
         // ======= scripts =============================================================================================
-        const channelsTransformed = networkConfig.channels.map(channel => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
-        const chaincodesTransformed = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, channelsTransformed, this.env);
-
         this._copyCommandsGeneratedScript(
             {
                 networkSettings: networkConfig.networkSettings,
                 rootOrg: rootOrgTransformed,
-                orgs: networkConfig.orgs,
+                orgs: orgsTransformed,
                 channels: channelsTransformed,
                 chaincodes: chaincodesTransformed
             }
@@ -135,15 +135,13 @@ module.exports = class extends Generator {
         );
     }
 
-    _copyOrgCryptoConfig(orgs) {
+    _copyOrgCryptoConfig(orgsTransformed) {
         const thisGenerator = this;
-        orgs.forEach(function (org) {
-            //TODO nazwa powinna byc wykorzystywana w commands-generated.sh.
-            const orgsCryptoConfigFileName = `crypto-config-${org.organization.name.toLowerCase()}`;
+        orgsTransformed.forEach(function (orgTransformed) {
             thisGenerator.fs.copyTpl(
                 thisGenerator.templatePath('fabric-config/crypto-config-org.yaml'),
-                thisGenerator.destinationPath(`fabric-config/${orgsCryptoConfigFileName}.yaml`),
-                {org},
+                thisGenerator.destinationPath(`fabric-config/${orgTransformed.cryptoConfigFileName}.yaml`),
+                {org: orgTransformed},
             );
         });
     }

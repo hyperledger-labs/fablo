@@ -48,7 +48,7 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
     const orgPeers = channelJsonConfigFormat.orgs.map(o => o.peers).reduce(flatten);
     const orgsForChannel = orgsJsonConfigFormat
         .filter(o => orgKeys.includes(o.organization.key))
-        .map(o => transformToShortened(o))
+        .map(o => transformOrgConfig(o))
         .map(o => filterToAvailablePeers(o, orgPeers));
 
     return {
@@ -58,12 +58,15 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
     }
 }
 
-function transformToShortened(orgJsonConfigFormat) {
+function transformOrgConfig(orgJsonConfigFormat) {
+    const orgsCryptoConfigFileName = `crypto-config-${orgJsonConfigFormat.organization.name.toLowerCase()}`;
     return {
         name: orgJsonConfigFormat.organization.name,
         mspName: orgJsonConfigFormat.organization.mspName,
         domain: orgJsonConfigFormat.organization.domain,
-        peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain)
+        peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
+        peersCount: orgJsonConfigFormat.peer.instances,
+        cryptoConfigFileName: orgsCryptoConfigFileName
     }
 }
 
@@ -98,6 +101,7 @@ function getFullPathOf(configFile, env) {
 module.exports = {
     transformChaincodesConfig,
     transformRootOrgConfig,
+    transformOrgConfig,
     transformChannelConfig
 };
 
