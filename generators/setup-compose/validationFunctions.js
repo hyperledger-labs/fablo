@@ -1,6 +1,12 @@
 const supportedFabricVersions = ['1.4.3', '1.4.4'];
 const supportFabrikkaVersions = ['alpha-0.0.1'];
 
+function validationBase(condition, errorMessage, emitFn) {
+  if (condition) {
+    emitFn('error', new Error(errorMessage));
+  }
+}
+
 function validateFabrikkaVersion(fabrikkaVersion, emitFn) {
   validationBase(
     !supportFabrikkaVersions.includes(fabrikkaVersion),
@@ -23,12 +29,6 @@ function validateOrderer(orderer, emitFn) {
     `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only one instance is needed :).`,
     emitFn,
   );
-}
-
-function validationBase(condition, errorMessage, emitFn) {
-  if (condition) {
-    emitFn('error', new Error(errorMessage));
-  }
 }
 
 module.exports = {
