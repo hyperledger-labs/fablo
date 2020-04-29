@@ -20,10 +20,10 @@ function certsGenerate() {
     exit 1
   fi
 
-  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
   docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -45,11 +45,11 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -it $CONTAINER_NAME mkdir /config
-  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
   docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -72,11 +72,11 @@ function createChannelTx() {
     exit 1
   fi
 
-  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -it $CONTAINER_NAME mkdir /config
-  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
 
   docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
   docker rm -f $CONTAINER_NAME
@@ -100,11 +100,11 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -it $CONTAINER_NAME mkdir /config
-  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
 
   docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
   docker rm -f $CONTAINER_NAME
