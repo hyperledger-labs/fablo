@@ -1,7 +1,8 @@
-/*
- * License-Identifier: Apache-2.0
- */
+/* eslint no-underscore-dangle: 0 */
 
+/*
+* License-Identifier: Apache-2.0
+*/
 const Generator = require('yeoman-generator');
 const mkdirp = require('mkdirp');
 const utils = require('../utils');
@@ -33,24 +34,30 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const thisGenerator = this;
+    const _ = this;
     const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
-    validationFunctions.validateFabrikkaVersion(networkConfig.fabrikkaVersion, this.emit);
-    validationFunctions.validateFabricVersion(networkConfig.networkSettings.fabricVersion, this.emit);
+    validationFunctions.validateFabrikkaVersion(networkConfig.fabrikkaVersion, _.emit);
+    validationFunctions.validateFabricVersion(networkConfig.networkSettings.fabricVersion, _.emit);
     validationFunctions.validateOrderer(networkConfig.rootOrg.orderer, this.emit);
 
     this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
     this.log(`Fabric version is: ${networkConfig.networkSettings.fabricVersion}`);
     this.log('Generating docker-compose network...');
 
-    const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
+    const capabilities = configTransformers.getNetworkCapabilities(
+      networkConfig.networkSettings.fabricVersion,
+    );
     const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
     const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
-    const channelsTransformed = networkConfig.channels.map((channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs));
-    const chaincodesTransformed = configTransformers.transformChaincodesConfig(networkConfig.chaincodes, channelsTransformed, this.env);
+    const channelsTransformed = networkConfig.channels.map(
+      (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
+    );
+    const chaincodesTransformed = configTransformers.transformChaincodesConfig(
+      networkConfig.chaincodes, channelsTransformed, _.env,
+    );
 
-    // ======= fabric-config =======================================================================================
+    // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(
       {
         rootOrg: rootOrgTransformed,
@@ -68,7 +75,7 @@ module.exports = class extends Generator {
     );
     this._copyGitIgnore();
 
-    // ======= fabric-compose ======================================================================================
+    // ======= fabric-compose ===========================================================
     this._copyDockerComposeEnv(
       {
         networkSettings: networkConfig.networkSettings,
@@ -84,7 +91,7 @@ module.exports = class extends Generator {
       },
     );
 
-    // ======= scripts =============================================================================================
+    // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(
       {
         networkSettings: networkConfig.networkSettings,
@@ -101,9 +108,9 @@ module.exports = class extends Generator {
       mkdirp.sync(chaincode.directory);
     });
 
-    this.on('end', function () {
+    this.on('end', () => {
       chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        thisGenerator.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+        _.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
       });
       this.log('Done & done !!! Try the network out: ');
       this.log('-> fabric-compose.sh up - to start network');
@@ -194,17 +201,6 @@ module.exports = class extends Generator {
       this.templatePath('fabric-compose/scripts/base-help.sh'),
       this.destinationPath('fabric-compose/scripts/base-help.sh'),
     );
-  }
-
-  _getNetworkCapabilities(fabricVersion) {
-    switch (fabricVersion) {
-      case '1.4.4':
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-      case '1.4.3':
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-      default:
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    }
   }
 
   _getFullPathOf(configFile) {

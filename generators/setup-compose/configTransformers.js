@@ -103,9 +103,21 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
   };
 }
 
+function getNetworkCapabilities(fabricVersion) {
+  switch (fabricVersion) {
+    case '1.4.4':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.3':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    default:
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+  }
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
   transformOrgConfig,
   transformChannelConfig,
+  getNetworkCapabilities,
 };
