@@ -76,14 +76,16 @@ try {
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
-      stage("Install NPM") {
-        sh "apk add --no-cache nodejs npm"
+      stage("Install required libs") {
+        // nodejs npm - to run js tests
+        // bash - to run generated scripts
+        // the rest - to install docker compose (later)
+        sh "apk add --no-cache nodejs npm bash python python-dev py-pip build-base libffi-dev openssl-dev"
       }
       parallel(
         failFast: false,
         'Install docker-compose': {
           stage('Install docker-compose') {
-            sh "apk add --no-cache python python-dev py-pip build-base libffi-dev openssl-dev"
             sh "pip install docker-compose"
           }
         },
