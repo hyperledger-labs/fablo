@@ -106,16 +106,14 @@ try {
       parallel(
         failFast: true,
         'Start network 01': {
-          sh "cd e2e/__tmp__/sample-01/"
-          sh "./fabric-compose.sh up"
+          sh "e2e/start-network.sh"
         },
         'Test network 01': {
           stage('Wait for services') {
             sh "e2e/wait-for-network.sh"
           }
           stage('Down network') {
-            sh "cd e2e/__tmp__/sample-01.json/"
-            sh "./fabric-compose.sh down"
+            sh "e2e/down-network.sh"
           }
         }
       )
