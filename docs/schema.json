@@ -1,107 +1,523 @@
 {
-  "fabrikkaVersion": "alpha-0.0.1",
-  "fileVersion": "0.1",
-  "networkSettings": {
-    "fabricVersion": "1.4.3",
-    "tls": false
-  },
-  "rootOrg": {
-    "organization": {
-      "key": "root",
-      "name": "Orderer",
-      "mspName": "OrdererMSP",
-      "domain": "root.com"
-    },
-    "ca": {
-      "prefix": "ca"
-    },
-    "orderer": {
-      "prefix": "orderer",
-      "consensus": "solo",
-      "instances": 1
-    }
-  },
-  "orgs": [
-    {
-      "organization": {
-        "key": "org1",
-        "name": "Org1",
-        "mspName": "Org1MSP",
-        "domain": "org1.com"
-      },
-      "ca": {
-        "prefix": "ca"
-      },
-      "peer": {
-        "prefix": "peer",
-        "instances": 2,
-        "db": "LevelDb"
-      }
-    },
-    {
-      "organization": {
-        "key": "org2",
-        "name": "Org2",
-        "mspName": "Org2MSP",
-        "domain": "org2.com"
-      },
-      "ca": {
-        "prefix": "ca"
-      },
-      "peer": {
-        "prefix": "peer",
-        "instances": 2,
-        "db": "LevelDb"
-      }
-    }
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "Root",
+  "default": {},
+  "additionalProperties": true,
+  "required": [
+    "fabrikkaVersion",
+    "fileVersion",
+    "networkSettings",
+    "rootOrg",
+    "orgs",
+    "channels",
+    "chaincodes"
   ],
-  "channels": [
-    {
-      "key": "channel1",
-      "name": "my-channel1",
-      "orgs": [
+  "properties": {
+    "fabrikkaVersion": {
+      "$id": "#/properties/fabrikkaVersion",
+      "type": "string",
+      "title": "Fabrikka version",
+      "default": "alpha-0.0.1",
+      "readOnly": true
+    },
+    "fileVersion": {
+      "$id": "#/properties/fileVersion",
+      "type": "string",
+      "title": "File version",
+      "default": "0.1"
+    },
+    "networkSettings": {
+      "$id": "#/properties/networkSettings",
+      "type": "object",
+      "title": "Network settings",
+      "description": "Basic settings of the Hyperledger Fabric network",
+      "default": {},
+      "examples": [
         {
-          "key": "org1",
-          "peers": [
-            "peer0"
+          "tls": false,
+          "rootCaOnly": true,
+          "fabricVersion": "1.4.3"
+        }
+      ],
+      "additionalProperties": true,
+      "required": [
+        "fabricVersion",
+        "tls"
+      ],
+      "properties": {
+        "fabricVersion": {
+          "$id": "#/properties/networkSettings/properties/fabricVersion",
+          "type": "string",
+          "enum": [
+            "1.4.3",
+            "1.4.4"
+          ],
+          "title": "Hyperledger Fabric version",
+          "default": "1.4.4"
+        },
+        "tls": {
+          "$id": "#/properties/networkSettings/properties/tls",
+          "type": "boolean",
+          "title": "Use TLS",
+          "default": true
+        }
+      }
+    },
+    "rootOrg": {
+      "$id": "#/properties/rootOrg",
+      "type": "object",
+      "title": "Root organization",
+      "description": "The configuration of the root organization for the Hyperledger Fabric network.",
+      "default": {},
+      "additionalProperties": true,
+      "required": [
+        "organization",
+        "ca",
+        "orderer"
+      ],
+      "properties": {
+        "organization": {
+          "$id": "#/properties/rootOrg/properties/organization",
+          "type": "object",
+          "title": "Basic information",
+          "default": {},
+          "additionalProperties": true,
+          "required": [
+            "key",
+            "name",
+            "mspName",
+            "domain"
+          ],
+          "properties": {
+            "key": {
+              "$id": "#/properties/rootOrg/properties/organization/properties/key",
+              "type": "string",
+              "title": "Key",
+              "default": "root"
+            },
+            "name": {
+              "$id": "#/properties/rootOrg/properties/organization/properties/name",
+              "type": "string",
+              "title": "Name",
+              "default": "Root Organization"
+            },
+            "mspName": {
+              "$id": "#/properties/rootOrg/properties/organization/properties/mspName",
+              "type": "string",
+              "title": "MSP Name",
+              "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
+              "default": "RootMSP"
+            },
+            "domain": {
+              "$id": "#/properties/rootOrg/properties/organization/properties/domain",
+              "type": "string",
+              "title": "Domain",
+              "default": "root.com"
+            }
+          }
+        },
+        "ca": {
+          "$id": "#/properties/rootOrg/properties/ca",
+          "type": "object",
+          "title": "Root Certificate Authority (CA)",
+          "additionalProperties": true,
+          "required": [
+            "prefix"
+          ],
+          "properties": {
+            "prefix": {
+              "$id": "#/properties/rootOrg/properties/ca/properties/prefix",
+              "type": "string",
+              "title": "Domain prefix",
+              "default": "ca"
+            }
+          }
+        },
+        "orderer": {
+          "$id": "#/properties/rootOrg/properties/orderer",
+          "type": "object",
+          "title": "Orderer",
+          "additionalProperties": true,
+          "required": [
+            "prefix",
+            "consensus",
+            "instances"
+          ],
+          "properties": {
+            "prefix": {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/prefix",
+              "type": "string",
+              "title": "Domain prefix",
+              "default": "orderer"
+            },
+            "consensus": {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/consensus",
+              "type": "string",
+              "enum": [
+                "solo",
+                "raft"
+              ],
+              "title": "Consensus type",
+              "default": "solo",
+              "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production."
+            },
+            "instances": {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/instances",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "title": "Number of instances",
+              "default": 1
+            }
+          }
+        }
+      }
+    },
+    "orgs": {
+      "$id": "#/properties/orgs",
+      "type": "array",
+      "title": "Organizations",
+      "default": [
+        {
+          "ca": {
+            "prefix": "ca"
+          },
+          "peer": {
+            "instances": 2.0,
+            "prefix": "peer",
+            "db": "LevelDb"
+          },
+          "organization": {
+            "domain": "org1.com",
+            "mspName": "Org1MSP",
+            "key": "org1",
+            "name": "Org1"
+          }
+        }
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/orgs/items",
+        "type": "object",
+        "title": "Organization",
+        "additionalProperties": true,
+        "required": [
+          "organization",
+          "ca",
+          "peer"
+        ],
+        "properties": {
+          "organization": {
+            "$id": "#/properties/orgs/items/properties/organization",
+            "type": "object",
+            "title": "Basic information",
+            "additionalProperties": true,
+            "required": [
+              "key",
+              "name",
+              "mspName",
+              "domain"
+            ],
+            "properties": {
+              "key": {
+                "$id": "#/properties/orgs/items/properties/organization/properties/key",
+                "type": "string",
+                "title": "Key",
+                "default": "org1"
+              },
+              "name": {
+                "$id": "#/properties/orgs/items/properties/organization/properties/name",
+                "type": "string",
+                "title": "Name",
+                "default": "Organization 1"
+              },
+              "mspName": {
+                "$id": "#/properties/orgs/items/properties/organization/properties/mspName",
+                "type": "string",
+                "title": "MSP Name",
+                "default": "Organiztion 1 MSP"
+              },
+              "domain": {
+                "$id": "#/properties/orgs/items/properties/organization/properties/domain",
+                "type": "string",
+                "title": "Domain",
+                "default": "org1.com"
+              }
+            }
+          },
+          "ca": {
+            "$id": "#/properties/orgs/items/properties/ca",
+            "type": "object",
+            "title": "Organization Certificate Authority (CA)",
+            "additionalProperties": true,
+            "required": [
+              "prefix"
+            ],
+            "properties": {
+              "prefix": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
+                "type": "string",
+                "title": "Domain prefix",
+                "default": "ca"
+              }
+            }
+          },
+          "peer": {
+            "$id": "#/properties/orgs/items/properties/peer",
+            "type": "object",
+            "title": "Peer",
+            "additionalProperties": true,
+            "required": [
+              "prefix",
+              "instances",
+              "db"
+            ],
+            "properties": {
+              "prefix": {
+                "$id": "#/properties/orgs/items/properties/peer/properties/prefix",
+                "type": "string",
+                "title": "Domain prefix",
+                "default": "peer"
+              },
+              "instances": {
+                "$id": "#/properties/orgs/items/properties/peer/properties/instances",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "title": "Number of instances",
+                "default": 2
+              },
+              "db": {
+                "$id": "#/properties/orgs/items/properties/peer/properties/db",
+                "type": "string",
+                "enum": [
+                  "LevelDb",
+                  "CouchDb"
+                ],
+                "title": "Database Type",
+                "default": "LevelDb"
+              }
+            }
+          }
+        }
+      }
+    },
+    "channels": {
+      "$id": "#/properties/channels",
+      "type": "array",
+      "title": "Channels",
+      "default": [
+        {
+          "key": "channel1",
+          "name": "my-channel1",
+          "orgs": [
+            {
+              "peers": [
+                "peer0"
+              ],
+              "key": "org1"
+            },
+            {
+              "peers": [
+                "peer0"
+              ],
+              "key": "org2"
+            }
           ]
         },
         {
-          "key": "org2",
-          "peers": [
-            "peer0"
-          ]
+          "orgs": [
+            {
+              "key": "org1",
+              "peers": [
+                "peer1"
+              ]
+            },
+            {
+              "peers": [
+                "peer1"
+              ],
+              "key": "org2"
+            }
+          ],
+          "key": "channel2",
+          "name": "my-channel2"
         }
-      ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/channels/items",
+        "type": "object",
+        "title": "Channel",
+        "additionalProperties": true,
+        "required": [
+          "key",
+          "name",
+          "orgs"
+        ],
+        "properties": {
+          "key": {
+            "$id": "#/properties/channels/items/properties/key",
+            "type": "string",
+            "title": "Key",
+            "default": "channel1"
+          },
+          "name": {
+            "$id": "#/properties/channels/items/properties/name",
+            "type": "string",
+            "title": "Name",
+            "default": "My Channel 1"
+          },
+          "orgs": {
+            "$id": "#/properties/channels/items/properties/orgs",
+            "type": "array",
+            "title": "Organizations in the channel",
+            "default": [],
+            "examples": [
+              [
+                {
+                  "peers": [
+                    "peer0"
+                  ],
+                  "key": "org1"
+                },
+                {
+                  "peers": [
+                    "peer0"
+                  ],
+                  "key": "org2"
+                }
+              ]
+            ],
+            "additionalItems": true,
+            "items": {
+              "$id": "#/properties/channels/items/properties/orgs/items",
+              "type": "object",
+              "title": "Organization",
+              "additionalProperties": true,
+              "required": [
+                "key",
+                "peers"
+              ],
+              "properties": {
+                "key": {
+                  "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
+                  "type": "string",
+                  "title": "Organization key",
+                  "watch": {
+                    "orgs": "orgs"
+                  },
+                  "enumSource": [
+                    [],
+                    {
+                      "source": "orgs",
+                      "value": "{{item.organization.key}}"
+                    }
+                  ]
+                },
+                "peers": {
+                  "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
+                  "type": "array",
+                  "title": "Peers for ogranization",
+                  "additionalItems": true,
+                  "items": {
+                    "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
+                    "type": "string",
+                    "title": "Peer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
-    {
-      "key": "channel2",
-      "name": "my-channel2",
-      "orgs": [
+    "chaincodes": {
+      "$id": "#/properties/chaincodes",
+      "type": "array",
+      "title": "Chaincodes",
+      "default": [
         {
-          "key": "org1",
-          "peers": [
-            "peer1"
-          ]
-        },
-        {
-          "key": "org2",
-          "peers": [
-            "peer1"
-          ]
+          "channel": "channel1",
+          "endorsment": "AND ('Org1.member')",
+          "version": "0.0.1",
+          "lang": "java",
+          "init": "{'Args':[]}",
+          "name": "chaincode1"
         }
-      ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "$id": "#/properties/chaincodes/items",
+        "type": "object",
+        "title": "Chaincode",
+        "additionalProperties": true,
+        "required": [
+          "name",
+          "version",
+          "lang",
+          "channel",
+          "init",
+          "endorsment",
+          "directory"
+        ],
+        "properties": {
+          "name": {
+            "$id": "#/properties/chaincodes/items/properties/name",
+            "type": "string",
+            "title": "Name",
+            "default": "Chaincode 1"
+          },
+          "version": {
+            "$id": "#/properties/chaincodes/items/properties/version",
+            "type": "string",
+            "title": "Version",
+            "default": "0.0.1"
+          },
+          "lang": {
+            "$id": "#/properties/chaincodes/items/properties/lang",
+            "type": "string",
+            "title": "Language",
+            "default": "java"
+          },
+          "channel": {
+            "$id": "#/properties/chaincodes/items/properties/channel",
+            "type": "string",
+            "title": "Channel key",
+            "default": "channel1",
+            "watch": {
+              "channels": "channels"
+            },
+            "enumSource": [
+              [],
+              {
+                "source": "channels",
+                "value": "{{item.key}}"
+              }
+            ]
+          },
+          "init": {
+            "$id": "#/properties/chaincodes/items/properties/init",
+            "type": "string",
+            "title": "Initialization arguments",
+            "default": "{'Args':[]}"
+          },
+          "endorsment": {
+            "$id": "#/properties/chaincodes/items/properties/endorsment",
+            "type": "string",
+            "title": "Endorsment configuration",
+            "default": "AND ('Org1.member')"
+          },
+          "directory": {
+            "$id": "#/properties/chaincodes/items/properties/directory",
+            "type": "string",
+            "title": "Chaincode directory",
+            "default": "chaincode1"
+          }
+        }
+      }
     }
-  ],
-  "chaincodes": [
-    {
-      "name": "chaincode1",
-      "version": "0.0.1",
-      "lang": "java",
-      "channel": "channel1",
-      "init": "{'Args':[]}",
-      "endorsment": "AND ('Org1.member')",
-      "directory": "chaincode1"
-    }
-  ]
+  }
 }
