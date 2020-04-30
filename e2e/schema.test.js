@@ -1,25 +1,26 @@
-const { execSync } = require('child_process');
 const { matchers } = require('jest-json-schema');
+const schema = require('../docs/schema');
+const sample01 = require('../samples/fabrikkaConfig-1org-1channel-1chaincode');
+const sample02 = require('../samples/fabrikkaConfig-2orgs-2channels-1chaincode');
+const docsSample = require('../docs/sample');
 
 expect.extend(matchers);
 
-const executeCommand = (c) => execSync(c, { encoding: 'utf-8' });
-
-const sample01 = 'samples/fabrikkaConfig-1org-1channel-1chaincode.json';
-const sample02 = 'samples/fabrikkaConfig-2orgs-2channels-1chaincode.json';
-
-const schema = 'docs/schema.json';
-
-const getJson = (path) => JSON.parse(executeCommand(`cat "${path}"`));
-
-describe(schema, () => {
-  const schemaJson = getJson(schema);
-
-  it(`should be obeyed by ${sample01}`, () => {
-    expect(getJson(sample01)).toMatchSchema(schemaJson);
+describe('samples', () => {
+  [
+    ['sample01', sample01],
+    ['sample02', sample02],
+    ['docsSample', docsSample],
+  ].forEach(([name, json]) => {
+    it(`${name} should match schema`, () => {
+      expect(json).toMatchSchema(schema);
+    });
   });
+});
 
-  it(`should be obeyed by ${sample02}`, () => {
-    expect(getJson(sample02)).toMatchSchema(schemaJson);
+describe('schema', () => {
+  it('should validate fabric version', () => {
+    const json = { ...docsSample, networkSettings: { ...docsSample.networkSettings, fabricVersion: '1.3.2' } };
+    expect(json).not.toMatchSchema(schema);
   });
 });
