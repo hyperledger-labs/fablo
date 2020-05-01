@@ -7,7 +7,7 @@ function installChaincodes() {
   chaincodeInstall "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
-  chaincodeInstantiate "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsment %>"
+  chaincodeInstantiate "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
   <% })})}) -%>
 }
 
@@ -16,8 +16,8 @@ function networkUp() {
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
-  printf "===== \U1F512 Generating crypto material for <%= org.organization.name %> \U1F512 ===== \n"
-  certsGenerate "fabric-config" "crypto-config-<%= org.organization.name.toLowerCase() %>.yaml" "peerOrganizations/<%= org.organization.domain %>" "./fabric-config/crypto-config/"
+  printf "===== \U1F512 Generating crypto material for <%= org.name %> \U1F512 ===== \n"
+  certsGenerate "fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "./fabric-config/crypto-config/"
   <% }) %>
 
   printf "===== \U1F3E0 Generating genesis block \U1F3E0 ===== \n"

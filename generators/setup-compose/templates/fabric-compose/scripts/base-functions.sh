@@ -157,7 +157,7 @@ function chaincodeInstantiate() {
   local CLI_NAME=$8
 
   local INIT_PARAMS=$9
-  local ENDORSMENT=${10}
+  local ENDORSEMENT=${10}
 
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
@@ -168,7 +168,7 @@ function chaincodeInstantiate() {
   echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   echo ""
   echo "   INIT_PARAMS: $INIT_PARAMS"
-  echo "   ENDORSMENT: $ENDORSMENT"
+  echo "   ENDORSEMENT: $ENDORSEMENT"
   echo ""
   echo "   PEER_ADDRESS: $PEER_ADDRESS"
   echo "   ORDERER_URL: $ORDERER_URL"
@@ -178,7 +178,7 @@ function chaincodeInstantiate() {
     docker exec \
         -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
         $CLI_NAME peer chaincode instantiate \
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSMENT" \
+        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSEMENT" \
         -o $ORDERER_URL
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
