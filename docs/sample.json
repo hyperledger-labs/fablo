@@ -3,14 +3,13 @@
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
-    "tls": false,
-    "rootCaOnly": true
+    "tls": false
   },
   "rootOrg": {
     "organization": {
       "key": "root",
-      "name": "Root Organization",
-      "mspName": "RootMSP",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
       "domain": "root.com"
     },
     "ca": {
@@ -101,7 +100,8 @@
       "lang": "java",
       "channel": "channel1",
       "init": "{'Args':[]}",
-      "endorsment": "AND ('Org1.member')"
+      "endorsement": "AND ('Org1.member')",
+      "directory": "chaincode1"
     }
   ]
 }
