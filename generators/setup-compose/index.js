@@ -1,14 +1,14 @@
-/*
- * License-Identifier: Apache-2.0
- */
+/* eslint no-underscore-dangle: 0 */
 
+/*
+* License-Identifier: Apache-2.0
+*/
 const Generator = require('yeoman-generator');
 const mkdirp = require('mkdirp');
-const fs = require('fs');
 const utils = require('../utils');
 
-const supportedFabricVersions = ['1.4.3', '1.4.4'];
-const supportFabrikkaVersions = ['alpha-0.0.1'];
+const configTransformers = require('./configTransformers');
+const validationFunctions = require('./validationFunctions');
 
 module.exports = class extends Generator {
   async initializing() {
@@ -34,76 +34,149 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const thisGenerator = this;
+    const _ = this;
     const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
-    this._validateFabrikkaVersion(networkConfig.fabrikkaVersion);
-    this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
-    this._validateOrderer(networkConfig.rootOrg.orderer);
+    validationFunctions.validateFabrikkaVersion(networkConfig.fabrikkaVersion, _.emit);
+    validationFunctions.validateFabricVersion(networkConfig.networkSettings.fabricVersion, _.emit);
+    validationFunctions.validateOrderer(networkConfig.rootOrg.orderer, this.emit);
 
     this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
     this.log(`Fabric version is: ${networkConfig.networkSettings.fabricVersion}`);
     this.log('Generating docker-compose network...');
 
-    const capabilities = this._getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
-
-    // ======= fabric-config =======================================================================================
-
-    this.fs.copyTpl(
-      this.templatePath('fabric-config/crypto-config-root.yaml'),
-      this.destinationPath('fabric-config/crypto-config-root.yaml'),
-      { rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg) },
+    const capabilities = configTransformers.getNetworkCapabilities(
+      networkConfig.networkSettings.fabricVersion,
+    );
+    const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
+    const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
+    const channelsTransformed = networkConfig.channels.map(
+      (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
+    );
+    const chaincodesTransformed = configTransformers.transformChaincodesConfig(
+      networkConfig.chaincodes, channelsTransformed, _.env,
     );
 
-    const generator = this;
-    networkConfig.orgs.forEach((org) => {
-      generator.fs.copyTpl(
-        generator.templatePath('fabric-config/crypto-config-org.yaml'),
-        generator.destinationPath(`fabric-config/crypto-config-${org.organization.name.toLowerCase()}.yaml`),
-        { org },
-      );
-    });
+    // ======= fabric-config ============================================================
+    this._copyRootOrgCryptoConfig(
+      {
+        rootOrg: rootOrgTransformed,
+      },
+    );
 
-    this.fs.copyTpl(
-      this.templatePath('fabric-config/configtx.yaml'),
-      this.destinationPath('fabric-config/configtx.yaml'),
+    this._copyOrgCryptoConfig(orgsTransformed);
+    this._copyConfigTx(
       {
         capabilities,
         networkSettings: networkConfig.networkSettings,
-        rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
-        orgs: networkConfig.orgs,
+        rootOrg: rootOrgTransformed,
+        orgs: orgsTransformed,
       },
     );
+    this._copyGitIgnore();
 
-    this.fs.copyTpl(
-      this.templatePath('fabric-config/.gitignore'),
-      this.destinationPath('fabric-config/.gitignore'),
-    );
-
-    // ======= fabric-compose ======================================================================================
-
-    this.fs.copyTpl(
-      this.templatePath('fabric-compose/.env'),
-      this.destinationPath('fabric-compose/.env'),
+    // ======= fabric-compose ===========================================================
+    this._copyDockerComposeEnv(
       {
         networkSettings: networkConfig.networkSettings,
-        orgs: networkConfig.orgs,
+        orgs: orgsTransformed,
       },
     );
-
-    this.fs.copyTpl(
-      this.templatePath('fabric-compose/docker-compose.yaml'),
-      this.destinationPath('fabric-compose/docker-compose.yaml'),
+    this._copyDockerCompose(
       {
         networkSettings: networkConfig.networkSettings,
-        rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
+        rootOrg: rootOrgTransformed,
         orgs: networkConfig.orgs,
         chaincodes: networkConfig.chaincodes,
       },
     );
 
-    // ======= scripts =============================================================================================
+    // ======= scripts ==================================================================
+    this._copyCommandsGeneratedScript(
+      {
+        networkSettings: networkConfig.networkSettings,
+        rootOrg: rootOrgTransformed,
+        orgs: orgsTransformed,
+        channels: channelsTransformed,
+        chaincodes: chaincodesTransformed,
+      },
+    );
 
+    this._copyUtilityScripts();
+
+    networkConfig.chaincodes.forEach((chaincode) => {
+      mkdirp.sync(chaincode.directory);
+    });
+
+    this.on('end', () => {
+      chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
+        _.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+      });
+      this.log('Done & done !!! Try the network out: ');
+      this.log('-> fabric-compose.sh up - to start network');
+      this.log('-> fabric-compose.sh help - to view all commands');
+    });
+  }
+
+  _copyConfigTx(settings) {
+    this.fs.copyTpl(
+      this.templatePath('fabric-config/configtx.yaml'),
+      this.destinationPath('fabric-config/configtx.yaml'),
+      settings,
+    );
+  }
+
+  _copyGitIgnore() {
+    this.fs.copyTpl(
+      this.templatePath('fabric-config/.gitignore'),
+      this.destinationPath('fabric-config/.gitignore'),
+    );
+  }
+
+  _copyRootOrgCryptoConfig(settings) {
+    this.fs.copyTpl(
+      this.templatePath('fabric-config/crypto-config-root.yaml'),
+      this.destinationPath('fabric-config/crypto-config-root.yaml'),
+      settings,
+    );
+  }
+
+  _copyOrgCryptoConfig(orgsTransformed) {
+    const thisGenerator = this;
+    orgsTransformed.forEach((orgTransformed) => {
+      thisGenerator.fs.copyTpl(
+        thisGenerator.templatePath('fabric-config/crypto-config-org.yaml'),
+        thisGenerator.destinationPath(`fabric-config/${orgTransformed.cryptoConfigFileName}.yaml`),
+        { org: orgTransformed },
+      );
+    });
+  }
+
+  _copyDockerComposeEnv(settings) {
+    this.fs.copyTpl(
+      this.templatePath('fabric-compose/.env'),
+      this.destinationPath('fabric-compose/.env'),
+      settings,
+    );
+  }
+
+  _copyDockerCompose(settings) {
+    this.fs.copyTpl(
+      this.templatePath('fabric-compose/docker-compose.yaml'),
+      this.destinationPath('fabric-compose/docker-compose.yaml'),
+      settings,
+    );
+  }
+
+  _copyCommandsGeneratedScript(settings) {
+    this.fs.copyTpl(
+      this.templatePath('fabric-compose/scripts/commands-generated.sh'),
+      this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
+      settings,
+    );
+  }
+
+  _copyUtilityScripts() {
     this.fs.copyTpl(
       this.templatePath('fabric-compose.sh'),
       this.destinationPath('fabric-compose.sh'),
@@ -128,166 +201,10 @@ module.exports = class extends Generator {
       this.templatePath('fabric-compose/scripts/base-help.sh'),
       this.destinationPath('fabric-compose/scripts/base-help.sh'),
     );
-
-    const transformedChannels = networkConfig.channels.map((channel) => {
-      const orgKeys = channel.orgs.map((o) => o.key);
-      const orgPeers = channel.orgs.map((o) => o.peers).reduce(thisGenerator._flatten);
-      const orgsForChannel = networkConfig.orgs
-        .filter((o) => orgKeys.includes(o.organization.key))
-        .map((o) => thisGenerator._transformToShortened(o))
-        .map((o) => thisGenerator._filterToAvailablePeers(o, orgPeers));
-
-      return {
-        key: channel.key,
-        name: channel.name,
-        orgs: orgsForChannel,
-      };
-    });
-
-    const chaincodes = thisGenerator._extendChaincodes(networkConfig.chaincodes, transformedChannels);
-
-    this.fs.copyTpl(
-      this.templatePath('fabric-compose/scripts/commands-generated.sh'),
-      this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
-      {
-        networkSettings: networkConfig.networkSettings,
-        rootOrg: thisGenerator._transformRootOrg(networkConfig.rootOrg),
-        orgs: networkConfig.orgs,
-        channels: transformedChannels,
-        chaincodes,
-      },
-    );
-
-    networkConfig.chaincodes.forEach((chaincode) => {
-      mkdirp.sync(chaincode.directory);
-    });
-    // TODO outbox pattern
-    // TODO transaction outbox pattern
-
-    this.on('end', function () {
-      chaincodes.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        thisGenerator.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
-      });
-      this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabric-compose.sh up - to start network');
-      this.log('-> fabric-compose.sh help - to view all commands');
-    });
-  }
-
-  _extendChaincodes(chaincodes, transformedChannels) {
-    const thisClass = this;
-    return chaincodes.map((chaincode) => {
-      const matchingChannel = transformedChannels
-        .filter((c) => c.key === chaincode.channel)
-        .slice(0, 1)
-        .reduce(thisClass._flatten);
-      const chaincodePath = thisClass._getFullPathOf(chaincode.name);
-      const chaincodePathExists = fs.existsSync(chaincodePath);
-      return {
-        directory: chaincode.directory,
-        name: chaincode.name,
-        version: chaincode.version,
-        lang: chaincode.lang,
-        channel: matchingChannel,
-        init: chaincode.init,
-        endorsement: chaincode.endorsement,
-        chaincodePathExists,
-      };
-    });
-  }
-
-  _transformRootOrg(rootOrg) {
-    const orderersExtended = this._extendOrderers(rootOrg.orderer, rootOrg.organization.domain);
-    const ordererHead = orderersExtended.slice(0, 1).reduce(this._flatten);
-    return {
-      organization: rootOrg.organization,
-      ca: rootOrg.ca,
-      orderers: orderersExtended,
-      ordererHead,
-    };
-  }
-
-  _extendOrderers(orderer, domain) {
-    return Array(orderer.instances).fill().map((x, i) => i).map((i) => {
-      const name = `${orderer.prefix}${i}`;
-      return {
-        name,
-        address: `${name}.${domain}`,
-        consensus: orderer.consensus,
-      };
-    });
-  }
-
-  _transformToShortened(org) {
-    return {
-      name: org.organization.name,
-      mspName: org.organization.mspName,
-      domain: org.organization.domain,
-      peers: this._extendPeers(org.peer, org.organization.domain),
-    };
-  }
-
-  _filterToAvailablePeers(shortenedOrg, availablePeers) {
-    const filteredPeers = shortenedOrg.peers.filter((p) => availablePeers.includes(p.name));
-    return {
-      name: shortenedOrg.name,
-      mspName: shortenedOrg.mspName,
-      domain: shortenedOrg.domain,
-      peers: filteredPeers,
-    };
-  }
-
-  _extendPeers(peer, domain) {
-    return Array(peer.instances).fill().map((x, i) => i).map((i) => ({
-      name: `peer${i}`,
-      address: `peer${i}.${domain}`,
-    }));
-  }
-
-  _validateFabrikkaVersion(fabrikkaVersion) {
-    this._validationBase(
-      !supportFabrikkaVersions.includes(fabrikkaVersion),
-      `Fabrikka's ${fabrikkaVersion} version is not supported. Supported versions are: ${supportFabrikkaVersions}`,
-    );
-  }
-
-  _validateFabricVersion(fabricVersion) {
-    this._validationBase(
-      !supportedFabricVersions.includes(fabricVersion),
-      `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`,
-    );
-  }
-
-  _validateOrderer(orderer) {
-    this._validationBase(
-      (orderer.consensus === 'solo' && orderer.instances > 1),
-      `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only one instance is needed :).`,
-    );
-  }
-
-  _getNetworkCapabilities(fabricVersion) {
-    switch (fabricVersion) {
-      case '1.4.4':
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-      case '1.4.3':
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-      default:
-        return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    }
   }
 
   _getFullPathOf(configFile) {
     const currentPath = this.env.cwd;
     return `${currentPath}/${configFile}`;
-  }
-
-  _validationBase(condition, errorMessage) {
-    if (condition) {
-      this.emit('error', new Error(errorMessage));
-    }
-  }
-
-  _flatten(prev, curr) {
-    return prev.concat(curr);
   }
 };
