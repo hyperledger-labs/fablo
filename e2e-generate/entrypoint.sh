@@ -9,7 +9,6 @@ generate() {
   source="$samples/$name"
   echo "Generating $source in $dir..."
   mkdir -p "$dir" &&
-    rm -rf "${dir:?}/*" &&
     cp "$source" "$dir/"
     (
       cd "$dir" &&
@@ -18,6 +17,7 @@ generate() {
 }
 
 sudo npm link &&
+  sudo rm -rf "$basedir" &&
   sudo mkdir -p "$basedir" &&
   sudo chown -R yeoman:yeoman "$basedir" &&
   generate "sample-01" "fabrikkaConfig-1org-1channel-1chaincode.json" &&
