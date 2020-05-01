@@ -154,6 +154,7 @@
   editor.on('change', function () {
     // Get an array of errors from the validator
     const errors = editor.validate();
+    console.log(errors)
 
     // Not valid
     if (errors.length) {
