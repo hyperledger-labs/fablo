@@ -1,33 +1,59 @@
-
 const Generator = require('yeoman-generator');
-const utils = require('../utils');
+const splashAndVersions = require('../splashAndVersions');
 
 module.exports = class extends Generator {
-  async initializing() {
-    this.log(utils.splashScreen());
-  }
+    async initializing() {
+        this.log(splashAndVersions.splashScreen());
+    }
 
-  async prompting() {
-    const questions = [{
-      type: 'list',
-      name: 'subgenerator',
-      message: 'What you gonna do today ?',
-      choices: [
-        { name: 'Create new HLF network', value: 'create' },
-        { name: 'Export (create config.json file)', value: 'export' },
-        { name: 'Update (update saved config)', value: 'update' },
-        { name: 'Import (import config.json file)', value: 'import' },
-        { name: 'Setup environment (translate config.json to docker-compose or helm)', value: 'setup' },
-      ],
-      when: () => !this.options.subgenerator,
-    }];
-    const answers = await this.prompt(questions);
-    Object.assign(this.options, answers);
-  }
+    constructor(args, opts) {
+        super(args, opts);
+    }
 
-  async configuring() {
-    const { subgenerator } = this.options;
-    this.log(`This generator can also be run with: yo fabric-network:${subgenerator}`);
-    this.composeWith(require.resolve(`../${subgenerator}`), this.options);
-  }
+    async displayManual() {
+        this.log(this.arguments);
+        this.log(this.options);
+
+        const questions = [{
+            type: 'list',
+            name: 'manualOption',
+            message: 'Welcome to the manual! Select option for more details :',
+            choices: [
+                {
+                    name: "yo fabrikka:version \t\t\t\t: prints Fabrikka's version",
+                    value: 'version'
+                },
+                {
+                    name: "yo fabrikka:setup-compose configFile.json \t: create docker-compose network based on config",
+                    value: 'setupCompose'
+                },
+                {
+                    name: "exit",
+                    value: 'exit'
+                },
+            ],
+            when: () => !this.options.manualOption,
+        }];
+        const answers = await this.prompt(questions);
+        this.options.answers = answers;
+        this._printHelp();
+    }
+
+    _printHelp() {
+        const {manualOption} = this.options.answers;
+        switch (manualOption) {
+            case 'version':
+                this._versionHelp();
+            case 'setupCompose':
+                this._setupComposeHelp();
+        }
+    }
+
+    _versionHelp() {
+        this.log("yo fabrikka:version : robie ważne rzeczy. serio. ");
+    }
+
+    _setupComposeHelp() {
+        this.log("yo fabrikka:setup-compose : robie ważne rzeczy. serio. ");
+    }
 };
