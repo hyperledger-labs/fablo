@@ -229,10 +229,10 @@ function certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
   docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -254,11 +254,11 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
   docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -281,11 +281,11 @@ function createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
   docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
   docker rm -f $CONTAINER_NAME
@@ -309,11 +309,11 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
   docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
   docker rm -f $CONTAINER_NAME
@@ -366,7 +366,7 @@ function chaincodeInstantiate() {
   local CLI_NAME=$8
 
   local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
+  local ENDORSMENT=\${10}
 
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
@@ -377,7 +377,7 @@ function chaincodeInstantiate() {
   echo \\"   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
   echo \\"\\"
   echo \\"   INIT_PARAMS: $INIT_PARAMS\\"
-  echo \\"   ENDORSEMENT: $ENDORSEMENT\\"
+  echo \\"   ENDORSMENT: $ENDORSMENT\\"
   echo \\"\\"
   echo \\"   PEER_ADDRESS: $PEER_ADDRESS\\"
   echo \\"   ORDERER_URL: $ORDERER_URL\\"
@@ -387,7 +387,7 @@ function chaincodeInstantiate() {
     docker exec \\\\
         -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
         $CLI_NAME peer chaincode instantiate \\\\
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSMENT\\" \\\\
         -o $ORDERER_URL
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
@@ -611,12 +611,12 @@ function networkUp() {
   createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
     
     printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
+    docker exec -it cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
   
     
     printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org1/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
+    docker exec -it cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
   
         
@@ -859,7 +859,7 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabrik
       \\"lang\\": \\"java\\",
       \\"channel\\": \\"channel1\\",
       \\"init\\": \\"{'Args':[]}\\",
-      \\"endorsement\\": \\"AND ('Org1.member')\\",
+      \\"endorsment\\": \\"AND ('Org1.member')\\",
       \\"directory\\": \\"chaincode1\\"
     }
   ]
@@ -869,17 +869,17 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabrik
 
 exports[`e2e/__tmp__/sample-01 should create proper files 1`] = `
 Array [
-  "e2e/__tmp__/sample-01/fabric-compose.sh",
-  "e2e/__tmp__/sample-01/fabric-compose/.env",
   "e2e/__tmp__/sample-01/fabric-compose/docker-compose.yaml",
+  "e2e/__tmp__/sample-01/fabric-compose/.env",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/commands-generated.sh",
-  "e2e/__tmp__/sample-01/fabric-config/.gitignore",
+  "e2e/__tmp__/sample-01/fabric-compose.sh",
   "e2e/__tmp__/sample-01/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-01/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/sample-01/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/sample-01/fabric-config/.gitignore",
   "e2e/__tmp__/sample-01/fabrikkaConfig-1org-1channel-1chaincode.json",
 ]
 `;
@@ -1227,10 +1227,10 @@ function certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -it $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
   docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -1252,11 +1252,11 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
   docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
   docker rm -f $CONTAINER_NAME
@@ -1279,11 +1279,11 @@ function createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
   docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
   docker rm -f $CONTAINER_NAME
@@ -1307,11 +1307,11 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
+  docker run -it -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
+  docker exec -it $CONTAINER_NAME mkdir /config
+  docker exec -it $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
   docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
   docker rm -f $CONTAINER_NAME
@@ -1364,7 +1364,7 @@ function chaincodeInstantiate() {
   local CLI_NAME=$8
 
   local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
+  local ENDORSMENT=\${10}
 
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
@@ -1375,7 +1375,7 @@ function chaincodeInstantiate() {
   echo \\"   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
   echo \\"\\"
   echo \\"   INIT_PARAMS: $INIT_PARAMS\\"
-  echo \\"   ENDORSEMENT: $ENDORSEMENT\\"
+  echo \\"   ENDORSMENT: $ENDORSMENT\\"
   echo \\"\\"
   echo \\"   PEER_ADDRESS: $PEER_ADDRESS\\"
   echo \\"   ORDERER_URL: $ORDERER_URL\\"
@@ -1385,7 +1385,7 @@ function chaincodeInstantiate() {
     docker exec \\\\
         -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
         $CLI_NAME peer chaincode instantiate \\\\
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSMENT\\" \\\\
         -o $ORDERER_URL
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
@@ -1612,24 +1612,24 @@ function networkUp() {
   createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
     
     printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
+    docker exec -it cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
   
         
     printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org2/peer0 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
+    docker exec -it cli.org2.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org2MSP' 'peer0.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
   
           printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
   createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
     
     printf \\"============ \\\\U1F63B Creating 'my-channel2' on Org1/peer1 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
+    docker exec -it cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel2' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
   
         
     printf \\"====== \\\\U1F638 Joining 'my-channel2' on  Org2/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
+    docker exec -it cli.org2.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel2' 'Org2MSP' 'peer1.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
   
         
@@ -1926,7 +1926,7 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabrik
       \\"lang\\": \\"java\\",
       \\"channel\\": \\"channel1\\",
       \\"init\\": \\"{'Args':[]}\\",
-      \\"endorsement\\": \\"AND ('Org1.member')\\",
+      \\"endorsment\\": \\"AND ('Org1.member')\\",
       \\"directory\\": \\"chaincode1\\"
     }
   ]
@@ -1936,18 +1936,18 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabrik
 
 exports[`e2e/__tmp__/sample-02 should create proper files 1`] = `
 Array [
-  "e2e/__tmp__/sample-02/fabric-compose.sh",
-  "e2e/__tmp__/sample-02/fabric-compose/.env",
   "e2e/__tmp__/sample-02/fabric-compose/docker-compose.yaml",
+  "e2e/__tmp__/sample-02/fabric-compose/.env",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/commands-generated.sh",
-  "e2e/__tmp__/sample-02/fabric-config/.gitignore",
+  "e2e/__tmp__/sample-02/fabric-compose.sh",
   "e2e/__tmp__/sample-02/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-02/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/sample-02/fabric-config/crypto-config-org2.yaml",
   "e2e/__tmp__/sample-02/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/sample-02/fabric-config/.gitignore",
   "e2e/__tmp__/sample-02/fabrikkaConfig-2orgs-2channels-1chaincode.json",
 ]
 `;
