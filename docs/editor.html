@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Fabrikka config editor</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- https://github.com/json-editor/json-editor -->
+    <!-- use selects for externatl items: https://github.com/json-editor/json-editor#enum-values -->
+    <script src="lib/jsoneditor.min.js"></script>
+
+    <script>
+      // Set the default CSS theme and icon library globally
+      JSONEditor.defaults.theme = 'html';
+      JSONEditor.defaults.iconlib = 'fontawesome5';
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            /*background: #d6e8f0;*/
+            color: #333333;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 300;
+        }
+
+        h1 {
+            font-size: 3em;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        .je-indented-panel {
+            /*background: rgba(128, 128, 128, 0.05);*/
+            /*padding: 20px 10px;*/
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 100px auto
+        }
+
+        .form-control {
+            margin: 10px 10px 10px 13px;
+        }
+
+        button {
+            border-radius: 3px;
+            height: 22px;
+            line-height: 1em;
+            vertical-align: middle;
+            margin-right: 2px;
+            background: #e9f4ff;
+        }
+
+        button.json-editor-btn-collapse {
+            border-radius: 10em;
+            width: 22px;
+        }
+
+        .form-control label {
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+        }
+
+        p {
+            font-weight: 300;
+            font-size: 0.85em;
+            width: 648px;
+            margin: -20px 0 -28px 8px;
+            padding: 0 0 28px 0px;
+        }
+
+        p.je-form-input-label, .errmsg {
+            font-weight: 300;
+            font-size: 0.85em;
+            width: 400px;
+            margin: 0 0 0 200px;
+            border: none;
+            padding: 5px 10px;
+        }
+
+        input, select, textarea {
+            width: 400px;
+            border: 1px #ccc solid;
+            border-radius: 0.25em;
+            padding: 5px 10px;
+            font-size: 12pt;
+        }
+
+        input[readonly] {
+            color: #888888;
+            background: #f0f0f0;
+        }
+
+        .je-child-editor-holder > span, .je-indented-panel > span {
+            margin: 10px 0 0 0;
+            display: inline-block;
+        }
+
+        .property-selector label {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+
+        textarea {
+            font-family: monospace;
+            font-size: 8pt;
+        }
+    </style>
+</head>
+<body>
+<div class='container'>
+    <h1>Fabrikka config editor</h1>
+    <div id='editor_holder'></div>
+</div>
+
+<script>
+
+  // Initialize the editor
+  const editor = new JSONEditor(document.getElementById('editor_holder'), {
+    // Enable fetching schemas via ajax
+    ajax: true,
+
+    // The schema for the editor
+    schema: {
+      $ref: "schema.json",
+      format: "grid"
+    },
+  });
+
+  fetch('sample.json')
+    .then(resp => resp.json())
+    .then(json => {
+      editor.setValue(json);
+    });
+
+  // Hook up the validation indicator to update its
+  // status whenever the editor changes
+  editor.on('change', function () {
+    // Get an array of errors from the validator
+    const errors = editor.validate();
+    console.log(errors)
+
+    // Not valid
+    if (errors.length) {
+      errors.forEach(err => {
+        console.error(err);
+      })
+    }
+  });
+</script>
+</body>
+</html>
