@@ -312,12 +312,6 @@
                 "peer0"
               ],
               "key": "org1"
-            },
-            {
-              "peers": [
-                "peer0"
-              ],
-              "key": "org2"
             }
           ]
         },
@@ -328,12 +322,6 @@
               "peers": [
                 "peer1"
               ]
-            },
-            {
-              "peers": [
-                "peer1"
-              ],
-              "key": "org2"
             }
           ],
           "key": "channel2",
@@ -365,25 +353,8 @@
           },
           "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",
-            "type": "array",
             "title": "Organizations in the channel",
-            "default": [],
-            "examples": [
-              [
-                {
-                  "peers": [
-                    "peer0"
-                  ],
-                  "key": "org1"
-                },
-                {
-                  "peers": [
-                    "peer0"
-                  ],
-                  "key": "org2"
-                }
-              ]
-            ],
+            "type": "array",
             "additionalItems": true,
             "items": {
               "$id": "#/properties/channels/items/properties/orgs/items",
@@ -430,8 +401,8 @@
     },
     "chaincodes": {
       "$id": "#/properties/chaincodes",
-      "type": "array",
       "title": "Chaincodes",
+      "type": "array",
       "default": [
         {
           "name": "chaincode1",
@@ -446,8 +417,8 @@
       "additionalItems": true,
       "items": {
         "$id": "#/properties/chaincodes/items",
-        "type": "object",
         "title": "Chaincode",
+        "type": "object",
         "required": [
           "name",
           "version",
@@ -475,7 +446,7 @@
             "title": "Language",
             "type": "string",
             "enum": [
-              "go",
+              "golang",
               "java",
               "javascript"
             ]
@@ -498,21 +469,18 @@
           },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
-            "type": "string",
             "title": "Initialization arguments",
-            "default": "{'Args':[]}"
+            "type": "string"
           },
           "endorsement": {
             "$id": "#/properties/chaincodes/items/properties/endorsement",
-            "type": "string",
             "title": "Endorsement configuration",
-            "default": "AND ('Org1.member')"
+            "type": "string"
           },
           "directory": {
             "$id": "#/properties/chaincodes/items/properties/directory",
-            "type": "string",
             "title": "Chaincode directory",
-            "default": "chaincode1"
+            "type": "string"
           }
         }
       }
