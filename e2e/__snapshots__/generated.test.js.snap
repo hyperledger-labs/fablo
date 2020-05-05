@@ -580,13 +580,13 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric
   chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"{'Args':[]}\\" \\"AND ('Org1.member')\\"
+  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
   chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
-  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"{'Args':[]}\\" \\"AND ('Org1.member')\\"
+  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
   }
 
 function networkUp() {
@@ -1578,13 +1578,13 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric
   chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"{'Args':[]}\\" \\"AND ('Org1.member')\\"
+  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
   chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
-  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"{'Args':[]}\\" \\"AND ('Org1.member')\\"
+  chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
   }
 
 function networkUp() {
