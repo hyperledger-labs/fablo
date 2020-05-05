@@ -9,7 +9,7 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "lint": "eslint --fix .",
+    "lint": "eslint --fix generators e2e",
     "test": "jest"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jest": "^23.7.0",
     "jest": "^25.1.0",
+    "jest-json-schema": "^2.1.0",
     "yeoman-test": "^2.1.0"
   }
 }
