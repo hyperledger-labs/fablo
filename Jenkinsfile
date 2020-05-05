@@ -94,10 +94,11 @@ try {
             sh "npm install"
           }
           stage("Yeoman") {
-            sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$WORKSPACE:/fabrikka\" e2e-generate"
+            sh "npm run test:e2e-generate"
           }
           stage('Test') {
-            sh "CI=true npm test"
+            sh "CI=true npm run test:unit"
+            sh "CI=true npm run test:e2e"
           }
           stage('Lint') {
 //             sh "CI=true npm lint"
