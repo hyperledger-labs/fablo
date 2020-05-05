@@ -41,26 +41,23 @@ Object {
           },
           "directory": Object {
             "$id": "#/properties/chaincodes/items/properties/directory",
-            "default": "chaincode1",
             "title": "Chaincode directory",
             "type": "string",
           },
           "endorsement": Object {
             "$id": "#/properties/chaincodes/items/properties/endorsement",
-            "default": "AND ('Org1.member')",
             "title": "Endorsement configuration",
             "type": "string",
           },
           "init": Object {
             "$id": "#/properties/chaincodes/items/properties/init",
-            "default": "{'Args':[]}",
             "title": "Initialization arguments",
             "type": "string",
           },
           "lang": Object {
             "$id": "#/properties/chaincodes/items/properties/lang",
             "enum": Array [
-              "go",
+              "golang",
               "java",
               "javascript",
             ],
@@ -109,12 +106,6 @@ Object {
                 "peer0",
               ],
             },
-            Object {
-              "key": "org2",
-              "peers": Array [
-                "peer0",
-              ],
-            },
           ],
         },
         Object {
@@ -123,12 +114,6 @@ Object {
           "orgs": Array [
             Object {
               "key": "org1",
-              "peers": Array [
-                "peer1",
-              ],
-            },
-            Object {
-              "key": "org2",
               "peers": Array [
                 "peer1",
               ],
@@ -154,23 +139,6 @@ Object {
           "orgs": Object {
             "$id": "#/properties/channels/items/properties/orgs",
             "additionalItems": true,
-            "default": Array [],
-            "examples": Array [
-              Array [
-                Object {
-                  "key": "org1",
-                  "peers": Array [
-                    "peer0",
-                  ],
-                },
-                Object {
-                  "key": "org2",
-                  "peers": Array [
-                    "peer0",
-                  ],
-                },
-              ],
-            ],
             "items": Object {
               "$id": "#/properties/channels/items/properties/orgs/items",
               "properties": Object {
