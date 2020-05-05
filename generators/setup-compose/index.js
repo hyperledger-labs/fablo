@@ -5,14 +5,14 @@
 */
 const Generator = require('yeoman-generator');
 const mkdirp = require('mkdirp');
-const splashAndVersions = require('../splashAndVersions');
+const config = require('../config');
 
 const configTransformers = require('./configTransformers');
 const validationFunctions = require('./validationFunctions');
 
 module.exports = class extends Generator {
   async initializing() {
-    this.log(splashAndVersions.splashScreen());
+    this.log(config.splashScreen());
   }
 
   constructor(args, opts) {

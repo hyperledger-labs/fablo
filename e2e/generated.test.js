@@ -7,8 +7,8 @@ const dir02 = 'e2e/__tmp__/sample-02';
 
 const getFiles = (dir) => executeCommand(`find ${dir}/* -type f`)
     .split('\n')
-    .sort()
-    .filter((s) => !!s.length);
+    .filter((s) => !!s.length)
+    .sort();
 
 const testFilesExistence = (files) => {
   it('should create proper files', () => {

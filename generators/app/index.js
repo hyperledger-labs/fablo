@@ -1,10 +1,10 @@
 /* eslint no-underscore-dangle: 0 */
 const Generator = require('yeoman-generator');
-const splashAndVersions = require('../splashAndVersions');
+const config = require('../config');
 
 module.exports = class extends Generator {
   async initializing() {
-    this.log(splashAndVersions.splashScreen());
+    this.log(config.splashScreen());
   }
 
   async displayManual() {
