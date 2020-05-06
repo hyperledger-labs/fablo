@@ -8,15 +8,16 @@ function installChaincodes() {
   chaincodeInstall "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   <% } else { -%>
   chaincodeInstallTls "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-  <% } %>
+  <% } -%>
 
   printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
   <% if(!networkSettings.tls) { -%>
   chaincodeInstantiate "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
   <% } else { -%>
   chaincodeInstantiateTls "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-  <% } %>
+  <% } -%>
   <% })})}) -%>
+
 }
 
 function networkUp() {
