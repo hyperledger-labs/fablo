@@ -21,4 +21,6 @@ sudo npm link &&
   sudo mkdir -p "$basedir" &&
   sudo chown -R yeoman:yeoman "$basedir" &&
   generate "sample-01" "fabrikkaConfig-1org-1channel-1chaincode.json" &&
-  generate "sample-02" "fabrikkaConfig-2orgs-2channels-1chaincode.json"
+  generate "sample-02" "fabrikkaConfig-2orgs-2channels-1chaincode.json" &&
+  generate "sample-03" "fabrikkaConfig-1org-1channel-1chaincode-tls.json" &&
+  generate "sample-04" "fabrikkaConfig-2orgs-2channels-1chaincode-tls.json"
