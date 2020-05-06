@@ -5,9 +5,10 @@ const executeCommand = (c) => execSync(c, { encoding: 'utf-8' });
 const dir01 = 'e2e/__tmp__/sample-01';
 const dir02 = 'e2e/__tmp__/sample-02';
 
-const getFiles = (dir) => executeCommand(`find ${dir}/* -type f | sort`)
-  .split('\n')
-  .filter((s) => !!s.length);
+const getFiles = (dir) => executeCommand(`find ${dir}/* -type f`)
+    .split('\n')
+    .filter((s) => !!s.length)
+    .sort();
 
 const testFilesExistence = (files) => {
   it('should create proper files', () => {
