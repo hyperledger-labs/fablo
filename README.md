@@ -36,7 +36,7 @@ npm link
 
 ## Commands:
 ```
-yo fabric-network 
-yo fabric-network:create
-yo fabric-network:environment
+yo fabrikka 
+yo fabrikka:validate
+yo fabrikka:setup-compose
 ```

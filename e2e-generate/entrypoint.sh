@@ -12,7 +12,7 @@ generate() {
     cp "$source" "$dir/"
     (
       cd "$dir" &&
-        yo --no-insight fabric-network:setup-compose "$name"
+        yo --no-insight fabrikka:setup-compose "$name"
     )
 }
 
