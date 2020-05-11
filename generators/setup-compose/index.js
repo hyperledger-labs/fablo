@@ -5,14 +5,14 @@
 */
 const Generator = require('yeoman-generator');
 const mkdirp = require('mkdirp');
-const utils = require('../utils');
+const config = require('../config');
 
 const configTransformers = require('./configTransformers');
 const validationFunctions = require('./validationFunctions');
 
 module.exports = class extends Generator {
   async initializing() {
-    this.log(utils.splashScreen());
+    this.log(config.splashScreen());
   }
 
   constructor(args, opts) {
@@ -206,5 +206,9 @@ module.exports = class extends Generator {
   _getFullPathOf(configFile) {
     const currentPath = this.env.cwd;
     return `${currentPath}/${configFile}`;
+  }
+
+  _displayHelp() {
+    this.log('helpful help for this command !');
   }
 };
