@@ -97,7 +97,7 @@ try {
             sh "npm run test:e2e-generate"
           }
           stage('Test') {
-            sh "CI=true npm run test:unit"
+            sh "CI=true npm run test:unit --passWithNoTests"
             sh "CI=true npm run test:e2e"
           }
           stage('Lint') {
