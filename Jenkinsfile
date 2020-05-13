@@ -76,19 +76,49 @@ try {
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
-      stage('NPM') {
-        sh "apk add --no-cache nodejs npm"
-        sh "npm install"
+      stage("Install required libs") {
+        // nodejs npm - to run js tests
+        // bash - to run generated scripts
+        // the rest - to install docker compose (later)
+        sh "apk add --no-cache nodejs npm bash python python-dev py-pip build-base libffi-dev openssl-dev"
       }
-      stage("Yeoman") {
-        sh "docker build --tag e2e-generate e2e-generate && docker run -v \"$WORKSPACE:/fabrikka\" e2e-generate"
-      }
-      stage('Test') {
-        sh "CI=true npm test"
-      }
-      stage('Lint') {
-          sh "npm run lint"
-      }
+      parallel(
+        failFast: false,
+        'Install docker-compose': {
+          stage('Install docker-compose') {
+            sh "pip install docker-compose"
+          }
+        },
+        'JS Tests': {
+          stage('NPM') {
+            sh "npm install"
+          }
+          stage("Yeoman") {
+            sh "npm run test:e2e-generate"
+          }
+          stage('Test') {
+            sh "CI=true npm run test:e2e"
+          }
+          stage('Lint') {
+            sh "npm run lint"
+          }
+        }
+      )
+
+      parallel(
+        failFast: true,
+        'Start network 01': {
+          sh "e2e/start-network.sh"
+        },
+        'Test network 01': {
+          stage('Wait for services') {
+            sh "e2e/wait-for-network.sh"
+          }
+          stage('Down network') {
+            sh "e2e/down-network.sh"
+          }
+        }
+      )
     }
   })
 } catch (e) {
