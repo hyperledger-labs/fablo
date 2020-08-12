@@ -40,6 +40,14 @@ function startNetwork() {
   sleep 4
 }
 
+function stopNetwork() {
+  printf "============ \U1F68F Stopping network \U1F68F =========================================== \n"
+  cd fabric-compose
+  docker-compose stop
+  cd ..
+  sleep 4
+}
+
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
@@ -108,11 +116,6 @@ function networkDown() {
   rm -rf fabric-config/crypto-config
 
   printf "============ \U1F5D1 Done! Network was purged \U1F5D1 =================================== \n"
-}
-
-function networkRerun() {
-  networkDown
-  networkUp
 }
 
 # TODO 1 - na koniec powinien polecieć anchorPeerUpdate
