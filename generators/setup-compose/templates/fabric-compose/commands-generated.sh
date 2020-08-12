@@ -92,7 +92,7 @@ function installChannels() {
 }
 
 function networkDown() {
-  printf "============ \U1F916 Stopping network \U1F916 =========================================== \n"
+  printf "============ \U1F916 Destroying network \U1F916 =========================================== \n"
   cd fabric-compose
   docker-compose down
   cd ..
