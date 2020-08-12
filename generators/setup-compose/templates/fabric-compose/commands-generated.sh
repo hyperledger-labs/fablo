@@ -20,7 +20,7 @@ function installChaincodes() {
 
 }
 
-function networkUp() {
+function generateArtifacts() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
@@ -28,19 +28,28 @@ function networkUp() {
   printf "===== \U1F512 Generating crypto material for <%= org.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "./fabric-config/crypto-config/"
   <% }) %>
-
   printf "===== \U1F3E0 Generating genesis block \U1F3E0 ===== \n"
   genesisBlockCreate "fabric-config" "./fabric-config/config"
+}
 
+function startNetwork() {
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
   cd fabric-compose
   docker-compose up -d
   cd ..
   sleep 4
+}
 
+function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
   createChannelTx "<%= channel.name %>" "fabric-config" "AllOrgChannel" "./fabric-config/config"
+  <% }) -%>
+}
+
+function installChannels() {
+  <% channels.forEach(function(channel){  -%>
+
   <% for (orgNo in channel.orgs) {
       var org = channel.orgs[orgNo]
   -%>
@@ -71,7 +80,6 @@ function networkUp() {
   <% } -%>
   <% }) -%>
 
-  installChaincodes
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
 
