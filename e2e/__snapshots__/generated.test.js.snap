@@ -6,16 +6,29 @@ set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
-source fabric-compose/scripts/commands-generated.sh
+source fabric-compose/commands-generated.sh
 
 source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
-  networkUp
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+elif [ \\"$1\\" = \\"recreate\\" ]; then
+  networkDown
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
-elif [ \\"$1\\" = \\"rerun\\" ]; then
-  networkRerun
+elif [ \\"$1\\" = \\"start\\" ]; then
+  startNetwork
+elif [ \\"$1\\" = \\"stop\\" ]; then
+  stopNetwork
 elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
 elif [ \\"$1\\" = \\"help\\" ]; then
@@ -24,7 +37,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
   printHelp
 else
   echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, rerun\\"
+  echo \\"Basic commands are: up, down, start, stop, recreate\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -42,6 +55,107 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
+"
+`;
+
+exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric-compose/commands-generated.sh 1`] = `
+"function installChaincodes() {
+  
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    
+}
+
+function generateArtifacts() {
+  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
+  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
+}
+
+function startNetwork() {
+  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose up -d
+  cd ..
+  sleep 4
+}
+
+function stopNetwork() {
+  printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose stop
+  cd ..
+  sleep 4
+}
+
+function generateChannelsArtifacts() {
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+  }
+
+function installChannels() {
+  
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+  
+    
+    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org1/peer1 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+  
+        
+  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
+}
+
+function networkDown() {
+  printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose down
+  cd ..
+
+  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+   
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
+
+  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
+}
+
+# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
+# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
+# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -500,7 +614,7 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric
   echo \\"./fabric-compose.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabric-compose.sh rerun\\"
+  echo \\"./fabric-compose.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -631,98 +745,6 @@ function fetchChannelAndJoinTls() {
 
   rm -rf $DIR_NAME
 }
-"
-`;
-
-exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric-compose/scripts/commands-generated.sh 1`] = `
-"function installChaincodes() {
-  
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
-    
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
-    
-}
-
-function networkUp() {
-  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
-  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
-  
-
-  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
-
-  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose up -d
-  cd ..
-  sleep 4
-
-    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-    
-    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org1/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-        
-  installChaincodes
-  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
-}
-
-function networkDown() {
-  printf \\"============ \\\\U1F916 Stopping network \\\\U1F916 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose down
-  cd ..
-
-  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-   
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
-
-  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
-}
-
-function networkRerun() {
-  networkDown
-  networkUp
-}
-
-# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -933,11 +955,11 @@ exports[`e2e/__tmp__/sample-01 should create proper files 1`] = `
 Array [
   "e2e/__tmp__/sample-01/fabric-compose.sh",
   "e2e/__tmp__/sample-01/fabric-compose/.env",
+  "e2e/__tmp__/sample-01/fabric-compose/commands-generated.sh",
   "e2e/__tmp__/sample-01/fabric-compose/docker-compose.yaml",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-01/fabric-compose/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/sample-01/fabric-compose/scripts/commands-generated.sh",
   "e2e/__tmp__/sample-01/fabric-config/.gitignore",
   "e2e/__tmp__/sample-01/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-01/fabric-config/crypto-config-org1.yaml",
@@ -952,16 +974,29 @@ set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
-source fabric-compose/scripts/commands-generated.sh
+source fabric-compose/commands-generated.sh
 
 source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
-  networkUp
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+elif [ \\"$1\\" = \\"recreate\\" ]; then
+  networkDown
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
-elif [ \\"$1\\" = \\"rerun\\" ]; then
-  networkRerun
+elif [ \\"$1\\" = \\"start\\" ]; then
+  startNetwork
+elif [ \\"$1\\" = \\"stop\\" ]; then
+  stopNetwork
 elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
 elif [ \\"$1\\" = \\"help\\" ]; then
@@ -970,7 +1005,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
   printHelp
 else
   echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, rerun\\"
+  echo \\"Basic commands are: up, down, start, stop, recreate\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -991,6 +1026,123 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
 
+"
+`;
+
+exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric-compose/commands-generated.sh 1`] = `
+"function installChaincodes() {
+  
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    
+}
+
+function generateArtifacts() {
+  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
+  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
+}
+
+function startNetwork() {
+  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose up -d
+  cd ..
+  sleep 4
+}
+
+function stopNetwork() {
+  printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose stop
+  cd ..
+  sleep 4
+}
+
+function generateChannelsArtifacts() {
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+  }
+
+function installChannels() {
+  
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+  
+        
+    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org2/peer0 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org2.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org2MSP' 'peer0.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
+  
+        
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel2' on Org1/peer1 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel2' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+  
+        
+    printf \\"====== \\\\U1F638 Joining 'my-channel2' on  Org2/peer1 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org2.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel2' 'Org2MSP' 'peer1.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
+  
+        
+  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
+}
+
+function networkDown() {
+  printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose down
+  cd ..
+
+  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+   
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
+
+  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
+}
+
+# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
+# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
+# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -1560,7 +1712,7 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric
   echo \\"./fabric-compose.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabric-compose.sh rerun\\"
+  echo \\"./fabric-compose.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -1691,113 +1843,6 @@ function fetchChannelAndJoinTls() {
 
   rm -rf $DIR_NAME
 }
-"
-`;
-
-exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric-compose/scripts/commands-generated.sh 1`] = `
-"function installChaincodes() {
-  
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
-    
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
-    
-}
-
-function networkUp() {
-  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
-  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
-  
-
-  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
-
-  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose up -d
-  cd ..
-  sleep 4
-
-    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-        
-    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org2/peer0 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org2MSP' 'peer0.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
-  
-          printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel2' on Org1/peer1 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel2' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-        
-    printf \\"====== \\\\U1F638 Joining 'my-channel2' on  Org2/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel2' 'Org2MSP' 'peer1.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
-  
-        
-  installChaincodes
-  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
-}
-
-function networkDown() {
-  printf \\"============ \\\\U1F916 Stopping network \\\\U1F916 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose down
-  cd ..
-
-  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-   
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
-
-  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
-}
-
-function networkRerun() {
-  networkDown
-  networkUp
-}
-
-# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -2062,11 +2107,11 @@ exports[`e2e/__tmp__/sample-02 should create proper files 1`] = `
 Array [
   "e2e/__tmp__/sample-02/fabric-compose.sh",
   "e2e/__tmp__/sample-02/fabric-compose/.env",
+  "e2e/__tmp__/sample-02/fabric-compose/commands-generated.sh",
   "e2e/__tmp__/sample-02/fabric-compose/docker-compose.yaml",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-02/fabric-compose/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/sample-02/fabric-compose/scripts/commands-generated.sh",
   "e2e/__tmp__/sample-02/fabric-config/.gitignore",
   "e2e/__tmp__/sample-02/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-02/fabric-config/crypto-config-org1.yaml",
@@ -2082,16 +2127,29 @@ set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
-source fabric-compose/scripts/commands-generated.sh
+source fabric-compose/commands-generated.sh
 
 source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
-  networkUp
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+elif [ \\"$1\\" = \\"recreate\\" ]; then
+  networkDown
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
-elif [ \\"$1\\" = \\"rerun\\" ]; then
-  networkRerun
+elif [ \\"$1\\" = \\"start\\" ]; then
+  startNetwork
+elif [ \\"$1\\" = \\"stop\\" ]; then
+  stopNetwork
 elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
 elif [ \\"$1\\" = \\"help\\" ]; then
@@ -2100,7 +2158,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
   printHelp
 else
   echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, rerun\\"
+  echo \\"Basic commands are: up, down, start, stop, recreate\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -2118,6 +2176,107 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
+"
+`;
+
+exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric-compose/commands-generated.sh 1`] = `
+"function installChaincodes() {
+  
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    
+}
+
+function generateArtifacts() {
+  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
+  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
+}
+
+function startNetwork() {
+  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose up -d
+  cd ..
+  sleep 4
+}
+
+function stopNetwork() {
+  printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose stop
+  cd ..
+  sleep 4
+}
+
+function generateChannelsArtifacts() {
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+  }
+
+function installChannels() {
+  
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+    
+    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org1/peer1 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+        
+  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
+}
+
+function networkDown() {
+  printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose down
+  cd ..
+
+  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+   
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
+
+  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
+}
+
+# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
+# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
+# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -2595,7 +2754,7 @@ exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric
   echo \\"./fabric-compose.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabric-compose.sh rerun\\"
+  echo \\"./fabric-compose.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -2726,98 +2885,6 @@ function fetchChannelAndJoinTls() {
 
   rm -rf $DIR_NAME
 }
-"
-`;
-
-exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric-compose/scripts/commands-generated.sh 1`] = `
-"function installChaincodes() {
-  
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-    
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-    
-}
-
-function networkUp() {
-  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
-  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
-  
-
-  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
-
-  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose up -d
-  cd ..
-  sleep 4
-
-    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-    
-    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org1/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-        
-  installChaincodes
-  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
-}
-
-function networkDown() {
-  printf \\"============ \\\\U1F916 Stopping network \\\\U1F916 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose down
-  cd ..
-
-  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-   
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
-
-  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
-}
-
-function networkRerun() {
-  networkDown
-  networkUp
-}
-
-# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -3028,11 +3095,11 @@ exports[`e2e/__tmp__/sample-03 should create proper files 1`] = `
 Array [
   "e2e/__tmp__/sample-03/fabric-compose.sh",
   "e2e/__tmp__/sample-03/fabric-compose/.env",
+  "e2e/__tmp__/sample-03/fabric-compose/commands-generated.sh",
   "e2e/__tmp__/sample-03/fabric-compose/docker-compose.yaml",
   "e2e/__tmp__/sample-03/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-03/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-03/fabric-compose/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/sample-03/fabric-compose/scripts/commands-generated.sh",
   "e2e/__tmp__/sample-03/fabric-config/.gitignore",
   "e2e/__tmp__/sample-03/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-03/fabric-config/crypto-config-org1.yaml",
@@ -3047,16 +3114,29 @@ set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
-source fabric-compose/scripts/commands-generated.sh
+source fabric-compose/commands-generated.sh
 
 source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
-  networkUp
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+elif [ \\"$1\\" = \\"recreate\\" ]; then
+  networkDown
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
-elif [ \\"$1\\" = \\"rerun\\" ]; then
-  networkRerun
+elif [ \\"$1\\" = \\"start\\" ]; then
+  startNetwork
+elif [ \\"$1\\" = \\"stop\\" ]; then
+  stopNetwork
 elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
 elif [ \\"$1\\" = \\"help\\" ]; then
@@ -3065,7 +3145,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
   printHelp
 else
   echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, rerun\\"
+  echo \\"Basic commands are: up, down, start, stop, recreate\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -3086,6 +3166,123 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
 
+"
+`;
+
+exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric-compose/commands-generated.sh 1`] = `
+"function installChaincodes() {
+  
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    
+  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  
+  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    
+}
+
+function generateArtifacts() {
+  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
+  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
+  
+  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
+}
+
+function startNetwork() {
+  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose up -d
+  cd ..
+  sleep 4
+}
+
+function stopNetwork() {
+  printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose stop
+  cd ..
+  sleep 4
+}
+
+function generateChannelsArtifacts() {
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+    printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
+  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
+  }
+
+function installChannels() {
+  
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+        
+    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org2/peer0 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org2.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org2MSP' 'peer0.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+        
+    
+    printf \\"============ \\\\U1F63B Creating 'my-channel2' on Org1/peer1 \\\\U1F63B ================== \\\\n\\"
+    docker exec -i cli.org1.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+        
+    printf \\"====== \\\\U1F638 Joining 'my-channel2' on  Org2/peer1 \\\\U1F638 ====== \\\\n\\"
+    docker exec -i cli.org2.com bash -c \\\\
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+  
+        
+  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
+}
+
+function networkDown() {
+  printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
+  cd fabric-compose
+  docker-compose down
+  cd ..
+
+  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+   
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
+
+  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
+}
+
+# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
+# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
+# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -3689,7 +3886,7 @@ exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric
   echo \\"./fabric-compose.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabric-compose.sh rerun\\"
+  echo \\"./fabric-compose.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -3820,113 +4017,6 @@ function fetchChannelAndJoinTls() {
 
   rm -rf $DIR_NAME
 }
-"
-`;
-
-exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric-compose/scripts/commands-generated.sh 1`] = `
-"function installChaincodes() {
-  
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-    
-  printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-  
-  printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-    
-}
-
-function networkUp() {
-  printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
-  printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
-  
-  printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
-  
-
-  printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
-
-  printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose up -d
-  cd ..
-  sleep 4
-
-    printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel1' on Org1/peer0 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-        
-    printf \\"====== \\\\U1F638 Joining 'my-channel1' on  Org2/peer0 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org2MSP' 'peer0.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-          printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
-    
-    printf \\"============ \\\\U1F63B Creating 'my-channel2' on Org1/peer1 \\\\U1F63B ================== \\\\n\\"
-    docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-        
-    printf \\"====== \\\\U1F638 Joining 'my-channel2' on  Org2/peer1 \\\\U1F638 ====== \\\\n\\"
-    docker exec -i cli.org2.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.com:7051' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
-  
-        
-  installChaincodes
-  printf \\"============ \\\\U1F984 Done! Enjoy your fresh network \\\\U1F984 ============================= \\\\n\\"
-}
-
-function networkDown() {
-  printf \\"============ \\\\U1F916 Stopping network \\\\U1F916 =========================================== \\\\n\\"
-  cd fabric-compose
-  docker-compose down
-  cd ..
-
-  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-   
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || {
-    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  }
-  
-  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
-
-  printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
-}
-
-function networkRerun() {
-  networkDown
-  networkUp
-}
-
-# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 3 - try/catch w bashu
 "
 `;
 
@@ -4191,11 +4281,11 @@ exports[`e2e/__tmp__/sample-04 should create proper files 1`] = `
 Array [
   "e2e/__tmp__/sample-04/fabric-compose.sh",
   "e2e/__tmp__/sample-04/fabric-compose/.env",
+  "e2e/__tmp__/sample-04/fabric-compose/commands-generated.sh",
   "e2e/__tmp__/sample-04/fabric-compose/docker-compose.yaml",
   "e2e/__tmp__/sample-04/fabric-compose/scripts/base-functions.sh",
   "e2e/__tmp__/sample-04/fabric-compose/scripts/base-help.sh",
   "e2e/__tmp__/sample-04/fabric-compose/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/sample-04/fabric-compose/scripts/commands-generated.sh",
   "e2e/__tmp__/sample-04/fabric-config/.gitignore",
   "e2e/__tmp__/sample-04/fabric-config/configtx.yaml",
   "e2e/__tmp__/sample-04/fabric-config/crypto-config-org1.yaml",
