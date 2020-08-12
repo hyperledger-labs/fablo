@@ -170,8 +170,8 @@ module.exports = class extends Generator {
 
   _copyCommandsGeneratedScript(settings) {
     this.fs.copyTpl(
-      this.templatePath('fabric-compose/scripts/commands-generated.sh'),
-      this.destinationPath('fabric-compose/scripts/commands-generated.sh'),
+      this.templatePath('fabric-compose/commands-generated.sh'),
+      this.destinationPath('fabric-compose/commands-generated.sh'),
       settings,
     );
   }

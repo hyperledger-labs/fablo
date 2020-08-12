@@ -3,12 +3,16 @@ set -e
 
 source fabric-compose/scripts/base-help.sh
 source fabric-compose/scripts/base-functions.sh
-source fabric-compose/scripts/commands-generated.sh
+source fabric-compose/commands-generated.sh
 
 source fabric-compose/.env
 
 if [ "$1" = "up" ]; then
-  networkUp
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
 elif [ "$1" = "down" ]; then
   networkDown
 elif [ "$1" = "rerun" ]; then
