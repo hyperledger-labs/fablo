@@ -1,11 +1,14 @@
 #!/bin/bash
 set -e
 
-source fabric-compose/scripts/base-help.sh
-source fabric-compose/scripts/base-functions.sh
-source fabric-compose/commands-generated.sh
+SCRIPT=$(readlink -f "$0")
+BASEDIR=$(dirname "$SCRIPT")
 
-source fabric-compose/.env
+source "$BASEDIR"/fabric-compose/scripts/base-help.sh
+source "$BASEDIR"/fabric-compose/scripts/base-functions.sh
+source "$BASEDIR"/fabric-compose/commands-generated.sh
+
+source "$BASEDIR"/fabric-compose/.env
 
 if [ "$1" = "up" ]; then
   generateArtifacts
