@@ -3,6 +3,11 @@ function certsRemove() {
   rm -rf "$CERTS_DIR_PATH"/*
 }
 
+function removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f "$CONTAINER_NAME"
+}
+
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -29,12 +34,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
 }
@@ -58,13 +63,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -91,13 +96,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -119,13 +124,13 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
