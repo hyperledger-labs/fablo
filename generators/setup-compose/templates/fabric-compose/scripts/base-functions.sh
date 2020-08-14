@@ -12,6 +12,14 @@ function certsGenerate() {
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
 
+  echo "Generating certs..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
+  echo "   ORG_PATH: $ORG_PATH"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+  echo ""
+  echo "   FULL_CERT_PATH: $FULL_CERT_PATH"
+
   if [ -d "$FULL_CERT_PATH" ]; then
     printf "\U1F910 \n"
     echo "  Error: Won't genere certs, directory already exists : $FULL_CERT_PATH"
@@ -37,7 +45,11 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-    if [ -d "$OUTPUT_PATH" ]; then
+  echo "Creating genesis block..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+
+  if [ -d "$OUTPUT_PATH" ]; then
     printf "\U1F910 \n"
     echo "  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH"
     echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
@@ -63,6 +75,12 @@ function createChannelTx() {
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH"/"$CHANNEL_NAME".tx"
+
+  echo "Creating channelTx for $CHANNEL_NAME..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   CONFIG_PROFILE: $CONFIG_PROFILE"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+  echo "   CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
 
   if [ -f "$CHANNEL_TX_PATH" ]; then
     printf "\U1F910 \n"
