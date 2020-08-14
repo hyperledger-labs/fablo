@@ -1,3 +1,6 @@
+SCRIPT=$(readlink -f "$0")
+BASEDIR=$(dirname "$SCRIPT")
+
 function installChaincodes() {
   <% chaincodes.forEach(function(chaincode) {
      chaincode.channel.orgs.forEach(function (org) {
@@ -23,35 +26,37 @@ function installChaincodes() {
 function generateArtifacts() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
-  certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
+  certsGenerate "$BASEDIR/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$BASEDIR/fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printf "===== \U1F512 Generating crypto material for <%= org.name %> \U1F512 ===== \n"
-  certsGenerate "fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "./fabric-config/crypto-config/"
+  certsGenerate "$BASEDIR/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$BASEDIR/fabric-config/crypto-config/"
   <% }) %>
   printf "===== \U1F3E0 Generating genesis block \U1F3E0 ===== \n"
-  genesisBlockCreate "fabric-config" "./fabric-config/config"
+  genesisBlockCreate "$BASEDIR/fabric-config" "$BASEDIR/fabric-config/config"
 }
 
 function startNetwork() {
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
-  cd fabric-compose
+  CURRENT_DIR=$(pwd)
+  cd "$BASEDIR"/fabric-compose
   docker-compose up -d
-  cd ..
+  cd $CURRENT_DIR
   sleep 4
 }
 
 function stopNetwork() {
   printf "============ \U1F68F Stopping network \U1F68F =========================================== \n"
-  cd fabric-compose
+  CURRENT_DIR=$(pwd)
+  cd "$BASEDIR"/fabric-compose
   docker-compose stop
-  cd ..
+  cd $CURRENT_DIR
   sleep 4
 }
 
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
-  createChannelTx "<%= channel.name %>" "fabric-config" "AllOrgChannel" "./fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$BASEDIR/fabric-config" "AllOrgChannel" "$BASEDIR/fabric-config/config"
   <% }) -%>
 }
 
@@ -93,9 +98,10 @@ function installChannels() {
 
 function networkDown() {
   printf "============ \U1F916 Destroying network \U1F916 =========================================== \n"
-  cd fabric-compose
+  CURRENT_DIR=$(pwd)
+  cd "$BASEDIR"/fabric-compose
   docker-compose down
-  cd ..
+  cd $CURRENT_DIR
 
   printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
    <% chaincodes.forEach(function(chaincode) {
@@ -112,8 +118,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
+  rm -rf $BASEDIR/fabric-config/config
+  rm -rf $BASEDIR/fabric-config/crypto-config
 
   printf "============ \U1F5D1 Done! Network was purged \U1F5D1 =================================== \n"
 }
