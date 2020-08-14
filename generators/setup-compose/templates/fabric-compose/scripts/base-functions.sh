@@ -134,7 +134,7 @@ function createAnchorPeerUpdateTx() {
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -168,7 +168,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -210,7 +210,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -246,7 +246,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
