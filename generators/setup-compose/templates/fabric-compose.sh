@@ -10,8 +10,6 @@ source "$BASEDIR"/fabric-compose/commands-generated.sh
 
 source "$BASEDIR"/fabric-compose/.env
 
-import util/exception
-
 if [ "$1" = "up" ]; then
   generateArtifacts
   startNetwork

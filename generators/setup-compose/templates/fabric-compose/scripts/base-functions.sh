@@ -1,6 +1,5 @@
 import util/log
 import util/tryCatch
-import util/exception
 
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
@@ -19,7 +18,8 @@ function certsGenerate() {
   inputLog "FULL_CERT_PATH: $FULL_CERT_PATH"
 
   if [ -d "$FULL_CERT_PATH" ]; then
-    e="Can't genere certs, directory already exists : $FULL_CERT_PATH" throw
+    echo "Can't generate certs, directory already exists : $FULL_CERT_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
   fi
 
   try {
@@ -48,7 +48,8 @@ function genesisBlockCreate() {
   inputLog "OUTPUT_PATH: $OUTPUT_PATH"
 
   if [ -d "$OUTPUT_PATH" ]; then
-    e="Cant't generate genesis block, directory already exists : $OUTPUT_PATH" throw
+    echo "Cant't generate genesis block, directory already exists : $OUTPUT_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
   fi
 
   try {
@@ -81,7 +82,8 @@ function createChannelTx() {
   inputLog "CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
 
   if [ -f "$CHANNEL_TX_PATH" ]; then
-    e="Can't create channel configuration, it already exists : $CHANNEL_TX_PATH" throw
+    echo "Can't create channel configuration, it already exists : $CHANNEL_TX_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
   fi
 
   try {
@@ -109,7 +111,8 @@ function createAnchorPeerUpdateTx() {
   local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP"anchors.tx"
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    e="Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH" throw
+    echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
   fi
 
   try {
