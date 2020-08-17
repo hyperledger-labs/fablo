@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
-
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
+
+source "$BASEDIR"/fabric-compose/scripts/lib/oo-bootstrap.sh
 
 source "$BASEDIR"/fabric-compose/scripts/base-help.sh
 source "$BASEDIR"/fabric-compose/scripts/base-functions.sh
@@ -10,12 +10,15 @@ source "$BASEDIR"/fabric-compose/commands-generated.sh
 
 source "$BASEDIR"/fabric-compose/.env
 
+import util/exception
+
 if [ "$1" = "up" ]; then
   generateArtifacts
   startNetwork
   generateChannelsArtifacts
   installChannels
   installChaincodes
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
 elif [ "$1" = "recreate" ]; then
   networkDown
   generateArtifacts
@@ -23,6 +26,7 @@ elif [ "$1" = "recreate" ]; then
   generateChannelsArtifacts
   installChannels
   installChaincodes
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
 elif [ "$1" = "down" ]; then
   networkDown
 elif [ "$1" = "start" ]; then
