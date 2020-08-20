@@ -1,0 +1,9 @@
+<% if (rootOrg.ordererHead.consensus == 'etcdraft') { %>
+    EtcdRaft:
+        Consenters:<% rootOrg.orderers.forEach(function(orderer) { %>
+            - Host: <%= orderer.address %>
+              Port: 7050
+              ClientTLSCert: crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/server.crt
+              ServerTLSCert: crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/server.crt
+                    <% }) -%>
+<% } -%>
