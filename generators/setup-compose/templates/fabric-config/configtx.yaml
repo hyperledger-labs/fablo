@@ -70,7 +70,7 @@ Orderer: &OrdererDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-    SoloOrdererGenesis:
+    OrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
