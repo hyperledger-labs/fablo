@@ -6,6 +6,8 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const { supportedFabrikkaVersions, supportedFabricVersions } = require('../config');
+const Listener = require('../utils/listener');
+const utils = require('../utils/utils');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -36,28 +38,14 @@ module.exports = class extends Generator {
       process.exit();
     });
 
-    this.listeners.error = {
-      messages: [],
-      onEvent: (event) => {
-        this.listeners.error.messages.push(event);
-      },
-      count: () => this.listeners.error.messages.length,
-    };
+    this.listeners = { error: new Listener(), warn: new Listener() };
 
-    this.listeners.warn = {
-      messages: [],
-      onEvent: (event) => {
-        this.listeners.warn.messages.push(event);
-      },
-      count: () => this.listeners.warn.messages.length,
-    };
-
-    this.addListener(validationErrorType.ERROR, this.listeners.error.onEvent);
-    this.addListener(validationErrorType.WARN, this.listeners.warn.onEvent);
+    this.addListener(validationErrorType.ERROR, (e) => this.listeners.error.onEvent(e));
+    this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
   }
 
   _validateIfConfigFileExists(configFilePath) {
-    const configFilePathAbsolute = this._getFullPathOf(configFilePath);
+    const configFilePathAbsolute = utils.getFullPathOf(configFilePath, this.env.cwd);
     const fileExists = this.fs.exists(configFilePathAbsolute);
     if (!fileExists) {
       const objectToEmit = {
@@ -85,8 +73,8 @@ module.exports = class extends Generator {
     this.log(`Errors count: ${this.listeners.error.count()}`);
     this.log(`Warnings count: ${this.listeners.warn.count()}`);
 
-    this._printIfNotEmpty(this.listeners.error.messages, chalk.red.bold('Errors found :'));
-    this._printIfNotEmpty(this.listeners.warn.messages, chalk.yellow('Warnings found :'));
+    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found :'));
+    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found :'));
 
     this.log(chalk.bold('========================================'));
 
@@ -100,7 +88,7 @@ module.exports = class extends Generator {
     if (messages.length > 0) {
       this.log(caption);
 
-      const grouped = this._groupBy(messages, (msg) => msg.category);
+      const grouped = utils.groupBy(messages, (msg) => msg.category);
 
       Array.from(grouped.keys()).forEach((key) => {
         this.log(chalk.bold(`  ${key}:`));
@@ -137,24 +125,5 @@ module.exports = class extends Generator {
       };
       this.emit(validationErrorType.WARN, objectToEmit);
     }
-  }
-
-  _getFullPathOf(configFile) {
-    const currentPath = this.env.cwd;
-    return `${currentPath}/${configFile}`;
-  }
-
-  static _groupBy(list, keyGetter) {
-    const map = new Map();
-    list.forEach((item) => {
-      const key = keyGetter(item);
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [item]);
-      } else {
-        collection.push(item);
-      }
-    });
-    return map;
   }
 };
