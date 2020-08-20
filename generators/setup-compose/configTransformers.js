@@ -31,13 +31,24 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
   });
 }
 
+function transformOrdererType(ordererTypeJsonConfigFormat) {
+  let consensusType = ordererTypeJsonConfigFormat
+  if (consensusType === 'raft') {
+    consensusType = 'etcdraft';
+  }
+  return consensusType;
+}
+
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
+  let type = transformOrdererType(ordererJsonConfigFormat.type);
+
   return Array(ordererJsonConfigFormat.instances).fill().map((x, i) => i).map((i) => {
     const name = `${ordererJsonConfigFormat.prefix}${i}`;
     return {
       name,
       address: `${name}.${rootDomainJsonConfigFormat}`,
-      consensus: ordererJsonConfigFormat.consensus,
+      domain: rootDomainJsonConfigFormat,
+      consensus: type,
     };
   });
 }
