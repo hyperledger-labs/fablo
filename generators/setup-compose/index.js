@@ -8,38 +8,29 @@ const mkdirp = require('mkdirp');
 const config = require('../config');
 
 const configTransformers = require('./configTransformers');
-const validationFunctions = require('./validationFunctions');
+
+const ValidateGenerator = require.resolve('../validate');
 
 module.exports = class extends Generator {
-  async initializing() {
-    this.log(config.splashScreen());
-  }
-
   constructor(args, opts) {
     super(args, opts);
     this.argument('fabrikkaConfig', {
       type: String,
       required: true,
-      description: 'Name of fabrikka config file in current dir',
+      description: 'fabrikka config file path',
     });
 
-    const configFilePath = this._getFullPathOf(this.options.fabrikkaConfig);
-    const fileExists = this.fs.exists(configFilePath);
+    this.composeWith(ValidateGenerator, { arguments: [this.options.fabrikkaConfig] });
+  }
 
-    if (!fileExists) {
-      this.emit('error', new Error(`No file under path: ${configFilePath}`));
-    } else {
-      this.options.fabrikkaConfigPath = configFilePath;
-    }
+  initializing() {
+    this.log(config.splashScreen());
   }
 
   async writing() {
     const _ = this;
+    this.options.fabrikkaConfigPath = this._getFullPathOf(this.options.fabrikkaConfig);
     const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
-
-    validationFunctions.validateFabrikkaVersion(networkConfig.fabrikkaVersion, _.emit);
-    validationFunctions.validateFabricVersion(networkConfig.networkSettings.fabricVersion, _.emit);
-    validationFunctions.validateOrderer(networkConfig.rootOrg.orderer, this.emit);
 
     this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
     this.log(`Fabric version is: ${networkConfig.networkSettings.fabricVersion}`);
@@ -178,8 +169,8 @@ module.exports = class extends Generator {
 
   _copyUtilityScripts() {
     this.fs.copy(
-        this.templatePath('fabric-compose/scripts/lib/'),
-        this.destinationPath('fabric-compose/scripts/lib/')
+      this.templatePath('fabric-compose/scripts/lib/'),
+      this.destinationPath('fabric-compose/scripts/lib/'),
     );
 
     this.fs.copyTpl(
