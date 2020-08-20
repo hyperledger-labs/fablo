@@ -6,6 +6,7 @@
 const Generator = require('yeoman-generator');
 const mkdirp = require('mkdirp');
 const config = require('../config');
+const utils = require('../utils/utils');
 
 const configTransformers = require('./configTransformers');
 
@@ -29,7 +30,9 @@ module.exports = class extends Generator {
 
   async writing() {
     const _ = this;
-    this.options.fabrikkaConfigPath = this._getFullPathOf(this.options.fabrikkaConfig);
+    this.options.fabrikkaConfigPath = utils.getFullPathOf(
+      this.options.fabrikkaConfig, this.env.cwd,
+    );
     const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
     this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
