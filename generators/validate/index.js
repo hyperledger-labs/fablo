@@ -66,6 +66,7 @@ module.exports = class extends Generator {
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
+    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
   }
 
   async summary() {
@@ -117,12 +118,41 @@ module.exports = class extends Generator {
   }
 
   _validateOrdererCountForSoloType(orderer) {
-    if (orderer.consensus === 'solo' && orderer.instances > 1) {
+    if (orderer.type === 'solo' && orderer.instances > 1) {
       const objectToEmit = {
         category: validationCategories.ORDERER,
         message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
       };
       this.emit(validationErrorType.WARN, objectToEmit);
+    }
+  }
+
+  _validateOrdererForRaftType(orderer, networkSettings) {
+    if (orderer.type === 'raft' || orderer.type === 'etcdraft') {
+      if (orderer.instances === 1) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Consider higher number to make network fault tolerant`,
+        };
+        this.emit(validationErrorType.WARN, objectToEmit);
+      }
+
+      const versionsSupportingRaft = ['1.4.1','1.4.2','1.4.3','1.4.4','1.4.5','1.4.6','1.4.7','1.4.8'];
+      if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${versionsSupportingRaft}`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
+
+        if (!networkSettings.tls) {
+            const objectToEmit = {
+                category: validationCategories.ORDERER,
+                message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+        }
     }
   }
 };
