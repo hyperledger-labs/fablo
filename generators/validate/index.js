@@ -69,19 +69,18 @@ module.exports = class extends Generator {
   }
 
   async summary() {
-    this.log(chalk.bold('========== Validation summary =========='));
+    this.log(chalk.bold('=================== Validation summary ==================='));
     this.log(`Errors count: ${this.listeners.error.count()}`);
     this.log(`Warnings count: ${this.listeners.warn.count()}`);
 
-    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found :'));
-    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found :'));
+    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
+    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
 
-    this.log(chalk.bold('========================================'));
+    this.log(chalk.bold('==========================================================='));
 
-    this.on('end', () => {
-      this.removeAllListeners(validationErrorType.ERROR);
-      this.removeAllListeners(validationErrorType.WARN);
-    });
+    if(this.listeners.error.count() > 0) {
+      process.exit();
+    }
   }
 
   _printIfNotEmpty(messages, caption) {
