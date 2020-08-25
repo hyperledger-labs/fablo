@@ -132,7 +132,7 @@ module.exports = class extends Generator {
       if (orderer.instances === 1) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
-          message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Consider higher number to make network fault tolerant`,
+          message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
         };
         this.emit(validationErrorType.WARN, objectToEmit);
       }
