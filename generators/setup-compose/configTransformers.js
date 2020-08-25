@@ -115,11 +115,28 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 }
 
 function getNetworkCapabilities(fabricVersion) {
+  //Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
   switch (fabricVersion) {
+    case '1.4.8':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.7':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.6':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.5':
+      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
     case '1.4.4':
       return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
     case '1.4.3':
       return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.2':
+      return { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' };
+    case '1.4.1':
+      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
+    case '1.4.0':
+      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
+    case '1.3.0':
+      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
     default:
       return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
   }
