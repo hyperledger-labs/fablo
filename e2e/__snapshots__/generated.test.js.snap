@@ -4,14 +4,11 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric
 "#!/bin/bash
 set -e
 
-SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+source fabric-compose/scripts/base-help.sh
+source fabric-compose/scripts/base-functions.sh
+source fabric-compose/commands-generated.sh
 
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-help.sh
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-functions.sh
-source \\"$BASEDIR\\"/fabric-compose/commands-generated.sh
-
-source \\"$BASEDIR\\"/fabric-compose/.env
+source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
@@ -62,58 +59,55 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
-
-function installChaincodes() {
+"function installChaincodes() {
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
     
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
     
 }
 
 function generateArtifacts() {
   printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
   printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"$BASEDIR/fabric-config\\" \\"$BASEDIR/fabric-config/config\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
 }
 
 function startNetwork() {
   printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
     printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
   }
 
 function installChannels() {
@@ -134,10 +128,10 @@ function installChannels() {
 
 function networkDown() {
   printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd fabric-compose
+    docker-compose down
+  )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
    
@@ -156,8 +150,8 @@ function networkDown() {
   }
   
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
 
   printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
 }
@@ -331,11 +325,6 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric
   rm -rf \\"$CERTS_DIR_PATH\\"/*
 }
 
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -344,14 +333,6 @@ function certsGenerate() {
   local ORG_PATH=$3
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
-
-  echo \\"Generating certs...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME\\"
-  echo \\"   ORG_PATH: $ORG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"\\"
-  echo \\"   FULL_CERT_PATH: $FULL_CERT_PATH\\"
 
   if [ -d \\"$FULL_CERT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
@@ -362,12 +343,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv \${dir}/*_sk \${dir}/priv-key.pem; done
 }
@@ -378,11 +359,7 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-  echo \\"Creating genesis block...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-
-  if [ -d \\"$OUTPUT_PATH\\" ]; then
+    if [ -d \\"$OUTPUT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH\\"
     echo \\"  Looks like network is already prepared. Try using 'start' or 'rerun'.\\"
@@ -391,13 +368,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -409,12 +386,6 @@ function createChannelTx() {
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH\\"/\\"$CHANNEL_NAME\\".tx\\"
 
-  echo \\"Creating channelTx for $CHANNEL_NAME...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CONFIG_PROFILE: $CONFIG_PROFILE\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"   CHANNEL_TX_PATH: $CHANNEL_TX_PATH\\"
-
   if [ -f \\"$CHANNEL_TX_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH\\"
@@ -424,13 +395,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -452,17 +423,17 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
-  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -496,7 +467,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -538,7 +509,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -574,7 +545,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -1000,14 +971,11 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric
 "#!/bin/bash
 set -e
 
-SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+source fabric-compose/scripts/base-help.sh
+source fabric-compose/scripts/base-functions.sh
+source fabric-compose/commands-generated.sh
 
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-help.sh
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-functions.sh
-source \\"$BASEDIR\\"/fabric-compose/commands-generated.sh
-
-source \\"$BASEDIR\\"/fabric-compose/.env
+source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
@@ -1061,63 +1029,60 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
-
-function installChaincodes() {
+"function installChaincodes() {
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
     
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstall \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+    chaincodeInstall \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiate \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
+    chaincodeInstantiate \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\"
     
 }
 
 function generateArtifacts() {
   printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
   printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"$BASEDIR/fabric-config\\" \\"$BASEDIR/fabric-config/config\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
 }
 
 function startNetwork() {
   printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
     printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
     printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel2\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
   }
 
 function installChannels() {
@@ -1149,10 +1114,10 @@ function installChannels() {
 
 function networkDown() {
   printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd fabric-compose
+    docker-compose down
+  )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
    
@@ -1171,8 +1136,8 @@ function networkDown() {
   }
   
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
 
   printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
 }
@@ -1457,11 +1422,6 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric
   rm -rf \\"$CERTS_DIR_PATH\\"/*
 }
 
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -1470,14 +1430,6 @@ function certsGenerate() {
   local ORG_PATH=$3
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
-
-  echo \\"Generating certs...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME\\"
-  echo \\"   ORG_PATH: $ORG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"\\"
-  echo \\"   FULL_CERT_PATH: $FULL_CERT_PATH\\"
 
   if [ -d \\"$FULL_CERT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
@@ -1488,12 +1440,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv \${dir}/*_sk \${dir}/priv-key.pem; done
 }
@@ -1504,11 +1456,7 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-  echo \\"Creating genesis block...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-
-  if [ -d \\"$OUTPUT_PATH\\" ]; then
+    if [ -d \\"$OUTPUT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH\\"
     echo \\"  Looks like network is already prepared. Try using 'start' or 'rerun'.\\"
@@ -1517,13 +1465,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -1535,12 +1483,6 @@ function createChannelTx() {
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH\\"/\\"$CHANNEL_NAME\\".tx\\"
 
-  echo \\"Creating channelTx for $CHANNEL_NAME...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CONFIG_PROFILE: $CONFIG_PROFILE\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"   CHANNEL_TX_PATH: $CHANNEL_TX_PATH\\"
-
   if [ -f \\"$CHANNEL_TX_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH\\"
@@ -1550,13 +1492,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -1578,17 +1520,17 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
-  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -1622,7 +1564,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -1664,7 +1606,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -1700,7 +1642,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -2181,14 +2123,11 @@ exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric
 "#!/bin/bash
 set -e
 
-SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+source fabric-compose/scripts/base-help.sh
+source fabric-compose/scripts/base-functions.sh
+source fabric-compose/commands-generated.sh
 
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-help.sh
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-functions.sh
-source \\"$BASEDIR\\"/fabric-compose/commands-generated.sh
-
-source \\"$BASEDIR\\"/fabric-compose/.env
+source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
@@ -2239,58 +2178,55 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
-
-function installChaincodes() {
+"function installChaincodes() {
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer1 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
 }
 
 function generateArtifacts() {
   printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
   printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"$BASEDIR/fabric-config\\" \\"$BASEDIR/fabric-config/config\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
 }
 
 function startNetwork() {
   printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
     printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
   }
 
 function installChannels() {
@@ -2311,10 +2247,10 @@ function installChannels() {
 
 function networkDown() {
   printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd fabric-compose
+    docker-compose down
+  )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
    
@@ -2333,8 +2269,8 @@ function networkDown() {
   }
   
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
 
   printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
 }
@@ -2527,11 +2463,6 @@ exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric
   rm -rf \\"$CERTS_DIR_PATH\\"/*
 }
 
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -2540,14 +2471,6 @@ function certsGenerate() {
   local ORG_PATH=$3
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
-
-  echo \\"Generating certs...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME\\"
-  echo \\"   ORG_PATH: $ORG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"\\"
-  echo \\"   FULL_CERT_PATH: $FULL_CERT_PATH\\"
 
   if [ -d \\"$FULL_CERT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
@@ -2558,12 +2481,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv \${dir}/*_sk \${dir}/priv-key.pem; done
 }
@@ -2574,11 +2497,7 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-  echo \\"Creating genesis block...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-
-  if [ -d \\"$OUTPUT_PATH\\" ]; then
+    if [ -d \\"$OUTPUT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH\\"
     echo \\"  Looks like network is already prepared. Try using 'start' or 'rerun'.\\"
@@ -2587,13 +2506,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -2605,12 +2524,6 @@ function createChannelTx() {
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH\\"/\\"$CHANNEL_NAME\\".tx\\"
 
-  echo \\"Creating channelTx for $CHANNEL_NAME...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CONFIG_PROFILE: $CONFIG_PROFILE\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"   CHANNEL_TX_PATH: $CHANNEL_TX_PATH\\"
-
   if [ -f \\"$CHANNEL_TX_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH\\"
@@ -2620,13 +2533,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -2648,17 +2561,17 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
-  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -2692,7 +2605,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -2734,7 +2647,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -2770,7 +2683,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -3196,14 +3109,11 @@ exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric
 "#!/bin/bash
 set -e
 
-SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+source fabric-compose/scripts/base-help.sh
+source fabric-compose/scripts/base-functions.sh
+source fabric-compose/commands-generated.sh
 
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-help.sh
-source \\"$BASEDIR\\"/fabric-compose/scripts/base-functions.sh
-source \\"$BASEDIR\\"/fabric-compose/commands-generated.sh
-
-source \\"$BASEDIR\\"/fabric-compose/.env
+source fabric-compose/.env
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
@@ -3257,63 +3167,60 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
-
-function installChaincodes() {
+"function installChaincodes() {
   
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org1/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
   printf \\"============ \\\\U1F60E Installing 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F60E ============== \\\\n\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printf \\"==== \\\\U1F618 Instantiating 'chaincode1' on my-channel1/Org2/peer0 \\\\U1F618 ==== \\\\n\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
 }
 
 function generateArtifacts() {
   printf \\"============ \\\\U1F913 Generating basic configs \\\\U1F913 =================================== \\\\n\\"
   printf \\"===== \\\\U1F512 Generating crypto material for org Orderer \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org1 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F512 Generating crypto material for Org2 \\\\U1F512 ===== \\\\n\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"./fabric-config/crypto-config/\\"
   
   printf \\"===== \\\\U1F3E0 Generating genesis block \\\\U1F3E0 ===== \\\\n\\"
-  genesisBlockCreate \\"$BASEDIR/fabric-config\\" \\"$BASEDIR/fabric-config/config\\"
+  genesisBlockCreate \\"fabric-config\\" \\"./fabric-config/config\\"
 }
 
 function startNetwork() {
   printf \\"============ \\\\U1F680 Starting network \\\\U1F680 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printf \\"============ \\\\U1F68F Stopping network \\\\U1F68F =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
     printf \\"============ \\\\U1F913 Generating config for 'my-channel1' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel1\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
     printf \\"============ \\\\U1F913 Generating config for 'my-channel2' \\\\U1F913 =========================== \\\\n\\"
-  createChannelTx \\"my-channel2\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel2\\" \\"fabric-config\\" \\"AllOrgChannel\\" \\"./fabric-config/config\\"
   }
 
 function installChannels() {
@@ -3345,10 +3252,10 @@ function installChannels() {
 
 function networkDown() {
   printf \\"============ \\\\U1F916 Destroying network \\\\U1F916 =========================================== \\\\n\\"
-  CURRENT_DIR=$(pwd)
-  cd \\"$BASEDIR\\"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd fabric-compose
+    docker-compose down
+  )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
    
@@ -3367,8 +3274,8 @@ function networkDown() {
   }
   
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf fabric-config/config
+  rm -rf fabric-config/crypto-config
 
   printf \\"============ \\\\U1F5D1 Done! Network was purged \\\\U1F5D1 =================================== \\\\n\\"
 }
@@ -3687,11 +3594,6 @@ exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric
   rm -rf \\"$CERTS_DIR_PATH\\"/*
 }
 
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -3700,14 +3602,6 @@ function certsGenerate() {
   local ORG_PATH=$3
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
-
-  echo \\"Generating certs...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME\\"
-  echo \\"   ORG_PATH: $ORG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"\\"
-  echo \\"   FULL_CERT_PATH: $FULL_CERT_PATH\\"
 
   if [ -d \\"$FULL_CERT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
@@ -3718,12 +3612,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv \${dir}/*_sk \${dir}/priv-key.pem; done
 }
@@ -3734,11 +3628,7 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-  echo \\"Creating genesis block...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-
-  if [ -d \\"$OUTPUT_PATH\\" ]; then
+    if [ -d \\"$OUTPUT_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH\\"
     echo \\"  Looks like network is already prepared. Try using 'start' or 'rerun'.\\"
@@ -3747,13 +3637,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -3765,12 +3655,6 @@ function createChannelTx() {
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH\\"/\\"$CHANNEL_NAME\\".tx\\"
 
-  echo \\"Creating channelTx for $CHANNEL_NAME...\\"
-  echo \\"   CONFIG_PATH: $CONFIG_PATH\\"
-  echo \\"   CONFIG_PROFILE: $CONFIG_PROFILE\\"
-  echo \\"   OUTPUT_PATH: $OUTPUT_PATH\\"
-  echo \\"   CHANNEL_TX_PATH: $CHANNEL_TX_PATH\\"
-
   if [ -f \\"$CHANNEL_TX_PATH\\" ]; then
     printf \\"\\\\U1F910 \\\\n\\"
     echo \\"  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH\\"
@@ -3780,13 +3664,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID \${CHANNEL_NAME}
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -3808,17 +3692,17 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME mkdir /config
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/\${MSP}anchors.tx -channelID \${CHANNEL_NAME} -asOrg \${MSP}
 
-  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
-  removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/\${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
+  docker rm -f $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -3852,7 +3736,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -3894,7 +3778,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -3930,7 +3814,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
+  local CHAINCODE_DIR_PATH=$(pwd)\\"/\\"$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
