@@ -1,12 +1,5 @@
-function certsRemove() {
-  local CERTS_DIR_PATH=$1
-  rm -rf "$CERTS_DIR_PATH"/*
-}
-
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f "$CONTAINER_NAME"
-}
+import util/log
+import util/tryCatch
 
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
@@ -18,29 +11,30 @@ function certsGenerate() {
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
 
   echo "Generating certs..."
-  echo "   CONFIG_PATH: $CONFIG_PATH"
-  echo "   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
-  echo "   ORG_PATH: $ORG_PATH"
-  echo "   OUTPUT_PATH: $OUTPUT_PATH"
-  echo ""
-  echo "   FULL_CERT_PATH: $FULL_CERT_PATH"
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
+  inputLog "ORG_PATH: $ORG_PATH"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "FULL_CERT_PATH: $FULL_CERT_PATH"
 
   if [ -d "$FULL_CERT_PATH" ]; then
-    printf "\U1F910 \n"
-    echo "  Error: Won't genere certs, directory already exists : $FULL_CERT_PATH"
-    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-    printf "\U1F912 \n"
+    echo "Can't generate certs, directory already exists : $FULL_CERT_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  try {
+    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+    docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
+  } catch {
+    removeContainer $CONTAINER_NAME
+  }
+
   removeContainer $CONTAINER_NAME
-
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
 }
 
@@ -51,24 +45,26 @@ function genesisBlockCreate() {
   local OUTPUT_PATH=$2
 
   echo "Creating genesis block..."
-  echo "   CONFIG_PATH: $CONFIG_PATH"
-  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
 
   if [ -d "$OUTPUT_PATH" ]; then
-    printf "\U1F910 \n"
-    echo "  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH"
-    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-    printf "\U1F912 \n"
+    echo "Cant't generate genesis block, directory already exists : $OUTPUT_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  try {
+    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME mkdir /config
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+    docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
+  } catch {
+    removeContainer $CONTAINER_NAME
+  }
   removeContainer $CONTAINER_NAME
 }
 
@@ -82,26 +78,28 @@ function createChannelTx() {
   local CHANNEL_TX_PATH=$OUTPUT_PATH"/"$CHANNEL_NAME".tx"
 
   echo "Creating channelTx for $CHANNEL_NAME..."
-  echo "   CONFIG_PATH: $CONFIG_PATH"
-  echo "   CONFIG_PROFILE: $CONFIG_PROFILE"
-  echo "   OUTPUT_PATH: $OUTPUT_PATH"
-  echo "   CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CONFIG_PROFILE: $CONFIG_PROFILE"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
 
   if [ -f "$CHANNEL_TX_PATH" ]; then
-    printf "\U1F910 \n"
-    echo "  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH"
-    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-    printf "\U1F912 \n"
+    echo "Can't create channel configuration, it already exists : $CHANNEL_TX_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  try {
+    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME mkdir /config
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
+    docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
+  } catch {
+    removeContainer $CONTAINER_NAME
+  }
   removeContainer $CONTAINER_NAME
 }
 
@@ -116,20 +114,22 @@ function createAnchorPeerUpdateTx() {
   local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP"anchors.tx"
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    printf "\U1F910 \n"
-    echo "  Error: Won't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
-    echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
-    printf "\U1F912 \n"
+    echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
+    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  try {
+    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
+    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME mkdir /config
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+    docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
+  } catch {
+    removeContainer $CONTAINER_NAME
+  }
   removeContainer $CONTAINER_NAME
 }
 
@@ -148,14 +148,13 @@ function chaincodeInstall() {
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME..."
-  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
-  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
-  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
-  echo ""
-  echo "   PEER_ADDRESS: $PEER_ADDRESS"
-  echo "   ORDERER_URL: $ORDERER_URL"
-  echo "   CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "CLI_NAME: $CLI_NAME"
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
@@ -185,17 +184,17 @@ function chaincodeInstantiate() {
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Instantiating chaincode on $CHANNEL_NAME..."
-  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
-  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
-  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
-  echo ""
-  echo "   INIT_PARAMS: $INIT_PARAMS"
-  echo "   ENDORSEMENT: $ENDORSEMENT"
-  echo ""
-  echo "   PEER_ADDRESS: $PEER_ADDRESS"
-  echo "   ORDERER_URL: $ORDERER_URL"
-  echo "   CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+
+  inputLog "INIT_PARAMS: $INIT_PARAMS"
+  inputLog "ENDORSEMENT: $ENDORSEMENT"
+
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "CLI_NAME: $CLI_NAME"
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec \
@@ -225,15 +224,15 @@ function chaincodeInstallTls() {
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Installing chaincode on $CHANNEL_NAME (TLS)..."
-  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
-  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
-  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
-  echo ""
-  echo "   PEER_ADDRESS: $PEER_ADDRESS"
-  echo "   ORDERER_URL: $ORDERER_URL"
-  echo "   CLI_NAME: $CLI_NAME"
-  echo "   CA_CERT: $CA_CERT"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CA_CERT: $CA_CERT"
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
@@ -264,18 +263,18 @@ function chaincodeInstantiateTls() {
   local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
 
   echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
-  echo "   CHAINCODE_NAME: $CHAINCODE_NAME"
-  echo "   CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  echo "   CHAINCODE_LANG: $CHAINCODE_LANG"
-  echo "   CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
-  echo ""
-  echo "   INIT_PARAMS: $INIT_PARAMS"
-  echo "   ENDORSEMENT: $ENDORSEMENT"
-  echo ""
-  echo "   PEER_ADDRESS: $PEER_ADDRESS"
-  echo "   ORDERER_URL: $ORDERER_URL"
-  echo "   CLI_NAME: $CLI_NAME"
-  echo "   CA_CERT: $CA_CERT"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+
+  inputLog "INIT_PARAMS: $INIT_PARAMS"
+  inputLog "ENDORSEMENT: $ENDORSEMENT"
+
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CA_CERT: $CA_CERT"
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec \
@@ -287,4 +286,30 @@ function chaincodeInstantiateTls() {
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
+}
+
+function printHeadline() {
+  TEXT=$1
+  EMOJI=$2
+  printf "$(UI.Color.Bold)============ %b %s %b ==============$(UI.Color.Default)\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
+}
+
+function printItalics() {
+  TEXT=$1
+  EMOJI=$2
+  printf "$(UI.Color.Italics)==== %b %s %b ====$(UI.Color.Default)\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
+}
+
+function inputLog() {
+  echo "$(UI.Color.DarkGray)   $1 $(UI.Color.Default)"
+}
+
+function certsRemove() {
+  local CERTS_DIR_PATH=$1
+  rm -rf "$CERTS_DIR_PATH"/*
+}
+
+function removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f "$CONTAINER_NAME"
 }

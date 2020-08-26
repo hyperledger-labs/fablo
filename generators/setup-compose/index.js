@@ -177,6 +177,11 @@ module.exports = class extends Generator {
   }
 
   _copyUtilityScripts() {
+    this.fs.copy(
+      this.templatePath('fabric-compose/scripts/lib/'),
+      this.destinationPath('fabric-compose/scripts/lib/'),
+    );
+
     this.fs.copyTpl(
       this.templatePath('fabric-compose.sh'),
       this.destinationPath('fabric-compose.sh'),
