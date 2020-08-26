@@ -37,20 +37,20 @@ function generateArtifacts() {
 
 function startNetwork() {
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printf "============ \U1F68F Stopping network \U1F68F =========================================== \n"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
@@ -98,10 +98,10 @@ function installChannels() {
 
 function networkDown() {
   printf "============ \U1F916 Destroying network \U1F916 =========================================== \n"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose down
+  )
 
   printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
    <% chaincodes.forEach(function(chaincode) {
