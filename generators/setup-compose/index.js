@@ -10,7 +10,7 @@ const utils = require('../utils/utils');
 
 const configTransformers = require('./configTransformers');
 
-const ValidateGenerator = require.resolve('../validate');
+const ValidateGeneratorType = require.resolve('../validate');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -21,7 +21,7 @@ module.exports = class extends Generator {
       description: 'fabrikka config file path',
     });
 
-    this.composeWith(ValidateGenerator, { arguments: [this.options.fabrikkaConfig] });
+    this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabrikkaConfig] });
   }
 
   initializing() {
@@ -29,7 +29,6 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    const _ = this;
     this.options.fabrikkaConfigPath = utils.getFullPathOf(
       this.options.fabrikkaConfig, this.env.cwd,
     );
@@ -48,7 +47,7 @@ module.exports = class extends Generator {
       (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
     );
     const chaincodesTransformed = configTransformers.transformChaincodesConfig(
-      networkConfig.chaincodes, channelsTransformed, _.env,
+      networkConfig.chaincodes, channelsTransformed, this.env,
     );
 
     // ======= fabric-config ============================================================
@@ -104,7 +103,7 @@ module.exports = class extends Generator {
 
     this.on('end', () => {
       chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        _.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+        this.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
       });
       this.log('Done & done !!! Try the network out: ');
       this.log('-> fabric-compose.sh up - to start network');
