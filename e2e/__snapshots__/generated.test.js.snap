@@ -62,7 +62,9 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
+"#!/bin/bash
+
+SCRIPT=$(readlink -f \\"$0\\")
 BASEDIR=$(dirname \\"$SCRIPT\\")
 
 function installChaincodes() {
@@ -1061,7 +1063,9 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
+"#!/bin/bash
+
+SCRIPT=$(readlink -f \\"$0\\")
 BASEDIR=$(dirname \\"$SCRIPT\\")
 
 function installChaincodes() {
@@ -2239,7 +2243,9 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
+"#!/bin/bash
+
+SCRIPT=$(readlink -f \\"$0\\")
 BASEDIR=$(dirname \\"$SCRIPT\\")
 
 function installChaincodes() {
@@ -3257,7 +3263,9 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabric-compose/commands-generated.sh 1`] = `
-"SCRIPT=$(readlink -f \\"$0\\")
+"#!/bin/bash
+
+SCRIPT=$(readlink -f \\"$0\\")
 BASEDIR=$(dirname \\"$SCRIPT\\")
 
 function installChaincodes() {
