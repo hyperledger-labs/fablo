@@ -79,7 +79,7 @@ module.exports = class extends Generator {
 
     this.log(chalk.bold('==========================================================='));
 
-    if(this.listeners.error.count() > 0) {
+    if (this.listeners.error.count() > 0) {
       process.exit();
     }
   }
@@ -137,7 +137,7 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      const versionsSupportingRaft = ['1.4.1','1.4.2','1.4.3','1.4.4','1.4.5','1.4.6','1.4.7','1.4.8'];
+      const versionsSupportingRaft = ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8'];
       if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
@@ -146,13 +146,13 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.ERROR, objectToEmit);
       }
 
-        if (!networkSettings.tls) {
-            const objectToEmit = {
-                category: validationCategories.ORDERER,
-                message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
-            };
-            this.emit(validationErrorType.ERROR, objectToEmit);
-        }
+      if (!networkSettings.tls) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
     }
   }
 };

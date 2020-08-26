@@ -3623,7 +3623,7 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: 
+    OrdererType: solo
     Addresses: 
         - orderer0.root.com:7050
     
@@ -3706,7 +3706,7 @@ exports[`e2e/__tmp__/sample-01 should create proper e2e/__tmp__/sample-01/fabrik
     },
     \\"orderer\\": {
       \\"prefix\\": \\"orderer\\",
-      \\"consensus\\": \\"solo\\",
+      \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
   },
@@ -7567,7 +7567,7 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: 
+    OrdererType: solo
     Addresses: 
         - orderer0.root.com:7050
     
@@ -7664,7 +7664,7 @@ exports[`e2e/__tmp__/sample-02 should create proper e2e/__tmp__/sample-02/fabrik
     },
     \\"orderer\\": {
       \\"prefix\\": \\"orderer\\",
-      \\"consensus\\": \\"solo\\",
+      \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
   },
@@ -11444,7 +11444,7 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: 
+    OrdererType: solo
     Addresses: 
         - orderer0.root.com:7050
     
@@ -11527,7 +11527,7 @@ exports[`e2e/__tmp__/sample-03 should create proper e2e/__tmp__/sample-03/fabrik
     },
     \\"orderer\\": {
       \\"prefix\\": \\"orderer\\",
-      \\"consensus\\": \\"solo\\",
+      \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
   },
@@ -15425,7 +15425,7 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: 
+    OrdererType: solo
     Addresses: 
         - orderer0.root.com:7050
     
@@ -15522,7 +15522,7 @@ exports[`e2e/__tmp__/sample-04 should create proper e2e/__tmp__/sample-04/fabrik
     },
     \\"orderer\\": {
       \\"prefix\\": \\"orderer\\",
-      \\"consensus\\": \\"solo\\",
+      \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
   },
