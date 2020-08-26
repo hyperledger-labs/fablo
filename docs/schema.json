@@ -139,12 +139,12 @@
           "type": "object",
           "default": {
             "prefix": "orderer",
-            "consensus": "solo",
+            "type": "solo",
             "instances": 1
           },
           "required": [
             "prefix",
-            "consensus",
+            "type",
             "instances"
           ],
           "properties": {
@@ -154,8 +154,8 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             },
-            "consensus": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/consensus",
+            "type": {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/type",
               "type": "string",
               "title": "Consensus type",
               "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",

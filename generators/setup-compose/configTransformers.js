@@ -32,7 +32,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
 }
 
 function transformOrdererType(ordererTypeJsonConfigFormat) {
-  let consensusType = ordererTypeJsonConfigFormat
+  let consensusType = ordererTypeJsonConfigFormat;
   if (consensusType === 'raft') {
     consensusType = 'etcdraft';
   }
@@ -40,7 +40,7 @@ function transformOrdererType(ordererTypeJsonConfigFormat) {
 }
 
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
-  let type = transformOrdererType(ordererJsonConfigFormat.type);
+  const type = transformOrdererType(ordererJsonConfigFormat.type);
 
   return Array(ordererJsonConfigFormat.instances).fill().map((x, i) => i).map((i) => {
     const name = `${ordererJsonConfigFormat.prefix}${i}`;
@@ -115,7 +115,7 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 }
 
 function getNetworkCapabilities(fabricVersion) {
-  //Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
+  // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
   switch (fabricVersion) {
     case '1.4.8':
       return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };

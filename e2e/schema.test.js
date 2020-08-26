@@ -139,7 +139,7 @@ describe('schema', () => {
 
   it('should validate root orderer consensus type ', () => {
     const withRootOrdererConsensus = (c) => updatedBase((json) => {
-      json.rootOrg.orderer.consensus = c;
+      json.rootOrg.orderer.type = c;
     });
 
     expect(withRootOrdererConsensus('solo')).toMatchSchema(schema);

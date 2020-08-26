@@ -387,21 +387,11 @@ Object {
         "orderer": Object {
           "$id": "#/properties/rootOrg/properties/orderer",
           "default": Object {
-            "consensus": "solo",
             "instances": 1,
             "prefix": "orderer",
+            "type": "solo",
           },
           "properties": Object {
-            "consensus": Object {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/consensus",
-              "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
-              "enum": Array [
-                "solo",
-                "raft",
-              ],
-              "title": "Consensus type",
-              "type": "string",
-            },
             "instances": Object {
               "$id": "#/properties/rootOrg/properties/orderer/properties/instances",
               "maximum": 10,
@@ -415,10 +405,20 @@ Object {
               "title": "Domain prefix",
               "type": "string",
             },
+            "type": Object {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/type",
+              "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+              "enum": Array [
+                "solo",
+                "raft",
+              ],
+              "title": "Consensus type",
+              "type": "string",
+            },
           },
           "required": Array [
             "prefix",
-            "consensus",
+            "type",
             "instances",
           ],
           "title": "Orderer",
