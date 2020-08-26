@@ -3,6 +3,11 @@ function certsRemove() {
   rm -rf "$CERTS_DIR_PATH"/*
 }
 
+function removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f "$CONTAINER_NAME"
+}
+
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -11,6 +16,14 @@ function certsGenerate() {
   local ORG_PATH=$3
   local OUTPUT_PATH=$4
   local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
+
+  echo "Generating certs..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
+  echo "   ORG_PATH: $ORG_PATH"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+  echo ""
+  echo "   FULL_CERT_PATH: $FULL_CERT_PATH"
 
   if [ -d "$FULL_CERT_PATH" ]; then
     printf "\U1F910 \n"
@@ -21,12 +34,12 @@ function certsGenerate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
 }
@@ -37,7 +50,11 @@ function genesisBlockCreate() {
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
 
-    if [ -d "$OUTPUT_PATH" ]; then
+  echo "Creating genesis block..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+
+  if [ -d "$OUTPUT_PATH" ]; then
     printf "\U1F910 \n"
     echo "  Error: Won't generate genesis block, directory already exists : $OUTPUT_PATH"
     echo "  Looks like network is already prepared. Try using 'start' or 'rerun'."
@@ -46,13 +63,13 @@ function genesisBlockCreate() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function createChannelTx() {
@@ -64,6 +81,12 @@ function createChannelTx() {
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH=$OUTPUT_PATH"/"$CHANNEL_NAME".tx"
 
+  echo "Creating channelTx for $CHANNEL_NAME..."
+  echo "   CONFIG_PATH: $CONFIG_PATH"
+  echo "   CONFIG_PROFILE: $CONFIG_PROFILE"
+  echo "   OUTPUT_PATH: $OUTPUT_PATH"
+  echo "   CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
+
   if [ -f "$CHANNEL_TX_PATH" ]; then
     printf "\U1F910 \n"
     echo "  Error: Won't create channel configuration, it already exists : $CHANNEL_TX_PATH"
@@ -73,13 +96,13 @@ function createChannelTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function createAnchorPeerUpdateTx() {
@@ -101,17 +124,17 @@ function createAnchorPeerUpdateTx() {
   fi
 
   docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME mkdir /config
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
-  docker rm -f $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+  removeContainer $CONTAINER_NAME
 }
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -145,7 +168,7 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -187,7 +210,7 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
@@ -223,7 +246,7 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$(pwd)"/"$1
+  local CHAINCODE_DIR_PATH=$1
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4

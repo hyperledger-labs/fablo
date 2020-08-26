@@ -1,3 +1,8 @@
+#!/bin/bash
+
+SCRIPT=$(readlink -f "$0")
+BASEDIR=$(dirname "$SCRIPT")
+
 function installChaincodes() {
   <% chaincodes.forEach(function(chaincode) {
      chaincode.channel.orgs.forEach(function (org) {
@@ -5,16 +10,16 @@ function installChaincodes() {
   %>
   printf "============ \U1F60E Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F60E ============== \n"
   <% if(!networkSettings.tls) { -%>
-  chaincodeInstall "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  chaincodeInstall "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   <% } else { -%>
-  chaincodeInstallTls "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+  chaincodeInstallTls "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } -%>
 
   printf "==== \U1F618 Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %> \U1F618 ==== \n"
   <% if(!networkSettings.tls) { -%>
-  chaincodeInstantiate "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
+  chaincodeInstantiate "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
   <% } else { -%>
-  chaincodeInstantiateTls "<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+  chaincodeInstantiateTls "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "java" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } -%>
   <% })})}) -%>
 
@@ -23,19 +28,19 @@ function installChaincodes() {
 function generateArtifacts() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
-  certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
+  certsGenerate "$BASEDIR/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$BASEDIR/fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printf "===== \U1F512 Generating crypto material for <%= org.name %> \U1F512 ===== \n"
-  certsGenerate "fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "./fabric-config/crypto-config/"
+  certsGenerate "$BASEDIR/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$BASEDIR/fabric-config/crypto-config/"
   <% }) %>
   printf "===== \U1F3E0 Generating genesis block \U1F3E0 ===== \n"
-  genesisBlockCreate "fabric-config" "./fabric-config/config"
+  genesisBlockCreate "$BASEDIR/fabric-config" "$BASEDIR/fabric-config/config"
 }
 
 function startNetwork() {
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
   (
-    cd fabric-compose
+    cd "$BASEDIR"/fabric-compose
     docker-compose up -d
     sleep 4
   )
@@ -44,7 +49,7 @@ function startNetwork() {
 function stopNetwork() {
   printf "============ \U1F68F Stopping network \U1F68F =========================================== \n"
   (
-    cd fabric-compose
+    cd "$BASEDIR"/fabric-compose
     docker-compose stop
     sleep 4
   )
@@ -53,7 +58,7 @@ function stopNetwork() {
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
-  createChannelTx "<%= channel.name %>" "fabric-config" "AllOrgChannel" "./fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$BASEDIR/fabric-config" "AllOrgChannel" "$BASEDIR/fabric-config/config"
   <% }) -%>
 }
 
@@ -96,7 +101,7 @@ function installChannels() {
 function networkDown() {
   printf "============ \U1F916 Destroying network \U1F916 =========================================== \n"
   (
-    cd fabric-compose
+    cd "$BASEDIR"/fabric-compose
     docker-compose down
   )
 
@@ -115,8 +120,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf fabric-config/config
-  rm -rf fabric-config/crypto-config
+  rm -rf $BASEDIR/fabric-config/config
+  rm -rf $BASEDIR/fabric-config/crypto-config
 
   printf "============ \U1F5D1 Done! Network was purged \U1F5D1 =================================== \n"
 }
