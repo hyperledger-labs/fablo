@@ -1,3 +1,5 @@
+#!/bin/bash
+
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
 
@@ -37,20 +39,20 @@ function generateArtifacts() {
 
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose up -d
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
 }
 
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose stop
-  cd $CURRENT_DIR
-  sleep 4
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose stop
+    sleep 4
+  )
 }
 
 function generateChannelsArtifacts() {
@@ -96,10 +98,10 @@ function installChannels() {
 
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
-  CURRENT_DIR=$(pwd)
-  cd "$BASEDIR"/fabric-compose
-  docker-compose down
-  cd $CURRENT_DIR
+  (
+    cd "$BASEDIR"/fabric-compose
+    docker-compose down
+  )
 
   printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
    <% chaincodes.forEach(function(chaincode) {
