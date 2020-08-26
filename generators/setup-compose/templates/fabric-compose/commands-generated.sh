@@ -20,7 +20,7 @@ function installChaincodes() {
 
 }
 
-function networkUp() {
+function generateArtifacts() {
   printf "============ \U1F913 Generating basic configs \U1F913 =================================== \n"
   printf "===== \U1F512 Generating crypto material for org <%= rootOrg.organization.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "./fabric-config/crypto-config/"
@@ -28,19 +28,38 @@ function networkUp() {
   printf "===== \U1F512 Generating crypto material for <%= org.name %> \U1F512 ===== \n"
   certsGenerate "fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "./fabric-config/crypto-config/"
   <% }) %>
-
   printf "===== \U1F3E0 Generating genesis block \U1F3E0 ===== \n"
   genesisBlockCreate "fabric-config" "./fabric-config/config"
+}
 
+function startNetwork() {
   printf "============ \U1F680 Starting network \U1F680 =========================================== \n"
-  cd fabric-compose
-  docker-compose up -d
-  cd ..
-  sleep 4
+  (
+    cd fabric-compose
+    docker-compose up -d
+    sleep 4
+  )
+}
 
+function stopNetwork() {
+  printf "============ \U1F68F Stopping network \U1F68F =========================================== \n"
+  (
+    cd fabric-compose
+    docker-compose stop
+    sleep 4
+  )
+}
+
+function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printf "============ \U1F913 Generating config for '<%= channel.name %>' \U1F913 =========================== \n"
   createChannelTx "<%= channel.name %>" "fabric-config" "AllOrgChannel" "./fabric-config/config"
+  <% }) -%>
+}
+
+function installChannels() {
+  <% channels.forEach(function(channel){  -%>
+
   <% for (orgNo in channel.orgs) {
       var org = channel.orgs[orgNo]
   -%>
@@ -71,15 +90,15 @@ function networkUp() {
   <% } -%>
   <% }) -%>
 
-  installChaincodes
   printf "============ \U1F984 Done! Enjoy your fresh network \U1F984 ============================= \n"
 }
 
 function networkDown() {
-  printf "============ \U1F916 Stopping network \U1F916 =========================================== \n"
-  cd fabric-compose
-  docker-compose down
-  cd ..
+  printf "============ \U1F916 Destroying network \U1F916 =========================================== \n"
+  (
+    cd fabric-compose
+    docker-compose down
+  )
 
   printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
    <% chaincodes.forEach(function(chaincode) {
@@ -101,12 +120,3 @@ function networkDown() {
 
   printf "============ \U1F5D1 Done! Network was purged \U1F5D1 =================================== \n"
 }
-
-function networkRerun() {
-  networkDown
-  networkUp
-}
-
-# TODO 1 - na koniec powinien polecieć anchorPeerUpdate
-# TODO 2 - pomyśl o tym jak konfigurowac anchor peer'a
-# TODO 3 - try/catch w bashu
