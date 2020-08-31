@@ -4,11 +4,9 @@
 2. generowanie docker-compose -> Piotrek
 3. Jakie dane potrzebujemy -> Hejwo
 
-###Taski:
+## Taski:
 - Stan pośredni  
 - Mechanika Yeomana. 
-
-
 
 ## Prerequisites :  
 ##### 1. Install Yeoman  

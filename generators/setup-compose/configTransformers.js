@@ -32,12 +32,15 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
 }
 
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
+  const type = ordererJsonConfigFormat.type === 'raft' ? 'etcdraft' : ordererJsonConfigFormat.type;
+
   return Array(ordererJsonConfigFormat.instances).fill().map((x, i) => i).map((i) => {
     const name = `${ordererJsonConfigFormat.prefix}${i}`;
     return {
       name,
       address: `${name}.${rootDomainJsonConfigFormat}`,
-      consensus: ordererJsonConfigFormat.consensus,
+      domain: rootDomainJsonConfigFormat,
+      consensus: type,
     };
   });
 }
@@ -104,14 +107,20 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 }
 
 function getNetworkCapabilities(fabricVersion) {
-  switch (fabricVersion) {
-    case '1.4.4':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.3':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    default:
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-  }
+  // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
+  const networkCapabilities = {
+    '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.5': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.4': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.3': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.2': { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.1': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+    '1.4.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+    '1.3.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+  };
+  return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
 
 module.exports = {
