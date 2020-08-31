@@ -31,16 +31,8 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
   });
 }
 
-function transformOrdererType(ordererTypeJsonConfigFormat) {
-  let consensusType = ordererTypeJsonConfigFormat;
-  if (consensusType === 'raft') {
-    consensusType = 'etcdraft';
-  }
-  return consensusType;
-}
-
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
-  const type = transformOrdererType(ordererJsonConfigFormat.type);
+  const type = ordererJsonConfigFormat.type === 'raft' ? 'etcdraft' : ordererJsonConfigFormat.type;
 
   return Array(ordererJsonConfigFormat.instances).fill().map((x, i) => i).map((i) => {
     const name = `${ordererJsonConfigFormat.prefix}${i}`;
@@ -116,30 +108,19 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 
 function getNetworkCapabilities(fabricVersion) {
   // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-  switch (fabricVersion) {
-    case '1.4.8':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.7':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.6':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.5':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.4':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.3':
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.2':
-      return { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' };
-    case '1.4.1':
-      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
-    case '1.4.0':
-      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
-    case '1.3.0':
-      return { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' };
-    default:
-      return { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' };
-  }
+  const networkCapabilities = {
+    '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.5': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.4': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.3': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.2': { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '1.4.1': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+    '1.4.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+    '1.3.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+  };
+  return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
 
 module.exports = {
