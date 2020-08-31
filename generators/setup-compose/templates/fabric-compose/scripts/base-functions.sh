@@ -59,7 +59,7 @@ function genesisBlockCreate() {
     docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
     docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile SoloOrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block
 
     docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
   } catch {
@@ -94,7 +94,7 @@ function createChannelTx() {
     docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
     docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
 
     docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
   } catch {
@@ -124,7 +124,7 @@ function createAnchorPeerUpdateTx() {
     docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
 
     docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
+    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
 
     docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
   } catch {

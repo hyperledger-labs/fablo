@@ -66,22 +66,22 @@ module.exports = class extends Generator {
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
+    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
   }
 
   async summary() {
-    this.log(chalk.bold('========== Validation summary =========='));
+    this.log(chalk.bold('=================== Validation summary ==================='));
     this.log(`Errors count: ${this.listeners.error.count()}`);
     this.log(`Warnings count: ${this.listeners.warn.count()}`);
 
-    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found :'));
-    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found :'));
+    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
+    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
 
-    this.log(chalk.bold('========================================'));
+    this.log(chalk.bold('==========================================================='));
 
-    this.on('end', () => {
-      this.removeAllListeners(validationErrorType.ERROR);
-      this.removeAllListeners(validationErrorType.WARN);
-    });
+    if (this.listeners.error.count() > 0) {
+      process.exit();
+    }
   }
 
   _printIfNotEmpty(messages, caption) {
@@ -118,12 +118,41 @@ module.exports = class extends Generator {
   }
 
   _validateOrdererCountForSoloType(orderer) {
-    if (orderer.consensus === 'solo' && orderer.instances > 1) {
+    if (orderer.type === 'solo' && orderer.instances > 1) {
       const objectToEmit = {
         category: validationCategories.ORDERER,
         message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
       };
       this.emit(validationErrorType.WARN, objectToEmit);
+    }
+  }
+
+  _validateOrdererForRaftType(orderer, networkSettings) {
+    if (orderer.type === 'raft' || orderer.type === 'etcdraft') {
+      if (orderer.instances === 1) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
+        };
+        this.emit(validationErrorType.WARN, objectToEmit);
+      }
+
+      const versionsSupportingRaft = ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8'];
+      if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${versionsSupportingRaft}`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
+
+      if (!networkSettings.tls) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
     }
   }
 };

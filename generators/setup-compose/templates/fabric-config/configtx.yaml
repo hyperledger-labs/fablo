@@ -55,8 +55,9 @@ Application: &ApplicationDefaults
 ################################################################################
 Orderer: &OrdererDefaults
     OrdererType: <%= rootOrg.ordererHead.consensus %>
-    Addresses: <% rootOrg.orderers.forEach(function(ordrer) { %>
-        - <%= ordrer.address %>:7050<% }) %>
+    Addresses: <% rootOrg.orderers.forEach(function(orderer) { %>
+        - <%= orderer.address %>:7050<% }) %>
+    <%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
@@ -70,7 +71,7 @@ Orderer: &OrdererDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-    SoloOrdererGenesis:
+    OrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
