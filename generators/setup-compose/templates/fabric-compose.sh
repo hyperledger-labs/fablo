@@ -2,8 +2,6 @@
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
 
-source "$BASEDIR"/fabric-compose/scripts/lib/oo-bootstrap.sh
-
 source "$BASEDIR"/fabric-compose/scripts/base-help.sh
 source "$BASEDIR"/fabric-compose/scripts/base-functions.sh
 source "$BASEDIR"/fabric-compose/commands-generated.sh
