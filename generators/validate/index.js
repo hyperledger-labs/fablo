@@ -4,10 +4,12 @@
 * License-Identifier: Apache-2.0
 */
 const Generator = require('yeoman-generator');
+const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
 const { supportedFabrikkaVersions, supportedFabricVersions } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
+const schema = require('../../docs/schema.json');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -20,6 +22,7 @@ const validationCategories = {
   GENERAL: 'General',
   ORDERER: 'Orderer',
   PEER: 'Peer',
+  VALIDATION: 'Schema validation',
 };
 
 module.exports = class extends Generator {
@@ -33,8 +36,8 @@ module.exports = class extends Generator {
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log('Critical error occured: ');
-      this.log(`   ${event.message}`);
+      this.log(chalk.bgRed('Critical error occured:')+chalk.bold(` ${event.message}`));
+      this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
 
@@ -62,6 +65,7 @@ module.exports = class extends Generator {
     this._validateIfConfigFileExists(this.options.fabrikkaConfig);
 
     const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
+    this._validateJsonSchema(networkConfig);
     this._validateSupportedFabrikkaVersion(networkConfig.fabrikkaVersion);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
@@ -81,6 +85,26 @@ module.exports = class extends Generator {
 
     if(this.listeners.error.count() > 0) {
       process.exit();
+    }
+  }
+
+  _validateJsonSchema(configToValidate) {
+    const validator = new SchemaValidator();
+    const results = validator.validate(configToValidate, schema)
+    results.errors.forEach((result) => {
+      const msg = `${result.property} : ${result.message}`;
+      const objectToEmit = {
+        category: validationCategories.VALIDATION,
+        message: msg,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    });
+    if(results.errors.length > 0) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `Json schema validation failed!`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
   }
 
