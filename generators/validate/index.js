@@ -36,7 +36,7 @@ module.exports = class extends Generator {
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log(chalk.bgRed('Critical error occured:')+chalk.bold(` ${event.message}`));
+      this.log(chalk.bgRed('Critical error occured:') + chalk.bold(` ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
@@ -90,7 +90,7 @@ module.exports = class extends Generator {
 
   _validateJsonSchema(configToValidate) {
     const validator = new SchemaValidator();
-    const results = validator.validate(configToValidate, schema)
+    const results = validator.validate(configToValidate, schema);
     results.errors.forEach((result) => {
       const msg = `${result.property} : ${result.message}`;
       const objectToEmit = {
@@ -99,10 +99,10 @@ module.exports = class extends Generator {
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     });
-    if(results.errors.length > 0) {
+    if (results.errors.length > 0) {
       const objectToEmit = {
         category: validationCategories.CRITICAL,
-        message: `Json schema validation failed!`,
+        message: 'Json schema validation failed!',
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
