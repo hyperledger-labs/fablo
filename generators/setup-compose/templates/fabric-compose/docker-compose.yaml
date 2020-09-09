@@ -131,6 +131,7 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>

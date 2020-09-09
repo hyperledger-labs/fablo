@@ -1,0 +1,4 @@
+<% if(chaincode.lang === "node") { -%>
+printHeadline "Building '<%= chaincode.name %>'" "U1F60B"
+npm run build --prefix <%= chaincode.directory -%>
+<% } -%>
