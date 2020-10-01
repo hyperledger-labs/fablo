@@ -3,6 +3,11 @@ FROM node:14-alpine
 RUN apk add --no-cache sudo
 RUN npm install --global --silent yo
 
+COPY . /fabrikka
+WORKDIR /fabrikka
+RUN npm install --silent
+RUN npm link
+
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
 # This was because less technical people would run Yeoman as root and cause problems.
 # Setting uid to 501 here since it's already a random number being thrown around.
@@ -17,6 +22,4 @@ ENV HOME /home/yeoman
 
 USER yeoman
 WORKDIR /fabrikka
-
-COPY entrypoint.sh /
-ENTRYPOINT /entrypoint.sh
+ENTRYPOINT /fabrikka/docker-entrypoint.sh
