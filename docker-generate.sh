@@ -1,12 +1,15 @@
 #!/bin/sh
 
-FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
+fullPath() {
+  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
 
-CONFIG="$1"
-TARGET="$2"
+FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
+CONFIG="$(fullPath "$1")"
+TARGET="$(fullPath "$2")"
 
 if [ -z "$TARGET" ]; then
-  echo "Usage: docker-generate.sh ./fabrikka-config.json ./target-network"
+  echo "Usage: docker-generate.sh ./fabrikka-config.json ./target-network-dir"
   exit 1
 fi
 
