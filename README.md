@@ -36,5 +36,5 @@ npm link
 ```
 yo fabrikka 
 yo fabrikka:validate
-yo fabrikka:setup-compose
+yo fabrikka:setup-docker
 ```
