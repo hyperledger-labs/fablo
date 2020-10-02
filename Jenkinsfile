@@ -76,36 +76,29 @@ try {
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
-      stage("Install required libs") {
+
+      stage("Install libs") {
         // nodejs npm - to run js tests
         // bash - to run generated scripts
-        // the rest - to install docker compose (later)
-        sh "apk add --no-cache nodejs npm bash python3-dev py3-pip build-base libffi-dev openssl-dev gcc libc-dev make"
+        // docker-compose to test networks
+        sh "apk add --no-cache nodejs npm bash docker-compose"
+        sh "npm install"
       }
-
-      parallel(
-        failFast: false,
-        'Install docker-compose': {
-          stage('Install docker-compose') {
-            sh "pip3 install docker-compose"
-          }
-        },
-        'JS Tests': {
-          stage('NPM') {
-            sh "npm install"
-          }
-          stage('Test (e2e)') {
-            sh "CI=true npm run test:e2e"
-          }
-          stage('Lint') {
-            sh "npm run lint"
-          }
-        }
-      )
+      stage('Test generators') {
+        sh "CI=true npm run test:e2e"
+      }
+      stage('Lint') {
+        sh "npm run lint"
+      }
 
       stage("Test simple network") {
         sh "e2e-network/test-01-simple.sh"
       }
+
+      stage("Test RAFT network (2 orgs)") {
+        sh "e2e-network/test-02-raft-2orgs.sh"
+      }
+
     }
   })
 } catch (e) {
