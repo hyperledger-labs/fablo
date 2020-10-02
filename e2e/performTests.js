@@ -7,7 +7,11 @@ expect.extend(matchers);
 
 const executeCommand = (c) => execSync(c, { encoding: 'utf-8' });
 
-const generate = (config, target) => executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+const generate = (config, target) => {
+  const output = executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+  // eslint-disable-next-line no-console
+  console.log(output);
+};
 
 const getFiles = (dir) => executeCommand(`find ${dir}/* -type f`)
   .split('\n')

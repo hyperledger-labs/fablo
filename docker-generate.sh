@@ -1,17 +1,17 @@
 #!/bin/sh
 
+if [ -z "$2" ]; then
+  echo "Usage: docker-generate.sh ./fabrikka-config.json ./target-network-dir"
+  exit 1
+fi
+
 fullPath() {
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 }
 
 FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="$(fullPath "$1")"
-TARGET="$(fullPath "$2")"
-
-if [ -z "$TARGET" ]; then
-  echo "Usage: docker-generate.sh ./fabrikka-config.json ./target-network-dir"
-  exit 1
-fi
+TARGET="$(mkdir -p "$(dirname "$2")" && fullPath "$2")"
 
 echo "Creating network config for $CONFIG in $TARGET"
 
