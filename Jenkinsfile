@@ -94,10 +94,7 @@ try {
           stage('NPM') {
             sh "npm install"
           }
-          stage("Yeoman") {
-            sh "npm run test:e2e-generate"
-          }
-          stage('Test') {
+          stage('Test (e2e)') {
             sh "CI=true npm run test:e2e"
           }
           stage('Lint') {
