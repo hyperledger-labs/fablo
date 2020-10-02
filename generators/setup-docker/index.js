@@ -68,7 +68,7 @@ module.exports = class extends Generator {
     );
     this._copyGitIgnore();
 
-    // ======= fabrikka-docker ===========================================================
+    // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(
       {
         networkSettings: networkConfig.networkSettings,
@@ -147,24 +147,24 @@ module.exports = class extends Generator {
 
   _copyDockerComposeEnv(settings) {
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/.env'),
-      this.destinationPath('fabrikka-docker/.env'),
+      this.templatePath('fabric-docker/.env'),
+      this.destinationPath('fabric-docker/.env'),
       settings,
     );
   }
 
   _copyDockerCompose(settings) {
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/docker-compose.yaml'),
-      this.destinationPath('fabrikka-docker/docker-compose.yaml'),
+      this.templatePath('fabric-docker/docker-compose.yaml'),
+      this.destinationPath('fabric-docker/docker-compose.yaml'),
       settings,
     );
   }
 
   _copyCommandsGeneratedScript(settings) {
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/commands-generated.sh'),
-      this.destinationPath('fabrikka-docker/commands-generated.sh'),
+      this.templatePath('fabric-docker/commands-generated.sh'),
+      this.destinationPath('fabric-docker/commands-generated.sh'),
       settings,
     );
   }
@@ -176,23 +176,23 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/scripts/cli/channel_fns.sh'),
-      this.destinationPath('fabrikka-docker/scripts/cli/channel_fns.sh'),
+      this.templatePath('fabric-docker/scripts/cli/channel_fns.sh'),
+      this.destinationPath('fabric-docker/scripts/cli/channel_fns.sh'),
     );
 
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/scripts/cli/channel_fns.sh'),
-      this.destinationPath('fabrikka-docker/scripts/cli/channel_fns.sh'),
+      this.templatePath('fabric-docker/scripts/cli/channel_fns.sh'),
+      this.destinationPath('fabric-docker/scripts/cli/channel_fns.sh'),
     );
 
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/scripts/base-functions.sh'),
-      this.destinationPath('fabrikka-docker/scripts/base-functions.sh'),
+      this.templatePath('fabric-docker/scripts/base-functions.sh'),
+      this.destinationPath('fabric-docker/scripts/base-functions.sh'),
     );
 
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker/scripts/base-help.sh'),
-      this.destinationPath('fabrikka-docker/scripts/base-help.sh'),
+      this.templatePath('fabric-docker/scripts/base-help.sh'),
+      this.destinationPath('fabric-docker/scripts/base-help.sh'),
     );
   }
 
