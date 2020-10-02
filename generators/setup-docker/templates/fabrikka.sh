@@ -9,11 +9,11 @@ function get_realpath() {
 SCRIPT=$(get_realpath "$0")
 BASEDIR=$(dirname "$SCRIPT")
 
-source "$BASEDIR"/fabric-compose/scripts/base-help.sh
-source "$BASEDIR"/fabric-compose/scripts/base-functions.sh
-source "$BASEDIR"/fabric-compose/commands-generated.sh
+source "$BASEDIR"/fabrikka-docker/scripts/base-help.sh
+source "$BASEDIR"/fabrikka-docker/scripts/base-functions.sh
+source "$BASEDIR"/fabrikka-docker/commands-generated.sh
 
-source "$BASEDIR"/fabric-compose/.env
+source "$BASEDIR"/fabrikka-docker/.env
 
 if [ "$1" = "up" ]; then
   generateArtifacts

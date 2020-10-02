@@ -21,7 +21,7 @@ module.exports = class extends Generator {
           value: 'version',
         },
         {
-          name: 'yo fabrikka:setup-compose configFile.json \t: create docker-compose network based on config',
+          name: 'yo fabrikka:setup-docker configFile.json \t: create docker-compose network based on config',
           value: 'setupCompose',
         },
         {
@@ -50,10 +50,10 @@ module.exports = class extends Generator {
   }
 
   _versionHelp() {
-    this.log('yo fabrikka:version : robie ważne rzeczy. serio. ');
+    this.log('yo fabrikka:version : robie ważne rzeczy. serio. '); // FIXME
   }
 
   _setupComposeHelp() {
-    this.log('yo fabrikka:setup-compose : robie ważne rzeczy. serio. ');
+    this.log('yo fabrikka:setup-docker : robie ważne rzeczy. serio. '); // FIXME
   }
 };

@@ -8,6 +8,6 @@ sudo rm -rf "$target/*" &&
   sudo chown -R yeoman:yeoman "$target" &&
   (
     cd "$target" &&
-      yo --no-insight fabrikka:setup-compose "../../$config"
+      yo --no-insight fabrikka:setup-docker "../../$config"
   ) &&
   sudo chown -R root:root "$target"

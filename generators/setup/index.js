@@ -12,7 +12,7 @@ module.exports = class extends Generator {
       name: 'setupType',
       message: 'Select type of environment to create',
       choices: [
-        { name: 'docker-compose', value: 'setup-compose' },
+        { name: 'docker-compose', value: 'setup-docker' },
         { name: 'Helm', value: 'setup-helm' },
       ],
     }];

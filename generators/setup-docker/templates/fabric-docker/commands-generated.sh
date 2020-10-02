@@ -46,7 +46,7 @@ function generateArtifacts() {
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
   (
-    cd "$BASEDIR"/fabric-compose
+    cd "$BASEDIR"/fabrikka-docker
     docker-compose up -d
     sleep 4
   )
@@ -55,7 +55,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
   (
-    cd "$BASEDIR"/fabric-compose
+    cd "$BASEDIR"/fabrikka-docker
     docker-compose stop
     sleep 4
   )
@@ -105,7 +105,7 @@ function installChannels() {
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
   (
-    cd "$BASEDIR"/fabric-compose
+    cd "$BASEDIR"/fabrikka-docker
     docker-compose down
   )
 
