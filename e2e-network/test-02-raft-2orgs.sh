@@ -9,11 +9,11 @@ CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raf
 networkUpAsync() {
   (sh "$FABRIKKA_HOME/docker-generate.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
-    (sh fabric-compose.sh up &))
+    (sh fabrikka.sh up &))
 }
 
 networkDown() {
-  (cd "$TEST_TMP" && sh fabric-compose.sh down)
+  (cd "$TEST_TMP" && sh fabrikka.sh down)
 }
 
 waitFor() {
