@@ -106,6 +106,11 @@ try {
       stage("Test simple network") {
         sh "e2e-network/test-01-simple.sh"
       }
+
+      stage("Test RAFT network (2 orgs)") {
+        sh "e2e-network/test-02-raft-2orgs.sh"
+      }
+
     }
   })
 } catch (e) {
