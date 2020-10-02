@@ -13,7 +13,7 @@ FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
 CONFIG="$(fullPath "$1")"
 TARGET="$(mkdir -p "$(dirname "$2")" && fullPath "$2")"
 
-echo "Creating network config for $CONFIG in $TARGET"
+echo "Creating network config in $TARGET for $CONFIG"
 
 docker build --tag fabrikka "$FABRIKKA_HOME" &&
   docker run \

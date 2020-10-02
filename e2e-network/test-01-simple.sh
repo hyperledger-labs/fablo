@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TEST_TMP="$0-tmp"
+TEST_TMP="$0.tmpdir"
 FABRIKKA_HOME="$TEST_TMP/../../"
 mkdir -p "$TEST_TMP"
 
