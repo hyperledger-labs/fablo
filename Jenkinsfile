@@ -72,7 +72,7 @@ def uuid = UUID.randomUUID().toString()
 
 try {
   node ('master') {
-    slackSend (color: '#333FFF', message: "Build ${BUILD_TAG} started\n${BUILD_URL}")
+    slackSend (color: '#aaaaaa', message: "🏭 Fabrikka tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
   runOnNewPod("fabrikka", uuid, {
     container('dind') {
@@ -115,9 +115,10 @@ try {
   node ('master') {
     if (currentBuild.result == "FAILURE") {
       color = "#FF0000"
+      slackSend (color: '#df000f', message: "🛑 Fabrikka tests failed <${BUILD_URL}|${BUILD_TAG}>")
     } else {
       color = "#00FF00"
+      slackSend (color: '#0bbd00', message: "🏭 Fabrikka tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
     }
-    slackSend (color: color, message: "Build ${BUILD_TAG} finished - ${currentBuild.currentResult}\n${BUILD_URL}")
   }
 }
