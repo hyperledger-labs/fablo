@@ -82,6 +82,7 @@ try {
         // the rest - to install docker compose (later)
         sh "apk add --no-cache nodejs npm bash python python-dev py-pip build-base libffi-dev openssl-dev"
       }
+
       parallel(
         failFast: false,
         'Install docker-compose': {
@@ -105,20 +106,9 @@ try {
         }
       )
 
-      parallel(
-        failFast: true,
-        'Start network 01': {
-          sh "e2e/start-network.sh"
-        },
-        'Test network 01': {
-          stage('Wait for services') {
-            sh "e2e/wait-for-network.sh"
-          }
-          stage('Down network') {
-            sh "e2e/down-network.sh"
-          }
-        }
-      )
+      stage("Test simple network") {
+        sh "e2e-network/test-01-simple.sh"
+      }
     }
   })
 } catch (e) {
