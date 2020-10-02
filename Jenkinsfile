@@ -80,14 +80,14 @@ try {
         // nodejs npm - to run js tests
         // bash - to run generated scripts
         // the rest - to install docker compose (later)
-        sh "apk add --no-cache nodejs npm bash python python-dev py-pip build-base libffi-dev openssl-dev"
+        sh "apk add --no-cache nodejs npm bash python3-dev py3-pip build-base libffi-dev openssl-dev gcc libc-dev make"
       }
 
       parallel(
         failFast: false,
         'Install docker-compose': {
           stage('Install docker-compose') {
-            sh "pip install docker-compose"
+            sh "pip3 install docker-compose"
           }
         },
         'JS Tests': {
