@@ -16,15 +16,20 @@ networkDown() {
   (cd "$TEST_TMP" && sh fabric-compose.sh down)
 }
 
-waitFor() {
+waitForContainer() {
   sh "$TEST_TMP/../wait-for-container.sh" "$1" "$2"
+}
+
+waitForChaincode() {
+  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2"
 }
 
 networkUpAsync
 
-waitFor "ca.root.com" "Listening on http://0.0.0.0:7054" &&
-  waitFor "orderer0.root.com" "Created and starting new chain my-channel1" &&
-  waitFor "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
-  waitFor "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitFor "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  networkDown
+waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
+  waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1" &&
+  waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
+  waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
+  waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
+  waitForChaincode "chaincode1" "0.0.1"
+networkDown
