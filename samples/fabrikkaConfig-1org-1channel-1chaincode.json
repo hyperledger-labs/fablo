@@ -64,11 +64,11 @@
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "java",
+      "lang": "node",
       "channel": "channel1",
-      "init": "{'Args':[]}",
+      "init": "{\"Args\":[]}",
       "endorsement": "AND ('Org1.member')",
-      "directory": "chaincode1"
+      "directory": "chaincode-kv-node"
     }
   ]
 }

@@ -10,8 +10,9 @@ SCRIPT=$(get_realpath "$0")
 BASEDIR=$(dirname "$SCRIPT")
 
 function installChaincodes() {
-  <% chaincodes.forEach(function(chaincode) {
-     chaincode.channel.orgs.forEach(function (org) {
+  <% chaincodes.forEach(function(chaincode) { %>
+  <%- include('commands-generated-node-build.sh.ejs', {chaincode: chaincode}); -%>
+  <% chaincode.channel.orgs.forEach(function (org) {
        org.peers.forEach(function (peer) {
   %>
   printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"

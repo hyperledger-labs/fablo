@@ -2,18 +2,22 @@
 
 TEST_TMP="$0.tmpdir"
 FABRIKKA_HOME="$TEST_TMP/../../"
-mkdir -p "$TEST_TMP"
 
 CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
+CHAINCODE="$FABRIKKA_HOME/samples/chaincode-kv-node"
 
 networkUpAsync() {
-  (sh "$FABRIKKA_HOME/docker-generate.sh" "$CONFIG" "$TEST_TMP" &&
+  (rm -rf "$TEST_TMP" &&
+    mkdir -p "$TEST_TMP" &&
+    sh "$FABRIKKA_HOME/docker-generate.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
+    cp -R "$CHAINCODE" "$TEST_TMP" &&
     (sh fabrikka.sh up &))
 }
 
 networkDown() {
-  (cd "$TEST_TMP" && sh fabrikka.sh down)
+  exit 1
+  #  (cd "$TEST_TMP" && sh fabrikka.sh down)
 }
 
 waitFor() {
