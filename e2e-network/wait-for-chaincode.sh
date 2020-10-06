@@ -10,7 +10,7 @@ listChaincodes() {
     --instantiated
 }
 
-for i in $(seq 1 120); do
+for i in $(seq 1 60); do
   echo "Verifying if chaincode ($chaincode/$version) is ready ($i)..."
 
   if listChaincodes 2>&1 | grep "$search_string"; then
