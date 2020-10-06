@@ -18,7 +18,7 @@ const executeCommand = (c, noConsole = false) => {
 };
 
 const generate = (config, target) => {
-  executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+  executeCommand(`rm -rf "${target}" && sh "docker-generate.sh" "${config}" "${target}"`);
 };
 
 const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
@@ -42,7 +42,7 @@ const testFilesExistence = (config, files) => {
 
 const testFilesContent = (config, files) => files.forEach((f) => {
   it(`should create proper ${f} from ${config}`, () => {
-    expect(executeCommand(`cat ${f}`)).toMatchSnapshot();
+    expect(executeCommand(`cat ${f}`, true)).toMatchSnapshot();
   });
 });
 
