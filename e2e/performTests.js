@@ -5,13 +5,15 @@ const schema = require('../docs/schema');
 
 expect.extend(matchers);
 
-const executeCommand = (c) => {
-  // eslint-disable-next-line no-console
-  console.log(c);
-  const out = execSync(c, { encoding: 'utf-8' });
+const executeCommand = (c, noConsole = false) => {
+  const log = (out) => {
+    // eslint-disable-next-line no-console
+    if (!noConsole) console.log(out);
+  };
 
-  // eslint-disable-next-line no-console
-  console.log(out);
+  log(c);
+  const out = execSync(c, { encoding: 'utf-8' });
+  log(out);
   return out;
 };
 
