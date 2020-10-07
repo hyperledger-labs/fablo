@@ -35,4 +35,4 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForChaincode "cli.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
-  networkDown || networkDown
+  networkDown || (networkDown && exit 1)
