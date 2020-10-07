@@ -33,7 +33,7 @@ spec:
     value: "true"
     effect: "NoSchedule"
   containers:
-  - name: dind
+  - name: sbt
     image: softwaremill/sbt-jenkins:11.0.7-jdk_2.12.12_1.3.8
     securityContext:
         privileged: true
