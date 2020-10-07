@@ -37,7 +37,7 @@ spec:
     image: softwaremill/sbt-jenkins:11.0.7-jdk_2.12.12_1.3.8
     securityContext:
         privileged: true
-        runAsUser: 1000
+        runAsUser: 0
 """
 }
 
