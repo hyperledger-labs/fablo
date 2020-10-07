@@ -19,4 +19,5 @@ docker build --tag fabrikka "$FABRIKKA_HOME" &&
   docker run \
     -v "$CONFIG":/network/config.json \
     -v "$TARGET":/network/target \
+    -u "$(id -u "${USER}")":"$(id -g "${USER}")" \
     fabrikka
