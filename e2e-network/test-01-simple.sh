@@ -27,7 +27,9 @@ waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4"
 }
 
-networkUpAsync
+networkUpAsync || (
+  printf "\n\nERROR: Cannot start network\n\n\n" && exit 1
+)
 
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1" &&
