@@ -34,10 +34,10 @@ spec:
     effect: "NoSchedule"
   containers:
   - name: dind
-    image: docker:18.09-dind
+    image: softwaremill/sbt-jenkins:11.0.7-jdk_2.12.12_1.3.8
     securityContext:
         privileged: true
-        runAsUser: 0
+        runAsUser: 1000
 """
 }
 
@@ -78,10 +78,6 @@ try {
     container('dind') {
 
       stage("Install libs") {
-        // nodejs npm - to run js tests
-        // bash - to run generated scripts
-        // docker-compose to test networks
-        sh "apk add --no-cache nodejs npm bash docker-compose"
         sh "npm install"
       }
       stage('Test generators') {
