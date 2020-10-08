@@ -3,7 +3,7 @@
 container="$1"
 expected_message="$2"
 
-for i in $(seq 1 60); do
+for i in $(seq 1 90); do
   echo "Verifying if container $container is ready ($i)..."
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
