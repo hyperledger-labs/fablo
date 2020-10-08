@@ -5,8 +5,6 @@ if [ -z "$2" ]; then
   exit 1
 fi
 
-=> fabrikka-docker.sh
-
 fullPath() {
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 }
