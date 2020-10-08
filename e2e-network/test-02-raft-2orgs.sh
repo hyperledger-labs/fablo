@@ -9,6 +9,7 @@ CHAINCODE="$FABRIKKA_HOME/samples/chaincode-kv-node"
 networkUpAsync() {
   (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
+    cp -R "$CHAINCODE" "$TEST_TMP" &&
     (sh fabrikka-docker.sh up &))
 }
 
@@ -39,4 +40,5 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org2.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForContainer "peer1.org2.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
-  networkDown
+  waitForChaincode "cli.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+  networkDown || (networkDown && exit 1)
