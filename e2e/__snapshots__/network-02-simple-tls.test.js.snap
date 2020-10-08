@@ -752,25 +752,25 @@ exports[`network-02-simple-tls should create proper e2e/__tmp__/network-02-simpl
   echo \\"Fabrikka is powered by SoftwareMill\\"
 
   echo \\"\\"
-  echo \\"usage: ./fabrikka.sh <command>\\"
+  echo \\"usage: ./fabrikka-docker.sh <command>\\"
   echo \\"\\"
 
   echo \\"Commands: \\"
   echo \\"\\"
-  echo \\"./fabrikka.sh up\\"
+  echo \\"./fabrikka-docker.sh up\\"
   echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
   echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh down\\"
+  echo \\"./fabrikka-docker.sh down\\"
   echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh start\\"
+  echo \\"./fabrikka-docker.sh start\\"
   echo -e \\"\\\\t Starts already created network.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh stop\\"
+  echo \\"./fabrikka-docker.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh recreate\\"
+  echo \\"./fabrikka-docker.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -904,7 +904,7 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-02-simple-tls should create proper e2e/__tmp__/network-02-simple-tls/fabrikka.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls.json 1`] = `
+exports[`network-02-simple-tls should create proper e2e/__tmp__/network-02-simple-tls/fabrikka-docker.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls.json 1`] = `
 "#!/bin/bash
 function get_realpath() {
   [[ ! -f \\"$1\\" ]] && return 1 # failure : file does not exist.
@@ -970,6 +970,6 @@ Array [
   "e2e/__tmp__/network-02-simple-tls/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-02-simple-tls/fabric-docker/scripts/base-help.sh",
   "e2e/__tmp__/network-02-simple-tls/fabric-docker/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/network-02-simple-tls/fabrikka.sh",
+  "e2e/__tmp__/network-02-simple-tls/fabrikka-docker.sh",
 ]
 `;

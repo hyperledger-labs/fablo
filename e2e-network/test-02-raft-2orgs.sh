@@ -7,13 +7,13 @@ mkdir -p "$TEST_TMP"
 CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raft.json"
 
 networkUpAsync() {
-  (sh "$FABRIKKA_HOME/docker-generate.sh" "$CONFIG" "$TEST_TMP" &&
+  (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
-    (sh fabrikka.sh up &))
+    (sh fabrikka-docker.sh up &))
 }
 
 networkDown() {
-  (cd "$TEST_TMP" && sh fabrikka.sh down)
+  (cd "$TEST_TMP" && sh fabrikka-docker.sh down)
 }
 
 waitFor() {
