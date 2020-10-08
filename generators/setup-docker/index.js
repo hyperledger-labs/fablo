@@ -106,8 +106,8 @@ module.exports = class extends Generator {
         this.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
       });
       this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabrikka.sh up - to start network');
-      this.log('-> fabrikka.sh help - to view all commands');
+      this.log('-> fabrikka-docker.sh up - to start network');
+      this.log('-> fabrikka-docker.sh help - to view all commands');
     });
   }
 
@@ -171,8 +171,8 @@ module.exports = class extends Generator {
 
   _copyUtilityScripts() {
     this.fs.copyTpl(
-      this.templatePath('fabrikka.sh'),
-      this.destinationPath('fabrikka.sh'),
+      this.templatePath('fabrikka-docker.sh'),
+      this.destinationPath('fabrikka-docker.sh'),
     );
 
     this.fs.copyTpl(
