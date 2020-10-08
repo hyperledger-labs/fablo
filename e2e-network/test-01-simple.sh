@@ -7,9 +7,7 @@ CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 CHAINCODE="$FABRIKKA_HOME/samples/chaincode-kv-node"
 
 networkUpAsync() {
-  (rm -rf "$TEST_TMP" &&
-    mkdir -p "$TEST_TMP" &&
-    sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
+  (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
     cp -R "$CHAINCODE" "$TEST_TMP" &&
     (sh fabrikka-docker.sh up &))
@@ -27,9 +25,7 @@ waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4"
 }
 
-networkUpAsync || (
-  printf "\n\nERROR: Cannot start network\n\n\n" && exit 1
-)
+networkUpAsync
 
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1" &&
