@@ -78,11 +78,12 @@ try {
     container('dind') {
 
       stage("Install libs") {
-        // nodejs npm - to run js tests
-        // bash - to run generated scripts
-        // docker-compose to test networks
         sh "apk add --no-cache nodejs npm bash docker-compose"
         sh "npm install"
+      }
+      stage ("Generate sample network") {
+        sh "./docker-generate.sh samples/fabrikkaConfig-1org-1channel-1chaincode.json __jenkinstmp__"
+        sh "ls -lh __jenkinstmp__/*"
       }
       stage('Test generators') {
         sh "CI=true npm run test:e2e"
