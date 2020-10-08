@@ -3,7 +3,14 @@ FROM node:14-alpine
 RUN apk add --no-cache sudo
 RUN npm install --global --silent yo
 
-COPY . /fabrikka
+COPY docs /fabrikka/docs
+COPY generators /fabrikka/generators
+COPY samples /fabrikka/samples
+COPY docker-entrypoint.sh /fabrikka/docker-entrypoint.sh
+COPY package.json /fabrikka/package.json
+COPY package-lock.json /fabrikka/package-lock.json
+COPY README.md /fabrikka/README.md
+
 WORKDIR /fabrikka
 RUN npm install --silent
 RUN npm link
