@@ -1,9 +1,11 @@
 #!/bin/sh
 
 if [ -z "$2" ]; then
-  echo "Usage: docker-generate.sh ./fabrikka-config.json ./target-network-dir"
+  echo "Usage: fabrikka.sh ./fabrikka-config.json ./target-network-dir"
   exit 1
 fi
+
+=> fabrikka-docker.sh
 
 fullPath() {
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
