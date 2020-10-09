@@ -9,11 +9,11 @@ CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 networkUpAsync() {
   (sh "$FABRIKKA_HOME/docker-generate.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
-    (sh fabrikka.sh up &))
+    (sh ./fabrikka.sh up &))
 }
 
 networkDown() {
-  (cd "$TEST_TMP" && sh fabrikka.sh down)
+  (cd "$TEST_TMP" && sh ./fabrikka.sh down)
 }
 
 waitFor() {
