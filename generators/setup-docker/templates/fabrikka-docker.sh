@@ -1,19 +1,11 @@
 #!/bin/bash
-function get_realpath() {
-  [[ ! -f "$1" ]] && return 1 # failure : file does not exist.
-  [[ -n "$no_symlinks" ]] && local pwdp='pwd -P' || local pwdp='pwd' # do symlinks.
-  echo "$( cd "$( echo "${1%/*}" )" 2>/dev/null; $pwdp )"/"${1##*/}" # echo result.
-  return 0 # success
-}
 
-SCRIPT=$(get_realpath "$0")
-BASEDIR=$(dirname "$SCRIPT")
+BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
 
-source "$BASEDIR"/fabric-docker/scripts/base-help.sh
-source "$BASEDIR"/fabric-docker/scripts/base-functions.sh
-source "$BASEDIR"/fabric-docker/commands-generated.sh
-
-source "$BASEDIR"/fabric-docker/.env
+source "$BASEDIR/fabric-docker/scripts/base-help.sh"
+source "$BASEDIR/fabric-docker/scripts/base-functions.sh"
+source "$BASEDIR/fabric-docker/commands-generated.sh"
+source "$BASEDIR/fabric-docker/.env"
 
 if [ "$1" = "up" ]; then
   generateArtifacts
