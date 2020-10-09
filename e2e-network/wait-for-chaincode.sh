@@ -13,10 +13,10 @@ listChaincodes() {
 }
 
 for i in $(seq 1 90); do
-  echo "Verifying if chaincode ($chaincode/$version) is ready on $channel ($i)..."
+  echo "Verifying if chaincode ($chaincode/$version) is ready on $channel/$cli ($i)..."
 
   if listChaincodes 2>&1 | grep "$search_string"; then
-    echo "Chaincode $chaincode/$version is ready on $channel!"
+    echo "Chaincode $chaincode/$version is ready on $channel/$cli!"
     exit 0
   else
     sleep 1
@@ -24,6 +24,6 @@ for i in $(seq 1 90); do
 done
 
 #timeout
-echo "Failed to verify chaincode $chaincode/$version on $channel"
+echo "Failed to verify chaincode $chaincode/$version on $channel/$cli"
 listChaincodes
 exit 1
