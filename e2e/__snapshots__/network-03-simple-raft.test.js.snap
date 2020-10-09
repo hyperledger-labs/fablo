@@ -149,30 +149,22 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 
 exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
 "#!/bin/bash
-function get_realpath() {
-  [[ ! -f \\"$1\\" ]] && return 1 # failure : file does not exist.
-  [[ -n \\"$no_symlinks\\" ]] && local pwdp='pwd -P' || local pwdp='pwd' # do symlinks.
-  echo \\"$( cd \\"$( echo \\"\${1%/*}\\" )\\" 2>/dev/null || exit; $pwdp )\\"/\\"\${1##*/}\\" # echo result.
-  return 0 # success
-}
 
-SCRIPT=$(get_realpath \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+BASEDIR=\\"$(cd \\"$(dirname \\"./$0\\")\\" && pwd)\\"
 
 function installChaincodes() {
   
-    
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
 }
 
@@ -356,7 +348,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper. 
-      - ../chaincode-kv-node/:/var/hyperledger/cli/chaincode1/
+      - ../chaincode1/:/var/hyperledger/cli/chaincode1/
     networks:
       - basic
   
@@ -371,7 +363,6 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
@@ -410,7 +401,6 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
@@ -913,21 +903,13 @@ function fetchChannelAndJoinTls() {
 
 exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
 "#!/bin/bash
-function get_realpath() {
-  [[ ! -f \\"$1\\" ]] && return 1 # failure : file does not exist.
-  [[ -n \\"$no_symlinks\\" ]] && local pwdp='pwd -P' || local pwdp='pwd' # do symlinks.
-  echo \\"$( cd \\"$( echo \\"\${1%/*}\\" )\\" 2>/dev/null || exit; $pwdp )\\"/\\"\${1##*/}\\" # echo result.
-  return 0 # success
-}
 
-SCRIPT=$(get_realpath \\"$0\\")
-BASEDIR=$(dirname \\"$SCRIPT\\")
+BASEDIR=\\"$(cd \\"$(dirname \\"./$0\\")\\" && pwd)\\"
 
-source \\"$BASEDIR\\"/fabric-docker/scripts/base-help.sh
-source \\"$BASEDIR\\"/fabric-docker/scripts/base-functions.sh
-source \\"$BASEDIR\\"/fabric-docker/commands-generated.sh
-
-source \\"$BASEDIR\\"/fabric-docker/.env
+source \\"$BASEDIR/fabric-docker/scripts/base-help.sh\\"
+source \\"$BASEDIR/fabric-docker/scripts/base-functions.sh\\"
+source \\"$BASEDIR/fabric-docker/commands-generated.sh\\"
+source \\"$BASEDIR/fabric-docker/.env\\"
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
