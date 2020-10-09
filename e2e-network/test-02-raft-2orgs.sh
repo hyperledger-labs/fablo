@@ -1,6 +1,7 @@
 #!/bin/sh
 
 TEST_TMP="$(mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
+TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raft.json"
@@ -13,8 +14,27 @@ networkUpAsync() {
     (sh fabrikka-docker.sh up &))
 }
 
+dumpLogs() {
+  echo "Saving logs of $1 to $TEST_LOGS/$1.log"
+  mkdir -p "$TEST_LOGS" &&
+    docker logs "$1" >"$TEST_LOGS/$1.log" 2>&1
+}
+
 networkDown() {
-  (cd "$TEST_TMP" && sh fabrikka-docker.sh down)
+  rm -rf "$TEST_LOGS" &&
+    dumpLogs "ca.root.com" &&
+    dumpLogs "orderer0.root.com" &&
+    dumpLogs "orderer1.root.com" &&
+    dumpLogs "orderer2.root.com" &&
+    dumpLogs "ca.org1.com" &&
+    dumpLogs "peer0.org1.com" &&
+    dumpLogs "peer1.org1.com" &&
+    dumpLogs "ca.org2.com" &&
+    dumpLogs "peer0.org2.com" &&
+    dumpLogs "peer1.org2.com" &&
+    dumpLogs "cli.org1.com" &&
+    dumpLogs "cli.org2.com" &&
+    (cd "$TEST_TMP" && sh fabrikka-docker.sh down)
 }
 
 waitForContainer() {
