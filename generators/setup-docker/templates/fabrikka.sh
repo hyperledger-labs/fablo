@@ -2,10 +2,10 @@
 
 BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
 
-source "$BASEDIR/fabric-compose/scripts/base-help.sh"
-source "$BASEDIR/fabric-compose/scripts/base-functions.sh"
-source "$BASEDIR/fabric-compose/commands-generated.sh"
-source "$BASEDIR/fabric-compose/.env"
+source "$BASEDIR/fabric-docker/scripts/base-help.sh"
+source "$BASEDIR/fabric-docker/scripts/base-functions.sh"
+source "$BASEDIR/fabric-docker/commands-generated.sh"
+source "$BASEDIR/fabric-docker/.env"
 
 if [ "$1" = "up" ]; then
   generateArtifacts

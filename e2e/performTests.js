@@ -5,15 +5,21 @@ const schema = require('../docs/schema');
 
 expect.extend(matchers);
 
-const executeCommand = (c) => execSync(c, { encoding: 'utf-8' });
-
-const generate = (config, target) => {
-  const output = executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+const executeCommand = (c) => {
   // eslint-disable-next-line no-console
-  console.log(output);
+  console.log(c);
+  const out = execSync(c, { encoding: 'utf-8' });
+
+  // eslint-disable-next-line no-console
+  console.log(out);
+  return out;
 };
 
-const getFiles = (dir) => executeCommand(`find ${dir}/* -type f`)
+const generate = (config, target) => {
+  executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+};
+
+const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
   .split('\n')
   .filter((s) => !!s.length)
   .sort();
