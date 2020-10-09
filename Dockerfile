@@ -5,7 +5,6 @@ RUN npm install --global --silent yo
 
 COPY docs /fabrikka/docs
 COPY generators /fabrikka/generators
-COPY samples /fabrikka/samples
 COPY docker-entrypoint.sh /fabrikka/docker-entrypoint.sh
 COPY package.json /fabrikka/package.json
 COPY package-lock.json /fabrikka/package-lock.json
