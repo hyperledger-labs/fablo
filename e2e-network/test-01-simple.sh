@@ -12,11 +12,11 @@ networkUpAsync() {
     sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
     cp -R "$CHAINCODE" "$TEST_TMP" &&
-    (sh fabrikka-docker.sh up &))
+    (sh ./fabrikka-docker.sh up &))
 }
 
 networkDown() {
-  (cd "$TEST_TMP" && sh fabrikka-docker.sh down)
+  (cd "$TEST_TMP" && sh ./fabrikka-docker.sh down)
 }
 
 waitForContainer() {
