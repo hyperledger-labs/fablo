@@ -1,6 +1,3 @@
-import util/log
-import util/tryCatch
-
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -23,16 +20,12 @@ function certsGenerate() {
     exit 1
   fi
 
-  try {
-    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-    docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
 
-    docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH
-  } catch {
-    removeContainer $CONTAINER_NAME
-  }
+  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
   for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
@@ -54,17 +47,14 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  try {
-    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-    docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
 
-    docker cp $CONTAINER_NAME:/config $OUTPUT_PATH
-  } catch {
-    removeContainer $CONTAINER_NAME
-  }
+  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+
   removeContainer $CONTAINER_NAME
 }
 
@@ -89,17 +79,14 @@ function createChannelTx() {
     exit 1
   fi
 
-  try {
-    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-    docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
 
-    docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH
-  } catch {
-    removeContainer $CONTAINER_NAME
-  }
+  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
+
   removeContainer $CONTAINER_NAME
 }
 
@@ -119,17 +106,14 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  try {
-    docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash
-    docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
+  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-    docker exec -i $CONTAINER_NAME mkdir /config
-    docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP}
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
 
-    docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH
-  } catch {
-    removeContainer $CONTAINER_NAME
-  }
+  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+
   removeContainer $CONTAINER_NAME
 }
 
@@ -289,19 +273,28 @@ function chaincodeInstantiateTls() {
 }
 
 function printHeadline() {
+  bold=$'\e[1m'
+  end=$'\e[0m'
+
   TEXT=$1
   EMOJI=$2
-  printf "$(UI.Color.Bold)============ %b %s %b ==============$(UI.Color.Default)\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
+  printf "${bold}============ %b %s %b ==============${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
 }
 
 function printItalics() {
+  italics=$'\e[3m'
+  end=$'\e[0m'
+
   TEXT=$1
   EMOJI=$2
-  printf "$(UI.Color.Italics)==== %b %s %b ====$(UI.Color.Default)\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
+  printf "${italics}==== %b %s %b ====${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
 }
 
 function inputLog() {
-  echo "$(UI.Color.DarkGray)   $1 $(UI.Color.Default)"
+  end=$'\e[0m'
+  darkGray=$'\e[90m'
+
+  echo "${darkGray}   $1 ${end}"
 }
 
 function certsRemove() {

@@ -85,8 +85,12 @@ try {
       parallel(
         failFast: false,
         'Install docker-compose': {
-          stage('Install docker-compose') {
-            sh "pip install docker-compose"
+          stage("Install libs") {
+            // nodejs npm - to run js tests
+            // bash - to run generated scripts
+            // docker-compose to test networks
+            sh "apk add --no-cache nodejs npm bash docker-compose"
+            sh "npm install"
           }
         },
         'JS Tests': {
