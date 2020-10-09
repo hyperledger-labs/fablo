@@ -16,4 +16,6 @@ done
 
 #timeout
 echo "Failed to verify $container"
+echo "Last log messages:"
+docker logs "$container" | tail -n 30
 exit 1

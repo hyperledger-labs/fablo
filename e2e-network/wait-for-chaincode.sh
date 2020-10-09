@@ -25,4 +25,5 @@ done
 
 #timeout
 echo "Failed to verify chaincode $chaincode/$version on $channel"
+listChaincodes
 exit 1
