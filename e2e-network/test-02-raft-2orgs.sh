@@ -11,7 +11,7 @@ networkUpAsync() {
   (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
     cd "$TEST_TMP" &&
     cp -R "$CHAINCODE" "$TEST_TMP" &&
-    (sh fabrikka-docker.sh up &))
+    (sh ./fabrikka-docker.sh up &))
 }
 
 dumpLogs() {
@@ -34,7 +34,7 @@ networkDown() {
     dumpLogs "peer1.org2.com" &&
     dumpLogs "cli.org1.com" &&
     dumpLogs "cli.org2.com" &&
-    (cd "$TEST_TMP" && sh fabrikka-docker.sh down)
+    (cd "$TEST_TMP" && sh ./fabrikka-docker.sh down)
 }
 
 waitForContainer() {
