@@ -1,13 +1,6 @@
 #!/bin/bash
-function get_realpath() {
-  [[ ! -f "$1" ]] && return 1 # failure : file does not exist.
-  [[ -n "$no_symlinks" ]] && local pwdp='pwd -P' || local pwdp='pwd' # do symlinks.
-  echo "$( cd "$( echo "${1%/*}" )" 2>/dev/null || exit; $pwdp )"/"${1##*/}" # echo result.
-  return 0 # success
-}
 
-SCRIPT=$(get_realpath "$0")
-BASEDIR=$(dirname "$SCRIPT")
+BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
 
 function installChaincodes() {
   <% chaincodes.forEach(function(chaincode) {

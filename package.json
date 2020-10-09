@@ -11,9 +11,7 @@
   "scripts": {
     "lint": "eslint --fix generators e2e",
     "test:unit": "jest generators",
-    "test:e2e-generate": "docker build --tag e2e-gen e2e/generator && docker run --name e2e-generate -v `[ -z \"$WORKSPACE\" ] && echo \"$PWD\" || echo \"$WORKSPACE\"`:/fabrikka e2e-gen && docker rm -f e2e-generate",
-    "test:e2e": "jest e2e",
-    "test:e2e-update": "jest e2e --watchAll"
+    "test:e2e": "jest e2e -i"
   },
   "dependencies": {
     "chalk": "^4.1.0",
