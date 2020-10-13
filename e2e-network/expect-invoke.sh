@@ -7,6 +7,11 @@ chaincode="$4"
 command="$5"
 expected="$6"
 
+if [ -z "$expected" ]; then
+  echo "Usage: ./expect-invoke.sh [cli] [peer] [channel] [chaincode] [command] [expected_substring]"
+  exit 1
+fi
+
 label="Invoke $cli/$peer $command"
 echo "[testing] $label"
 
