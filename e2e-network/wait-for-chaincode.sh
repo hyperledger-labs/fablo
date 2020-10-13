@@ -1,13 +1,14 @@
 #!/bin/sh
 
 cli=$1
-channel=$2
-chaincode=$3
-version=$4
+peer=$2
+channel=$3
+chaincode=$4
+version=$5
 search_string="Name: $chaincode, Version: $version"
 
 listChaincodes() {
-  docker exec "$cli" peer chaincode list \
+  docker exec -e CORE_PEER_ADDRESS="$peer" "$cli" peer chaincode list \
     -C "$channel" \
     --instantiated
 }
