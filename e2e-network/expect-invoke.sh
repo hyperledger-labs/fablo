@@ -12,7 +12,7 @@ if [ -z "$expected" ]; then
   exit 1
 fi
 
-label="Invoke $cli/$peer $command"
+label="Invoke $channel/$cli/$peer $command"
 echo "[testing] $label"
 
 response="$(

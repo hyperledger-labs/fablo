@@ -69,6 +69,9 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
     '{\"success\":\"OK\"}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Jack Sparrow\"}' &&
   expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
