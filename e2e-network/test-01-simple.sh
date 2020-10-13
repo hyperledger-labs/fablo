@@ -39,6 +39,34 @@ waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
 }
 
+expectInvoke() {
+  cli="$1"
+  peer="$2"
+  command="$3"
+  expected="$4"
+  label="Invoke $cli/$peer $command"
+
+  expectedStatus="status:200"
+
+  response="$(
+    docker exec -e CORE_PEER_ADDRESS="$peer:7051" "$cli" peer chaincode invoke \
+      -C "my-channel1" \
+      -n "chaincode1" \
+      -c "$command" \
+      --waitForEvent \
+      2>&1
+  )"
+
+  if echo "$response" | grep "$expected"; then
+    echo "[ok] $label"
+  else
+    echo "[failed] $label
+      expected: $expected
+      actual:   $response"
+    exit 1
+  fi
+}
+
 networkUpAsync
 
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
@@ -48,4 +76,6 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+  expectInvoke "cli.org1.com" "peer0.org1.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}' '{\"success\":\"OK\"}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" '{"Args":["KVContract:get", "name"]}' '{\"success\":\"Willy Wonka\"}' &&
   networkDown || (networkDown && exit 1)
