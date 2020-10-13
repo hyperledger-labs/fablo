@@ -45,6 +45,10 @@ waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
 }
 
+expectInvoke() {
+  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4"
+}
+
 networkUpAsync
 
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
@@ -62,4 +66,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org2.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
+    '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
+    '{\"success\":\"OK\"}' &&
+  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Jack Sparrow\"}' &&
   networkDown || (networkDown && exit 1)

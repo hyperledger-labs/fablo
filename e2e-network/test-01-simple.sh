@@ -52,6 +52,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
-  expectInvoke "cli.org1.com" "peer0.org1.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}' '{\"success\":\"OK\"}' &&
-  expectInvoke "cli.org1.com" "peer1.org1.com" '{"Args":["KVContract:get", "name"]}' '{\"success\":\"Willy Wonka\"}' &&
+  expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
+    '{\"success\":\"OK\"}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Willy Wonka\"}' &&
   networkDown || (networkDown && exit 1)
