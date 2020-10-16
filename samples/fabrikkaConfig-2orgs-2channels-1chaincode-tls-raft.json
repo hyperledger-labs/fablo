@@ -100,7 +100,7 @@
       "lang": "node",
       "channel": "channel2",
       "init": "{\"Args\":[]}",
-      "endorsement": "AND ('Org1MSP.member', 'Org2MSP.member')",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "directory": "chaincode-kv-node"
     }
   ]
