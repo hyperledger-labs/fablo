@@ -18,10 +18,13 @@ echo "[testing] $label"
 response="$(
   docker exec "$cli" peer chaincode invoke \
     --peerAddresses "$peer:7051" \
+    --tlsRootCertFiles "/var/hyperledger/cli/crypto/peers/$peer/tls/ca.crt" \
     -C "$channel" \
     -n "$chaincode" \
     -c "$command" \
     --waitForEvent \
+    --tls \
+    --cafile "/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem" \
     2>&1
 )"
 
