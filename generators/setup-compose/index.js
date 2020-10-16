@@ -103,7 +103,7 @@ module.exports = class extends Generator {
 
     this.on('end', () => {
       chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        this.log(`INFO: chaincode '${chaincode.name}' not found. Use generated folder and place it there.`);
+        this.log(`INFO: chaincode '${chaincode.name}' not found in ${chaincode.chaincodePath}. Use generated folder and place it there.`);
       });
       this.log('Done & done !!! Try the network out: ');
       this.log('-> fabric-compose.sh up - to start network');

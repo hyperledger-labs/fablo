@@ -26,6 +26,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
+      chaincodePath,
       chaincodePathExists,
     };
   });
