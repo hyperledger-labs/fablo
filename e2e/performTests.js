@@ -18,7 +18,7 @@ const executeCommand = (c, noConsole = false) => {
 };
 
 const generate = (config, target) => {
-  executeCommand(`rm -rf "${target}" && sh "fabrikka.sh" "${config}" "${target}"`);
+  executeCommand(`rm -rf "${target}" && sh fabrikka.sh generate "${config}" "${target}"`);
 };
 
 const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
