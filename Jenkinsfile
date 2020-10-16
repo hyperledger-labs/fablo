@@ -82,6 +82,7 @@ try {
         sh "npm install"
       }
       stage ("Generate sample network") {
+        sh "./fabrikka.sh build"
         sh "./fabrikka.sh generate samples/fabrikkaConfig-1org-1channel-1chaincode.json __jenkinstmp__"
         sh "ls -lh __jenkinstmp__/*"
       }
