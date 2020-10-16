@@ -8,8 +8,7 @@ CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 CHAINCODES="$FABRIKKA_HOME/chaincodes"
 
 networkUpAsync() {
-  sh "$FABRIKKA_HOME/fabrikka.sh" build &&
-    sh "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG" "$TEST_TMP" "$CHAINCODES" &&
+  sh "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG" "$TEST_TMP" "$CHAINCODES" &&
     (sh "$FABRIKKA_HOME/fabrikka.sh" up "$CONFIG" "$TEST_TMP" "$CHAINCODES" &)
 }
 
