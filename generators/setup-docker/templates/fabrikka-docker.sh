@@ -1,11 +1,13 @@
 #!/bin/bash
 
-BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
+FABRIKKA_DOCKER_ROOT="/network/docker"
+FABRIKKA_CHAINCODES_ROOT="/network/chaincodes"
+#FABRIKKA_DOCKER_ROOT="$(cd "$(dirname "./$0")" && pwd)"
 
-source "$BASEDIR/fabric-docker/scripts/base-help.sh"
-source "$BASEDIR/fabric-docker/scripts/base-functions.sh"
-source "$BASEDIR/fabric-docker/commands-generated.sh"
-source "$BASEDIR/fabric-docker/.env"
+source "$FABRIKKA_DOCKER_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABRIKKA_DOCKER_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABRIKKA_DOCKER_ROOT/fabric-docker/commands-generated.sh"
+source "$FABRIKKA_DOCKER_ROOT/fabric-docker/.env"
 
 if [ "$1" = "up" ]; then
   generateArtifacts

@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-RUN apk add --no-cache sudo
+RUN apk add --no-cache sudo docker-cli docker-compose
 RUN npm install --global --silent yo
 
 COPY docs /fabrikka/docs
@@ -26,6 +26,5 @@ RUN adduser -D -u 501 yeoman && \
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /home/yeoman
 
-USER yeoman
 WORKDIR /fabrikka
 ENTRYPOINT /fabrikka/docker-entrypoint.sh
