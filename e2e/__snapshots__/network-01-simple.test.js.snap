@@ -324,7 +324,7 @@ services:
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
-      - /var/run/:/host/var/run/
+      - /var/run/docker.sock:/host/var/run/docker.sock
       - ./scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
@@ -355,7 +355,7 @@ services:
       - 7051:7051
      #- 7053:7053
     volumes:
-      - /var/run/:/host/var/run/
+      - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
@@ -388,7 +388,7 @@ services:
       - 7052:7051
      #- 7053:7053
     volumes:
-      - /var/run/:/host/var/run/
+      - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
