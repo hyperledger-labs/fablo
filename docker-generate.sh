@@ -9,9 +9,9 @@ if [ "$1" = "build" ]; then
   docker build --tag fabrikka "$FABRIKKA_HOME" && exit 0
 fi
 
-if [ -z "$4" ]; then
+if [ -z "$3" ]; then
   # TODO consider reasonable defaults
-  echo "Usage: fabrikka.sh [command] ./fabrikka-config.json ./target-network-dir ./chaincodes-dir"
+  echo "Usage: fabrikka.sh [command] ./fabrikka-config.json ./target-network-dir [./chaincodes-dir"]
   exit 1
 fi
 
