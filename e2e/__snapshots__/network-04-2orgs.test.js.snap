@@ -170,8 +170,8 @@ exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabr
 function installChaincodes() {
   
   printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-npm run build --prefix \\"$BASEDIR/chaincode-kv-node\\"
-
+npm run build --prefix \\"$FABRIKKA_CHAINCODES_ROOT/chaincode-kv-node\\"
+  
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"$FABRIKKA_CHAINCODES_ROOT/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   
@@ -369,7 +369,7 @@ services:
       - \\"$NETWORK_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
       - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
       - \\"$NETWORK_TARGET/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper. 
       - \\"$CHAINCODES/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
@@ -482,7 +482,7 @@ services:
       - \\"$NETWORK_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
       - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/\\"
       - \\"$NETWORK_TARGET/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper. 
       - \\"$CHAINCODES/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
