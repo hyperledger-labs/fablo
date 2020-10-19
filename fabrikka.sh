@@ -23,7 +23,7 @@ NETWORK_CONFIG="$(fullPath "$2")"
 NETWORK_TARGET="$(mkdir -p "$(dirname "$3")" && fullPath "$3")"
 CHAINCODES="$(mkdir -p "$(dirname "$4")" && fullPath "$4")"
 
-docker run -i \
+docker run -i --rm \
   -v "$NETWORK_CONFIG":/network/config.json \
   -v "$NETWORK_TARGET":/network/docker \
   -v "$CHAINCODES":/network/chaincodes \
