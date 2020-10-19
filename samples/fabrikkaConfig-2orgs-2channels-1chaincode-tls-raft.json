@@ -99,9 +99,9 @@
       "version": "0.0.1",
       "lang": "java",
       "channel": "channel1",
-      "init": "{'Args':[]}",
-      "endorsement": "AND ('Org1.member')",
-      "directory": "chaincode1"
+      "init": "{\"Args\":[]}",
+      "endorsement": "AND ('Org1MSP.member')",
+      "directory": "chaincode-kv-node"
     }
   ]
 }

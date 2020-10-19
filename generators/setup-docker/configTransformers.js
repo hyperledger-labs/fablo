@@ -9,7 +9,6 @@ function getFullPathOf(configFile, env) {
   return `${currentPath}/${configFile}`;
 }
 
-
 function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels
@@ -44,7 +43,6 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
     };
   });
 }
-
 
 function transformRootOrgConfig(rootOrgJsonConfigFormat) {
   const orderersExtended = transformOrderersConfig(

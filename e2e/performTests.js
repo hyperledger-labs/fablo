@@ -5,18 +5,20 @@ const schema = require('../docs/schema');
 
 expect.extend(matchers);
 
-const executeCommand = (c) => {
-  // eslint-disable-next-line no-console
-  console.log(c);
-  const out = execSync(c, { encoding: 'utf-8' });
+const executeCommand = (c, noConsole = false) => {
+  const log = (out) => {
+    // eslint-disable-next-line no-console
+    if (!noConsole) console.log(out);
+  };
 
-  // eslint-disable-next-line no-console
-  console.log(out);
+  log(c);
+  const out = execSync(c, { encoding: 'utf-8' });
+  log(out);
   return out;
 };
 
 const generate = (config, target) => {
-  executeCommand(`sh "docker-generate.sh" "${config}" "${target}"`);
+  executeCommand(`rm -rf "${target}" && sh "fabrikka.sh" "${config}" "${target}"`);
 };
 
 const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
@@ -40,7 +42,7 @@ const testFilesExistence = (config, files) => {
 
 const testFilesContent = (config, files) => files.forEach((f) => {
   it(`should create proper ${f} from ${config}`, () => {
-    expect(executeCommand(`cat ${f}`)).toMatchSnapshot();
+    expect(executeCommand(`cat ${f}`, true)).toMatchSnapshot();
   });
 });
 
