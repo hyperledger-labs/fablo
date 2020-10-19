@@ -101,7 +101,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=:/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
