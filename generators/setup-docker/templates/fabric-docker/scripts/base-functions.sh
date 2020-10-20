@@ -90,7 +90,7 @@ function createChannelTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function createAnchorPeerUpdateTx() {
+function createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
 
   local CHANNEL_NAME=$1
@@ -98,7 +98,7 @@ function createAnchorPeerUpdateTx() {
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
   local MSP=$5
-  local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP"anchors.tx"
+  local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP"anchors-$CHANNEL_NAME.tx"
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
     echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
@@ -110,11 +110,57 @@ function createAnchorPeerUpdateTx() {
   docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen \
+    --configPath ./fabric-config \
+    -profile ${CONFIG_PROFILE} \
+    -outputAnchorPeersUpdate ./config/${MSP}anchors.tx \
+    -channelID ${CHANNEL_NAME} \
+    -asOrg ${MSP} || removeContainer $CONTAINER_NAME
 
   docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
+}
+
+function updateChannelConfig() {
+  local CLI_NAME=$1
+  local MSP_NAME=$2
+  local PEER_ADDRESS=$3
+  local CHANNEL_NAME=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+
+  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "MSP_NAME: $MSP_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+      $CLI_NAME peer channel update \
+      -c $CHANNEL_NAME \
+      -o $ORDERER_URL \
+      -f $ANCHOR_PEER_UPDATE_PATH
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+}
+
+function deleteNewChannelUpdateTx() {
+  local CLI_NAME=$1
+  local MSP_NAME=$2
+  local CHANNEL_NAME=$3
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+
+  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec $CLI_NAME rm $ANCHOR_PEER_UPDATE_PATH
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+
 }
 
 function chaincodeInstall() {

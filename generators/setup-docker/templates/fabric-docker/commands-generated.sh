@@ -25,6 +25,18 @@ function installChaincodes() {
 
 }
 
+function notifyAnchorPeers() {
+  <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+createNewChannelUpdateTx "<%= channel.name %>" "$BASEDIR/fabric-config" "AllOrgChannel" "$BASEDIR/fabric-config/config" "<%= org.mspName %>"
+  <% })}) %>
+  <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+updateChannelConfig "cli.<%= org.domain %>" "<%= org.mspName %>" "peer0.<%= org.domain %>" "<%= channel.name %>"  "<%= rootOrg.ordererHead.address %>:7050"
+  <% })}) %>
+    <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+deleteChannelUpdateTx "cli.<%= org.domain %>" "<%= org.mspName %>" "<%= channel.name %>"
+  <% })}) %>
+}
+
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"

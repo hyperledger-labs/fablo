@@ -30,6 +30,8 @@ elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
+elif [ "$1" = "notify" ]; then
+  notifyAnchorPeers
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
