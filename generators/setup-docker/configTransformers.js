@@ -65,6 +65,17 @@ function extendPeers(peerJsonFormat, domainJsonFormat) {
   }));
 }
 
+function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
+  let anchorPeerInstances = peerJsonFormat.anchorPeerInstances
+  if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
+    anchorPeerInstances = 1;
+  }
+  return Array(anchorPeerInstances).fill().map((x, i) => i).map((i) => ({
+    name: `peer${i}`,
+    address: `peer${i}.${domainJsonFormat}`,
+  }));
+}
+
 function transformOrgConfig(orgJsonConfigFormat) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonConfigFormat.organization.name.toLowerCase()}`;
   return {
@@ -72,6 +83,7 @@ function transformOrgConfig(orgJsonConfigFormat) {
     mspName: orgJsonConfigFormat.organization.mspName,
     domain: orgJsonConfigFormat.organization.domain,
     peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
+    anchorPeers: extendAnchorPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
     peersCount: orgJsonConfigFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
   };
