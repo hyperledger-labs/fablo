@@ -78,7 +78,7 @@ try {
     container('dind') {
 
       stage("Install libs") {
-        sh "apk add --no-cache nodejs npm bash docker-compose"
+        sh "apk add --no-cache nodejs npm docker-cli"
         sh "npm install"
       }
       stage ("Generate sample network") {
