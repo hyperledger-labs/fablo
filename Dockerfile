@@ -20,8 +20,8 @@ RUN npm link
 # @see https://github.com/yeoman/yeoman.github.io/issues/282
 # @see https://github.com/cthulhu666/docker-yeoman/blob/master/Dockerfile
 # @see https://github.com/phase2/docker-yeoman/blob/master/Dockerfile
-# RUN adduser -D -u 501 yeoman && \
-#   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+ RUN adduser -D -u 501 yeoman && \
+   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /home/yeoman
