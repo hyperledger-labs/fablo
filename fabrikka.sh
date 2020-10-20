@@ -40,7 +40,7 @@ yeomanGenerate() {
       --env NETWORK_CONFIG="$NETWORK_CONFIG" \
       --env NETWORK_TARGET="$NETWORK_TARGET" \
       --env CHAINCODES="$CHAINCODES" \
-      -u "$(id -u "${USER}"):$(id -g "${USER}")" \
+      -u "$(id -u):$(id -g)" \
       fabrikka
 }
 
