@@ -71,6 +71,8 @@ module.exports = class extends Generator {
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
     this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
+
+    this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
   }
 
   async summary() {
@@ -178,5 +180,20 @@ module.exports = class extends Generator {
             this.emit(validationErrorType.ERROR, objectToEmit);
         }
     }
+  }
+
+  _validateOrgsAnchorPeerInstancesCount(orgs) {
+    orgs.forEach((org) => {
+      const numberOfPeers = org.peer.instances
+      const numberOfAnchorPeers = org.peer.anchorPeerInstances
+
+      if(numberOfPeers < numberOfAnchorPeers) {
+        const objectToEmit = {
+          category: validationCategories.PEER,
+          message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
+    });
   }
 };
