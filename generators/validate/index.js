@@ -184,10 +184,10 @@ module.exports = class extends Generator {
 
   _validateOrgsAnchorPeerInstancesCount(orgs) {
     orgs.forEach((org) => {
-      const numberOfPeers = org.peer.instances
-      const numberOfAnchorPeers = org.peer.anchorPeerInstances
+      const numberOfPeers = org.peer.instances;
+      const numberOfAnchorPeers = org.peer.anchorPeerInstances;
 
-      if(numberOfPeers < numberOfAnchorPeers) {
+      if (numberOfPeers < numberOfAnchorPeers) {
         const objectToEmit = {
           category: validationCategories.PEER,
           message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
