@@ -1,6 +1,6 @@
 #!/bin/sh
 
-config="/network/config.json"
+config="/network/fabrikka-config.json"
 target="/network/docker"
 chaincodes="/network/chaincodes"
 command="$COMMAND"
