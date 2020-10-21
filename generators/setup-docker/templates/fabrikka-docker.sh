@@ -9,21 +9,21 @@ source "$BASEDIR/fabric-docker/scripts/base-functions.sh"
 source "$BASEDIR/fabric-docker/commands-generated.sh"
 source "$BASEDIR/fabric-docker/.env"
 
-if [ "$1" = "up" ]; then
+function newNetwork() {
   generateArtifacts
   startNetwork
   generateChannelsArtifacts
   installChannels
   installChaincodes
+  notifyOrgsAboutChannels
   printHeadline "Done! Enjoy your fresh network" "U1F984"
+}
+
+if [ "$1" = "up" ]; then
+  newNetwork
 elif [ "$1" = "recreate" ]; then
   networkDown
-  generateArtifacts
-  startNetwork
-  generateChannelsArtifacts
-  installChannels
-  installChaincodes
-  printHeadline "Done! Enjoy your fresh network" "U1F984"
+  newNetwork
 elif [ "$1" = "down" ]; then
   networkDown
 elif [ "$1" = "start" ]; then
@@ -32,8 +32,6 @@ elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
-elif [ "$1" = "notify" ]; then
-  notifyAnchorPeers
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then

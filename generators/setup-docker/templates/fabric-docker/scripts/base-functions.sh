@@ -157,6 +157,35 @@ function notifyOrgAboutNewChannel() {
   fi
 }
 
+function notifyOrgAboutNewChannelTls() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local PEER_ADDRESS=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+  local CA_CERT="/var/hyperledger/cli/"${6}
+
+  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME (TLS)..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "MSP_NAME: $MSP_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+      $CLI_NAME peer channel update \
+      -c $CHANNEL_NAME \
+      -o $ORDERER_URL \
+      -f $ANCHOR_PEER_UPDATE_PATH \
+      --tls --cafile $CA_CERT
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+}
+
 function deleteNewChannelUpdateTx() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
