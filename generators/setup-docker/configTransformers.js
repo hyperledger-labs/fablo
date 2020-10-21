@@ -66,7 +66,7 @@ function extendPeers(peerJsonFormat, domainJsonFormat) {
 }
 
 function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
-  let anchorPeerInstances = peerJsonFormat.anchorPeerInstances
+  let { anchorPeerInstances } = peerJsonFormat;
   if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
     anchorPeerInstances = 1;
   }
@@ -83,7 +83,10 @@ function transformOrgConfig(orgJsonConfigFormat) {
     mspName: orgJsonConfigFormat.organization.mspName,
     domain: orgJsonConfigFormat.organization.domain,
     peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
-    anchorPeers: extendAnchorPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
+    anchorPeers: extendAnchorPeers(
+      orgJsonConfigFormat.peer,
+      orgJsonConfigFormat.organization.domain,
+    ),
     peersCount: orgJsonConfigFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
   };
