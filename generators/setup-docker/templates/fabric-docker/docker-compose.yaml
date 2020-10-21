@@ -111,6 +111,7 @@ services:
       - ./scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/config/<%= org.organization.mspName %>:/var/hyperledger/cli/config/<%= org.organization.mspName %>
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper. <% chaincodes.forEach(function(chaincode) { %>
       - ../<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>
     networks:
