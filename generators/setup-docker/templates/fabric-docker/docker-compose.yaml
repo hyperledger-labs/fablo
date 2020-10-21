@@ -109,7 +109,7 @@ services:
       - "$FABRIKKA_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/"
       - "$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/"
       - "$FABRIKKA_TARGET/fabric-config/config:/var/hyperledger/cli/config/" # genesis.block and channel.tx's
-      - "$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls" # TODO ! To ease up deployment, not proper. <% chaincodes.forEach(function(chaincode) { %>
+      - "$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls" # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
       - "$CHAINCODES/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>"
     networks:
       - basic
