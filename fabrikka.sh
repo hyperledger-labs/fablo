@@ -48,7 +48,7 @@ executeNetworkCommand() {
   docker run -i --rm \
     -v "$NETWORK_CONFIG":/network/fabrikka-config.json \
     -v "$NETWORK_TARGET":/network/docker \
-    -v "$CHAINCODES":/network \
+    -v "$CHAINCODES":/network/chaincodes \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --env COMMAND="$COMMAND" \
     --env NETWORK_CONFIG="$NETWORK_CONFIG" \
