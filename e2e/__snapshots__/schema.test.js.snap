@@ -326,6 +326,13 @@ Object {
           "peer": Object {
             "$id": "#/properties/orgs/items/properties/peer",
             "properties": Object {
+              "anchorPeerInstances": Object {
+                "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Number of anchor peer instances",
+                "type": "integer",
+              },
               "db": Object {
                 "$id": "#/properties/orgs/items/properties/peer/properties/db",
                 "enum": Array [
