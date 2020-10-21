@@ -26,14 +26,17 @@ function installChaincodes() {
 }
 
 function notifyAnchorPeers() {
+  printHeadline "Creating new channel config blocks" "U1F537"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
-createNewChannelUpdateTx "<%= channel.name %>" "$BASEDIR/fabric-config" "AllOrgChannel" "$BASEDIR/fabric-config/config" "<%= org.mspName %>"
+createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChannel" "$BASEDIR/fabric-config"  "$BASEDIR/fabric-config/config"
   <% })}) %>
+  printHeadline "Notyfing orgs about channels" "U1F4E2"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
-updateChannelConfig "cli.<%= org.domain %>" "<%= org.mspName %>" "peer0.<%= org.domain %>" "<%= channel.name %>"  "<%= rootOrg.ordererHead.address %>:7050"
+notifyOrgAboutNewChannel "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.address %>:7050"
   <% })}) %>
+  printHeadline "Creating new channel config blocks" "U1F52A"
     <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
-deleteChannelUpdateTx "cli.<%= org.domain %>" "<%= org.mspName %>" "<%= channel.name %>"
+deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>"
   <% })}) %>
 }
 

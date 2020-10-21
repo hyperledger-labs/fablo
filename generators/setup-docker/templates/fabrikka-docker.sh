@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
 
 source "$BASEDIR/fabric-docker/scripts/base-help.sh"
