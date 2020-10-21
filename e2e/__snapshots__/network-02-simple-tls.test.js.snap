@@ -263,7 +263,7 @@ services:
       - 7030:7054
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -291,9 +291,9 @@ services:
     ports:
       - 7040:7050
     volumes:
-      - \\"$NETWORK_TARGET/fabric-config/config/:/var/hyperledger/config\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/config/:/var/hyperledger/config\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls\\"
     networks:
       - basic
     
@@ -310,7 +310,7 @@ services:
       - 7031:7054
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -338,10 +338,10 @@ services:
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$NETWORK_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
-      - \\"$NETWORK_TARGET/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper. 
+      - \\"$FABRIKKA_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
       - \\"$CHAINCODES/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
@@ -375,10 +375,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$NETWORK_TARGET/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -414,10 +414,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$NETWORK_TARGET/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_TARGET/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
