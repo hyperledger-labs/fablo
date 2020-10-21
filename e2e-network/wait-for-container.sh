@@ -3,6 +3,11 @@
 container="$1"
 expected_message="$2"
 
+if [ -z "$expected_message" ]; then
+  echo "Usage: ./wait-for-container.sh [container_name] [expcted_message]"
+  exit 1
+fi
+
 for i in $(seq 1 90); do
   echo "Verifying if container $container is ready ($i)..."
 

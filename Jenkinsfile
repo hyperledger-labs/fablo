@@ -44,7 +44,7 @@ spec:
 def runOnNewPod(String labelBase, String uuid, Closure closure) {
   def label = "${labelBase}-${uuid}"
   podTemplate(label: label, yaml: podTemplateYaml()) {
-    timeout(10) {
+    timeout(20) {
       node(label) {
         try {
           ansiColor('xterm') {
