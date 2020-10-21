@@ -18,7 +18,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - "$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto"
     networks:
       - basic
   <% for (ordererNo in rootOrg.orderers) {
@@ -50,9 +50,9 @@ services:
     ports:
       - <%= ordererHostPortToUse %>:7050
     volumes:
-      - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+      - "$NETWORK_TARGET/fabric-config/config/:/var/hyperledger/config"
+      - "$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp"
+      - "$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls"
     networks:
       - basic
   <% } -%>
@@ -78,7 +78,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= caUserVariable %>}:${<%= caPassVariable %>} -d'
     volumes:
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - "$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto"
     networks:
       - basic
   <% } -%>
@@ -103,17 +103,16 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=:/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ./scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/config/<%= org.organization.mspName %>:/var/hyperledger/cli/config/<%= org.organization.mspName %>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper. <% chaincodes.forEach(function(chaincode) { %>
-      - ../<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>
+      - "$NETWORK_TARGET/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/"
+      - "$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/"
+      - "$NETWORK_TARGET/fabric-config/config:/var/hyperledger/cli/config/" # genesis.block and channel.tx's
+      - "$NETWORK_TARGET/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls" # TODO ! To ease up deployment, not proper. <% chaincodes.forEach(function(chaincode) { %>
+      - "$CHAINCODES/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>"
     networks:
       - basic
   <% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
@@ -160,10 +159,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
-      - ../fabric-config/config:/etc/hyperledger/fabric/config
+      - "$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp"
+      - "$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/tls:/etc/hyperledger/fabric/peer/tls"
+      - "$NETWORK_TARGET/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/fabric/peer/msp/users"
+      - "$NETWORK_TARGET/fabric-config/config:/etc/hyperledger/fabric/config"
     depends_on:
       - <%= rootOrg.ordererHead.address %>
     networks:

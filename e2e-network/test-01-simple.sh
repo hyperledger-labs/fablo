@@ -5,13 +5,11 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
-CHAINCODE="$FABRIKKA_HOME/samples/chaincode-kv-node"
+CHAINCODES="$FABRIKKA_HOME/chaincodes"
 
 networkUpAsync() {
-  (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
-    cd "$TEST_TMP" &&
-    cp -R "$CHAINCODE" "$TEST_TMP" &&
-    (sh ./fabrikka-docker.sh up &))
+  sh "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG" "$TEST_TMP" "$CHAINCODES" &&
+    (sh "$FABRIKKA_HOME/fabrikka.sh" up "$CONFIG" "$TEST_TMP" "$CHAINCODES" &)
 }
 
 dumpLogs() {
@@ -28,7 +26,7 @@ networkDown() {
     dumpLogs "peer0.org1.com" &&
     dumpLogs "peer1.org1.com" &&
     dumpLogs "cli.org1.com" &&
-    (cd "$TEST_TMP" && sh ./fabrikka-docker.sh down)
+    (sh "$FABRIKKA_HOME/fabrikka.sh" down "$CONFIG" "$TEST_TMP" "$CHAINCODES")
 }
 
 waitForContainer() {
@@ -37,6 +35,10 @@ waitForContainer() {
 
 waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+}
+
+expectInvoke() {
+  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6"
 }
 
 networkUpAsync
@@ -54,4 +56,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1 : [{peer0.org1.com 7051}]" &&
   waitForContainer "peer1.org1.com" "[my-channel1] Validated block [1]" &&
   waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:  [[ peer0.org1.com:7051]] , current view:  [[ peer0.org1.com:7051]]" &&
+  expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
+    '{\"success\":\"OK\"}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Willy Wonka\"}' &&
   networkDown || (networkDown && exit 1)

@@ -7,6 +7,11 @@ chaincode=$4
 version=$5
 search_string="Name: $chaincode, Version: $version"
 
+if [ -z "$version" ]; then
+  echo "Usage: ./wait-for-chaincode.sh [cli] [peer] [channel] [chaincode] [version]"
+  exit 1
+fi
+
 listChaincodes() {
   docker exec -e CORE_PEER_ADDRESS="$peer:7051" "$cli" peer chaincode list \
     -C "$channel" \
