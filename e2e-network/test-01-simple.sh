@@ -48,4 +48,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+  waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1 : [{peer0.org1.com 7051}]" &&
+  waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself" &&
+  waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:  [[ peer1.org1.com:7051]] , current view:  [[ peer1.org1.com:7051]]" &&
+  waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1 : [{peer0.org1.com 7051}]" &&
+  waitForContainer "peer1.org1.com" "[my-channel1] Validated block [1]" &&
+  waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:  [[ peer0.org1.com:7051]] , current view:  [[ peer0.org1.com:7051]]" &&
   networkDown || (networkDown && exit 1)
