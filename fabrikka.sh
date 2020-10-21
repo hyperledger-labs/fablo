@@ -32,7 +32,7 @@ yeomanGenerate() {
   rm -rf "$NETWORK_TARGET" &&
     mkdir -p "$NETWORK_TARGET" &&
     docker run -i --rm \
-      -v "$NETWORK_CONFIG":/network/config.json \
+      -v "$NETWORK_CONFIG":/network/fabrikka-config.json \
       -v "$NETWORK_TARGET":/network/docker \
       -v "$CHAINCODES":/network/chaincodes \
       -v /tmp:/home/yeoman \
@@ -46,9 +46,9 @@ yeomanGenerate() {
 
 executeNetworkCommand() {
   docker run -i --rm \
-    -v "$NETWORK_CONFIG":/network/config.json \
+    -v "$NETWORK_CONFIG":/network/fabrikka-config.json \
     -v "$NETWORK_TARGET":/network/docker \
-    -v "$CHAINCODES":/network/chaincodes \
+    -v "$CHAINCODES":/network \
     -v /var/run/docker.sock:/var/run/docker.sock \
     --env COMMAND="$COMMAND" \
     --env NETWORK_CONFIG="$NETWORK_CONFIG" \
