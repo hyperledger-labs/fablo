@@ -1,13 +1,12 @@
 #!/bin/sh
 
 config="/network/config.json"
-target="/network/target"
+target="/network/docker"
+chaincodes="/network/chaincodes"
+command="$COMMAND"
 
-sudo rm -rf "$target/*" &&
-  sudo mkdir -p "$target" &&
-  sudo chown -R yeoman:yeoman "$target" &&
-  (
-    cd "$target" &&
-      yo --no-insight fabrikka:setup-docker "../../$config"
-  ) &&
-  sudo chown -R root:root "$target"
+if [ "$command" = "generate" ]; then
+  (cd "$target" && yo --no-insight fabrikka:setup-docker "../..$config")
+else
+  sh "$target/fabrikka-docker.sh" "$command"
+fi

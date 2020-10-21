@@ -1,7 +1,5 @@
 #!/bin/bash
 
-BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
-
 function installChaincodes() {
   <% chaincodes.forEach(function(chaincode) { %>
   <%- include('commands-generated-node-build.sh.ejs', {chaincode: chaincode}); -%>
@@ -10,16 +8,16 @@ function installChaincodes() {
   %>
   printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
   <% if(!networkSettings.tls) { -%>
-  chaincodeInstall "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  chaincodeInstall "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
   <% } else { -%>
-  chaincodeInstallTls "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+  chaincodeInstallTls "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } -%>
 
   printItalics "Instantiating '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F618"
   <% if(!networkSettings.tls) { -%>
-  chaincodeInstantiate "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
+  chaincodeInstantiate "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
   <% } else { -%>
-  chaincodeInstantiateTls "$BASEDIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+  chaincodeInstantiateTls "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } -%>
   <% })})}) -%>
 
@@ -47,19 +45,19 @@ deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"
-  certsGenerate "$BASEDIR/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$BASEDIR/fabric-config/crypto-config/"
+  certsGenerate "$FABRIKKA_DOCKER_ROOT/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printItalics "Generating crypto material for <%= org.name %>" "U1F512"
-  certsGenerate "$BASEDIR/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$BASEDIR/fabric-config/crypto-config/"
+  certsGenerate "$FABRIKKA_DOCKER_ROOT/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config/"
   <% }) %>
   printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$BASEDIR/fabric-config" "$BASEDIR/fabric-config/config"
+  genesisBlockCreate "$FABRIKKA_DOCKER_ROOT/fabric-config" "$FABRIKKA_DOCKER_ROOT/fabric-config/config"
 }
 
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
   (
-    cd "$BASEDIR"/fabric-docker
+    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
     docker-compose up -d
     sleep 4
   )
@@ -68,7 +66,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
   (
-    cd "$BASEDIR"/fabric-docker
+    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
     docker-compose stop
     sleep 4
   )
@@ -77,7 +75,7 @@ function stopNetwork() {
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-  createChannelTx "<%= channel.name %>" "$BASEDIR/fabric-config" "AllOrgChannel" "$BASEDIR/fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$FABRIKKA_DOCKER_ROOT/fabric-config" "AllOrgChannel" "$FABRIKKA_DOCKER_ROOT/fabric-config/config"
   <% }) -%>
 }
 
@@ -118,7 +116,7 @@ function installChannels() {
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
   (
-    cd "$BASEDIR"/fabric-docker
+    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
     docker-compose down
   )
 
@@ -137,8 +135,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf $FABRIKKA_DOCKER_ROOT/fabric-config/config
+  rm -rf $FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }
