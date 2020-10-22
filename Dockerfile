@@ -1,5 +1,6 @@
 FROM node:14-alpine
 
+## TODO cleanup
 RUN apk add --no-cache sudo docker-cli docker-compose
 RUN npm install --global --silent yo
 

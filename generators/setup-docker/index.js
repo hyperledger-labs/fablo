@@ -102,6 +102,7 @@ module.exports = class extends Generator {
     });
 
     this.on('end', () => {
+      // TODO do we really need it?
       chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
         this.log(`INFO: chaincode '${chaincode.name}' not found in ${chaincode.chaincodePath}. Use generated folder and place it there.`);
       });
