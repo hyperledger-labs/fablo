@@ -83,8 +83,8 @@ try {
       }
       stage ("Generate sample network") {
         sh "./fabrikka.sh build"
-        sh "./fabrikka.sh generate samples/fabrikkaConfig-1org-1channel-1chaincode.json __jenkinstmp__"
-        sh "ls -lh __jenkinstmp__/*"
+        sh "mkdir -p __jenkinstmp__"
+        sh "cd __jenkinstmp__ && ../fabrikka.sh generate ../samples/fabrikkaConfig-1org-1channel-1chaincode.json && ls -lh ./"
       }
       stage('Test generators') {
         sh "CI=true npm run test:e2e"
