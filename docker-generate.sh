@@ -43,8 +43,8 @@ elif [ "$COMMAND" = "generate" ]; then
     -v /tmp:/home/yeoman \
     -u "$(id -u):$(id -g)" \
     fabrikka &&
-    echo "FABRIKKA_NETWORK_ROOT=\"$FABRIKKA_NETWORK_ROOT\"" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
-    echo "FABRIKKA_CHAINCODES_ROOT=\"$FABRIKKA_CHAINCODES_ROOT\"" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    echo "FABRIKKA_NETWORK_ROOT=$FABRIKKA_NETWORK_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    echo "FABRIKKA_CHAINCODES_ROOT=$FABRIKKA_CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
     exit 0
 
 elif [ "$COMMAND" = "up" ]; then
