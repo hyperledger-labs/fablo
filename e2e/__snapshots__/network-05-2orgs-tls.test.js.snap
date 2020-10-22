@@ -161,49 +161,52 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
 
+FABRIKKA_NETWORK_ROOT=<absolute path>
+FABRIKKA_CHAINCODES_ROOT=<absolute path>
 "
 `;
 
 exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "#!/bin/bash
 
-BASEDIR=\\"$(cd \\"$(dirname \\"./$0\\")\\" && pwd)\\"
-
 function installChaincodes() {
   
+  printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
+npm run build --prefix \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\"
+  
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$BASEDIR/chaincode1\\" \\"chaincode1\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{'Args':[]}' \\"AND ('Org1.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstantiateTls \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
 }
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
   printItalics \\"Generating crypto material for org Orderer\\" \\"U1F512\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/\\"
   
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/\\"
   
   printItalics \\"Generating crypto material for Org2\\" \\"U1F512\\"
-  certsGenerate \\"$BASEDIR/fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"$BASEDIR/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/\\"
   
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
-  genesisBlockCreate \\"$BASEDIR/fabric-config\\" \\"$BASEDIR/fabric-config/config\\"
+  genesisBlockCreate \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
 }
 
 function startNetwork() {
   printHeadline \\"Starting network\\" \\"U1F680\\"
   (
-    cd \\"$BASEDIR\\"/fabric-docker
+    cd \\"$FABRIKKA_NETWORK_ROOT\\"/fabric-docker
     docker-compose up -d
     sleep 4
   )
@@ -212,7 +215,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (
-    cd \\"$BASEDIR\\"/fabric-docker
+    cd \\"$FABRIKKA_NETWORK_ROOT\\"/fabric-docker
     docker-compose stop
     sleep 4
   )
@@ -220,9 +223,9 @@ function stopNetwork() {
 
 function generateChannelsArtifacts() {
     printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel1\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
     printHeadline \\"Generating config for 'my-channel2'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel2\\" \\"$BASEDIR/fabric-config\\" \\"AllOrgChannel\\" \\"$BASEDIR/fabric-config/config\\"
+  createChannelTx \\"my-channel2\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
   }
 
 function installChannels() {
@@ -253,7 +256,7 @@ function installChannels() {
 function networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (
-    cd \\"$BASEDIR\\"/fabric-docker
+    cd \\"$FABRIKKA_NETWORK_ROOT\\"/fabric-docker
     docker-compose down
   )
 
@@ -274,8 +277,8 @@ function networkDown() {
   }
   
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf $BASEDIR/fabric-config/config
-  rm -rf $BASEDIR/fabric-config/crypto-config
+  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/config
+  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config
 
   printHeadline \\"Done! Network was purged\\" \\"U1F5D1\\"
 }
@@ -302,7 +305,7 @@ services:
       - 7030:7054
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -330,9 +333,9 @@ services:
     ports:
       - 7040:7050
     volumes:
-      - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config/:/var/hyperledger/config\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls\\"
     networks:
       - basic
     
@@ -349,7 +352,7 @@ services:
       - 7031:7054
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -372,16 +375,16 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/ca.crt
-      - TLS_CA_CERT_PATH=:/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ./scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper. 
-      - ../chaincode1/:/var/hyperledger/cli/chaincode1/
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
   
@@ -396,6 +399,7 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
@@ -413,10 +417,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
-      - ../fabric-config/config:/etc/hyperledger/fabric/config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -434,6 +438,7 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
@@ -451,10 +456,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
-      - ../fabric-config/config:/etc/hyperledger/fabric/config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -475,7 +480,7 @@ services:
       - 7032:7054
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -498,16 +503,16 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/ca.crt
-      - TLS_CA_CERT_PATH=:/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ./scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper. 
-      - ../chaincode1/:/var/hyperledger/cli/chaincode1/
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
   
@@ -522,6 +527,7 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
@@ -539,10 +545,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
-      - ../fabric-config/config:/etc/hyperledger/fabric/config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -560,6 +566,7 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - GODEBUG=netdns=go
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
@@ -577,10 +584,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/msp:/etc/hyperledger/fabric/peer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
-      - ../fabric-config/config:/etc/hyperledger/fabric/config
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -619,10 +626,14 @@ exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
 
+  mkdir -p \\"$OUTPUT_PATH\\"
   docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
-  for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv \${dir}/*_sk \${dir}/priv-key.pem; done
+  for file in $(find $OUTPUT_PATH/ -iname *_sk); do
+    dir=$(dirname $file)
+    mv \${dir}/*_sk \${dir}/priv-key.pem
+  done
 }
 
 function genesisBlockCreate() {
@@ -776,10 +787,10 @@ function chaincodeInstantiate() {
 
   if [ ! -z \\"$CHAINCODE_DIR_CONTENT\\" ]; then
     docker exec \\\\
-        -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
-        $CLI_NAME peer chaincode instantiate \\\\
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
-        -o $ORDERER_URL
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+      $CLI_NAME peer chaincode instantiate \\\\
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+      -o $ORDERER_URL
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -856,10 +867,10 @@ function chaincodeInstantiateTls() {
 
   if [ ! -z \\"$CHAINCODE_DIR_CONTENT\\" ]; then
     docker exec \\\\
-        -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
-        $CLI_NAME peer chaincode instantiate \\\\
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
-        -o $ORDERER_URL --tls --cafile $CA_CERT
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+      $CLI_NAME peer chaincode instantiate \\\\
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+      -o $ORDERER_URL --tls --cafile $CA_CERT
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -908,25 +919,25 @@ exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-
   echo \\"Fabrikka is powered by SoftwareMill\\"
 
   echo \\"\\"
-  echo \\"usage: ./fabrikka.sh <command>\\"
+  echo \\"usage: ./fabrikka-docker.sh <command>\\"
   echo \\"\\"
 
   echo \\"Commands: \\"
   echo \\"\\"
-  echo \\"./fabrikka.sh up\\"
+  echo \\"./fabrikka-docker.sh up\\"
   echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
   echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh down\\"
+  echo \\"./fabrikka-docker.sh down\\"
   echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh start\\"
+  echo \\"./fabrikka-docker.sh start\\"
   echo -e \\"\\\\t Starts already created network.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh stop\\"
+  echo \\"./fabrikka-docker.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabrikka.sh recreate\\"
+  echo \\"./fabrikka-docker.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
@@ -1060,15 +1071,15 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-docker.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "#!/bin/bash
 
-BASEDIR=\\"$(cd \\"$(dirname \\"./$0\\")\\" && pwd)\\"
+FABRIKKA_NETWORK_ROOT=<absolute path>
 
-source \\"$BASEDIR/fabric-docker/scripts/base-help.sh\\"
-source \\"$BASEDIR/fabric-docker/scripts/base-functions.sh\\"
-source \\"$BASEDIR/fabric-docker/commands-generated.sh\\"
-source \\"$BASEDIR/fabric-docker/.env\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
 
 if [ \\"$1\\" = \\"up\\" ]; then
   generateArtifacts
@@ -1119,6 +1130,6 @@ Array [
   "e2e/__tmp__/network-05-2orgs-tls/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabric-docker/scripts/base-help.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabric-docker/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/network-05-2orgs-tls/fabrikka.sh",
+  "e2e/__tmp__/network-05-2orgs-tls/fabrikka-docker.sh",
 ]
 `;

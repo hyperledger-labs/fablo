@@ -82,8 +82,9 @@ try {
         sh "npm install"
       }
       stage ("Generate sample network") {
-        sh "./docker-generate.sh samples/fabrikkaConfig-1org-1channel-1chaincode.json __jenkinstmp__"
-        sh "ls -lh __jenkinstmp__/*"
+        sh "./fabrikka.sh build"
+        sh "mkdir -p __jenkinstmp__"
+        sh "cd __jenkinstmp__ && ../fabrikka.sh generate ../samples/fabrikkaConfig-1org-1channel-1chaincode.json && ls -lh ./"
       }
       stage('Test generators') {
         sh "CI=true npm run test:e2e"
@@ -93,11 +94,19 @@ try {
       }
 
       stage("Test simple network") {
-        sh "e2e-network/test-01-simple.sh"
+        try {
+          sh "e2e-network/test-01-simple.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
+        }
       }
 
       stage("Test RAFT network (2 orgs)") {
-        sh "e2e-network/test-02-raft-2orgs.sh"
+        try {
+          sh "e2e-network/test-02-raft-2orgs.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
+        }
       }
 
     }

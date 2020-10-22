@@ -5,12 +5,10 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
-CHAINCODES="$FABRIKKA_HOME/chaincodes"
 
 networkUpAsync() {
-  sh "$FABRIKKA_HOME/fabrikka.sh" build &&
-    sh "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG" "$TEST_TMP" "$CHAINCODES" &&
-    (sh "$FABRIKKA_HOME/fabrikka.sh" up "$CONFIG" "$TEST_TMP" "$CHAINCODES" &)
+  (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG") &&
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" up &)
 }
 
 dumpLogs() {
@@ -27,7 +25,7 @@ networkDown() {
     dumpLogs "peer0.org1.com" &&
     dumpLogs "peer1.org1.com" &&
     dumpLogs "cli.org1.com" &&
-    (sh "$FABRIKKA_HOME/fabrikka.sh" down "$CONFIG" "$TEST_TMP" "$CHAINCODES")
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" down)
 }
 
 waitForContainer() {

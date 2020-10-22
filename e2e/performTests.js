@@ -18,7 +18,7 @@ const executeCommand = (c, noConsole = false) => {
 };
 
 const generate = (config, target) => {
-  executeCommand(`rm -rf "${target}" && sh "docker-generate.sh" "${config}" "${target}"`);
+  executeCommand(`(rm -rf "${target}" && mkdir -p "${target}" && cd "${target}" && sh ../../../fabrikka.sh generate "../../../${config}")`);
 };
 
 const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
@@ -42,7 +42,11 @@ const testFilesExistence = (config, files) => {
 
 const testFilesContent = (config, files) => files.forEach((f) => {
   it(`should create proper ${f} from ${config}`, () => {
-    expect(executeCommand(`cat ${f}`, true)).toMatchSnapshot();
+    const content = executeCommand(`cat ${f}`, true);
+    const cleaned = content
+      .replace(/FABRIKKA_NETWORK_ROOT=(.*?)(\n|$)/g, 'FABRIKKA_NETWORK_ROOT=<absolute path>\n')
+      .replace(/FABRIKKA_CHAINCODES_ROOT=(.*?)(\n|$)/g, 'FABRIKKA_CHAINCODES_ROOT=<absolute path>\n');
+    expect(cleaned).toMatchSnapshot();
   });
 });
 
