@@ -97,6 +97,7 @@ module.exports = class extends Generator {
 
     this._copyFabrikkaDockerScript(
       {
+        tls: networkConfig.networkSettings.tls,
         orgs: orgsTransformed,
         channels: channelsTransformed,
       },

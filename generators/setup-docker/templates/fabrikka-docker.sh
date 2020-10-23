@@ -31,7 +31,7 @@ elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
-<%- include('fabrikka-docker-channelScipts.sh.ejs', {orgs: orgs, channels: channels}); -%>
+<%- include('fabrikka-docker-channelScipts.sh.ejs', {tls: tls, orgs: orgs, channels: channels}); -%>
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
