@@ -1,6 +1,9 @@
 <% orgs.forEach(function(org) { %>
-elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 3 ]; then
+elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 3 ]; then<% if(!tls) { -%>
   peerChannelListDefault "<%= org.cliAddress %>"
+<% } else { -%>
+  peerChannelListDefaultTls "<%= org.cliAddress %>"
+<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ -n "$4" ]; then
   PEER_NAME=$4
   peerChannelList "<%= org.cliAddress %>" "${PEER_NAME}.<%= org.domain %>:7051"
