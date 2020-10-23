@@ -68,6 +68,7 @@ function extendPeers(peerJsonFormat, domainJsonFormat) {
 
 function transformOrgConfig(orgJsonConfigFormat) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonConfigFormat.organization.name.toLowerCase()}`;
+  const cliAddress = `cli.${orgJsonConfigFormat.organization.domain}`
   return {
     name: orgJsonConfigFormat.organization.name,
     mspName: orgJsonConfigFormat.organization.mspName,
@@ -75,6 +76,7 @@ function transformOrgConfig(orgJsonConfigFormat) {
     peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
     peersCount: orgJsonConfigFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
+    cliAddress: cliAddress
   };
 }
 

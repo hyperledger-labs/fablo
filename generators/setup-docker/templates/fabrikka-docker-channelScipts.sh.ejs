@@ -1,0 +1,49 @@
+<% orgs.forEach(function(org) { %>
+elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 3 ]; then
+  peerChannelListDefault "<%= org.cliAddress %>"
+elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ -n "$4" ]; then
+  PEER_NAME=$4
+  peerChannelList "<%= org.cliAddress %>" "${PEER_NAME}.<%= org.domain %>:7051"
+<% }) %><% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { %>
+elif [ "$1" = "channel" ] && [ "$2" = "getinfo" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 4 ]; then
+  peerChannelGetInfoDefault "<%= channel.name %>" "cli.<%= org.domain %>"
+elif [ "$1" = "channel" ] && [ "$2" = "getinfo" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.mspName.toLowerCase(); %>" ] && [ -n "$5" ]; then
+  PEER_NAME=$5
+  peerChannelGetInfo "<%= channel.name %>" "cli.<%= org.domain %>" "${PEER_NAME}.<%= org.domain %>:7051"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "config" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchConfigDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "config" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchConfig "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "lastBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchLastBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "lastBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchLastBlock "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "firstBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "firstBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "block" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "block" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% })}) %>
+elif [ "$1" = "channel" ] && [ "$2" = "--help" ]; then<% orgs.forEach(function(org) { %>
+  echo "peer channel list <%= org.mspName.toLowerCase(); %> [peer0] - to list channels on given peer. Optionally you can pass peer name to query from".<% }) %><% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { %>
+  echo "peer channel getinfo <%= channel.name %> <%= org.mspName.toLowerCase(); %> [peer0] - to get channel info. Optionally you can pass peer name to query from"
+  echo "peer channel fetch config <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download latest config block. Optionally you can pass peer name to query from"
+  echo "peer channel fetch lastBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download last, decrypted block. Optionally you can pass peer name to query from"
+  echo "peer channel fetch firstBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download first, decrypted block. Optionally you can pass peer name to query from"
+<% })}) %>
+
+

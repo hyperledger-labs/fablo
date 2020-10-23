@@ -95,6 +95,13 @@ module.exports = class extends Generator {
       },
     );
 
+    this._copyFabrikkaDockerScript(
+      {
+        orgs: orgsTransformed,
+        channels: channelsTransformed,
+      },
+    )
+
     this._copyUtilityScripts();
 
     networkConfig.chaincodes.forEach((chaincode) => {
@@ -170,12 +177,15 @@ module.exports = class extends Generator {
     );
   }
 
-  _copyUtilityScripts() {
+  _copyFabrikkaDockerScript(settings) {
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker.sh'),
-      this.destinationPath('fabrikka-docker.sh'),
+        this.templatePath('fabrikka-docker.sh'),
+        this.destinationPath('fabrikka-docker.sh'),
+        settings,
     );
+  }
 
+  _copyUtilityScripts() {
     this.fs.copyTpl(
       this.templatePath('fabric-docker/scripts/cli/channel_fns.sh'),
       this.destinationPath('fabric-docker/scripts/cli/channel_fns.sh'),
@@ -189,6 +199,11 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('fabric-docker/scripts/base-functions.sh'),
       this.destinationPath('fabric-docker/scripts/base-functions.sh'),
+    );
+
+    this.fs.copyTpl(
+        this.templatePath('fabric-docker/scripts/base-peer-channel-functions.sh'),
+        this.destinationPath('fabric-docker/scripts/base-peer-channel-functions.sh'),
     );
 
     this.fs.copyTpl(
