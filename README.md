@@ -50,11 +50,16 @@ This script `fabrikka-docker.sh` is generated among docker network configuration
 
 ## Managing chaincodes
 
-### Installing a chaincode
+### chaincodes install
 
 ```bash
-fabrikka.sh docker chaincodes install
+fabrikka.sh chaincodes install [chaincode-name]
 ```
+Installs chaincode on all relevant peers (specified in fabrikka config file). If no chaincode name is provided, installs all chaincodes from config.
 
-Installs all chaincodes configured in Fabrikka config file.
+### chaincodes upgrade
 
+```bash
+fabrikka.sh chaincodes upgrade chaincode-name version
+```
+Upgrades and instantiates chaincode with given name on all relevant peers.
