@@ -45,19 +45,19 @@ deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"
-  certsGenerate "$FABRIKKA_DOCKER_ROOT/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config/"
+  certsGenerate "$FABRIKKA_NETWORK_ROOT/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printItalics "Generating crypto material for <%= org.name %>" "U1F512"
-  certsGenerate "$FABRIKKA_DOCKER_ROOT/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config/"
+  certsGenerate "$FABRIKKA_NETWORK_ROOT/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/"
   <% }) %>
   printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$FABRIKKA_DOCKER_ROOT/fabric-config" "$FABRIKKA_DOCKER_ROOT/fabric-config/config"
+  genesisBlockCreate "$FABRIKKA_NETWORK_ROOT/fabric-config" "$FABRIKKA_NETWORK_ROOT/fabric-config/config"
 }
 
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
   (
-    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
+    cd "$FABRIKKA_NETWORK_ROOT"/fabric-docker
     docker-compose up -d
     sleep 4
   )
@@ -66,7 +66,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
   (
-    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
+    cd "$FABRIKKA_NETWORK_ROOT"/fabric-docker
     docker-compose stop
     sleep 4
   )
@@ -75,7 +75,7 @@ function stopNetwork() {
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-  createChannelTx "<%= channel.name %>" "$FABRIKKA_DOCKER_ROOT/fabric-config" "AllOrgChannel" "$FABRIKKA_DOCKER_ROOT/fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$FABRIKKA_NETWORK_ROOT/fabric-config" "AllOrgChannel" "$FABRIKKA_NETWORK_ROOT/fabric-config/config"
   <% }) -%>
 }
 
@@ -116,7 +116,7 @@ function installChannels() {
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
   (
-    cd "$FABRIKKA_DOCKER_ROOT"/fabric-docker
+    cd "$FABRIKKA_NETWORK_ROOT"/fabric-docker
     docker-compose down
   )
 
@@ -135,8 +135,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf $FABRIKKA_DOCKER_ROOT/fabric-config/config
-  rm -rf $FABRIKKA_DOCKER_ROOT/fabric-config/crypto-config
+  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/config
+  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }
