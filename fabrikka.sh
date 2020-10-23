@@ -2,71 +2,62 @@
 
 # TODO: https://wizardzines.com/comics/bash-errors/
 
-FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
-COMMAND="$1"
-
-if [ "$1" = "build" ]; then
-  docker build --tag fabrikka "$FABRIKKA_HOME" && exit 0
-fi
-
-if [ -z "$3" ]; then
-  # TODO consider reasonable defaults
-  echo "Usage: fabrikka.sh [command] ./fabrikka-config.json ./target-network-dir [./chaincodes-dir"]
+if [ -z "$1" ]; then
+  echo "Usage: fabrikka.sh command [./fabrikka-config.json"]
   exit 1
 fi
 
-fullPath() {
-  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
-}
+FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
+COMMAND="$1"
+FABRIKKA_NETWORK_ROOT="$(pwd)"
 
-NETWORK_CONFIG="$(fullPath "$2")"
-NETWORK_TARGET="$(mkdir -p "$(dirname "$3")" && fullPath "$3")"
-CHAINCODES="$(mkdir -p "$(dirname "$4")" && fullPath "$4")"
+if [ "$COMMAND" = "build" ]; then
+  docker build --tag fabrikka "$FABRIKKA_HOME" &&
+    exit 0
 
-yeomanGenerate() {
+elif [ "$COMMAND" = "generate" ]; then
+  if [ -z "$2" ]; then
+    FABRIKKA_CONFIG="$FABRIKKA_NETWORK_ROOT/fabrikka-config.json"
+    if [ ! -f "$FABRIKKA_CONFIG" ]; then
+      echo "File $FABRIKKA_CONFIG does not exist"
+      exit 1
+    fi
+  else
+    if [ ! -f "$2" ]; then
+      echo "File $2 does not exist"
+      exit 1
+    fi
+    FABRIKKA_CONFIG="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
+  fi
+
+  FABRIKKA_CHAINCODES_ROOT="$(dirname "$FABRIKKA_CONFIG")"
+
   echo "Generating network config"
-  echo "    NETWORK_CONFIG: $NETWORK_CONFIG"
-  echo "    NETWORK_TARGET: $NETWORK_TARGET"
-  echo "    CHAINCODES:     $CHAINCODES"
+  echo "    FABRIKKA_CONFIG:          $FABRIKKA_CONFIG"
+  echo "    FABRIKKA_CHAINCODES_ROOT: $FABRIKKA_CHAINCODES_ROOT"
+  echo "    FABRIKKA_NETWORK_ROOT:    $FABRIKKA_NETWORK_ROOT"
 
-  rm -rf "$NETWORK_TARGET" &&
-    mkdir -p "$NETWORK_TARGET" &&
-    docker run -i --rm \
-      -v "$NETWORK_CONFIG":/network/config.json \
-      -v "$NETWORK_TARGET":/network/docker \
-      -v "$CHAINCODES":/network/chaincodes \
-      -v /tmp:/home/yeoman \
-      --env COMMAND="generate" \
-      --env NETWORK_CONFIG="$NETWORK_CONFIG" \
-      --env NETWORK_TARGET="$NETWORK_TARGET" \
-      --env CHAINCODES="$CHAINCODES" \
-      -u "$(id -u "${USER}"):$(id -g "${USER}")" \
-      fabrikka
-}
-
-executeNetworkCommand() {
   docker run -i --rm \
-    -v "$NETWORK_CONFIG":/network/config.json \
-    -v "$NETWORK_TARGET":/network/docker \
-    -v "$CHAINCODES":/network/chaincodes \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    --env COMMAND="$COMMAND" \
-    --env NETWORK_CONFIG="$NETWORK_CONFIG" \
-    --env NETWORK_TARGET="$NETWORK_TARGET" \
-    --env CHAINCODES="$CHAINCODES" \
-    fabrikka
-}
+    -v "$FABRIKKA_CONFIG":/network/fabrikka-config.json \
+    -v "$FABRIKKA_NETWORK_ROOT":/network/docker \
+    -v /tmp:/home/yeoman \
+    -u "$(id -u):$(id -g)" \
+    fabrikka &&
+    echo "FABRIKKA_NETWORK_ROOT=$FABRIKKA_NETWORK_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    echo "FABRIKKA_CHAINCODES_ROOT=$FABRIKKA_CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    exit 0
 
-if [ "$COMMAND" = "generate" ]; then
-  yeomanGenerate
-elif [ -z "$(ls -A "$NETWORK_TARGET")" ]; then
-  echo "Network target directory is empty"
-  yeomanGenerate
+elif [ "$COMMAND" = "up" ]; then
+  if [ -z "$(ls -A "$FABRIKKA_NETWORK_ROOT")" ]; then
+    echo "Network target directory is empty"
+    "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" generate "$2"
+  fi
+
+  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" up &&
+    exit 0
+
 else
-  echo "Use command 'generate' to overwrite network config"
-fi
-
-if [ "$COMMAND" != "generate" ]; then
   echo "Executing Fabrikka docker command: $COMMAND"
-  executeNetworkCommand
+  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" "$COMMAND" &&
+    exit 0
 fi
