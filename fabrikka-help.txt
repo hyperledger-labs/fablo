@@ -11,8 +11,8 @@ Usage:
   fabrikka.sh [down | start | stop]
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. (Similar to down, start and stop commands for Docker Compose).
 
-  fabrikka.sh chaincodes install [chaincode-name]
-    Installs chaincode on all relevant peers (specified in fabrikka config file). If no chaincode name is provided, installs all chaincodes from config.
+  fabrikka.sh chaincodes install [chaincode-name [version]]
+    Installs chaincode on all relevant peers (specified in fabrikka config file). If no chaincode name is provided, installs all chaincodes from config. Default version is 0.0.1.
 
   fabrikka.sh chaincodes upgrade chaincode-name version
     Upgrades and instantiates chaincode with given name on all relevant peers.

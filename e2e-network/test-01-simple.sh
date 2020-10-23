@@ -55,4 +55,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
+  (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" chaincodes upgrade "chaincode1" "0.0.2") &&
+  waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.2" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.2" &&
+  expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Willy Wonka\"}' &&
   networkDown || (networkDown && exit 1)
