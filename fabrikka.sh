@@ -60,7 +60,7 @@ elif [ "$COMMAND" = "up" ]; then
     exit 0
 
 else
-  echo "Executing Fabrikka docker command: $COMMAND"
-  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" "$COMMAND" &&
+  echo "Executing Fabrikka docker command: $COMMAND $2 $3 $4"
+  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" "$COMMAND" "$2" "$3" "$4" &&
     exit 0
 fi
