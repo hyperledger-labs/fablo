@@ -15,6 +15,9 @@ if [ "$COMMAND" = "build" ]; then
   docker build --tag fabrikka "$FABRIKKA_HOME" &&
     exit 0
 
+elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
+  cat "$FABRIKKA_HOME/fabrikka-help.txt"
+
 elif [ "$COMMAND" = "generate" ]; then
   if [ -z "$2" ]; then
     FABRIKKA_CONFIG="$FABRIKKA_NETWORK_ROOT/fabrikka-config.json"
