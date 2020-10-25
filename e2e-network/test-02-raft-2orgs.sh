@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TEST_TMP="$(mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
@@ -74,5 +74,5 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.2" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
-    '{\"success\":\"Willy Wonka\"}' &&
+    '{\"success\":\"Jack Sparrow\"}' &&
   networkDown || (networkDown && exit 1)
