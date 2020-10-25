@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TEST_TMP="$(mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
