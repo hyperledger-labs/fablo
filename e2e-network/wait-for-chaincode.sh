@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cli=$1
 channel=$2
