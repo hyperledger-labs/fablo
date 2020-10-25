@@ -4,7 +4,6 @@
 * License-Identifier: Apache-2.0
 */
 const Generator = require('yeoman-generator');
-const mkdirp = require('mkdirp');
 const config = require('../config');
 const utils = require('../utils/utils');
 
@@ -47,7 +46,7 @@ module.exports = class extends Generator {
       (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
     );
     const chaincodesTransformed = configTransformers.transformChaincodesConfig(
-      networkConfig.chaincodes, channelsTransformed, this.env,
+      networkConfig.chaincodes, channelsTransformed,
     );
 
     // ======= fabric-config ============================================================
@@ -97,15 +96,7 @@ module.exports = class extends Generator {
 
     this._copyUtilityScripts();
 
-    networkConfig.chaincodes.forEach((chaincode) => {
-      mkdirp.sync(chaincode.directory);
-    });
-
     this.on('end', () => {
-      // TODO do we really need it?
-      chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        this.log(`INFO: chaincode '${chaincode.name}' not found in ${chaincode.chaincodePath}. Use generated folder and place it there.`);
-      });
       this.log('Done & done !!! Try the network out: ');
       this.log('-> fabrikka-docker.sh up - to start network');
       this.log('-> fabrikka-docker.sh help - to view all commands');
