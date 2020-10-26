@@ -12,7 +12,7 @@ Supports:
 ## Basic usage
 
 ```bash
-fabrikka.sh docker up /path/to/fabrikka-config.json
+fabrikka.sh up /path/to/fabrikka-config.json
 ```
 
 This command will create initial configuration and start Hyperledger Fabric network on Docker. All network configuration is saved in current directory (`pwd`), as well as `fabrikka-docker.sh` script to manage the network.
