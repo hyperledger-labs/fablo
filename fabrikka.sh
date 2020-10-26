@@ -1,22 +1,32 @@
 #!/bin/sh
 
-# TODO: https://wizardzines.com/comics/bash-errors/
-
-if [ -z "$1" ]; then
-  echo "Usage: fabrikka.sh command [./fabrikka-config.json"]
-  exit 1
-fi
-
-FABRIKKA_HOME="$(cd "$(dirname "$0")" && pwd)"
 COMMAND="$1"
 FABRIKKA_NETWORK_ROOT="$(pwd)"
 
-if [ "$COMMAND" = "build" ]; then
-  docker build --tag fabrikka "$FABRIKKA_HOME" &&
-    exit 0
+printHelp() {
+  echo "Fabrikka -- kick-off and manage your Hyperledger Fabric network
+
+Usage:
+
+  fabrikka.sh generate [/path/to/fabrikka-config.json]
+    Generates network configuration files in the current directory. Default config file path is $(pwd)/fabrikka-config.json
+
+  fabrikka.sh docker up [/path/to/fabrikka-config.json]
+    Starts the Hyperledger Fabric network for configuration in the current directory. If there is no configuration, it will call $(generate) command for given config file.
+
+  fabrikka.sh docker [down | start | stop]
+    Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. (Similar to down, start and stop commands for Docker Compose).
+
+  fabrikka.sh [help | --help]
+    Prints the manual."
+}
+
+if [ -z "$COMMAND" ]; then
+  printHelp
+  exit 1
 
 elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
-  cat "$FABRIKKA_HOME/fabrikka-help.txt"
+  printHelp
 
 elif [ "$COMMAND" = "generate" ]; then
   if [ -z "$2" ]; then
@@ -46,7 +56,6 @@ elif [ "$COMMAND" = "generate" ]; then
     -v /tmp:/home/yeoman \
     -u "$(id -u):$(id -g)" \
     fabrikka &&
-    echo "FABRIKKA_NETWORK_ROOT=$FABRIKKA_NETWORK_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
     echo "FABRIKKA_CHAINCODES_ROOT=$FABRIKKA_CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
     exit 0
 

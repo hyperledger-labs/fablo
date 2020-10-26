@@ -161,7 +161,6 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
 
-FABRIKKA_NETWORK_ROOT=<absolute path>
 FABRIKKA_CHAINCODES_ROOT=<absolute path>
 "
 `;
@@ -1074,7 +1073,7 @@ function fetchChannelAndJoinTls() {
 exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-docker.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "#!/bin/bash
 
-FABRIKKA_NETWORK_ROOT=<absolute path>
+FABRIKKA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
