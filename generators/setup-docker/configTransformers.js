@@ -108,6 +108,10 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 function getNetworkCapabilities(fabricVersion) {
   // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
   const networkCapabilities = {
+    '2.2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
