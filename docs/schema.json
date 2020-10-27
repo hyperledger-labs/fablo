@@ -46,8 +46,20 @@
           "title": "Hyperledger Fabric version",
           "type": "string",
           "enum": [
+            "1.3.0",
+            "1.4.0",
+            "1.4.1",
+            "1.4.2",
             "1.4.3",
-            "1.4.4"
+            "1.4.4",
+            "1.4.5",
+            "1.4.6",
+            "1.4.7",
+            "1.4.8",
+            "2.0",
+            "2.1",
+            "2.2.0",
+            "2.2.1"
           ],
           "default": "1.4.4"
         },
@@ -139,12 +151,12 @@
           "type": "object",
           "default": {
             "prefix": "orderer",
-            "consensus": "solo",
+            "type": "solo",
             "instances": 1
           },
           "required": [
             "prefix",
-            "consensus",
+            "type",
             "instances"
           ],
           "properties": {
@@ -154,10 +166,10 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             },
-            "consensus": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/consensus",
+            "type": {
+              "$id": "#/properties/rootOrg/properties/orderer/properties/type",
               "type": "string",
-              "title": "Consensus type",
+              "title": "Orderer type",
               "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
               "enum": [
                 "solo",
@@ -280,13 +292,6 @@
               "instances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/instances",
                 "title": "Number of instances",
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 100
-              },
-              "anchorPeerInstances": {
-                "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
-                "title": "Number of anchor peer instances",
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 100
@@ -455,7 +460,7 @@
             "enum": [
               "golang",
               "java",
-              "javascript"
+              "node"
             ]
           },
           "channel": {
