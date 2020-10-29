@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-config/.gitignore from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-config/configtx.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -114,7 +114,7 @@ Profiles:
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -126,7 +126,7 @@ exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabr
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-org2.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-org2.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "PeerOrgs:
   - Name: Org2
     Domain: org2.com
@@ -138,7 +138,7 @@ exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabr
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -147,7 +147,53 @@ exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabr
     "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/.env from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+"#!/bin/bash
+
+FABRIKKA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
+
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
+
+if [ \\"$1\\" = \\"up\\" ]; then
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+elif [ \\"$1\\" = \\"recreate\\" ]; then
+  networkDown
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+elif [ \\"$1\\" = \\"down\\" ]; then
+  networkDown
+elif [ \\"$1\\" = \\"start\\" ]; then
+  startNetwork
+elif [ \\"$1\\" = \\"stop\\" ]; then
+  stopNetwork
+elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+  installChaincodes
+elif [ \\"$1\\" = \\"help\\" ]; then
+  printHelp
+elif [ \\"$1\\" = \\"--help\\" ]; then
+  printHelp
+else
+  echo \\"No command specified\\"
+  echo \\"Basic commands are: up, down, start, stop, recreate\\"
+  echo \\"Also check: 'chaincodes install'\\"
+  echo \\"Use 'help' or '--help' for more information\\"
+fi
+"
+`;
+
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "COMPOSE_PROJECT_NAME=network
 FABRIC_VERSION=1.4.3
 LOGGING_LEVEL=info
@@ -161,69 +207,32 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
 
-FABRIKKA_NETWORK_ROOT=<absolute path>
-FABRIKKA_CHAINCODES_ROOT=<absolute path>
+FABRIKKA_CONFIG=<absolute path>
+CHAINCODES_BASE_DIR=<absolute path>
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "#!/bin/bash
 
 function installChaincodes() {
-  chaincodeName=\\"$1\\"
-  version=\${2:-\\"0.0.1\\"}
-
   
-  if [ -z \\"$chaincodeName\\" ] || [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-      printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-  npm run build --prefix \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\"
-    
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-    
-    printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-        chaincodeInstantiate \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-        
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-    
-    printItalics \\"Instantiating 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
-        chaincodeInstantiate \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-          fi
-  }
-
-function upgradeChaincodes() {
-  chaincodeName=\\"$1\\"
-  version=\\"$2\\"
-
-  if [ -z \\"$chaincodeName\\" ]; then
-    echo \\"Error: chaincode name is not provided\\"
-    exit 1
-  fi
-
-  if [ -z \\"$version\\" ]; then
-    echo \\"Error: chaincode version is not provided\\"
-    exit 1
-  fi
-
+  printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
+npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   
-  if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-      printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-  npm run build --prefix \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\"
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
+    chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
     
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
+    chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
     
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-        chaincodeUpgrade \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-        
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-    
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
-        chaincodeUpgrade \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-          fi
-  }
+}
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
@@ -322,7 +331,7 @@ function networkDown() {
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -342,7 +351,7 @@ services:
       - 7030:7054
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
+      - \\"../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -363,9 +372,9 @@ services:
     ports:
       - 7040:7050
     volumes:
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config/:/var/hyperledger/config\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls\\"
+      - \\"../fabric-config/config/:/var/hyperledger/config\\"
+      - \\"../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp\\"
+      - \\"../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls\\"
     networks:
       - basic
     
@@ -382,7 +391,7 @@ services:
       - 7031:7054
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -405,11 +414,11 @@ services:
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
-      - \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/\\"
+      - \\"../fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
+      - \\"../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
   
@@ -437,10 +446,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"../fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -471,10 +480,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"../fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -495,7 +504,7 @@ services:
       - 7032:7054
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
     networks:
       - basic
   
@@ -518,11 +527,11 @@ services:
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
-      - \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/\\"
+      - \\"../fabric-config/config:/var/hyperledger/cli/config/\\" # genesis.block and channel.tx's
+      - \\"../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls\\" # TODO ! To ease up deployment, not proper.
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
   
@@ -550,10 +559,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"../fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -584,10 +593,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
-      - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/msp:/etc/hyperledger/fabric/peer/msp\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls\\"
+      - \\"../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users\\"
+      - \\"../fabric-config/config:/etc/hyperledger/fabric/config\\"
     depends_on:
       - orderer0.root.com
     networks:
@@ -598,7 +607,7 @@ services:
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -760,10 +769,13 @@ function chaincodeInstantiate() {
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
+
   local CHANNEL_NAME=$5
+
   local PEER_ADDRESS=$6
   local ORDERER_URL=$7
   local CLI_NAME=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
@@ -774,62 +786,20 @@ function chaincodeInstantiate() {
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
 
   if [ ! -z \\"$CHAINCODE_DIR_CONTENT\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode instantiate \\\\
-      -C $CHANNEL_NAME \\\\
-      -n $CHAINCODE_NAME \\\\
-      -v $CHAINCODE_VERSION \\\\
-      -l $CHAINCODE_LANG \\\\
-      -o $ORDERER_URL \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\"
-  else
-    echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
-  fi
-}
-
-function chaincodeUpgrade() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
-
-  local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
-
-  echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
-  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-
-  if [ -n \\"$CHAINCODE_DIR_CONTENT\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode upgrade \\\\
-      -C \\"$CHANNEL_NAME\\" \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\"
+    docker exec \\\\
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+      $CLI_NAME peer chaincode instantiate \\\\
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+      -o $ORDERER_URL
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -841,7 +811,9 @@ function chaincodeInstallTls() {
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
+
   local CHANNEL_NAME=$5
+
   local PEER_ADDRESS=$6
   local ORDERER_URL=$7
   local CLI_NAME=$8
@@ -854,6 +826,7 @@ function chaincodeInstallTls() {
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
@@ -874,10 +847,13 @@ function chaincodeInstantiateTls() {
   local CHAINCODE_NAME=$2
   local CHAINCODE_VERSION=$3
   local CHAINCODE_LANG=$4
+
   local CHANNEL_NAME=$5
+
   local PEER_ADDRESS=$6
   local ORDERER_URL=$7
   local CLI_NAME=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
   local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
@@ -889,69 +865,21 @@ function chaincodeInstantiateTls() {
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
   if [ ! -z \\"$CHAINCODE_DIR_CONTENT\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode instantiate \\\\
-      -C $CHANNEL_NAME \\\\
-      -n $CHAINCODE_NAME \\\\
-      -v $CHAINCODE_VERSION \\\\
-      -l $CHAINCODE_LANG \\\\
-      -o $ORDERER_URL \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      --tls \\\\
-      --cafile $CA_CERT
-  else
-    echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
-  fi
-}
-
-function chaincodeUpgradeTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
-  local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
-
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
-
-  echo \\"Upgrading chaincode on $CHANNEL_NAME (TLS)...\\"
-  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-
-  if [ ! -z \\"$CHAINCODE_DIR_CONTENT\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode upgrade \\\\
-      -C $CHANNEL_NAME \\\\
-      -n $CHAINCODE_NAME \\\\
-      -v $CHAINCODE_VERSION \\\\
-      -l $CHAINCODE_LANG \\\\
-      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o $ORDERER_URL \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      --tls \\\\
-      --cafile $CA_CERT
+    docker exec \\\\
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+      $CLI_NAME peer chaincode instantiate \\\\
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c \\"$INIT_PARAMS\\" -C $CHANNEL_NAME -P \\"$ENDORSEMENT\\" \\\\
+      -o $ORDERER_URL --tls --cafile $CA_CERT
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -995,37 +923,37 @@ function removeContainer() {
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "function printHelp() {
   echo \\"Fabrikka is powered by SoftwareMill\\"
 
   echo \\"\\"
-  echo \\"usage: ./fabrikka-docker.sh <command>\\"
+  echo \\"usage: ./fabric-docker.sh <command>\\"
   echo \\"\\"
 
   echo \\"Commands: \\"
   echo \\"\\"
-  echo \\"./fabrikka-docker.sh up\\"
+  echo \\"./fabric-docker.sh up\\"
   echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
   echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
   echo \\"\\"
-  echo \\"./fabrikka-docker.sh down\\"
+  echo \\"./fabric-docker.sh down\\"
   echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
   echo \\"\\"
-  echo \\"./fabrikka-docker.sh start\\"
+  echo \\"./fabric-docker.sh start\\"
   echo -e \\"\\\\t Starts already created network.\\"
   echo \\"\\"
-  echo \\"./fabrikka-docker.sh stop\\"
+  echo \\"./fabric-docker.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabrikka-docker.sh recreate\\"
+  echo \\"./fabric-docker.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
+exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 "function createChannelAndJoin() {
   local CHANNEL_NAME=$1
 
@@ -1152,67 +1080,19 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-04-2orgs should create proper e2e/__tmp__/network-04-2orgs/fabrikka-docker.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
-"#!/bin/bash
-
-FABRIKKA_NETWORK_ROOT=<absolute path>
-
-source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
-source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
-source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
-source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
-
-if [ \\"$1\\" = \\"up\\" ]; then
-  generateArtifacts
-  startNetwork
-  generateChannelsArtifacts
-  installChannels
-  installChaincodes
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
-elif [ \\"$1\\" = \\"recreate\\" ]; then
-  networkDown
-  generateArtifacts
-  startNetwork
-  generateChannelsArtifacts
-  installChannels
-  installChaincodes
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
-elif [ \\"$1\\" = \\"down\\" ]; then
-  networkDown
-elif [ \\"$1\\" = \\"start\\" ]; then
-  startNetwork
-elif [ \\"$1\\" = \\"stop\\" ]; then
-  stopNetwork
-elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
-  installChaincodes \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
-  upgradeChaincodes \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"help\\" ]; then
-  printHelp
-elif [ \\"$1\\" = \\"--help\\" ]; then
-  printHelp
-else
-  echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, recreate\\"
-  echo \\"Also check: 'chaincodes install' and 'chaincodes upgrade'\\"
-  echo \\"Use 'help' or '--help' for more information\\"
-fi
-"
-`;
-
 exports[`network-04-2orgs should create proper files from samples/fabrikkaConfig-2orgs-2channels-1chaincode.json 1`] = `
 Array [
-  "e2e/__tmp__/network-04-2orgs/fabric-config/.gitignore",
-  "e2e/__tmp__/network-04-2orgs/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-org2.yaml",
-  "e2e/__tmp__/network-04-2orgs/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/.env",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-04-2orgs/fabric-docker/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/network-04-2orgs/fabrikka-docker.sh",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/.gitignore",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/configtx.yaml",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-org2.yaml",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker.sh",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/.env",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-04-2orgs/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;

@@ -4,7 +4,8 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
+# testing relative path
+CONFIG="../../samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 
 networkUpAsync() {
   "$FABRIKKA_HOME/fabrikka-build.sh" &&
