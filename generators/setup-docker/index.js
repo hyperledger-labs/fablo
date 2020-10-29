@@ -98,8 +98,8 @@ module.exports = class extends Generator {
 
     this.on('end', () => {
       this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabrikka-docker.sh up - to start network');
-      this.log('-> fabrikka-docker.sh help - to view all commands');
+      this.log('-> fabric-docker.sh up - to start network');
+      this.log('-> fabric-docker.sh help - to view all commands');
     });
   }
 
@@ -163,8 +163,8 @@ module.exports = class extends Generator {
 
   _copyUtilityScripts() {
     this.fs.copyTpl(
-      this.templatePath('fabrikka-docker.sh'),
-      this.destinationPath('fabrikka-docker.sh'),
+      this.templatePath('fabric-docker.sh'),
+      this.destinationPath('fabric-docker.sh'),
     );
 
     this.fs.copyTpl(
