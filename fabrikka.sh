@@ -68,14 +68,14 @@ elif [ "$COMMAND" = "generate" ]; then
 elif [ "$COMMAND" = "up" ]; then
   if [ -z "$(ls -A "$FABRIKKA_NETWORK_ROOT")" ]; then
     echo "Network target directory is empty"
-    "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" generate "$2"
+    "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" generate "$2"
   fi
 
-  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" up &&
+  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" up &&
     exit 0
 
 else
   echo "Executing Fabrikka docker command: $COMMAND"
-  "$FABRIKKA_NETWORK_ROOT/fabrikka-docker.sh" "$COMMAND" &&
+  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" "$COMMAND" &&
     exit 0
 fi
