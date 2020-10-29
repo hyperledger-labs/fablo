@@ -1,7 +1,7 @@
 #!/bin/sh
 
 COMMAND="$1"
-FABRIKKA_NETWORK_ROOT="$(pwd)/.fabrikka"
+FABRIKKA_NETWORK_ROOT="$(pwd)/fabrikka-target/network" # TODO https://github.com/softwaremill/fabrikka/issues/73
 
 printHelp() {
   echo "Fabrikka -- kick-off and manage your Hyperledger Fabric network
@@ -48,11 +48,11 @@ elif [ "$COMMAND" = "generate" ]; then
     FABRIKKA_CONFIG="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
   fi
 
-  CHAINCODES_ROOT="$(dirname "$FABRIKKA_CONFIG")"
+  CHAINCODES_BASE_DIR="$(dirname "$FABRIKKA_CONFIG")"
 
   echo "Generating network config"
   echo "    FABRIKKA_CONFIG:       $FABRIKKA_CONFIG"
-  echo "    CHAINCODES_ROOT:       $CHAINCODES_ROOT"
+  echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
   echo "    FABRIKKA_NETWORK_ROOT: $FABRIKKA_NETWORK_ROOT"
 
   docker run -i --rm \
@@ -62,8 +62,7 @@ elif [ "$COMMAND" = "generate" ]; then
     -u "$(id -u):$(id -g)" \
     fabrikka &&
     echo "FABRIKKA_CONFIG=$FABRIKKA_CONFIG" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
-    echo "CHAINCODES_ROOT=$CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
-    exit 0
+    echo "CHAINCODES_BASE_DIR=$CHAINCODES_BASE_DIR" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
 
 elif [ "$COMMAND" = "up" ]; then
   if [ -z "$(ls -A "$FABRIKKA_NETWORK_ROOT")" ]; then
@@ -71,11 +70,9 @@ elif [ "$COMMAND" = "up" ]; then
     "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" generate "$2"
   fi
 
-  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" up &&
-    exit 0
+  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" up
 
 else
   echo "Executing Fabrikka docker command: $COMMAND"
-  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" "$COMMAND" &&
-    exit 0
+  "$FABRIKKA_NETWORK_ROOT/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
 fi
