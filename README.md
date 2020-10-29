@@ -26,9 +26,9 @@ There are two basic use cases. You may use Fabrikka to start and manage the netw
 ### generate
 
 ```bash
-fabrikka.sh generate [/path/to/fabrikka-config.json]
+fabrikka.sh generate [/path/to/fabrikka-config.json [/path/to/fabrikka/target]]
 ```
-Generates network configuration files in the current directory. Default config file path is `$(pwd)/fabrikka-config.json`
+Generates network configuration files in the given directory. Default config file path is `$(pwd)/fabrikka-config.json`, default (and recommended) directory `$(pwd)/.fabrikka`.
 
 ### up
 
@@ -57,4 +57,10 @@ fabrikka.sh docker chaincodes install
 ```
 
 Installs all chaincodes configured in Fabrikka config file.
+
+## Getting pure network config
+
+By default Fabrikka generates network configuration in `.fabrikka` directory. It should not be kept out of version control since it may contain absolute paths.
+
+If you want to use Fabrikka only to kick off the Hyperledger Fabric network, you may provide target directory parameter to `fabrikka.sh generate` or just copy generated `.fabrikka` directory content to desired directory and add it to version control. Note that generated files may contain variables with paths on your disk and generated crypto material for Hyperledger Fabric.
 
