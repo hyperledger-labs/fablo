@@ -13,8 +13,7 @@ if [ -z "$version" ]; then
 fi
 
 listChaincodes() {
-  docker exec "$cli" peer chaincode list \
-    --peerAddresses "$peer:7051" \
+  docker exec -e CORE_PEER_ADDRESS="$peer:7051" "$cli" peer chaincode list \
     -C "$channel" \
     --instantiated
 }
