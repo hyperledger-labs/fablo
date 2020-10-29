@@ -1,20 +1,20 @@
 #!/bin/sh
 
 COMMAND="$1"
-FABRIKKA_NETWORK_ROOT="$(pwd)"
+FABRIKKA_NETWORK_ROOT="$(pwd)/.fabrikka"
 
 printHelp() {
   echo "Fabrikka -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
 
-  fabrikka.sh generate [/path/to/fabrikka-config.json]
-    Generates network configuration files in the current directory. Default config file path is $(pwd)/fabrikka-config.json
+  fabrikka.sh generate [/path/to/fabrikka-config.json [/path/to/fabrikka/target]]
+   Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrikka-config.json', default (and recommended) directory '\$(pwd)/.fabrikka'.
 
-  fabrikka.sh docker up [/path/to/fabrikka-config.json]
-    Starts the Hyperledger Fabric network for configuration in the current directory. If there is no configuration, it will call $(generate) command for given config file.
+  fabrikka.sh up [/path/to/fabrikka-config.json]
+    Starts the Hyperledger Fabric network for configuration in the current directory. If there is no configuration, it will call 'generate' command for given config file.
 
-  fabrikka.sh docker [down | start | stop]
+  fabrikka.sh [down | start | stop]
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. (Similar to down, start and stop commands for Docker Compose).
 
   fabrikka.sh [help | --help]
@@ -29,6 +29,11 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "generate" ]; then
+  if [ -n "$3" ]; then
+    FABRIKKA_NETWORK_ROOT="$3"
+    mkdir -p "$FABRIKKA_NETWORK_ROOT"
+  fi
+
   if [ -z "$2" ]; then
     FABRIKKA_CONFIG="$FABRIKKA_NETWORK_ROOT/fabrikka-config.json"
     if [ ! -f "$FABRIKKA_CONFIG" ]; then
@@ -43,12 +48,12 @@ elif [ "$COMMAND" = "generate" ]; then
     FABRIKKA_CONFIG="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
   fi
 
-  FABRIKKA_CHAINCODES_ROOT="$(dirname "$FABRIKKA_CONFIG")"
+  CHAINCODES_ROOT="$(dirname "$FABRIKKA_CONFIG")"
 
   echo "Generating network config"
-  echo "    FABRIKKA_CONFIG:          $FABRIKKA_CONFIG"
-  echo "    FABRIKKA_CHAINCODES_ROOT: $FABRIKKA_CHAINCODES_ROOT"
-  echo "    FABRIKKA_NETWORK_ROOT:    $FABRIKKA_NETWORK_ROOT"
+  echo "    FABRIKKA_CONFIG:       $FABRIKKA_CONFIG"
+  echo "    CHAINCODES_ROOT:       $CHAINCODES_ROOT"
+  echo "    FABRIKKA_NETWORK_ROOT: $FABRIKKA_NETWORK_ROOT"
 
   docker run -i --rm \
     -v "$FABRIKKA_CONFIG":/network/fabrikka-config.json \
@@ -56,7 +61,8 @@ elif [ "$COMMAND" = "generate" ]; then
     -v /tmp:/home/yeoman \
     -u "$(id -u):$(id -g)" \
     fabrikka &&
-    echo "FABRIKKA_CHAINCODES_ROOT=$FABRIKKA_CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    echo "FABRIKKA_CONFIG=$FABRIKKA_CONFIG" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
+    echo "CHAINCODES_ROOT=$CHAINCODES_ROOT" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
     exit 0
 
 elif [ "$COMMAND" = "up" ]; then
