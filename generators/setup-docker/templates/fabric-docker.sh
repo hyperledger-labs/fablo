@@ -28,9 +28,9 @@ elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
+elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
   installChaincodes "$3" "$4"
-elif [ "$1" = "chaincodes" ] && [ "$2" = "upgrade" ]; then
+elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincodes "$3" "$4"
 elif [ "$1" = "help" ]; then
   printHelp
@@ -39,6 +39,6 @@ elif [ "$1" = "--help" ]; then
 else
   echo "No command specified"
   echo "Basic commands are: up, down, start, stop, recreate"
-  echo "Also check: 'chaincodes install' and 'chaincodes upgrade'"
+  echo "Also check: 'chaincode install' and 'chaincode upgrade'"
   echo "Use 'help' or '--help' for more information"
 fi

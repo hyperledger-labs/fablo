@@ -1,10 +1,7 @@
 #!/bin/bash
 
 function installChaincodes() {
-  chaincodeName="$1"
-
   <% chaincodes.forEach(function(chaincode) { %>
-  if [ -z "$chaincodeName" ] || [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
     <%- include('commands-generated-node-build.sh.ejs', {chaincode: chaincode}); -%>
     <% chaincode.channel.orgs.forEach(function (org) {
          org.peers.forEach(function (peer) {
@@ -23,7 +20,6 @@ function installChaincodes() {
     chaincodeInstantiateTls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%= peer.address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= org.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
     <% } -%>
     <% })}) -%>
-  fi
   <% }) -%>
 }
 
