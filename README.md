@@ -57,16 +57,10 @@ The script `fabric-docker.sh` is generated among docker network configuration. I
 
 ## Managing chaincodes
 
-### chaincodes install
+### chaincode upgrade
 
 ```bash
-fabrikka.sh chaincodes install [chaincode-name [version]]
+fabrikka.sh chaincode upgrade chaincode-name version
 ```
-Installs chaincode on all relevant peers (specified in fabrikka config file). If no chaincode name is provided, installs all chaincodes from config. Default version is 0.0.1.
 
-### chaincodes upgrade
-
-```bash
-fabrikka.sh chaincodes upgrade chaincode-name version
-```
-Upgrades and instantiates chaincode with given name on all relevant peers.
+Upgrades and instantiates chaincode with given name on all relevant peers. Chaincode directory is specified in Fabrikka config file.
