@@ -21,7 +21,7 @@ const generate = (config, target) => {
   executeCommand(`(rm -rf "${target}" && mkdir -p "${target}" && cd "${target}" && sh ../../../fabrikka.sh generate "../../../${config}")`);
 };
 
-const getFiles = (target) => executeCommand(`find ${target}/* -type f`)
+const getFiles = (target) => executeCommand(`find ${target}/fabrikka-target/* -type f`)
   .split('\n')
   .filter((s) => !!s.length)
   .sort();
@@ -44,8 +44,8 @@ const testFilesContent = (config, files) => files.forEach((f) => {
   it(`should create proper ${f} from ${config}`, () => {
     const content = executeCommand(`cat ${f}`, true);
     const cleaned = content
-      .replace(/FABRIKKA_NETWORK_ROOT=(.*?)(\n|$)/g, 'FABRIKKA_NETWORK_ROOT=<absolute path>\n')
-      .replace(/FABRIKKA_CHAINCODES_ROOT=(.*?)(\n|$)/g, 'FABRIKKA_CHAINCODES_ROOT=<absolute path>\n');
+      .replace(/FABRIKKA_CONFIG=(.*?)(\n|$)/g, 'FABRIKKA_CONFIG=<absolute path>\n')
+      .replace(/CHAINCODES_BASE_DIR=(.*?)(\n|$)/g, 'CHAINCODES_BASE_DIR=<absolute path>\n');
     expect(cleaned).toMatchSnapshot();
   });
 });
