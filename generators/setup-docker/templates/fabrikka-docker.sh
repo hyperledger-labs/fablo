@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 FABRIKKA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
