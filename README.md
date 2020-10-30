@@ -41,7 +41,7 @@ If you want to use Fabrikka only to kick off the Hyperledger Fabric network, you
 fabrikka.sh up [/path/to/fabrikka-config.json]
 ```
 
-Starts the Hyperledger Fabric network for configuration in the default Fabrikka target directory. If there is no configuration, it will call `generate` command for given config file.
+Starts the Hyperledger Fabric network for given Fabrikka configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call `generate` command for given config file.
 
 ### down, start, stop
 
