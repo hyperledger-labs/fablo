@@ -1,4 +1,4 @@
 <% if(chaincode.lang === "node") { -%>
 printHeadline "Building '<%= chaincode.name %>'" "U1F60B"
-npm run build --prefix "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory -%>"
+npm run build --prefix "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>"
 <% } -%>

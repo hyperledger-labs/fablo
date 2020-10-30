@@ -83,7 +83,7 @@ try {
       }
 
       stage ("Build fabrikka") {
-        sh "./fabrikka.sh build"
+        sh "./fabrikka-build.sh"
       }
 
       stage("Test simple network") {
