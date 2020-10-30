@@ -47,7 +47,7 @@ Organizations:
         Name: Org1MSP
         ID: Org1MSP
         MSPDir: crypto-config/peerOrganizations/org1.com/msp
-        AnchorPeers:
+        AnchorPeers: 
             - Host: peer0.org1.com
               Port: 7051
 
@@ -137,6 +137,7 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
+
 FABRIKKA_NETWORK_ROOT=<absolute path>
 FABRIKKA_CHAINCODES_ROOT=<absolute path>
 "
@@ -162,6 +163,18 @@ npm run build --prefix \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-no
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
     chaincodeInstantiateTls \\"$FABRIKKA_CHAINCODES_ROOT/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
+}
+
+function notifyOrgsAboutChannels() {
+  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\"  \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
+  
+  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
+    notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    
+  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
+    deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+  
 }
 
 function generateArtifacts() {
@@ -259,10 +272,11 @@ services:
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.root.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.root.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.root.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7030:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
       - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
@@ -306,10 +320,11 @@ services:
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org1.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7031:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - \\"$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config\\"
