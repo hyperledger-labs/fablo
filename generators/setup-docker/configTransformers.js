@@ -126,10 +126,27 @@ function getNetworkCapabilities(fabricVersion) {
   return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
 
+function isHlf20(fabricVersion) {
+  const supported20Versions = ['2.2.1','2.2.0', '2.1', '2.0'];
+  return supported20Versions.includes(fabricVersion);
+}
+
+function getCaVersion(fabricVersion) {
+  const caVersion = {
+    '2.2.1': '1.4.9',
+    '2.2.0': '1.4.9',
+    '2.1': '1.4.9',
+    '2.0': '1.4.9'
+  }
+  return caVersion[fabricVersion] || fabricVersion;
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
   transformOrgConfig,
   transformChannelConfig,
   getNetworkCapabilities,
+  getCaVersion,
+  isHlf20
 };
