@@ -110,8 +110,10 @@ function getNetworkCapabilities(fabricVersion) {
   const networkCapabilities = {
     '2.2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '2.2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.1.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.1.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.0.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+
     '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
@@ -127,7 +129,7 @@ function getNetworkCapabilities(fabricVersion) {
 }
 
 function isHlf20(fabricVersion) {
-  const supported20Versions = ['2.2.1','2.2.0', '2.1', '2.0'];
+  const supported20Versions = ['2.2.1','2.2.0', '2.1.1', '2.1.0', '2.0.1'];
   return supported20Versions.includes(fabricVersion);
 }
 
@@ -135,8 +137,9 @@ function getCaVersion(fabricVersion) {
   const caVersion = {
     '2.2.1': '1.4.9',
     '2.2.0': '1.4.9',
-    '2.1': '1.4.9',
-    '2.0': '1.4.9'
+    '2.1.1': '1.4.9',
+    '2.1.0': '1.4.9',
+    '2.0.1': '1.4.9'
   }
   return caVersion[fabricVersion] || fabricVersion;
 }
