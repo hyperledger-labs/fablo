@@ -17,7 +17,7 @@ services:
       - 7030:7054
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config"
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - basic
   <% for (ordererNo in rootOrg.orderers) {
@@ -49,9 +49,9 @@ services:
     ports:
       - <%= ordererHostPortToUse %>:7050
     volumes:
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/config/:/var/hyperledger/config"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls"
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
   <% } -%>
@@ -76,7 +76,7 @@ services:
       - <%= orgCaHostPort %>:7054
     command: sh -c 'fabric-ca-server start -b ${<%= caUserVariable %>}:${<%= caPassVariable %>} -d'
     volumes:
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config"
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
     networks:
       - basic
   <% } -%>
@@ -106,11 +106,11 @@ services:
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/config:/var/hyperledger/cli/config/" # genesis.block and channel.tx's
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls" # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
-      - "$FABRIKKA_CHAINCODES_ROOT/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>"
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>"
     networks:
       - basic
   <% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
@@ -157,10 +157,10 @@ services:
      #- 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/tls:/etc/hyperledger/fabric/peer/tls"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/fabric/peer/msp/users"
-      - "$FABRIKKA_NETWORK_ROOT/fabric-config/config:/etc/hyperledger/fabric/config"
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/peers/<%= peerFullName %>/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - <%= rootOrg.ordererHead.address %>
     networks:
