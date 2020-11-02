@@ -118,7 +118,7 @@ function getNetworkCapabilities(fabricVersion) {
 }
 
 function isHlf20(fabricVersion) {
-  const supported20Versions = ['2.2.1','2.2.0', '2.1.1', '2.1.0', '2.0.1'];
+  const supported20Versions = ['2.2.1', '2.2.0', '2.1.1', '2.1.0', '2.0.1'];
   return supported20Versions.includes(fabricVersion);
 }
 
@@ -128,8 +128,8 @@ function getCaVersion(fabricVersion) {
     '2.2.0': '1.4.9',
     '2.1.1': '1.4.9',
     '2.1.0': '1.4.9',
-    '2.0.1': '1.4.9'
-  }
+    '2.0.1': '1.4.9',
+  };
   return caVersion[fabricVersion] || fabricVersion;
 }
 
@@ -140,5 +140,5 @@ module.exports = {
   transformChannelConfig,
   getNetworkCapabilities,
   getCaVersion,
-  isHlf20
+  isHlf20,
 };

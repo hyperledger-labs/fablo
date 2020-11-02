@@ -111,6 +111,15 @@ try {
           archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
         }
       }
+
+      stage("Test RAFT network (2 orgs) HLF") {
+        try {
+          sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.logs/*', fingerprint: true
+        }
+      }
     }
   })
 } catch (e) {
