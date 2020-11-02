@@ -27,7 +27,7 @@ Channel: &ChannelDefaults
         <% if(!is20Version) { %><<: *ChannelCapabilities<% } %>
 
 ################################################################################
-#   Section: Organizations is20Version
+#   Section: Organizations
 ################################################################################
 Organizations:
     - &OrdererOrg
@@ -64,9 +64,9 @@ Organizations:
                 Type: Signature
                 Rule: "OR('<%= org.mspName %>.peer')"<% } %>
 
-        AnchorPeers:
-            - Host: peer0.<%= org.domain %>
-              Port: 7051<% }) %>
+        AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
+            - Host: <%= anchorPeer.address %>
+              Port: 7051<% })}) %>
 
 ################################################################################
 #   SECTION: Application

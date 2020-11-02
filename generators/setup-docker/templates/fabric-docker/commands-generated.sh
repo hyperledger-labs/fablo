@@ -23,6 +23,25 @@ function installChaincodes() {
 
 }
 
+function notifyOrgsAboutChannels() {
+  printHeadline "Creating new channel config blocks" "U1F537"
+  <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChannel" "$FABRIKKA_NETWORK_ROOT/fabric-config"  "$FABRIKKA_NETWORK_ROOT/fabric-config/config"
+  <% })}) %>
+  printHeadline "Notyfing orgs about channels" "U1F4E2"
+  <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+  <% if(!networkSettings.tls) { -%>
+notifyOrgAboutNewChannel "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.address %>:7050"
+  <% } else { -%>
+notifyOrgAboutNewChannelTls "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.address %>:7050" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+  <% } -%>
+  <% })}) %>
+  printHeadline "Deleting new channel config blocks" "U1F52A"
+    <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
+deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>"
+  <% })}) %>
+}
+
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"
