@@ -9,7 +9,7 @@ source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
 
-function newNetwork() {
+function networkUp() {
   generateArtifacts
   startNetwork
   generateChannelsArtifacts
@@ -20,10 +20,10 @@ function newNetwork() {
 }
 
 if [ "$1" = "up" ]; then
-  newNetwork
+  networkUp
 elif [ "$1" = "recreate" ]; then
   networkDown
-  newNetwork
+  networkUp
 elif [ "$1" = "down" ]; then
   networkDown
 elif [ "$1" = "start" ]; then
