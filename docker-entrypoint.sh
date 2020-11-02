@@ -11,3 +11,6 @@ if [ "$(id -u)" = 0 ]; then
 else
   (cd "$target" && yo --no-insight fabrikka:setup-docker "../..$config")
 fi
+
+echo "Formatting generated scripts"
+#shellcheck -f diff "$target/**/*.sh" | patch -p1
