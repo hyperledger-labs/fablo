@@ -2,7 +2,7 @@
 
 set -e
 
-set -eu
+set -e
 
 COMMAND="$1"
 FABRIKKA_NETWORK_ROOT="$(pwd)/fabrikka-target/network" # TODO https://github.com/softwaremill/fabrikka/issues/73
