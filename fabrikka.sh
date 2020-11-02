@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 COMMAND="$1"
 FABRIKKA_NETWORK_ROOT="$(pwd)/fabrikka-target/network" # TODO https://github.com/softwaremill/fabrikka/issues/73
 
@@ -46,14 +48,16 @@ generateNetworkConfig() {
   echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
   echo "    FABRIKKA_NETWORK_ROOT: $FABRIKKA_NETWORK_ROOT"
 
+  mkdir -p "$FABRIKKA_NETWORK_ROOT"
+
   docker run -i --rm \
     -v "$FABRIKKA_CONFIG":/network/fabrikka-config.json \
-    -v "$FABRIKKA_NETWORK_ROOT":/network/docker \
-    -v /tmp:/home/yeoman \
+    -v "$FABRIKKA_NETWORK_ROOT":/network/target \
     -u "$(id -u):$(id -g)" \
-    fabrikka &&
-    echo "FABRIKKA_CONFIG=$FABRIKKA_CONFIG" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env" &&
-    echo "CHAINCODES_BASE_DIR=$CHAINCODES_BASE_DIR" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
+    fabrikka
+
+  echo "FABRIKKA_CONFIG=$FABRIKKA_CONFIG" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
+  echo "CHAINCODES_BASE_DIR=$CHAINCODES_BASE_DIR" >>"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
 }
 
 if [ -z "$COMMAND" ]; then
