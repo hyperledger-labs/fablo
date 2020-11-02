@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-RUN apk add --no-cache sudo
+RUN apk add --no-cache sudo shellcheck patch
 RUN npm install --global --silent yo
 
 COPY docs /fabrikka/docs
