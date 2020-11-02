@@ -12,7 +12,7 @@ if [ -z "$expected_message" ]; then
 fi
 
 for i in $(seq 1 90); do
-  echo "Verifying if container $container is ready ($i)... ${darkGray}'$expected_message'${end}"
+  echo "Verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
     echo "Container $container is ready!"
