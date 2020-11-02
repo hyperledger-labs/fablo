@@ -1,17 +1,16 @@
 #!/bin/sh
 
-TEST_TMP="$(mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
+TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
-CHAINCODE="$FABRIKKA_HOME/samples/chaincode-kv-node"
+# testing relative path
+CONFIG="../../samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 
 networkUpAsync() {
-  (sh "$FABRIKKA_HOME/fabrikka.sh" "$CONFIG" "$TEST_TMP" &&
-    cd "$TEST_TMP" &&
-    cp -R "$CHAINCODE" "$TEST_TMP" &&
-    (sh ./fabrikka-docker.sh up &))
+  "$FABRIKKA_HOME/fabrikka-build.sh" &&
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG") &&
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" up &)
 }
 
 dumpLogs() {
@@ -28,7 +27,7 @@ networkDown() {
     dumpLogs "peer0.org1.com" &&
     dumpLogs "peer1.org1.com" &&
     dumpLogs "cli.org1.com" &&
-    (cd "$TEST_TMP" && sh ./fabrikka-docker.sh down)
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" down)
 }
 
 waitForContainer() {

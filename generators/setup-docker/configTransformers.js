@@ -1,22 +1,13 @@
-const fs = require('fs');
-
 function flatten(prev, curr) {
   return prev.concat(curr);
 }
 
-function getFullPathOf(configFile, env) {
-  const currentPath = env.cwd;
-  return `${currentPath}/${configFile}`;
-}
-
-function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
+function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels
       .filter((c) => c.key === chaincode.channel)
       .slice(0, 1)
       .reduce(flatten);
-    const chaincodePath = getFullPathOf(chaincode.directory, yeomanEnv);
-    const chaincodePathExists = fs.existsSync(chaincodePath);
     return {
       directory: chaincode.directory,
       name: chaincode.name,
@@ -25,7 +16,6 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      chaincodePathExists,
     };
   });
 }

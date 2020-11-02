@@ -28,7 +28,10 @@ function certsGenerate() {
   docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
-  for file in $(find $OUTPUT_PATH/ -iname *_sk); do dir=$(dirname $file); mv ${dir}/*_sk ${dir}/priv-key.pem; done
+  for file in $(find $OUTPUT_PATH/ -iname *_sk); do
+    dir=$(dirname $file)
+    mv ${dir}/*_sk ${dir}/priv-key.pem
+  done
 }
 
 function genesisBlockCreate() {
@@ -182,10 +185,10 @@ function chaincodeInstantiate() {
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec \
-        -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-        $CLI_NAME peer chaincode instantiate \
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSEMENT" \
-        -o $ORDERER_URL
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+      $CLI_NAME peer chaincode instantiate \
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSEMENT" \
+      -o $ORDERER_URL
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -262,10 +265,10 @@ function chaincodeInstantiateTls() {
 
   if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
     docker exec \
-        -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-        $CLI_NAME peer chaincode instantiate \
-        -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSEMENT" \
-        -o $ORDERER_URL --tls --cafile $CA_CERT
+      -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
+      $CLI_NAME peer chaincode instantiate \
+      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -c "$INIT_PARAMS" -C $CHANNEL_NAME -P "$ENDORSEMENT" \
+      -o $ORDERER_URL --tls --cafile $CA_CERT
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
