@@ -112,7 +112,7 @@ try {
         }
       }
 
-      stage("Test RAFT network (2 orgs) HLF") {
+      stage("HLF2 - Test RAFT network (2 orgs)") {
         try {
           sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
         } finally {
