@@ -81,33 +81,36 @@ try {
         sh "apk add --no-cache nodejs npm bash docker-compose"
         sh "npm install"
       }
-      stage ("Generate sample network") {
-        sh "./fabrikka.sh samples/fabrikkaConfig-1org-1channel-1chaincode.json __jenkinstmp__"
-        sh "ls -lh __jenkinstmp__/*"
-      }
-      stage('Test generators') {
-        sh "CI=true npm run test:e2e"
-      }
-      stage('Lint') {
-        sh "npm run lint"
+
+      stage ("Build fabrikka") {
+        sh "./fabrikka-build.sh"
       }
 
       stage("Test simple network") {
         try {
           sh "e2e-network/test-01-simple.sh"
         } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.tmpdir/**/*', fingerprint: true
           archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
         }
+      }
+
+      stage('Test generators') {
+        sh "CI=true npm run test:e2e"
+      }
+
+      stage('Lint') {
+        sh "npm run lint"
       }
 
       stage("Test RAFT network (2 orgs)") {
         try {
           sh "e2e-network/test-02-raft-2orgs.sh"
         } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.tmpdir/**/*', fingerprint: true
           archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
         }
       }
-
     }
   })
 } catch (e) {
