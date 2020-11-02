@@ -6,7 +6,7 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabrikkaVersions, supportedFabricVersions } = require('../config');
+const { supportedFabrikkaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
 const schema = require('../../docs/schema.json');
@@ -161,7 +161,6 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      const versionsSupportingRaft = ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8'];
       if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
