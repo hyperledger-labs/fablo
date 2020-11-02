@@ -3,13 +3,16 @@
 container="$1"
 expected_message="$2"
 
+end='\e[0m'
+darkGray='\e[90m'
+
 if [ -z "$expected_message" ]; then
   echo "Usage: ./wait-for-container.sh [container_name] [expcted_message]"
   exit 1
 fi
 
 for i in $(seq 1 90); do
-  echo "Verifying if container $container is ready ($i)..."
+  echo "Verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
     echo "Container $container is ready!"
