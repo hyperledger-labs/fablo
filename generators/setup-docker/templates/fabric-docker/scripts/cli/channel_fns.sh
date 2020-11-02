@@ -1,3 +1,5 @@
+set -eu
+
 function createChannelAndJoin() {
   local CHANNEL_NAME=$1
 
