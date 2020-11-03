@@ -79,7 +79,8 @@ try {
 
       stage("Install libs") {
         sh "apk add --no-cache nodejs npm bash docker-compose py-pip tar"
-        sh "pip install --user yamllint"
+        sh "pip install yamllint"
+        sh "yamllint --version"
         sh "wget -qO- \"https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz\" | tar -xJv"
         sh "cp \"shellcheck-stable/shellcheck\" /usr/bin/"
         sh "shellcheck --version"
@@ -105,7 +106,7 @@ try {
 
       stage('Lint') {
         sh "npm run lint"
-        sh "lint.sh"
+        sh "./lint.sh"
       }
 
       stage("Test RAFT network (2 orgs)") {

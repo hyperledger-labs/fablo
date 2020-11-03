@@ -105,7 +105,7 @@ function createNewChannelUpdateTx() {
   local CONFIG_PROFILE=$3
   local CONFIG_PATH=$4
   local OUTPUT_PATH=$5
-  local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP_NAME"anchors-$CHANNEL_NAME.tx"
+  local ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
 
   echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
@@ -127,12 +127,12 @@ function createNewChannelUpdateTx() {
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
   docker exec -i $CONTAINER_NAME configtxgen \
     --configPath ./fabric-config \
-    -profile ${CONFIG_PROFILE} \
-    -outputAnchorPeersUpdate ./config/${MSP_NAME}anchors.tx \
-    -channelID ${CHANNEL_NAME} \
-    -asOrg ${MSP_NAME} || removeContainer $CONTAINER_NAME
+    -profile "${CONFIG_PROFILE}" \
+    -outputAnchorPeersUpdate ./config/"${MSP_NAME}"anchors.tx \
+    -channelID "${CHANNEL_NAME}" \
+    -asOrg "${MSP_NAME}" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/${MSP_NAME}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/"${MSP_NAME}"anchors.tx "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
@@ -153,12 +153,12 @@ function notifyOrgAboutNewChannel() {
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
 
-  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-      $CLI_NAME peer channel update \
-      -c $CHANNEL_NAME \
-      -o $ORDERER_URL \
-      -f $ANCHOR_PEER_UPDATE_PATH
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+      "$CLI_NAME" peer channel update \
+      -c "$CHANNEL_NAME" \
+      -o "$ORDERER_URL" \
+      -f "$ANCHOR_PEER_UPDATE_PATH"
   else
     echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
   fi
@@ -181,13 +181,13 @@ function notifyOrgAboutNewChannelTls() {
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
 
-  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-      $CLI_NAME peer channel update \
-      -c $CHANNEL_NAME \
-      -o $ORDERER_URL \
-      -f $ANCHOR_PEER_UPDATE_PATH \
-      --tls --cafile $CA_CERT
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+      "$CLI_NAME" peer channel update \
+      -c "$CHANNEL_NAME" \
+      -o "$ORDERER_URL" \
+      -f "$ANCHOR_PEER_UPDATE_PATH" \
+      --tls --cafile "$CA_CERT"
   else
     echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
   fi
@@ -202,8 +202,8 @@ function deleteNewChannelUpdateTx() {
   echo "Deleting new channel config block. Channel: $CHANNEL_NAME, Organization: $MSP_NAME"
   inputLogShort "CHANNEL_NAME: $CHANNEL_NAME, MSP_NAME: $MSP_NAME, CLI_NAME: $CLI_NAME, ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
 
-  if [ ! -z "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec $CLI_NAME rm $ANCHOR_PEER_UPDATE_PATH
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec "$CLI_NAME" rm "$ANCHOR_PEER_UPDATE_PATH"
   else
     echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
   fi

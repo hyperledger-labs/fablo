@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-# This script runs linter for all Fabrikka script/yaml files and for generated
-# network configs in 'e2e-network' directory. It fails if generated network
-# configs are missing.
+# This script runs linter for bash and YAML files in Fabrikka root and for
+# generated network configs in 'e2e-network' directory. It fails if generated
+# network configs are missing.
 #
 # Required libs: shellcheck and yamllint
 
