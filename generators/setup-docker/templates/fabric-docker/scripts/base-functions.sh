@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -20,17 +22,19 @@ function certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/$CRYPTO_CONFIG_FILE_NAME || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/crypto-config/. $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/crypto-config/. "$OUTPUT_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
-  for file in $(find $OUTPUT_PATH/ -iname *_sk); do
-    dir=$(dirname $file)
-    mv ${dir}/*_sk ${dir}/priv-key.pem
+
+  # shellcheck disable=2044
+  for file in $(find "$OUTPUT_PATH"/ -iname '*_sk'); do
+    dir=$(dirname "$file")
+    mv "${dir}"/*_sk "${dir}"/priv-key.pem
   done
 }
 
@@ -50,13 +54,13 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
   docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config $OUTPUT_PATH || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config "$OUTPUT_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
@@ -68,7 +72,7 @@ function createChannelTx() {
   local CONFIG_PATH=$2
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
-  local CHANNEL_TX_PATH=$OUTPUT_PATH"/"$CHANNEL_NAME".tx"
+  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME".tx
 
   echo "Creating channelTx for $CHANNEL_NAME..."
   inputLog "CONFIG_PATH: $CONFIG_PATH"
@@ -82,13 +86,13 @@ function createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputCreateChannelTx ./config/channel.tx -channelID ${CHANNEL_NAME} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/channel.tx $CHANNEL_TX_PATH || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
@@ -101,7 +105,7 @@ function createAnchorPeerUpdateTx() {
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
   local MSP=$5
-  local ANCHOR_PEER_UPDATE_PATH=$OUTPUT_PATH"/"$MSP"anchors.tx"
+  local ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/$MSP"anchors.tx
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
     echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
@@ -109,13 +113,13 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:${FABRIC_VERSION} bash || removeContainer $CONTAINER_NAME
-  docker cp $CONFIG_PATH $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile ${CONFIG_PROFILE} -outputAnchorPeersUpdate ./config/${MSP}anchors.tx -channelID ${CHANNEL_NAME} -asOrg ${MSP} || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "${CONFIG_PROFILE}" -outputAnchorPeersUpdate ./config/"${MSP}"anchors.tx -channelID "${CHANNEL_NAME}" -asOrg "${MSP}" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/${MSP}anchors.tx $ANCHOR_PEER_UPDATE_PATH || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/"${MSP}"anchors.tx "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
@@ -132,7 +136,7 @@ function chaincodeInstall() {
   local ORDERER_URL=$7
   local CLI_NAME=$8
 
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
+  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
   echo "Installing chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -143,11 +147,11 @@ function chaincodeInstall() {
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
 
-  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-      $CLI_NAME peer chaincode install \
-      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
-      -o $ORDERER_URL
+  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+    docker exec -e CHANNEL_NAME="$CHANNEL_NAME" -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+      "$CLI_NAME" peer chaincode install \
+      -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
+      -o "$ORDERER_URL"
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
   fi
@@ -165,7 +169,7 @@ function chaincodeInstantiate() {
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
+  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
   echo "Instantiating chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -178,13 +182,13 @@ function chaincodeInstantiate() {
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
 
-  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode instantiate \
-      -C $CHANNEL_NAME \
-      -n $CHAINCODE_NAME \
-      -v $CHAINCODE_VERSION \
-      -l $CHAINCODE_LANG \
-      -o $ORDERER_URL \
+  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode instantiate \
+      -C "$CHANNEL_NAME" \
+      -n "$CHAINCODE_NAME" \
+      -v "$CHAINCODE_VERSION" \
+      -l "$CHAINCODE_LANG" \
+      -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT"
   else
@@ -219,7 +223,7 @@ function chaincodeUpgrade() {
   inputLog "CLI_NAME: $CLI_NAME"
 
   if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode upgrade \
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode upgrade \
       -C "$CHANNEL_NAME" \
       -n "$CHAINCODE_NAME" \
       -v "$CHAINCODE_VERSION" \
@@ -245,7 +249,7 @@ function chaincodeInstallTls() {
   local CLI_NAME=$8
   local CA_CERT="/var/hyperledger/cli/"$9
 
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
+  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
   echo "Installing chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -257,11 +261,11 @@ function chaincodeInstallTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CHANNEL_NAME=$CHANNEL_NAME -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-      $CLI_NAME peer chaincode install \
-      -n $CHAINCODE_NAME -v $CHAINCODE_VERSION -l $CHAINCODE_LANG -p /var/hyperledger/cli/$CHAINCODE_NAME/ \
-      -o $ORDERER_URL --tls --cafile $CA_CERT
+  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+    docker exec -e CHANNEL_NAME="$CHANNEL_NAME" -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+      "$CLI_NAME" peer chaincode install \
+      -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
+      -o "$ORDERER_URL" --tls --cafile "$CA_CERT"
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty."
   fi
@@ -280,7 +284,7 @@ function chaincodeInstantiateTls() {
   local ENDORSEMENT=${10}
   local CA_CERT="/var/hyperledger/cli/"${11}
 
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
+  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
   echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -294,17 +298,17 @@ function chaincodeInstantiateTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode instantiate \
-      -C $CHANNEL_NAME \
-      -n $CHAINCODE_NAME \
-      -v $CHAINCODE_VERSION \
-      -l $CHAINCODE_LANG \
-      -o $ORDERER_URL \
+  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode instantiate \
+      -C "$CHANNEL_NAME" \
+      -n "$CHAINCODE_NAME" \
+      -v "$CHAINCODE_VERSION" \
+      -l "$CHAINCODE_LANG" \
+      -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
       --tls \
-      --cafile $CA_CERT
+      --cafile "$CA_CERT"
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -324,7 +328,7 @@ function chaincodeUpgradeTls() {
   local ENDORSEMENT=${10}
   local CA_CERT="/var/hyperledger/cli/"${11}
 
-  local CHAINCODE_DIR_CONTENT=$(ls $CHAINCODE_DIR_PATH)
+  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
   echo "Upgrading chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -338,18 +342,18 @@ function chaincodeUpgradeTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ ! -z "$CHAINCODE_DIR_CONTENT" ]; then
-    docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer chaincode upgrade \
-      -C $CHANNEL_NAME \
-      -n $CHAINCODE_NAME \
-      -v $CHAINCODE_VERSION \
-      -l $CHAINCODE_LANG \
+  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode upgrade \
+      -C "$CHANNEL_NAME" \
+      -n "$CHAINCODE_NAME" \
+      -v "$CHAINCODE_VERSION" \
+      -l "$CHAINCODE_LANG" \
       -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
-      -o $ORDERER_URL \
+      -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
       --tls \
-      --cafile $CA_CERT
+      --cafile "$CA_CERT"
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -383,7 +387,7 @@ function inputLog() {
 
 function certsRemove() {
   local CERTS_DIR_PATH=$1
-  rm -rf "$CERTS_DIR_PATH"/*
+  rm -rf "$CERTS_DIR_PATH"
 }
 
 function removeContainer() {

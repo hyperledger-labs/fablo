@@ -154,8 +154,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/config
-  rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config
+  rm -rf "$FABRIKKA_NETWORK_ROOT"/fabric-config/config
+  rm -rf "$FABRIKKA_NETWORK_ROOT"/fabric-config/crypto-config
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }
