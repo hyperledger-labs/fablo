@@ -38,9 +38,9 @@ Organizations:
         Name: <%= org.mspName %>
         ID: <%= org.mspName %>
         MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-        AnchorPeers:
-            - Host: peer0.<%= org.domain %>
-              Port: 7051<% }) %>
+        AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
+            - Host: <%= anchorPeer.address %>
+              Port: 7051<% })}) %>
 
 ################################################################################
 #   SECTION: Application
