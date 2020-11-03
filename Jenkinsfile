@@ -78,7 +78,7 @@ try {
     container('dind') {
 
       stage("Install libs") {
-        sh "apk add --no-cache nodejs npm bash docker-compose pip tar"
+        sh "apk add --no-cache nodejs npm bash docker-compose py-pip tar"
         sh "pip install --user yamllint"
         sh "wget -qO- \"https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz\" | tar -xJv"
         sh "cp \"shellcheck-stable/shellcheck\" /usr/bin/"
