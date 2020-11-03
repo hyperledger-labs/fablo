@@ -31,16 +31,16 @@ Channel: &ChannelDefaults
 ################################################################################
 Organizations:
     - &OrdererOrg
-        Name: <%= rootOrg.organization.name %>
-        ID: <%= rootOrg.organization.mspName %>
-        MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
+      Name: <%= rootOrg.organization.name %>
+      ID: <%= rootOrg.organization.mspName %>
+      MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
     - &<%= org.name %>
-        Name: <%= org.mspName %>
-        ID: <%= org.mspName %>
-        MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-        AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
-            - Host: <%= anchorPeer.address %>
-              Port: 7051<% })}) %>
+      Name: <%= org.mspName %>
+      ID: <%= org.mspName %>
+      MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
+      AnchorPeers:
+          - Host: peer0.<%= org.domain %>
+            Port: 7051<% }) %>
 
 ################################################################################
 #   SECTION: Application

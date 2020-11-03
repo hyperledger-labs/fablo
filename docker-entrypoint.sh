@@ -1,7 +1,7 @@
 #!/bin/sh
 
-config="/network/config.json"
-target="/network/docker"
+config="/network/fabrikka-config.json"
+target="/network/target"
 
 if [ "$(id -u)" = 0 ]; then
   echo "Root user detected, running as yeoman user"
@@ -12,5 +12,25 @@ else
   (cd "$target" && yo --no-insight fabrikka:setup-docker "../..$config")
 fi
 
-echo "Formatting generated scripts"
-#shellcheck -f diff "$target/**/*.sh" | patch -p1
+rm -rf "$target/.cache" "$target/.config"
+
+#
+# Additional script and yaml formatting
+#
+# Why? Yeoman output may contain some additional whitespaces or the formatting
+# might not be ideal. Keeping those whitespaces, however, might be useful
+# in templates to improve the brevity. That's why we need additional formatting.
+# Since the templates should obey good practices, we don't use linters here
+# (i.e. shellcheck and yamllint).
+
+echo "Formatting generated files"
+shfmt -i=2 -l -w "$target"
+
+for yaml in "$target"/**/*.yaml; do
+  # remove trailing spaces
+  sed --in-place 's/[ \t]*$//' "$yaml"
+
+  # remove duplicated empty/blank lines
+  content="$(awk -v RS= -v ORS='\n\n' '1' "$yaml")"
+  echo "$content" >"$yaml"
+done

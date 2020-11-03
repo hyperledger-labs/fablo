@@ -44,6 +44,7 @@ expectInvoke() {
 
 networkUpAsync
 
+# shellcheck disable=2015
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
