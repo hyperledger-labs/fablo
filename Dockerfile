@@ -1,6 +1,6 @@
 FROM node:14-alpine3.12
 
-RUN apk add --no-cache sudo shellcheck patch shfmt
+RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
 
 COPY generators /fabrikka/generators
