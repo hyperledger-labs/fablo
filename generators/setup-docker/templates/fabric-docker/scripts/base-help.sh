@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function printHelp() {
   echo "Fabrikka is powered by SoftwareMill"
 
