@@ -11,10 +11,11 @@ services:
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=<%= rootCaFullName %>
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.<%= rootOrg.organization.domain %>-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.organization.domain %>-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7030:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -70,10 +71,11 @@ services:
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=<%= orgCaFullName %>
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.<%= org.organization.domain %>-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.organization.domain %>-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - <%= orgCaHostPort %>:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= caUserVariable %>}:${<%= caPassVariable %>} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server-config
