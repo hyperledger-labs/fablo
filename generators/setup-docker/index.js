@@ -203,8 +203,8 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
-        this.templatePath('fabric-docker/scripts/base-peer-channel-functions.sh'),
-        this.destinationPath('fabric-docker/scripts/base-peer-channel-functions.sh'),
+        this.templatePath('fabric-docker/scripts/base-channel-functions.sh'),
+        this.destinationPath('fabric-docker/scripts/base-channel-functions.sh'),
     );
 
     this.fs.copyTpl(
