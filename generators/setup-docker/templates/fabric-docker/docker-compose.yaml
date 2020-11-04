@@ -7,7 +7,7 @@ services:
   <% var rootCaFullName=rootOrg.ca.prefix+"."+rootOrg.organization.domain %>
   <%= rootCaFullName %>:
     container_name: <%= rootCaFullName %>
-    image: hyperledger/fabric-ca:${FABRIC_VERSION}
+    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=<%= rootCaFullName %>
@@ -67,7 +67,7 @@ services:
   %>
   <%= orgCaFullName %>:
     container_name: <%= orgCaFullName %>
-    image: hyperledger/fabric-ca:${FABRIC_VERSION}
+    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=<%= orgCaFullName %>
