@@ -5,7 +5,7 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 # testing absolute path
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raft.json"
+CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raft-hlf2.json"
 
 networkUpAsync() {
   "$FABRIKKA_HOME/fabrikka-build.sh" &&
@@ -66,9 +66,9 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
-    '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
+    '{"Args":["KVContract:put", "name", "Harry Potter"]}' \
     '{\"success\":\"OK\"}' &&
   expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
-    '{\"success\":\"Jack Sparrow\"}' &&
+    '{\"success\":\"Harry Potter\"}' &&
   networkDown || (networkDown && exit 1)

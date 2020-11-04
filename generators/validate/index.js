@@ -6,7 +6,7 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabrikkaVersions, supportedFabricVersions } = require('../config');
+const { supportedFabrikkaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
 const schema = require('../../docs/schema.json');
@@ -71,6 +71,8 @@ module.exports = class extends Generator {
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
     this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
+
+    this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
   }
 
   async summary() {
@@ -161,7 +163,6 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      const versionsSupportingRaft = ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8'];
       if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
@@ -178,5 +179,20 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.ERROR, objectToEmit);
       }
     }
+  }
+
+  _validateOrgsAnchorPeerInstancesCount(orgs) {
+    orgs.forEach((org) => {
+      const numberOfPeers = org.peer.instances;
+      const numberOfAnchorPeers = org.peer.anchorPeerInstances;
+
+      if (numberOfPeers < numberOfAnchorPeers) {
+        const objectToEmit = {
+          category: validationCategories.PEER,
+          message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
+    });
   }
 };
