@@ -169,6 +169,7 @@ FABRIKKA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-peer-channel-functions.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
 
@@ -195,6 +196,206 @@ elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
 elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"list\\" ] && [ \\"$3\\" = \\"org1msp\\" ] && [ -n \\"$4\\" ]; then
+  PEER_NAME=$4
+  peerChannelListTls \\"cli.org1.com\\" \\"\${PEER_NAME}.org1.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"list\\" ] && [ \\"$3\\" = \\"org2msp\\" ] && [ -n \\"$4\\" ]; then
+  PEER_NAME=$4
+  peerChannelListTls \\"cli.org2.com\\" \\"\${PEER_NAME}.org2.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"getinfo\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1msp\\" ] && [ -n \\"$5\\" ]; then
+  PEER_NAME=$5
+  peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchConfigDefault \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchLastBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"getinfo\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2msp\\" ] && [ -n \\"$5\\" ]; then
+  PEER_NAME=$5
+  peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchConfigDefault \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchLastBlockDefaultTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"getinfo\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org1msp\\" ] && [ -n \\"$5\\" ]; then
+  PEER_NAME=$5
+  peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchConfigDefault \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchLastBlockDefaultTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"getinfo\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org2msp\\" ] && [ -n \\"$5\\" ]; then
+  PEER_NAME=$5
+  peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchConfigDefault \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchLastBlockDefaultTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 6 ]; then
+  FILE_NAME=$6
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\"
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel2\\" ] && [ \\"$5\\" = \\"org2msp\\" ] && [ \\"$#\\" = 7 ]; then
+  FILE_NAME=$6
+  PEER_NAME=$7
+  peerChannelFetchFirstBlockDefaultTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org2.com:7051\\"
+
+elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"--help\\" ]; then
+  echo \\"Channel managment commands:\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel list org1msp <peer0>\\"
+  echo -e \\"\\\\t List channels on given peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel list org2msp <peer0>\\"
+  echo -e \\"\\\\t List channels on given peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel getinfo my-channel1 org1msp <peer0>\\"
+  echo -e \\"\\\\t Get channel info on given peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch config my-channel1 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download latest config block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch lastBlock my-channel1 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch firstBlock my-channel1 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+
+  echo \\"./fabric-docker.sh channel getinfo my-channel1 org2msp <peer0>\\"
+  echo -e \\"\\\\t Get channel info on given peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch config my-channel1 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download latest config block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch lastBlock my-channel1 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch firstBlock my-channel1 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+
+  echo \\"./fabric-docker.sh channel getinfo my-channel2 org1msp <peer0>\\"
+  echo -e \\"\\\\t Get channel info on given peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch config my-channel2 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download latest config block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch lastBlock my-channel2 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch firstBlock my-channel2 org1msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"\\"
+
+  echo \\"./fabric-docker.sh channel getinfo my-channel2 org2msp <peer0>\\"
+  echo -e \\"\\\\t Get channel info on given peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch config my-channel2 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download latest config block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch lastBlock my-channel2 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+  echo \\"./fabric-docker.sh channel fetch firstBlock my-channel2 org2msp <fileName.json> [peer0]\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. By default it uses first peer of Org2MSP\\".
+  echo \\"\\"
+
+
+
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -202,6 +403,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
 else
   echo \\"No command specified\\"
   echo \\"Basic commands are: up, down, start, stop, recreate\\"
+  echo \\"To list channel query helper commands type: './fabrikka-docker.sh channel --help'\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -1119,6 +1321,411 @@ exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-
   echo \\"./fabric-docker.sh recreate\\"
   echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
+  echo \\"./fabric-docker.sh channel --help\\"
+  echo -e \\"\\\\t Detailed help for channel management scripts.\\"
+  echo \\"\\"
+}
+"
+`;
+
+exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-peer-channel-functions.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+"function peerChannelList() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+
+  echo \\"Listing channels using $CLI_NAME using peer $PEER_ADDRESS...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel list
+}
+
+function peerChannelListDefault() {
+  local CLI_NAME=$1
+
+  echo \\"Listing channels using $CLI_NAME using default cli's peer\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+
+  docker exec $CLI_NAME peer channel list
+}
+
+function peerChannelGetInfo() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local PEER_ADDRESS=$3
+
+  echo \\"Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel getinfo \\\\
+    -c $CHANNEL_NAME
+}
+
+function peerChannelGetInfoDefault() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+
+  echo \\"Getting info about $CHANNEL_NAME using default cli's peer...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+
+  docker exec $CLI_NAME peer channel getinfo \\\\
+    -c $CHANNEL_NAME
+}
+
+function peerChannelFetchConfig() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+
+  echo \\"Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec \\\\
+    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
+    -c $CHANNEL_NAME
+
+  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec \\\\
+    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchConfigDefault() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+
+  echo \\"Fetching config block from $CHANNEL_NAME using default cli's peer...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
+    -c $CHANNEL_NAME
+
+  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchLastBlock() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+
+  echo \\"Fetching last block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
+    -c $CHANNEL_NAME
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/newest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchLastBlockDefault() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+
+  echo \\"Fetching last block from $CHANNEL_NAME using default cli's peer...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
+    -c $CHANNEL_NAME
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/newest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchFirstBlock() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+
+  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
+    -c $CHANNEL_NAME
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/oldest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchFirstBlockDefault() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+
+  echo \\"Fetching first block from $CHANNEL_NAME using default cli's peer...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
+    -c $CHANNEL_NAME
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/oldest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+#=== TLS equivalents =========================================================
+
+function peerChannelListTls() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CA_CERT=$3
+
+  echo \\"Listing channels using $CLI_NAME using peer $PEER_ADDRESS (TLS)...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel list --tls --cafile $CA_CERT
+}
+
+function peerChannelListDefaultTls() {
+  local CLI_NAME=$1
+  local CA_CERT=$2
+
+  echo \\"Listing channels using $CLI_NAME using default cli's peer (TLS)...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+
+  docker exec $CLI_NAME peer channel list --cafile $CA_CERT
+}
+
+function peerChannelGetInfoTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local PEER_ADDRESS=$3
+  local CA_CERT=$4
+
+
+  echo \\"Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel getinfo \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+}
+
+function peerChannelGetInfoDefaultTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CA_CERT=$3
+
+  echo \\"Getting info about $CHANNEL_NAME using default cli's peer (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+
+  docker exec $CLI_NAME peer channel getinfo \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+}
+
+function peerChannelFetchConfigTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+  local CA_CERT=$5
+
+  echo \\"Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec \\\\
+    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+
+  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec \\\\
+    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchConfigDefaultTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+  local CA_CERT=$4
+
+  echo \\"Fetching config block from $CHANNEL_NAME using default cli's peer (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+
+  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchLastBlockTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+  local CA_CERT=$5
+
+  echo \\"Fetching last block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/newest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchLastBlockDefaultTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local CA_CERT=$4
+
+  echo \\"Fetching last block from $CHANNEL_NAME using default cli's peer (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/newest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+}
+
+function peerChannelFetchFirstBlockTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+  local CA_CERT=$5
+
+  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \\\\
+    $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/oldest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/1
+}
+
+function peerChannelFetchFirstBlockDefaultTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local BLOCK_FILE_NAME=$3
+  local CA_CERT=$4
+
+  echo \\"Fetching first block from $CHANNEL_NAME using default cli's peer (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
+
+  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
+  docker exec \\\\
+    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
+    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+  docker exec $CLI_NAME configtxlator proto_decode \\\\
+    --input /tmp/hyperledger/blocks/oldest.block \\\\
+    --type common.Block | \\\\
+    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+
+  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
 }
 "
 `;
@@ -1265,6 +1872,7 @@ Array [
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/docker-compose.yaml",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-peer-channel-functions.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
