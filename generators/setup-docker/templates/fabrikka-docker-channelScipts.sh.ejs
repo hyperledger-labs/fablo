@@ -41,12 +41,24 @@ elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "block" ] && [ "$4" 
   FILE_NAME=$6
   PEER_NAME=$7
   peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% })}) %>
-elif [ "$1" = "channel" ] && [ "$2" = "--help" ]; then<% orgs.forEach(function(org) { %>
-  echo "peer channel list <%= org.mspName.toLowerCase(); %> [peer0] - to list channels on given peer. Optionally you can pass peer name to query from".<% }) %><% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { %>
-  echo "peer channel getinfo <%= channel.name %> <%= org.mspName.toLowerCase(); %> [peer0] - to get channel info. Optionally you can pass peer name to query from"
-  echo "peer channel fetch config <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download latest config block. Optionally you can pass peer name to query from"
-  echo "peer channel fetch lastBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download last, decrypted block. Optionally you can pass peer name to query from"
-  echo "peer channel fetch firstBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> fileName.json [peer0] - to download first, decrypted block. Optionally you can pass peer name to query from"
+elif [ "$1" = "channel" ] && [ "$2" = "--help" ]; then
+  echo "Channel managment commands:"
+  echo ""<% orgs.forEach(function(org) { %>
+  echo "./fabric-docker.sh channel list <%= org.mspName.toLowerCase(); %> <peer0>"
+  echo -e "\t List channels on given peer of <%= org.mspName %>".
+  echo ""<% }) %><% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { %>
+  echo "./fabric-docker.sh channel getinfo <%= channel.name %> <%= org.mspName.toLowerCase(); %> <peer0>"
+  echo -e "\t Get channel info on given peer of <%= org.mspName %>".
+  echo ""
+  echo "./fabric-docker.sh channel fetch config <%= channel.name %> <%= org.mspName.toLowerCase(); %> <fileName.json> [peer0]"
+  echo -e "\t Download latest config block to current dir. By default it uses first peer of <%= org.mspName %>".
+  echo ""
+  echo "./fabric-docker.sh channel fetch lastBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> <fileName.json> [peer0]"
+  echo -e "\t Download last, decrypted block to current dir. By default it uses first peer of <%= org.mspName %>".
+  echo ""
+  echo "./fabric-docker.sh channel fetch firstBlock <%= channel.name %> <%= org.mspName.toLowerCase(); %> <fileName.json> [peer0]"
+  echo -e "\t Download first, decrypted block to current dir. By default it uses first peer of <%= org.mspName %>".
+  echo ""
 <% })}) %>
 
 
