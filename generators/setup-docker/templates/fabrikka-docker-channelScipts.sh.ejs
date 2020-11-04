@@ -1,46 +1,50 @@
 <% orgs.forEach(function(org) { %>
-elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 3 ]; then<% if(!tls) { -%>
-  peerChannelListDefault "<%= org.cliAddress %>"
-<% } else { -%>
-  peerChannelListDefaultTls "<%= org.cliAddress %>"
-<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "list" ] && [ "$3" = "<%= org.mspName.toLowerCase(); %>" ] && [ -n "$4" ]; then
   PEER_NAME=$4
-  peerChannelList "<%= org.cliAddress %>" "${PEER_NAME}.<%= org.domain %>:7051"
+<% if(!tls) { %>  peerChannelList "<%= org.cliAddress %>" "${PEER_NAME}.<%= org.domain %>:7051" <% } else { -%>
+  peerChannelListTls "<%= org.cliAddress %>" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
 <% }) %><% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { %>
-elif [ "$1" = "channel" ] && [ "$2" = "getinfo" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 4 ]; then
-  peerChannelGetInfoDefault "<%= channel.name %>" "cli.<%= org.domain %>"
 elif [ "$1" = "channel" ] && [ "$2" = "getinfo" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.mspName.toLowerCase(); %>" ] && [ -n "$5" ]; then
   PEER_NAME=$5
-  peerChannelGetInfo "<%= channel.name %>" "cli.<%= org.domain %>" "${PEER_NAME}.<%= org.domain %>:7051"
+<% if(!tls) { %>  peerChannelGetInfo "<%= channel.name %>" "cli.<%= org.domain %>" "${PEER_NAME}.<%= org.domain %>:7051" <% } else { -%>
+  peerChannelGetInfoTls "<%= channel.name %>" "cli.<%= org.domain %>" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "config" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
   FILE_NAME=$6
-  peerChannelFetchConfigDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+<% if(!tls) { %>  peerChannelFetchConfigDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" <% } else { -%>
+  peerChannelFetchConfigDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "config" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
   FILE_NAME=$6
   PEER_NAME=$7
-  peerChannelFetchConfig "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+<% if(!tls) { %>  peerChannelFetchConfig "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051" <% } else { -%>
+  peerChannelFetchConfigTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "lastBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
   FILE_NAME=$6
-  peerChannelFetchLastBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+<% if(!tls) { %>  peerChannelFetchLastBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } else { -%>
+  peerChannelFetchLastBlockDefaultTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "lastBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
   FILE_NAME=$6
   PEER_NAME=$7
-  peerChannelFetchLastBlock "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+<% if(!tls) { %>  peerChannelFetchLastBlock "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } else { -%>
+  peerChannelFetchLastBlockTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "firstBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
   FILE_NAME=$6
-  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+<% if(!tls) { %>  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } else { -%>
+  peerChannelFetchFirstBlockDefaultTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "firstBlock" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
   FILE_NAME=$6
   PEER_NAME=$7
-  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"
+<% if(!tls) { %>  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } else { -%>
+  peerChannelFetchFirstBlockDefaultTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "block" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 6 ]; then
   FILE_NAME=$6
-  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"
+<% if(!tls) { %>  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } else { -%>
+  peerChannelFetchFirstBlockDefaultTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}"<% } %>
 elif [ "$1" = "channel" ] && [ "$2" = "fetch" ] && [ "$3" = "block" ] && [ "$4" = "<%= channel.name %>" ] && [ "$5" = "<%= org.mspName.toLowerCase(); %>" ] && [ "$#" = 7 ]; then
   FILE_NAME=$6
   PEER_NAME=$7
-  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% })}) %>
+<% if(!tls) { %>  peerChannelFetchFirstBlockDefault "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } else { -%>
+  peerChannelFetchFirstBlockDefaultTls "<%= channel.name %>" "cli.<%= org.domain %>" "${FILE_NAME}" "${PEER_NAME}.<%= org.domain %>:7051"<% } %>
+<% })}) %>
 elif [ "$1" = "channel" ] && [ "$2" = "--help" ]; then
   echo "Channel managment commands:"
   echo ""<% orgs.forEach(function(org) { %>
