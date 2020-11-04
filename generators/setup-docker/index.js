@@ -102,10 +102,11 @@ module.exports = class extends Generator {
     this._copyFabrikkaDockerScript(
       {
         tls: networkConfig.networkSettings.tls,
+        rootOrg: rootOrgTransformed,
         orgs: orgsTransformed,
         channels: channelsTransformed,
       },
-    )
+    );
 
     this._copyUtilityScripts();
 
@@ -199,8 +200,8 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
-        this.templatePath('fabric-docker/scripts/base-channel-functions.sh'),
-        this.destinationPath('fabric-docker/scripts/base-channel-functions.sh'),
+      this.templatePath('fabric-docker/scripts/base-channel-functions.sh'),
+      this.destinationPath('fabric-docker/scripts/base-channel-functions.sh'),
     );
 
     this.fs.copyTpl(
