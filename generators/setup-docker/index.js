@@ -4,7 +4,6 @@
 * License-Identifier: Apache-2.0
 */
 const Generator = require('yeoman-generator');
-const mkdirp = require('mkdirp');
 const config = require('../config');
 const utils = require('../utils/utils');
 
@@ -41,13 +40,14 @@ module.exports = class extends Generator {
     const capabilities = configTransformers.getNetworkCapabilities(
       networkConfig.networkSettings.fabricVersion,
     );
+    const isHlf20 = configTransformers.isHlf20(networkConfig.networkSettings.fabricVersion);
     const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
     const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
     const channelsTransformed = networkConfig.channels.map(
       (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
     );
     const chaincodesTransformed = configTransformers.transformChaincodesConfig(
-      networkConfig.chaincodes, channelsTransformed, this.env,
+      networkConfig.chaincodes, channelsTransformed,
     );
 
     // ======= fabric-config ============================================================
@@ -61,6 +61,7 @@ module.exports = class extends Generator {
     this._copyConfigTx(
       {
         capabilities,
+        isHlf20,
         networkSettings: networkConfig.networkSettings,
         rootOrg: rootOrgTransformed,
         orgs: orgsTransformed,
@@ -71,6 +72,9 @@ module.exports = class extends Generator {
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(
       {
+        fabricCaVersion: configTransformers.getCaVersion(
+          networkConfig.networkSettings.fabricVersion,
+        ),
         networkSettings: networkConfig.networkSettings,
         orgs: orgsTransformed,
       },
@@ -105,18 +109,10 @@ module.exports = class extends Generator {
 
     this._copyUtilityScripts();
 
-    networkConfig.chaincodes.forEach((chaincode) => {
-      mkdirp.sync(chaincode.directory);
-    });
-
     this.on('end', () => {
-      // TODO do we really need it?
-      chaincodesTransformed.filter((c) => !c.chaincodePathExists).forEach((chaincode) => {
-        this.log(`INFO: chaincode '${chaincode.name}' not found in ${chaincode.chaincodePath}. Use generated folder and place it there.`);
-      });
       this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabrikka-docker.sh up - to start network');
-      this.log('-> fabrikka-docker.sh help - to view all commands');
+      this.log('-> fabric-docker.sh up - to start network');
+      this.log('-> fabric-docker.sh help - to view all commands');
     });
   }
 
@@ -180,9 +176,9 @@ module.exports = class extends Generator {
 
   _copyFabrikkaDockerScript(settings) {
     this.fs.copyTpl(
-        this.templatePath('fabrikka-docker.sh'),
-        this.destinationPath('fabrikka-docker.sh'),
-        settings,
+      this.templatePath('fabric-docker.sh'),
+      this.destinationPath('fabric-docker.sh'),
+      settings,
     );
   }
 

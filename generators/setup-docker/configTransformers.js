@@ -1,22 +1,13 @@
-const fs = require('fs');
-
 function flatten(prev, curr) {
   return prev.concat(curr);
 }
 
-function getFullPathOf(configFile, env) {
-  const currentPath = env.cwd;
-  return `${currentPath}/${configFile}`;
-}
-
-function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
+function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels
       .filter((c) => c.key === chaincode.channel)
       .slice(0, 1)
       .reduce(flatten);
-    const chaincodePath = getFullPathOf(chaincode.directory, yeomanEnv);
-    const chaincodePathExists = fs.existsSync(chaincodePath);
     return {
       directory: chaincode.directory,
       name: chaincode.name,
@@ -25,8 +16,6 @@ function transformChaincodesConfig(chaincodes, transformedChannels, yeomanEnv) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      chaincodePath,
-      chaincodePathExists,
     };
   });
 }
@@ -66,6 +55,17 @@ function extendPeers(peerJsonFormat, domainJsonFormat) {
   }));
 }
 
+function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
+  let { anchorPeerInstances } = peerJsonFormat;
+  if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
+    anchorPeerInstances = 1;
+  }
+  return Array(anchorPeerInstances).fill().map((x, i) => i).map((i) => ({
+    name: `peer${i}`,
+    address: `peer${i}.${domainJsonFormat}`,
+  }));
+}
+
 function transformOrgConfig(orgJsonConfigFormat) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonConfigFormat.organization.name.toLowerCase()}`;
   const cliAddress = `cli.${orgJsonConfigFormat.organization.domain}`
@@ -74,6 +74,10 @@ function transformOrgConfig(orgJsonConfigFormat) {
     mspName: orgJsonConfigFormat.organization.mspName,
     domain: orgJsonConfigFormat.organization.domain,
     peers: extendPeers(orgJsonConfigFormat.peer, orgJsonConfigFormat.organization.domain),
+    anchorPeers: extendAnchorPeers(
+      orgJsonConfigFormat.peer,
+      orgJsonConfigFormat.organization.domain,
+    ),
     peersCount: orgJsonConfigFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
     cliAddress: cliAddress
@@ -110,6 +114,12 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
 function getNetworkCapabilities(fabricVersion) {
   // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
   const networkCapabilities = {
+    '2.2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.1.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.1.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.0.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+
     '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
     '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
@@ -124,10 +134,28 @@ function getNetworkCapabilities(fabricVersion) {
   return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
 
+function isHlf20(fabricVersion) {
+  const supported20Versions = ['2.2.1', '2.2.0', '2.1.1', '2.1.0', '2.0.1'];
+  return supported20Versions.includes(fabricVersion);
+}
+
+function getCaVersion(fabricVersion) {
+  const caVersion = {
+    '2.2.1': '1.4.9',
+    '2.2.0': '1.4.9',
+    '2.1.1': '1.4.9',
+    '2.1.0': '1.4.9',
+    '2.0.1': '1.4.9',
+  };
+  return caVersion[fabricVersion] || fabricVersion;
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
   transformOrgConfig,
   transformChannelConfig,
   getNetworkCapabilities,
+  getCaVersion,
+  isHlf20,
 };

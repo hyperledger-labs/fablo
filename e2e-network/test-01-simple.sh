@@ -1,13 +1,15 @@
 #!/bin/sh
 
-TEST_TMP="$(mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
+TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-1org-1channel-1chaincode.json"
+# testing relative path
+CONFIG="../../samples/fabrikkaConfig-1org-1channel-1chaincode.json"
 
 networkUpAsync() {
-  (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG") &&
+  "$FABRIKKA_HOME/fabrikka-build.sh" &&
+    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG") &&
     (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" up &)
 }
 
@@ -49,6 +51,13 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+
+  waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
+  waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself" &&
+  waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.* peer1.org1.com" &&
+
+  waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1 :" &&
+  waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.* peer0.org1.com" &&
   expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
     '{\"success\":\"OK\"}' &&
