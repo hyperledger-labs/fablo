@@ -112,7 +112,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
-      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/<% }) %>"
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
     networks:
       - basic
   <% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
