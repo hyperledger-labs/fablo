@@ -103,16 +103,16 @@ try {
         sh "npm run lint"
       }
 
-      stage("Test RAFT network (2 orgs)") {
+      stage("Test RAFT network (2 orgs, 2 chaincodes)") {
         try {
-          sh "e2e-network/test-02-raft-2orgs.sh"
+          sh "e2e-network/test-02-raft-2orgs-2chaincodes.sh"
         } finally {
-          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.tmpdir/**/*', fingerprint: true
-          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs-2chaincodes.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs-2chaincodes.sh.logs/*', fingerprint: true
         }
       }
 
-      stage("Test HF 2.0 network (2 orgs & RAFT)") {
+      stage("Test HF 2.0 network (2 orgs, 2 chaincodes & RAFT)") {
         try {
           sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
         } finally {
