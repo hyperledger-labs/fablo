@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -115,7 +115,7 @@ Profiles:
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -127,7 +127,7 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -136,7 +136,7 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
     "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 set -eu
@@ -184,7 +184,7 @@ fi
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "COMPOSE_PROJECT_NAME=network
 LOGGING_LEVEL=info
 
@@ -203,7 +203,7 @@ CHAINCODES_BASE_DIR=<absolute path>
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 function installChaincodes() {
@@ -222,6 +222,19 @@ npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
     chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    
+    
+  printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F618\\"
+    chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    
+  printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+  
+  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F618\\"
+    chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
     
 }
 
@@ -309,6 +322,20 @@ function networkDown() {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode2-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode2-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode2-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer1.org1.com-chaincode2-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/config
   rm -rf $FABRIKKA_NETWORK_ROOT/fabric-config/crypto-config
@@ -318,7 +345,7 @@ function networkDown() {
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -408,6 +435,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
   
@@ -483,7 +511,7 @@ services:
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -890,7 +918,7 @@ function removeContainer() {
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "function printHelp() {
   echo \\"Fabrikka is powered by SoftwareMill\\"
 
@@ -920,7 +948,7 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "set -eu
 
 function createChannelAndJoin() {
@@ -1049,18 +1077,18 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-01-simple should create proper files from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper files from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 Array [
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/.gitignore",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker.sh",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/.env",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-01-simple/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/.gitignore",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/configtx.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/.env",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
