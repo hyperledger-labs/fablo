@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -146,7 +146,7 @@ Profiles:
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -158,7 +158,7 @@ exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-org2.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-org2.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "PeerOrgs:
   - Name: Org2
     Domain: org2.com
@@ -170,7 +170,7 @@ exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -183,7 +183,7 @@ exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs
     "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "#!/bin/bash
 
 set -eu
@@ -231,7 +231,7 @@ fi
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "COMPOSE_PROJECT_NAME=network
 LOGGING_LEVEL=info
 
@@ -253,7 +253,7 @@ CHAINCODES_BASE_DIR=<absolute path>
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "#!/bin/bash
 
 function installChaincodes() {
@@ -261,17 +261,17 @@ function installChaincodes() {
   printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
 npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   
-  printHeadline \\"Installing 'chaincode1' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel2\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
-  printItalics \\"Instantiating 'chaincode1' on my-channel2/Org1/peer1\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel2\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
+    chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
-  printHeadline \\"Installing 'chaincode1' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel2\\" \\"peer1.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   
-  printItalics \\"Instantiating 'chaincode1' on my-channel2/Org2/peer1\\" \\"U1F618\\"
-    chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel2\\" \\"peer1.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
+    chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
     
     
   printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
@@ -383,17 +383,17 @@ function networkDown() {
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
    
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
-  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
+  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   
-  docker rm -f $(docker ps -a | grep dev-peer1.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
+  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
-  docker rmi $(docker images dev-peer1.org2.com-chaincode1-0.0.1-* -q) || {
+  docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   
@@ -420,7 +420,7 @@ function networkDown() {
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -798,7 +798,7 @@ services:
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
@@ -1205,7 +1205,7 @@ function removeContainer() {
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "function printHelp() {
   echo \\"Fabrikka is powered by SoftwareMill\\"
 
@@ -1235,7 +1235,7 @@ exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 "set -eu
 
 function createChannelAndJoin() {
@@ -1364,19 +1364,19 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-06-2orgs-raft should create proper files from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
+exports[`network-09-2orgs-2chaincodes-raft-hlf2 should create proper files from samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json 1`] = `
 Array [
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/.gitignore",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-org2.yaml",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker.sh",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/.env",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-06-2orgs-raft/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/.gitignore",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/configtx.yaml",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-org2.yaml",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker.sh",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/.env",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;

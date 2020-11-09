@@ -5,7 +5,7 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 # testing absolute path
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls-raft-hlf2.json"
+CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft-hlf2.json"
 
 networkUpAsync() {
   "$FABRIKKA_HOME/fabrikka-build.sh" &&
@@ -63,12 +63,22 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org2.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForContainer "peer1.org2.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
-  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
-  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
-  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
+
+  waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org2.com" "peer0.org2.com" "my-channel1" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org2.com" "my-channel2" "chaincode2" "0.0.1" &&
+
+  expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Harry Potter"]}' \
     '{\"success\":\"OK\"}' &&
-  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
+  expectInvoke "cli.org2.com" "peer0.org2.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Harry Potter\"}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" \
+    '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
+    'status:200' &&
+  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode2" \
+    '{"Args":["PokeballContract:readPokeball", "id1"]}' \
+    '{\"value\":\"Pokeball 1\"}' &&
   networkDown || (networkDown && exit 1)
