@@ -88,10 +88,10 @@ try {
 
       stage("Test simple network") {
         try {
-          sh "e2e-network/test-01-simple.sh"
+          sh "e2e-network/test-01-simple-2chaincodes.sh"
         } finally {
-          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.tmpdir/**/*', fingerprint: true
-          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple-2chaincodes.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple-2chaincodes.sh.logs/*', fingerprint: true
         }
       }
 
