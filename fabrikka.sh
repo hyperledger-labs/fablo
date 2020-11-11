@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -18,6 +18,9 @@ Usage:
 
   fabrikka.sh [down | start | stop]
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
+
+  fabrikka.sh chaincode upgrade chaincode-name version
+    Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrikka config file.
 
   fabrikka.sh [help | --help]
     Prints the manual."
