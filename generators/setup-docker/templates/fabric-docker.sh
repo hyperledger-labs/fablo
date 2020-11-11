@@ -6,6 +6,7 @@ FABRIKKA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
 
@@ -33,7 +34,7 @@ elif [ "$1" = "stop" ]; then
 elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
   installChaincodes "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
-  upgradeChaincodes "$3" "$4"
+  upgradeChaincode "$3" "$4"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then

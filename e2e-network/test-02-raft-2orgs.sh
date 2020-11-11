@@ -50,6 +50,7 @@ expectInvoke() {
 
 networkUpAsync
 
+# shellcheck disable=2015
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel1" &&
   waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel2" &&
