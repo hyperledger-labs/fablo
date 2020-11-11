@@ -43,10 +43,12 @@ Organizations:
       Name: Orderer
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
+
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
+
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7051
@@ -54,6 +56,7 @@ Organizations:
       Name: Org2MSP
       ID: Org2MSP
       MSPDir: crypto-config/peerOrganizations/org2.com/msp
+
       AnchorPeers:
           - Host: peer0.org2.com
             Port: 7051
@@ -147,28 +150,31 @@ exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-
 exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "#!/bin/bash
 
+set -eu
+
 FABRIKKA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
 
-if [ \\"$1\\" = \\"up\\" ]; then
+function networkUp() {
   generateArtifacts
   startNetwork
   generateChannelsArtifacts
   installChannels
   installChaincodes
+  notifyOrgsAboutChannels
   printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+}
+
+if [ \\"$1\\" = \\"up\\" ]; then
+  networkUp
 elif [ \\"$1\\" = \\"recreate\\" ]; then
   networkDown
-  generateArtifacts
-  startNetwork
-  generateChannelsArtifacts
-  installChannels
-  installChaincodes
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+  networkUp
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
 elif [ \\"$1\\" = \\"start\\" ]; then
@@ -178,7 +184,7 @@ elif [ \\"$1\\" = \\"stop\\" ]; then
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
-  upgradeChaincodes \\"$3\\" \\"$4\\"
+  upgradeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -194,8 +200,10 @@ fi
 
 exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "COMPOSE_PROJECT_NAME=network
-FABRIC_VERSION=1.4.3
 LOGGING_LEVEL=info
+
+FABRIC_VERSION=1.4.3
+FABRIC_CA_VERSION=1.4.3
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -205,6 +213,7 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 
 ORG2_CA_ADMIN_NAME=admin
 ORG2_CA_ADMIN_PASSWORD=adminpw
+
 
 FABRIKKA_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -232,7 +241,7 @@ function installChaincodes() {
   chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 }
 
-function upgradeChaincodes() {
+function upgradeChaincode() {
   chaincodeName=\\"$1\\"
   version=\\"$2\\"
 
@@ -262,6 +271,27 @@ function upgradeChaincodes() {
     printItalics \\"Upgrading 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F618\\"
     chaincodeUpgradeTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org2.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org2.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
   fi
+}
+
+function notifyOrgsAboutChannels() {
+  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
+
+  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
+  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\"
+  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.com\\"
+
 }
 
 function generateArtifacts() {
@@ -366,14 +396,15 @@ services:
 
   ca.root.com:
     container_name: ca.root.com
-    image: hyperledger/fabric-ca:\${FABRIC_VERSION}
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.root.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.root.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.root.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7030:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -391,7 +422,8 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-            # enabled TLS
+
+      # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
@@ -412,14 +444,15 @@ services:
 
   ca.org1.com:
     container_name: ca.org1.com
-    image: hyperledger/fabric-ca:\${FABRIC_VERSION}
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org1.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7031:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -440,7 +473,8 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.key
@@ -474,7 +508,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -512,7 +547,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -536,14 +572,15 @@ services:
 
   ca.org2.com:
     container_name: ca.org2.com
-    image: hyperledger/fabric-ca:\${FABRIC_VERSION}
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org2.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv-key.pem
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org2.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
       - 7032:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -564,7 +601,8 @@ services:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org2.com/msp
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.key
@@ -598,7 +636,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -636,7 +675,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer1.org2.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -685,7 +725,7 @@ function certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w=\\"/\\" --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
   docker cp \\"$CONFIG_PATH\\" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/\\"$CRYPTO_CONFIG_FILE_NAME\\" || removeContainer $CONTAINER_NAME
@@ -717,11 +757,11 @@ function genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w=\\"/\\" --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
   docker cp \\"$CONFIG_PATH\\" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block -channelID system-channel || removeContainer $CONTAINER_NAME
 
   docker cp $CONTAINER_NAME:/config \\"$OUTPUT_PATH\\" || removeContainer $CONTAINER_NAME
 
@@ -749,7 +789,7 @@ function createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w=\\"/\\" --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
   docker cp \\"$CONFIG_PATH\\" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -760,15 +800,23 @@ function createChannelTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function createAnchorPeerUpdateTx() {
+function createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
 
   local CHANNEL_NAME=$1
-  local CONFIG_PATH=$2
+  local MSP_NAME=$2
   local CONFIG_PROFILE=$3
-  local OUTPUT_PATH=$4
-  local MSP=$5
-  local ANCHOR_PEER_UPDATE_PATH=\\"$OUTPUT_PATH/$MSP\\"anchors.tx
+  local CONFIG_PATH=$4
+  local OUTPUT_PATH=$5
+  local ANCHOR_PEER_UPDATE_PATH=\\"$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.tx\\"
+
+  echo \\"Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"MSP_NAME: $MSP_NAME\\"
+  inputLog \\"CONFIG_PROFILE: $CONFIG_PROFILE\\"
+  inputLog \\"CONFIG_PATH: $CONFIG_PATH\\"
+  inputLog \\"OUTPUT_PATH: $OUTPUT_PATH\\"
+  inputLog \\"ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH\\"
 
   if [ -f \\"$ANCHOR_PEER_UPDATE_PATH\\" ]; then
     echo \\"Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH\\"
@@ -776,16 +824,172 @@ function createAnchorPeerUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w=\\"/\\" --name $CONTAINER_NAME hyperledger/fabric-tools:\\"\${FABRIC_VERSION}\\" bash || removeContainer $CONTAINER_NAME
   docker cp \\"$CONFIG_PATH\\" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile \\"\${CONFIG_PROFILE}\\" -outputAnchorPeersUpdate ./config/\\"\${MSP}\\"anchors.tx -channelID \\"\${CHANNEL_NAME}\\" -asOrg \\"\${MSP}\\" || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen \\\\
+    --configPath ./fabric-config \\\\
+    -profile \\"\${CONFIG_PROFILE}\\" \\\\
+    -outputAnchorPeersUpdate ./config/\\"\${MSP_NAME}\\"anchors.tx \\\\
+    -channelID \\"\${CHANNEL_NAME}\\" \\\\
+    -asOrg \\"\${MSP_NAME}\\" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/\\"\${MSP}\\"anchors.tx \\"$ANCHOR_PEER_UPDATE_PATH\\" || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/\\"\${MSP_NAME}\\"anchors.tx \\"$ANCHOR_PEER_UPDATE_PATH\\" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
+
+function notifyOrgAboutNewChannel() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local PEER_ADDRESS=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH=\\"/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx\\"
+
+  echo \\"Updating channel $CHANNEL_NAME for organization $MSP_NAME...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"MSP_NAME: $MSP_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH\\"
+
+  if [ -n \\"$ANCHOR_PEER_UPDATE_PATH\\" ]; then
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
+      \\"$CLI_NAME\\" peer channel update \\\\
+      -c \\"$CHANNEL_NAME\\" \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -f \\"$ANCHOR_PEER_UPDATE_PATH\\"
+  else
+    echo \\"channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH\\"
+  fi
+}
+
+function notifyOrgAboutNewChannelTls() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local PEER_ADDRESS=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH=\\"/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx\\"
+  local CA_CERT=\\"/var/hyperledger/cli/\\"\${6}
+
+  echo \\"Updating channel $CHANNEL_NAME for organization $MSP_NAME (TLS)...\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"MSP_NAME: $MSP_NAME\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH\\"
+
+  if [ -n \\"$ANCHOR_PEER_UPDATE_PATH\\" ]; then
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
+      \\"$CLI_NAME\\" peer channel update \\\\
+      -c \\"$CHANNEL_NAME\\" \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -f \\"$ANCHOR_PEER_UPDATE_PATH\\" \\\\
+      --tls --cafile \\"$CA_CERT\\"
+  else
+    echo \\"channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH\\"
+  fi
+}
+
+function deleteNewChannelUpdateTx() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local ANCHOR_PEER_UPDATE_PATH=\\"/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx\\"
+
+  echo \\"Deleting new channel config block. Channel: $CHANNEL_NAME, Organization: $MSP_NAME\\"
+  inputLogShort \\"CHANNEL_NAME: $CHANNEL_NAME, MSP_NAME: $MSP_NAME, CLI_NAME: $CLI_NAME, ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH\\"
+
+  if [ -n \\"$ANCHOR_PEER_UPDATE_PATH\\" ]; then
+    docker exec \\"$CLI_NAME\\" rm \\"$ANCHOR_PEER_UPDATE_PATH\\"
+  else
+    echo \\"channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH\\"
+  fi
+}
+
+function printHeadline() {
+  bold=$'\\\\e[1m'
+  end=$'\\\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+}
+
+function printItalics() {
+  italics=$'\\\\e[3m'
+  end=$'\\\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+}
+
+function inputLog() {
+  end=$'\\\\e[0m'
+  darkGray=$'\\\\e[90m'
+
+  echo \\"\${darkGray}   $1 \${end}\\"
+}
+
+function inputLogShort() {
+  end=$'\\\\e[0m'
+  darkGray=$'\\\\e[90m'
+
+  echo \\"\${darkGray}   $1 \${end}\\"
+}
+
+function certsRemove() {
+  local CERTS_DIR_PATH=$1
+  rm -rf \\"$CERTS_DIR_PATH\\"
+}
+
+function removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f \\"$CONTAINER_NAME\\"
+}
+"
+`;
+
+exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+"#!/bin/bash
+
+function printHelp() {
+  echo \\"Fabrikka is powered by SoftwareMill\\"
+
+  echo \\"\\"
+  echo \\"usage: ./fabric-docker.sh <command>\\"
+  echo \\"\\"
+
+  echo \\"Commands: \\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh up\\"
+  echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
+  echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh down\\"
+  echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh start\\"
+  echo -e \\"\\\\t Starts already created network.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh stop\\"
+  echo -e \\"\\\\t Stops already running network.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh recreate\\"
+  echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
+  echo \\"\\"
+}
+"
+`;
+
+exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+"#!/bin/bash
 
 function chaincodeInstall() {
   local CHAINCODE_DIR_PATH=$1
@@ -1022,78 +1226,13 @@ function chaincodeUpgradeTls() {
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
   fi
 }
-
-function printHeadline() {
-  bold=$'\\\\e[1m'
-  end=$'\\\\e[0m'
-
-  TEXT=$1
-  EMOJI=$2
-  printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
-}
-
-function printItalics() {
-  italics=$'\\\\e[3m'
-  end=$'\\\\e[0m'
-
-  TEXT=$1
-  EMOJI=$2
-  printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
-}
-
-function inputLog() {
-  end=$'\\\\e[0m'
-  darkGray=$'\\\\e[90m'
-
-  echo \\"\${darkGray}   $1 \${end}\\"
-}
-
-function certsRemove() {
-  local CERTS_DIR_PATH=$1
-  rm -rf \\"$CERTS_DIR_PATH\\"
-}
-
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-"
-`;
-
-exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
-
-function printHelp() {
-  echo \\"Fabrikka is powered by SoftwareMill\\"
-
-  echo \\"\\"
-  echo \\"usage: ./fabric-docker.sh <command>\\"
-  echo \\"\\"
-
-  echo \\"Commands: \\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh up\\"
-  echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
-  echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh down\\"
-  echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh start\\"
-  echo -e \\"\\\\t Starts already created network.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh stop\\"
-  echo -e \\"\\\\t Stops already running network.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh recreate\\"
-  echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
-  echo \\"\\"
-}
 "
 `;
 
 exports[`network-05-2orgs-tls should create proper e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "#!/bin/bash
+
+set -eu
 
 function createChannelAndJoin() {
   local CHANNEL_NAME=$1
@@ -1234,6 +1373,7 @@ Array [
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/docker-compose.yaml",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh",
   "e2e/__tmp__/network-05-2orgs-tls/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;

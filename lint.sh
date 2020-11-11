@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script runs linter for all Fabrikka script/yaml files and for generated
-# network configs in 'e2e-network' directory. It fails if generated network
-# configs are missing.
+# This script runs linter for bash and YAML files in Fabrikka root and for
+# generated network configs in 'e2e/__tmp__' directory. It fails if generated
+# network configs are missing.
 #
 # Required libs: shellcheck and yamllint
 
@@ -11,18 +11,29 @@ set -e
 FABRIKKA_HOME="$(dirname "$0")"
 shellcheck "$FABRIKKA_HOME"/*.sh
 
-E2E_NETWORK="$FABRIKKA_HOME/e2e-network"
-yamllint "$E2E_NETWORK"
+EXPECTED_NETWORKS=(
+  "$FABRIKKA_HOME/e2e/__tmp__/network-01-simple"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-02-simple-tls"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-03-simple-raft"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-04-2orgs"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-05-2orgs-tls"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-06-2orgs-raft"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-07-2orgs-raft-hlf2"
+)
 
-# wildcards like **/*.sh does not work on MacOS
-# shellcheck disable=2044
-for file in $(find "$E2E_NETWORK" -name "*.sh"); do
-  shellcheck "$file"
-done
-
-for t in "$E2E_NETWORK"/test-*.sh; do
-  if [ -z "$(ls -A "$t.tmpdir")" ]; then
-    echo "Missing network in $t.tmpdir"
+for network in "${EXPECTED_NETWORKS[@]}"; do
+  if [ -z "$(ls -A "$network")" ]; then
+    echo "Missing network $network"
     exit 1
   fi
+
+  echo "Linting network $network"
+
+  # shellcheck disable=2044
+  for file in $(find "$network" -name "*.sh"); do
+    shellcheck "$file"
+  done
+
+  yamllint "$network"
+
 done
