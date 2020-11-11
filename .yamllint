@@ -1,7 +1,9 @@
 extends: default
 
 rules:
-  line-length: disable  # don't bother me with this rule
+  line-length: disable
+
+  document-start: disable
 
   comments:
     require-starting-space: true
