@@ -23,7 +23,7 @@ function installChaincodes() {
   <% }) -%>
 }
 
-function upgradeChaincodes() {
+function upgradeChaincode() {
   chaincodeName="$1"
   version="$2"
 
