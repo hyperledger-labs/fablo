@@ -53,14 +53,14 @@ Downs, starts or stops the Hyperledger Fabric network for configuration in the c
 
 ### fabric-docker.sh
 
-This script `fabric-docker.sh` is generated among docker network configuration. It does not support `generate` command, however other commands work in same way as in `fabrikka.sh`. Basically `fabrikka.sh` forwards commands other than `generate` to this script. In most cases you can use `fabrikka.sh docker` and `fabric-docker.sh` interchangebly.
+The script `fabric-docker.sh` is generated among docker network configuration. It does not support `generate` command, however other commands work in same way as in `fabrikka.sh`. Basically `fabrikka.sh` forwards commands other than `generate` to this script. In most cases you can use `fabrikka.sh docker` and `fabric-docker.sh` interchangebly.
 
 ## Managing chaincodes
 
-### Installing a chaincode
+### chaincode upgrade
 
 ```bash
-fabrikka.sh docker chaincodes install
+fabrikka.sh chaincode upgrade chaincode-name version
 ```
 
-Installs all chaincodes configured in Fabrikka config file.
+Upgrades and instantiates chaincode with given name on all relevant peers. Chaincode directory is specified in Fabrikka config file.
