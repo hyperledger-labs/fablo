@@ -140,6 +140,7 @@ FABRIKKA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
 source \\"$FABRIKKA_NETWORK_ROOT/fabric-docker/.env\\"
 
@@ -167,7 +168,7 @@ elif [ \\"$1\\" = \\"stop\\" ]; then
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
-  upgradeChaincodes \\"$3\\" \\"$4\\"
+  upgradeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -219,7 +220,7 @@ function installChaincodes() {
   chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 }
 
-function upgradeChaincodes() {
+function upgradeChaincode() {
   chaincodeName=\\"$1\\"
   version=\\"$2\\"
 
@@ -378,7 +379,8 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-            # enabled TLS
+
+      # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
@@ -428,7 +430,8 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.key
@@ -462,7 +465,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -500,7 +504,8 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-            # enabled TLS
+
+      # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
@@ -735,6 +740,85 @@ function deleteNewChannelUpdateTx() {
     echo \\"channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH\\"
   fi
 }
+
+function printHeadline() {
+  bold=$'\\\\e[1m'
+  end=$'\\\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+}
+
+function printItalics() {
+  italics=$'\\\\e[3m'
+  end=$'\\\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+}
+
+function inputLog() {
+  end=$'\\\\e[0m'
+  darkGray=$'\\\\e[90m'
+
+  echo \\"\${darkGray}   $1 \${end}\\"
+}
+
+function inputLogShort() {
+  end=$'\\\\e[0m'
+  darkGray=$'\\\\e[90m'
+
+  echo \\"\${darkGray}   $1 \${end}\\"
+}
+
+function certsRemove() {
+  local CERTS_DIR_PATH=$1
+  rm -rf \\"$CERTS_DIR_PATH\\"
+}
+
+function removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f \\"$CONTAINER_NAME\\"
+}
+"
+`;
+
+exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+"#!/bin/bash
+
+function printHelp() {
+  echo \\"Fabrikka is powered by SoftwareMill\\"
+
+  echo \\"\\"
+  echo \\"usage: ./fabric-docker.sh <command>\\"
+  echo \\"\\"
+
+  echo \\"Commands: \\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh up\\"
+  echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
+  echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh down\\"
+  echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh start\\"
+  echo -e \\"\\\\t Starts already created network.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh stop\\"
+  echo -e \\"\\\\t Stops already running network.\\"
+  echo \\"\\"
+  echo \\"./fabric-docker.sh recreate\\"
+  echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
+  echo \\"\\"
+}
+"
+`;
+
+exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+"#!/bin/bash
 
 function chaincodeInstall() {
   local CHAINCODE_DIR_PATH=$1
@@ -971,80 +1055,6 @@ function chaincodeUpgradeTls() {
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
   fi
 }
-
-function printHeadline() {
-  bold=$'\\\\e[1m'
-  end=$'\\\\e[0m'
-
-  TEXT=$1
-  EMOJI=$2
-  printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
-}
-
-function printItalics() {
-  italics=$'\\\\e[3m'
-  end=$'\\\\e[0m'
-
-  TEXT=$1
-  EMOJI=$2
-  printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
-}
-
-function inputLog() {
-  end=$'\\\\e[0m'
-  darkGray=$'\\\\e[90m'
-
-  echo \\"\${darkGray}   $1 \${end}\\"
-}
-
-function inputLogShort() {
-  end=$'\\\\e[0m'
-  darkGray=$'\\\\e[90m'
-
-  echo \\"\${darkGray}   $1 \${end}\\"
-}
-
-function certsRemove() {
-  local CERTS_DIR_PATH=$1
-  rm -rf \\"$CERTS_DIR_PATH\\"
-}
-
-function removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f \\"$CONTAINER_NAME\\"
-}
-"
-`;
-
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
-"#!/bin/bash
-
-function printHelp() {
-  echo \\"Fabrikka is powered by SoftwareMill\\"
-
-  echo \\"\\"
-  echo \\"usage: ./fabric-docker.sh <command>\\"
-  echo \\"\\"
-
-  echo \\"Commands: \\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh up\\"
-  echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
-  echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh down\\"
-  echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh start\\"
-  echo -e \\"\\\\t Starts already created network.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh stop\\"
-  echo -e \\"\\\\t Stops already running network.\\"
-  echo \\"\\"
-  echo \\"./fabric-docker.sh recreate\\"
-  echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
-  echo \\"\\"
-}
 "
 `;
 
@@ -1189,6 +1199,7 @@ Array [
   "e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/docker-compose.yaml",
   "e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh",
   "e2e/__tmp__/network-03-simple-raft/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
