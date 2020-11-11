@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
@@ -50,6 +50,7 @@ expectInvoke() {
 
 networkUpAsync
 
+# shellcheck disable=2015
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel1" &&
   waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel2" &&
@@ -73,6 +74,12 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
     '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
     '{\"success\":\"OK\"}' &&
   expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
+    '{"Args":["KVContract:get", "name"]}' \
+    '{\"success\":\"Jack Sparrow\"}' &&
+  (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" chaincode upgrade "chaincode1" "0.0.2") &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.2" &&
+  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.2" &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" \
