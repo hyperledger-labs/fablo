@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cli=$1
 peer=$2

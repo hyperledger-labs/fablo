@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 container="$1"
 expected_message="$2"
