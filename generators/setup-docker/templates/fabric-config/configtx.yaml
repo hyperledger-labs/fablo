@@ -1,4 +1,4 @@
-################################################################################
+<% if(!isHlf20) { %>################################################################################
 #   SECTION: Capabilities
 ################################################################################
 Capabilities:
@@ -7,7 +7,7 @@ Capabilities:
     Orderer: &OrdererCapabilities
         <%=  capabilities.orderer %>: true
     Application: &ApplicationCapabilities
-        <%=  capabilities.application %>: true
+        <%=  capabilities.application %>: true<% } %>
 
 ################################################################################
 #   CHANNEL Defaults
@@ -24,23 +24,49 @@ Channel: &ChannelDefaults
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
     Capabilities:
-        <<: *ChannelCapabilities
+        <% if(!isHlf20) { %><<: *ChannelCapabilities<% } %>
 
 ################################################################################
 #   Section: Organizations
 ################################################################################
 Organizations:
     - &OrdererOrg
-      Name: <%= rootOrg.organization.name %>
-      ID: <%= rootOrg.organization.mspName %>
-      MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp <% orgs.forEach(function(org){ %>
+        Name: <%= rootOrg.organization.name %>
+        ID: <%= rootOrg.organization.mspName %>
+        MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
+
+        <% if(isHlf20) { %>Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('<%= rootOrg.organization.mspName %>.admin')"<%} orgs.forEach(function(org){ %>
     - &<%= org.name %>
-      Name: <%= org.mspName %>
-      ID: <%= org.mspName %>
-      MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-      AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
-          - Host: <%= anchorPeer.address %>
-            Port: 7051<% })}) %>
+        Name: <%= org.mspName %>
+        ID: <%= org.mspName %>
+        MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
+
+        <% if(isHlf20) { %>Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('<%= org.mspName %>.admin', '<%= org.mspName %>.peer', '<%= org.mspName %>.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('<%= org.mspName %>.admin', '<%= org.mspName %>.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('<%= org.mspName %>.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('<%= org.mspName %>.peer')"<% } %>
+
+        AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
+            - Host: <%= anchorPeer.address %>
+              Port: 7051<% })}) %>
 
 ################################################################################
 #   SECTION: Application
@@ -48,7 +74,27 @@ Organizations:
 Application: &ApplicationDefaults
     Organizations:
     Capabilities:
-        <<: *ApplicationCapabilities
+        <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
+
+    <% if(isHlf20) { %># Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"<% } %>
 
 ################################################################################
 #   SECTION: Orderer
@@ -65,6 +111,26 @@ Orderer: &OrdererDefaults
         PreferredMaxBytes: 512 KB
     Organizations:
 
+    <% if(isHlf20) { %># Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"<% } %>
+
+
 ################################################################################
 #   Profile
 ################################################################################
@@ -78,7 +144,7 @@ Profiles:
             Organizations:
                 - *OrdererOrg
             Capabilities:
-                <<: *OrdererCapabilities
+                <% if(!isHlf20) { %><<: *OrdererCapabilities<% } %>
         Consortiums:
             SampleConsortium:
                 Organizations: <% orgs.forEach(function(org){ %>
@@ -91,5 +157,5 @@ Profiles:
             Organizations: <% orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
             Capabilities:
-                <<: *ApplicationCapabilities
+                <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
 
