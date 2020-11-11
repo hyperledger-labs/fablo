@@ -18,6 +18,7 @@ EXPECTED_NETWORKS=(
   "$FABRIKKA_HOME/e2e/__tmp__/network-04-2orgs"
   "$FABRIKKA_HOME/e2e/__tmp__/network-05-2orgs-tls"
   "$FABRIKKA_HOME/e2e/__tmp__/network-06-2orgs-raft"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-07-2orgs-raft-hlf2"
 )
 
 for network in "${EXPECTED_NETWORKS[@]}"; do
