@@ -36,7 +36,7 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.organization.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      <% if(networkSettings.tls) { -%>
+      <% if(networkSettings.tls) { %>
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -55,7 +55,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-  <% } -%>
+  <% } %>
   <% for (orgNo in orgs) {
     var org = orgs[orgNo]
   %>
@@ -81,7 +81,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  <% } -%>
+  <% } %>
 
   cli.<%= org.organization.domain %>:
     container_name: cli.<%= org.organization.domain %>
@@ -97,7 +97,7 @@ services:
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/msp
       - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
-      <% if(networkSettings.tls) { -%>
+      <% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.crt
@@ -138,14 +138,14 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
       - CORE_PEER_ADDRESS=<%= peerFullName %>:7051
-      <% if(networkSettings.tls) { -%>
+      <% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      <% } -%>
-      <% if(couchDdEnabled) { -%>
+      <% } %>
+      <% if(couchDdEnabled) { %>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=<%= peerName %>.couchdb.<%= org.organization.domain %>:5984

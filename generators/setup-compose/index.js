@@ -186,6 +186,11 @@ module.exports = class extends Generator {
       this.templatePath('fabric-compose/scripts/base-help.sh'),
       this.destinationPath('fabric-compose/scripts/base-help.sh'),
     );
+
+    this.fs.copyTpl(
+      this.templatePath('fabric-docker/scripts/chaincode-functions.sh'),
+      this.destinationPath('fabric-docker/scripts/chaincode-functions.sh'),
+    );
   }
 
   _getFullPathOf(configFile) {
