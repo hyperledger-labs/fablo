@@ -40,6 +40,7 @@ module.exports = class extends Generator {
     const capabilities = configTransformers.getNetworkCapabilities(
       networkConfig.networkSettings.fabricVersion,
     );
+    const isHlf20 = configTransformers.isHlf20(networkConfig.networkSettings.fabricVersion);
     const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
     const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
     const channelsTransformed = networkConfig.channels.map(
@@ -60,6 +61,7 @@ module.exports = class extends Generator {
     this._copyConfigTx(
       {
         capabilities,
+        isHlf20,
         networkSettings: networkConfig.networkSettings,
         rootOrg: rootOrgTransformed,
         orgs: orgsTransformed,
@@ -70,6 +72,9 @@ module.exports = class extends Generator {
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(
       {
+        fabricCaVersion: configTransformers.getCaVersion(
+          networkConfig.networkSettings.fabricVersion,
+        ),
         networkSettings: networkConfig.networkSettings,
         orgs: orgsTransformed,
       },
