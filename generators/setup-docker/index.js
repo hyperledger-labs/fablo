@@ -40,7 +40,8 @@ module.exports = class extends Generator {
       chaincodes: chaincodesJson,
     } = this.fs.readJSON(this.options.fabrikkaConfigPath);
 
-    const composeNetworkName = 'fabrikka-network-123'; // TODO
+    const dateString = new Date().toISOString().substring(0, 16).replace(/[^0-9]+/g, '-');
+    const composeNetworkName = `fabrikka-network-${dateString}`;
 
     this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
     this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
