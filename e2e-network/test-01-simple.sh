@@ -5,7 +5,7 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRIKKA_HOME="$TEST_TMP/../.."
 
 # testing relative path
-CONFIG="../../samples/fabrikkaConfig-1org-1channel-1chaincode.json"
+CONFIG="../../samples/fabrikkaConfig-1org-1channel-2chaincodes.json"
 
 networkUpAsync() {
   "$FABRIKKA_HOME/fabrikka-build.sh" &&
@@ -50,15 +50,18 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
   waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
+
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode2" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode2" "0.0.1" &&
 
   waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
   waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself" &&
   waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.* peer1.org1.com" &&
-
   waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1 :" &&
   waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.* peer0.org1.com" &&
+
   expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
     '{\"success\":\"OK\"}' &&
@@ -71,4 +74,10 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
+  expectInvoke "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode2" \
+    '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
+    'status:200' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode2" \
+    '{"Args":["PokeballContract:readPokeball", "id1"]}' \
+    '{\"value\":\"Pokeball 1\"}' &&
   networkDown || (networkDown && exit 1)

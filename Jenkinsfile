@@ -81,8 +81,8 @@ try {
         sh "apk add --no-cache nodejs npm bash docker-compose py-pip tar"
         sh "pip install yamllint"
         sh "yamllint --version"
-        sh "wget -qO- \"https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz\" | tar -xJv"
-        sh "cp \"shellcheck-stable/shellcheck\" /usr/bin/"
+        sh 'wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv'
+        sh 'cp "shellcheck-stable/shellcheck" /usr/bin/'
         sh "shellcheck --version"
         sh "npm install"
       }
@@ -118,7 +118,7 @@ try {
         }
       }
 
-      stage("Test HF 2.0 network (2 orgs & RAFT)") {
+      stage("Test HF 2.0 network (2 orgs)") {
         try {
           sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
         } finally {
