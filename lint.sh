@@ -15,10 +15,12 @@ EXPECTED_NETWORKS=(
   "$FABRIKKA_HOME/e2e/__tmp__/network-01-simple"
   "$FABRIKKA_HOME/e2e/__tmp__/network-02-simple-tls"
   "$FABRIKKA_HOME/e2e/__tmp__/network-03-simple-raft"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-04-2orgs"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-05-2orgs-tls"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-06-2orgs-raft"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-07-2orgs-raft-hlf2"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-04-simple-2chaincodes"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-05-2orgs"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-06-2orgs-tls"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-07-2orgs-raft"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-08-2orgs-raft-hlf2"
+  "$FABRIKKA_HOME/e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2"
 )
 
 for network in "${EXPECTED_NETWORKS[@]}"; do
