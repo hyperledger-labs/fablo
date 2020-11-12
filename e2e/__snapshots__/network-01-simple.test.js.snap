@@ -178,7 +178,9 @@ fi
 `;
 
 exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrikka-target/fabric-docker/.env from samples/fabrikkaConfig-1org-1channel-1chaincode.json 1`] = `
-"COMPOSE_PROJECT_NAME=network
+"COMPOSE_PROJECT_NAME=fabrikka-network-123
+FABRIKKA_CONFIG=<absolute path>
+CHAINCODES_BASE_DIR=<absolute path>
 LOGGING_LEVEL=info
 
 FABRIC_VERSION=1.4.3
@@ -190,9 +192,6 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
-
-FABRIKKA_CONFIG=<absolute path>
-CHAINCODES_BASE_DIR=<absolute path>
 "
 `;
 

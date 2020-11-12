@@ -23,15 +23,18 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
   const type = ordererJsonConfigFormat.type === 'raft' ? 'etcdraft' : ordererJsonConfigFormat.type;
 
-  return Array(ordererJsonConfigFormat.instances).fill().map((x, i) => i).map((i) => {
-    const name = `${ordererJsonConfigFormat.prefix}${i}`;
-    return {
-      name,
-      address: `${name}.${rootDomainJsonConfigFormat}`,
-      domain: rootDomainJsonConfigFormat,
-      consensus: type,
-    };
-  });
+  return Array(ordererJsonConfigFormat.instances)
+    .fill()
+    .map((x, i) => i)
+    .map((i) => {
+      const name = `${ordererJsonConfigFormat.prefix}${i}`;
+      return {
+        name,
+        address: `${name}.${rootDomainJsonConfigFormat}`,
+        domain: rootDomainJsonConfigFormat,
+        consensus: type,
+      };
+    });
 }
 
 function transformRootOrgConfig(rootOrgJsonConfigFormat) {
@@ -39,7 +42,8 @@ function transformRootOrgConfig(rootOrgJsonConfigFormat) {
     rootOrgJsonConfigFormat.orderer,
     rootOrgJsonConfigFormat.organization.domain,
   );
-  const ordererHead = orderersExtended.slice(0, 1).reduce(flatten);
+  const ordererHead = orderersExtended.slice(0, 1)
+    .reduce(flatten);
   return {
     organization: rootOrgJsonConfigFormat.organization,
     ca: rootOrgJsonConfigFormat.ca,
@@ -49,10 +53,13 @@ function transformRootOrgConfig(rootOrgJsonConfigFormat) {
 }
 
 function extendPeers(peerJsonFormat, domainJsonFormat) {
-  return Array(peerJsonFormat.instances).fill().map((x, i) => i).map((i) => ({
-    name: `peer${i}`,
-    address: `peer${i}.${domainJsonFormat}`,
-  }));
+  return Array(peerJsonFormat.instances)
+    .fill()
+    .map((x, i) => i)
+    .map((i) => ({
+      name: `peer${i}`,
+      address: `peer${i}.${domainJsonFormat}`,
+    }));
 }
 
 function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
@@ -60,10 +67,13 @@ function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
   if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
     anchorPeerInstances = 1;
   }
-  return Array(anchorPeerInstances).fill().map((x, i) => i).map((i) => ({
-    name: `peer${i}`,
-    address: `peer${i}.${domainJsonFormat}`,
-  }));
+  return Array(anchorPeerInstances)
+    .fill()
+    .map((x, i) => i)
+    .map((i) => ({
+      name: `peer${i}`,
+      address: `peer${i}.${domainJsonFormat}`,
+    }));
 }
 
 function transformOrgConfig(orgJsonConfigFormat) {
@@ -82,6 +92,10 @@ function transformOrgConfig(orgJsonConfigFormat) {
   };
 }
 
+function transformOrgConfigs(orgsJsonConfigFormat) {
+  return orgsJsonConfigFormat.map((o) => transformOrgConfig(o));
+}
+
 function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
   const filteredPeers = orgTransformedFormat.peers.filter(
     (p) => peersTransformedFormat.includes(p.name),
@@ -96,7 +110,8 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
 
 function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
   const orgKeys = channelJsonConfigFormat.orgs.map((o) => o.key);
-  const orgPeers = channelJsonConfigFormat.orgs.map((o) => o.peers).reduce(flatten);
+  const orgPeers = channelJsonConfigFormat.orgs.map((o) => o.peers)
+    .reduce(flatten);
   const orgsForChannel = orgsJsonConfigFormat
     .filter((o) => orgKeys.includes(o.organization.key))
     .map((o) => transformOrgConfig(o))
@@ -109,25 +124,89 @@ function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
   };
 }
 
+function transformChannelConfigs(channelsJsonConfigFormat, orgsJsonConfigFormat) {
+  return channelsJsonConfigFormat.map((ch) => transformChannelConfig(ch, orgsJsonConfigFormat));
+}
+
 function getNetworkCapabilities(fabricVersion) {
   // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
   const networkCapabilities = {
-    '2.2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.1.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.1.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '2.0.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+    '2.2.1': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '2.2.0': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '2.1.1': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '2.1.0': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '2.0.1': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
 
-    '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.5': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.4': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.3': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.2': { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' },
-    '1.4.1': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
-    '1.4.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
-    '1.3.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+    '1.4.8': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.7': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.6': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.5': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.4': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.3': {
+      channel: 'V1_4_3',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.2': {
+      channel: 'V1_4_2',
+      orderer: 'V1_4_2',
+      application: 'V1_4_2',
+    },
+    '1.4.1': {
+      channel: 'V1_3',
+      orderer: 'V1_1',
+      application: 'V1_3',
+    },
+    '1.4.0': {
+      channel: 'V1_3',
+      orderer: 'V1_1',
+      application: 'V1_3',
+    },
+    '1.3.0': {
+      channel: 'V1_3',
+      orderer: 'V1_1',
+      application: 'V1_3',
+    },
   };
   return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
@@ -148,12 +227,27 @@ function getCaVersion(fabricVersion) {
   return caVersion[fabricVersion] || fabricVersion;
 }
 
+function getEnvVarOrThrow(name) {
+  const value = process.env[name];
+  if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
+  return value;
+}
+
+function getPathsFromEnv() {
+  return {
+    fabrikkaConfig: getEnvVarOrThrow('FABRIKKA_CONFIG'),
+    chaincodesBaseDir: getEnvVarOrThrow('CHAINCODES_BASE_DIR'),
+    fabrikkaNetworkRoot: getEnvVarOrThrow('FABRIKKA_NETWORK_ROOT'),
+  };
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
-  transformOrgConfig,
-  transformChannelConfig,
+  transformOrgConfigs,
+  transformChannelConfigs,
   getNetworkCapabilities,
   getCaVersion,
+  getPathsFromEnv,
   isHlf20,
 };
