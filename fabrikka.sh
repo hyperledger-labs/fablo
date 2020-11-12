@@ -3,7 +3,7 @@
 set -e
 
 COMMAND="$1"
-FABRIKKA_NETWORK_ROOT="$(pwd)/fabrikka-target/network" # TODO https://github.com/softwaremill/fabrikka/issues/73
+FABRIKKA_NETWORK_ROOT="$(pwd)/fabrikka-target"
 
 printHelp() {
   echo "Fabrikka -- kick-off and manage your Hyperledger Fabric network
@@ -11,7 +11,7 @@ printHelp() {
 Usage:
 
   fabrikka.sh generate [/path/to/fabrikka-config.json [/path/to/fabrikka/target]]
-    Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrikka-config.json', default (and recommended) directory '\$(pwd)/fabrikka-target/network'.
+    Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrikka-config.json', default (and recommended) directory '\$(pwd)/fabrikka-target'.
 
   fabrikka.sh up [/path/to/fabrikka-config.json]
     Starts the Hyperledger Fabric network for given Fabrikka configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call 'generate' command for given config file.
@@ -19,7 +19,7 @@ Usage:
   fabrikka.sh [down | start | stop]
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
-  fabrikka.sh chaincode upgrade chaincode-name version
+  fabrikka.sh chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrikka config file.
 
   fabrikka.sh [help | --help]
