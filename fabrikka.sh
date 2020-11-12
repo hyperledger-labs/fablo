@@ -52,9 +52,9 @@ generateNetworkConfig() {
   docker run -i --rm \
     -v "$FABRIKKA_CONFIG":/network/fabrikka-config.json \
     -v "$FABRIKKA_NETWORK_ROOT":/network/target \
-    -e FABRIKKA_CONFIG="$FABRIKKA_CONFIG" \
-    -e CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
-    -e FABRIKKA_NETWORK_ROOT="$FABRIKKA_NETWORK_ROOT" \
+    --env FABRIKKA_CONFIG="$FABRIKKA_CONFIG" \
+    --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
+    --env FABRIKKA_NETWORK_ROOT="$FABRIKKA_NETWORK_ROOT" \
     -u "$(id -u):$(id -g)" \
     fabrikka
 }
