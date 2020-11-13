@@ -1,13 +1,6 @@
-function flatten(prev, curr) {
-  return prev.concat(curr);
-}
-
 function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
-    const matchingChannel = transformedChannels
-      .filter((c) => c.key === chaincode.channel)
-      .slice(0, 1)
-      .reduce(flatten);
+    const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
     return {
       directory: chaincode.directory,
       name: chaincode.name,
@@ -42,8 +35,7 @@ function transformRootOrgConfig(rootOrgJsonConfigFormat) {
     rootOrgJsonConfigFormat.orderer,
     rootOrgJsonConfigFormat.organization.domain,
   );
-  const ordererHead = orderersExtended.slice(0, 1)
-    .reduce(flatten);
+  const ordererHead = orderersExtended[0];
   return {
     organization: rootOrgJsonConfigFormat.organization,
     ca: rootOrgJsonConfigFormat.ca,
@@ -111,7 +103,7 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
 function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
   const orgKeys = channelJsonConfigFormat.orgs.map((o) => o.key);
   const orgPeers = channelJsonConfigFormat.orgs.map((o) => o.peers)
-    .reduce(flatten);
+    .reduce((a, b) => a.concat(b), []);
   const orgsForChannel = orgsJsonConfigFormat
     .filter((o) => orgKeys.includes(o.organization.key))
     .map((o) => transformOrgConfig(o))
