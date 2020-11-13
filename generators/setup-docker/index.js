@@ -62,7 +62,8 @@ module.exports = class extends Generator {
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
     this._copyDockerCompose({
-      networkSettings, rootOrg, orgs: orgsJson, chaincodes, // FIXME
+      // TODO https://github.com/softwaremill/fabrikka/issues/82
+      networkSettings, rootOrg, orgs: orgsJson, chaincodes,
     });
 
     // ======= scripts ==================================================================
