@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/.gitignore from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/.gitignore from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/configtx.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/configtx.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -65,16 +65,9 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: etcdraft
+    OrdererType: solo
     Addresses:
         - orderer0.root.com:7050
-
-    EtcdRaft:
-        Consenters:
-            - Host: orderer0.root.com
-              Port: 7050
-              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
-              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
 
     BatchTimeout: 2s
     BatchSize:
@@ -113,7 +106,7 @@ Profiles:
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-org1.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -124,7 +117,7 @@ exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simp
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-root.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -133,7 +126,7 @@ exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simp
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 set -eu
@@ -181,10 +174,8 @@ fi
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/.env from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
-"COMPOSE_PROJECT_NAME=<name-with-timestamp>
-FABRIKKA_CONFIG=<absolute path>
-CHAINCODES_BASE_DIR=<absolute path>
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/.env from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
+"COMPOSE_PROJECT_NAME=network
 LOGGING_LEVEL=info
 
 FABRIC_VERSION=1.4.3
@@ -196,10 +187,13 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
+
+FABRIKKA_CONFIG=<absolute path>
+CHAINCODES_BASE_DIR=<absolute path>
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/commands-generated.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 function installChaincodes() {
@@ -208,16 +202,28 @@ function installChaincodes() {
   npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-  chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
   printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-  chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
+  printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
+  printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 }
 
 function upgradeChaincode() {
@@ -239,16 +245,31 @@ function upgradeChaincode() {
     npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
     printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeUpgradeTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
     printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-    chaincodeUpgradeTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  fi
+
+  if [ \\"$chaincodeName\\" = \\"chaincode2\\" ]; then
+
+    printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+    printItalics \\"Upgrading 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F618\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
+    printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+    printItalics \\"Upgrading 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F618\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
   fi
 }
 
@@ -257,7 +278,7 @@ function notifyOrgsAboutChannels() {
   createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config\\" \\"$FABRIKKA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
@@ -303,11 +324,11 @@ function installChannels() {
 
   printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
   docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+    \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
 
   printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
   docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
 
 }
 
@@ -334,6 +355,20 @@ function networkDown() {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
 
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode2-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer0.org1.com-chaincode2-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode2-0.0.1-* | awk '{print $1}') || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+  docker rmi $(docker images dev-peer1.org1.com-chaincode2-0.0.1-* -q) || {
+    echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  }
+
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABRIKKA_NETWORK_ROOT\\"/fabric-config/config
   rm -rf \\"$FABRIKKA_NETWORK_ROOT\\"/fabric-config/crypto-config
@@ -343,7 +378,7 @@ function networkDown() {
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/docker-compose.yaml from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -380,14 +415,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
 
-      # enabled TLS
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -431,12 +458,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
 
-      # enabled TLS
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
-      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -446,6 +467,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
 
@@ -465,12 +487,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-
-      # enabled TLS
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
 
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
@@ -505,12 +521,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
 
-      # enabled TLS
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -529,7 +539,7 @@ services:
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-functions.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 function certsGenerate() {
@@ -785,7 +795,7 @@ function removeContainer() {
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-help.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 function printHelp() {
@@ -817,7 +827,7 @@ function printHelp() {
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 function chaincodeInstall() {
@@ -1058,7 +1068,7 @@ function chaincodeUpgradeTls() {
 "
 `;
 
-exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 "#!/bin/bash
 
 set -eu
@@ -1189,19 +1199,19 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-03-simple-raft should create proper files from samples/fabrikkaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
+exports[`network-04-simple-2chaincodes should create proper files from samples/fabrikkaConfig-1org-1channel-2chaincodes.json 1`] = `
 Array [
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/.gitignore",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker.sh",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/.env",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/network-03-simple-raft/fabrikka-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/.gitignore",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/configtx.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/.env",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/network-04-simple-2chaincodes/fabrikka-target/network/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
