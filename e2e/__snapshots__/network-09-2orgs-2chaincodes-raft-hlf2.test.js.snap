@@ -468,7 +468,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
 
@@ -578,7 +578,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
 
@@ -707,7 +707,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
 
