@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "eslint --fix generators e2e",
     "test:unit": "jest generators",
-    "test:e2e": "jest e2e -i"
+    "test:e2e": "jest e2e -i",
+    "test:e2e-update": "./fabrikka-build.sh && jest e2e -i --updateSnapshot"
   },
   "dependencies": {
     "chalk": "^4.1.0",

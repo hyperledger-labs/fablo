@@ -44,6 +44,7 @@ const testFilesContent = (config, files) => files.forEach((f) => {
   it(`should create proper ${f} from ${config}`, () => {
     const content = executeCommand(`cat ${f}`, true);
     const cleaned = content
+      .replace(/COMPOSE_PROJECT_NAME=(.*?)(\n|$)/g, 'COMPOSE_PROJECT_NAME=<name with timestamp>\n')
       .replace(/FABRIKKA_CONFIG=(.*?)(\n|$)/g, 'FABRIKKA_CONFIG=<absolute path>\n')
       .replace(/CHAINCODES_BASE_DIR=(.*?)(\n|$)/g, 'CHAINCODES_BASE_DIR=<absolute path>\n');
     expect(cleaned).toMatchSnapshot();
