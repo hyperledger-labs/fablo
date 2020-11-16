@@ -120,86 +120,27 @@ function transformChannelConfigs(channelsJsonConfigFormat, orgsJsonConfigFormat)
   return channelsJsonConfigFormat.map((ch) => transformChannelConfig(ch, orgsJsonConfigFormat));
 }
 
-function getNetworkCapabilities(fabricVersion) {
-  // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-  const networkCapabilities = {
-    '2.2.1': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '2.2.0': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '2.1.1': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '2.1.0': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '2.0.1': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
+// Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
+const networkCapabilities = {
+  '2.2.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '2.2.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '2.1.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '2.1.0': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '2.0.1': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
 
-    '1.4.8': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.7': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.6': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.5': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.4': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.3': {
-      channel: 'V1_4_3',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.2': {
-      channel: 'V1_4_2',
-      orderer: 'V1_4_2',
-      application: 'V1_4_2',
-    },
-    '1.4.1': {
-      channel: 'V1_3',
-      orderer: 'V1_1',
-      application: 'V1_3',
-    },
-    '1.4.0': {
-      channel: 'V1_3',
-      orderer: 'V1_1',
-      application: 'V1_3',
-    },
-    '1.3.0': {
-      channel: 'V1_3',
-      orderer: 'V1_1',
-      application: 'V1_3',
-    },
-  };
+  '1.4.8': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.7': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.6': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.5': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.4': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.3': { channel: 'V1_4_3', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.2': { channel: 'V1_4_2', orderer: 'V1_4_2', application: 'V1_4_2' },
+  '1.4.1': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+  '1.4.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+  '1.3.0': { channel: 'V1_3', orderer: 'V1_1', application: 'V1_3' },
+};
+
+function getNetworkCapabilities(fabricVersion) {
   return networkCapabilities[fabricVersion] || networkCapabilities['1.4.8'];
 }
 
