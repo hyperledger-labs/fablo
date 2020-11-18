@@ -1,4 +1,6 @@
-FROM node:12.18.0-alpine3.12
+ARG NODE_IMAGE_TAG
+
+FROM node:$NODE_IMAGE_TAG
 
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
 # This was because less technical people would run Yeoman as root and cause problems.
@@ -27,5 +29,8 @@ RUN npm link
 
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /network/target
+
+ARG VERSION_DETAILS
+RUN echo $VERSION_DETAILS > /fabrica/version.details
 
 ENTRYPOINT /fabrica/docker-entrypoint.sh
