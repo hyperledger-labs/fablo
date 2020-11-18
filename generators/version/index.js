@@ -1,4 +1,6 @@
 /* eslint no-underscore-dangle: 0 */
+/* eslint import/no-unresolved: 0 */
+/* eslint import/no-absolute-path: 0 */
 
 /*
 * License-Identifier: Apache-2.0
@@ -34,9 +36,9 @@ module.exports = class extends Generator {
       version: config.version,
       build: buildInfo,
       support: {
-          hyperledgerFabricVersions: config.supportedFabricVersions,
-          fabricaVersions: config.supportedFabricaVersions
-      }
+        hyperledgerFabricVersions: config.supportedFabricVersions,
+        fabricaVersions: config.supportedFabricaVersions,
+      },
     };
   }
 };
