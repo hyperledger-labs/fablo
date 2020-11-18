@@ -1,9 +1,9 @@
 {
-  "fabrikkaVersion": "alpha-0.0.1",
+  "fabricaVersion": "alpha-0.0.1",
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
-    "tls": false
+    "tls": true
   },
   "rootOrg": {
     "organization": {
@@ -17,8 +17,8 @@
     },
     "orderer": {
       "prefix": "orderer",
-      "type": "solo",
-      "instances": 1
+      "type": "raft",
+      "instances": 3
     }
   },
   "orgs": [
@@ -28,6 +28,22 @@
         "name": "Org1",
         "mspName": "Org1MSP",
         "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    },
+    {
+      "organization": {
+        "key": "org2",
+        "name": "Org2",
+        "mspName": "Org2MSP",
+        "domain": "org2.com"
       },
       "ca": {
         "prefix": "ca"
@@ -47,7 +63,30 @@
         {
           "key": "org1",
           "peers": [
-            "peer0",
+            "peer0"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "channel2",
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer1"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
             "peer1"
           ]
         }
@@ -59,18 +98,18 @@
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel1",
+      "channel": "channel2",
       "init": "{\"Args\":[]}",
-      "endorsement": "AND ('Org1MSP.member')",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "directory": "./chaincodes/chaincode-kv-node"
     },
     {
       "name": "chaincode2",
       "version": "0.0.1",
       "lang": "java",
-      "channel": "channel1",
+      "channel": "channel2",
       "init": "{\"Args\":[]}",
-      "endorsement": "AND ('Org1MSP.member')",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
