@@ -31,6 +31,6 @@ RUN npm link
 ENV HOME /network/target
 
 ARG VERSION_DETAILS
-RUN echo $VERSION_DETAILS > /fabrica/version.details
+RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
 
 ENTRYPOINT /fabrica/docker-entrypoint.sh
