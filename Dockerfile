@@ -1,15 +1,4 @@
-FROM node:14-alpine3.12
-
-RUN apk add --no-cache sudo shfmt
-RUN npm install --global --silent yo
-
-COPY generators /fabrica/generators
-COPY package.json /fabrica/package.json
-COPY package-lock.json /fabrica/package-lock.json
-
-WORKDIR /fabrica
-RUN npm install --silent
-RUN npm link
+FROM node:12.18.0-alpine3.12
 
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
 # This was because less technical people would run Yeoman as root and cause problems.
@@ -20,11 +9,23 @@ RUN npm link
 RUN adduser -D -u 501 yeoman && \
   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Yeoman needs the use of a home directory for caching and certain config storage.
-ENV HOME /network/target
+RUN apk add --no-cache sudo shfmt
+RUN npm install --global --silent yo
 
-COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
+WORKDIR /fabrica
+
 COPY docs /fabrica/docs
 COPY README.md /fabrica/README.md
+COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
+
+COPY package.json /fabrica/package.json
+COPY package-lock.json /fabrica/package-lock.json
+RUN npm install --silent
+
+COPY generators /fabrica/generators
+RUN npm link
+
+# Yeoman needs the use of a home directory for caching and certain config storage.
+ENV HOME /network/target
 
 ENTRYPOINT /fabrica/docker-entrypoint.sh
