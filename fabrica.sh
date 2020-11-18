@@ -67,6 +67,13 @@ if [ -z "$COMMAND" ]; then
 elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
+elif [ "$COMMAND" = "version" ]; then
+  docker run -it --rm \
+    -v "$FABRICA_NETWORK_ROOT":/network/target \
+    -u "$(id -u):$(id -g)" \
+    --entrypoint "sh" \
+    fabrica
+
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then
