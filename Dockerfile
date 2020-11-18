@@ -2,6 +2,17 @@ ARG NODE_IMAGE_TAG
 
 FROM node:$NODE_IMAGE_TAG
 
+RUN apk add --no-cache sudo shfmt
+RUN npm install --global --silent yo
+
+COPY generators /fabrica/generators
+COPY package.json /fabrica/package.json
+COPY package-lock.json /fabrica/package-lock.json
+
+WORKDIR /fabrica
+RUN npm install --silent
+RUN npm link
+
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
 # This was because less technical people would run Yeoman as root and cause problems.
 # Setting uid to 501 here since it's already a random number being thrown around.
@@ -11,24 +22,12 @@ FROM node:$NODE_IMAGE_TAG
 RUN adduser -D -u 501 yeoman && \
   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN apk add --no-cache sudo shfmt
-RUN npm install --global --silent yo
-
-WORKDIR /fabrica
-
-COPY docs /fabrica/docs
-COPY README.md /fabrica/README.md
-COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
-
-COPY package.json /fabrica/package.json
-COPY package-lock.json /fabrica/package-lock.json
-RUN npm install --silent
-
-COPY generators /fabrica/generators
-RUN npm link
-
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /network/target
+
+COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
+COPY docs /fabrica/docs
+COPY README.md /fabrica/README.md
 
 ARG VERSION_DETAILS
 RUN echo $VERSION_DETAILS > /fabrica/version.details
