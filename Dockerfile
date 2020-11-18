@@ -3,11 +3,11 @@ FROM node:14-alpine3.12
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
 
-COPY generators /fabrikka/generators
-COPY package.json /fabrikka/package.json
-COPY package-lock.json /fabrikka/package-lock.json
+COPY generators /fabrica/generators
+COPY package.json /fabrica/package.json
+COPY package-lock.json /fabrica/package-lock.json
 
-WORKDIR /fabrikka
+WORKDIR /fabrica
 RUN npm install --silent
 RUN npm link
 
@@ -23,8 +23,8 @@ RUN adduser -D -u 501 yeoman && \
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /network/target
 
-COPY docker-entrypoint.sh /fabrikka/docker-entrypoint.sh
-COPY docs /fabrikka/docs
-COPY README.md /fabrikka/README.md
+COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
+COPY docs /fabrica/docs
+COPY README.md /fabrica/README.md
 
-ENTRYPOINT /fabrikka/docker-entrypoint.sh
+ENTRYPOINT /fabrica/docker-entrypoint.sh

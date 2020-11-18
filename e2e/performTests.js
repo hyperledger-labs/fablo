@@ -18,10 +18,10 @@ const executeCommand = (c, noConsole = false) => {
 };
 
 const generate = (config, target) => {
-  executeCommand(`(rm -rf "${target}" && mkdir -p "${target}" && cd "${target}" && sh ../../../fabrikka.sh generate "../../../${config}")`);
+  executeCommand(`(rm -rf "${target}" && mkdir -p "${target}" && cd "${target}" && sh ../../../fabrica.sh generate "../../../${config}")`);
 };
 
-const getFiles = (target) => executeCommand(`find ${target}/fabrikka-target/* -type f`)
+const getFiles = (target) => executeCommand(`find ${target}/fabrica-target/* -type f`)
   .split('\n')
   .filter((s) => !!s.length)
   .sort();
@@ -45,7 +45,7 @@ const testFilesContent = (config, files) => files.forEach((f) => {
     const content = executeCommand(`cat ${f}`, true);
     const cleaned = content
       .replace(/COMPOSE_PROJECT_NAME=(.*?)(\n|$)/g, 'COMPOSE_PROJECT_NAME=<name with timestamp>\n')
-      .replace(/FABRIKKA_CONFIG=(.*?)(\n|$)/g, 'FABRIKKA_CONFIG=<absolute path>\n')
+      .replace(/FABRICA_CONFIG=(.*?)(\n|$)/g, 'FABRICA_CONFIG=<absolute path>\n')
       .replace(/CHAINCODES_BASE_DIR=(.*?)(\n|$)/g, 'CHAINCODES_BASE_DIR=<absolute path>\n');
     expect(cleaned).toMatchSnapshot();
   });

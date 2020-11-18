@@ -2,15 +2,15 @@
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABRIKKA_HOME="$TEST_TMP/../.."
+FABRICA_HOME="$TEST_TMP/../.."
 
 # testing absolute path
-CONFIG="$FABRIKKA_HOME/samples/fabrikkaConfig-2orgs-2channels-2chaincodes-tls-raft.json"
+CONFIG="$FABRICA_HOME/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json"
 
 networkUpAsync() {
-  "$FABRIKKA_HOME/fabrikka-build.sh" &&
-    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" generate "$CONFIG") &&
-    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" up &)
+  "$FABRICA_HOME/fabrica-build.sh" &&
+    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" generate "$CONFIG") &&
+    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up &)
 }
 
 dumpLogs() {
@@ -33,7 +33,7 @@ networkDown() {
     dumpLogs "peer1.org2.com" &&
     dumpLogs "cli.org1.com" &&
     dumpLogs "cli.org2.com" &&
-    (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" down)
+    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
 waitForContainer() {
@@ -76,7 +76,7 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
-  (cd "$TEST_TMP" && "$FABRIKKA_HOME/fabrikka.sh" chaincode upgrade "chaincode1" "0.0.2") &&
+  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.2" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.2" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \

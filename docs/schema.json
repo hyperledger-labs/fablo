@@ -5,7 +5,7 @@
   "title": "Root",
   "default": {},
   "required": [
-    "fabrikkaVersion",
+    "fabricaVersion",
     "fileVersion",
     "networkSettings",
     "rootOrg",
@@ -14,9 +14,9 @@
     "chaincodes"
   ],
   "properties": {
-    "fabrikkaVersion": {
-      "$id": "#/properties/fabrikkaVersion",
-      "title": "Fabrikka version",
+    "fabricaVersion": {
+      "$id": "#/properties/fabricaVersion",
+      "title": "Fabrica version",
       "type": "string",
       "default": "alpha-0.0.1",
       "readOnly": true
