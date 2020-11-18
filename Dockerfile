@@ -33,4 +33,4 @@ ENV HOME /network/target
 ARG VERSION_DETAILS
 RUN echo $VERSION_DETAILS > /fabrica/version.details
 
-ENTRYPOINT /fabrica/docker-entrypoint.sh
+CMD /fabrica/docker-entrypoint.sh
