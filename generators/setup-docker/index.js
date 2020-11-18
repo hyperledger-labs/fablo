@@ -14,13 +14,13 @@ const ValidateGeneratorType = require.resolve('../validate');
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-    this.argument('fabrikkaConfig', {
+    this.argument('fabricaConfig', {
       type: String,
       required: true,
-      description: 'fabrikka config file path',
+      description: 'fabrica config file path',
     });
 
-    this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabrikkaConfig] });
+    this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabricaConfig] });
   }
 
   initializing() {
@@ -28,8 +28,8 @@ module.exports = class extends Generator {
   }
 
   async writing() {
-    this.options.fabrikkaConfigPath = utils.getFullPathOf(
-      this.options.fabrikkaConfig, this.env.cwd,
+    this.options.fabricaConfigPath = utils.getFullPathOf(
+      this.options.fabricaConfig, this.env.cwd,
     );
 
     const {
@@ -38,12 +38,12 @@ module.exports = class extends Generator {
       orgs: orgsJson,
       channels: channelsJson,
       chaincodes: chaincodesJson,
-    } = this.fs.readJSON(this.options.fabrikkaConfigPath);
+    } = this.fs.readJSON(this.options.fabricaConfigPath);
 
     const dateString = new Date().toISOString().substring(0, 16).replace(/[^0-9]+/g, '-');
-    const composeNetworkName = `fabrikka-network-${dateString}`;
+    const composeNetworkName = `fabrica-network-${dateString}`;
 
-    this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
+    this.log(`Used network config: ${this.options.fabricaConfigPath}`);
     this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
@@ -62,7 +62,7 @@ module.exports = class extends Generator {
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
     this._copyDockerCompose({
-      // TODO https://github.com/softwaremill/fabrikka/issues/82
+      // TODO https://github.com/softwaremill/fabrica/issues/82
       networkSettings, rootOrg, orgs: orgsJson, chaincodes,
     });
 

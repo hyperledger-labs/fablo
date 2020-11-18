@@ -1,9 +1,9 @@
 {
-  "fabrikkaVersion": "alpha-0.0.1",
+  "fabricaVersion": "alpha-0.0.1",
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
-    "tls": true
+    "tls": false
   },
   "rootOrg": {
     "organization": {
@@ -17,8 +17,8 @@
     },
     "orderer": {
       "prefix": "orderer",
-      "type": "raft",
-      "instances": 3
+      "type": "solo",
+      "instances": 1
     }
   },
   "orgs": [
@@ -100,17 +100,8 @@
       "lang": "node",
       "channel": "channel1",
       "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "endorsement": "AND ('Org1MSP.member')",
       "directory": "./chaincodes/chaincode-kv-node"
-    },
-    {
-      "name": "chaincode2",
-      "version": "0.0.1",
-      "lang": "java",
-      "channel": "channel2",
-      "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
 }

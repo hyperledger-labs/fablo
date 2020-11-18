@@ -1,5 +1,5 @@
 {
-  "fabrikkaVersion": "alpha-0.0.1",
+  "fabricaVersion": "alpha-0.0.1",
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
@@ -37,22 +37,6 @@
         "instances": 2,
         "db": "LevelDb"
       }
-    },
-    {
-      "organization": {
-        "key": "org2",
-        "name": "Org2",
-        "mspName": "Org2MSP",
-        "domain": "org2.com"
-      },
-      "ca": {
-        "prefix": "ca"
-      },
-      "peer": {
-        "prefix": "peer",
-        "instances": 2,
-        "db": "LevelDb"
-      }
     }
   ],
   "channels": [
@@ -63,30 +47,7 @@
         {
           "key": "org1",
           "peers": [
-            "peer0"
-          ]
-        },
-        {
-          "key": "org2",
-          "peers": [
-            "peer0"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "channel2",
-      "name": "my-channel2",
-      "orgs": [
-        {
-          "key": "org1",
-          "peers": [
-            "peer1"
-          ]
-        },
-        {
-          "key": "org2",
-          "peers": [
+            "peer0",
             "peer1"
           ]
         }
