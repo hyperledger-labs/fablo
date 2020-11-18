@@ -6,7 +6,7 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabrikkaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
+const { supportedFabricaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
 const schema = require('../../docs/schema.json');
@@ -29,10 +29,10 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
-    this.argument('fabrikkaConfig', {
+    this.argument('fabricaConfig', {
       type: String,
       required: true,
-      description: 'fabrikka config file path',
+      description: 'fabrica config file path',
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
@@ -57,16 +57,16 @@ module.exports = class extends Generator {
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     } else {
-      this.options.fabrikkaConfigPath = configFilePathAbsolute;
+      this.options.fabricaConfigPath = configFilePathAbsolute;
     }
   }
 
   async validate() {
-    this._validateIfConfigFileExists(this.options.fabrikkaConfig);
+    this._validateIfConfigFileExists(this.options.fabricaConfig);
 
-    const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
+    const networkConfig = this.fs.readJSON(this.options.fabricaConfigPath);
     this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabrikkaVersion(networkConfig.fabrikkaVersion);
+    this._validateSupportedFabricaVersion(networkConfig.fabricaVersion);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
@@ -123,11 +123,11 @@ module.exports = class extends Generator {
     }
   }
 
-  _validateSupportedFabrikkaVersion(fabrikkaVersion) {
-    if (!supportedFabrikkaVersions.includes(fabrikkaVersion)) {
+  _validateSupportedFabricaVersion(fabricaVersion) {
+    if (!supportedFabricaVersions.includes(fabricaVersion)) {
       const objectToEmit = {
         category: validationCategories.CRITICAL,
-        message: `Fabrikka's ${fabrikkaVersion} version is not supported. Supported versions are: ${supportedFabrikkaVersions}`,
+        message: `Fabrica's ${fabricaVersion} version is not supported. Supported versions are: ${supportedFabricaVersions}`,
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }

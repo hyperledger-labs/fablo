@@ -2,13 +2,13 @@
 
 set -eu
 
-FABRIKKA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
+FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts

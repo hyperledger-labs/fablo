@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script runs linter for bash and YAML files in Fabrikka root and for
+# This script runs linter for bash and YAML files in Fabrica root and for
 # generated network configs in 'e2e/__tmp__' directory. It fails if generated
 # network configs are missing.
 #
@@ -8,19 +8,20 @@
 
 set -e
 
-FABRIKKA_HOME="$(dirname "$0")"
-shellcheck "$FABRIKKA_HOME"/*.sh
+FABRICA_HOME="$(dirname "$0")"
+shellcheck "$FABRICA_HOME"/*.sh
+shellcheck "$FABRICA_HOME"/e2e-network/*.sh
 
 EXPECTED_NETWORKS=(
-  "$FABRIKKA_HOME/e2e/__tmp__/network-01-simple"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-02-simple-tls"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-03-simple-raft"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-04-simple-2chaincodes"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-05-2orgs"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-06-2orgs-tls"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-07-2orgs-raft"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-08-2orgs-raft-hlf2"
-  "$FABRIKKA_HOME/e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2"
+  "$FABRICA_HOME/e2e/__tmp__/network-01-simple"
+  "$FABRICA_HOME/e2e/__tmp__/network-02-simple-tls"
+  "$FABRICA_HOME/e2e/__tmp__/network-03-simple-raft"
+  "$FABRICA_HOME/e2e/__tmp__/network-04-simple-2chaincodes"
+  "$FABRICA_HOME/e2e/__tmp__/network-05-2orgs"
+  "$FABRICA_HOME/e2e/__tmp__/network-06-2orgs-tls"
+  "$FABRICA_HOME/e2e/__tmp__/network-07-2orgs-raft"
+  "$FABRICA_HOME/e2e/__tmp__/network-08-2orgs-raft-hlf2"
+  "$FABRICA_HOME/e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2"
 )
 
 for network in "${EXPECTED_NETWORKS[@]}"; do

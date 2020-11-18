@@ -1,9 +1,9 @@
 {
-  "fabrikkaVersion": "alpha-0.0.1",
+  "fabricaVersion": "alpha-0.0.1",
   "fileVersion": "0.1",
   "networkSettings": {
     "fabricVersion": "1.4.3",
-    "tls": false
+    "tls": true
   },
   "rootOrg": {
     "organization": {
@@ -46,6 +46,12 @@
       "orgs": [
         {
           "key": "org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "key": "org2",
           "peers": [
             "peer0",
             "peer1"

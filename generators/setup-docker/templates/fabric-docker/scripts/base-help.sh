@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function printHelp() {
-  echo "Fabrikka is powered by SoftwareMill"
+  echo "Fabrica is powered by SoftwareMill"
 
   echo ""
   echo "usage: ./fabric-docker.sh <command>"
