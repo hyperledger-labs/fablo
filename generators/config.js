@@ -1,4 +1,5 @@
 const { version } = require('../package.json');
+
 const supportedFabricaVersions = ['0.0.1-alpha'];
 
 const supportedFabricVersions = [
