@@ -33,4 +33,4 @@ ENV HOME /network/target
 ARG VERSION_DETAILS
 RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
 
-ENTRYPOINT /fabrica/docker-entrypoint.sh
+CMD /fabrica/docker-entrypoint.sh
