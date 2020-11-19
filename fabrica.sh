@@ -70,7 +70,8 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 elif [ "$COMMAND" = "version" ]; then
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
-    fabrica sh -c "yo --no-insight fabrica:version"
+    -v "$FABRICA_NETWORK_ROOT":/network/target \
+    fabrica sh -c "/fabrica/docker-entrypoint.sh version $2"
 
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
