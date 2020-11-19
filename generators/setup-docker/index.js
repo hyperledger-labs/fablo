@@ -127,7 +127,7 @@ module.exports = class extends Generator {
       orgs: orgsTransformed,
       paths: configTransformers.getPathsFromEnv(),
       fabricaVersion: config.version,
-      fabricaBuild: buildUtil.getBuildInfo()
+      fabricaBuild: buildUtil.getBuildInfo(),
     };
     this.fs.copyTpl(
       this.templatePath('fabric-docker/.env'),
