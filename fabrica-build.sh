@@ -3,7 +3,8 @@
 set -eu
 
 FABRICA_HOME="$(cd "$(dirname "$0")" && pwd)"
-FABRICA_VERSION=$(head package.json | jq -r '.version')
+# shellcheck disable=2002
+FABRICA_VERSION=$(cat package.json | jq -r '.version')
 
 NODE_IMAGE_TAG="12.18.0-alpine3.12"
 
