@@ -52,6 +52,6 @@ else
   # by default entrypoint generates files from fabrica config
   config_path="/network/fabrica-config.json"
 
-  executeYeomanCommand "$yeoman_target_dir" "setup-docker ../..$config_path"
-  formatGeneratedFiles $yeoman_target_dir
+  executeYeomanCommand "$yeoman_target_dir" "setup-docker \"../..$config_path\""
+  formatGeneratedFiles "$yeoman_target_dir"
 fi
