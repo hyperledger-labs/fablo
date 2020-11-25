@@ -9,6 +9,8 @@ printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
+  fabrica.sh version [--full]
+    Prints current fabrica version, with optional details.
 
   fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json', default (and recommended) directory '\$(pwd)/fabrica-target'.
@@ -24,6 +26,14 @@ Usage:
 
   fabrica.sh [help | --help]
     Prints the manual."
+}
+
+printVersion() {
+  optional_full_flag=$1
+  docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/network/target \
+    fabrica sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
 }
 
 generateNetworkConfig() {
@@ -67,6 +77,8 @@ if [ -z "$COMMAND" ]; then
 elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
+elif [ "$COMMAND" = "version" ]; then
+  printVersion "$2"
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then

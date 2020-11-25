@@ -1,4 +1,4 @@
-FROM node:14-alpine3.12
+FROM node:12.18.0-alpine3.12
 
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
@@ -27,4 +27,8 @@ COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
 COPY docs /fabrica/docs
 COPY README.md /fabrica/README.md
 
-ENTRYPOINT /fabrica/docker-entrypoint.sh
+ARG VERSION_DETAILS
+RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
+RUN cat /fabrica/version.json
+
+CMD /fabrica/docker-entrypoint.sh
