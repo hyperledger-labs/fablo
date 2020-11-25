@@ -53,5 +53,5 @@ else
   config_path="/network/fabrica-config.json"
 
   executeYeomanCommand "$yeoman_target_dir" "setup-docker ../..$config_path"
-  formatGeneratedFiles $yeoman_target_dir
+  formatGeneratedFiles "$yeoman_target_dir"
 fi
