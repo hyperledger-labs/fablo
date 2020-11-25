@@ -5,6 +5,11 @@ set -e
 COMMAND="$1"
 FABRICA_NETWORK_ROOT="$(pwd)/fabrica-target"
 
+#TODO 1 - info about newer version of fabrica
+#TODO 2 - param to use older fabrica version
+
+FABRICA_IMAGE="softwaremill/fabrica:0.0.1-alpha"
+
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
@@ -33,7 +38,7 @@ printVersion() {
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -v $(pwd):/network/target \
-    fabrica sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
 }
 
 generateNetworkConfig() {
@@ -67,7 +72,7 @@ generateNetworkConfig() {
     --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
     --env FABRICA_NETWORK_ROOT="$FABRICA_NETWORK_ROOT" \
     -u "$(id -u):$(id -g)" \
-    fabrica
+    $FABRICA_IMAGE
 }
 
 if [ -z "$COMMAND" ]; then

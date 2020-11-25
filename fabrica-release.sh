@@ -15,7 +15,7 @@ echo "Pushing to docker hub.."
 echo "   FABRICA_HOME: $FABRICA_HOME"
 echo "   FABRICA_VERSION: $FABRICA_VERSION"
 
-docker login -u "$1" -p "$2"
+docker login -u "$login" -p "$pass"
 
 docker push softwaremill/fabrica:latest
 docker push softwaremill/fabrica:"$FABRICA_VERSION"
