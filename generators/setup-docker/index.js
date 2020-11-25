@@ -6,6 +6,7 @@
 const Generator = require('yeoman-generator');
 const config = require('../config');
 const utils = require('../utils/utils');
+const buildUtil = require('../version/buildUtil');
 
 const configTransformers = require('./configTransformers');
 
@@ -125,6 +126,8 @@ module.exports = class extends Generator {
       networkSettings,
       orgs: orgsTransformed,
       paths: configTransformers.getPathsFromEnv(),
+      fabricaVersion: config.version,
+      fabricaBuild: buildUtil.getBuildInfo(),
     };
     this.fs.copyTpl(
       this.templatePath('fabric-docker/.env'),

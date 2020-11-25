@@ -196,9 +196,13 @@ fi
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/.env from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"COMPOSE_PROJECT_NAME=<name with timestamp>
+"FABRICA_VERSION=\\"0.0.1-alpha\\"
+FABRICA_BUILD=<date with git hash>
+
 FABRICA_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
+
+COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
 FABRIC_VERSION=1.4.3
