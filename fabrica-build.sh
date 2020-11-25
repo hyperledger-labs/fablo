@@ -19,6 +19,6 @@ docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
   --tag fabrica "$FABRICA_HOME"
 
-docker tag fabrica "$FABRICA_VERSION"
 docker tag fabrica latest
+docker tag fabrica "fabrica:$FABRICA_VERSION"
 
