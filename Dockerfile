@@ -1,6 +1,4 @@
-ARG NODE_IMAGE_TAG
-
-FROM node:$NODE_IMAGE_TAG
+FROM node:12.18.0-alpine3.12
 
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
@@ -31,5 +29,6 @@ COPY README.md /fabrica/README.md
 
 ARG VERSION_DETAILS
 RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
+RUN cat /fabrica/version.json
 
 CMD /fabrica/docker-entrypoint.sh
