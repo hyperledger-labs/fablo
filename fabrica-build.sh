@@ -15,10 +15,12 @@ echo "   FABRICA_HOME: $FABRICA_HOME"
 echo "   FABRICA_VERSION: $FABRICA_VERSION"
 echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
+IMAGE_BASE_NAME="softwaremill/fabrica"
+
 docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
-  --tag fabrica "$FABRICA_HOME"
+  --tag "$IMAGE_BASE_NAME" "$FABRICA_HOME"
 
-docker tag fabrica latest
-docker tag fabrica "fabrica:$FABRICA_VERSION"
+docker tag "$IMAGE_BASE_NAME" latest
+docker tag "$IMAGE_BASE_NAME" "softwaremill/fabrica:$FABRICA_VERSION"
 
