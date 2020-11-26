@@ -7,14 +7,29 @@ FABRICA_NETWORK_ROOT="$(pwd)/fabrica-target"
 
 #TODO 1 - info about newer version of fabrica
 #TODO 2 - param to use older fabrica version
+#TODO 3 - how to store docker passwords
 
-FABRICA_IMAGE="softwaremill/fabrica:0.0.1-alpha"
+FABRICA_IMAGE_NAME="softwaremill/fabrica"
+FABRICA_IMAGE_TAG="0.0.1-alpha"
+FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_IMAGE_TAG"
+
+#listTags() {
+#  all_tags=$( curl -L -s 'https://registry.hub.docker.com/v2/repositories/softwaremill/fabrica/tags?page_size=1024&tag_status=active'| jq '."results"[]["name"]' | sed -e 's/^"//' -e 's/"$//' )
+#  declare -p all_tags
+#
+#  for i in "${all_tags[@]}"
+#  do
+#    if [ "$i" == "$FABRICA_IMAGE_TAG" ] ; then
+#        echo "Found: $i"
+#    fi
+#  done
+#}
 
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fabrica.sh version [--full]
+  fabrica.sh version [--verbose | -v]
     Prints current fabrica version, with optional details.
 
   fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
@@ -59,6 +74,7 @@ generateNetworkConfig() {
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
+  echo "    FABRICA_IMAGE:       $FABRICA_IMAGE"
   echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
   echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
   echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
