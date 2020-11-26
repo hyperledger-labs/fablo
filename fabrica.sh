@@ -2,28 +2,15 @@
 
 set -e
 
+FABRICA_IMAGE_TAG="0.0.1-alpha"
+FABRICA_IMAGE_NAME="softwaremill/fabrica"
+FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_IMAGE_TAG"
+
 COMMAND="$1"
 FABRICA_NETWORK_ROOT="$(pwd)/fabrica-target"
 
-#TODO 1 - info about newer version of fabrica
-#TODO 2 - param to use older fabrica version
-#TODO 3 - how to store docker passwords
-
-FABRICA_IMAGE_NAME="softwaremill/fabrica"
-FABRICA_IMAGE_TAG="0.0.1-alpha"
-FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_IMAGE_TAG"
-
-#listTags() {
-#  all_tags=$( curl -L -s 'https://registry.hub.docker.com/v2/repositories/softwaremill/fabrica/tags?page_size=1024&tag_status=active'| jq '."results"[]["name"]' | sed -e 's/^"//' -e 's/"$//' )
-#  declare -p all_tags
-#
-#  for i in "${all_tags[@]}"
-#  do
-#    if [ "$i" == "$FABRICA_IMAGE_TAG" ] ; then
-#        echo "Found: $i"
-#    fi
-#  done
-#}
+#TODO 1 - how to store docker passwords
+#TODO 2 - fabrica.sh prompt on compatible updates
 
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
@@ -45,7 +32,13 @@ Usage:
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
 
   fabrica.sh [help | --help]
-    Prints the manual."
+    Prints the manual.
+
+  fabrica.sh updates
+    Prints all newer versions available.
+
+  fabrica.sh updateTo <version>
+    Updates Fabrica to specified version."
 }
 
 printVersion() {
@@ -54,6 +47,13 @@ printVersion() {
     -u "$(id -u):$(id -g)" \
     -v $(pwd):/network/target \
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
+}
+
+printUpdates() {
+    docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh check-updates"
 }
 
 generateNetworkConfig() {
@@ -91,6 +91,18 @@ generateNetworkConfig() {
     $FABRICA_IMAGE
 }
 
+updateTo() {
+  version=$1
+
+  if [ -z "$version" ]; then
+    echo "Please specify version number, ie:"
+    echo "fabrica.sh updateTo 0.1.0"
+    exit 1
+  fi
+
+  sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o /usr/local/bin/fabrica.sh && sudo chmod +x /usr/local/bin/fabrica.sh
+}
+
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -100,6 +112,10 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
+elif [ "$COMMAND" = "updates" ]; then
+  printUpdates
+elif [ "$COMMAND" = "updateTo" ]; then
+  updateTo "$2"
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then
