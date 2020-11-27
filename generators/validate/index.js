@@ -6,12 +6,14 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabricaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
+const { supportedVersionPrefix, isFabricaVersionSupported, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
 
 const schema = require('../../docs/schema.json');
 const config = require('../config');
+
+const CheckUpdatesGeneratorType = require.resolve('../check-updates');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -48,6 +50,8 @@ module.exports = class extends Generator {
 
     this.addListener(validationErrorType.ERROR, (e) => this.listeners.error.onEvent(e));
     this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
+
+    this.composeWith(CheckUpdatesGeneratorType, { arguments: [this.options.compatible] });
   }
 
   initializing() {
@@ -131,8 +135,8 @@ module.exports = class extends Generator {
   }
 
   _validateSupportedFabricaVersion(fabricaVersion) {
-    if (!supportedFabricaVersions.includes(fabricaVersion)) {
-      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${supportedFabricaVersions}`
+    if (!isFabricaVersionSupported(fabricaVersion)) {
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${supportedVersionPrefix}x`
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
