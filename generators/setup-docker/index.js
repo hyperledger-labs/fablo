@@ -23,10 +23,6 @@ module.exports = class extends Generator {
     this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabrikkaConfig] });
   }
 
-  initializing() {
-    this.log(config.splashScreen());
-  }
-
   async writing() {
     this.options.fabrikkaConfigPath = utils.getFullPathOf(
       this.options.fabrikkaConfig, this.env.cwd,
