@@ -19,6 +19,9 @@ Usage:
   fabrica.sh version [--verbose | -v]
     Prints current fabrica version, with optional details.
 
+  fabrica.sh init
+    Creates simple Fabrica config in current directory.
+
   fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json', default (and recommended) directory '\$(pwd)/fabrica-target'.
 
@@ -56,6 +59,13 @@ printUpdates() {
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh check-updates"
 }
 
+init() {
+    docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh init"
+}
+
 updateTo() {
   version=$1
 
@@ -84,11 +94,11 @@ validateConfig() {
   fi
 
   docker run -i --rm \
-    -v "$FABRICA_CONFIG":/network/target/fabrica-config.json \
+    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
     -v $(pwd):/network/target \
     --env FABRICA_CONFIG="/network/fabrica-config.json" \
     -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate fabrica-config.json"
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate ../fabrica-config.json"
 }
 
 generateNetworkConfig() {
@@ -139,6 +149,8 @@ elif [ "$COMMAND" = "updates" ]; then
   printUpdates
 elif [ "$COMMAND" = "updateTo" ]; then
   updateTo "$2"
+elif [ "$COMMAND" = "init" ]; then
+  init
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
 elif [ "$COMMAND" = "generate" ]; then
