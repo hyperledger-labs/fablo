@@ -18,7 +18,7 @@
     },
     "orderer": {
       "prefix": "orderer",
-      "type": "raft",
+      "type": "solo",
       "instances": 1
     }
   },
@@ -29,6 +29,22 @@
         "name": "Org1",
         "mspName": "Org1MSP",
         "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    },
+    {
+      "organization": {
+        "key": "org2",
+        "name": "Org2",
+        "mspName": "Org2MSP",
+        "domain": "org2.com"
       },
       "ca": {
         "prefix": "ca"
@@ -54,7 +70,24 @@
         {
           "key": "org2",
           "peers": [
-            "peer0",
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "channel2",
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer1"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
             "peer1"
           ]
         }
