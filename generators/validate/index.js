@@ -36,7 +36,8 @@ module.exports = class extends Generator {
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log(chalk.bgRed('Critical error occured:') + chalk.bold(` ${event.message}`));
+      this.log(chalk.bold.bgRed('Critical error occured:'));
+      this.log(chalk.bold(`\t${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
@@ -125,9 +126,10 @@ module.exports = class extends Generator {
 
   _validateSupportedFabricaVersion(fabricaVersion) {
     if (!supportedFabricaVersions.includes(fabricaVersion)) {
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${supportedFabricaVersions}`
       const objectToEmit = {
         category: validationCategories.CRITICAL,
-        message: `Fabrica's ${fabricaVersion} version is not supported. Supported versions are: ${supportedFabricaVersions}`,
+        message: msg,
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
@@ -137,7 +139,7 @@ module.exports = class extends Generator {
     if (!supportedFabricVersions.includes(fabricVersion)) {
       const objectToEmit = {
         category: validationCategories.GENERAL,
-        message: `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`,
+        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${supportedFabricVersions}`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
