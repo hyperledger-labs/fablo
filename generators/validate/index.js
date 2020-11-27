@@ -6,7 +6,6 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedVersionPrefix, isFabricaVersionSupported, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
 
@@ -135,8 +134,8 @@ module.exports = class extends Generator {
   }
 
   _validateSupportedFabricaVersion(fabricaVersion) {
-    if (!isFabricaVersionSupported(fabricaVersion)) {
-      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${supportedVersionPrefix}x`
+    if (!config.isFabricaVersionSupported(fabricaVersion)) {
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
@@ -146,10 +145,10 @@ module.exports = class extends Generator {
   }
 
   _validateFabricVersion(fabricVersion) {
-    if (!supportedFabricVersions.includes(fabricVersion)) {
+    if (!config.supportedFabricVersions.includes(fabricVersion)) {
       const objectToEmit = {
         category: validationCategories.GENERAL,
-        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${supportedFabricVersions}`,
+        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${config.supportedFabricVersions}`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
@@ -175,10 +174,10 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+      if (!config.versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
-          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${versionsSupportingRaft}`,
+          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
         };
         this.emit(validationErrorType.ERROR, objectToEmit);
       }
