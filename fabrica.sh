@@ -56,6 +56,41 @@ printUpdates() {
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh check-updates"
 }
 
+updateTo() {
+  version=$1
+
+  if [ -z "$version" ]; then
+    echo "Please specify version number, ie:"
+    echo "fabrica.sh updateTo 0.1.0"
+    exit 1
+  fi
+
+  sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o /usr/local/bin/fabrica.sh && sudo chmod +x /usr/local/bin/fabrica.sh
+}
+
+validateConfig() {
+  if [ -z "$1" ]; then
+    FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/fabrica-config.json"
+    if [ ! -f "$FABRICA_CONFIG" ]; then
+      echo "File $FABRICA_CONFIG does not exist"
+      exit 1
+    fi
+  else
+    if [ ! -f "$1" ]; then
+      echo "File $1 does not exist"
+      exit 1
+    fi
+    FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+  fi
+
+  docker run -i --rm \
+    -v "$FABRICA_CONFIG":/network/target/fabrica-config.json \
+    -v $(pwd):/network/target \
+    --env FABRICA_CONFIG="/network/fabrica-config.json" \
+    -u "$(id -u):$(id -g)" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate fabrica-config.json"
+}
+
 generateNetworkConfig() {
   if [ -z "$1" ]; then
     FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/fabrica-config.json"
@@ -91,18 +126,6 @@ generateNetworkConfig() {
     $FABRICA_IMAGE
 }
 
-updateTo() {
-  version=$1
-
-  if [ -z "$version" ]; then
-    echo "Please specify version number, ie:"
-    echo "fabrica.sh updateTo 0.1.0"
-    exit 1
-  fi
-
-  sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o /usr/local/bin/fabrica.sh && sudo chmod +x /usr/local/bin/fabrica.sh
-}
-
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -116,6 +139,8 @@ elif [ "$COMMAND" = "updates" ]; then
   printUpdates
 elif [ "$COMMAND" = "updateTo" ]; then
   updateTo "$2"
+elif [ "$COMMAND" = "validate" ]; then
+  validateConfig "$2"
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then

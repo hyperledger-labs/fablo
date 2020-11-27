@@ -9,7 +9,9 @@ const chalk = require('chalk');
 const { supportedFabricaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
+
 const schema = require('../../docs/schema.json');
+const config = require('../config');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -37,7 +39,7 @@ module.exports = class extends Generator {
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
       this.log(chalk.bold.bgRed('Critical error occured:'));
-      this.log(chalk.bold(`\t${event.message}`));
+      this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
@@ -48,18 +50,8 @@ module.exports = class extends Generator {
     this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
   }
 
-  _validateIfConfigFileExists(configFilePath) {
-    const configFilePathAbsolute = utils.getFullPathOf(configFilePath, this.env.cwd);
-    const fileExists = this.fs.exists(configFilePathAbsolute);
-    if (!fileExists) {
-      const objectToEmit = {
-        category: validationCategories.CRITICAL,
-        message: `No file under path: ${configFilePathAbsolute}`,
-      };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
-    } else {
-      this.options.fabricaConfigPath = configFilePathAbsolute;
-    }
+  initializing() {
+    this.log(config.splashScreen());
   }
 
   async validate() {
@@ -77,9 +69,9 @@ module.exports = class extends Generator {
   }
 
   async summary() {
-    this.log(chalk.bold('=================== Validation summary ==================='));
     this.log(`Errors count: ${this.listeners.error.count()}`);
     this.log(`Warnings count: ${this.listeners.warn.count()}`);
+    this.log(chalk.bold('=================== Validation summary ==================='));
 
     this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
     this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
@@ -88,6 +80,20 @@ module.exports = class extends Generator {
 
     if (this.listeners.error.count() > 0) {
       process.exit();
+    }
+  }
+
+  _validateIfConfigFileExists(configFilePath) {
+    const configFilePathAbsolute = utils.getFullPathOf(configFilePath, this.env.cwd);
+    const fileExists = this.fs.exists(configFilePathAbsolute);
+    if (!fileExists) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `No file under path: ${configFilePathAbsolute}`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    } else {
+      this.options.fabricaConfigPath = configFilePathAbsolute;
     }
   }
 
