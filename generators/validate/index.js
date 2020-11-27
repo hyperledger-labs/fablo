@@ -6,10 +6,14 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabrikkaVersions, supportedFabricVersions } = require('../config');
+const { supportedVersionPrefix, isFabricaVersionSupported, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
+
 const schema = require('../../docs/schema.json');
+const config = require('../config');
+
+const CheckUpdatesGeneratorType = require.resolve('../check-updates');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -29,14 +33,15 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
-    this.argument('fabrikkaConfig', {
+    this.argument('fabricaConfig', {
       type: String,
       required: true,
-      description: 'fabrikka config file path',
+      description: 'fabrica config file path',
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log(chalk.bgRed('Critical error occured:') + chalk.bold(` ${event.message}`));
+      this.log(chalk.bold.bgRed('Critical error occured:'));
+      this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
@@ -45,6 +50,41 @@ module.exports = class extends Generator {
 
     this.addListener(validationErrorType.ERROR, (e) => this.listeners.error.onEvent(e));
     this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
+
+    this.composeWith(CheckUpdatesGeneratorType, { arguments: [this.options.compatible] });
+  }
+
+  initializing() {
+    this.log(config.splashScreen());
+  }
+
+  async validate() {
+    this._validateIfConfigFileExists(this.options.fabricaConfig);
+
+    const networkConfig = this.fs.readJSON(this.options.fabricaConfigPath);
+    this._validateJsonSchema(networkConfig);
+    this._validateSupportedFabricaVersion(networkConfig.fabricaVersion);
+    this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
+
+    this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
+    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
+
+    this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
+  }
+
+  async summary() {
+    this.log(`Errors count: ${this.listeners.error.count()}`);
+    this.log(`Warnings count: ${this.listeners.warn.count()}`);
+    this.log(chalk.bold('=================== Validation summary ==================='));
+
+    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
+    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
+
+    this.log(chalk.bold('==========================================================='));
+
+    if (this.listeners.error.count() > 0) {
+      process.exit();
+    }
   }
 
   _validateIfConfigFileExists(configFilePath) {
@@ -57,36 +97,7 @@ module.exports = class extends Generator {
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     } else {
-      this.options.fabrikkaConfigPath = configFilePathAbsolute;
-    }
-  }
-
-  async validate() {
-    this._validateIfConfigFileExists(this.options.fabrikkaConfig);
-
-    const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
-    this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabrikkaVersion(networkConfig.fabrikkaVersion);
-    this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
-
-    this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
-    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
-
-    this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
-  }
-
-  async summary() {
-    this.log(chalk.bold('=================== Validation summary ==================='));
-    this.log(`Errors count: ${this.listeners.error.count()}`);
-    this.log(`Warnings count: ${this.listeners.warn.count()}`);
-
-    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
-    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
-
-    this.log(chalk.bold('==========================================================='));
-
-    if(this.listeners.error.count() > 0) {
-      process.exit();
+      this.options.fabricaConfigPath = configFilePathAbsolute;
     }
   }
 
@@ -123,11 +134,12 @@ module.exports = class extends Generator {
     }
   }
 
-  _validateSupportedFabrikkaVersion(fabrikkaVersion) {
-    if (!supportedFabrikkaVersions.includes(fabrikkaVersion)) {
+  _validateSupportedFabricaVersion(fabricaVersion) {
+    if (!isFabricaVersionSupported(fabricaVersion)) {
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${supportedVersionPrefix}x`
       const objectToEmit = {
         category: validationCategories.CRITICAL,
-        message: `Fabrikka's ${fabrikkaVersion} version is not supported. Supported versions are: ${supportedFabrikkaVersions}`,
+        message: msg,
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
@@ -137,7 +149,7 @@ module.exports = class extends Generator {
     if (!supportedFabricVersions.includes(fabricVersion)) {
       const objectToEmit = {
         category: validationCategories.GENERAL,
-        message: `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`,
+        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${supportedFabricVersions}`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
@@ -163,7 +175,6 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      const versionsSupportingRaft = ['1.4.1','1.4.2','1.4.3','1.4.4','1.4.5','1.4.6','1.4.7','1.4.8'];
       if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
@@ -172,13 +183,13 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.ERROR, objectToEmit);
       }
 
-        if (!networkSettings.tls) {
-            const objectToEmit = {
-                category: validationCategories.ORDERER,
-                message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
-            };
-            this.emit(validationErrorType.ERROR, objectToEmit);
-        }
+      if (!networkSettings.tls) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
     }
   }
 

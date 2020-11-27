@@ -1,14 +1,12 @@
 /* eslint no-underscore-dangle: 0 */
-/* eslint import/no-unresolved: 0 */
-/* eslint import/no-absolute-path: 0 */
 
 /*
 * License-Identifier: Apache-2.0
 */
 const Generator = require('yeoman-generator');
 
+const buildUtil = require('./buildUtil');
 const config = require('../config');
-const { buildInfo } = require('/fabrica/version.json');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -29,17 +27,17 @@ module.exports = class extends Generator {
   _basicInfo() {
     return {
       version: config.version,
-      build: buildInfo,
+      build: buildUtil.getBuildInfo(),
     };
   }
 
   _fullInfo() {
     return {
       version: config.version,
-      build: buildInfo,
-      support: {
+      build: buildUtil.getBuildInfo(),
+      supported: {
         hyperledgerFabricVersions: config.supportedFabricVersions,
-        fabricaVersions: config.supportedFabricaVersions,
+        fabricaVersions: `${config.supportedVersionPrefix}x`,
       },
     };
   }
