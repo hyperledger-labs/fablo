@@ -1,6 +1,10 @@
 const { version } = require('../package.json');
 
-const supportedFabricaVersions = ['0.0.1-alpha'];
+const supportedVersionPrefix = "0.0."
+
+function isFabricaVersionSupported(versionName) {
+ return versionName.startsWith(supportedVersionPrefix)
+}
 
 const supportedFabricVersions = [
   '1.3.0', '1.4.0', '1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8',
@@ -27,5 +31,6 @@ module.exports = {
   version,
   supportedFabricVersions,
   versionsSupportingRaft,
-  supportedFabricaVersions,
+  isFabricaVersionSupported,
+  supportedVersionPrefix
 };
