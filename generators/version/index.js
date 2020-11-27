@@ -12,7 +12,7 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.option('verbose', {
-      alias: "v"
+      alias: 'v',
     });
   }
 
