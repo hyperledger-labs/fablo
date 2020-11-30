@@ -12,8 +12,8 @@ FABRICA_VERSION=$(cat "$FABRICA_HOME"/package.json | jq -r '.version')
 ./fabrica-build.sh
 
 echo "Pushing to docker hub.."
-echo "   FABRICA_HOME: $FABRICA_HOME"
-echo "   FABRICA_VERSION: $FABRICA_VERSION"
+echo "   FABRICA_HOME:   $FABRICA_HOME"
+echo "   FABRICA_VERSION:   $FABRICA_VERSION"
 
 docker login -u "$login" -p "$pass"
 

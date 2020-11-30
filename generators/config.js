@@ -1,3 +1,6 @@
+const repositoryName = 'softwaremill/fabrica';
+const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
+
 const { version } = require('../package.json');
 
 const supportedVersionPrefix = '0.0.';
@@ -27,6 +30,7 @@ function splashScreen() {
 }
 
 module.exports = {
+  repositoryTagsListUrl,
   splashScreen,
   version,
   supportedFabricVersions,
