@@ -9,10 +9,11 @@ async function getAvailableTags() {
         },
     };
     try {
-        return await got(repositoryTagsListUrl, params).json();
+        const response = await got(repositoryTagsListUrl, params).json();
+        return response.results.filter(version => version.name !== "latest")
     } catch(err) {
         console.log(`Could not check for updates. Url: '${repositoryTagsListUrl}' not available`)
-        return {results: []};
+        return [];
     }
 
 }
