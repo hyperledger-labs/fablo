@@ -2,35 +2,19 @@
 
 set -e
 
+FABRICA_VERSION="0.0.1-alpha"
+FABRICA_IMAGE_NAME="softwaremill/fabrica"
+FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
+
 COMMAND="$1"
 FABRICA_NETWORK_ROOT="$(pwd)/fabrica-target"
-
-#TODO 1 - info about newer version of fabrica
-#TODO 2 - param to use older fabrica version
-#TODO 3 - how to store docker passwords
-
-FABRICA_IMAGE_NAME="softwaremill/fabrica"
-FABRICA_IMAGE_TAG="0.0.1-alpha"
-FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_IMAGE_TAG"
-
-#listTags() {
-#  all_tags=$( curl -L -s 'https://registry.hub.docker.com/v2/repositories/softwaremill/fabrica/tags?page_size=1024&tag_status=active'| jq '."results"[]["name"]' | sed -e 's/^"//' -e 's/"$//' )
-#  declare -p all_tags
-#
-#  for i in "${all_tags[@]}"
-#  do
-#    if [ "$i" == "$FABRICA_IMAGE_TAG" ] ; then
-#        echo "Found: $i"
-#    fi
-#  done
-#}
 
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
   fabrica.sh version [--verbose | -v]
-    Prints current fabrica version, with optional details.
+    Prints current Fabrica version, with optional details.
 
   fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json', default (and recommended) directory '\$(pwd)/fabrica-target'.
@@ -45,7 +29,13 @@ Usage:
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
 
   fabrica.sh [help | --help]
-    Prints the manual."
+    Prints the manual.
+
+  fabrica.sh updates
+    Prints all newer versions available.
+
+  fabrica.sh use <version>
+    Updates Fabrica to specified version."
 }
 
 printVersion() {
@@ -54,6 +44,48 @@ printVersion() {
     -u "$(id -u):$(id -g)" \
     -v $(pwd):/network/target \
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
+}
+
+printVersions() {
+  docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh list-versions"
+}
+
+setTo() {
+  version=$1
+
+  if [ -z "$version" ]; then
+    echo "Please specify version number, for example:"
+    echo "   fabrica.sh updateTo 0.1.0"
+    exit 1
+  fi
+
+  curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
+}
+
+validateConfig() {
+  if [ -z "$1" ]; then
+    FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/fabrica-config.json"
+    if [ ! -f "$FABRICA_CONFIG" ]; then
+      echo "File $FABRICA_CONFIG does not exist"
+      exit 1
+    fi
+  else
+    if [ ! -f "$1" ]; then
+      echo "File $1 does not exist"
+      exit 1
+    fi
+    FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+  fi
+
+  docker run -i --rm \
+    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
+    -v $(pwd):/network/target \
+    --env FABRICA_CONFIG="/network/fabrica-config.json" \
+    -u "$(id -u):$(id -g)" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate ../fabrica-config.json"
 }
 
 generateNetworkConfig() {
@@ -74,10 +106,10 @@ generateNetworkConfig() {
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
-  echo "    FABRICA_IMAGE:       $FABRICA_IMAGE"
-  echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
+  echo "    FABRICA_VERSION:   $FABRICA_VERSION"
+  echo "    FABRICA_CONFIG:   $FABRICA_CONFIG"
   echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
-  echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
+  echo "    FABRICA_NETWORK_ROOT:   $FABRICA_NETWORK_ROOT"
 
   mkdir -p "$FABRICA_NETWORK_ROOT"
 
@@ -100,6 +132,12 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
+elif [ "$COMMAND" = "updates" ]; then
+  printVersions
+elif [ "$COMMAND" = "use" ]; then
+  setTo "$2"
+elif [ "$COMMAND" = "validate" ]; then
+  validateConfig "$2"
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then
