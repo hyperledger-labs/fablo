@@ -46,11 +46,11 @@ printVersion() {
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
 }
 
-printUpdates() {
-    docker run -it --rm \
-      -u "$(id -u):$(id -g)" \
-      -v $(pwd):/network/target \
-      $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh list-compatible-updates"
+printVersions() {
+  docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh list-versions"
 }
 
 setTo() {
@@ -106,7 +106,7 @@ generateNetworkConfig() {
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
-  echo "    FABRICA_IMAGE:   $FABRICA_IMAGE"
+  echo "    FABRICA_VERSION:   $FABRICA_VERSION"
   echo "    FABRICA_CONFIG:   $FABRICA_CONFIG"
   echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
   echo "    FABRICA_NETWORK_ROOT:   $FABRICA_NETWORK_ROOT"
@@ -133,7 +133,7 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
 elif [ "$COMMAND" = "updates" ]; then
-  printUpdates
+  printVersions
 elif [ "$COMMAND" = "use" ]; then
   setTo "$2"
 elif [ "$COMMAND" = "validate" ]; then

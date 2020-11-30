@@ -8,22 +8,15 @@ const Generator = require('yeoman-generator');
 const got = require('got');
 const chalk = require('chalk');
 const { version } = require('../config');
-
-const dockerRepositoryName = 'softwaremill/fabrica';
+const { getAvailableTags } = require('../list-compatible-updates/repositoryUtils');
 
 module.exports = class extends Generator {
 
-    async _printAllVersions(allNewerVersions) {
-        if (allNewerVersions.length > 0) {
-            this.log(chalk.bold('====== !There are new fabrica versions available! :) ======'));
-            this.log(`${chalk.underline.bold('all')} newer versions: ${JSON.stringify(allNewerVersions, null, 2)}`);
-            this.log('');
-            this.log('To update just run command:');
-            this.log(`\t${chalk.bold('fabrica use [version]')}`);
-            this.log(chalk.bold('==========================================================='));
-        } else {
-            this.log(chalk.bold(`No updates available. ${version} seems to be the latest one`));
-        }
+    async printAllVersions() {
+        const allVersions = (await getAvailableTags())
+            .map(version => version.name)
+            .map(versionName => versionName.split('.'))
+        this.log(allVersions);
     }
 
 }

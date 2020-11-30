@@ -30,11 +30,10 @@ module.exports = class extends Generator {
 
   async _getAllVersionsSorted() {
     const tagsResponse = await getAvailableTags()
-    return tagsResponse.results.map((result) => ({
+    return tagsResponse.map((result) => ({
       name: result.name,
       last_pushed: result.tag_last_pushed,
     }))
-      .filter((result) => result.name !== 'latest')
       .sort((a, b) => new Date(b.last_pushed) - new Date(a.last_pushed))
       .map((result) => result.name);
   }
