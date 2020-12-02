@@ -23,6 +23,29 @@ There are two basic use cases. You may use Fabrica to start and manage the netwo
 
 On the other hand you can use Fabrica to generate initial network configuration, keep it in version control and tweak for specific requirements. In this case, however, you should use generated `fabrica-docker.sh` instead of `fabrica.sh`.
 
+## Utility commands
+
+### version
+```bash
+fabrica.sh version [--verbose | -v]
+```
+Prints current Fabrica version. With optional flag `-v` added it will also print supported Fabrica and Hyperledger Fabric versions.
+
+### use
+```bash
+fabrica.sh use
+```   
+
+Lists all available Fabrica versions.
+
+### use <version-number>
+```bash
+fabrica.sh use <version-number>
+```   
+
+Switches current script to selected version
+
+
 ## Managing the network
 
 ### generate
@@ -50,6 +73,13 @@ fabrica.sh [down | start | stop]
 ```
 
 Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
+
+### validate
+```bash
+fabrica.sh validate [/path/to/fabrica-config.json]
+```
+
+Validates network config. This command will try to find potential problems in your network and suggests changes. Please note that the step is executed automatically before each `generate` to ensure that at least critical errors where fixed. 
 
 ### fabric-docker.sh
 

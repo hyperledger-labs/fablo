@@ -38,19 +38,21 @@ Usage:
     Updates Fabrica to specified version."
 }
 
-printVersion() {
-  optional_full_flag=$1
+executeOnFabricaDocker() {
+  passed_command=$1
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
-    -v $(pwd):/network/target \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
+    -v "$(pwd)":/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
 }
 
-printVersions() {
-  docker run -it --rm \
-    -u "$(id -u):$(id -g)" \
-    -v $(pwd):/network/target \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh list-versions"
+printVersion() {
+  optional_full_flag=$1
+  executeOnFabricaDocker "version $optional_full_flag"
+}
+
+listVersions() {
+  executeOnFabricaDocker "list-versions"
 }
 
 setTo() {
@@ -132,9 +134,9 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
-elif [ "$COMMAND" = "updates" ]; then
-  printVersions
-elif [ "$COMMAND" = "use" ]; then
+elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
+  listVersions
+elif [ "$COMMAND" = "use" ] && [ -n "$2"  ]; then
   setTo "$2"
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
