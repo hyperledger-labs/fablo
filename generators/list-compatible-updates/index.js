@@ -10,7 +10,6 @@ const { version } = require('../config');
 const { getAvailableTags } = require('./repositoryUtils');
 
 module.exports = class extends Generator {
-
   async checkForCompatibleUpdates() {
     const allNewerVersions = await this._getAllNewerVersions(version);
     await this._printCompatibleVersionsOnly(allNewerVersions);
@@ -29,7 +28,7 @@ module.exports = class extends Generator {
   }
 
   async _getAllVersionsSorted() {
-    const tagsResponse = await getAvailableTags()
+    const tagsResponse = await getAvailableTags();
     return tagsResponse.map((result) => ({
       name: result.name,
       last_pushed: result.tag_last_pushed,
@@ -42,6 +41,7 @@ module.exports = class extends Generator {
     const allAvailableVersions = await this._getAllVersionsSorted();
 
     const currentVersionIndex = allAvailableVersions.reverse().indexOf(currentVersion);
-    return allAvailableVersions.slice(currentVersionIndex + 1, allAvailableVersions.length).reverse();
+    return allAvailableVersions.slice(currentVersionIndex + 1, allAvailableVersions.length)
+      .reverse();
   }
 };

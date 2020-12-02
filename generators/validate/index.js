@@ -78,9 +78,9 @@ module.exports = class extends Generator {
   }
 
   async detailedSummary() {
-    const allValidationMessagesCount = this.listeners.error.count()+this.listeners.warn.count()
+    const allValidationMessagesCount = this.listeners.error.count() + this.listeners.warn.count();
 
-    if(allValidationMessagesCount>0) {
+    if (allValidationMessagesCount > 0) {
       this.log(chalk.bold('=================== Validation summary ===================='));
 
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
