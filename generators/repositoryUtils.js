@@ -21,7 +21,6 @@ async function getAvailableTags() {
 }
 
 function sortVersions(versionsList) {
-  console.log(versionsList)
   return versionsList
     .map((a) => a.split('.').map((n) => +n + 100000).join('.')).sort()
     .map((a) => a.split('.').map((n) => +n - 100000).join('.'))

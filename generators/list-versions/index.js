@@ -14,7 +14,7 @@ module.exports = class extends Generator {
 
     const versionsSortedAndMarked = repositoryUtils
       .sortVersions(allVersions)
-      .map(this._markAsCurrent())
+      .map(this._markAsCurrent)
       .map(this._markAsCompatible);
 
     this.log(JSON.stringify(versionsSortedAndMarked, null, 2));
