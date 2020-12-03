@@ -17,7 +17,6 @@ echo "   FABRICA_VERSION: $FABRICA_VERSION"
 
 docker login -u "$login" -p "$pass"
 
-docker push softwaremill/fabrica:latest
 docker push softwaremill/fabrica:"$FABRICA_VERSION"
 
 docker logout
