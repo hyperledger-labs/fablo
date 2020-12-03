@@ -5,18 +5,32 @@
 */
 const Generator = require('yeoman-generator');
 
-const got = require('got');
-const chalk = require('chalk');
-const { version } = require('../config');
-const { getAvailableTags } = require('../list-compatible-updates/repositoryUtils');
+const config = require('../config');
+const repositoryUtils = require('../repositoryUtils');
 
 module.exports = class extends Generator {
+  async printAllVersions() {
+    const allVersions = await repositoryUtils.getAvailableTags();
 
-    async printAllVersions() {
-        const allVersions = (await getAvailableTags())
-            .map(version => version.name)
-            .map(versionName => versionName.split('.'))
-        this.log(allVersions);
+    const versionsSortedAndMarked = repositoryUtils
+      .sortVersions(allVersions)
+      .map(this._markAsCurrent)
+      .map(this._markAsCompatible);
+
+    this.log(JSON.stringify(versionsSortedAndMarked, null, 2));
+  }
+
+  _markAsCurrent(versionToCheck) {
+    if (versionToCheck === config.version) {
+      return `${versionToCheck} <== current`;
     }
+    return versionToCheck;
+  }
 
-}
+  _markAsCompatible(versionToCheck) {
+    if (config.isFabricaVersionSupported(versionToCheck)) {
+      return `${versionToCheck} (compatible)`;
+    }
+    return versionToCheck;
+  }
+};
