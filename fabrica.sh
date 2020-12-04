@@ -34,8 +34,8 @@ Usage:
   fabrica.sh updates
     Prints all newer versions available.
 
-  fabrica.sh use <version>
-    Updates Fabrica to specified version."
+  fabrica.sh use [version]
+    Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided."
 }
 
 executeOnFabricaDocker() {
@@ -55,15 +55,9 @@ listVersions() {
   executeOnFabricaDocker "list-versions"
 }
 
-setTo() {
+useVersion() {
   version=$1
-
-  if [ -z "$version" ]; then
-    echo "Please specify version number, for example:"
-    echo "   fabrica.sh updateTo 0.1.0"
-    exit 1
-  fi
-
+  echo "Updating '$0' to version $version..."
   curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
 }
 
@@ -108,10 +102,10 @@ generateNetworkConfig() {
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
-  echo "    FABRICA_VERSION:   $FABRICA_VERSION"
-  echo "    FABRICA_CONFIG:   $FABRICA_CONFIG"
-  echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
-  echo "    FABRICA_NETWORK_ROOT:   $FABRICA_NETWORK_ROOT"
+  echo "    FABRICA_VERSION:      $FABRICA_VERSION"
+  echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
+  echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
+  echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
 
   mkdir -p "$FABRICA_NETWORK_ROOT"
 
@@ -137,7 +131,7 @@ elif [ "$COMMAND" = "version" ]; then
 elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
   listVersions
 elif [ "$COMMAND" = "use" ] && [ -n "$2"  ]; then
-  setTo "$2"
+  useVersion "$2"
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
 elif [ "$COMMAND" = "generate" ]; then

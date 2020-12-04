@@ -12,12 +12,11 @@ module.exports = class extends Generator {
   async printAllVersions() {
     const allVersions = await repositoryUtils.getAvailableTags();
 
-    const versionsSortedAndMarked = repositoryUtils
-      .sortVersions(allVersions)
+    const versionsSortedAndMarked = allVersions
       .map(this._markAsCurrent)
       .map(this._markAsCompatible);
 
-    this.log(JSON.stringify(versionsSortedAndMarked, null, 2));
+    versionsSortedAndMarked.forEach((version) => this.log(`- ${version}`))
   }
 
   _markAsCurrent(versionToCheck) {
@@ -28,7 +27,7 @@ module.exports = class extends Generator {
   }
 
   _markAsCompatible(versionToCheck) {
-    if (config.isFabricaVersionSupported(versionToCheck)) {
+    if (config.isFabricaVersionSupported(versionToCheck) && !versionToCheck.includes('current')) {
       return `${versionToCheck} (compatible)`;
     }
     return versionToCheck;

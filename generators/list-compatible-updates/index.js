@@ -6,13 +6,13 @@
 const Generator = require('yeoman-generator');
 
 const chalk = require('chalk');
-const { version } = require('../config');
+const config = require('../config');
 const repositoryUtils = require('../repositoryUtils');
 
 module.exports = class extends Generator {
   async checkForCompatibleUpdates() {
-    const allNewerVersions = (await this._getAllVersionsSorted())
-      .filter((name) => name.startsWith('0.0.') && name > version);
+    const allNewerVersions = (await repositoryUtils.getAvailableTags())
+      .filter((name) => config.isFabricaVersionSupported(name) && name > config.version);
 
     this._printVersions(allNewerVersions);
   }
@@ -28,8 +28,4 @@ module.exports = class extends Generator {
     }
   }
 
-  async _getAllVersionsSorted() {
-    const tagsResponse = await repositoryUtils.getAvailableTags();
-    return repositoryUtils.sortVersions(tagsResponse);
-  }
 };

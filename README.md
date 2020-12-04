@@ -79,7 +79,7 @@ Downs, starts or stops the Hyperledger Fabric network for configuration in the c
 fabrica.sh validate [/path/to/fabrica-config.json]
 ```
 
-Validates network config. This command will try to find potential problems in your network and suggests changes. Please note that the step is executed automatically before each `generate` to ensure that at least critical errors where fixed. 
+Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks. Please note that this step is also executed automatically before each `generate` to ensure that at least critical errors where fixed. 
 
 ### fabric-docker.sh
 

@@ -1,4 +1,3 @@
-const assert = require('assert');
 const repositoryUtils = require('../generators/repositoryUtils');
 
 describe('versionSort', () => {
@@ -23,6 +22,7 @@ describe('versionSort', () => {
       '0.0.2',
       '0.0.1',
     ];
-    assert.deepEqual(sortedVersions, expectedVersions);
+
+    expect(sortedVersions).toEqual(expectedVersions);
   });
 });
