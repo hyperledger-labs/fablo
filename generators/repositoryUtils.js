@@ -9,10 +9,10 @@ async function getAvailableTags() {
     },
   };
   try {
-    const response = await got(repositoryTagsListUrl, params).json();
-    return response.results
+    const versionNames = (await got(repositoryTagsListUrl, params).json()).results
         .filter((version) => version.name !== 'latest')
         .map(tag => tag.name);
+    return sortVersions(versionNames)
   } catch (err) {
     /* eslint no-console: 0 */
     console.log(`Could not check for updates. Url: '${repositoryTagsListUrl}' not available`);
@@ -20,8 +20,8 @@ async function getAvailableTags() {
   }
 }
 
-function sortVersions(versionsList) {
-  return versionsList
+function sortVersions(versions) {
+  return versions
     .map((a) => a.split('.').map((n) => +n + 100000).join('.')).sort()
     .map((a) => a.split('.').map((n) => +n - 100000).join('.'))
     .reverse();
@@ -29,5 +29,5 @@ function sortVersions(versionsList) {
 
 module.exports = {
   getAvailableTags,
-  sortVersions,
+  sortVersions
 };
