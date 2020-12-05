@@ -12,7 +12,7 @@ const utils = require('../utils/utils');
 const schema = require('../../docs/schema.json');
 const config = require('../config');
 
-const CheckUpdatesGeneratorType = require.resolve('../check-updates');
+const ListCompatibleUpdatesGeneratorType = require.resolve('../list-compatible-updates');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -50,10 +50,10 @@ module.exports = class extends Generator {
     this.addListener(validationErrorType.ERROR, (e) => this.listeners.error.onEvent(e));
     this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
 
-    this.composeWith(CheckUpdatesGeneratorType, { arguments: [this.options.compatible] });
+    this.composeWith(ListCompatibleUpdatesGeneratorType);
   }
 
-  initializing() {
+  async initializing() {
     this.log(config.splashScreen());
   }
 
@@ -71,15 +71,23 @@ module.exports = class extends Generator {
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
   }
 
-  async summary() {
-    this.log(`Errors count: ${this.listeners.error.count()}`);
-    this.log(`Warnings count: ${this.listeners.warn.count()}`);
-    this.log(chalk.bold('=================== Validation summary ==================='));
-
-    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
-    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
-
+  async shortSummary() {
+    this.log(`Validation errors count: ${this.listeners.error.count()}`);
+    this.log(`validation warnings count: ${this.listeners.warn.count()}`);
     this.log(chalk.bold('==========================================================='));
+  }
+
+  async detailedSummary() {
+    const allValidationMessagesCount = this.listeners.error.count() + this.listeners.warn.count();
+
+    if (allValidationMessagesCount > 0) {
+      this.log(chalk.bold('=================== Validation summary ===================='));
+
+      this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
+      this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
+
+      this.log(chalk.bold('==========================================================='));
+    }
 
     if (this.listeners.error.count() > 0) {
       process.exit();
@@ -135,7 +143,7 @@ module.exports = class extends Generator {
 
   _validateSupportedFabricaVersion(fabricaVersion) {
     if (!config.isFabricaVersionSupported(fabricaVersion)) {
-      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix()}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
