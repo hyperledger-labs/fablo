@@ -16,7 +16,7 @@ module.exports = class extends Generator {
       .map(this._markAsCurrent)
       .map(this._markAsCompatible);
 
-    versionsSortedAndMarked.forEach((version) => this.log(`- ${version}`))
+    versionsSortedAndMarked.forEach((version) => this.log(`- ${version}`));
   }
 
   _markAsCurrent(versionToCheck) {

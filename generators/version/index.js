@@ -36,7 +36,7 @@ module.exports = class extends Generator {
       version: config.version,
       build: buildUtil.getBuildInfo(),
       supported: {
-        fabricaVersions: `${config.supportedVersionPrefix}x`,
+        fabricaVersions: `${config.supportedVersionPrefix()}x`,
         hyperledgerFabricVersions: config.supportedFabricVersions,
       },
     };

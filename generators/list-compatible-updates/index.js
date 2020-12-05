@@ -20,12 +20,12 @@ module.exports = class extends Generator {
   _printVersions(versionsToPrint) {
     if (versionsToPrint.length > 0) {
       this.log(chalk.bold('====== !Compatible Fabrica versions found! :) ============='));
-      this.log(`${chalk.underline.bold('Compatible')} versions: ${JSON.stringify(versionsToPrint, null, 2)}`);
+      this.log(`${chalk.underline.bold('Compatible')} versions:`);
+      versionsToPrint.forEach((version) => this.log(`- ${version}`));
       this.log('');
       this.log('To update just run command:');
       this.log(`\t${chalk.bold('fabrica use [version]')}`);
       this.log(chalk.bold('==========================================================='));
     }
   }
-
 };
