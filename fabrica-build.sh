@@ -21,6 +21,5 @@ docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
   --tag "$IMAGE_BASE_NAME" "$FABRICA_HOME"
 
-docker tag "$IMAGE_BASE_NAME" latest
 docker tag "$IMAGE_BASE_NAME" "softwaremill/fabrica:$FABRICA_VERSION"
 
