@@ -135,7 +135,7 @@ module.exports = class extends Generator {
 
   _validateSupportedFabricaVersion(fabricaVersion) {
     if (!config.isFabricaVersionSupported(fabricaVersion)) {
-      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix()}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
