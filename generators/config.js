@@ -3,10 +3,13 @@ const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/$
 
 const { version } = require('../package.json');
 
-const supportedVersionPrefix = '0.0.';
+function supportedVersionPrefix() {
+  const majorAndMinor = version.split('.').slice(0, 2).join('.');
+  return `${majorAndMinor}.`;
+}
 
 function isFabricaVersionSupported(versionName) {
-  return versionName.startsWith(supportedVersionPrefix);
+  return versionName.startsWith(supportedVersionPrefix());
 }
 
 const supportedFabricVersions = [
