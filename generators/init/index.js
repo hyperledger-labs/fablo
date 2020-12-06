@@ -9,7 +9,7 @@ const simpleFabricaConfigJson = require('../../samples/fabricaConfig-1org-1chann
 module.exports = class extends Generator {
   async copySimpleFile() {
     this.fs.writeJSON(
-      'fabrica-network-config.json',
+      'fabrica-config.json',
       simpleFabricaConfigJson,
     );
   }
