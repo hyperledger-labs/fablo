@@ -60,10 +60,7 @@ printUpdates() {
 }
 
 init() {
-    docker run -it --rm \
-    -u "$(id -u):$(id -g)" \
-    -v $(pwd):/network/target \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh init"
+    executeOnFabricaDocker "init"
 }
 
 updateTo() {

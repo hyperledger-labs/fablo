@@ -48,6 +48,14 @@ Switches current script to selected version
 
 ## Managing the network
 
+### init
+```bash
+fabrica.sh init
+```
+
+Creates simple network config file in current dir.  
+Good step to start your adventure with Fabrica or set fas prototype. 
+
 ### generate
 
 ```bash
