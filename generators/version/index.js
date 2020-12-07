@@ -12,7 +12,7 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.option('verbose', {
-      alias: "v"
+      alias: 'v',
     });
   }
 
@@ -35,9 +35,9 @@ module.exports = class extends Generator {
     return {
       version: config.version,
       build: buildUtil.getBuildInfo(),
-      support: {
+      supported: {
+        fabricaVersions: `${config.supportedVersionPrefix()}x`,
         hyperledgerFabricVersions: config.supportedFabricVersions,
-        fabricaVersions: config.supportedFabricaVersions,
       },
     };
   }
