@@ -24,10 +24,6 @@ module.exports = class extends Generator {
     this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabricaConfig] });
   }
 
-  initializing() {
-    this.log(config.splashScreen());
-  }
-
   async writing() {
     this.options.fabricaConfigPath = utils.getFullPathOf(
       this.options.fabricaConfig, this.env.cwd,

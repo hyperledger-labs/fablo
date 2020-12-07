@@ -2,6 +2,10 @@
 
 set -e
 
+FABRICA_VERSION="0.0.0"
+FABRICA_IMAGE_NAME="softwaremill/fabrica"
+FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
+
 COMMAND="$1"
 FABRICA_NETWORK_ROOT="$(pwd)/fabrica-target"
 
@@ -9,8 +13,8 @@ printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fabrica.sh version [--full]
-    Prints current fabrica version, with optional details.
+  fabrica.sh version [--verbose | -v]
+    Prints current Fabrica version, with optional details.
 
   fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json', default (and recommended) directory '\$(pwd)/fabrica-target'.
@@ -25,15 +29,59 @@ Usage:
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
 
   fabrica.sh [help | --help]
-    Prints the manual."
+    Prints the manual.
+
+  fabrica.sh updates
+    Prints all newer versions available.
+
+  fabrica.sh use [version]
+    Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided."
+}
+
+executeOnFabricaDocker() {
+  passed_command=$1
+  docker run -it --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd)":/network/target \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
 }
 
 printVersion() {
   optional_full_flag=$1
-  docker run -it --rm \
-    -u "$(id -u):$(id -g)" \
+  executeOnFabricaDocker "version $optional_full_flag"
+}
+
+listVersions() {
+  executeOnFabricaDocker "list-versions"
+}
+
+useVersion() {
+  version=$1
+  echo "Updating '$0' to version $version..."
+  curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
+}
+
+validateConfig() {
+  if [ -z "$1" ]; then
+    FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/fabrica-config.json"
+    if [ ! -f "$FABRICA_CONFIG" ]; then
+      echo "File $FABRICA_CONFIG does not exist"
+      exit 1
+    fi
+  else
+    if [ ! -f "$1" ]; then
+      echo "File $1 does not exist"
+      exit 1
+    fi
+    FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+  fi
+
+  docker run -i --rm \
+    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
     -v $(pwd):/network/target \
-    fabrica sh -c "/fabrica/docker-entrypoint.sh version $optional_full_flag"
+    --env FABRICA_CONFIG="/network/fabrica-config.json" \
+    -u "$(id -u):$(id -g)" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate ../fabrica-config.json"
 }
 
 generateNetworkConfig() {
@@ -54,8 +102,9 @@ generateNetworkConfig() {
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
+  echo "    FABRICA_VERSION:      $FABRICA_VERSION"
   echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
-  echo "    CHAINCODES_BASE_DIR:   $CHAINCODES_BASE_DIR"
+  echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
   echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
 
   mkdir -p "$FABRICA_NETWORK_ROOT"
@@ -67,7 +116,7 @@ generateNetworkConfig() {
     --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
     --env FABRICA_NETWORK_ROOT="$FABRICA_NETWORK_ROOT" \
     -u "$(id -u):$(id -g)" \
-    fabrica
+    $FABRICA_IMAGE
 }
 
 if [ -z "$COMMAND" ]; then
@@ -79,6 +128,12 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
+elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
+  listVersions
+elif [ "$COMMAND" = "use" ] && [ -n "$2"  ]; then
+  useVersion "$2"
+elif [ "$COMMAND" = "validate" ]; then
+  validateConfig "$2"
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then

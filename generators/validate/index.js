@@ -6,10 +6,13 @@
 const Generator = require('yeoman-generator');
 const SchemaValidator = require('jsonschema').Validator;
 const chalk = require('chalk');
-const { supportedFabricaVersions, supportedFabricVersions, versionsSupportingRaft } = require('../config');
 const Listener = require('../utils/listener');
 const utils = require('../utils/utils');
+
 const schema = require('../../docs/schema.json');
+const config = require('../config');
+
+const ListCompatibleUpdatesGeneratorType = require.resolve('../list-compatible-updates');
 
 const validationErrorType = {
   CRITICAL: 'validation-critical',
@@ -36,7 +39,8 @@ module.exports = class extends Generator {
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log(chalk.bgRed('Critical error occured:') + chalk.bold(` ${event.message}`));
+      this.log(chalk.bold.bgRed('Critical error occured:'));
+      this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
       process.exit();
     });
@@ -45,20 +49,12 @@ module.exports = class extends Generator {
 
     this.addListener(validationErrorType.ERROR, (e) => this.listeners.error.onEvent(e));
     this.addListener(validationErrorType.WARN, (e) => this.listeners.warn.onEvent(e));
+
+    this.composeWith(ListCompatibleUpdatesGeneratorType);
   }
 
-  _validateIfConfigFileExists(configFilePath) {
-    const configFilePathAbsolute = utils.getFullPathOf(configFilePath, this.env.cwd);
-    const fileExists = this.fs.exists(configFilePathAbsolute);
-    if (!fileExists) {
-      const objectToEmit = {
-        category: validationCategories.CRITICAL,
-        message: `No file under path: ${configFilePathAbsolute}`,
-      };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
-    } else {
-      this.options.fabricaConfigPath = configFilePathAbsolute;
-    }
+  async initializing() {
+    this.log(config.splashScreen());
   }
 
   async validate() {
@@ -75,18 +71,40 @@ module.exports = class extends Generator {
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
   }
 
-  async summary() {
-    this.log(chalk.bold('=================== Validation summary ==================='));
-    this.log(`Errors count: ${this.listeners.error.count()}`);
-    this.log(`Warnings count: ${this.listeners.warn.count()}`);
-
-    this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
-    this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
-
+  async shortSummary() {
+    this.log(`Validation errors count: ${this.listeners.error.count()}`);
+    this.log(`validation warnings count: ${this.listeners.warn.count()}`);
     this.log(chalk.bold('==========================================================='));
+  }
+
+  async detailedSummary() {
+    const allValidationMessagesCount = this.listeners.error.count() + this.listeners.warn.count();
+
+    if (allValidationMessagesCount > 0) {
+      this.log(chalk.bold('=================== Validation summary ===================='));
+
+      this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
+      this._printIfNotEmpty(this.listeners.warn.getAllMessages(), chalk.yellow('Warnings found:'));
+
+      this.log(chalk.bold('==========================================================='));
+    }
 
     if (this.listeners.error.count() > 0) {
       process.exit();
+    }
+  }
+
+  _validateIfConfigFileExists(configFilePath) {
+    const configFilePathAbsolute = utils.getFullPathOf(configFilePath, this.env.cwd);
+    const fileExists = this.fs.exists(configFilePathAbsolute);
+    if (!fileExists) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `No file under path: ${configFilePathAbsolute}`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    } else {
+      this.options.fabricaConfigPath = configFilePathAbsolute;
     }
   }
 
@@ -124,20 +142,21 @@ module.exports = class extends Generator {
   }
 
   _validateSupportedFabricaVersion(fabricaVersion) {
-    if (!supportedFabricaVersions.includes(fabricaVersion)) {
+    if (!config.isFabricaVersionSupported(fabricaVersion)) {
+      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix()}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
-        message: `Fabrica's ${fabricaVersion} version is not supported. Supported versions are: ${supportedFabricaVersions}`,
+        message: msg,
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
   }
 
   _validateFabricVersion(fabricVersion) {
-    if (!supportedFabricVersions.includes(fabricVersion)) {
+    if (!config.supportedFabricVersions.includes(fabricVersion)) {
       const objectToEmit = {
         category: validationCategories.GENERAL,
-        message: `Fabric's ${fabricVersion} version is not supported. Supported versions are: ${supportedFabricVersions}`,
+        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${config.supportedFabricVersions}`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
@@ -163,10 +182,10 @@ module.exports = class extends Generator {
         this.emit(validationErrorType.WARN, objectToEmit);
       }
 
-      if (!versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+      if (!config.versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
-          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${versionsSupportingRaft}`,
+          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
         };
         this.emit(validationErrorType.ERROR, objectToEmit);
       }

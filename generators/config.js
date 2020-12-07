@@ -1,6 +1,16 @@
+const repositoryName = 'softwaremill/fabrica';
+const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
+
 const { version } = require('../package.json');
 
-const supportedFabricaVersions = ['0.0.1-alpha'];
+function supportedVersionPrefix() {
+  const majorAndMinor = version.split('.').slice(0, 2).join('.');
+  return `${majorAndMinor}.`;
+}
+
+function isFabricaVersionSupported(versionName) {
+  return versionName.startsWith(supportedVersionPrefix());
+}
 
 const supportedFabricVersions = [
   '1.3.0', '1.4.0', '1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.4.8',
@@ -23,9 +33,11 @@ function splashScreen() {
 }
 
 module.exports = {
+  repositoryTagsListUrl,
   splashScreen,
   version,
   supportedFabricVersions,
   versionsSupportingRaft,
-  supportedFabricaVersions,
+  isFabricaVersionSupported,
+  supportedVersionPrefix,
 };
