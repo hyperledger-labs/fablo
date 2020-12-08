@@ -109,6 +109,10 @@ try {
         sh "./lint.sh"
       }
 
+      stage('Check Fabrica version across files') {
+        sh "./check-if-fabrica-version-matches.sh"
+      }
+
       stage("Test RAFT network (2 orgs)") {
         try {
           sh "e2e-network/test-02-raft-2orgs.sh"
