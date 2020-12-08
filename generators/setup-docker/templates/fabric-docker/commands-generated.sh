@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function prepareChaincodeDirs() {
+  <% chaincodes.forEach(function(chaincode) { %>
+    mkdir -p "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
+  <% }) -%>
+}
+
 function installChaincodes() {
   <% chaincodes.forEach(function(chaincode) { %>
     <%- include('commands-generated-node-build.sh.ejs', {chaincode: chaincode}); -%>
