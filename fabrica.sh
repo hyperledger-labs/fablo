@@ -161,7 +161,7 @@ elif [ "$COMMAND" = "generate" ]; then
   fi
 
 elif [ "$COMMAND" = "up" ]; then
-  if [ ! -f "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
+  if [ ! -d "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
     echo "Network target directory is empty"
     mkdir -p "$FABRICA_NETWORK_ROOT"
     generateNetworkConfig "$2"
