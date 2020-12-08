@@ -148,6 +148,7 @@ source \\"$FABRICA_NETWORK_ROOT/fabric-docker/.env\\"
 
 function networkUp() {
   generateArtifacts
+  prepareChaincodeDirs
   startNetwork
   generateChannelsArtifacts
   installChannels
@@ -191,8 +192,8 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=1.4.3
-FABRIC_CA_VERSION=1.4.3
+FABRIC_VERSION=1.4.6
+FABRIC_CA_VERSION=1.4.6
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -206,10 +207,19 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 exports[`network-03-simple-raft should create proper e2e/__tmp__/network-03-simple-raft/fabrica-target/fabric-docker/commands-generated.sh from samples/fabricaConfig-1org-1channel-1chaincode-tls-raft.json 1`] = `
 "#!/bin/bash
 
+function prepareChaincodeDirs() {
+
+  mkdir -p \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+}
+
 function installChaincodes() {
 
   printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-  npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+    npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+  else
+    echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
+  fi
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
@@ -240,7 +250,11 @@ function upgradeChaincode() {
 
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
     printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-    npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+      npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    else
+      echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
+    fi
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"

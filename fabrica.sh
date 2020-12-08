@@ -41,25 +41,50 @@ Usage:
     Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided."
 }
 
-executeOnFabricaDocker() {
+executeOnFabricaDockerConsolePrintOnly() {
   passed_command=$1
-  docker run -it --rm \
+  docker run -i --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd)":/network/target \
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
 }
 
+executeOnFabricaDockerMountedAllDirs() {
+  local passed_command=$1
+
+  mkdir -p "$FABRICA_NETWORK_ROOT"
+  docker run -i --rm \
+    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
+    -v "$FABRICA_NETWORK_ROOT":/network/target \
+    --env FABRICA_CONFIG="$FABRICA_CONFIG" \
+    --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
+    --env FABRICA_NETWORK_ROOT="$FABRICA_NETWORK_ROOT" \
+    -u "$(id -u):$(id -g)" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
+}
+
+executeOnFabricaDockerMountedConfigFile() {
+  local passed_command=$1
+
+  docker run -i --rm \
+    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
+    -v $(pwd):/network/target \
+    --env FABRICA_CONFIG="/network/fabrica-config.json" \
+    -u "$(id -u):$(id -g)" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
+}
+
 printVersion() {
   optional_full_flag=$1
-  executeOnFabricaDocker "version $optional_full_flag"
+  executeOnFabricaDockerConsolePrintOnly "version $optional_full_flag"
 }
 
 listVersions() {
-  executeOnFabricaDocker "list-versions"
+  executeOnFabricaDockerConsolePrintOnly "list-versions"
 }
 
 init() {
-    executeOnFabricaDocker "init"
+  executeOnFabricaDockerConsolePrintOnly "init"
 }
 
 useVersion() {
@@ -83,17 +108,12 @@ validateConfig() {
     FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
   fi
 
-  docker run -i --rm \
-    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
-    -v $(pwd):/network/target \
-    --env FABRICA_CONFIG="/network/fabrica-config.json" \
-    -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh validate ../fabrica-config.json"
+  executeOnFabricaDockerMountedConfigFile "validate ../fabrica-config.json"
 }
 
 generateNetworkConfig() {
   if [ -z "$1" ]; then
-    FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/fabrica-config.json"
+    FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/../fabrica-config.json"
     if [ ! -f "$FABRICA_CONFIG" ]; then
       echo "File $FABRICA_CONFIG does not exist"
       exit 1
@@ -114,16 +134,7 @@ generateNetworkConfig() {
   echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
   echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
 
-  mkdir -p "$FABRICA_NETWORK_ROOT"
-
-  docker run -i --rm \
-    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
-    -v "$FABRICA_NETWORK_ROOT":/network/target \
-    --env FABRICA_CONFIG="$FABRICA_CONFIG" \
-    --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
-    --env FABRICA_NETWORK_ROOT="$FABRICA_NETWORK_ROOT" \
-    -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE
+  executeOnFabricaDockerMountedAllDirs ""
 }
 
 if [ -z "$COMMAND" ]; then
@@ -137,7 +148,7 @@ elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
 elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
   listVersions
-elif [ "$COMMAND" = "use" ] && [ -n "$2"  ]; then
+elif [ "$COMMAND" = "use" ] && [ -n "$2" ]; then
   useVersion "$2"
 elif [ "$COMMAND" = "init" ]; then
   init
@@ -150,8 +161,9 @@ elif [ "$COMMAND" = "generate" ]; then
   fi
 
 elif [ "$COMMAND" = "up" ]; then
-  if [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
+  if [ ! -f "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
     echo "Network target directory is empty"
+    mkdir -p "$FABRICA_NETWORK_ROOT"
     generateNetworkConfig "$2"
   fi
   "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up
