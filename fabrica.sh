@@ -50,7 +50,7 @@ executeOnFabricaDockerConsolePrintOnly() {
 }
 
 executeOnFabricaDockerMountedAllDirs() {
-  local passed_command=$1
+  local passed_command="$1"
 
   mkdir -p "$FABRICA_NETWORK_ROOT"
   docker run -i --rm \
@@ -64,7 +64,7 @@ executeOnFabricaDockerMountedAllDirs() {
 }
 
 executeOnFabricaDockerMountedConfigFile() {
-  local passed_command=$1
+  local passed_command="$1"
 
   docker run -i --rm \
     -v "$FABRICA_CONFIG":/network/fabrica-config.json \
@@ -75,7 +75,7 @@ executeOnFabricaDockerMountedConfigFile() {
 }
 
 printVersion() {
-  optional_full_flag=$1
+  optional_full_flag="$1"
   executeOnFabricaDockerConsolePrintOnly "version $optional_full_flag"
 }
 
@@ -112,6 +112,7 @@ validateConfig() {
 }
 
 generateNetworkConfig() {
+  mkdir -p "$FABRICA_NETWORK_ROOT"
   if [ -z "$1" ]; then
     FABRICA_CONFIG="$FABRICA_NETWORK_ROOT/../fabrica-config.json"
     if [ ! -f "$FABRICA_CONFIG" ]; then
@@ -163,7 +164,6 @@ elif [ "$COMMAND" = "generate" ]; then
 elif [ "$COMMAND" = "up" ]; then
   if [ ! -d "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
     echo "Network target directory is empty"
-    mkdir -p "$FABRICA_NETWORK_ROOT"
     generateNetworkConfig "$2"
   fi
   "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up

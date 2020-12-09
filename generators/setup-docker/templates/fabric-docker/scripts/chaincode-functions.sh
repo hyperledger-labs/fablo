@@ -29,7 +29,7 @@ function chaincodeInstall() {
       -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
       -o "$ORDERER_URL"
   else
-    echo "Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
   fi
 }
 
@@ -68,7 +68,7 @@ function chaincodeInstantiate() {
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT"
   else
-    echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }
@@ -143,7 +143,7 @@ function chaincodeInstallTls() {
       -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
       -o "$ORDERER_URL" --tls --cafile "$CA_CERT"
   else
-    echo "Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty."
   fi
 }
 
@@ -186,7 +186,7 @@ function chaincodeInstantiateTls() {
       --tls \
       --cafile "$CA_CERT"
   else
-    echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }
@@ -231,7 +231,7 @@ function chaincodeUpgradeTls() {
       --tls \
       --cafile "$CA_CERT"
   else
-    echo "Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }

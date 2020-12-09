@@ -18,7 +18,7 @@ module.exports = class extends Generator {
       this.log('===========================================================');
       this.log(chalk.bold('Sample config file created! :)'));
       this.log('');
-      this.log(`Please note that chaincode directory is '${simpleFabricaConfigJson.chaincodes[0].directory}'.`);
+      this.log(`Chaincode directory is '${simpleFabricaConfigJson.chaincodes[0].directory}'.`);
       this.log('If it\'s empty your network won\'t run entirely.');
       this.log('===========================================================');
     });
