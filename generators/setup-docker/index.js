@@ -69,8 +69,8 @@ module.exports = class extends Generator {
 
     this.on('end', () => {
       this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabric-docker.sh up - to start network');
-      this.log('-> fabric-docker.sh help - to view all commands');
+      this.log('-> fabrica.sh up - to start network');
+      this.log('-> fabrica.sh help - to view all commands');
     });
   }
 

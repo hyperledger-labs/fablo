@@ -26,6 +26,7 @@ ENV HOME /network/target
 COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
 COPY docs /fabrica/docs
 COPY README.md /fabrica/README.md
+COPY samples /fabrica/samples/
 
 ARG VERSION_DETAILS
 RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
