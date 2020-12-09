@@ -18,7 +18,7 @@ function certsGenerate() {
 
   if [ -d "$FULL_CERT_PATH" ]; then
     echo "Can't generate certs, directory already exists : $FULL_CERT_PATH"
-    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
+    echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
@@ -50,7 +50,7 @@ function genesisBlockCreate() {
 
   if [ -d "$OUTPUT_PATH" ]; then
     echo "Cant't generate genesis block, directory already exists : $OUTPUT_PATH"
-    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
+    echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
@@ -82,7 +82,7 @@ function createChannelTx() {
 
   if [ -f "$CHANNEL_TX_PATH" ]; then
     echo "Can't create channel configuration, it already exists : $CHANNEL_TX_PATH"
-    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
+    echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
@@ -117,7 +117,7 @@ function createNewChannelUpdateTx() {
 
   if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
     echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
-    echo "Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it"
+    echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
 
