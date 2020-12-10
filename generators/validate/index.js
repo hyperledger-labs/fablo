@@ -42,7 +42,7 @@ module.exports = class extends Generator {
       this.log(chalk.bold.bgRed('Critical error occured:'));
       this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
-      process.exit();
+      process.exit(1);
     });
 
     this.listeners = { error: new Listener(), warn: new Listener() };
@@ -90,7 +90,7 @@ module.exports = class extends Generator {
     }
 
     if (this.listeners.error.count() > 0) {
-      process.exit();
+      process.exit(1);
     }
   }
 
