@@ -7,19 +7,19 @@ executeYeomanCommand() {
   command=$2
   param=$3
 
-  if [ "$(id -u)" = 0 ]; then
-    echo "Root user detected, running as yeoman user"
-    command_to_execute="sudo -E -u yeoman yo --no-insight fabrica:$command $param"
+  {
+    if [ "$(id -u)" = 0 ]; then
+      echo "Root user detected, running as yeoman user"
+      sudo chown -R yeoman:yeoman "$target_dir"
+      (cd "$target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
+      sudo chown -R root:root "$target_dir"
+    else
+      (cd "$target_dir" && yo --no-insight "fabrica:$command" "$param")
+    fi
 
-    (sudo chown -R yeoman:yeoman "$target_dir" &&
-      (cd "$target_dir" && eval "$command_to_execute") &&
-      sudo chown -R root:root "$target_dir")
-  else
-    command_to_execute="yo --no-insight fabrica:$command $param"
-    (cd "$target_dir" && eval "$command_to_execute")
-  fi
-
-  rm -rf "$target_dir/.cache" "$target_dir/.config"
+    rm -rf "$target_dir/.cache" "$target_dir/.config"
+  } ||
+    rm -rf "$target_dir/.cache" "$target_dir/.config" && exit 1
 }
 
 formatGeneratedFiles() {
@@ -52,6 +52,6 @@ else
   # by default entrypoint generates files from fabrica config
   config_path="/network/fabrica-config.json"
 
-  executeYeomanCommand "$yeoman_target_dir" "setup-docker \"../..$config_path\""
+  executeYeomanCommand "$yeoman_target_dir" setup-docker "../..$config_path"
   formatGeneratedFiles "$yeoman_target_dir"
 fi
