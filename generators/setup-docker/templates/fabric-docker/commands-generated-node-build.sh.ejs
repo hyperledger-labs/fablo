@@ -1,8 +1,8 @@
 <% if(chaincode.lang === "node") { -%>
 printHeadline "Building '<%= chaincode.name %>'" "U1F60B"
-if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>")" ]; then
-    npm run build --prefix "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>"
-else
-    echo "Skipping chaincode '<%= chaincode.directory -%>' build. Chaincode's directory is empty."
-fi
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>")" ]; then
+        npm run build --prefix "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>"
+    else
+        echo "Skipping chaincode '<%= chaincode.directory -%>' build. Chaincode's directory is empty."
+    fi
 <% } -%>
