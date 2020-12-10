@@ -5,8 +5,6 @@
   "title": "Root",
   "default": {},
   "required": [
-    "fabrikkaVersion",
-    "fileVersion",
     "networkSettings",
     "rootOrg",
     "orgs",
@@ -14,19 +12,6 @@
     "chaincodes"
   ],
   "properties": {
-    "fabrikkaVersion": {
-      "$id": "#/properties/fabrikkaVersion",
-      "title": "Fabrikka version",
-      "type": "string",
-      "default": "alpha-0.0.1",
-      "readOnly": true
-    },
-    "fileVersion": {
-      "$id": "#/properties/fileVersion",
-      "title": "File version",
-      "type": "string",
-      "default": "0.1"
-    },
     "networkSettings": {
       "$id": "#/properties/networkSettings",
       "title": "Network settings",
@@ -62,7 +47,7 @@
             "2.2.0",
             "2.2.1"
           ],
-          "default": "1.4.4"
+          "default": "1.4.6"
         },
         "tls": {
           "$id": "#/properties/networkSettings/properties/tls",
@@ -293,6 +278,13 @@
               "instances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/instances",
                 "title": "Number of instances",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "anchorPeerInstances": {
+                "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
+                "title": "Number of anchor peer instances",
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 100

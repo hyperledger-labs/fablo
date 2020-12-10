@@ -101,6 +101,7 @@ try {
       }
 
       stage('Test generators') {
+        sh "CI=true npm run test:unit"
         sh "CI=true npm run test:e2e"
       }
 
