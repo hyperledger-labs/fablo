@@ -9,6 +9,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
+      instantiatingOrg: matchingChannel.orgs[0]
     };
   });
 }
