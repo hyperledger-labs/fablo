@@ -103,15 +103,12 @@ try {
       stage('Test generators') {
         sh "CI=true npm run test:unit"
         sh "CI=true npm run test:e2e"
+        sh "./check-if-fabrica-version-matches.sh"
       }
 
       stage('Lint') {
         sh "npm run lint"
         sh "./lint.sh"
-      }
-
-      stage('Check Fabrica version across files') {
-        sh "./check-if-fabrica-version-matches.sh"
       }
 
       stage("Test RAFT network (2 orgs)") {
