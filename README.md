@@ -62,7 +62,7 @@ Good step to start your adventure with Fabrica or set fas prototype.
 fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
 ```
 
-Generates network configuration files in the given directory. Default config file path is `$(pwd)/fabrica-config.json`, default directory is `$(pwd)/fabrica-target/network`. If you specify a different directory, you loose Fabrica support for other commands.
+Generates network configuration files in the given directory. Default config file path is `$(pwd)/fabrica-config.json`, default directory is `$(pwd)/fabrica-target`. If you specify a different directory, you loose Fabrica support for other commands.
 
 If you want to use Fabrica only to kick off the Hyperledger Fabric network, you may provide target directory parameter or just copy generated Fabrica target directory content to desired directory and add it to version control. Note that generated files may contain variables with paths on your disk and generated crypto material for Hyperledger Fabric. Review the files before submitting to version control system.
 
@@ -81,6 +81,14 @@ fabrica.sh [down | start | stop]
 ```
 
 Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
+
+### prune
+
+```bash
+fabrica.sh prune
+```
+
+Downs the network and removes `fabrica-target` directory.
 
 ### validate
 ```bash
