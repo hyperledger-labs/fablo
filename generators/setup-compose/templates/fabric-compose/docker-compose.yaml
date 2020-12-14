@@ -3,8 +3,7 @@ version: '2.2'
 networks:
   basic:
 
-services:
-  <% var rootCaFullName=rootOrg.ca.prefix+"."+rootOrg.organization.domain %>
+services:<% var rootCaFullName=rootOrg.ca.prefix+"."+rootOrg.organization.domain %>
   <%= rootCaFullName %>:
     container_name: <%= rootCaFullName %>
     image: hyperledger/fabric-ca:${FABRIC_VERSION}
@@ -20,11 +19,10 @@ services:
     volumes:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
-      - basic
-  <% for (ordererNo in rootOrg.orderers) {
+      - basic<% for (ordererNo in rootOrg.orderers) {
     var orderer=rootOrg.orderers[ordererNo]
-    var ordererHostPortToUse=7040+parseInt(ordererNo,10)
-  %>
+    var ordererHostPortToUse=7040+parseInt(ordererNo,10) %>
+
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
@@ -35,8 +33,7 @@ services:
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.organization.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      <% if(networkSettings.tls) { %>
+      - GODEBUG=netdns=go<% if(networkSettings.tls) { %>
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -54,12 +51,9 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
-      - basic
-  <% } %>
-  <% for (orgNo in orgs) {
+      - basic<% } %><% for (orgNo in orgs) {
     var org = orgs[orgNo]
-  %>
-  <% if(!networkSettings.rootCaOnly) {
+  %><% if(!networkSettings.rootCaOnly) {
      var orgCaFullName=org.ca.prefix+"."+org.organization.domain
      var caUserVariable=org.organization.name.toUpperCase()+"_CA_ADMIN_NAME"
      var caPassVariable=org.organization.name.toUpperCase()+"_CA_ADMIN_PASSWORD"
@@ -80,8 +74,7 @@ services:
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.organization.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
-      - basic
-  <% } %>
+      - basic<% } %>
 
   cli.<%= org.organization.domain %>:
     container_name: cli.<%= org.organization.domain %>
@@ -96,8 +89,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/msp
-      - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051
-      <% if(networkSettings.tls) { %>
+      - CORE_PEER_ADDRESS=peer0.<%= org.organization.domain %>:7051<% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.organization.domain %>/tls/client.crt
@@ -114,8 +106,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
     networks:
-      - basic
-  <% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
+      - basic<% for(var peerNo=0; peerNo<org.peer.instances; peerNo++) {
     var peerName="peer"+peerNo
     var peerFullName=`${peerName}.${org.organization.domain}`
     var couchDdEnabled=org.peer.db==="CouchDb"
@@ -137,15 +128,13 @@ services:
       #
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=<%= org.organization.mspName %>
-      - CORE_PEER_ADDRESS=<%= peerFullName %>:7051
-      <% if(networkSettings.tls) { %>
+      - CORE_PEER_ADDRESS=<%= peerFullName %>:7051<% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      <% } %>
-      <% if(couchDdEnabled) { %>
+<% } %><% if(couchDdEnabled) { %>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=<%= peerName %>.couchdb.<%= org.organization.domain %>:5984
@@ -166,8 +155,7 @@ services:
     depends_on:
       - <%= rootOrg.ordererHead.address %>
     networks:
-      - basic
-  <% if(couchDdEnabled) { %>
+      - basic<% if(couchDdEnabled) { %>
   <%= peerName %>.couchdb.<%= org.organization.domain %>:
     container_name: <%= peerName %>.couchdb.<%= org.organization.domain %>
     image: hyperledger/fabric-couchdb:0.4.18
@@ -177,6 +165,4 @@ services:
     ports:
       - <%= dbHostPortToUse %>:5984
     networks:
-      - basic<% } // end of CouchDB if %>
-  <% } // end of peer loop %>
-  <% } // end of org loop %>
+      - basic<% } // end of CouchDB if %><% }} %>

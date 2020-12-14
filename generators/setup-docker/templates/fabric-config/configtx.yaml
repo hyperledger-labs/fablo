@@ -34,8 +34,8 @@ Organizations:
       Name: <%= rootOrg.organization.name %>
       ID: <%= rootOrg.organization.mspName %>
       MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
-
-      <% if(isHlf20) { %>Policies:
+<% if(isHlf20) { %>
+      Policies:
           Readers:
               Type: Signature
               Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
@@ -49,8 +49,7 @@ Organizations:
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-
-      <% if(isHlf20) { %>Policies:
+<% if(isHlf20) { %>Policies:
           Readers:
               Type: Signature
               Rule: "OR('<%= org.mspName %>.admin', '<%= org.mspName %>.peer', '<%= org.mspName %>.client')"
@@ -62,9 +61,8 @@ Organizations:
               Rule: "OR('<%= org.mspName %>.admin')"
           Endorsement:
               Type: Signature
-              Rule: "OR('<%= org.mspName %>.peer')"<% } %>
-
-      AnchorPeers: <% org.anchorPeers.forEach(function(anchorPeer){ %>
+              Rule: "OR('<%= org.mspName %>.peer')"<% } -%>
+      AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
           - Host: <%= anchorPeer.address %>
             Port: 7051<% })}) %>
 
@@ -75,8 +73,7 @@ Application: &ApplicationDefaults
     Organizations:
     Capabilities:
         <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
-
-    <% if(isHlf20) { %># Policies defines the set of policies at this level of the config tree
+<% if(isHlf20) { %># Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
     #   /Channel/Application/<PolicyName>
     Policies:
@@ -101,17 +98,16 @@ Application: &ApplicationDefaults
 ################################################################################
 Orderer: &OrdererDefaults
     OrdererType: <%= rootOrg.ordererHead.consensus %>
-    Addresses: <% rootOrg.orderers.forEach(function(orderer) { %>
-        - <%= orderer.address %>:7050<% }) %>
-    <%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
+    Addresses:<% rootOrg.orderers.forEach(function(orderer) { %>
+        - <%=orderer.address %>:7050<% })-%>
+<%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Organizations:
-
-    <% if(isHlf20) { %># Policies defines the set of policies at this level of the config tree
+    Organizations:<% if(isHlf20) { %>
+    # Policies defines the set of policies at this level of the config tree
     # For Orderer policies, their canonical path is
     #   /Channel/Orderer/<PolicyName>
     Policies:
@@ -130,7 +126,6 @@ Orderer: &OrdererDefaults
             Type: ImplicitMeta
             Rule: "ANY Writers"<% } %>
 
-
 ################################################################################
 #   Profile
 ################################################################################
@@ -147,15 +142,14 @@ Profiles:
                 <% if(!isHlf20) { %><<: *OrdererCapabilities<% } %>
         Consortiums:
             SampleConsortium:
-                Organizations: <% orgs.forEach(function(org){ %>
+                Organizations:<% orgs.forEach(function(org){ %>
                     - *<%= org.name %><% }) %>
     AllOrgChannel:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
-            Organizations: <% orgs.forEach(function(org){ %>
+            Organizations:<% orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
             Capabilities:
                 <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
-
