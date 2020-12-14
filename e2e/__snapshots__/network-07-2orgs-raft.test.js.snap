@@ -44,25 +44,18 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
-      
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
-
-      
-
-      AnchorPeers: 
+      AnchorPeers:
           - Host: peer0.org1.com
             Port: 7051
     - &Org2
       Name: Org2MSP
       ID: Org2MSP
       MSPDir: crypto-config/peerOrganizations/org2.com/msp
-
-      
-
-      AnchorPeers: 
+      AnchorPeers:
           - Host: peer0.org2.com
             Port: 7051
 
@@ -74,44 +67,39 @@ Application: &ApplicationDefaults
     Capabilities:
         <<: *ApplicationCapabilities
 
-    
 
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
     OrdererType: etcdraft
-    Addresses: 
+    Addresses:
         - orderer0.root.com:7050
         - orderer1.root.com:7050
         - orderer2.root.com:7050
-    
     EtcdRaft:
         Consenters:
             - Host: orderer0.root.com
               Port: 7050
               ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
               ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
-                    
+
             - Host: orderer1.root.com
               Port: 7050
               ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
               ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
-                    
+
             - Host: orderer2.root.com
               Port: 7050
               ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
               ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
-                    
+
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
-
-    
-
 
 ################################################################################
 #   Profile
@@ -129,7 +117,7 @@ Profiles:
                 <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
-                Organizations: 
+                Organizations:
                     - *Org1
                     - *Org2
     AllOrgChannel:
@@ -137,12 +125,11 @@ Profiles:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
-            Organizations: 
+            Organizations:
                 - *Org1
                 - *Org2
             Capabilities:
                 <<: *ApplicationCapabilities
-
 "
 `;
 
@@ -172,13 +159,13 @@ exports[`network-07-2orgs-raft should create proper e2e/__tmp__/network-07-2orgs
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
-    Specs: 
+    Specs:
       - Hostname: orderer0
-    
+
       - Hostname: orderer1
-    
+
       - Hostname: orderer2
-    "
+"
 `;
 
 exports[`network-07-2orgs-raft should create proper e2e/__tmp__/network-07-2orgs-raft/fabrica-target/fabric-docker.sh from samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
@@ -491,7 +478,6 @@ networks:
   basic:
 
 services:
-  
   ca.root.com:
     container_name: ca.root.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -508,7 +494,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  
+
   orderer0.root.com:
     container_name: orderer0.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -520,7 +506,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -539,7 +524,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-  
+
   orderer1.root.com:
     container_name: orderer1.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -551,7 +536,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -570,7 +554,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-  
+
   orderer2.root.com:
     container_name: orderer2.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -582,7 +566,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -601,9 +584,6 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-  
-  
-  
   ca.org1.com:
     container_name: ca.org1.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -620,7 +600,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  
 
   cli.org1.com:
     container_name: cli.org1.com
@@ -636,7 +615,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
@@ -655,7 +633,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
-  
   peer0.org1.com:
     container_name: peer0.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -672,14 +649,12 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      
-      
+
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -695,8 +670,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
   peer1.org1.com:
     container_name: peer1.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -713,14 +686,12 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      
-      
+
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -736,10 +707,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
-  
-  
   ca.org2.com:
     container_name: ca.org2.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -756,7 +723,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  
 
   cli.org2.com:
     container_name: cli.org2.com
@@ -772,7 +738,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org2.com/msp
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.crt
@@ -791,7 +756,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
-  
   peer0.org2.com:
     container_name: peer0.org2.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -808,14 +772,12 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      
-      
+
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -831,8 +793,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
   peer1.org2.com:
     container_name: peer1.org2.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -849,14 +809,12 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer1.org2.com:7051
-      
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      
-      
+
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -872,9 +830,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
-  
 "
 `;
 
