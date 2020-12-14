@@ -25,7 +25,7 @@ Usage:
   fabrica.sh <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
-  fabrica.sh clean
+  fabrica.sh prune
     Downs the network and removes all generated files.
 
   fabrica.sh chaincode upgrade <chaincode-name> <version>
@@ -176,7 +176,7 @@ elif [ "$COMMAND" = "up" ]; then
   fi
   "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up
 
-elif [ "$COMMAND" = "clean" ]; then
+elif [ "$COMMAND" = "prune" ]; then
   if [ -f "$FABRICA_NETWORK_ROOT/fabric-docker.sh" ]; then
     "$FABRICA_NETWORK_ROOT/fabric-docker.sh" down
   fi
