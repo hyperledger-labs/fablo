@@ -12,7 +12,7 @@
     "lint": "eslint --fix generators e2e",
     "test:unit": "jest generators",
     "test:e2e": "jest e2e -i",
-    "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot"
+    "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
   },
   "dependencies": {
     "chalk": "^4.1.0",
