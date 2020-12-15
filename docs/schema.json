@@ -5,8 +5,6 @@
   "title": "Root",
   "default": {},
   "required": [
-    "fabricaVersion",
-    "fileVersion",
     "networkSettings",
     "rootOrg",
     "orgs",
@@ -14,19 +12,6 @@
     "chaincodes"
   ],
   "properties": {
-    "fabricaVersion": {
-      "$id": "#/properties/fabricaVersion",
-      "title": "Fabrica version",
-      "type": "string",
-      "default": "0.0.1",
-      "readOnly": true
-    },
-    "fileVersion": {
-      "$id": "#/properties/fileVersion",
-      "title": "File version",
-      "type": "string",
-      "default": "0.1"
-    },
     "networkSettings": {
       "$id": "#/properties/networkSettings",
       "title": "Network settings",
