@@ -13,9 +13,6 @@ printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fabrica.sh version [--verbose | -v]
-    Prints current Fabrica version, with optional details.
-
   fabrica.sh init
     Creates simple Fabrica config in current directory.
 
@@ -25,20 +22,26 @@ Usage:
   fabrica.sh up [/path/to/fabrica-config.json]
     Starts the Hyperledger Fabric network for given Fabrica configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call 'generate' command for given config file.
 
-  fabrica.sh [down | start | stop]
+  fabrica.sh <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
+
+  fabrica.sh prune
+    Downs the network and removes all generated files.
 
   fabrica.sh chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
-
-  fabrica.sh [help | --help]
-    Prints the manual.
 
   fabrica.sh updates
     Prints all newer versions available.
 
   fabrica.sh use [version]
-    Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided."
+    Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided.
+
+  fabrica.sh <help | --help>
+    Prints the manual.
+
+  fabrica.sh version [--verbose | -v]
+    Prints current Fabrica version, with optional details."
 }
 
 executeOnFabricaDockerConsolePrintOnly() {
@@ -135,12 +138,20 @@ generateNetworkConfig() {
   echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
   echo "    FABRICA_NETWORK_ROOT: $FABRICA_NETWORK_ROOT"
 
-  executeOnFabricaDockerMountedAllDirs "setup-docker ../fabrica-config.json"
+  executeOnFabricaDockerMountedAllDirs ""
+}
+
+networkPrune() {
+  if [ -f "$FABRICA_NETWORK_ROOT/fabric-docker.sh" ]; then
+    "$FABRICA_NETWORK_ROOT/fabric-docker.sh" down
+  fi
+  echo "Removing $FABRICA_NETWORK_ROOT"
+  rm -rf "$FABRICA_NETWORK_ROOT"
 }
 
 networkUp() {
   if [ ! -d "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
-    echo "Fabrica network directory is empty, generating new one..."
+    echo "Network target directory is empty"
     generateNetworkConfig "$1"
   fi
   "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up
@@ -155,24 +166,31 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
 
 elif [ "$COMMAND" = "version" ]; then
   printVersion "$2"
+
 elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
   listVersions
+
 elif [ "$COMMAND" = "use" ] && [ -n "$2" ]; then
   useVersion "$2"
+
 elif [ "$COMMAND" = "init" ]; then
   init
+
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
+
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2"
   if [ -n "$3" ]; then
     mkdir -p "$3" && mv -R "$FABRICA_NETWORK_ROOT" "$3/*"
   fi
+
 elif [ "$COMMAND" = "up" ]; then
   networkUp "$2"
+elif [ "$COMMAND" = "prune" ]; then
+  networkPrune
 elif [ "$COMMAND" = "recreate" ]; then
-  "$FABRICA_NETWORK_ROOT/fabric-docker.sh" "down"
-  rm -rf "$FABRICA_NETWORK_ROOT"
+  networkPrune
   networkUp "$2"
 else
   echo "Executing Fabrica docker command: $COMMAND"
