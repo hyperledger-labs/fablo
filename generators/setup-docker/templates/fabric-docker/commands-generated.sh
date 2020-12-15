@@ -20,7 +20,7 @@ function installChaincodes() {
     <% } -%>
     <% })}) -%>
 
-    printItalics "Instantiating as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
+    printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
     <% if(!networkSettings.tls) { -%>
     chaincodeInstantiate "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "<%= chaincode.channel.name %>" "<%=  chaincode.instantiatingOrg.peers[0].address %>:7051" "<%= rootOrg.ordererHead.address %>:7050" "cli.<%= chaincode.instantiatingOrg.domain %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
     <% } else { -%>

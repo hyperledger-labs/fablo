@@ -60,7 +60,6 @@ Application: &ApplicationDefaults
     Capabilities:
         <<: *ApplicationCapabilities
 
-
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
@@ -200,28 +199,28 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "#!/bin/bash
 
 function prepareChaincodeDirs() {
-  
-    mkdir -p \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-  }
+
+  mkdir -p \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+}
 
 function installChaincodes() {
-  
-    printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
-        npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-    else
-        echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
-    fi
-    
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-        
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-        chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-        
-    printItalics \\"Instantiating as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-        chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-      
+
+  printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+    npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+  else
+    echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
+  fi
+
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
+  printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
 }
 
 function upgradeChaincode() {
@@ -238,48 +237,47 @@ function upgradeChaincode() {
     exit 1
   fi
 
-  
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
     printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
     if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
-        npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+      npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
     else
-        echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
+      echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
     fi
-    
+
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-        chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-        
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-        chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
-        
+    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
+
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-        chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-    
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
   fi
-  
+
 }
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\"  \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
-  
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-    notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
-    
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
+
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
-    deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
-  
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+
 }
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
   printItalics \\"Generating crypto material for org Orderer\\" \\"U1F512\\"
   certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
-  
+
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
   certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
-  
+
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
   genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 }
@@ -303,23 +301,21 @@ function stopNetwork() {
 }
 
 function generateChannelsArtifacts() {
-    printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
+  printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
   createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
-  }
+}
 
 function installChannels() {
-  
-    
-    printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
-    docker exec -i cli.org1.com bash -c \\\\
+
+  printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
+  docker exec -i cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-    
-    printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
-    docker exec -i cli.org1.com bash -c \\\\
+
+  printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
+  docker exec -i cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7051' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-  
-        }
+
+}
 
 function networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
@@ -329,21 +325,21 @@ function networkDown() {
   )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-   
+
   docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
-  
+
   docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
-  
+
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
   rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/crypto-config
