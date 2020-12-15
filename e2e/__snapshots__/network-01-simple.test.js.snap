@@ -44,15 +44,11 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
-      
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
-
-      
-
-      AnchorPeers: 
+      AnchorPeers:
           - Host: peer0.org1.com
             Port: 7051
 
@@ -64,25 +60,20 @@ Application: &ApplicationDefaults
     Capabilities:
         <<: *ApplicationCapabilities
 
-    
 
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
     OrdererType: solo
-    Addresses: 
+    Addresses:
         - orderer0.root.com:7050
-    
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
-
-    
-
 
 ################################################################################
 #   Profile
@@ -100,18 +91,17 @@ Profiles:
                 <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
-                Organizations: 
+                Organizations:
                     - *Org1
     AllOrgChannel:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
-            Organizations: 
+            Organizations:
                 - *Org1
             Capabilities:
                 <<: *ApplicationCapabilities
-
 "
 `;
 
@@ -130,9 +120,9 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
-    Specs: 
+    Specs:
       - Hostname: orderer0
-    "
+"
 `;
 
 exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
@@ -370,7 +360,6 @@ networks:
   basic:
 
 services:
-  
   ca.root.com:
     container_name: ca.root.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -387,7 +376,7 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  
+
   orderer0.root.com:
     container_name: orderer0.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -399,7 +388,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -410,9 +398,6 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-  
-  
-  
   ca.org1.com:
     container_name: ca.org1.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -429,7 +414,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-  
 
   cli.org1.com:
     container_name: cli.org1.com
@@ -445,7 +429,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-      
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -457,7 +440,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
-  
   peer0.org1.com:
     container_name: peer0.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -474,8 +456,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-      
-      
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -491,8 +471,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
   peer1.org1.com:
     container_name: peer1.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -509,8 +487,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-      
-      
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -526,9 +502,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-  
-  
-  
 "
 `;
 
