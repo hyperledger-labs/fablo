@@ -1,13 +1,8 @@
 <% if(chaincode.lang === "node") { -%>
-printHeadline "Building '<%= chaincode.name %>'" "U1F60B"
-curr_chaincode_dir="$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>"
-if [ -n "$(ls "$curr_chaincode_dir")" ]; then
-  if [ -f "$curr_chaincode_dir/yarn.lock" ]; then
-    (cd "$curr_chaincode_dir" && yarn install && yarn build)
-  else
-    (cd "$curr_chaincode_dir" && npm install --unsafe-perm=true && npm run build)
-  fi
-else
-  echo "Skipping chaincode '<%= chaincode.directory -%>' build. Directory $curr_chaincode_dir is empty."
-fi
+    printHeadline "Building '<%= chaincode.name %>'" "U1F60B"
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>")" ]; then
+        npm run build --prefix "$CHAINCODES_BASE_DIR/<%= chaincode.directory -%>"
+    else
+        echo "Skipping chaincode '<%= chaincode.directory -%>' build. Chaincode's directory is empty."
+    fi
 <% } -%>

@@ -48,7 +48,6 @@ Organizations:
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
-
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7051
@@ -68,7 +67,6 @@ Orderer: &OrdererDefaults
     OrdererType: solo
     Addresses:
         - orderer0.root.com:7050
-
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
@@ -176,8 +174,9 @@ fi
 `;
 
 exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/.env from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
-"FABRICA_VERSION=\\"0.0.0\\"
+"FABRICA_VERSION=\\"0.0.1\\"
 FABRICA_BUILD=<date with git hash>
+
 FABRICA_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
 
@@ -205,29 +204,23 @@ function prepareChaincodeDirs() {
 }
 
 function installChaincodes() {
+
   printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-  curr_chaincode_dir=\\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-  if [ -n \\"$(ls \\"$curr_chaincode_dir\\")\\" ]; then
-    if [ -f \\"$curr_chaincode_dir/yarn.lock\\" ]; then
-      (cd \\"$curr_chaincode_dir\\" && yarn install && yarn build)
-    else
-      (cd \\"$curr_chaincode_dir\\" && npm install --unsafe-perm=true && npm run build)
-    fi
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+    npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   else
-    echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
+    echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
   fi
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
 }
 
 function upgradeChaincode() {
@@ -246,29 +239,23 @@ function upgradeChaincode() {
 
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
     printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
-    curr_chaincode_dir=\\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-    if [ -n \\"$(ls \\"$curr_chaincode_dir\\")\\" ]; then
-      if [ -f \\"$curr_chaincode_dir/yarn.lock\\" ]; then
-        (cd \\"$curr_chaincode_dir\\" && yarn install && yarn build)
-      else
-        (cd \\"$curr_chaincode_dir\\" && npm install --unsafe-perm=true && npm run build)
-      fi
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+      npm run build --prefix \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
     else
-      echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
+      echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Chaincode's directory is empty.\\"
     fi
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
   fi
+
 }
 
 function notifyOrgsAboutChannels() {
@@ -369,7 +356,6 @@ networks:
   basic:
 
 services:
-
   ca.root.com:
     container_name: ca.root.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -398,7 +384,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -409,7 +394,6 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-
   ca.org1.com:
     container_name: ca.org1.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -441,7 +425,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -453,7 +436,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
-
   peer0.org1.com:
     container_name: peer0.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -470,7 +452,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -486,7 +467,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-
   peer1.org1.com:
     container_name: peer1.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -503,7 +483,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
