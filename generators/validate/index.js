@@ -42,7 +42,7 @@ module.exports = class extends Generator {
       this.log(chalk.bold.bgRed('Critical error occured:'));
       this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.listeners.error.getAllMessages(), chalk.red.bold('Errors found:'));
-      process.exit();
+      process.exit(1);
     });
 
     this.listeners = { error: new Listener(), warn: new Listener() };
@@ -62,7 +62,7 @@ module.exports = class extends Generator {
 
     const networkConfig = this.fs.readJSON(this.options.fabricaConfigPath);
     this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabricaVersion(networkConfig.fabricaVersion);
+    this._validateSupportedFabricaVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
@@ -90,7 +90,7 @@ module.exports = class extends Generator {
     }
 
     if (this.listeners.error.count() > 0) {
-      process.exit();
+      process.exit(1);
     }
   }
 
@@ -141,9 +141,10 @@ module.exports = class extends Generator {
     }
   }
 
-  _validateSupportedFabricaVersion(fabricaVersion) {
-    if (!config.isFabricaVersionSupported(fabricaVersion)) {
-      const msg = `Config file points to '${fabricaVersion}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix()}x`;
+  _validateSupportedFabricaVersion(schemaUrl) {
+    const version = config.getVersionFromSchemaUrl(schemaUrl);
+    if (!config.isFabricaVersionSupported(version)) {
+      const msg = `Config file points to '${version}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
