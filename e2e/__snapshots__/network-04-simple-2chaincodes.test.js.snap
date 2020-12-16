@@ -217,26 +217,21 @@ function installChaincodes() {
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
   printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
   chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-  printItalics \\"Instantiating 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  printItalics \\"Instantiating chaincode 'chaincode2' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
 }
 
 function upgradeChaincode() {
@@ -264,14 +259,12 @@ function upgradeChaincode() {
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
   fi
 
   if [ \\"$chaincodeName\\" = \\"chaincode2\\" ]; then
@@ -279,15 +272,14 @@ function upgradeChaincode() {
     printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
-
     printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
     chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" # TODO to mi sie nie podoba. a gdzie uprawnienia ?
 
-    printItalics \\"Upgrading 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    printItalics \\"Upgrading as 'Org1'. 'chaincode2' on channel 'my-channel1'\\" \\"U1F618\\"
+    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7051\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+
   fi
+
 }
 
 function notifyOrgsAboutChannels() {
