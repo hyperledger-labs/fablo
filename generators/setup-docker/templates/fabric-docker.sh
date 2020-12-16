@@ -23,11 +23,11 @@ function networkUp() {
 
 if [ "$1" = "up" ]; then
   networkUp
-elif [ "$1" = "recreate" ]; then
-  networkDown
-  networkUp
 elif [ "$1" = "down" ]; then
   networkDown
+elif [ "$1" = "reboot" ]; then
+  networkDown
+  networkUp
 elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
@@ -40,6 +40,6 @@ elif [ "$1" = "--help" ]; then
   printHelp
 else
   echo "No command specified"
-  echo "Basic commands are: up, down, start, stop, recreate"
+  echo "Basic commands are: up, down, start, stop, reboot"
   echo "Use 'help' or '--help' for more information"
 fi

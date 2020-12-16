@@ -141,6 +141,22 @@ generateNetworkConfig() {
   executeOnFabricaDockerMountedAllDirs ""
 }
 
+networkPrune() {
+  if [ -f "$FABRICA_NETWORK_ROOT/fabric-docker.sh" ]; then
+    "$FABRICA_NETWORK_ROOT/fabric-docker.sh" down
+  fi
+  echo "Removing $FABRICA_NETWORK_ROOT"
+  rm -rf "$FABRICA_NETWORK_ROOT"
+}
+
+networkUp() {
+  if [ ! -d "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
+    echo "Network target directory is empty"
+    generateNetworkConfig "$1"
+  fi
+  "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up
+}
+
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -170,19 +186,12 @@ elif [ "$COMMAND" = "generate" ]; then
   fi
 
 elif [ "$COMMAND" = "up" ]; then
-  if [ ! -d "$FABRICA_NETWORK_ROOT" ] || [ -z "$(ls -A "$FABRICA_NETWORK_ROOT")" ]; then
-    echo "Network target directory is empty"
-    generateNetworkConfig "$2"
-  fi
-  "$FABRICA_NETWORK_ROOT/fabric-docker.sh" up
-
+  networkUp "$2"
 elif [ "$COMMAND" = "prune" ]; then
-  if [ -f "$FABRICA_NETWORK_ROOT/fabric-docker.sh" ]; then
-    "$FABRICA_NETWORK_ROOT/fabric-docker.sh" down
-  fi
-  echo "Removing $FABRICA_NETWORK_ROOT"
-  rm -rf "$FABRICA_NETWORK_ROOT"
-
+  networkPrune
+elif [ "$COMMAND" = "recreate" ]; then
+  networkPrune
+  networkUp "$2"
 else
   echo "Executing Fabrica docker command: $COMMAND"
   "$FABRICA_NETWORK_ROOT/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"

@@ -82,6 +82,15 @@ fabrica.sh [down | start | stop]
 
 Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
+### recreate
+
+```bash
+fabrica.sh recreate [/path/to/fabrica-config.json]
+```
+
+Downs the network, removes `fabrica-target` directory and starts the Hyperledger Fabric network for given Fabrica configuration file.  
+Useful when you edited `fabrica-config` file and want to start newer network version in one command.    
+
 ### prune
 
 ```bash
@@ -89,6 +98,14 @@ fabrica.sh prune
 ```
 
 Downs the network and removes `fabrica-target` directory.
+
+### reboot
+
+```bash
+fabrica.sh reboot
+```
+
+Down and Up steps combined. Useful in cases when you want a fresh instance of network without any state.  
 
 ### validate
 ```bash
