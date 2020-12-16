@@ -48,7 +48,6 @@ Organizations:
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
-
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7051
@@ -56,7 +55,6 @@ Organizations:
       Name: Org2MSP
       ID: Org2MSP
       MSPDir: crypto-config/peerOrganizations/org2.com/msp
-
       AnchorPeers:
           - Host: peer0.org2.com
             Port: 7051
@@ -78,7 +76,6 @@ Orderer: &OrdererDefaults
         - orderer0.root.com:7050
         - orderer1.root.com:7050
         - orderer2.root.com:7050
-
     EtcdRaft:
         Consenters:
             - Host: orderer0.root.com
@@ -196,11 +193,11 @@ function networkUp() {
 
 if [ \\"$1\\" = \\"up\\" ]; then
   networkUp
-elif [ \\"$1\\" = \\"recreate\\" ]; then
-  networkDown
-  networkUp
 elif [ \\"$1\\" = \\"down\\" ]; then
   networkDown
+elif [ \\"$1\\" = \\"reboot\\" ]; then
+  networkDown
+  networkUp
 elif [ \\"$1\\" = \\"start\\" ]; then
   startNetwork
 elif [ \\"$1\\" = \\"stop\\" ]; then
@@ -213,7 +210,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
   printHelp
 else
   echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, recreate\\"
+  echo \\"Basic commands are: up, down, start, stop, reboot\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
 "
@@ -430,7 +427,6 @@ networks:
   basic:
 
 services:
-
   ca.root.com:
     container_name: ca.root.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -459,7 +455,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -490,7 +485,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -521,7 +515,6 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -540,7 +533,6 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
-
   ca.org1.com:
     container_name: ca.org1.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -572,7 +564,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
@@ -590,7 +581,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
-
   peer0.org1.com:
     container_name: peer0.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -607,7 +597,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer0.org1.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -629,7 +618,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-
   peer1.org1.com:
     container_name: peer1.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -646,7 +634,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ADDRESS=peer1.org1.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -668,7 +655,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-
   ca.org2.com:
     container_name: ca.org2.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -700,7 +686,6 @@ services:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org2.com/msp
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.crt
@@ -718,7 +703,6 @@ services:
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
-
   peer0.org2.com:
     container_name: peer0.org2.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -735,7 +719,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer0.org2.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -757,7 +740,6 @@ services:
       - orderer0.root.com
     networks:
       - basic
-
   peer1.org2.com:
     container_name: peer1.org2.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -774,7 +756,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ADDRESS=peer1.org2.com:7051
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -820,7 +801,7 @@ function certsGenerate() {
 
   if [ -d \\"$FULL_CERT_PATH\\" ]; then
     echo \\"Can't generate certs, directory already exists : $FULL_CERT_PATH\\"
-    echo \\"Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it\\"
+    echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
 
@@ -852,7 +833,7 @@ function genesisBlockCreate() {
 
   if [ -d \\"$OUTPUT_PATH\\" ]; then
     echo \\"Cant't generate genesis block, directory already exists : $OUTPUT_PATH\\"
-    echo \\"Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it\\"
+    echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
 
@@ -884,7 +865,7 @@ function createChannelTx() {
 
   if [ -f \\"$CHANNEL_TX_PATH\\" ]; then
     echo \\"Can't create channel configuration, it already exists : $CHANNEL_TX_PATH\\"
-    echo \\"Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it\\"
+    echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
 
@@ -919,7 +900,7 @@ function createNewChannelUpdateTx() {
 
   if [ -f \\"$ANCHOR_PEER_UPDATE_PATH\\" ]; then
     echo \\"Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH\\"
-    echo \\"Try using 'recreate' or 'down' to remove whole network or 'start' to reuse it\\"
+    echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
 
@@ -1080,8 +1061,8 @@ function printHelp() {
   echo \\"./fabric-docker.sh stop\\"
   echo -e \\"\\\\t Stops already running network.\\"
   echo \\"\\"
-  echo \\"./fabric-docker.sh recreate\\"
-  echo -e \\"\\\\t Fresh start - it destorys whole network, certs, configs and then reruns everything.\\"
+  echo \\"./fabric-docker.sh reboot\\"
+  echo -e \\"\\\\t Fresh start - it destroys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
 }
 "
