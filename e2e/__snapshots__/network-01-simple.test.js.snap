@@ -205,16 +205,13 @@ function prepareChaincodeDirs() {
 }
 
 function installChaincodes() {
-
   printHeadline \\"Building 'chaincode1'\\" \\"U1F60B\\"
   curr_chaincode_dir=\\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   if [ -n \\"$(ls \\"$curr_chaincode_dir\\")\\" ]; then
     if [ -f \\"$curr_chaincode_dir/yarn.lock\\" ]; then
-      yarn install --cwd \\"$curr_chaincode_dir\\"
-      yarn build --cwd \\"$curr_chaincode_dir\\"
+      (cd \\"$curr_chaincode_dir\\" && yarn install && yarn build)
     else
-      npm install --prefix \\"$curr_chaincode_dir\\"
-      npm run build --prefix \\"$curr_chaincode_dir\\"
+      (cd \\"$curr_chaincode_dir\\" && npm install --unsafe-perm=true && npm run build)
     fi
   else
     echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
@@ -252,11 +249,9 @@ function upgradeChaincode() {
     curr_chaincode_dir=\\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
     if [ -n \\"$(ls \\"$curr_chaincode_dir\\")\\" ]; then
       if [ -f \\"$curr_chaincode_dir/yarn.lock\\" ]; then
-        yarn install --cwd \\"$curr_chaincode_dir\\"
-        yarn build --cwd \\"$curr_chaincode_dir\\"
+        (cd \\"$curr_chaincode_dir\\" && yarn install && yarn build)
       else
-        npm install --prefix \\"$curr_chaincode_dir\\"
-        npm run build --prefix \\"$curr_chaincode_dir\\"
+        (cd \\"$curr_chaincode_dir\\" && npm install --unsafe-perm=true && npm run build)
       fi
     else
       echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"

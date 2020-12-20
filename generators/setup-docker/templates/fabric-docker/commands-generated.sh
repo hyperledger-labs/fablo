@@ -7,7 +7,7 @@ function prepareChaincodeDirs() {
 }
 
 function installChaincodes() {
-  <% chaincodes.forEach(function(chaincode) { %>
+  <% chaincodes.forEach(function(chaincode) { -%>
     <%- include('commands-generated-node-build.sh.ejs', {chaincode: chaincode}); -%>
     <% chaincode.channel.orgs.forEach(function (org) {
          org.peers.forEach(function (peer) {
