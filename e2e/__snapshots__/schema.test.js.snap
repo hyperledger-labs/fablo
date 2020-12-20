@@ -193,19 +193,6 @@ Object {
       "title": "Channels",
       "type": "array",
     },
-    "fabricaVersion": Object {
-      "$id": "#/properties/fabricaVersion",
-      "default": "0.0.1",
-      "readOnly": true,
-      "title": "Fabrica version",
-      "type": "string",
-    },
-    "fileVersion": Object {
-      "$id": "#/properties/fileVersion",
-      "default": "0.1",
-      "title": "File version",
-      "type": "string",
-    },
     "networkSettings": Object {
       "$id": "#/properties/networkSettings",
       "default": Object {
@@ -499,8 +486,6 @@ Object {
     },
   },
   "required": Array [
-    "fabricaVersion",
-    "fileVersion",
     "networkSettings",
     "rootOrg",
     "orgs",
