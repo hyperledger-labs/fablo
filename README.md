@@ -1,6 +1,4 @@
-# Fabrica
-
-Simple tool to kick-off your Hyperledger Fabric network.
+<h1><img src="./logo.svg" alt="Fabrica"/></h1>
 
 Supports:
 
