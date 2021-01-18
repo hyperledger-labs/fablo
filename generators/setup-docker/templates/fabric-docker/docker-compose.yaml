@@ -121,8 +121,8 @@ services:
       - CORE_PEER_ID=<%= peer.address %>
       - CORE_PEER_ADDRESS=<%= peer.address %>:7051
       - CORE_PEER_LISTENADDRESS=<%= peer.address %>:7051
-      - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.address %>:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.address %>:7051
+      - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.address %>:7051<% if(peer.isAnchorPeer) { %>
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.address %>:7051<% } %>
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_VERSION}
       #
