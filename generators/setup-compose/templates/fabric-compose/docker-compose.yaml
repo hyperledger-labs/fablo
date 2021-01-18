@@ -4,16 +4,16 @@ networks:
   basic:
 
 services:
-  <%= rootOrg.ca.fullName %>:
-    container_name: <%= rootOrg.ca.fullName %>
+  <%= rootOrg.ca.address %>:
+    container_name: <%= rootOrg.ca.address %>
     image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=<%= rootOrg.ca.fullName %>
+      - FABRIC_CA_SERVER_CA_NAME=<%= rootOrg.ca.address %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
-      - 7030:7054
+      - 7030:<%= rootOrg.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
@@ -61,16 +61,16 @@ services:
     var caHostPort=7031+parseInt(orgNo,10)
   %>
 
-  <%= org.ca.fullName %>:
-    container_name: <%= org.ca.fullName %>
+  <%= org.ca.address %>:
+    container_name: <%= org.ca.address %>
     image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.fullName %>
+      - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.address %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
-      - <%= caHostPort %>:7054
+      - <%= caHostPort %>:<%= org.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
