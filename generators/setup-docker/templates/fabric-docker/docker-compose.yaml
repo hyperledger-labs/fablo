@@ -22,7 +22,7 @@ services:
       - basic
     <% for (ordererNo in rootOrg.orderers) {
       var orderer=rootOrg.orderers[ordererNo]
-      var ordererHostPort=7040+parseInt(ordererNo,10)
+      var ordererHostPort=7050+parseInt(ordererNo,10)
     %>
 
   <%= orderer.address %>:
@@ -31,6 +31,7 @@ services:
     environment:
       - ORDERER_GENERAL_LOGLEVEL=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=<%= ordererHostPort %>
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.mspName %>
@@ -47,7 +48,7 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - <%= ordererHostPort %>:7050
+      - <%= ordererHostPort %>:<%= ordererHostPort %>
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
@@ -111,8 +112,8 @@ services:
 
   <% for(var peerNo=0; peerNo<org.peersCount; peerNo++) {
     var peer=org.peers[peerNo]
-    var peerHostPort=7051+orgNo*10+peerNo
-    var peerDbHostPort=5980+orgNo*10+peerNo
+    var peerHostPort=7060+orgNo*10+peerNo
+    var peerDbHostPort=5080+orgNo*10+peerNo
   %>
 
   <%= peer.address %>:
