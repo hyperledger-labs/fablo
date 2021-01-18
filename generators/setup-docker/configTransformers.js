@@ -36,9 +36,13 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
 }
 
 function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat) {
+  const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`
+  const port = 7054
   return {
     prefix: caJsonFormat.prefix,
-    fullName: `${caJsonFormat.prefix}.${orgDomainJsonFormat}`,
+    address,
+    port,
+    fullAddress: `${address}:${port}`,
     caAdminNameVar: orgName.toUpperCase()+"_CA_ADMIN_NAME",
     caAdminPassVar: orgName.toUpperCase()+"_CA_ADMIN_PASSWORD",
   }
