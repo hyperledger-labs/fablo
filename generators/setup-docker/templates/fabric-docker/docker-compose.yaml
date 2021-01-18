@@ -20,18 +20,15 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-    <% for (ordererNo in rootOrg.orderers) {
-      var orderer=rootOrg.orderers[ordererNo]
-      var ordererHostPort=7050+parseInt(ordererNo,10)
-    %>
 
+  <% rootOrg.orderers.forEach(function(orderer){ %>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=<%= ordererHostPort %>
+      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.mspName %>
@@ -48,13 +45,14 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - <%= ordererHostPort %>:<%= ordererHostPort %>
+      - <%= orderer.port %>:<%= orderer.port %>
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
-      - basic<% } %>
+      - basic
+  <% }) %>
 
   <% for (orgNo in orgs) {
     var org = orgs[orgNo]

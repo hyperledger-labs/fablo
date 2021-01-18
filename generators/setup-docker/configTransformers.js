@@ -22,11 +22,15 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
     .map((x, i) => i)
     .map((i) => {
       const name = `${ordererJsonConfigFormat.prefix}${i}`;
+      const address = `${name}.${rootDomainJsonConfigFormat}`;
+      const port = 7050 + i;
       return {
         name,
-        address: `${name}.${rootDomainJsonConfigFormat}`,
         domain: rootDomainJsonConfigFormat,
+        address,
         consensus: type,
+        port,
+        fullAddress: `${address}:${port}`
       };
     });
 }
