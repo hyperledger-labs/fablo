@@ -60,7 +60,7 @@ module.exports = class extends Generator {
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
     this._copyDockerCompose({
       // TODO https://github.com/softwaremill/fabrica/issues/82
-      networkSettings, rootOrg, orgs: orgsJson, chaincodes,
+      networkSettings, rootOrg, orgs, chaincodes,
     });
 
     // ======= scripts ==================================================================
