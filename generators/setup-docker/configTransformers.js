@@ -58,13 +58,18 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
 }
 
 function extendPeers(peerJsonFormat, domainJsonFormat) {
+  let { anchorPeerInstances } = peerJsonFormat;
+  if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
+    anchorPeerInstances = 1;
+  }
   return Array(peerJsonFormat.instances)
     .fill()
     .map((x, i) => i)
     .map((i) => ({
       name: `peer${i}`,
       address: `peer${i}.${domainJsonFormat}`,
-      db: peerJsonFormat.db
+      db: peerJsonFormat.db,
+      isAnchorPeer: i < anchorPeerInstances
     }));
 }
 
@@ -84,15 +89,13 @@ function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
 
 function transformOrgConfig(orgJsonFormat) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
+  const peersExtended = extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain)
   return {
     name: orgJsonFormat.organization.name,
     mspName: orgJsonFormat.organization.mspName,
     domain: orgJsonFormat.organization.domain,
     peers: extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain),
-    anchorPeers: extendAnchorPeers(
-      orgJsonFormat.peer,
-      orgJsonFormat.organization.domain,
-    ),
+    anchorPeers: peersExtended.filter(p => p.isAnchorPeer),
     peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
     ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgJsonFormat.organization.domain)
