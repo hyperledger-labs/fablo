@@ -19,9 +19,11 @@ services:
     volumes:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
-      - basic<% for (ordererNo in rootOrg.orderers) {
-    var orderer=rootOrg.orderers[ordererNo]
-    var ordererHostPortToUse=7040+parseInt(ordererNo,10) %>
+      - basic
+    <% for (ordererNo in rootOrg.orderers) {
+      var orderer=rootOrg.orderers[ordererNo]
+      var ordererHostPort=7040+parseInt(ordererNo,10)
+    %>
 
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
@@ -45,7 +47,7 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - <%= ordererHostPortToUse %>:7050
+      - <%= ordererHostPort %>:7050
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
@@ -55,7 +57,7 @@ services:
 
   <% for (orgNo in orgs) {
     var org = orgs[orgNo]
-    var orgCaHostPort=7031+parseInt(orgNo,10)
+    var caHostPort=7031+parseInt(orgNo,10)
   %>
 
   <%= org.ca.fullName %>:
@@ -67,7 +69,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
-      - <%= orgCaHostPort %>:7054
+      - <%= caHostPort %>:7054
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
@@ -109,8 +111,8 @@ services:
 
   <% for(var peerNo=0; peerNo<org.peersCount; peerNo++) {
     var peer=org.peers[peerNo]
-    var peerHostPortToUse=7051+orgNo*10+peerNo
-    var dbHostPortToUse=5984+orgNo*10+peerNo
+    var peerHostPort=7051+orgNo*10+peerNo
+    var peerDbHostPort=5980+orgNo*10+peerNo
   %>
 
   <%= peer.address %>:
@@ -121,6 +123,7 @@ services:
       - CORE_PEER_ID=<%= peer.address %>
       - CORE_PEER_ADDRESS=<%= peer.address %>:7051
       - CORE_PEER_LISTENADDRESS=<%= peer.address %>:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=<%= peer.address %>:7050
       - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.address %>:7051<% if(peer.isAnchorPeer) { %>
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.address %>:7051<% } %>
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
@@ -151,7 +154,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - <%= peerHostPortToUse %>:7051
+      - <%= peerHostPort %>:7051
       # - 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
@@ -171,7 +174,7 @@ services:
       - COUCHDB_USER=<%= peer.name %>
       - COUCHDB_PASSWORD=<%= peer.name %>Password
     ports:
-      - <%= dbHostPortToUse %>:5984
+      - <%= peerDbHostPort %>:5984
     networks:
       - basic
 <% } %>
