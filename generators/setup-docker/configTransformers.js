@@ -9,7 +9,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      instantiatingOrg: matchingChannel.orgs[0]
+      instantiatingOrg: matchingChannel.instantiatingOrg
     };
   });
 }
@@ -61,7 +61,7 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
   };
 }
 
-function extendPeers(peerJsonFormat, domainJsonFormat, peerPortsBeginning) {
+function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort) {
   let { anchorPeerInstances } = peerJsonFormat;
   if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
     anchorPeerInstances = 1;
@@ -71,13 +71,13 @@ function extendPeers(peerJsonFormat, domainJsonFormat, peerPortsBeginning) {
     .map((x, i) => i)
     .map((i) => {
       const address = `peer${i}.${domainJsonFormat}`
-      const port = peerPortsBeginning+i
+      const port = headPeerPort+i
       return {
         name: `peer${i}`,
         address,
         db: peerJsonFormat.db,
         isAnchorPeer: i < anchorPeerInstances,
-        port: peerPortsBeginning+i,
+        port,
         fullAddress: `${address}:${port}`
       }
     });
@@ -85,19 +85,21 @@ function extendPeers(peerJsonFormat, domainJsonFormat, peerPortsBeginning) {
 
 function transformOrgConfig(orgJsonFormat, orgNumber) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
-  const peerPortsBeginning = 7060+10*orgNumber
+  const headPeerPort = 7060+10*orgNumber
+  const orgDomain = orgJsonFormat.organization.domain
 
-  const peersExtended = extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain, peerPortsBeginning)
+  const peersExtended = extendPeers(orgJsonFormat.peer, orgDomain, headPeerPort)
   return {
     key: orgJsonFormat.organization.key,
     name: orgJsonFormat.organization.name,
     mspName: orgJsonFormat.organization.mspName,
-    domain: orgJsonFormat.organization.domain,
+    domain: orgDomain,
     peers: peersExtended,
     anchorPeers: peersExtended.filter(p => p.isAnchorPeer),
     peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
-    ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgJsonFormat.organization.domain)
+    ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgDomain),
+    headPeer: peersExtended[0]
   };
 }
 
@@ -116,6 +118,7 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
     mspName: orgTransformedFormat.mspName,
     domain: orgTransformedFormat.domain,
     peers: filteredPeers,
+    headPeer: filteredPeers[0]
   };
 }
 
@@ -131,6 +134,7 @@ function transformChannelConfig(channelJsonFormat, orgsTransformed) {
     key: channelJsonFormat.key,
     name: channelJsonFormat.name,
     orgs: orgsForChannel,
+    instantiatingOrg: orgsForChannel[0]
   };
 }
 
