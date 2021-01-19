@@ -64,7 +64,7 @@ Organizations:
               Rule: "OR('<%= org.mspName %>.peer')"<% } -%>
       AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
           - Host: <%= anchorPeer.address %>
-            Port: 7051<% })}) %>
+            Port: <%= anchorPeer.port %><% })}) %>
 
 ################################################################################
 #   SECTION: Application
