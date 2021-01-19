@@ -61,7 +61,7 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
   };
 }
 
-function extendPeers(peerJsonFormat, domainJsonFormat) {
+function extendPeers(peerJsonFormat, domainJsonFormat, peerPortsBeginning) {
   let { anchorPeerInstances } = peerJsonFormat;
   if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
     anchorPeerInstances = 1;
@@ -69,36 +69,31 @@ function extendPeers(peerJsonFormat, domainJsonFormat) {
   return Array(peerJsonFormat.instances)
     .fill()
     .map((x, i) => i)
-    .map((i) => ({
-      name: `peer${i}`,
-      address: `peer${i}.${domainJsonFormat}`,
-      db: peerJsonFormat.db,
-      isAnchorPeer: i < anchorPeerInstances
-    }));
+    .map((i) => {
+      const address = `peer${i}.${domainJsonFormat}`
+      const port = peerPortsBeginning+i
+      return {
+        name: `peer${i}`,
+        address,
+        db: peerJsonFormat.db,
+        isAnchorPeer: i < anchorPeerInstances,
+        port: peerPortsBeginning+i,
+        fullAddress: `${address}:${port}`
+      }
+    });
 }
 
-function extendAnchorPeers(peerJsonFormat, domainJsonFormat) {
-  let { anchorPeerInstances } = peerJsonFormat;
-  if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
-    anchorPeerInstances = 1;
-  }
-  return Array(anchorPeerInstances)
-    .fill()
-    .map((x, i) => i)
-    .map((i) => ({
-      name: `peer${i}`,
-      address: `peer${i}.${domainJsonFormat}`,
-    }));
-}
-
-function transformOrgConfig(orgJsonFormat) {
+function transformOrgConfig(orgJsonFormat, orgNumber) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
-  const peersExtended = extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain)
+  const peerPortsBeginning = 7060+10*orgNumber
+
+  const peersExtended = extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain, peerPortsBeginning)
   return {
+    key: orgJsonFormat.organization.key,
     name: orgJsonFormat.organization.name,
     mspName: orgJsonFormat.organization.mspName,
     domain: orgJsonFormat.organization.domain,
-    peers: extendPeers(orgJsonFormat.peer, orgJsonFormat.organization.domain),
+    peers: peersExtended,
     anchorPeers: peersExtended.filter(p => p.isAnchorPeer),
     peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
@@ -107,7 +102,9 @@ function transformOrgConfig(orgJsonFormat) {
 }
 
 function transformOrgConfigs(orgsJsonConfigFormat) {
-  return orgsJsonConfigFormat.map((o) => transformOrgConfig(o));
+  return orgsJsonConfigFormat.map((org, currentIndex) => {
+    return transformOrgConfig(org, currentIndex);
+  });
 }
 
 function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
@@ -122,24 +119,23 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
   };
 }
 
-function transformChannelConfig(channelJsonConfigFormat, orgsJsonConfigFormat) {
-  const orgKeys = channelJsonConfigFormat.orgs.map((o) => o.key);
-  const orgPeers = channelJsonConfigFormat.orgs.map((o) => o.peers)
+function transformChannelConfig(channelJsonFormat, orgsTransformed) {
+  const orgKeys = channelJsonFormat.orgs.map((o) => o.key);
+  const orgPeers = channelJsonFormat.orgs.map((o) => o.peers)
     .reduce((a, b) => a.concat(b), []);
-  const orgsForChannel = orgsJsonConfigFormat
-    .filter((o) => orgKeys.includes(o.organization.key))
-    .map((o) => transformOrgConfig(o))
-    .map((o) => filterToAvailablePeers(o, orgPeers));
+  const orgsForChannel = orgsTransformed
+    .filter((org) => orgKeys.includes(org.key))
+    .map((org) => filterToAvailablePeers(org, orgPeers));
 
   return {
-    key: channelJsonConfigFormat.key,
-    name: channelJsonConfigFormat.name,
+    key: channelJsonFormat.key,
+    name: channelJsonFormat.name,
     orgs: orgsForChannel,
   };
 }
 
-function transformChannelConfigs(channelsJsonConfigFormat, orgsJsonConfigFormat) {
-  return channelsJsonConfigFormat.map((ch) => transformChannelConfig(ch, orgsJsonConfigFormat));
+function transformChannelConfigs(channelsJsonConfigFormat, orgsTransformed) {
+  return channelsJsonConfigFormat.map((ch) => transformChannelConfig(ch, orgsTransformed));
 }
 
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
