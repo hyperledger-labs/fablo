@@ -35,13 +35,14 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
     });
 }
 
-function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat) {
+function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposePort) {
   const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`
   const port = 7054
   return {
     prefix: caJsonFormat.prefix,
     address,
     port,
+    exposePort: caExposePort,
     fullAddress: `${address}:${port}`,
     caAdminNameVar: orgName.toUpperCase()+"_CA_ADMIN_NAME",
     caAdminPassVar: orgName.toUpperCase()+"_CA_ADMIN_PASSWORD",
@@ -59,13 +60,13 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
     mspName: rootOrgJsonFormat.organization.mspName,
     domain: rootOrgJsonFormat.organization.domain,
     organization: rootOrgJsonFormat.organization,
-    ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, rootOrgJsonFormat.organization.domain),
+    ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, rootOrgJsonFormat.organization.domain, 7030),
     orderers: orderersExtended,
     ordererHead,
   };
 }
 
-function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort) {
+function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCouchDbExposePort) {
   let { anchorPeerInstances } = peerJsonFormat;
   if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
     anchorPeerInstances = 1;
@@ -82,7 +83,8 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort) {
         db: peerJsonFormat.db,
         isAnchorPeer: i < anchorPeerInstances,
         port,
-        fullAddress: `${address}:${port}`
+        fullAddress: `${address}:${port}`,
+        couchDbExposePort: headPeerCouchDbExposePort+i
       }
     });
 }
@@ -90,9 +92,11 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort) {
 function transformOrgConfig(orgJsonFormat, orgNumber) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
   const headPeerPort = 7060+10*orgNumber
+  const headPeerCouchDbExposePort = 5080+10*orgNumber
+  const caExposePort = 7031+orgNumber
   const orgDomain = orgJsonFormat.organization.domain
 
-  const peersExtended = extendPeers(orgJsonFormat.peer, orgDomain, headPeerPort)
+  const peersExtended = extendPeers(orgJsonFormat.peer, orgDomain, headPeerPort, headPeerCouchDbExposePort)
   return {
     key: orgJsonFormat.organization.key,
     name: orgJsonFormat.organization.name,
@@ -102,7 +106,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     anchorPeers: peersExtended.filter(p => p.isAnchorPeer),
     peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
-    ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgDomain),
+    ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgDomain, caExposePort),
     headPeer: peersExtended[0]
   };
 }
