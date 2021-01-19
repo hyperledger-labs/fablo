@@ -13,7 +13,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
-      - 7030:<%= rootOrg.ca.port %>
+      - <%= rootOrg.ca.exposePort %>:<%= rootOrg.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
@@ -56,11 +56,7 @@ services:
     networks:
       - basic<% } %>
 
-  <% for (orgNo in orgs) {
-    var org = orgs[orgNo]
-    var caHostPort=7031+parseInt(orgNo,10)
-  %>
-
+<% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
     image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
@@ -70,7 +66,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
     ports:
-      - <%= caHostPort %>:<%= org.ca.port %>
+      - <%= org.ca.exposePort %>:<%= org.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
@@ -110,11 +106,7 @@ services:
     networks:
       - basic
 
-  <% for(var peerNo=0; peerNo<org.peersCount; peerNo++) {
-    var peer=org.peers[peerNo]
-    var peerDbHostPort=5080+orgNo*10+peerNo
-  %>
-
+  <% org.peers.forEach(function(peer){ %>
   <%= peer.address %>:
     container_name: <%= peer.address %>
     image: hyperledger/fabric-peer:${FABRIC_VERSION}
@@ -155,7 +147,6 @@ services:
     command: peer node start
     ports:
       - <%= peer.port %>:<%= peer.port %>
-      # - 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/msp:/etc/hyperledger/fabric/peer/msp
@@ -166,7 +157,7 @@ services:
       - <%= rootOrg.ordererHead.address %>
     networks:
       - basic
-<% if(peer.db==="CouchDb") { %>
+  <% if(peer.db==="CouchDb") { %>
   <%= peer.name %>.couchdb.<%= org.domain %>:
     container_name: <%= peer.name %>.couchdb.<%= org.domain %>
     image: hyperledger/fabric-couchdb:0.4.18
@@ -174,8 +165,9 @@ services:
       - COUCHDB_USER=<%= peer.name %>
       - COUCHDB_PASSWORD=<%= peer.name %>Password
     ports:
-      - <%= peerDbHostPort %>:5984
+      - <%= peer.couchDbExposePort %>:5984
     networks:
       - basic
-<% } %>
-<% }} %>
+  <% } %>
+  <% }) %>
+<% }) %>
