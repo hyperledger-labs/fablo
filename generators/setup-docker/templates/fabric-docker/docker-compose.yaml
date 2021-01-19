@@ -89,7 +89,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/msp
-      - CORE_PEER_ADDRESS=peer0.<%= org.domain %>:7051<% if(networkSettings.tls) { %>
+      - CORE_PEER_ADDRESS=peer0.<%= org.headPeer.fullAddress %><% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
@@ -110,7 +110,6 @@ services:
 
   <% for(var peerNo=0; peerNo<org.peersCount; peerNo++) {
     var peer=org.peers[peerNo]
-    var peerHostPort=7060+orgNo*10+peerNo
     var peerDbHostPort=5080+orgNo*10+peerNo
   %>
 
@@ -120,11 +119,11 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_ID=<%= peer.address %>
-      - CORE_PEER_ADDRESS=<%= peer.address %>:7051
-      - CORE_PEER_LISTENADDRESS=<%= peer.address %>:7051
+      - CORE_PEER_ADDRESS=<%= peer.fullAddress %>
+      - CORE_PEER_LISTENADDRESS=<%= peer.fullAddress %>
       - CORE_PEER_CHAINCODELISTENADDRESS=<%= peer.address %>:7050
-      - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.address %>:7051<% if(peer.isAnchorPeer) { %>
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.address %>:7051<% } %>
+      - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.fullAddress %><% if(peer.isAnchorPeer) { %>
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.fullAddress %><% } %>
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_VERSION}
       #
@@ -153,7 +152,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - <%= peerHostPort %>:7051
+      - <%= peer.port %>:<%= peer.port %>
       # - 7053:7053
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
