@@ -9,7 +9,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       channel: matchingChannel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      instantiatingOrg: matchingChannel.instantiatingOrg
+      instantiatingOrg: matchingChannel.instantiatingOrg,
     };
   });
 }
@@ -30,37 +30,38 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
         address,
         consensus: type,
         port,
-        fullAddress: `${address}:${port}`
+        fullAddress: `${address}:${port}`,
       };
     });
 }
 
 function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposePort) {
-  const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`
-  const port = 7054
+  const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`;
+  const port = 7054;
   return {
     prefix: caJsonFormat.prefix,
     address,
     port,
     exposePort: caExposePort,
     fullAddress: `${address}:${port}`,
-    caAdminNameVar: orgName.toUpperCase()+"_CA_ADMIN_NAME",
-    caAdminPassVar: orgName.toUpperCase()+"_CA_ADMIN_PASSWORD",
-  }
+    caAdminNameVar: `${orgName.toUpperCase()}_CA_ADMIN_NAME`,
+    caAdminPassVar: `${orgName.toUpperCase()}_CA_ADMIN_PASSWORD`,
+  };
 }
 
 function transformRootOrgConfig(rootOrgJsonFormat) {
+  const { domain } = rootOrgJsonFormat.organization;
   const orderersExtended = transformOrderersConfig(
     rootOrgJsonFormat.orderer,
-    rootOrgJsonFormat.organization.domain,
+    domain,
   );
   const ordererHead = orderersExtended[0];
   return {
     name: rootOrgJsonFormat.organization.name,
     mspName: rootOrgJsonFormat.organization.mspName,
-    domain: rootOrgJsonFormat.organization.domain,
+    domain,
     organization: rootOrgJsonFormat.organization,
-    ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, rootOrgJsonFormat.organization.domain, 7030),
+    ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,
   };
@@ -75,8 +76,8 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCou
     .fill()
     .map((x, i) => i)
     .map((i) => {
-      const address = `peer${i}.${domainJsonFormat}`
-      const port = headPeerPort+i
+      const address = `peer${i}.${domainJsonFormat}`;
+      const port = headPeerPort + i;
       return {
         name: `peer${i}`,
         address,
@@ -84,37 +85,41 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCou
         isAnchorPeer: i < anchorPeerInstances,
         port,
         fullAddress: `${address}:${port}`,
-        couchDbExposePort: headPeerCouchDbExposePort+i
-      }
+        couchDbExposePort: headPeerCouchDbExposePort + i,
+      };
     });
 }
 
 function transformOrgConfig(orgJsonFormat, orgNumber) {
   const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
-  const headPeerPort = 7060+10*orgNumber
-  const headPeerCouchDbExposePort = 5080+10*orgNumber
-  const caExposePort = 7031+orgNumber
-  const orgDomain = orgJsonFormat.organization.domain
+  const headPeerPort = 7060 + 10 * orgNumber;
+  const headPeerCouchDbExposePort = 5080 + 10 * orgNumber;
+  const caExposePort = 7031 + orgNumber;
+  const orgName = orgJsonFormat.organization.name;
+  const orgDomain = orgJsonFormat.organization.domain;
 
-  const peersExtended = extendPeers(orgJsonFormat.peer, orgDomain, headPeerPort, headPeerCouchDbExposePort)
+  const peersExtended = extendPeers(
+    orgJsonFormat.peer,
+    orgDomain,
+    headPeerPort,
+    headPeerCouchDbExposePort,
+  );
   return {
     key: orgJsonFormat.organization.key,
-    name: orgJsonFormat.organization.name,
+    name: orgName,
     mspName: orgJsonFormat.organization.mspName,
     domain: orgDomain,
     peers: peersExtended,
-    anchorPeers: peersExtended.filter(p => p.isAnchorPeer),
+    anchorPeers: peersExtended.filter((p) => p.isAnchorPeer),
     peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
-    ca: transformCaConfig(orgJsonFormat.ca, orgJsonFormat.organization.name, orgDomain, caExposePort),
-    headPeer: peersExtended[0]
+    ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
+    headPeer: peersExtended[0],
   };
 }
 
 function transformOrgConfigs(orgsJsonConfigFormat) {
-  return orgsJsonConfigFormat.map((org, currentIndex) => {
-    return transformOrgConfig(org, currentIndex);
-  });
+  return orgsJsonConfigFormat.map((org, currentIndex) => transformOrgConfig(org, currentIndex));
 }
 
 function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
@@ -126,7 +131,7 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
     mspName: orgTransformedFormat.mspName,
     domain: orgTransformedFormat.domain,
     peers: filteredPeers,
-    headPeer: filteredPeers[0]
+    headPeer: filteredPeers[0],
   };
 }
 
@@ -142,7 +147,7 @@ function transformChannelConfig(channelJsonFormat, orgsTransformed) {
     key: channelJsonFormat.key,
     name: channelJsonFormat.name,
     orgs: orgsForChannel,
-    instantiatingOrg: orgsForChannel[0]
+    instantiatingOrg: orgsForChannel[0],
   };
 }
 
