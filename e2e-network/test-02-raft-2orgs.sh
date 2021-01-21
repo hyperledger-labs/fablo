@@ -59,11 +59,11 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel1" &&
   waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel2" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
-  waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
+  waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 2 organizations" &&
+  waitForContainer "peer0.org2.com" "Joining gossip network of channel my-channel1 with 2 organizations" &&
   waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054" &&
-  waitForContainer "peer0.org2.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitForContainer "peer1.org2.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
+  waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel2 with 2 organizations" &&
+  waitForContainer "peer1.org2.com" "Joining gossip network of channel my-channel2 with 2 organizations" &&
 
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1" &&
