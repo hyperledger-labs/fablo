@@ -1,3 +1,10 @@
+function singleOrListString(items) {
+  if (items.length === 1) {
+    return items[0];
+  }
+  return `"${items.join(' ')}"`;
+}
+
 function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
@@ -105,7 +112,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     headPeerCouchDbExposePort,
   );
   const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
-  const bootstrapPeers = anchorPeers.map((a) => a.fullAddress).join(' ');
+  const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
 
   return {
     key: orgJsonFormat.organization.key,
@@ -116,7 +123,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers,
+    bootstrapPeers: singleOrListString(bootstrapPeersList),
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };

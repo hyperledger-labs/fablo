@@ -517,7 +517,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7060
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060\\"
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -561,7 +561,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.com:7061
       - CORE_PEER_LISTENADDRESS=peer1.org1.com:7061
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7061
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060\\"
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -655,7 +655,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7070
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070\\"
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -699,7 +699,7 @@ services:
       - CORE_PEER_ADDRESS=peer1.org2.com:7071
       - CORE_PEER_LISTENADDRESS=peer1.org2.com:7071
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org2.com:7071
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070\\"
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
