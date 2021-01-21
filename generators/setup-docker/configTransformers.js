@@ -104,15 +104,19 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     headPeerPort,
     headPeerCouchDbExposePort,
   );
+  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer)
+  const bootstrapPeers=anchorPeers.map((a) => a.fullAddress).join(" ")
+
   return {
     key: orgJsonFormat.organization.key,
     name: orgName,
     mspName: orgJsonFormat.organization.mspName,
     domain: orgDomain,
-    peers: peersExtended,
-    anchorPeers: peersExtended.filter((p) => p.isAnchorPeer),
-    peersCount: orgJsonFormat.peer.instances,
     cryptoConfigFileName: orgsCryptoConfigFileName,
+    peersCount: peersExtended.length,
+    peers: peersExtended,
+    anchorPeers,
+    bootstrapPeers,
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };
