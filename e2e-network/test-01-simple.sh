@@ -47,8 +47,8 @@ networkUpAsync
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
-  waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
+  waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
+  waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
 
   waitForChaincode "cli.org1.com" "peer0.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel1" "chaincode1" "0.0.1" &&
