@@ -104,8 +104,8 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     headPeerPort,
     headPeerCouchDbExposePort,
   );
-  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer)
-  const bootstrapPeers=anchorPeers.map((a) => a.fullAddress).join(" ")
+  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
+  const bootstrapPeers = anchorPeers.map((a) => a.fullAddress).join(' ');
 
   return {
     key: orgJsonFormat.organization.key,
