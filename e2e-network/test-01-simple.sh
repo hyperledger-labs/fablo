@@ -5,7 +5,7 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRICA_HOME="$TEST_TMP/../.."
 
 # testing relative path
-CONFIG="../../samples/fabricaConfig-1org-1channel-2chaincodes.json"
+CONFIG="../../samples/fabricaConfig-1org-1channel-1chaincode.json"
 
 networkUpAsync() {
   "$FABRICA_HOME/fabrica-build.sh" &&
@@ -68,6 +68,7 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
+
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.2" &&
