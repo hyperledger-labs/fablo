@@ -16,7 +16,7 @@ function installChaincodes() {
     <% if(!networkSettings.tls) { -%>
     chaincodeInstall "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>"
     <% } else { -%>
-    chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
     <% } -%>
     <% })}) -%>
 
@@ -24,7 +24,7 @@ function installChaincodes() {
     <% if(!networkSettings.tls) { -%>
     chaincodeInstantiate "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
     <% } else { -%>
-    chaincodeInstantiateTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    chaincodeInstantiateTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
     <% } -%>
   <% }) %>
 }
@@ -53,7 +53,7 @@ function upgradeChaincode() {
     <% if(!networkSettings.tls) { -%>
     chaincodeInstall "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>"
     <% } else { -%>
-    chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
     <% } -%>
     <% })}) -%>
 
@@ -61,7 +61,7 @@ function upgradeChaincode() {
     <% if(!networkSettings.tls) { -%>
     chaincodeUpgrade "cli.<%= chaincode.instantiatingOrg.domain %>" "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
     <% } else { -%>
-    chaincodeUpgradeTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    chaincodeUpgradeTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
     <% } %>
   fi
   <% }) %>
@@ -77,7 +77,7 @@ createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChann
   <% if(!networkSettings.tls) { -%>
 notifyOrgAboutNewChannel "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.fullAddress %>"
   <% } else { -%>
-notifyOrgAboutNewChannelTls "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+notifyOrgAboutNewChannelTls "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>" "peer0.<%= org.domain %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } -%>
   <% })}) %>
   printHeadline "Deleting new channel config blocks" "U1F52A"
@@ -140,7 +140,7 @@ function installChannels() {
     "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
   <% } else { -%>
   docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+    "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
   <% } %>
   <% } else { -%>
   printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
@@ -149,7 +149,7 @@ function installChannels() {
     "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
   <% } else { -%>
   docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+    "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
   <% } %>
   <% } -%>
   <% } -%>

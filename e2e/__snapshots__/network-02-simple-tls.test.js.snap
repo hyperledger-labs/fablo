@@ -217,13 +217,13 @@ function installChaincodes() {
   fi
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstallTls \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstallTls \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiateTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  chaincodeInstantiateTls \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
 }
 
@@ -255,13 +255,13 @@ function upgradeChaincode() {
     fi
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstallTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstallTls \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgradeTls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeUpgradeTls \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
   fi
 
@@ -272,7 +272,7 @@ function notifyOrgsAboutChannels() {
   createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
@@ -318,11 +318,11 @@ function installChannels() {
 
   printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
   docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7060' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+    \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7060' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/orderer-tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
 
   printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
   docker exec -i cli.org1.com bash -c \\\\
-    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.com:7061' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
+    \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.com:7061' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto/orderer-tlscacerts/tlsca.root.com-cert.pem' 'orderer0.root.com:7050';\\"
 
 }
 
@@ -449,7 +449,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -457,7 +457,7 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
@@ -845,16 +845,16 @@ exports[`network-02-simple-tls should create proper e2e/__tmp__/network-02-simpl
 "#!/bin/bash
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
 
-  local CHANNEL_NAME=$5
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
 
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local ORDERER_URL=$8
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
 
@@ -878,14 +878,17 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
@@ -918,14 +921,17 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeUpgrade() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
@@ -959,14 +965,16 @@ function chaincodeUpgrade() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local CA_CERT=\\"/var/hyperledger/cli/\\"$9
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
@@ -992,16 +1000,20 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
+
   local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
@@ -1036,16 +1048,20 @@ function chaincodeInstantiateTls() {
 }
 
 function chaincodeUpgradeTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local INIT_PARAMS=$9
+
   local ENDORSEMENT=\${10}
+
   local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")

@@ -24,7 +24,7 @@ response="$(
     -c "$command" \
     --waitForEvent \
     --tls \
-    --cafile "/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem" \
+    --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem" \
     2>&1
 )"
 
