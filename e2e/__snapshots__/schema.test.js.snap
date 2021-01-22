@@ -195,10 +195,6 @@ Object {
     },
     "networkSettings": Object {
       "$id": "#/properties/networkSettings",
-      "default": Object {
-        "fabricVersion": "1.4.4",
-        "tls": false,
-      },
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
         "fabricVersion": Object {
@@ -215,11 +211,6 @@ Object {
             "1.4.6",
             "1.4.7",
             "1.4.8",
-            "2.0.1",
-            "2.1.0",
-            "2.1.1",
-            "2.2.0",
-            "2.2.1",
           ],
           "title": "Hyperledger Fabric version",
           "type": "string",
