@@ -2,7 +2,7 @@
     EtcdRaft:
         Consenters:<% rootOrg.orderers.forEach(function(orderer) { %>
             - Host: <%= orderer.address %>
-              Port: 7050
+              Port: <%= orderer.port %>
               ClientTLSCert: crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/server.crt
               ServerTLSCert: crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/server.crt
 <% })} -%>
