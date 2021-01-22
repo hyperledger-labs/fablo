@@ -20,8 +20,6 @@ EXPECTED_NETWORKS=(
   "$FABRICA_HOME/e2e/__tmp__/network-05-2orgs"
   "$FABRICA_HOME/e2e/__tmp__/network-06-2orgs-tls"
   "$FABRICA_HOME/e2e/__tmp__/network-07-2orgs-raft"
-  "$FABRICA_HOME/e2e/__tmp__/network-08-2orgs-raft-hlf2"
-  "$FABRICA_HOME/e2e/__tmp__/network-09-2orgs-2chaincodes-raft-hlf2"
 )
 
 for network in "${EXPECTED_NETWORKS[@]}"; do
