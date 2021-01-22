@@ -12,6 +12,7 @@ services:<% var rootCaFullName=rootOrg.ca.prefix+"."+rootOrg.organization.domain
       - FABRIC_CA_SERVER_CA_NAME=<%= rootCaFullName %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.organization.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
     ports:
       - 7030:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -67,6 +68,7 @@ services:<% var rootCaFullName=rootOrg.ca.prefix+"."+rootOrg.organization.domain
       - FABRIC_CA_SERVER_CA_NAME=<%= orgCaFullName %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.organization.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
     ports:
       - <%= orgCaHostPort %>:7054
     working_dir: /etc/hyperledger/fabric-ca-server
