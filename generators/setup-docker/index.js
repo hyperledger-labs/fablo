@@ -5,12 +5,11 @@
 */
 const Generator = require('yeoman-generator');
 const config = require('../config');
-const utils = require('../utils/utils');
 const buildUtil = require('../version/buildUtil');
 
-const configTransformers = require('./configTransformers');
+const configTransformers = require('../extendConfig/configTransformers');
 
-const ValidateGeneratorType = require.resolve('../validate');
+const ExtendConfigGeneratorType = require.resolve('../extendConfig');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -21,21 +20,20 @@ module.exports = class extends Generator {
       description: 'fabrica config file path',
     });
 
-    this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabricaConfig] });
+    this.composeWith(ExtendConfigGeneratorType, { arguments: [this.options.fabricaConfig] });
   }
 
   async writing() {
-    this.options.fabricaConfigPath = utils.getFullPathOf(
-      this.options.fabricaConfig, this.env.cwd,
-    );
+    const transformedConfig = this.config.get('transformedConfig');
 
-    const {
-      networkSettings,
-      rootOrg: rootOrgJson,
-      orgs: orgsJson,
-      channels: channelsJson,
-      chaincodes: chaincodesJson,
-    } = this.fs.readJSON(this.options.fabricaConfigPath);
+    const { networkSettings } = transformedConfig;
+    const { capabilities } = transformedConfig;
+    const { rootOrg } = transformedConfig;
+    const { orgs } = transformedConfig;
+    const { channels } = transformedConfig;
+    const { chaincodes } = transformedConfig;
+
+    this.config.delete('transformedConfig');
 
     const dateString = new Date().toISOString().substring(0, 16).replace(/[^0-9]+/g, '');
     const composeNetworkName = `fabrica_network_${dateString}`;
@@ -43,12 +41,6 @@ module.exports = class extends Generator {
     this.log(`Used network config: ${this.options.fabricaConfigPath}`);
     this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
-
-    const capabilities = configTransformers.getNetworkCapabilities(networkSettings.fabricVersion);
-    const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
-    const orgs = configTransformers.transformOrgConfigs(orgsJson);
-    const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
-    const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
 
     // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(rootOrg);

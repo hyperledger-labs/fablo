@@ -6,7 +6,7 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils/utils');
 
-const configTransformers = require('../setup-docker/configTransformers');
+const configTransformers = require('./configTransformers');
 
 const ValidateGeneratorType = require.resolve('../validate');
 
@@ -18,11 +18,14 @@ module.exports = class extends Generator {
       required: true,
       description: 'fabrica config file path',
     });
+    this.option('debug', {
+      alias: 'd',
+    });
 
     this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabricaConfig] });
   }
 
-  async writing() {
+  async transformConfig() {
     this.options.fabricaConfigPath = utils.getFullPathOf(
       this.options.fabricaConfig, this.env.cwd,
     );
@@ -42,6 +45,7 @@ module.exports = class extends Generator {
     const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
 
     const transformedConfig = {
+      networkSettings,
       capabilities,
       rootOrg,
       orgs,
@@ -49,6 +53,12 @@ module.exports = class extends Generator {
       chaincodes,
     };
 
-    this.log(JSON.stringify(transformedConfig, null, 4));
+    this.config.set('transformedConfig', transformedConfig);
+
+    this.on('end', () => {
+      if (typeof this.options.debug !== 'undefined') {
+        this.log(JSON.stringify(this.config.get('transformedConfig'), null, 4));
+      }
+    });
   }
 };
