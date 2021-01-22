@@ -79,7 +79,14 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
 
-  # TODO restart
+  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" \
+    '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
+    'status:200' &&
+  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode2" \
+    '{"Args":["PokeballContract:readPokeball", "id1"]}' \
+    '{\"value\":\"Pokeball 1\"}' &&
+
+  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" restart) &&
 
   waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
@@ -90,12 +97,5 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
-  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" \
-    '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
-    'status:200' &&
-
-  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode2" \
-    '{"Args":["PokeballContract:readPokeball", "id1"]}' \
-    '{\"value\":\"Pokeball 1\"}' &&
 
   networkDown || (networkDown && exit 1)

@@ -33,8 +33,8 @@ elif [ "$1" = "start" ]; then
 elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "restart" ]; then
-  startNetwork
   stopNetwork
+  startNetwork
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincode "$3" "$4"
 elif [ "$1" = "help" ]; then
