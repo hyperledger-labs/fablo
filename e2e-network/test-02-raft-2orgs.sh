@@ -60,41 +60,40 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel2" &&
 
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
-  waitForContainer "peer0.org1.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitForContainer "peer1.org1.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
-
+  waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 2 organizations" &&
+  waitForContainer "peer0.org2.com" "Joining gossip network of channel my-channel1 with 2 organizations" &&
   waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054" &&
-  waitForContainer "peer0.org2.com" "Elected as a leader, starting delivery service for channel my-channel1" &&
-  waitForContainer "peer1.org2.com" "Elected as a leader, starting delivery service for channel my-channel2" &&
+  waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel2 with 2 organizations" &&
+  waitForContainer "peer1.org2.com" "Joining gossip network of channel my-channel2 with 2 organizations" &&
 
-  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
-  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
-  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" "0.0.1" &&
-  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode2" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" "0.0.1" &&
+  waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" "0.0.1" &&
 
-  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
     '{\"success\":\"OK\"}' &&
-  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" \
+  expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
 
-  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode2" \
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" \
     '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
     'status:200' &&
-  expectInvoke "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode2" \
+  expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
     '{"Args":["PokeballContract:readPokeball", "id1"]}' \
     '{\"value\":\"Pokeball 1\"}' &&
 
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" restart) &&
 
-  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.1" &&
-  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1" &&
+  waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1" &&
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
-  waitForChaincode "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" "0.0.2" &&
-  waitForChaincode "cli.org2.com" "peer1.org2.com" "my-channel2" "chaincode1" "0.0.2" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.2" &&
+  waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.2" &&
 
-  expectInvoke "cli.org1.com" "peer1.org1.com" "my-channel2" "chaincode1" \
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Jack Sparrow\"}' &&
 
