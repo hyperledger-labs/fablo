@@ -8,7 +8,7 @@ command="$5"
 expected="$6"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [cli] [peer] [channel] [chaincode] [command] [expected_substring]"
+  echo "Usage: ./expect-invoke.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring]"
   exit 1
 fi
 
@@ -17,7 +17,7 @@ echo "[testing] $label"
 
 response="$(
   docker exec "$cli" peer chaincode invoke \
-    --peerAddresses "$peer:7051" \
+    --peerAddresses "$peer" \
     -C "$channel" \
     -n "$chaincode" \
     -c "$command" \
