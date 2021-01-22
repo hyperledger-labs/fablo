@@ -25,14 +25,20 @@ Usage:
   fabrica.sh <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
+  fabrica.sh restart
+    Stops and starts the network. Useful in case of minor config changes in generated files.
+
+  fabrica.sh reboot
+    Downs and ups the network. Network state is lost, but the configuration is kept intact.
+
   fabrica.sh prune
     Downs the network and removes all generated files.
 
+  fabrica.sh recreate [/path/to/fabrica-config.json]
+    Prunes and ups the network. Default config file path is '\$(pwd)/fabrica-config.json'
+
   fabrica.sh chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
-
-  fabrica.sh updates
-    Prints all newer versions available.
 
   fabrica.sh use [version]
     Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided.
@@ -187,8 +193,10 @@ elif [ "$COMMAND" = "generate" ]; then
 
 elif [ "$COMMAND" = "up" ]; then
   networkUp "$2"
+
 elif [ "$COMMAND" = "prune" ]; then
   networkPrune
+
 elif [ "$COMMAND" = "recreate" ]; then
   networkPrune
   networkUp "$2"
