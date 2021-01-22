@@ -480,7 +480,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
-      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
@@ -525,7 +524,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
-      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
