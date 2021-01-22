@@ -17,7 +17,7 @@ executeYeomanCommand() {
 }
 
 cleanupYeomanCache() {
-  rm -rf "$yeoman_target_dir/.cache" "$yeoman_target_dir/.config"
+  rm -rf "$yeoman_target_dir/.cache" "$yeoman_target_dir/.config" "$yeoman_target_dir/.yo-rc.json"
 }
 
 executeYeomanCommandAndCleanup() {
