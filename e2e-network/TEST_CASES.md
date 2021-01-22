@@ -12,6 +12,8 @@
 | Channels                  | 1     | 2     |
 | Node chaincode            | yes   | yes   |
 | Node chaincode upgrade    | no    | yes   |
+| Node chaincode endorsement| OR    | AND   |
 | Java chaincode            | no    | yes   |
+| Java chaincode endorsement| -     | OR    |
 | Go chaincode              | no    | no    |
 | Network restart           | no    | yes   |
