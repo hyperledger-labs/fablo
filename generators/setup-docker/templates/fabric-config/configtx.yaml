@@ -65,7 +65,7 @@ Organizations:
               Rule: "OR('<%= org.mspName %>.peer')"<% } %>
       AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
           - Host: <%= anchorPeer.address %>
-            Port: 7051<% })}) %>
+            Port: <%= anchorPeer.port %><% })}) %>
 
 ################################################################################
 #   SECTION: Application
@@ -101,7 +101,7 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
     OrdererType: <%= rootOrg.ordererHead.consensus %>
     Addresses:<% rootOrg.orderers.forEach(function(orderer) { %>
-        - <%=orderer.address %>:7050<% })-%>
+        - <%= orderer.fullAddress %><% })-%>
 <%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
     BatchTimeout: 2s
     BatchSize:
