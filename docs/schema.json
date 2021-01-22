@@ -17,10 +17,6 @@
       "title": "Network settings",
       "description": "Basic settings of the Hyperledger Fabric network",
       "type": "object",
-      "default": {
-        "tls": false,
-        "fabricVersion": "1.4.4"
-      },
       "required": [
         "fabricVersion",
         "tls"
@@ -40,12 +36,7 @@
             "1.4.5",
             "1.4.6",
             "1.4.7",
-            "1.4.8",
-            "2.0.1",
-            "2.1.0",
-            "2.1.1",
-            "2.2.0",
-            "2.2.1"
+            "1.4.8"
           ],
           "default": "1.4.6"
         },

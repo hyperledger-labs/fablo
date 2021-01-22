@@ -120,14 +120,6 @@ try {
         }
       }
 
-      stage("Test HF 2.0 network (2 orgs)") {
-        try {
-          sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
-        } finally {
-          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.tmpdir/**/*', fingerprint: true
-          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.logs/*', fingerprint: true
-        }
-      }
     }
   })
 } catch (e) {
