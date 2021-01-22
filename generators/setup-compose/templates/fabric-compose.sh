@@ -2,12 +2,13 @@
 
 set -eu
 
-BASEDIR="$(cd "$(dirname "./$0")" && pwd)"
+FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source "$BASEDIR/fabric-docker/scripts/base-help.sh"
-source "$BASEDIR/fabric-docker/scripts/base-functions.sh"
-source "$BASEDIR/fabric-docker/commands-generated.sh"
-source "$BASEDIR/fabric-docker/.env"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts
@@ -31,8 +32,11 @@ elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
-  installChaincodes
+elif [ "$1" = "restart" ]; then
+  stopNetwork
+  startNetwork
+elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
+  upgradeChaincode "$3" "$4"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
