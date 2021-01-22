@@ -1,3 +1,4 @@
+
 ## main (0.0.1)
 
 ### Features
@@ -11,6 +12,7 @@
 * Allow to upgrade chaincode ([#45](https://github.com/softwaremill/fabrica/issues/36))
 * Network recreation in one step ([#105](https://github.com/softwaremill/fabrica/issues/105))
 * Init command to provide simple config ([#90](https://github.com/softwaremill/fabrica/issues/90))
+* Proper exposing Orderer and Peers ports for service discovery ([#116](https://github.com/softwaremill/fabrica/issues/116))  
 
 ### Fixes
 
