@@ -8,7 +8,7 @@ command="$5"
 expected="$6"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port] [port] [channel] [chaincode] [command] [expected_substring]"
+  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring]"
   exit 1
 fi
 
