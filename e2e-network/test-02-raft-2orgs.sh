@@ -86,9 +86,9 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
     '{\"value\":\"Pokeball 1\"}' &&
 
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" restart) &&
-
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1" &&
+
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.2" &&
   waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.2" &&
