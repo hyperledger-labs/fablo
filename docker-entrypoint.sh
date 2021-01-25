@@ -50,7 +50,7 @@ formatGeneratedFiles() {
   done
 }
 
-yeoman_target_dir="/network/target"
+yeoman_target_dir="/network/workspace"
 fabrica_config_path="../../network/fabrica-config.json"
 yeoman_command=${1:-setup-docker}
 yeoman_param=${2:-"$fabrica_config_path"}
