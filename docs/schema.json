@@ -45,6 +45,17 @@
           "title": "Use TLS",
           "type": "boolean",
           "default": true
+        },
+        "loglevel": {
+          "$id": "#/properties/monitoring/properties/loglevel",
+          "title": "Log level for all components",
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn"
+          ],
+          "default": "info"
         }
       }
     },
