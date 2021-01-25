@@ -119,7 +119,7 @@ module.exports = class extends Generator {
     const settings = {
       composeNetworkName,
       fabricCaVersion: configTransformers.getCaVersion(networkSettings.fabricVersion),
-      networkSettings,
+      networkSettings: { ...networkSettings, loglevel: networkSettings.loglevel || 'info' },
       orgs: orgsTransformed,
       paths: configTransformers.getPathsFromEnv(),
       fabricaVersion: config.version,
