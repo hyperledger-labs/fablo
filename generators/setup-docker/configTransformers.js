@@ -216,7 +216,7 @@ function getPathsFromEnv() {
   return {
     fabricaConfig: getEnvVarOrThrow('FABRICA_CONFIG'),
     chaincodesBaseDir: getEnvVarOrThrow('CHAINCODES_BASE_DIR'),
-    fabricaNetworkRoot: getEnvVarOrThrow('FABRICA_NETWORK_ROOT'),
+    fabricaNetworkRoot: getEnvVarOrThrow('FABRICA_WORKSPACE'),
   };
 }
 

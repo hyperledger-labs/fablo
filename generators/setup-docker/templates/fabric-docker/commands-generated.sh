@@ -78,7 +78,7 @@ function upgradeChaincode() {
 function notifyOrgsAboutChannels() {
   printHeadline "Creating new channel config blocks" "U1F537"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
-createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config"  "$FABRICA_NETWORK_ROOT/fabric-config/config"
+createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChannel" "$FABRICA_WORKSPACE/fabric-config"  "$FABRICA_WORKSPACE/fabric-config/config"
   <% })}) %>
   printHeadline "Notyfing orgs about channels" "U1F4E2"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
@@ -97,19 +97,19 @@ deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"
-  certsGenerate "$FABRICA_NETWORK_ROOT/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/"
+  certsGenerate "$FABRICA_WORKSPACE/fabric-config" "crypto-config-root.yaml" "ordererOrganizations/<%= rootOrg.organization.domain %>" "$FABRICA_WORKSPACE/fabric-config/crypto-config/"
   <% orgs.forEach(function(org){  %>
   printItalics "Generating crypto material for <%= org.name %>" "U1F512"
-  certsGenerate "$FABRICA_NETWORK_ROOT/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/"
+  certsGenerate "$FABRICA_WORKSPACE/fabric-config" "<%= org.cryptoConfigFileName %>.yaml" "peerOrganizations/<%= org.domain %>" "$FABRICA_WORKSPACE/fabric-config/crypto-config/"
   <% }) %>
   printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$FABRICA_NETWORK_ROOT/fabric-config" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  genesisBlockCreate "$FABRICA_WORKSPACE/fabric-config" "$FABRICA_WORKSPACE/fabric-config/config"
 }
 
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
   (
-    cd "$FABRICA_NETWORK_ROOT"/fabric-docker
+    cd "$FABRICA_WORKSPACE"/fabric-docker
     docker-compose up -d
     sleep 4
   )
@@ -118,7 +118,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
   (
-    cd "$FABRICA_NETWORK_ROOT"/fabric-docker
+    cd "$FABRICA_WORKSPACE"/fabric-docker
     docker-compose stop
     sleep 4
   )
@@ -127,7 +127,7 @@ function stopNetwork() {
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-  createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$FABRICA_WORKSPACE/fabric-config" "AllOrgChannel" "$FABRICA_WORKSPACE/fabric-config/config"
   <% }) -%>
 }
 
@@ -168,7 +168,7 @@ function installChannels() {
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
   (
-    cd "$FABRICA_NETWORK_ROOT"/fabric-docker
+    cd "$FABRICA_WORKSPACE"/fabric-docker
     docker-compose down
   )
 
@@ -187,8 +187,8 @@ function networkDown() {
   <% })})}) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/config
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/crypto-config
+  rm -rf "$FABRICA_WORKSPACE"/fabric-config/config
+  rm -rf "$FABRICA_WORKSPACE"/fabric-config/crypto-config
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }
