@@ -23,7 +23,7 @@ function installChaincodes() {
       <% if(!networkSettings.tls) { -%>
       chaincodeInstall "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>"
       <% } else { -%>
-      chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+      chaincodeInstallTls "cli.<%= org.domain %>" "<%= peer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
       <% } -%>
       <% })}) -%>
 
@@ -31,7 +31,7 @@ function installChaincodes() {
       <% if(!networkSettings.tls) { -%>
       chaincodeInstantiate "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
       <% } else { -%>
-      chaincodeInstantiateTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+      chaincodeInstantiateTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
       <% } -%>
     <% }) %>
   <% } -%>
