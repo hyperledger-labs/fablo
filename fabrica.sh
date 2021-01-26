@@ -8,6 +8,7 @@ FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
 
 COMMAND="$1"
 FABRICA_WORKSPACE="$(pwd)/fabrica-target"
+DEFAULT_FABRICA_CONFIG="$(pwd)/fabrica-config.json"
 
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
@@ -55,7 +56,8 @@ executeOnFabricaDockerConsolePrintOnly() {
   docker run -i --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd)":/network/workspace \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
+    2>&1
 }
 
 executeOnFabricaDockerMountedAllDirs() {
@@ -69,7 +71,8 @@ executeOnFabricaDockerMountedAllDirs() {
     --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
     --env FABRICA_WORKSPACE="$FABRICA_WORKSPACE" \
     -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
+    2>&1
 }
 
 executeOnFabricaDockerMountedConfigFile() {
@@ -80,7 +83,8 @@ executeOnFabricaDockerMountedConfigFile() {
     -v $(pwd):/network/workspace \
     --env FABRICA_CONFIG="/network/fabrica-config.json" \
     -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command"
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
+    2>&1
 }
 
 printVersion() {
@@ -104,7 +108,7 @@ useVersion() {
 
 validateConfig() {
   if [ -z "$1" ]; then
-    FABRICA_CONFIG="$FABRICA_WORKSPACE/fabrica-config.json"
+    FABRICA_CONFIG="$DEFAULT_FABRICA_CONFIG"
     if [ ! -f "$FABRICA_CONFIG" ]; then
       echo "File $FABRICA_CONFIG does not exist"
       exit 1
@@ -121,9 +125,8 @@ validateConfig() {
 }
 
 generateNetworkConfig() {
-  mkdir -p "$FABRICA_WORKSPACE"
   if [ -z "$1" ]; then
-    FABRICA_CONFIG="$FABRICA_WORKSPACE/../fabrica-config.json"
+    FABRICA_CONFIG="$DEFAULT_FABRICA_CONFIG"
     if [ ! -f "$FABRICA_CONFIG" ]; then
       echo "File $FABRICA_CONFIG does not exist"
       exit 1
@@ -136,13 +139,14 @@ generateNetworkConfig() {
     FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
   fi
 
+  mkdir -p "$FABRICA_WORKSPACE"
   CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
 
   echo "Generating network config"
   echo "    FABRICA_VERSION:      $FABRICA_VERSION"
   echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
   echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
-  echo "    FABRICA_WORKSPACE: $FABRICA_WORKSPACE"
+  echo "    FABRICA_WORKSPACE:    $FABRICA_WORKSPACE"
 
   executeOnFabricaDockerMountedAllDirs ""
 }
@@ -200,6 +204,7 @@ elif [ "$COMMAND" = "prune" ]; then
 elif [ "$COMMAND" = "recreate" ]; then
   networkPrune
   networkUp "$2"
+
 else
   echo "Executing Fabrica docker command: $COMMAND"
   "$FABRICA_WORKSPACE/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
