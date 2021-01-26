@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`init should \`init\` simple fabrica config 1`] = `
+Object {
+  "output": "   create fabrica-config.json
+===========================================================
+Sample config file created! :)
+
+Chaincode directory is './chaincodes/chaincode-kv-node'.
+If it's empty your network won't run entirely.
+===========================================================
+",
+  "status": 0,
+}
+`;
+
+exports[`init should \`init\` simple fabrica config 2`] = `
+Object {
+  "output": "{
+  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.0.1/schema.json\\",
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"1.4.6\\",
+    \\"tls\\": false,
+    \\"loglevel\\": \\"debug\\"
+  },
+  \\"rootOrg\\": {
+    \\"organization\\": {
+      \\"key\\": \\"root\\",
+      \\"name\\": \\"Orderer\\",
+      \\"mspName\\": \\"OrdererMSP\\",
+      \\"domain\\": \\"root.com\\"
+    },
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\"
+    },
+    \\"orderer\\": {
+      \\"prefix\\": \\"orderer\\",
+      \\"type\\": \\"solo\\",
+      \\"instances\\": 1
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"organization\\": {
+        \\"key\\": \\"org1\\",
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\"
+      },
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\"
+      },
+      \\"peer\\": {
+        \\"prefix\\": \\"peer\\",
+        \\"instances\\": 2,
+        \\"db\\": \\"LevelDb\\"
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"key\\": \\"channel1\\",
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"key\\": \\"org1\\",
+          \\"peers\\": [
+            \\"peer0\\",
+            \\"peer1\\"
+          ]
+        }
+      ]
+    }
+  ],
+  \\"chaincodes\\": [
+    {
+      \\"name\\": \\"chaincode1\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"node\\",
+      \\"channel\\": \\"channel1\\",
+      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
+    }
+  ]
+}
+",
+  "status": 0,
+}
+`;
+
+exports[`validate should fail to validate if config file is missing 1`] = `
+Object {
+  "output": "File /Users/jakubdzikowski/IdeaProjects/fabrikka/e2e/__tmp__/commands-tests/fabrica-config.json does not exist
+",
+  "status": 1,
+}
+`;
+
+exports[`validate should validate custom config 1`] = `
+Object {
+  "output": "Fabrica is powered by :
+ _____        __ _                         ___  ____ _ _ 
+/  ___|      / _| |                        |  \\\\/  (_) | |
+\\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
+ \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
+/\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
+\\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
+=========================================================== v: 0.0.1
+Validation errors count: 0
+validation warnings count: 0
+===========================================================
+",
+  "status": 0,
+}
+`;
+
+exports[`validate should validate default config 1`] = `
+Object {
+  "output": "Fabrica is powered by :
+ _____        __ _                         ___  ____ _ _ 
+/  ___|      / _| |                        |  \\\\/  (_) | |
+\\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
+ \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
+/\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
+\\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
+=========================================================== v: 0.0.1
+Validation errors count: 0
+validation warnings count: 0
+===========================================================
+",
+  "status": 0,
+}
+`;
