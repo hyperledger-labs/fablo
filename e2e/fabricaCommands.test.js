@@ -39,19 +39,19 @@ const cleanupWorkdir = () => {
 describe('init', () => {
   beforeEach(cleanupWorkdir);
 
-  it('should `init` simple fabrica config', () => {
+  it('should init simple fabrica config', () => {
     // When
     const commandResult = fabricaExec('init');
 
     // Then
-    expect(commandResult)
-      .toEqual(success());
-    expect(commandResult)
-      .toMatchSnapshot();
-    expect(getFiles())
-      .toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
-    expect(getFileContent(`${workdir}/fabrica-config.json`))
-      .toMatchSnapshot();
+    expect(commandResult).toEqual(success());
+    expect(commandResult.output).toContain('Sample config file created! :)');
+    expect(commandResult.output).toContain(
+      'Chaincode directory is \'./chaincodes/chaincode-kv-node\'.\nIf it\'s empty your network won\'t run entirely.',
+    );
+
+    expect(getFiles()).toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
+    expect(getFileContent(`${workdir}/fabrica-config.json`)).toMatchSnapshot();
   });
 });
 
@@ -82,7 +82,8 @@ describe('validate', () => {
 
     // Then
     expect(commandResult).toEqual(success());
-    expect(commandResult).toMatchSnapshot();
+    expect(commandResult.output).toContain('Validation errors count: 0');
+    expect(commandResult.output).toContain('Validation warnings count: 0');
     expect(getFiles()).toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
   });
 
@@ -95,7 +96,8 @@ describe('validate', () => {
 
     // Then
     expect(commandResult).toEqual(success());
-    expect(commandResult).toMatchSnapshot();
+    expect(commandResult.output).toContain('Validation errors count: 0');
+    expect(commandResult.output).toContain('Validation warnings count: 0');
     expect(getFiles()).toEqual([]);
   });
 
@@ -104,7 +106,7 @@ describe('validate', () => {
 
     // Then
     expect(commandResult).toEqual(failure());
-    expect(commandResult).toMatchSnapshot();
+    expect(commandResult.output).toContain('commands-tests/fabrica-config.json does not exist');
     expect(getFiles()).toEqual([]);
   });
 });
