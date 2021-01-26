@@ -21,13 +21,13 @@ sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fa
 To get a copy of Fabrica for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica.sh
+curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica && chmod +x ./fabrica
 ```
 
 ## Basic usage
 
 ```bash
-fabrica.sh up /path/to/fabrica-config.json
+fabrica up /path/to/fabrica-config.json
 ```
 
 The `up` command creates initial configuration and starts Hyperledger Fabric network on Docker.
@@ -99,9 +99,9 @@ Downs the network and removes `fabrica-target` directory.
 ### restart, reboot, recreate
 
 ```bash
-fabrica.sh restart
-fabrica.sh reboot
-fabrica.sh recreate [/path/to/fabrica-config.json]
+fabrica restart
+fabrica reboot
+fabrica recreate [/path/to/fabrica-config.json]
 ```
 
 * `restart` -- just stops and starts the network. Useful in case of minor config changes of generated files.
@@ -111,7 +111,7 @@ fabrica.sh recreate [/path/to/fabrica-config.json]
 ### reboot
 
 ```bash
-fabrica.sh reboot
+fabrica reboot
 ```
 
 Down and Up steps combined. Useful in cases when you want a fresh instance of network without any state.  
@@ -129,9 +129,8 @@ Please note that this step is also executed automatically before each `generate`
 ### fabric-docker.sh
 
 The script `fabric-docker.sh` is generated among docker network configuration.
-It does not support `generate` command, however other commands work in same way as in `fabrica.sh`.
-Basically `fabrica.sh` forwards commands other than `generate` to this script.
-In most cases you can use `fabrica.sh docker` and `fabric-docker.sh` interchangebly.
+It does not support `generate` command, however other commands work in same way as in `fabrica`.
+Basically `fabrica` forwards some to this script.
 
 ## Managing chaincodes
 
@@ -174,7 +173,7 @@ Switches current script to selected version.
 
 Fabrica config is a single JSON file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
 It has to be compatible with the [schema].
-You may generate a basic config with `./fabrica.sh init` command.
+You may generate a basic config with `./fabrica init` command.
 See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/) directory for more complex examples.
 
 The basic structure of Fabrica config file is as follows:
