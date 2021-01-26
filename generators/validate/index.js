@@ -73,7 +73,7 @@ module.exports = class extends Generator {
 
   async shortSummary() {
     this.log(`Validation errors count: ${this.listeners.error.count()}`);
-    this.log(`validation warnings count: ${this.listeners.warn.count()}`);
+    this.log(`Validation warnings count: ${this.listeners.warn.count()}`);
     this.log(chalk.bold('==========================================================='));
   }
 
