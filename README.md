@@ -18,10 +18,10 @@ To install it globally:
 sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o /usr/local/bin/fabrica && sudo chmod +x /usr/local/bin/fabrica
 ```
 
-To get a copy of Fabrica in current directory:
+To get a copy of Fabrica for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica
+curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica.sh
 ```
 
 ## Basic usage
@@ -35,7 +35,7 @@ In this case network configuration is saved in `$(pwd)/fabrica-target`.
 Then you can manage the network with other commands, for example `stop`, `start`, `down`, `prune`.
 
 Provided Fabrica configuration file describes network topology: root organization, other organizations, channels and chaincodes.
-See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/).
+See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/) or [Fabrica config](https://github.com/softwaremill/fabrica#fabrica-config) section.
 
 There are two basic use cases.
 You may use Fabrica to start and manage the network for development purposes, test different network topologies, run it in CI environment etc.
@@ -148,3 +148,139 @@ fabrica use <version-number>
 ```   
 
 Switches current script to selected version.
+
+## Fabrica config
+
+Fabrica config is a single JSON file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
+It has to be compatible with the [schema].
+You may generate a basic config with `./fabrica.sh init` command.
+See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/) directory for more complex examples.
+
+The basic structure of Fabrica config file is as follows:
+
+```json
+{
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.0.1/schema.json",
+  "networkSettings": { ... },
+  "rootOrg": { ... },
+  "orgs": [ ... ],
+  "channels": [ ... ],
+  "chaincodes": [ ... ]
+}
+```
+
+### networkSettings
+
+Example:
+
+```json
+  "networkSettings": {
+    "fabricVersion": "1.4.6",
+    "tls": false,
+    "loglevel": "debug"
+  },
+```
+
+### rootOrg
+
+Example:
+
+```json
+  "rootOrg": {
+    "organization": {
+      "key": "root",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
+      "domain": "root.com"
+    },
+    "ca": {
+      "prefix": "ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "type": "raft",
+      "instances": 3
+    }
+  },
+```
+
+### orgs
+
+Example:
+
+```json
+  "orgs": [
+    {
+      "organization": {
+        "key": "org1",
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    },
+    ...
+  ],
+```
+
+### channels
+
+Example:
+
+```json
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    ...
+  ],
+```
+
+### chaincodes
+
+Example:
+
+```json
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "channel2",
+      "init": "{\"Args\":[]}",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node"
+    },
+    {
+      "name": "chaincode2",
+      "version": "0.0.1",
+      "lang": "java",
+      "channel": "channel2",
+      "init": "{\"Args\":[]}",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-java-simple"
+    }
+  ]
+```
