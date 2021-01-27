@@ -93,15 +93,15 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem<% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.<% chaincodes.forEach(function(chaincode) { %>
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's<% if(networkSettings.tls) { %>
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts<% } %><% chaincodes.forEach(function(chaincode) { %>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
     networks:
       - basic
