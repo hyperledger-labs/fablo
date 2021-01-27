@@ -26,9 +26,6 @@ Usage:
   fabrica.sh <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
-  fabrica.sh restart
-    Stops and starts the network. Useful in case of minor config changes in generated files.
-
   fabrica.sh reboot
     Downs and ups the network. Network state is lost, but the configuration is kept intact.
 

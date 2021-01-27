@@ -96,26 +96,15 @@ fabrica prune
 
 Downs the network and removes `fabrica-target` directory.
 
-### restart, reboot, recreate
+### reboot and recreate
 
 ```bash
-fabrica restart
 fabrica reboot
 fabrica recreate [/path/to/fabrica-config.json]
 ```
 
-* `restart` -- just stops and starts the network. Useful in case of minor config changes of generated files.
-* `reboot` -- downs and ups the network. Network state is lost, but the configuration is kept intact.
+* `reboot` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
 * `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fabrica-config` file and want to start newer network version in one command.    
-
-### reboot
-
-```bash
-fabrica reboot
-```
-
-Down and Up steps combined. Useful in cases when you want a fresh instance of network without any state.  
-
 
 ### validate
 
@@ -130,7 +119,7 @@ Please note that this step is also executed automatically before each `generate`
 
 The script `fabric-docker.sh` is generated among docker network configuration.
 It does not support `generate` command, however other commands work in same way as in `fabrica`.
-Basically `fabrica` forwards some to this script.
+Basically `fabrica` forwards some commands to this script.
 
 ## Managing chaincodes
 

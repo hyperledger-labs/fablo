@@ -1,16 +1,16 @@
 #!/bin/bash
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
 
-  local CHANNEL_NAME=$5
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
 
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local ORDERER_URL=$8
 
   local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
 
@@ -34,14 +34,17 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
@@ -74,14 +77,17 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeUpgrade() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
@@ -115,14 +121,16 @@ function chaincodeUpgrade() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local CA_CERT="/var/hyperledger/cli/"$9
 
   local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
@@ -148,16 +156,20 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
+
   local CA_CERT="/var/hyperledger/cli/"${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
@@ -192,16 +204,20 @@ function chaincodeInstantiateTls() {
 }
 
 function chaincodeUpgradeTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local INIT_PARAMS=$9
+
   local ENDORSEMENT=${10}
+
   local CA_CERT="/var/hyperledger/cli/"${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
