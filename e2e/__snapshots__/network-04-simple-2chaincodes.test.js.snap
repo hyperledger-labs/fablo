@@ -160,9 +160,6 @@ elif [ \\"$1\\" = \\"start\\" ]; then
   startNetwork
 elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
-elif [ \\"$1\\" = \\"restart\\" ]; then
-  stopNetwork
-  startNetwork
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
@@ -223,22 +220,22 @@ function installChaincodes() {
   fi
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\"
 
   printItalics \\"Instantiating chaincode 'chaincode2' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
 }
 
@@ -270,26 +267,26 @@ function upgradeChaincode() {
     fi
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   fi
 
   if [ \\"$chaincodeName\\" = \\"chaincode2\\" ]; then
 
     printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\"
 
     printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer1.org1.com:7061\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode2' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"my-channel1\\" \\"peer0.org1.com:7060\\" \\"orderer0.root.com:7050\\" \\"cli.org1.com\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   fi
 
@@ -487,7 +484,6 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/:/var/hyperledger/cli/crypto/daTls # TODO ! To ease up deployment, not proper.
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
@@ -864,16 +860,16 @@ exports[`network-04-simple-2chaincodes should create proper e2e/__tmp__/network-
 "#!/bin/bash
 
 function chaincodeInstall() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
 
-  local CHANNEL_NAME=$5
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
 
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local ORDERER_URL=$8
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
 
@@ -897,14 +893,17 @@ function chaincodeInstall() {
 }
 
 function chaincodeInstantiate() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
@@ -937,14 +936,17 @@ function chaincodeInstantiate() {
 }
 
 function chaincodeUpgrade() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
@@ -978,14 +980,16 @@ function chaincodeUpgrade() {
 }
 
 function chaincodeInstallTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local CA_CERT=\\"/var/hyperledger/cli/\\"$9
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
@@ -1011,16 +1015,20 @@ function chaincodeInstallTls() {
 }
 
 function chaincodeInstantiateTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
+
   local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
@@ -1055,16 +1063,20 @@ function chaincodeInstantiateTls() {
 }
 
 function chaincodeUpgradeTls() {
-  local CHAINCODE_DIR_PATH=$1
-  local CHAINCODE_NAME=$2
-  local CHAINCODE_VERSION=$3
-  local CHAINCODE_LANG=$4
-  local CHANNEL_NAME=$5
-  local PEER_ADDRESS=$6
-  local ORDERER_URL=$7
-  local CLI_NAME=$8
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
   local INIT_PARAMS=$9
+
   local ENDORSEMENT=\${10}
+
   local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
