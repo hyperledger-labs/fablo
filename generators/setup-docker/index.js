@@ -116,10 +116,12 @@ module.exports = class extends Generator {
   }
 
   _copyDockerComposeEnv(networkSettings, orgsTransformed, composeNetworkName) {
+    const fabricCaVersion = configTransformers.getCaVersion(networkSettings.fabricVersion);
+    const monitoring = { loglevel: 'info', ...(networkSettings.monitoring || {}) };
     const settings = {
       composeNetworkName,
-      fabricCaVersion: configTransformers.getCaVersion(networkSettings.fabricVersion),
-      networkSettings,
+      fabricCaVersion,
+      networkSettings: { ...networkSettings, monitoring },
       orgs: orgsTransformed,
       paths: configTransformers.getPathsFromEnv(),
       fabricaVersion: config.version,
