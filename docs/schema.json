@@ -46,16 +46,25 @@
           "type": "boolean",
           "default": true
         },
-        "loglevel": {
-          "$id": "#/properties/monitoring/properties/loglevel",
-          "title": "Log level for all components",
-          "type": "string",
-          "enum": [
-            "debug",
-            "info",
-            "warn"
-          ],
-          "default": "info"
+        "monitoring": {
+          "$id": "#/properties/monitoring",
+          "title": "Monitoring settings",
+          "description": "Optional settings for monitoring purposes",
+          "type": "object",
+          "required": [],
+          "properties": {
+            "loglevel": {
+              "$id": "#/properties/monitoring/properties/loglevel",
+              "title": "Log level for all components",
+              "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn"
+              ],
+              "default": "info"
+            }
+          }
         }
       }
     },
