@@ -96,15 +96,13 @@ fabrica prune
 
 Downs the network and removes `fabrica-target` directory.
 
-### restart, reboot, recreate
+### reboot and recreate
 
 ```bash
-fabrica.sh restart
 fabrica.sh reboot
 fabrica.sh recreate [/path/to/fabrica-config.json]
 ```
 
-* `restart` -- just stops and starts the network. Useful in case of minor config changes of generated files.
 * `reboot` -- downs and ups the network. Network state is lost, but the configuration is kept intact.
 * `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fabrica-config` file and want to start newer network version in one command.    
 
