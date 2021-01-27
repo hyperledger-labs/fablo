@@ -197,7 +197,9 @@ Example:
   "networkSettings": {
     "fabricVersion": "1.4.6",
     "tls": false,
-    "loglevel": "debug"
+    "monitoring": {
+      "loglevel": "debug"
+    }
   },
 ```
 
