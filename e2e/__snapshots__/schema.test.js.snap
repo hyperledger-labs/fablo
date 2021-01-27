@@ -215,6 +215,26 @@ Object {
           "title": "Hyperledger Fabric version",
           "type": "string",
         },
+        "monitoring": Object {
+          "$id": "#/properties/monitoring",
+          "description": "Optional settings for monitoring purposes",
+          "properties": Object {
+            "loglevel": Object {
+              "$id": "#/properties/monitoring/properties/loglevel",
+              "default": "info",
+              "enum": Array [
+                "debug",
+                "info",
+                "warn",
+              ],
+              "title": "Log level for all components",
+              "type": "string",
+            },
+          },
+          "required": Array [],
+          "title": "Monitoring settings",
+          "type": "object",
+        },
         "tls": Object {
           "$id": "#/properties/networkSettings/properties/tls",
           "default": true,
