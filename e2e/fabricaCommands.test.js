@@ -1,4 +1,11 @@
 const { execSync } = require('child_process');
+const currentFabricaVersion = require('../package.json').version;
+
+const commandOutput = (status, output) => ({
+  status,
+  output,
+  outputJson: () => JSON.parse(output),
+});
 
 const executeCommand = (c, noConsole = false) => {
   // eslint-disable-next-line no-console
@@ -7,12 +14,12 @@ const executeCommand = (c, noConsole = false) => {
     log(c);
     const output = execSync(c, { encoding: 'utf-8' });
     log(output);
-    return { status: 0, output };
+    return commandOutput(0, output);
   } catch (e) {
     const output = (e.output || []).join('');
     // eslint-disable-next-line no-console
     console.error(output);
-    return { status: e.status, output };
+    return commandOutput(e.status, output);
   }
 };
 
@@ -65,7 +72,7 @@ describe('use', () => {
     // Then
     expect(commandResult).toEqual(success());
     expect(commandResult.output).toContain('0.0.1');
-    expect(commandResult.output).toContain('<== current');
+    expect(commandResult.output).toContain(`${currentFabricaVersion} <== current`);
     expect(getFiles()).toEqual([]);
   });
 });
@@ -108,6 +115,40 @@ describe('validate', () => {
     expect(commandResult).toEqual(failure());
     expect(commandResult.output).toContain('commands-tests/fabrica-config.json does not exist');
     expect(getFiles()).toEqual([]);
+  });
+});
+
+describe('version', () => {
+  it('should print version information', () => {
+    // When
+    const commandResult = fabricaExec('version');
+
+    // Then
+    expect(commandResult).toEqual(success());
+    expect(commandResult.outputJson()).toEqual(expect.objectContaining({
+      version: currentFabricaVersion,
+      build: expect.stringMatching(/.*/),
+    }));
+  });
+
+  it('should print verbose version information', () => {
+    // When
+    const commandResult1 = fabricaExec('version -v');
+    const commandResult2 = fabricaExec('version --verbose');
+
+    // Then
+    expect(commandResult1).toEqual(success());
+    expect(commandResult1.outputJson()).toEqual(expect.objectContaining({
+      version: currentFabricaVersion,
+      build: expect.stringMatching(/.*/),
+      supported: expect.objectContaining({
+        fabricaVersions: expect.stringMatching(/.*/),
+        hyperledgerFabricVersions: expect.anything(),
+      }),
+    }));
+
+    expect(commandResult1.status).toEqual(commandResult2.status);
+    expect(commandResult1.output).toEqual(commandResult2.output);
   });
 });
 
