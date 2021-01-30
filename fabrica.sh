@@ -7,7 +7,7 @@ FABRICA_IMAGE_NAME="softwaremill/fabrica"
 FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
 
 COMMAND="$1"
-FABRICA_WORKSPACE="$(pwd)/fabrica-target"
+DEFAULT_FABRICA_TARGET="$(pwd)/fabrica-target"
 DEFAULT_FABRICA_CONFIG="$(pwd)/fabrica-config.json"
 
 printHelp() {
@@ -48,59 +48,40 @@ Usage:
     Prints current Fabrica version, with optional details."
 }
 
-executeOnFabricaDockerConsolePrintOnly() {
-  passed_command=$1
-  docker run -i --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd)":/network/workspace \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
-    2>&1
-}
-
-executeOnFabricaDockerMountedAllDirs() {
+executeOnFabricaDocker() {
   local passed_command="$1"
+  local passed_param="$2"
+  local fabrica_workspace="$3"
+  local fabrica_config="${4:-$FABRICA_CONFIG}"
+  local chaincodes_base_dir="$(dirname "$fabrica_config")"
 
-  mkdir -p "$FABRICA_WORKSPACE"
-  docker run -i --rm \
-    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
-    -v "$FABRICA_WORKSPACE":/network/workspace \
-    --env FABRICA_CONFIG="$FABRICA_CONFIG" \
-    --env CHAINCODES_BASE_DIR="$CHAINCODES_BASE_DIR" \
-    --env FABRICA_WORKSPACE="$FABRICA_WORKSPACE" \
-    -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
-    2>&1
-}
-
-executeOnFabricaDockerMountedConfigFile() {
-  local passed_command="$1"
+  # Create temporary workspace and remove it after script execution
+  if [ -z "$fabrica_workspace" ]; then
+    fabrica_workspace="$(mktemp -d -t fabrica.XXXXXXXX)"
+    # shellcheck disable=SC2064
+    trap "rm -rf \"$fabrica_workspace\"" EXIT
+  fi
 
   docker run -i --rm \
-    -v "$FABRICA_CONFIG":/network/fabrica-config.json \
-    -v $(pwd):/network/workspace \
-    --env FABRICA_CONFIG="/network/fabrica-config.json" \
+    -v "$fabrica_config":/network/fabrica-config.json \
+    -v "$fabrica_workspace":/network/workspace \
+    --env FABRICA_CONFIG="$fabrica_config" \
+    --env CHAINCODES_BASE_DIR="$chaincodes_base_dir" \
+    --env FABRICA_WORKSPACE="$fabrica_workspace" \
     -u "$(id -u):$(id -g)" \
-    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh $passed_command" \
+    $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh \"$passed_command\" \"$passed_param\"" \
     2>&1
-}
-
-printVersion() {
-  optional_full_flag="$1"
-  executeOnFabricaDockerConsolePrintOnly "version $optional_full_flag"
-}
-
-listVersions() {
-  executeOnFabricaDockerConsolePrintOnly "list-versions"
-}
-
-init() {
-  executeOnFabricaDockerConsolePrintOnly "init"
 }
 
 useVersion() {
-  version=$1
-  echo "Updating '$0' to version $version..."
-  curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
+  version="$1"
+
+  if [ -n "$version" ]; then
+    echo "Updating '$0' to version $version..."
+    curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
+  else
+    executeOnFabricaDocker list-versions
+  fi
 }
 
 validateConfig() {
@@ -118,50 +99,51 @@ validateConfig() {
     FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
   fi
 
-  executeOnFabricaDockerMountedConfigFile "validate ../fabrica-config.json"
+  executeOnFabricaDocker validate
 }
 
 generateNetworkConfig() {
-  if [ -z "$1" ]; then
-    FABRICA_CONFIG="$DEFAULT_FABRICA_CONFIG"
-    if [ ! -f "$FABRICA_CONFIG" ]; then
-      echo "File $FABRICA_CONFIG does not exist"
+  fabrica_config="$1"
+  fabrica_target="${2:-$DEFAULT_FABRICA_TARGET}"
+
+  if [ -z "$fabrica_config" ]; then
+    fabrica_config="$DEFAULT_FABRICA_CONFIG"
+    if [ ! -f "$fabrica_config" ]; then
+      echo "File $fabrica_config does not exist"
       exit 1
     fi
   else
-    if [ ! -f "$1" ]; then
-      echo "File $1 does not exist"
+    if [ ! -f "$fabrica_config" ]; then
+      echo "File $fabrica_config does not exist"
       exit 1
     fi
-    FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+    fabrica_config="$(cd "$(dirname "$fabrica_config")" && pwd)/$(basename "$fabrica_config")"
   fi
 
-  mkdir -p "$FABRICA_WORKSPACE"
-  CHAINCODES_BASE_DIR="$(dirname "$FABRICA_CONFIG")"
+  mkdir -p "$fabrica_target"
 
   echo "Generating network config"
   echo "    FABRICA_VERSION:      $FABRICA_VERSION"
-  echo "    FABRICA_CONFIG:       $FABRICA_CONFIG"
-  echo "    CHAINCODES_BASE_DIR:  $CHAINCODES_BASE_DIR"
-  echo "    FABRICA_WORKSPACE:    $FABRICA_WORKSPACE"
+  echo "    FABRICA_CONFIG:       $fabrica_config"
+  echo "    FABRICA_TARGET:       $fabrica_target"
 
-  executeOnFabricaDockerMountedAllDirs ""
+  executeOnFabricaDocker "" "" "$fabrica_target" "$fabrica_config"
 }
 
 networkPrune() {
-  if [ -f "$FABRICA_WORKSPACE/fabric-docker.sh" ]; then
-    "$FABRICA_WORKSPACE/fabric-docker.sh" down
+  if [ -f "$DEFAULT_FABRICA_TARGET/fabric-docker.sh" ]; then
+    "$DEFAULT_FABRICA_TARGET/fabric-docker.sh" down
   fi
-  echo "Removing $FABRICA_WORKSPACE"
-  rm -rf "$FABRICA_WORKSPACE"
+  echo "Removing $DEFAULT_FABRICA_TARGET"
+  rm -rf "$DEFAULT_FABRICA_TARGET"
 }
 
 networkUp() {
-  if [ ! -d "$FABRICA_WORKSPACE" ] || [ -z "$(ls -A "$FABRICA_WORKSPACE")" ]; then
+  if [ ! -d "$DEFAULT_FABRICA_TARGET" ] || [ -z "$(ls -A "$DEFAULT_FABRICA_TARGET")" ]; then
     echo "Network target directory is empty"
     generateNetworkConfig "$1"
   fi
-  "$FABRICA_WORKSPACE/fabric-docker.sh" up
+  "$DEFAULT_FABRICA_TARGET/fabric-docker.sh" up
 }
 
 if [ -z "$COMMAND" ]; then
@@ -172,25 +154,19 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "version" ]; then
-  printVersion "$2"
+  executeOnFabricaDocker version "$2"
 
-elif [ "$COMMAND" = "use" ] && [ -z "$2" ]; then
-  listVersions
-
-elif [ "$COMMAND" = "use" ] && [ -n "$2" ]; then
+elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
 
 elif [ "$COMMAND" = "init" ]; then
-  init
+  executeOnFabricaDocker init
 
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
 
 elif [ "$COMMAND" = "generate" ]; then
-  generateNetworkConfig "$2"
-  if [ -n "$3" ]; then
-    mkdir -p "$3" && mv -R "$FABRICA_WORKSPACE" "$3/*"
-  fi
+  generateNetworkConfig "$2" "$3"
 
 elif [ "$COMMAND" = "up" ]; then
   networkUp "$2"
@@ -204,5 +180,5 @@ elif [ "$COMMAND" = "recreate" ]; then
 
 else
   echo "Executing Fabrica docker command: $COMMAND"
-  "$FABRICA_WORKSPACE/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
+  "$DEFAULT_FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
 fi
