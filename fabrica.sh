@@ -52,8 +52,7 @@ executeOnFabricaDocker() {
   local passed_command="$1"
   local passed_param="$2"
   local fabrica_workspace="$3"
-  local fabrica_config="${4:-$FABRICA_CONFIG}"
-  local chaincodes_base_dir="$(dirname "$fabrica_config")"
+  local fabrica_config="$4"
 
   # Create temporary workspace and remove it after script execution
   if [ -z "$fabrica_workspace" ]; then
@@ -62,19 +61,37 @@ executeOnFabricaDocker() {
     trap "rm -rf \"$fabrica_workspace\"" EXIT
   fi
 
+  local fabrica_workspace_params=(
+    -v "$fabrica_workspace":/network/workspace
+    --env "FABRICA_WORKSPACE=\"$fabrica_workspace\""
+  )
+
+  local fabrica_config_params=()
+  if [ -n "$fabrica_config" ]; then
+    if [ ! -f "$fabrica_config" ]; then
+      echo "File $fabrica_config does not exist"
+      exit 1
+    fi
+
+    fabrica_config="$(cd "$(dirname "$fabrica_config")" && pwd)/$(basename "$fabrica_config")"
+    local chaincodes_base_dir="$(dirname "$fabrica_config")"
+    fabrica_config_params=(
+      -v "$fabrica_config":/network/fabrica-config.json
+      --env "FABRICA_CONFIG=\"$fabrica_config\""
+      --env "CHAINCODES_BASE_DIR=\"$chaincodes_base_dir\""
+    )
+  fi
+
   docker run -i --rm \
-    -v "$fabrica_config":/network/fabrica-config.json \
-    -v "$fabrica_workspace":/network/workspace \
-    --env FABRICA_CONFIG="$fabrica_config" \
-    --env CHAINCODES_BASE_DIR="$chaincodes_base_dir" \
-    --env FABRICA_WORKSPACE="$fabrica_workspace" \
+    "${fabrica_workspace_params[@]}" \
+    "${fabrica_config_params[@]}" \
     -u "$(id -u):$(id -g)" \
     $FABRICA_IMAGE sh -c "/fabrica/docker-entrypoint.sh \"$passed_command\" \"$passed_param\"" \
     2>&1
 }
 
 useVersion() {
-  version="$1"
+  local version="$1"
 
   if [ -n "$version" ]; then
     echo "Updating '$0' to version $version..."
@@ -85,42 +102,13 @@ useVersion() {
 }
 
 validateConfig() {
-  if [ -z "$1" ]; then
-    FABRICA_CONFIG="$DEFAULT_FABRICA_CONFIG"
-    if [ ! -f "$FABRICA_CONFIG" ]; then
-      echo "File $FABRICA_CONFIG does not exist"
-      exit 1
-    fi
-  else
-    if [ ! -f "$1" ]; then
-      echo "File $1 does not exist"
-      exit 1
-    fi
-    FABRICA_CONFIG="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
-  fi
-
-  executeOnFabricaDocker validate
+  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  executeOnFabricaDocker validate "" "" "$fabrica_config"
 }
 
 generateNetworkConfig() {
-  fabrica_config="$1"
-  fabrica_target="${2:-$DEFAULT_FABRICA_TARGET}"
-
-  if [ -z "$fabrica_config" ]; then
-    fabrica_config="$DEFAULT_FABRICA_CONFIG"
-    if [ ! -f "$fabrica_config" ]; then
-      echo "File $fabrica_config does not exist"
-      exit 1
-    fi
-  else
-    if [ ! -f "$fabrica_config" ]; then
-      echo "File $fabrica_config does not exist"
-      exit 1
-    fi
-    fabrica_config="$(cd "$(dirname "$fabrica_config")" && pwd)/$(basename "$fabrica_config")"
-  fi
-
-  mkdir -p "$fabrica_target"
+  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  local fabrica_target=${2:-$DEFAULT_FABRICA_TARGET}
 
   echo "Generating network config"
   echo "    FABRICA_VERSION:      $FABRICA_VERSION"

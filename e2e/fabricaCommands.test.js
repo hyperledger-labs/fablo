@@ -113,7 +113,7 @@ describe('validate', () => {
 
     // Then
     expect(commandResult).toEqual(failure());
-    expect(commandResult.output).toContain('commands-tests/fabrica-config.json does not exist');
+    expect(commandResult.output).toContain('commands-tests/fabrica-config.json does not exist\n');
     expect(getFiles()).toEqual([]);
   });
 });
