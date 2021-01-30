@@ -37,7 +37,7 @@ const getFiles = () => executeCommand(`find '${workdir}' -type f`)
   .filter((s) => !!s.length)
   .sort();
 
-const getFileContent = (file) => executeCommand(`cat ${file}`);
+const getFileContent = (file) => executeCommand(`cat ${file}`).output;
 
 const cleanupWorkdir = () => {
   execSync(`rm -rf ${workdir} ; mkdir -p ${workdir}`);
