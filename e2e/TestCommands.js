@@ -55,7 +55,7 @@ class TestCommands {
   }
 
   getFileContent(file) {
-    return executeCommand(`cat "${this.workdir}/${file}"`).output;
+    return executeCommand(`cat "${this.workdir}/${file}"`, true).output;
   }
 
   cleanupWorkdir() {
@@ -67,4 +67,4 @@ TestCommands.success = () => expect.objectContaining({ status: 0 });
 
 TestCommands.failure = () => expect.objectContaining({ status: 1 });
 
-exports.default = TestCommands;
+exports.TestCommands = TestCommands;
