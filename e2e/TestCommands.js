@@ -27,7 +27,7 @@ const executeCommand = (c, noConsole = false) => {
   } catch (e) {
     const output = (e.output || []).join('');
     // eslint-disable-next-line no-console
-    console.error(output);
+    console.error(`Error executing command ${c}`, e, output);
     return commandOutput(e.status, output);
   }
 };
