@@ -11,7 +11,7 @@ executeYeomanCommand() {
   trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\"" EXIT
 
   if [ "$(id -u)" = 0 ]; then
-    echo "Root user detected, running as yeoman user"
+    # root user detected, running as yeoman user
     sudo chown -R yeoman:yeoman "$yeoman_target_dir"
     (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
     sudo chown -R root:root "$yeoman_target_dir"
