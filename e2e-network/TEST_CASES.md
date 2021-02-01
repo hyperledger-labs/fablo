@@ -11,7 +11,8 @@
 | Peers                     | 2     | 2, 2  |
 | Channels                  | 1     | 2     |
 | Node chaincode            | yes   | yes   |
-| Node chaincode upgrade    | no    | yes   |
+| Node chaincode upgrade    | yes   | yes   |
 | Java chaincode            | no    | yes   |
 | Go chaincode              | no    | no    |
 | Network restart           | no    | yes   |
+| Network reboot            | yes   | no    |
