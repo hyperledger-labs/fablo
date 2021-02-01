@@ -53,10 +53,8 @@ describe('init', () => {
     // Then
     expect(commandResult).toEqual(success());
     expect(commandResult.output).toContain('Sample config file created! :)');
-    expect(commandResult.output).toContain(
-      'Chaincode directory is \'./chaincodes/chaincode-kv-node\'.\nIf it\'s empty your network won\'t run entirely.',
-    );
-
+    expect(commandResult.output).toContain('Chaincode directory is \'./chaincodes/chaincode-kv-node\'.');
+    expect(commandResult.output).toContain('If it\'s empty your network won\'t run entirely.');
     expect(getFiles()).toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
     expect(getFileContent(`${workdir}/fabrica-config.json`)).toMatchSnapshot();
   });
