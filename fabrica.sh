@@ -62,7 +62,6 @@ executeOnFabricaDocker() {
 
   local fabrica_workspace_params=(
     -v "$fabrica_workspace":/network/workspace
-    --env "FABRICA_WORKSPACE=\"$fabrica_workspace\""
   )
 
   local fabrica_config_params=()
@@ -115,9 +114,9 @@ generateNetworkConfig() {
   local fabrica_target=${2:-$FABRICA_TARGET}
 
   echo "Generating network config"
-  echo "    FABRICA_VERSION:   $FABRICA_VERSION"
-  echo "    FABRICA_CONFIG:    $fabrica_config"
-  echo "    FABRICA_WORKSPACE: $fabrica_target"
+  echo "    FABRICA_VERSION:      $FABRICA_VERSION"
+  echo "    FABRICA_CONFIG:       $fabrica_config"
+  echo "    FABRICA_NETWORK_ROOT: $fabrica_target"
 
   executeOnFabricaDocker "" "" "$fabrica_target" "$fabrica_config"
 }
