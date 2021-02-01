@@ -6,7 +6,7 @@ executeYeomanCommand() {
   command=$1
   param=$2
 
-  # cleanyp yeoman files after execution
+  # cleanup yeoman files after execution
   # shellcheck disable=SC2064
   trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\"" EXIT
 
