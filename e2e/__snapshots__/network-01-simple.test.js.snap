@@ -130,13 +130,13 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 
 set -eu
 
-FABRICA_WORKSPACE=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
+FABRICA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
-source \\"$FABRICA_WORKSPACE/fabric-docker/scripts/base-help.sh\\"
-source \\"$FABRICA_WORKSPACE/fabric-docker/scripts/base-functions.sh\\"
-source \\"$FABRICA_WORKSPACE/fabric-docker/scripts/chaincode-functions.sh\\"
-source \\"$FABRICA_WORKSPACE/fabric-docker/commands-generated.sh\\"
-source \\"$FABRICA_WORKSPACE/fabric-docker/.env\\"
+source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
+source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
+source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh\\"
+source \\"$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
+source \\"$FABRICA_NETWORK_ROOT/fabric-docker/.env\\"
 
 function networkUp() {
   generateArtifacts
@@ -270,7 +270,7 @@ function upgradeChaincode() {
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_WORKSPACE/fabric-config\\" \\"$FABRICA_WORKSPACE/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
   notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
@@ -283,19 +283,19 @@ function notifyOrgsAboutChannels() {
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
   printItalics \\"Generating crypto material for org Orderer\\" \\"U1F512\\"
-  certsGenerate \\"$FABRICA_WORKSPACE/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRICA_WORKSPACE/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
-  certsGenerate \\"$FABRICA_WORKSPACE/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_WORKSPACE/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
-  genesisBlockCreate \\"$FABRICA_WORKSPACE/fabric-config\\" \\"$FABRICA_WORKSPACE/fabric-config/config\\"
+  genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 }
 
 function startNetwork() {
   printHeadline \\"Starting network\\" \\"U1F680\\"
   (
-    cd \\"$FABRICA_WORKSPACE\\"/fabric-docker
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
     docker-compose up -d
     sleep 4
   )
@@ -304,7 +304,7 @@ function startNetwork() {
 function stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (
-    cd \\"$FABRICA_WORKSPACE\\"/fabric-docker
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
     docker-compose stop
     sleep 4
   )
@@ -312,7 +312,7 @@ function stopNetwork() {
 
 function generateChannelsArtifacts() {
   printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel1\\" \\"$FABRICA_WORKSPACE/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_WORKSPACE/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 }
 
 function installChannels() {
@@ -330,7 +330,7 @@ function installChannels() {
 function networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (
-    cd \\"$FABRICA_WORKSPACE\\"/fabric-docker
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
     docker-compose down
   )
 
@@ -351,8 +351,8 @@ function networkDown() {
   }
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf \\"$FABRICA_WORKSPACE\\"/fabric-config/config
-  rm -rf \\"$FABRICA_WORKSPACE\\"/fabric-config/crypto-config
+  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
+  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/crypto-config
 
   printHeadline \\"Done! Network was purged\\" \\"U1F5D1\\"
 }
