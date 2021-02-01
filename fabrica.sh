@@ -8,7 +8,7 @@ FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
 
 COMMAND="$1"
 COMMAND_CALL_ROOT="$(pwd)"
-DEFAULT_FABRICA_WORKSPACE="$COMMAND_CALL_ROOT/fabrica-target"
+FABRICA_TARGET="$COMMAND_CALL_ROOT/fabrica-target"
 DEFAULT_FABRICA_CONFIG="$COMMAND_CALL_ROOT/fabrica-config.json"
 
 # Create temporary directory and remove it after script execution
@@ -112,7 +112,7 @@ validateConfig() {
 
 generateNetworkConfig() {
   local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
-  local fabrica_target=${2:-$DEFAULT_FABRICA_WORKSPACE}
+  local fabrica_target=${2:-$FABRICA_TARGET}
 
   echo "Generating network config"
   echo "    FABRICA_VERSION:   $FABRICA_VERSION"
@@ -123,19 +123,19 @@ generateNetworkConfig() {
 }
 
 networkPrune() {
-  if [ -f "$DEFAULT_FABRICA_WORKSPACE/fabric-docker.sh" ]; then
-    "$DEFAULT_FABRICA_WORKSPACE/fabric-docker.sh" down
+  if [ -f "$FABRICA_TARGET/fabric-docker.sh" ]; then
+    "$FABRICA_TARGET/fabric-docker.sh" down
   fi
-  echo "Removing $DEFAULT_FABRICA_WORKSPACE"
-  rm -rf "$DEFAULT_FABRICA_WORKSPACE"
+  echo "Removing $FABRICA_TARGET"
+  rm -rf "$FABRICA_TARGET"
 }
 
 networkUp() {
-  if [ ! -d "$DEFAULT_FABRICA_WORKSPACE" ] || [ -z "$(ls -A "$DEFAULT_FABRICA_WORKSPACE")" ]; then
+  if [ ! -d "$FABRICA_TARGET" ] || [ -z "$(ls -A "$FABRICA_TARGET")" ]; then
     echo "Network target directory is empty"
     generateNetworkConfig "$1"
   fi
-  "$DEFAULT_FABRICA_WORKSPACE/fabric-docker.sh" up
+  "$FABRICA_TARGET/fabric-docker.sh" up
 }
 
 if [ -z "$COMMAND" ]; then
@@ -172,5 +172,5 @@ elif [ "$COMMAND" = "recreate" ]; then
 
 else
   echo "Executing Fabrica docker command: $COMMAND"
-  "$DEFAULT_FABRICA_WORKSPACE/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
+  "$FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
 fi
