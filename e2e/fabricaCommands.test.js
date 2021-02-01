@@ -1,4 +1,4 @@
-const TestCommands = require('./TestCommands').default;
+const { TestCommands } = require('./TestCommands');
 const currentFabricaVersion = require('../package.json').version;
 
 const commands = new TestCommands('./e2e/__tmp__/commands-tests', '../../..');
