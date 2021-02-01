@@ -3,24 +3,24 @@
 set -e
 
 executeYeomanCommand() {
-  target_dir=$1
-  command=$2
-  param=$3
+  command=$1
+  param=$2
+
+  # cleanup yeoman files after execution
+  # shellcheck disable=SC2064
+  trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\"" EXIT
 
   if [ "$(id -u)" = 0 ]; then
-    echo "Root user detected, running as yeoman user"
-    sudo chown -R yeoman:yeoman "$target_dir"
-    (cd "$target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
-    sudo chown -R root:root "$target_dir"
+    # root user detected, running as yeoman user
+    sudo chown -R yeoman:yeoman "$yeoman_target_dir"
+    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
+    sudo chown -R root:root "$yeoman_target_dir"
   else
-    (cd "$target_dir" && yo --no-insight "fabrica:$command" "$param")
+    (cd "$yeoman_target_dir" && yo --no-insight "fabrica:$command" "$param")
   fi
-
-  rm -rf "$target_dir/.cache" "$target_dir/.config"
 }
 
 formatGeneratedFiles() {
-  target_dir=$1
   # Additional script and yaml formatting
   #
   # Why? Yeoman output may contain some additional whitespaces or the formatting
@@ -29,9 +29,9 @@ formatGeneratedFiles() {
   # Since the templates should obey good practices, we don't use linters here
   # (i.e. shellcheck and yamllint).
   echo "Formatting generated files"
-  shfmt -i=2 -l -w "$target_dir"
+  shfmt -i=2 -l -w "$yeoman_target_dir"
 
-  for yaml in "$target_dir"/**/*.yaml; do
+  for yaml in "$yeoman_target_dir"/**/*.yaml; do
     # remove trailing spaces
     sed --in-place 's/[ \t]*$//' "$yaml"
 
@@ -41,14 +41,13 @@ formatGeneratedFiles() {
   done
 }
 
-yeoman_target_dir="/network/target"
+yeoman_target_dir="/network/workspace"
+fabrica_config_path="../../network/fabrica-config.json"
+yeoman_command=${1:-setup-docker}
+yeoman_param=${2:-"$fabrica_config_path"}
 
-if [ -n "$1" ]; then
-  executeYeomanCommand "$yeoman_target_dir" "$1" "$2"
-else
-  # by default entrypoint generates files from fabrica config
-  config_path="/network/fabrica-config.json"
+executeYeomanCommand "$yeoman_command" "$yeoman_param"
 
-  executeYeomanCommand "$yeoman_target_dir" setup-docker "../..$config_path"
-  formatGeneratedFiles "$yeoman_target_dir"
+if [ "$yeoman_command" = setup-docker ]; then
+  formatGeneratedFiles
 fi
