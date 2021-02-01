@@ -8,7 +8,6 @@
 * Support for solo consensus protocol
 * Support for RAFT consensus protocol ([#16](https://github.com/softwaremill/fabrica/issues/16), [#38](https://github.com/softwaremill/fabrica/issues/38))
 * Validation of `fabrica-config.json` based on JSON schema and other rules
-* Support Hyperledger Fabric 2.0 as well (without 2.0 capabilities, [#17](https://github.com/softwaremill/fabrica/issues/17))
 * Allow to upgrade chaincode ([#45](https://github.com/softwaremill/fabrica/issues/36))
 * Network recreation in one step ([#105](https://github.com/softwaremill/fabrica/issues/105))
 * Init command to provide simple config ([#90](https://github.com/softwaremill/fabrica/issues/90))
