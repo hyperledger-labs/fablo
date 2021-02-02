@@ -118,6 +118,7 @@ generateNetworkConfig() {
   echo "    FABRICA_CONFIG:       $fabrica_config"
   echo "    FABRICA_NETWORK_ROOT: $fabrica_target"
 
+  mkdir -p "$fabrica_target"
   executeOnFabricaDocker "" "" "$fabrica_target" "$fabrica_config"
 }
 
