@@ -80,7 +80,7 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
 
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2" &&
-  waitForChaincode "cli.org2.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.2" &&
+  waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.2" &&
 
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
