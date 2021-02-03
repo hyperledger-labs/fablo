@@ -1,6 +1,6 @@
-const repositoryUtils = require('../generators/repositoryUtils');
+const repositoryUtils = require('./repositoryUtils');
 
-describe('versionSort', () => {
+describe('sortVersions', () => {
   it('should sort versions', () => {
     // Given
     const unsortedVersions = [

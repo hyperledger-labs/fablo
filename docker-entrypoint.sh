@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 set -e
 
@@ -6,27 +6,18 @@ executeYeomanCommand() {
   command=$1
   param=$2
 
+  # cleanup yeoman files after execution
+  # shellcheck disable=SC2064
+  trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\"" EXIT
+
   if [ "$(id -u)" = 0 ]; then
-    echo "Root user detected, running as yeoman user"
+    # root user detected, running as yeoman user
     sudo chown -R yeoman:yeoman "$yeoman_target_dir"
     (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
     sudo chown -R root:root "$yeoman_target_dir"
   else
     (cd "$yeoman_target_dir" && yo --no-insight "fabrica:$command" "$param")
   fi
-}
-
-cleanupYeomanCache() {
-  rm -rf "$yeoman_target_dir/.cache" "$yeoman_target_dir/.config"
-}
-
-executeYeomanCommandAndCleanup() {
-  # shellcheck disable=SC2015
-  executeYeomanCommand "$1" "$2" && cleanupYeomanCache || (
-    echo "Yeoman command failed!"
-    cleanupYeomanCache
-    exit 1
-  )
 }
 
 formatGeneratedFiles() {
@@ -50,12 +41,12 @@ formatGeneratedFiles() {
   done
 }
 
-yeoman_target_dir="/network/target"
+yeoman_target_dir="/network/workspace"
 fabrica_config_path="../../network/fabrica-config.json"
 yeoman_command=${1:-setup-docker}
 yeoman_param=${2:-"$fabrica_config_path"}
 
-executeYeomanCommandAndCleanup "$yeoman_command" "$yeoman_param"
+executeYeomanCommand "$yeoman_command" "$yeoman_param"
 
 if [ "$yeoman_command" = setup-docker ]; then
   formatGeneratedFiles

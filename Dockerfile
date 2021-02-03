@@ -21,7 +21,7 @@ RUN adduser -D -u 501 yeoman && \
   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Yeoman needs the use of a home directory for caching and certain config storage.
-ENV HOME /network/target
+ENV HOME /network/workspace
 
 COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
 COPY docs /fabrica/docs

@@ -147,7 +147,7 @@ exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 set -eu
 
@@ -221,7 +221,7 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/commands-generated.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 function prepareChaincodeDirs() {
 
@@ -742,7 +742,7 @@ services:
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
@@ -998,7 +998,7 @@ function removeContainer() {
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 function printHelp() {
   echo \\"Fabrica is powered by SoftwareMill\\"
@@ -1030,7 +1030,7 @@ function printHelp() {
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 function chaincodeInstall() {
   local CLI_NAME=$1
@@ -1287,7 +1287,7 @@ function chaincodeUpgradeTls() {
 `;
 
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
-"#!/bin/bash
+"#!/usr/bin/env bash
 
 set -eu
 

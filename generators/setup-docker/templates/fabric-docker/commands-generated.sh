@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function prepareChaincodeDirs() {
   <% if (!chaincodes || !chaincodes.length) { -%>
