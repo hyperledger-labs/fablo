@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script runs linter for bash and YAML files in Fabrica root and for
 # generated network configs in 'e2e/__tmp__' directory. It fails if generated

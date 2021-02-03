@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate

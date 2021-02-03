@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function chaincodeInstall() {
   local CLI_NAME=$1
