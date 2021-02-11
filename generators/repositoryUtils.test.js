@@ -5,9 +5,11 @@ describe('sortVersions', () => {
     // Given
     const unsortedVersions = [
       '0.0.2',
+      '0.0.2-unstable',
       '0.0.1',
       '0.1.11',
       '0.1.1',
+      '0.1.1-unstable',
       '1.21.2',
     ];
 
@@ -21,6 +23,8 @@ describe('sortVersions', () => {
       '0.1.1',
       '0.0.2',
       '0.0.1',
+      '0.1.1-unstable',
+      '0.0.2-unstable',
     ];
 
     expect(sortedVersions).toEqual(expectedVersions);
