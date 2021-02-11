@@ -6,9 +6,11 @@ describe('versionSort', () => {
     // Given
     const unsortedVersions = [
       '0.0.2',
+      '0.0.2-unstable',
       '0.0.1',
       '0.1.11',
       '0.1.1',
+      '0.1.1-unstable',
       '1.21.2',
     ];
 
@@ -22,6 +24,8 @@ describe('versionSort', () => {
       '0.1.1',
       '0.0.2',
       '0.0.1',
+      '0.1.1-unstable',
+      '0.0.2-unstable',
     ];
     assert.deepEqual(sortedVersions, expectedVersions);
   });
