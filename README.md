@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/softwaremill-fabrica/community.svg)](https://gitter.im/softwaremill-fabrica/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 <h1><img src="./logo.svg" alt="Fabrica"/></h1>
 
 Fabrica supports:
