@@ -29,7 +29,7 @@ describe('use', () => {
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toContain('0.0.1');
+    expect(commandResult.output).toContain('0.1.0-unstable');
     expect(commandResult.output).toContain(`${currentFabricaVersion} <== current`);
     expect(commands.getFiles()).toEqual([]);
   });
