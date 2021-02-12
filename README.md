@@ -9,6 +9,8 @@ Fabrica supports:
 * Multiple organizations and channels
 * Chaincode installation and upgrade
 
+[![How to use](https://img.youtube.com/vi/JqPNozCtHkQ/0.jpg)](https://www.youtube.com/watch?v=JqPNozCtHkQ)
+
 ## Installation
 
 Fabrica is distributed as a single shell script which uses Docker image to generate the network config.
