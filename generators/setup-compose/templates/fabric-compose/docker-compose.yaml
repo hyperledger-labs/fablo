@@ -102,7 +102,9 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's<% if(networkSettings.tls) { %>
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts<% } %><% chaincodes.forEach(function(chaincode) { %>
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.privateData.filepath %>/:<%= chaincode.privateData.dockerFilepath %>"
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
+    # TODO 3 ^ private data mapping
     networks:
       - basic
 

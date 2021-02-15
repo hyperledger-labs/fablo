@@ -61,7 +61,31 @@
       "channel": "channel1",
       "init": "{\"Args\":[]}",
       "endorsement": "AND ('Org1MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": {
+        "name": "privateCollection",
+        "policy": "OR('Org1MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 2,
+        "blockToLive": 10000,
+        "memberOnlyRead": true
+      },
+    }
+  ],
+  "privateData": [
+    {
+      "name": "privateCollection",
+      "policy": "OR('Org1MSP.member')",
+      "requiredPeerCount": 0,
+      "maxPeerCount": 2,
+      "blockToLive": 10000,
+      "memberOnlyRead": true,
+      "chaincodes": [],
+      "todo1": "czy to jest per channel?",
+      "todo2": "a może wystarczy podawać w ramach chaincode'a nazwę pliku tylko?",
+      "todo3": "co się stanie jeśli istnieje już kolekcja o tej nazwie?",
+      "todo4": "czy dalej plik musi się nazywać collections_config.json zeby to działało?",
+      "todo5": "jak działa chaincdoe update? zakualizuje kolecje, wyczyści ją czy co?"
     }
   ]
 }
