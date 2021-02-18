@@ -209,14 +209,21 @@ function getCaVersion(fabricVersion) {
 function transformNetworkSettings(networkSettingsJson) {
   if ('monitoring' in networkSettingsJson && 'grayLog' in networkSettingsJson.monitoring) {
     const image = ('image' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.image : 'graylog/graylog';
-    const { imageTag } = networkSettingsJson.monitoring.grayLog;
+    const { versionTag } = networkSettingsJson.monitoring.grayLog;
+
+    const mongoImage = ('mongoImage' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.mongoImage : 'mongo';
+    const mongoVersionTag = ('mongoVersionTag' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.mongoVersionTag : '4.2';
+
+    const elasticImage = ('elasticImage' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.elasticImage : 'docker.elastic.co/elasticsearch/elasticsearch-oss';
+    const elasticVersionTag = ('elasticVersionTag' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.elasticVersionTag : '7.10.0';
     return {
       enableGreyLog: true,
-      image,
-      imageTag,
-      imageFull: `${image}:${imageTag}`,
+      graylogImageFull: `${image}:${versionTag}`,
+      mongoImageFull: `${mongoImage}:${mongoVersionTag}`,
+      elasticImageFull: `${elasticImage}:${elasticVersionTag}`,
     };
   }
+  return {};
 }
 
 function getEnvVarOrThrow(name) {

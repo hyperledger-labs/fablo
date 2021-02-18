@@ -7,7 +7,11 @@
       "loglevel": "debug",
       "grayLog": {
         "image": "graylog/graylog",
-        "imageTag": "4.0.3-1"
+        "versionTag": "4.0.3-1",
+        "mongoImage": "mongo",
+        "mongoVersionTag": "4.2",
+        "elasticImage": "docker.elastic.co/elasticsearch/elasticsearch-oss",
+        "elasticVersionTag": "7.10.1"
       }
     }
   },
