@@ -1,4 +1,4 @@
-<% if(!isHlf20) { %>################################################################################
+<% if(!networkSettings.isHlf20) { %>################################################################################
 #   SECTION: Capabilities
 ################################################################################
 Capabilities:
@@ -24,7 +24,7 @@ Channel: &ChannelDefaults
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
     Capabilities:
-        <% if(!isHlf20) { %><<: *ChannelCapabilities<% } %>
+        <% if(!networkSettings.isHlf20) { %><<: *ChannelCapabilities<% } %>
 
 ################################################################################
 #   Section: Organizations
@@ -34,7 +34,7 @@ Organizations:
       Name: <%= rootOrg.organization.name %>
       ID: <%= rootOrg.organization.mspName %>
       MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
-<% if(isHlf20) { %>
+<% if(networkSettings.isHlf20) { %>
       Policies:
           Readers:
               Type: Signature
@@ -49,7 +49,7 @@ Organizations:
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-<% if(isHlf20) { %>
+<% if(networkSettings.isHlf20) { %>
       Policies:
           Readers:
               Type: Signature
@@ -73,8 +73,8 @@ Organizations:
 Application: &ApplicationDefaults
     Organizations:
     Capabilities:
-        <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
-<% if(isHlf20) { %>
+        <% if(!networkSettings.isHlf20) { %><<: *ApplicationCapabilities<% } %>
+<% if(networkSettings.isHlf20) { %>
     # Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
     #   /Channel/Application/<PolicyName>
@@ -108,7 +108,7 @@ Orderer: &OrdererDefaults
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Organizations:<% if(isHlf20) { %>
+    Organizations:<% if(networkSettings.isHlf20) { %>
     # Policies defines the set of policies at this level of the config tree
     # For Orderer policies, their canonical path is
     #   /Channel/Orderer/<PolicyName>
@@ -141,7 +141,7 @@ Profiles:
             Organizations:
                 - *OrdererOrg
             Capabilities:
-                <% if(!isHlf20) { %><<: *OrdererCapabilities<% } %>
+                <% if(!networkSettings.isHlf20) { %><<: *OrdererCapabilities<% } %>
         Consortiums:
             SampleConsortium:
                 Organizations:<% orgs.forEach(function(org){ %>
@@ -154,4 +154,4 @@ Profiles:
             Organizations:<% orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
             Capabilities:
-                <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
+                <% if(!networkSettings.isHlf20) { %><<: *ApplicationCapabilities<% } %>

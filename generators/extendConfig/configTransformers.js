@@ -228,10 +228,14 @@ function transformGraylogSettings(networkSettingsJson) {
 
 function transformNetworkSettings(networkSettingsJson) {
   const graylogSettings = transformGraylogSettings(networkSettingsJson);
+  const isHLF20 = isHlf20(networkSettingsJson.fabricVersion);
+  const fabricCaVersion = getCaVersion(networkSettingsJson.fabricVersion);
 
   return {
     fabricVersion: networkSettingsJson.fabricVersion,
+    fabricCaVersion,
     tls: networkSettingsJson.tls,
+    isHLF20,
     monitoring: networkSettingsJson.monitoring,
     ...(graylogSettings),
   };
@@ -259,12 +263,13 @@ function transformFabricaConfig(fabricaConfig) {
   const settings = transformNetworkSettings(fabricaConfig.networkSettings);
 
   return {
+    networkSettings: settings,
+
     capabilities,
     rootOrg,
     orgs,
     channels,
     chaincodes,
-    networkSettings: settings,
   };
 }
 
