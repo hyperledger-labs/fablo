@@ -217,7 +217,7 @@ function transformGraylogSettings(networkSettingsJson) {
     const elasticImage = ('elasticImage' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.elasticImage : 'docker.elastic.co/elasticsearch/elasticsearch-oss';
     const elasticVersionTag = ('elasticVersionTag' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.elasticVersionTag : '7.10.0';
     return {
-      enableGreyLog: true,
+      enableGrayLog: true,
       graylogImageFull: `${image}:${versionTag}`,
       mongoImageFull: `${mongoImage}:${mongoVersionTag}`,
       elasticImageFull: `${elasticImage}:${elasticVersionTag}`,
@@ -227,13 +227,13 @@ function transformGraylogSettings(networkSettingsJson) {
 }
 
 function transformNetworkSettings(networkSettingsJson) {
-  const greylogSettings = transformGraylogSettings(networkSettingsJson);
+  const graylogSettings = transformGraylogSettings(networkSettingsJson);
 
   return {
     fabricVersion: networkSettingsJson.fabricVersion,
     tls: networkSettingsJson.tls,
     monitoring: networkSettingsJson.monitoring,
-    ...(greylogSettings),
+    ...(graylogSettings),
   };
 }
 

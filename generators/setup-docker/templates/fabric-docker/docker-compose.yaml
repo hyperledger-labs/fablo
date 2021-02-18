@@ -172,10 +172,10 @@ services:
   <% } %>
   <% }) %>
 <% }) %>
-<% if(networkSettings2.enableGreyLog) { %>
-  greylog:
-    container_name: greylog
-    image: <%= networkSettings2.graylogImageFull %>
+<% if(networkSettings.enableGrayLog) { %>
+  graylog:
+    container_name: graylog
+    image: <%= networkSettings.graylogImageFull %>
     restart: on-failure
     environment:
       - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
@@ -196,13 +196,13 @@ services:
 
   mongo:
     container_name: mongo
-    image: <%= networkSettings2.mongoImageFull %>
+    image: <%= networkSettings.mongoImageFull %>
     networks:
       - basic
 
   elasticsearch:
     container_name: elasticsearch
-    image: <%= networkSettings2.elasticImageFull %>
+    image: <%= networkSettings.elasticImageFull %>
     environment:
       - http.host=0.0.0.0
       - discovery.type=single-node

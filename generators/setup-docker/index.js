@@ -29,27 +29,30 @@ module.exports = class extends Generator {
       this.options.fabricaConfig, this.env.cwd,
     );
 
+    // const {
+    //   networkSettings,
+    //   rootOrg: rootOrgJson,
+    //   orgs: orgsJson,
+    //   channels: channelsJson,
+    //   chaincodes: chaincodesJson,
+    // } = this.fs.readJSON(this.options.fabricaConfigPath);
+
+    const fabricaConfig = this.fs.readJSON(this.options.fabricaConfigPath);
     const {
+      capabilities,
+      rootOrg,
+      orgs,
+      channels,
+      chaincodes,
       networkSettings,
-      rootOrg: rootOrgJson,
-      orgs: orgsJson,
-      channels: channelsJson,
-      chaincodes: chaincodesJson,
-    } = this.fs.readJSON(this.options.fabricaConfigPath);
+    } = configTransformers.transformFabricaConfig(fabricaConfig);
 
     const dateString = new Date().toISOString().substring(0, 16).replace(/[^0-9]+/g, '');
     const composeNetworkName = `fabrica_network_${dateString}`;
 
     this.log(`Used network config: ${this.options.fabricaConfigPath}`);
-    this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
+    this.log(`Fabric version is: ${fabricaConfig.networkSettings.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
-
-    const capabilities = configTransformers.getNetworkCapabilities(networkSettings.fabricVersion);
-    const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
-    const orgs = configTransformers.transformOrgConfigs(orgsJson);
-    const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
-    const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
-    const networkSettings2 = configTransformers.transformNetworkSettings(networkSettings);
 
     // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(rootOrg);
@@ -61,7 +64,7 @@ module.exports = class extends Generator {
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
     this._copyDockerCompose({
       // TODO https://github.com/softwaremill/fabrica/issues/82
-      networkSettings, rootOrg, orgs, chaincodes, networkSettings2,
+      networkSettings, rootOrg, orgs, chaincodes,
     });
 
     // ======= scripts ==================================================================
