@@ -206,7 +206,7 @@ function getCaVersion(fabricVersion) {
   return caVersion[fabricVersion] || fabricVersion;
 }
 
-function transformNetworkSettings(networkSettingsJson) {
+function transformGraylogSettings(networkSettingsJson) {
   if ('monitoring' in networkSettingsJson && 'grayLog' in networkSettingsJson.monitoring) {
     const image = ('image' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.image : 'graylog/graylog';
     const { versionTag } = networkSettingsJson.monitoring.grayLog;
@@ -226,6 +226,17 @@ function transformNetworkSettings(networkSettingsJson) {
   return {};
 }
 
+function transformNetworkSettings(networkSettingsJson) {
+  const greylogSettings = transformGraylogSettings(networkSettingsJson);
+
+  return {
+    fabricVersion: networkSettingsJson.fabricVersion,
+    tls: networkSettingsJson.tls,
+    monitoring: networkSettingsJson.monitoring,
+    ...(greylogSettings),
+  };
+}
+
 function getEnvVarOrThrow(name) {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -239,6 +250,24 @@ function getPathsFromEnv() {
   };
 }
 
+function transformFabricaConfig(fabricaConfig) {
+  const capabilities = getNetworkCapabilities(fabricaConfig.networkSettings.fabricVersion);
+  const rootOrg = transformRootOrgConfig(fabricaConfig.rootOrg);
+  const orgs = transformOrgConfigs(fabricaConfig.orgs);
+  const channels = transformChannelConfigs(fabricaConfig.channels, orgs);
+  const chaincodes = transformChaincodesConfig(fabricaConfig.chaincodes, channels);
+  const settings = transformNetworkSettings(fabricaConfig.networkSettings);
+
+  return {
+    capabilities,
+    rootOrg,
+    orgs,
+    channels,
+    chaincodes,
+    networkSettings: settings,
+  };
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
@@ -248,5 +277,6 @@ module.exports = {
   getNetworkCapabilities,
   getCaVersion,
   getPathsFromEnv,
+  transformFabricaConfig,
   isHlf20,
 };
