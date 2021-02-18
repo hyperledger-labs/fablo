@@ -92,6 +92,7 @@ useVersion() {
   local version="$1"
 
   if [ -n "$version" ]; then
+    set +e
     echo "Updating '$0' to version $version..."
     curl -Lf https://github.com/softwaremill/fabrica/releases/download/"$version"/fabrica.sh -o "$0" && chmod +x "$0"
   else

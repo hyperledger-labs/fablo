@@ -206,6 +206,19 @@ function getCaVersion(fabricVersion) {
   return caVersion[fabricVersion] || fabricVersion;
 }
 
+function transformNetworkSettings(networkSettingsJson) {
+  if ('monitoring' in networkSettingsJson && 'grayLog' in networkSettingsJson.monitoring) {
+    const image = ('image' in networkSettingsJson.monitoring.grayLog) ? networkSettingsJson.monitoring.grayLog.image : 'graylog/graylog';
+    const { imageTag } = networkSettingsJson.monitoring.grayLog;
+    return {
+      enableGreyLog: true,
+      image,
+      imageTag,
+      imageFull: `${image}:${imageTag}`,
+    };
+  }
+}
+
 function getEnvVarOrThrow(name) {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -224,6 +237,7 @@ module.exports = {
   transformRootOrgConfig,
   transformOrgConfigs,
   transformChannelConfigs,
+  transformNetworkSettings,
   getNetworkCapabilities,
   getCaVersion,
   getPathsFromEnv,

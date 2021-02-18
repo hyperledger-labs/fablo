@@ -4,7 +4,11 @@
     "fabricVersion": "1.4.6",
     "tls": true,
     "monitoring": {
-      "loglevel": "debug"
+      "loglevel": "debug",
+      "grayLog": {
+        "image": "graylog/graylog",
+        "imageTag": "4.0.3-1"
+      }
     }
   },
   "rootOrg": {

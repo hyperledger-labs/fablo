@@ -49,6 +49,7 @@ module.exports = class extends Generator {
     const orgs = configTransformers.transformOrgConfigs(orgsJson);
     const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
     const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
+    const networkSettings2 = configTransformers.transformNetworkSettings(networkSettings);
 
     // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(rootOrg);
@@ -60,7 +61,7 @@ module.exports = class extends Generator {
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
     this._copyDockerCompose({
       // TODO https://github.com/softwaremill/fabrica/issues/82
-      networkSettings, rootOrg, orgs, chaincodes,
+      networkSettings, rootOrg, orgs, chaincodes, networkSettings2,
     });
 
     // ======= scripts ==================================================================

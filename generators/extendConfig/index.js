@@ -40,6 +40,7 @@ module.exports = class extends Generator {
     const orgs = configTransformers.transformOrgConfigs(orgsJson);
     const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
     const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
+    const networkSettings2 = configTransformers.transformNetworkSettings(networkSettings);
 
     const transformedConfig = {
       capabilities,
@@ -47,6 +48,7 @@ module.exports = class extends Generator {
       orgs,
       channels,
       chaincodes,
+      networkSettings2,
     };
 
     this.log(JSON.stringify(transformedConfig, null, 4));
