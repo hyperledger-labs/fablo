@@ -8,7 +8,7 @@ const config = require('../config');
 const utils = require('../utils/utils');
 const buildUtil = require('../version/buildUtil');
 
-const configTransformers = require('./configTransformers');
+const configTransformers = require('../extendConfig/configTransformers');
 
 const ValidateGeneratorType = require.resolve('../validate');
 

@@ -6,7 +6,7 @@
 const Generator = require('yeoman-generator');
 const utils = require('../utils/utils');
 
-const configTransformers = require('../setup-docker/configTransformers');
+const configTransformers = require('./configTransformers');
 
 const ValidateGeneratorType = require.resolve('../validate');
 
