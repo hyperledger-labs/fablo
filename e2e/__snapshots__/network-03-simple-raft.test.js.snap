@@ -560,6 +560,43 @@ services:
       - orderer0.root.com
     networks:
       - basic
+
+  graylog:
+    container_name: graylog
+    image: graylog/graylog:4.0.3-1
+    restart: on-failure
+    environment:
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_HTTP_ENABLE_CORS=true
+      - GRAYLOG_PASSWORD_SECRET=Bgw7mYROifuwMCojIcuQ0PYCiuwtOWNSIQBV6fbIfNIzpFFxKrVcRDOxJOPBmjHPhOA5uT928Ll9LlfpPEWxsy9a4VSgZebo
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_MONGODB_MAX_CONNECTIONS=100
+      - GRAYLOG_MONGODB_THREADS_ALLOWED_TO_BLOCK_MULTIPLIER=5
+    ports:
+      - 9000:9000
+      - 12201:12201
+      - 1514:1514
+    depends_on:
+      - mongo
+      - elasticsearch
+    networks:
+      - basic
+
+  mongo:
+    container_name: mongo
+    image: mongo:4.2
+    networks:
+      - basic
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1
+    environment:
+      - http.host=0.0.0.0
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    networks:
+      - basic
 "
 `;
 
