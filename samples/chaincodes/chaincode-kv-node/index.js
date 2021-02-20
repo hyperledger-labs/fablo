@@ -1,4 +1,5 @@
 const { Contract } = require('fabric-contract-api');
+const crypto = require('crypto');
 
 class KVContract extends Contract {
   constructor() {
@@ -33,16 +34,53 @@ class KVContract extends Contract {
         is_delete: isDelete, value, timestamp, tx_id: txId,
       } = next.value;
 
-      const date = new Date(timestamp.seconds.low * 1000 + timestamp.nanos / 1000000);
+      const date = typeof timestamp.seconds === 'number'
+        ? new Date(timestamp.seconds * 1000)
+        : new Date(timestamp.seconds.low * 1000 + timestamp.nanos / 1000000);
+
       results.push({
         isDelete,
-        value: value.toBuffer().toString(),
+        value: value.toBuffer ? value.toBuffer().toString() : value.toString(),
         timestamp: date.toISOString(),
         txId,
       });
     }
 
     return { success: results };
+  }
+
+  async putPrivate(ctx, collection) {
+    const transient = ctx.stub.getTransient();
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of transient) {
+      // eslint-disable-next-line no-await-in-loop
+      await ctx.stub.putPrivateData(collection, key, value);
+    }
+
+    return { success: 'OK' };
+  }
+
+  async verifyPrivate(ctx, collection) {
+    const transient = ctx.stub.getTransient();
+    console.log(transient);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of transient) {
+      console.log(key, value);
+      // eslint-disable-next-line no-await-in-loop
+      const privateDataHash = (await ctx.stub.getPrivateDataHash(collection, key)).toString('hex');
+      const currentHash = crypto.createHash('sha256').update(value.toString()).digest('hex');
+      console.log(key, value, privateDataHash, currentHash);
+
+      if (privateDataHash !== currentHash) {
+        return {
+          error: 'INVALID_PRIVATE_DATA', key, value, privateDataHash, currentHash,
+        };
+      }
+    }
+
+    return { success: 'OK' };
   }
 }
 
