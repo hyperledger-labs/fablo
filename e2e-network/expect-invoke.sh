@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cli="$1"
 peer="$2"
@@ -6,9 +6,10 @@ channel="$3"
 chaincode="$4"
 command="$5"
 expected="$6"
+transient="${7:'-{}'}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [cli] [peer] [channel] [chaincode] [command] [expected_substring]"
+  echo "Usage: ./expect-invoke.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring] [private_data]"
   exit 1
 fi
 
@@ -17,10 +18,11 @@ echo "[testing] $label"
 
 response="$(
   docker exec "$cli" peer chaincode invoke \
-    --peerAddresses "$peer:7051" \
+    --peerAddresses "$peer" \
     -C "$channel" \
     -n "$chaincode" \
     -c "$command" \
+    --transient "$transient" \
     --waitForEvent \
     2>&1
 )"
