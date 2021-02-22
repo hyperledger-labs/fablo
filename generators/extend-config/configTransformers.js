@@ -1,5 +1,3 @@
-const path = require('path');
-
 function singleOrListString(items) {
   if (items.length === 1) {
     return items[0];
@@ -10,10 +8,6 @@ function singleOrListString(items) {
 function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
-    const privateDataCollectionProvided = ('collectionsConfig' in chaincode);
-    if (privateDataCollectionProvided) {
-      const filename = path.parse(chaincode.collectionsConfig).base;
-    }
 
     return {
       directory: chaincode.directory,
@@ -24,11 +18,6 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: matchingChannel.instantiatingOrg,
-      privateData: {
-        filename: path.parse(chaincode.collectionsConfig).base,
-        filepath: chaincode.collectionsConfig,
-        dockerFilepath: `/var/hyperledger/cli/${chaincode.name}/${path.parse(chaincode.collectionsConfig).base}`,
-      },
     };
   });
 }
@@ -231,13 +220,20 @@ function getPathsFromEnv() {
   };
 }
 
+function transformNetworkSettings(networkSettingsJson) {
+  return {
+    ...networkSettingsJson,
+    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    paths: getPathsFromEnv(),
+    isHlf20: isHlf20(networkSettingsJson.fabricVersion),
+  };
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
   transformOrgConfigs,
   transformChannelConfigs,
   getNetworkCapabilities,
-  getCaVersion,
-  getPathsFromEnv,
-  isHlf20,
+  transformNetworkSettings,
 };
