@@ -5,9 +5,20 @@ function singleOrListString(items) {
   return `"${items.join(' ')}"`;
 }
 
-function transformChaincodesConfig(chaincodes, transformedChannels) {
+function transformChaincodesConfig(chaincodes, transformedChannels, privateData) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
+    if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
+
+    const matchingPrivateData = (privateData || [])
+      .filter((p) => p.chaincodes.find((ch) => ch === chaincode.name))
+      .map(({ name, policy }) => ({
+        name,
+        policy,
+        requiredPeerCount: 0, // FIXME => peers in channel from org of the channel / 3
+        blockToLive: 0,
+        memberOnlyRead: true,
+      }));
 
     return {
       directory: chaincode.directory,
@@ -18,6 +29,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: matchingChannel.instantiatingOrg,
+      privateData: matchingPrivateData,
     };
   });
 }

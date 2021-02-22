@@ -1540,7 +1540,23 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
         }
-      }
+      },
+      \\"privateData\\": [
+        {
+          \\"name\\": \\"privateDataOrg1\\",
+          \\"policy\\": \\"OR('Org1MSP.member')\\",
+          \\"requiredPeerCount\\": 0,
+          \\"blockToLive\\": 0,
+          \\"memberOnlyRead\\": true
+        },
+        {
+          \\"name\\": \\"privateDataOrg2\\",
+          \\"policy\\": \\"OR('Org2MSP.member')\\",
+          \\"requiredPeerCount\\": 0,
+          \\"blockToLive\\": 0,
+          \\"memberOnlyRead\\": true
+        }
+      ]
     }
   ]
 }
