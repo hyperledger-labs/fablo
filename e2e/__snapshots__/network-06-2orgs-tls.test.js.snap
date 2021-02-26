@@ -6,6 +6,8 @@ exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-
 "
 `;
 
+exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/collections/chaincode1.json from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `"[]"`;
+
 exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/configtx.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
@@ -508,6 +510,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
       - basic
 
@@ -647,6 +650,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
       - basic
 
@@ -1044,8 +1048,6 @@ function chaincodeInstall() {
 
   local ORDERER_URL=$8
 
-  local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
-
   echo \\"Installing chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
@@ -1055,10 +1057,13 @@ function chaincodeInstall() {
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
 
-  if [ -n \\"$CHAINCODE_DIR_CONTENT\\" ]; then
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
     docker exec -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
       \\"$CLI_NAME\\" peer chaincode install \\\\
-      -n \\"$CHAINCODE_NAME\\" -v \\"$CHAINCODE_VERSION\\" -l \\"$CHAINCODE_LANG\\" -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
       -o \\"$ORDERER_URL\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty.\\"
@@ -1074,26 +1079,26 @@ function chaincodeInstantiate() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
-
   echo \\"Instantiating chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
 
-  if [ -n \\"$CHAINCODE_DIR_CONTENT\\" ]; then
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
       -C \\"$CHANNEL_NAME\\" \\\\
       -n \\"$CHAINCODE_NAME\\" \\\\
@@ -1101,7 +1106,8 @@ function chaincodeInstantiate() {
       -l \\"$CHAINCODE_LANG\\" \\\\
       -o \\"$ORDERER_URL\\" \\\\
       -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\"
+      -P \\"$ENDORSEMENT\\" \\\\
+      --collections-config \\"$COLLECTIONS_CONFIG\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -1123,8 +1129,6 @@ function chaincodeUpgrade() {
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
-
   echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
@@ -1136,7 +1140,7 @@ function chaincodeUpgrade() {
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
 
-  if [ -n \\"$CHAINCODE_DIR_CONTENT\\" ]; then
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
       -C \\"$CHANNEL_NAME\\" \\\\
       -n \\"$CHAINCODE_NAME\\" \\\\
@@ -1163,9 +1167,7 @@ function chaincodeInstallTls() {
   local CHAINCODE_DIR_PATH=$7
 
   local ORDERER_URL=$8
-  local CA_CERT=\\"/var/hyperledger/cli/\\"$9
-
-  local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
+  local CA_CERT=\\"/var/hyperledger/cli/$9\\"
 
   echo \\"Installing chaincode on $CHANNEL_NAME (TLS)...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
@@ -1177,11 +1179,16 @@ function chaincodeInstallTls() {
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ -n \\"$CHAINCODE_DIR_CONTENT\\" ]; then
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
     docker exec -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
       \\"$CLI_NAME\\" peer chaincode install \\\\
-      -n \\"$CHAINCODE_NAME\\" -v \\"$CHAINCODE_VERSION\\" -l \\"$CHAINCODE_LANG\\" -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o \\"$ORDERER_URL\\" --tls --cafile \\"$CA_CERT\\"
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      --tls \\\\
+      --cafile \\"$CA_CERT\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty.\\"
   fi
@@ -1202,7 +1209,7 @@ function chaincodeInstantiateTls() {
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
+  local CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
 
   local CHAINCODE_DIR_CONTENT=$(ls \\"$CHAINCODE_DIR_PATH\\")
 
@@ -1420,6 +1427,7 @@ function fetchChannelAndJoinTls() {
 exports[`network-06-2orgs-tls should create proper files from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
 Array [
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/.gitignore",
+  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/collections/chaincode1.json",
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org2.yaml",
@@ -1433,4 +1441,477 @@ Array [
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
   "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
 ]
+`;
+
+exports[`network-06-2orgs-tls should extend config properly 1`] = `
+Object {
+  "output": "Fabrica is powered by :
+ _____        __ _                         ___  ____ _ _ 
+/  ___|      / _| |                        |  \\\\/  (_) | |
+\\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
+ \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
+/\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
+\\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
+=========================================================== v: 0.1.0-unstable
+Validation errors count: 0
+Validation warnings count: 0
+===========================================================
+{
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"1.4.6\\",
+    \\"tls\\": true,
+    \\"fabricCaVersion\\": \\"1.4.6\\",
+    \\"paths\\": {
+      \\"fabricaConfig\\": \\"/Users/jakubdzikowski/IdeaProjects/fabrikka/samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json\\",
+      \\"chaincodesBaseDir\\": \\"/Users/jakubdzikowski/IdeaProjects/fabrikka/samples\\"
+    },
+    \\"isHlf20\\": false
+  },
+  \\"capabilities\\": {
+    \\"channel\\": \\"V1_4_3\\",
+    \\"orderer\\": \\"V1_4_2\\",
+    \\"application\\": \\"V1_4_2\\"
+  },
+  \\"rootOrg\\": {
+    \\"name\\": \\"Orderer\\",
+    \\"mspName\\": \\"OrdererMSP\\",
+    \\"domain\\": \\"root.com\\",
+    \\"organization\\": {
+      \\"key\\": \\"root\\",
+      \\"name\\": \\"Orderer\\",
+      \\"mspName\\": \\"OrdererMSP\\",
+      \\"domain\\": \\"root.com\\"
+    },
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\",
+      \\"address\\": \\"ca.root.com\\",
+      \\"port\\": 7054,
+      \\"exposePort\\": 7030,
+      \\"fullAddress\\": \\"ca.root.com:7054\\",
+      \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
+      \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+    },
+    \\"orderers\\": [
+      {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"root.com\\",
+        \\"address\\": \\"orderer0.root.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7050,
+        \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+      }
+    ],
+    \\"ordererHead\\": {
+      \\"name\\": \\"orderer0\\",
+      \\"domain\\": \\"root.com\\",
+      \\"address\\": \\"orderer0.root.com\\",
+      \\"consensus\\": \\"solo\\",
+      \\"port\\": 7050,
+      \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"key\\": \\"org1\\",
+      \\"name\\": \\"Org1\\",
+      \\"mspName\\": \\"Org1MSP\\",
+      \\"domain\\": \\"org1.com\\",
+      \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+      \\"peersCount\\": 2,
+      \\"peers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": false,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      ],
+      \\"anchorPeers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      ],
+      \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.org1.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7031,
+        \\"fullAddress\\": \\"ca.org1.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+      },
+      \\"headPeer\\": {
+        \\"name\\": \\"peer0\\",
+        \\"address\\": \\"peer0.org1.com\\",
+        \\"db\\": \\"LevelDb\\",
+        \\"isAnchorPeer\\": true,
+        \\"port\\": 7060,
+        \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+        \\"couchDbExposePort\\": 5080
+      }
+    },
+    {
+      \\"key\\": \\"org2\\",
+      \\"name\\": \\"Org2\\",
+      \\"mspName\\": \\"Org2MSP\\",
+      \\"domain\\": \\"org2.com\\",
+      \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+      \\"peersCount\\": 2,
+      \\"peers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7070,
+          \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+          \\"couchDbExposePort\\": 5090
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": false,
+          \\"port\\": 7071,
+          \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+          \\"couchDbExposePort\\": 5091
+        }
+      ],
+      \\"anchorPeers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7070,
+          \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+          \\"couchDbExposePort\\": 5090
+        }
+      ],
+      \\"bootstrapPeers\\": \\"peer0.org2.com:7070\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.org2.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7032,
+        \\"fullAddress\\": \\"ca.org2.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+      },
+      \\"headPeer\\": {
+        \\"name\\": \\"peer0\\",
+        \\"address\\": \\"peer0.org2.com\\",
+        \\"db\\": \\"LevelDb\\",
+        \\"isAnchorPeer\\": true,
+        \\"port\\": 7070,
+        \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+        \\"couchDbExposePort\\": 5090
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"key\\": \\"channel1\\",
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          ],
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        },
+        {
+          \\"name\\": \\"Org2\\",
+          \\"mspName\\": \\"Org2MSP\\",
+          \\"domain\\": \\"org2.com\\",
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            }
+          ],
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org2.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7070,
+            \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+            \\"couchDbExposePort\\": 5090
+          }
+        }
+      ],
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        ],
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      }
+    },
+    {
+      \\"key\\": \\"channel2\\",
+      \\"name\\": \\"my-channel2\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": false,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"headPeer\\": {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": false,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        },
+        {
+          \\"name\\": \\"Org2\\",
+          \\"mspName\\": \\"Org2MSP\\",
+          \\"domain\\": \\"org2.com\\",
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": false,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"headPeer\\": {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org2.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": false,
+            \\"port\\": 7071,
+            \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+            \\"couchDbExposePort\\": 5091
+          }
+        }
+      ],
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": false,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"headPeer\\": {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": false,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      }
+    }
+  ],
+  \\"chaincodes\\": [
+    {
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\",
+      \\"name\\": \\"chaincode1\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"node\\",
+      \\"channel\\": {
+        \\"key\\": \\"channel1\\",
+        \\"name\\": \\"my-channel1\\",
+        \\"orgs\\": [
+          {
+            \\"name\\": \\"Org1\\",
+            \\"mspName\\": \\"Org1MSP\\",
+            \\"domain\\": \\"org1.com\\",
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7060,
+                \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+                \\"couchDbExposePort\\": 5080
+              }
+            ],
+            \\"headPeer\\": {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          },
+          {
+            \\"name\\": \\"Org2\\",
+            \\"mspName\\": \\"Org2MSP\\",
+            \\"domain\\": \\"org2.com\\",
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7070,
+                \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+                \\"couchDbExposePort\\": 5090
+              }
+            ],
+            \\"headPeer\\": {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            }
+          }
+        ],
+        \\"instantiatingOrg\\": {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          ],
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        }
+      },
+      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        ],
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      },
+      \\"privateData\\": []
+    }
+  ]
+}
+",
+  "outputJson": [Function],
+  "status": 0,
+}
 `;
