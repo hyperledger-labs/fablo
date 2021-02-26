@@ -46,6 +46,7 @@ module.exports = class extends Generator {
     this._copyOrgCryptoConfig(orgs);
     this._copyConfigTx(capabilities, networkSettings, rootOrg, orgs);
     this._copyGitIgnore();
+    this._createPrivateDataCollectionConfigs(chaincodes);
 
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
@@ -144,6 +145,15 @@ module.exports = class extends Generator {
       this.destinationPath('fabric-docker/commands-generated.sh'),
       settings,
     );
+  }
+
+  _createPrivateDataCollectionConfigs(chaincodes) {
+    chaincodes.forEach(({ name, privateData }) => {
+      this.fs.write(
+        this.destinationPath(`fabric-config/collections/${name}.json`),
+        JSON.stringify(privateData || [], undefined, 2),
+      );
+    });
   }
 
   _copyUtilityScripts() {

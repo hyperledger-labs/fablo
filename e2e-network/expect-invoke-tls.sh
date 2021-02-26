@@ -6,9 +6,10 @@ channel="$3"
 chaincode="$4"
 command="$5"
 expected="$6"
+transient="${7:-"{}"}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring]"
+  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
@@ -22,6 +23,7 @@ response="$(
     -C "$channel" \
     -n "$chaincode" \
     -c "$command" \
+    --transient "$transient" \
     --waitForEvent \
     --tls \
     --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem" \

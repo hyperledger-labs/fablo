@@ -49,37 +49,26 @@ class KVContract extends Contract {
     return { success: results };
   }
 
-  async putPrivate(ctx, collection) {
+  async putPrivateMessage(ctx, collection) {
     const transient = ctx.stub.getTransient();
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of transient) {
-      // eslint-disable-next-line no-await-in-loop
-      await ctx.stub.putPrivateData(collection, key, value);
-    }
-
+    const message = transient.get('message');
+    console.log('transient', message);
+    await ctx.stub.putPrivateData(collection, 'message', message);
     return { success: 'OK' };
   }
 
-  async verifyPrivate(ctx, collection) {
+  async verifyPrivateMessage(ctx, collection) {
     const transient = ctx.stub.getTransient();
-    console.log(transient);
+    const message = transient.get('message').toBuffer().toString();
+    console.log('transient', message);
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of transient) {
-      console.log(key, value);
-      // eslint-disable-next-line no-await-in-loop
-      const privateDataHash = (await ctx.stub.getPrivateDataHash(collection, key)).toString('hex');
-      const currentHash = crypto.createHash('sha256').update(value.toString()).digest('hex');
-      console.log(key, value, privateDataHash, currentHash);
+    const currentHash = crypto.createHash('sha256').update(message).digest('hex');
+    console.log('hash', currentHash);
 
-      if (privateDataHash !== currentHash) {
-        return {
-          error: 'INVALID_PRIVATE_DATA', key, value, privateDataHash, currentHash,
-        };
-      }
-    }
+    const privateDataHash = (await ctx.stub.getPrivateDataHash(collection, 'message')).toString('hex');
+    console.log('private data hash', privateDataHash);
 
+    if (privateDataHash !== currentHash) { return { error: 'VERIFICATION_FAILED' }; }
     return { success: 'OK' };
   }
 }

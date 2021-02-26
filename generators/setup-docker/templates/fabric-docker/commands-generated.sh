@@ -29,9 +29,7 @@ function installChaincodes() {
 
       printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
       <% if(!networkSettings.tls) { -%>
-#      !!! TODO PH 1 Private data
       chaincodeInstantiate "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
-#      --collections-config $COLLECTION_CONIFG_PATH
       <% } else { -%>
       chaincodeInstantiateTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "<%= chaincode.version %>" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
       <% } -%>
@@ -69,7 +67,6 @@ function upgradeChaincode() {
 
     printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
     <% if(!networkSettings.tls) { -%>
-#      !!! TODO PH 2 Private data
     chaincodeUpgrade "cli.<%= chaincode.instantiatingOrg.domain %>" "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>"
     <% } else { -%>
     chaincodeUpgradeTls "cli.<%= chaincode.instantiatingOrg.domain %>" "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" "<%= chaincode.channel.name %>" "<%= chaincode.name %>" "$version" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= rootOrg.ordererHead.fullAddress %>" '<%- chaincode.init %>' "<%- chaincode.endorsement %>" "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
