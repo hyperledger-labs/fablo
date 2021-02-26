@@ -20,13 +20,8 @@ dumpLogs() {
 }
 
 networkDown() {
-  rm -rf "$TEST_TEST_LOGS" &&
-    dumpLogs "ca.root.com" &&
-    dumpLogs "orderer0.root.com" &&
-    dumpLogs "ca.org1.com" &&
-    dumpLogs "peer0.org1.com" &&
-    dumpLogs "peer1.org1.com" &&
-    dumpLogs "cli.org1.com" &&
+  rm -rf "$TEST_LOGS" &&
+    (for name in $(docker ps --format '{{.Names}}') ; do dumpLogs "$name"; done) &&
     (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
