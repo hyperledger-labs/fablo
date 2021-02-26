@@ -34,7 +34,7 @@ waitForChaincode() {
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6"
+  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
 networkUpAsync
@@ -55,6 +55,7 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1" &&
 
+  # Test simple chaincode
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
     '{\"success\":\"OK\"}' &&
@@ -62,23 +63,40 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
 
+  # Test chaincode with transient fields and private data
+  expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:putPrivateMessage", "privateDataOrg1"]}' \
+    '{\"success\":\"OK\"}' \
+    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQo="}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
+    '{\"success\":\"OK\"}' \
+    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQo="}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
+    '{\"error\":\"VERIFICATION_FAILED\"}' \
+    '{"message":"Tm90IHNvIHNlY3JldCBtZXNzYWdl"}' &&
+
+  # Reboot and ensure the state is lost after reboot
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" reboot) &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1" &&
-
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"error\":\"NOT_FOUND\"}' &&
+
+  # Put some data again
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "James Bond"]}' \
     '{\"success\":\"OK\"}' &&
 
+  # Upgrade chaincode and check if the data is available
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.2" &&
-
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"James Bond\"}' &&
 
+  # Exit
   networkDown || (networkDown && exit 1)

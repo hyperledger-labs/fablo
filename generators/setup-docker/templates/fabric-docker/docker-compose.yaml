@@ -100,10 +100,14 @@ services:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's<% if(networkSettings.tls) { %>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts<% } %><% chaincodes.forEach(function(chaincode) { %>
-      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
-    # TODO 3 ^ private data mapping
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      <%_ if(networkSettings.tls) { _%>
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
+      <%_ } _%>
+      <%_ chaincodes.forEach(function(chaincode) { _%>
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
+      - "../fabric-config/collections/<%= chaincode.name %>.json:/var/hyperledger/cli/collections/<%= chaincode.name %>.json"
+      <%_ }) _%>
     networks:
       - basic
 
