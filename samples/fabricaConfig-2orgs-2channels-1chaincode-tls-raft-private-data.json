@@ -1,0 +1,101 @@
+{
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+  "networkSettings": {
+    "fabricVersion": "1.4.6",
+    "tls": true,
+    "monitoring": {
+      "loglevel": "info"
+    }
+  },
+  "rootOrg": {
+    "organization": {
+      "key": "root",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
+      "domain": "root.com"
+    },
+    "ca": {
+      "prefix": "ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "type": "raft",
+      "instances": 3
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "key": "org1",
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "CouchDb"
+      }
+    },
+    {
+      "organization": {
+        "key": "org2",
+        "name": "Org2",
+        "mspName": "Org2MSP",
+        "domain": "org2.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 1,
+        "db": "CouchDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "channel1",
+      "init": "{\"Args\":[]}",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node"
+    }
+  ],
+  "privateData": [
+    {
+      "name": "privateDataOrg1",
+      "policy": "OR('Org1MSP.member')",
+      "chaincodes": [
+        "chaincode1"
+      ]
+    }
+  ]
+}
