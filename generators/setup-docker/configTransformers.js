@@ -1,6 +1,26 @@
+function singleOrListString(items) {
+  if (items.length === 1) {
+    return items[0];
+  }
+  return `"${items.join(' ')}"`;
+}
+
 function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
+    if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
+
+    const matchingPrivateData = (chaincode.privateData || [])
+      .map(({ name, policy }) => ({
+        name,
+        policy,
+        requiredPeerCount: 1, // FIXME => peers in channel from org of the channel / 3
+        maxPeerCount: 10,
+        blockToLive: 0,
+        memberOnlyRead: true,
+        memberOnlyWrite: true,
+      }));
+
     return {
       directory: chaincode.directory,
       name: chaincode.name,
@@ -10,6 +30,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: matchingChannel.instantiatingOrg,
+      privateData: matchingPrivateData,
     };
   });
 }
@@ -104,8 +125,8 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     headPeerPort,
     headPeerCouchDbExposePort,
   );
-  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer)
-  const bootstrapPeers=anchorPeers.map((a) => a.fullAddress).join(" ")
+  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
+  const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
 
   return {
     key: orgJsonFormat.organization.key,
@@ -116,7 +137,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers,
+    bootstrapPeers: singleOrListString(bootstrapPeersList),
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };
@@ -209,7 +230,15 @@ function getPathsFromEnv() {
   return {
     fabricaConfig: getEnvVarOrThrow('FABRICA_CONFIG'),
     chaincodesBaseDir: getEnvVarOrThrow('CHAINCODES_BASE_DIR'),
-    fabricaNetworkRoot: getEnvVarOrThrow('FABRICA_NETWORK_ROOT'),
+  };
+}
+
+function transformNetworkSettings(networkSettingsJson) {
+  return {
+    ...networkSettingsJson,
+    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    paths: getPathsFromEnv(),
+    isHlf20: isHlf20(networkSettingsJson.fabricVersion),
   };
 }
 
@@ -219,7 +248,5 @@ module.exports = {
   transformOrgConfigs,
   transformChannelConfigs,
   getNetworkCapabilities,
-  getCaVersion,
-  getPathsFromEnv,
-  isHlf20,
+  transformNetworkSettings,
 };
