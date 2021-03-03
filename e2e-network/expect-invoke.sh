@@ -24,6 +24,7 @@ response="$(
     -c "$command" \
     --transient "$transient" \
     --waitForEvent \
+    --waitForEventTimeout 90s \
     2>&1
 )"
 

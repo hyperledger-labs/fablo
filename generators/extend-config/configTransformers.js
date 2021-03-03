@@ -15,9 +15,11 @@ function transformChaincodesConfig(chaincodes, transformedChannels, privateData)
       .map(({ name, policy }) => ({
         name,
         policy,
-        requiredPeerCount: 0, // FIXME => peers in channel from org of the channel / 3
+        requiredPeerCount: 1, // FIXME => peers in channel from org of the channel / 3
+        maxPeerCount: 10,
         blockToLive: 0,
         memberOnlyRead: true,
+        memberOnlyWrite: true,
       }));
 
     return {
