@@ -52,22 +52,21 @@ class KVContract extends Contract {
   async putPrivateMessage(ctx, collection) {
     const transient = ctx.stub.getTransient();
     const message = transient.get('message');
-    console.log('put transient', message.toBuffer().toString());
     await ctx.stub.putPrivateData(collection, 'message', message);
     return { success: 'OK' };
+  }
+
+  async getPrivateMessage(ctx, collection) {
+    const message = await ctx.stub.getPrivateData(collection, 'message');
+    const messageString = message.toBuffer ? message.toBuffer().toString() : message.toString();
+    return { success: messageString };
   }
 
   async verifyPrivateMessage(ctx, collection) {
     const transient = ctx.stub.getTransient();
     const message = transient.get('message').toBuffer().toString();
-    console.log('transient', message);
-
     const currentHash = crypto.createHash('sha256').update(message).digest('hex');
-    console.log('hash', currentHash);
-
     const privateDataHash = (await ctx.stub.getPrivateDataHash(collection, 'message')).toString('hex');
-    console.log('private data hash', privateDataHash);
-
     if (privateDataHash !== currentHash) { return { error: 'VERIFICATION_FAILED' }; }
     return { success: 'OK' };
   }

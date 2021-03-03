@@ -12,7 +12,7 @@
 | Channels                  | 1     | 2     |
 | Node chaincode            | yes   | yes   |
 | Node chaincode upgrade    | yes   | yes   |
-| Private data              | yes   | no   |
+| Private data              | yes   | no    |
 | Java chaincode            | no    | yes   |
 | Go chaincode              | no    | no    |
 | Network restart           | no    | yes   |
