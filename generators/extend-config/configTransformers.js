@@ -5,13 +5,12 @@ function singleOrListString(items) {
   return `"${items.join(' ')}"`;
 }
 
-function transformChaincodesConfig(chaincodes, transformedChannels, privateData) {
+function transformChaincodesConfig(chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
     if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
 
-    const matchingPrivateData = (privateData || [])
-      .filter((p) => p.chaincodes.find((ch) => ch === chaincode.name))
+    const matchingPrivateData = (chaincode.privateData || [])
       .map(({ name, policy }) => ({
         name,
         policy,
