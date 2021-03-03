@@ -25,6 +25,7 @@ response="$(
     -c "$command" \
     --transient "$transient" \
     --waitForEvent \
+    --waitForEventTimeout 90s \
     --tls \
     --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem" \
     2>&1
