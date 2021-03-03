@@ -1,8 +1,32 @@
-function singleOrListString(items) {
-  if (items.length === 1) {
-    return items[0];
-  }
-  return `"${items.join(' ')}"`;
+function createPrivateCollectionConfig(channel, name, orgNames) {
+  // We need only orgs that can have access to private data
+  const relevantOrgs = (channel.orgs || []).filter((o) => !!orgNames.find((n) => n === o.name));
+  if (relevantOrgs.length < orgNames.length) { throw new Error(`Cannot find all orgs for names ${orgNames}`); }
+
+  const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(',')})`;
+  const peerCounts = relevantOrgs.map((o) => (o.peers || []).length);
+  const totalPeers = peerCounts.reduce((a, b) => a + b, 0);
+
+  // We need enough peers to exceed one org (max in org + 1) and up to totalPeers - 1
+  const requiredPeerCount = Math.min(
+    totalPeers - 1,
+    peerCounts.reduce((a, b) => Math.max(a, b), 0) + 1,
+  );
+
+  const maxPeerCount = Math.max(
+    requiredPeerCount,
+    Math.min(requiredPeerCount * 2, totalPeers - 1),
+  );
+
+  return {
+    name,
+    policy,
+    requiredPeerCount,
+    maxPeerCount,
+    blockToLive: 0,
+    memberOnlyRead: true,
+    memberOnlyWrite: true,
+  };
 }
 
 function transformChaincodesConfig(chaincodes, transformedChannels) {
@@ -10,16 +34,8 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
     if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
 
-    const matchingPrivateData = (chaincode.privateData || [])
-      .map(({ name, policy }) => ({
-        name,
-        policy,
-        requiredPeerCount: 1, // FIXME => peers in channel from org of the channel / 3
-        maxPeerCount: 10,
-        blockToLive: 0,
-        memberOnlyRead: true,
-        memberOnlyWrite: true,
-      }));
+    const privateData = (chaincode.privateData || [])
+      .map(({ name, orgNames }) => createPrivateCollectionConfig(matchingChannel, name, orgNames));
 
     return {
       directory: chaincode.directory,
@@ -30,7 +46,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: matchingChannel.instantiatingOrg,
-      privateData: matchingPrivateData,
+      privateData,
     };
   });
 }
@@ -137,7 +153,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers: singleOrListString(bootstrapPeersList),
+    bootstrapPeers: bootstrapPeersList.join(' '),
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };
