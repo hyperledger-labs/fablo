@@ -68,7 +68,9 @@ exports[`init should init simple fabrica config 1`] = `
       \\"privateData\\": [
         {
           \\"name\\": \\"privateDataOrg1\\",
-          \\"policy\\": \\"OR('Org1MSP.member')\\"
+          \\"orgNames\\": [
+            \\"Org1\\"
+          ]
         }
       ]
     }
