@@ -67,11 +67,14 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:putPrivateMessage", "privateDataOrg1"]}' \
     '{\"success\":\"OK\"}' \
-    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQo="}' &&
+    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQ=="}' &&
+  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
+    '{"Args":["KVContract:getPrivateMessage", "privateDataOrg1"]}' \
+    '{\"success\":\"Very secret message\"}' &&
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
     '{\"success\":\"OK\"}' \
-    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQo="}' &&
+    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQ=="}' &&
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
     '{\"error\":\"VERIFICATION_FAILED\"}' \

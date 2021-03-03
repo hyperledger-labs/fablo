@@ -10,7 +10,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
     const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
     if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
 
-    const matchingPrivateData = (chaincode.privateData || [])
+    const privateData = (chaincode.privateData || [])
       .map(({ name, policy }) => ({
         name,
         policy,
@@ -30,7 +30,7 @@ function transformChaincodesConfig(chaincodes, transformedChannels) {
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: matchingChannel.instantiatingOrg,
-      privateData: matchingPrivateData,
+      privateData,
     };
   });
 }
