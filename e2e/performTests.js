@@ -16,7 +16,10 @@ const testSchemaMatch = (config) => {
 const testExtendConfig = (commands, config) => {
   it('should extend config properly', () => {
     const response = commands.fabricaExec(`extend-config "${commands.relativeRoot}/${config}"`);
-    expect(response).toMatchSnapshot();
+    const cleaned = response.output
+      .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
+      .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
+    expect(cleaned).toMatchSnapshot();
   });
 };
 

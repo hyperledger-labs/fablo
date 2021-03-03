@@ -1269,8 +1269,7 @@ Array [
 `;
 
 exports[`network-03-simple-raft should extend config properly 1`] = `
-Object {
-  "output": "Fabrica is powered by :
+"Fabrica is powered by :
  _____        __ _                         ___  ____ _ _ 
 /  ___|      / _| |                        |  \\\\/  (_) | |
 \\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
@@ -1295,8 +1294,8 @@ Warnings found:
     },
     \\"fabricCaVersion\\": \\"1.4.6\\",
     \\"paths\\": {
-      \\"fabricaConfig\\": \\"/Users/jakubdzikowski/IdeaProjects/fabrikka/samples/fabricaConfig-1org-1channel-1chaincode-tls-raft.json\\",
-      \\"chaincodesBaseDir\\": \\"/Users/jakubdzikowski/IdeaProjects/fabrikka/samples\\"
+      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
     \\"isHlf20\\": false
   },
@@ -1599,8 +1598,5 @@ Warnings found:
     }
   ]
 }
-",
-  "outputJson": [Function],
-  "status": 0,
-}
+"
 `;
