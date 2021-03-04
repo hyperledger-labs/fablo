@@ -4,11 +4,14 @@ exports[`schema should match snapshot 1`] = `
 Object {
   "$id": "http://example.com/example.json",
   "$schema": "http://json-schema.org/draft-07/schema",
+  "additionalProperties": false,
   "default": Object {},
   "properties": Object {
+    "$schema": Object {
+      "const": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+    },
     "chaincodes": Object {
       "$id": "#/properties/chaincodes",
-      "additionalItems": true,
       "default": Array [
         Object {
           "channel": "channel1",
@@ -22,6 +25,7 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/chaincodes/items",
+        "additionalProperties": false,
         "properties": Object {
           "channel": Object {
             "$id": "#/properties/chaincodes/items/properties/channel",
@@ -70,6 +74,50 @@ Object {
             "title": "Name",
             "type": "string",
           },
+          "privateData": Object {
+            "$id": "#/properties/chaincodes/items/properties/privateData",
+            "items": Object {
+              "$id": "#/properties/chaincodes/items/properties/privateData/items",
+              "additionalProperties": false,
+              "properties": Object {
+                "name": Object {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/name",
+                  "pattern": "^[A-Za-z0-9]+$",
+                  "title": "Collection name",
+                  "type": "string",
+                },
+                "orgNames": Object {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames",
+                  "items": Object {
+                    "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames/items",
+                    "enumSource": Array [
+                      Array [],
+                      Object {
+                        "source": "orgs",
+                        "value": "{{item.organization.name}}",
+                      },
+                    ],
+                    "pattern": "^[A-Za-z0-9]+$",
+                    "title": "Organization name",
+                    "type": "string",
+                    "watch": Object {
+                      "orgs": "orgs",
+                    },
+                  },
+                  "title": "Organization names",
+                  "type": "array",
+                },
+              },
+              "required": Array [
+                "name",
+                "orgNames",
+              ],
+              "title": "Private data collection",
+              "type": "object",
+            },
+            "title": "Private data collections",
+            "type": "array",
+          },
           "version": Object {
             "$id": "#/properties/chaincodes/items/properties/version",
             "pattern": "^[a-zA-Z0-9\\\\.]+$",
@@ -94,7 +142,6 @@ Object {
     },
     "channels": Object {
       "$id": "#/properties/channels",
-      "additionalItems": true,
       "default": Array [
         Object {
           "key": "channel1",
@@ -123,6 +170,7 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/channels/items",
+        "additionalProperties": false,
         "properties": Object {
           "key": Object {
             "$id": "#/properties/channels/items/properties/key",
@@ -138,9 +186,9 @@ Object {
           },
           "orgs": Object {
             "$id": "#/properties/channels/items/properties/orgs",
-            "additionalItems": true,
             "items": Object {
               "$id": "#/properties/channels/items/properties/orgs/items",
+              "additionalProperties": false,
               "properties": Object {
                 "key": Object {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
@@ -160,7 +208,6 @@ Object {
                 },
                 "peers": Object {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
-                  "additionalItems": true,
                   "items": Object {
                     "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
                     "pattern": "^[a-z0-9]+$",
@@ -195,6 +242,7 @@ Object {
     },
     "networkSettings": Object {
       "$id": "#/properties/networkSettings",
+      "additionalProperties": false,
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
         "fabricVersion": Object {
@@ -217,6 +265,7 @@ Object {
         },
         "monitoring": Object {
           "$id": "#/properties/monitoring",
+          "additionalProperties": false,
           "description": "Optional settings for monitoring purposes",
           "properties": Object {
             "loglevel": Object {
@@ -251,7 +300,6 @@ Object {
     },
     "orgs": Object {
       "$id": "#/properties/orgs",
-      "additionalItems": true,
       "default": Array [
         Object {
           "ca": Object {
@@ -272,9 +320,11 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/orgs/items",
+        "additionalProperties": false,
         "properties": Object {
           "ca": Object {
             "$id": "#/properties/orgs/items/properties/ca",
+            "additionalProperties": false,
             "properties": Object {
               "prefix": Object {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
@@ -291,6 +341,7 @@ Object {
           },
           "organization": Object {
             "$id": "#/properties/orgs/items/properties/organization",
+            "additionalProperties": false,
             "properties": Object {
               "domain": Object {
                 "$id": "#/properties/orgs/items/properties/organization/properties/domain",
@@ -328,6 +379,7 @@ Object {
           },
           "peer": Object {
             "$id": "#/properties/orgs/items/properties/peer",
+            "additionalProperties": false,
             "properties": Object {
               "anchorPeerInstances": Object {
                 "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
@@ -381,10 +433,12 @@ Object {
     },
     "rootOrg": Object {
       "$id": "#/properties/rootOrg",
+      "additionalProperties": false,
       "description": "The configuration of the root organization for the Hyperledger Fabric network.",
       "properties": Object {
         "ca": Object {
           "$id": "#/properties/rootOrg/properties/ca",
+          "additionalProperties": false,
           "default": Object {
             "prefix": "ca",
           },
@@ -404,6 +458,7 @@ Object {
         },
         "orderer": Object {
           "$id": "#/properties/rootOrg/properties/orderer",
+          "additionalProperties": false,
           "default": Object {
             "instances": 1,
             "prefix": "orderer",
@@ -444,6 +499,7 @@ Object {
         },
         "organization": Object {
           "$id": "#/properties/rootOrg/properties/organization",
+          "additionalProperties": false,
           "default": Object {
             "domain": "root.com",
             "key": "root",

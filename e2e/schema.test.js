@@ -264,7 +264,7 @@ describe('schema', () => {
     expect(withChannelKey(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate channel name - bez spacji i wlk liter', () => {
+  it('should validate channel name - no spaces and capital letters', () => {
     const withChannelName = (n) => updatedBase((json) => {
       json.channels[0].name = n;
     });
@@ -399,5 +399,21 @@ describe('schema', () => {
     expect(withChaincodeName(spaces)).toMatchSchema(schema);
     expect(withChaincodeName(specialCharacters1)).toMatchSchema(schema);
     expect(withChaincodeName(specialCharacters2)).toMatchSchema(schema);
+  });
+
+  it('should validate chaincode private data', () => {
+    const withNoPrivateData = () => updatedBase((json) => {
+      const { privateData, ...rest } = json.chaincodes[0];
+      json.chaincodes[0] = rest;
+    });
+    const withPrivateData = (d) => updatedBase((json) => {
+      json.chaincodes[0].privateData = d;
+    });
+    const privateData = (name, ...orgNames) => ({ name, orgNames });
+
+    expect(withNoPrivateData()).toMatchSchema(schema);
+    expect(withPrivateData(undefined)).not.toMatchSchema(schema);
+    expect(withPrivateData(privateData(lettersAndNumber, base.orgs[0].name))).toMatchSchema(schema);
+    expect(withPrivateData(privateData(lettersAndNumber, 'NonPresentOrg'))).not.toMatchSchema(schema);
   });
 });
