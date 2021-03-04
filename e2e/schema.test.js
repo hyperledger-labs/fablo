@@ -409,11 +409,11 @@ describe('schema', () => {
     const withPrivateData = (d) => updatedBase((json) => {
       json.chaincodes[0].privateData = d;
     });
-    const privateData = (name, ...orgNames) => ({ name, orgNames });
+    const privateData = (name, ...orgNames) => [{ name, orgNames }];
+    const validOrgName = base.orgs[0].organization.name;
 
     expect(withNoPrivateData()).toMatchSchema(schema);
-    expect(withPrivateData(undefined)).not.toMatchSchema(schema);
-    expect(withPrivateData(privateData(lettersAndNumber, base.orgs[0].name))).toMatchSchema(schema);
-    expect(withPrivateData(privateData(lettersAndNumber, 'NonPresentOrg'))).not.toMatchSchema(schema);
+    expect(withPrivateData({ wrong: 'obj' })).not.toMatchSchema(schema);
+    expect(withPrivateData(privateData(lettersAndNumber, validOrgName))).toMatchSchema(schema);
   });
 });
