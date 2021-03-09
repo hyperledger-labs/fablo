@@ -10,8 +10,7 @@ COPY package-lock.json /fabrica/package-lock.json
 
 # copy files for init network
 COPY samples/fabricaConfig-1org-1channel-1chaincode.json /fabrica/generators/init/templates/fabrica-config.json
-COPY samples/chaincodes/chaincode-kv-node/index.js /fabrica/generators/init/templates/chaincodes/chaincode-kv-node/index.js
-COPY samples/chaincodes/chaincode-kv-node/package.json /fabrica/generators/init/templates/chaincodes/chaincode-kv-node/package.json
+COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
 
 WORKDIR /fabrica
 RUN npm install --silent

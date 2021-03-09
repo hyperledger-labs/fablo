@@ -15,6 +15,7 @@ describe('init', () => {
     expect(commandResult.output).toContain('Sample config file created! :)');
     expect(commands.getFiles()).toEqual([
       './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js',
+      './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json',
       './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json',
       './e2e/__tmp__/commands-tests/fabrica-config.json',
     ]);
