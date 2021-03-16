@@ -104,7 +104,7 @@ useVersion() {
 
 initConfig() {
   executeOnFabricaDocker init
-  cp -R "$FABRICA_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
+  cp -R -i "$FABRICA_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
 validateConfig() {
