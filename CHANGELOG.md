@@ -10,7 +10,7 @@
 * Validation of `fabrica-config.json` based on JSON schema and other rules
 * Allow to upgrade chaincode ([#45](https://github.com/softwaremill/fabrica/issues/36))
 * Network recreation in one step ([#105](https://github.com/softwaremill/fabrica/issues/105))
-* Init command to provide simple config ([#90](https://github.com/softwaremill/fabrica/issues/90))
+* Init command to provide simple config ([#90](https://github.com/softwaremill/fabrica/issues/90)) with chaincode ([#100](https://github.com/softwaremill/fabrica/issues/100))  
 * Proper exposing Orderer and Peers ports for service discovery ([#116](https://github.com/softwaremill/fabrica/issues/116))  
 
 ### Fixes
