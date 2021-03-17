@@ -17,6 +17,7 @@ describe('schema', () => {
   };
 
   const lettersOnly = 'lettersonly';
+  const underscore = 'under_score';
   const lettersAndNumber = 'lettersand4';
   const uppercase = 'UpperCase';
   const domain = 'domain.example.com';
@@ -409,11 +410,26 @@ describe('schema', () => {
     const withPrivateData = (d) => updatedBase((json) => {
       json.chaincodes[0].privateData = d;
     });
-    const privateData = (name, ...orgNames) => [{ name, orgNames }];
+    const privateData = (name, ...orgNames) => ({ name, orgNames });
     const validOrgName = base.orgs[0].organization.name;
+    const withPrivateDataName = (name) => withPrivateData([privateData(name, validOrgName)]);
 
+    // various names
+    expect(withPrivateDataName(lettersOnly)).toMatchSchema(schema);
+    expect(withPrivateDataName(underscore)).toMatchSchema(schema);
+    expect(withPrivateDataName(lettersAndNumber)).toMatchSchema(schema);
+    expect(withPrivateDataName(uppercase)).toMatchSchema(schema);
+    expect(withPrivateDataName(domain)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(spaces)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(specialCharacters2)).not.toMatchSchema(schema);
+
+    // no private data, wrong object, two objects
     expect(withNoPrivateData()).toMatchSchema(schema);
     expect(withPrivateData({ wrong: 'obj' })).not.toMatchSchema(schema);
-    expect(withPrivateData(privateData(lettersAndNumber, validOrgName))).toMatchSchema(schema);
+    expect(withPrivateData([
+      privateData(lettersAndNumber, validOrgName),
+      privateData(lettersOnly, validOrgName),
+    ])).toMatchSchema(schema);
   });
 });
