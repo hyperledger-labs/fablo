@@ -13,9 +13,12 @@ describe('init', () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain('Sample config file created! :)');
-    expect(commandResult.output).toContain('Chaincode directory is \'./chaincodes/chaincode-kv-node\'.');
-    expect(commandResult.output).toContain('If it\'s empty your network won\'t run entirely.');
-    expect(commands.getFiles()).toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
+    expect(commands.getFiles()).toEqual([
+      './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js',
+      './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json',
+      './e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json',
+      './e2e/__tmp__/commands-tests/fabrica-config.json',
+    ]);
     expect(commands.getFileContent('fabrica-config.json')).toMatchSnapshot();
   });
 });
@@ -49,7 +52,7 @@ describe('validate', () => {
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain('Validation errors count: 0');
     expect(commandResult.output).toContain('Validation warnings count: 0');
-    expect(commands.getFiles()).toEqual(['./e2e/__tmp__/commands-tests/fabrica-config.json']);
+    expect(commands.getFiles()).toContain('./e2e/__tmp__/commands-tests/fabrica-config.json');
   });
 
   it('should validate custom config', () => {

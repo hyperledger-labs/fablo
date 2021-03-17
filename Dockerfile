@@ -3,9 +3,14 @@ FROM node:12.18.0-alpine3.12
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
 
+# copy fabrica files
 COPY generators /fabrica/generators
 COPY package.json /fabrica/package.json
 COPY package-lock.json /fabrica/package-lock.json
+
+# copy files for init network
+COPY samples/fabricaConfig-1org-1channel-1chaincode.json /fabrica/generators/init/templates/fabrica-config.json
+COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
 
 WORKDIR /fabrica
 RUN npm install --silent
