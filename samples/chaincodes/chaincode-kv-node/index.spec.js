@@ -62,29 +62,6 @@ describe('KVContract', () => {
     expect(getResponse).toEqual({ error: 'NOT_FOUND' });
   });
 
-  it('should get value history', async () => {
-    // Given
-    const stub = new KVContractMockStub();
-    const key = 'ship';
-    const value1 = 'Black Pearl';
-    const value2 = 'Green Pearl';
-    await stub.mockInvokeJson(['put', key, value1]);
-    await stub.mockInvokeJson(['put', key, value2]);
-
-    const historyElemMatcher = (value) => ({
-      isDelete: false,
-      timestamp: expect.stringContaining(new Date().toISOString().slice(0, 10)),
-      txId: expect.stringMatching(/.*/),
-      value,
-    });
-
-    // When
-    const response = await stub.mockInvokeJson(['getHistory', key]);
-
-    // Then
-    expect(response).toEqual({ success: [historyElemMatcher(value1), historyElemMatcher(value2)] });
-  });
-
   it('should put private data', async () => {
     // Given
     const stub = new KVContractMockStub();
