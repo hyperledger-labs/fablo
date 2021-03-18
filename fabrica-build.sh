@@ -11,11 +11,11 @@ BUILD_DATE=$(date +'%Y-%m-%d-%H:%M:%S')
 VERSION_DETAILS="$BUILD_DATE-$COMMIT_HASH"
 
 echo "Building new image..."
-echo "   FABRICA_HOME: $FABRICA_HOME"
+echo "   FABRICA_HOME:    $FABRICA_HOME"
 echo "   FABRICA_VERSION: $FABRICA_VERSION"
 echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
-IMAGE_BASE_NAME="softwaremill/fabrica"
+IMAGE_BASE_NAME="softwaremill/fabrica:$FABRICA_VERSION"
 
 docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
