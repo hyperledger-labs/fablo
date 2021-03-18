@@ -120,6 +120,15 @@ try {
         }
       }
 
+      stage("Test private data") {
+        try {
+          sh "e2e-network/test-03-collections.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-03-collections.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-collections.sh.logs/*', fingerprint: true
+        }
+      }
+
     }
   })
 } catch (e) {
