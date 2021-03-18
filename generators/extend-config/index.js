@@ -35,18 +35,13 @@ ExtendConfigGenerator.extendJsonConfig = (json) => {
     orgs: orgsJson,
     channels: channelsJson,
     chaincodes: chaincodesJson,
-    privateData,
   } = json;
 
   const capabilities = configTransformers.getNetworkCapabilities(networkSettingsJson.fabricVersion);
   const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
   const orgs = configTransformers.transformOrgConfigs(orgsJson);
   const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
-  const chaincodes = configTransformers.transformChaincodesConfig(
-    chaincodesJson,
-    channels,
-    privateData,
-  );
+  const chaincodes = configTransformers.transformChaincodesConfig(chaincodesJson, channels);
   const networkSettings = configTransformers.transformNetworkSettings(networkSettingsJson);
 
   return {

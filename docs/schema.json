@@ -12,6 +12,9 @@
     "chaincodes"
   ],
   "properties": {
+    "$schema": {
+      "const": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json"
+    },
     "networkSettings": {
       "$id": "#/properties/networkSettings",
       "title": "Network settings",
@@ -64,9 +67,11 @@
               ],
               "default": "info"
             }
-          }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "rootOrg": {
       "$id": "#/properties/rootOrg",
@@ -121,7 +126,8 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "ca": {
           "$id": "#/properties/rootOrg/properties/ca",
@@ -140,7 +146,8 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "orderer": {
           "$id": "#/properties/rootOrg/properties/orderer",
@@ -180,9 +187,11 @@
               "minimum": 1,
               "maximum": 10
             }
-          }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "orgs": {
       "$id": "#/properties/orgs",
@@ -206,7 +215,6 @@
           }
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/orgs/items",
         "title": "Organization",
@@ -252,7 +260,8 @@
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
@@ -268,7 +277,8 @@
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "peer": {
             "$id": "#/properties/orgs/items/properties/peer",
@@ -309,9 +319,11 @@
                   "CouchDb"
                 ]
               }
-            }
+            },
+            "additionalProperties": false
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "channels": {
@@ -344,7 +356,6 @@
           "name": "my-channel2"
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/channels/items",
         "title": "Channel",
@@ -371,7 +382,6 @@
             "$id": "#/properties/channels/items/properties/orgs",
             "title": "Organizations in the channel",
             "type": "array",
-            "additionalItems": true,
             "items": {
               "$id": "#/properties/channels/items/properties/orgs/items",
               "title": "Organization",
@@ -401,7 +411,6 @@
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
                   "title": "Peers for ogranization",
                   "type": "array",
-                  "additionalItems": true,
                   "items": {
                     "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
                     "title": "Peer",
@@ -409,10 +418,12 @@
                     "pattern": "^[a-z0-9]+$"
                   }
                 }
-              }
+              },
+              "additionalProperties": false
             }
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "chaincodes": {
@@ -430,7 +441,6 @@
           "directory": "chaincode1"
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/chaincodes/items",
         "title": "Chaincode",
@@ -497,9 +507,55 @@
             "$id": "#/properties/chaincodes/items/properties/directory",
             "title": "Chaincode directory",
             "type": "string"
+          },
+          "privateData": {
+            "$id": "#/properties/chaincodes/items/properties/privateData",
+            "title": "Private data collections",
+            "type": "array",
+            "items": {
+              "$id": "#/properties/chaincodes/items/properties/privateData/items",
+              "title": "Private data collection",
+              "type": "object",
+              "required": [
+                "name",
+                "orgNames"
+              ],
+              "properties": {
+                "name": {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/name",
+                  "title": "Collection name",
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                "orgNames": {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames",
+                  "title": "Organization names",
+                  "type": "array",
+                  "items": {
+                    "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames/items",
+                    "title": "Organization name",
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9]+$",
+                    "watch": {
+                      "orgs": "orgs"
+                    },
+                    "enumSource": [
+                      [],
+                      {
+                        "source": "orgs",
+                        "value": "{{item.organization.name}}"
+                      }
+                    ]
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
           }
-        }
+        },
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

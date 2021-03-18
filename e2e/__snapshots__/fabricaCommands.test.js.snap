@@ -64,15 +64,14 @@ exports[`init should init simple fabrica config 1`] = `
       \\"channel\\": \\"channel1\\",
       \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
       \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
-      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
-    }
-  ],
-  \\"privateData\\": [
-    {
-      \\"name\\": \\"privateDataOrg1\\",
-      \\"policy\\": \\"OR('Org1MSP.member')\\",
-      \\"chaincodes\\": [
-        \\"chaincode1\\"
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\",
+      \\"privateData\\": [
+        {
+          \\"name\\": \\"privateDataOrg1\\",
+          \\"orgNames\\": [
+            \\"Org1\\"
+          ]
+        }
       ]
     }
   ]
