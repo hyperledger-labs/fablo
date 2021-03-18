@@ -4,12 +4,9 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRICA_HOME="$TEST_TMP/../.."
 
-# testing relative path
-CONFIG="../../samples/fabricaConfig-1org-1channel-1chaincode.json"
-
 networkUpAsync() {
   "$FABRICA_HOME/fabrica-build.sh" &&
-    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" generate "$CONFIG") &&
+    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" init) &&
     (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up &)
 }
 
