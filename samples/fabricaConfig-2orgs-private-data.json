@@ -1,7 +1,7 @@
 {
   "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
   "networkSettings": {
-    "fabricVersion": "1.4.6",
+    "fabricVersion": "1.4.11",
     "tls": false
   },
   "rootOrg": {
@@ -36,6 +36,22 @@
         "instances": 2,
         "db": "LevelDb"
       }
+    },
+    {
+      "organization": {
+        "key": "org2",
+        "name": "Org2",
+        "mspName": "Org2MSP",
+        "domain": "org2.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 1,
+        "db": "LevelDb"
+      }
     }
   ],
   "channels": [
@@ -49,6 +65,12 @@
             "peer0",
             "peer1"
           ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0"
+          ]
         }
       ]
     }
@@ -60,8 +82,22 @@
       "lang": "node",
       "channel": "channel1",
       "init": "{\"Args\":[]}",
-      "endorsement": "AND ('Org1MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": [
+        {
+          "name": "org1-collection",
+          "orgNames": [
+            "Org1"
+          ]
+        },
+        {
+          "name": "org2-collection",
+          "orgNames": [
+            "Org2"
+          ]
+        }
+      ]
     }
   ]
 }
