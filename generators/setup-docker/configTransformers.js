@@ -225,17 +225,6 @@ function isHlf20(fabricVersion) {
   return supported20Versions.includes(fabricVersion);
 }
 
-function getCaVersion(fabricVersion) {
-  const caVersion = {
-    '2.2.1': '1.4.9',
-    '2.2.0': '1.4.9',
-    '2.1.1': '1.4.9',
-    '2.1.0': '1.4.9',
-    '2.0.1': '1.4.9',
-  };
-  return caVersion[fabricVersion] || fabricVersion;
-}
-
 function getEnvVarOrThrow(name) {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -252,7 +241,7 @@ function getPathsFromEnv() {
 function transformNetworkSettings(networkSettingsJson) {
   return {
     ...networkSettingsJson,
-    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    fabricCaVersion: '1.5.0',
     paths: getPathsFromEnv(),
     isHlf20: isHlf20(networkSettingsJson.fabricVersion),
   };
