@@ -79,6 +79,42 @@ describe('validate', () => {
   });
 });
 
+describe('extend config', () => {
+  beforeEach(() => commands.cleanupWorkdir());
+
+  it('should extend default config', () => {
+    // Given
+    commands.fabricaExec('init');
+
+    // When
+    const commandResult = commands.fabricaExec('extend-config');
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toMatchSnapshot();
+  });
+
+  it('should extend custom config', () => {
+    // Given
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json`;
+
+    // When
+    const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toMatchSnapshot();
+  });
+
+  it('should fail to extend if config file is missing', () => {
+    const commandResult = commands.fabricaExec('validate');
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.failure());
+    expect(commandResult.output).toContain('commands-tests/fabrica-config.json does not exist\n');
+  });
+});
+
 describe('version', () => {
   it('should print version information', () => {
     // When

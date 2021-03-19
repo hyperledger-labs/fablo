@@ -1,4 +1,6 @@
-function createPrivateCollectionConfig(channel, name, orgNames) {
+const { version } = require('../repositoryUtils');
+
+function createPrivateCollectionConfig(fabricVersion, channel, name, orgNames) {
   // We need only orgs that can have access to private data
   const relevantOrgs = (channel.orgs || []).filter((o) => !!orgNames.find((n) => n === o.name));
   if (relevantOrgs.length < orgNames.length) { throw new Error(`Cannot find all orgs for names ${orgNames}`); }
@@ -18,34 +20,37 @@ function createPrivateCollectionConfig(channel, name, orgNames) {
     Math.min(requiredPeerCount * 2, totalPeers - 1),
   );
 
+  const memberOnlyRead = version(fabricVersion).isGreaterOrEqual('1.4.0') ? { memberOnlyRead: true } : {};
+  const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual('2.0.0') ? { memberOnlyWrite: true } : {};
+
   return {
     name,
     policy,
     requiredPeerCount,
     maxPeerCount,
     blockToLive: 0,
-    memberOnlyRead: true,
-    memberOnlyWrite: true,
+    ...memberOnlyRead,
+    ...memberOnlyWrite,
   };
 }
 
-function transformChaincodesConfig(chaincodes, transformedChannels) {
+function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
-    const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
-    if (!matchingChannel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
+    const channel = transformedChannels.find((c) => c.key === chaincode.channel);
+    if (!channel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
 
     const privateData = (chaincode.privateData || [])
-      .map(({ name, orgNames }) => createPrivateCollectionConfig(matchingChannel, name, orgNames));
+      .map((d) => createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames));
 
     return {
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
-      channel: matchingChannel,
+      channel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      instantiatingOrg: matchingChannel.instantiatingOrg,
+      instantiatingOrg: channel.instantiatingOrg,
       privateData,
     };
   });
