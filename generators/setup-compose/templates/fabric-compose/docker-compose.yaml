@@ -87,7 +87,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/msp
-      - CORE_PEER_ADDRESS=peer0.<%= org.headPeer.fullAddress %><% if(networkSettings.tls) { %>
+      - CORE_PEER_ADDRESS=<%= org.headPeer.fullAddress %><% if(networkSettings.tls) { %>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
