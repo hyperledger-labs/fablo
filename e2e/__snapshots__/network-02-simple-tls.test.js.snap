@@ -446,7 +446,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
-      - CORE_PEER_ADDRESS=peer0.peer0.org1.com:7060
+      - CORE_PEER_ADDRESS=peer0.org1.com:7060
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
