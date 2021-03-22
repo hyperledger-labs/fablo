@@ -78,7 +78,7 @@ function upgradeChaincode() {
 function notifyOrgsAboutChannels() {
   printHeadline "Creating new channel config blocks" "U1F537"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
-createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config"  "$FABRICA_NETWORK_ROOT/fabric-config/config"
+createNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "<%= channel.profile.name %>" "$FABRICA_NETWORK_ROOT/fabric-config"  "$FABRICA_NETWORK_ROOT/fabric-config/config"
   <% })}) %>
   printHeadline "Notyfing orgs about channels" "U1F4E2"
   <% channels.forEach(function(channel){  channel.orgs.forEach(function(org){ -%>
@@ -127,7 +127,7 @@ function stopNetwork() {
 function generateChannelsArtifacts() {
   <% channels.forEach(function(channel){  -%>
   printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-  createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABRICA_NETWORK_ROOT/fabric-config/config"
   <% }) -%>
 }
 
