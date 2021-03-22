@@ -81,6 +81,7 @@ Orderer: &OrdererDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
+    # Profile used to create Genesis block for Orderer #
     OrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
@@ -93,9 +94,19 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
-    AllOrgChannel:
+
+    # Profile used to create channeltx for my-channel1 #
+    MyChannel1:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *Org1
         Application:
             <<: *ApplicationDefaults
             Organizations:
@@ -270,7 +281,7 @@ function upgradeChaincode() {
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
   notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
@@ -312,7 +323,7 @@ function stopNetwork() {
 
 function generateChannelsArtifacts() {
   printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 }
 
 function installChannels() {
