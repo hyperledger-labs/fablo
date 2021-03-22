@@ -354,7 +354,6 @@ function generateChannelsArtifacts() {
 }
 
 function installChannels() {
-
   printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
   docker exec -i cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7060' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
