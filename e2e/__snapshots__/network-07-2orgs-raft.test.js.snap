@@ -48,6 +48,17 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.admin')\\"
+
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
