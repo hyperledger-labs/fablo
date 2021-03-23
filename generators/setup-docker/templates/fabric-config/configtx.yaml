@@ -1,4 +1,5 @@
-<% if(!isHlf20) { %>################################################################################
+<% if(!isHlf20) { %>
+################################################################################
 #   SECTION: Capabilities
 ################################################################################
 Capabilities:
@@ -7,8 +8,8 @@ Capabilities:
     Orderer: &OrdererCapabilities
         <%=  capabilities.orderer %>: true
     Application: &ApplicationCapabilities
-        <%=  capabilities.application %>: true<% } %>
-
+        <%=  capabilities.application %>: true
+<% } %>
 ################################################################################
 #   CHANNEL Defaults
 ################################################################################
@@ -23,8 +24,10 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+<% if(!isHlf20) { %>
     Capabilities:
-        <% if(!isHlf20) { %><<: *ChannelCapabilities<% } %>
+        <<: *ChannelCapabilities
+<% } %>
 
 ################################################################################
 #   Section: Organizations
@@ -34,7 +37,7 @@ Organizations:
       Name: <%= rootOrg.organization.name %>
       ID: <%= rootOrg.organization.mspName %>
       MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
-<% if(isHlf20) { %>
+
       Policies:
           Readers:
               Type: Signature
@@ -44,25 +47,28 @@ Organizations:
               Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
           Admins:
               Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.admin')"<%} orgs.forEach(function(org){ %>
+              Rule: "OR('<%= rootOrg.organization.mspName %>.admin')"
+
+<% orgs.forEach(function(org){ %>
     - &<%= org.name %>
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-<% if(isHlf20) { %>
+
       Policies:
           Readers:
               Type: Signature
-              Rule: "OR('<%= org.mspName %>.admin', '<%= org.mspName %>.peer', '<%= org.mspName %>.client')"
+              Rule: "OR('<%= org.mspName %>.member')"
           Writers:
               Type: Signature
-              Rule: "OR('<%= org.mspName %>.admin', '<%= org.mspName %>.client')"
+              Rule: "OR('<%= org.mspName %>.member')"
           Admins:
               Type: Signature
               Rule: "OR('<%= org.mspName %>.admin')"
           Endorsement:
               Type: Signature
-              Rule: "OR('<%= org.mspName %>.peer')"<% } %>
+              Rule: "OR('<%= org.mspName %>.member')"
+
       AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
           - Host: <%= anchorPeer.address %>
             Port: <%= anchorPeer.port %><% })}) %>
@@ -72,9 +78,6 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
-    Capabilities:
-        <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
-<% if(isHlf20) { %>
     # Policies defines the set of policies at this level of the config tree
     # For Application policies, their canonical path is
     #   /Channel/Application/<PolicyName>
@@ -88,12 +91,13 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-        LifecycleEndorsement:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"
         Endorsement:
             Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"<% } %>
+            Rule: "MAJORITY Endorsement"
+<% if(!isHlf20) { %>
+    Capabilities:
+        <<: *ApplicationCapabilities
+<% } %>
 
 ################################################################################
 #   SECTION: Orderer
@@ -101,14 +105,14 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
     OrdererType: <%= rootOrg.ordererHead.consensus %>
     Addresses:<% rootOrg.orderers.forEach(function(orderer) { %>
-        - <%=orderer.address %>:7050<% })-%>
+        - <%= orderer.fullAddress %><% })-%>
 <%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Organizations:<% if(isHlf20) { %>
+    Organizations:
     # Policies defines the set of policies at this level of the config tree
     # For Orderer policies, their canonical path is
     #   /Channel/Orderer/<PolicyName>
@@ -126,7 +130,11 @@ Orderer: &OrdererDefaults
         # from the orderer for the peer to validate it.
         BlockValidation:
             Type: ImplicitMeta
-            Rule: "ANY Writers"<% } %>
+            Rule: "ANY Writers"
+<% if(!isHlf20) { %>
+    Capabilities:
+        <<: *OrdererCapabilities
+<% } %>
 
 ################################################################################
 #   Profile
@@ -134,24 +142,40 @@ Orderer: &OrdererDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
+    # Profile used to create Genesis block for Orderer #
     OrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
+<% if(!isHlf20) { %>
             Capabilities:
-                <% if(!isHlf20) { %><<: *OrdererCapabilities<% } %>
+                <<: *OrdererCapabilities
+<% } %>
         Consortiums:
             SampleConsortium:
                 Organizations:<% orgs.forEach(function(org){ %>
                     - *<%= org.name %><% }) %>
-    AllOrgChannel:
+<% channels.forEach(function(channel) { %>
+    # Profile used to create channeltx for <%= channel.name %> #
+    <%= channel.profile.name %>:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:<% channel.orgs.forEach(function(org){ %>
+                    - *<%= org.name %><% }) %>
         Application:
             <<: *ApplicationDefaults
-            Organizations:<% orgs.forEach(function(org){ %>
+            Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:<% channel.orgs.forEach(function(org){ %>
+                - *<%= org.name %><% }) %>
+<% if(!isHlf20) { %>
             Capabilities:
-                <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
+                <<: *ApplicationCapabilities
+<% } %>
+<% }) %>
