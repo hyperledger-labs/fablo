@@ -44,17 +44,6 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
-      Policies: &DefaultPolicies
-          Readers:
-              Type: ImplicitMeta
-              Rule: \\"ANY Readers\\"
-          Writers:
-              Type: ImplicitMeta
-              Rule: \\"ANY Writers\\"
-          Admins:
-              Type: ImplicitMeta
-              Rule: \\"MAJORITY Admins\\"
-
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
@@ -63,16 +52,16 @@ Organizations:
       Policies:
           Readers:
               Type: Signature
-              Rule: \\"OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')\\"
+              Rule: \\"OR('Org1MSP.member')\\"
           Writers:
               Type: Signature
-              Rule: \\"OR('Org1MSP.admin', 'Org1MSP.client')\\"
+              Rule: \\"OR('Org1MSP.member')\\"
           Admins:
               Type: Signature
               Rule: \\"OR('Org1MSP.admin')\\"
           Endorsement:
               Type: Signature
-              Rule: \\"OR('Org1MSP.peer')\\"
+              Rule: \\"OR('Org1MSP.member')\\"
 
       AnchorPeers:
           - Host: peer0.org1.com
@@ -85,16 +74,16 @@ Organizations:
       Policies:
           Readers:
               Type: Signature
-              Rule: \\"OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')\\"
+              Rule: \\"OR('Org2MSP.member')\\"
           Writers:
               Type: Signature
-              Rule: \\"OR('Org2MSP.admin', 'Org2MSP.client')\\"
+              Rule: \\"OR('Org2MSP.member')\\"
           Admins:
               Type: Signature
               Rule: \\"OR('Org2MSP.admin')\\"
           Endorsement:
               Type: Signature
-              Rule: \\"OR('Org2MSP.peer')\\"
+              Rule: \\"OR('Org2MSP.member')\\"
 
       AnchorPeers:
           - Host: peer0.org2.com
@@ -105,8 +94,22 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
     Policies:
-        <<: *DefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Readers\\"
+        Writers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+        Admins:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Admins\\"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Endorsement\\"
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -142,8 +145,26 @@ Orderer: &OrdererDefaults
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
     Policies:
-        <<: *DefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Readers\\"
+        Writers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+        Admins:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Admins\\"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+    Capabilities:
+        <<: *OrdererCapabilities
 
 ################################################################################
 #   Profile
@@ -175,15 +196,13 @@ Profiles:
                 Organizations:
                     - *Org1
                     - *Org2
-        Orderer:
-            <<: *OrdererDefaults
+        Application:
+            <<: *ApplicationDefaults
             Organizations:
                 - *Org1
                 - *Org2
-        Policies:
-            <<: *DefaultPolicies
-        Application:
-            <<: *ApplicationDefaults
+        Orderer:
+            <<: *OrdererDefaults
             Organizations:
                 - *Org1
                 - *Org2
@@ -199,15 +218,13 @@ Profiles:
                 Organizations:
                     - *Org1
                     - *Org2
-        Orderer:
-            <<: *OrdererDefaults
+        Application:
+            <<: *ApplicationDefaults
             Organizations:
                 - *Org1
                 - *Org2
-        Policies:
-            <<: *DefaultPolicies
-        Application:
-            <<: *ApplicationDefaults
+        Orderer:
+            <<: *OrdererDefaults
             Organizations:
                 - *Org1
                 - *Org2
