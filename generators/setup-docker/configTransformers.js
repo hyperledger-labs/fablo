@@ -202,6 +202,8 @@ function getCaVersion(fabricVersion) {
     '2.1.1': '1.4.9',
     '2.1.0': '1.4.9',
     '2.0.1': '1.4.9',
+    '1.4.10': '1.4.9',
+    '1.4.11': '1.4.9',
   };
   return caVersion[fabricVersion] || fabricVersion;
 }
