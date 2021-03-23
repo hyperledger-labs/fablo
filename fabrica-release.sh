@@ -2,21 +2,25 @@
 
 set -euo
 
-login=$1
-pass=$2
+tag=$1
+login=$2
+FABRICA_HOME="$(mktemp -d -t fabrica.XXXXXXXX)"
 
-FABRICA_HOME="$(cd "$(dirname "$0")" && pwd)"
-# shellcheck disable=2002
-FABRICA_VERSION=$(cat "$FABRICA_HOME"/package.json | jq -r '.version')
+cleanup() {
+  rm -rf "$FABRICA_HOME"
+  docker logout
+}
 
-./fabrica-build.sh
+trap cleanup EXIT
+
+git clone --depth 1 --branch "$tag" "https://github.com/softwaremill/fabrica" "$FABRICA_HOME"
+"$FABRICA_HOME/fabrica-build.sh"
+FABRICA_VERSION="$(jq -r '.version' "$FABRICA_HOME/package.json")"
 
 echo "Pushing to docker hub.."
 echo "   FABRICA_HOME:    $FABRICA_HOME"
 echo "   FABRICA_VERSION: $FABRICA_VERSION"
+echo "   GIT_TAG:         $tag"
 
-docker login -u "$login" -p "$pass"
-
+docker login -u "$login"
 docker push softwaremill/fabrica:"$FABRICA_VERSION"
-
-docker logout
