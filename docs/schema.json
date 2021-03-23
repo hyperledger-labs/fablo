@@ -462,7 +462,7 @@
             "$id": "#/properties/chaincodes/items/properties/name",
             "title": "Name",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9]+$"
+            "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "version": {
             "$id": "#/properties/chaincodes/items/properties/version",
