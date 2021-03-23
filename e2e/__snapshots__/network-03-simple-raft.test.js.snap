@@ -44,10 +44,35 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
+      Policies: &DefaultPolicies
+          Readers:
+              Type: ImplicitMeta
+              Rule: \\"ANY Readers\\"
+          Writers:
+              Type: ImplicitMeta
+              Rule: \\"ANY Writers\\"
+          Admins:
+              Type: ImplicitMeta
+              Rule: \\"MAJORITY Admins\\"
+
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.admin', 'Org1MSP.client')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.admin')\\"
+          Endorsement:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.peer')\\"
 
       AnchorPeers:
           - Host: peer0.org1.com
@@ -58,6 +83,8 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
+    Policies:
+        <<: *DefaultPolicies
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -81,6 +108,8 @@ Orderer: &OrdererDefaults
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
+    Policies:
+        <<: *DefaultPolicies
 
 ################################################################################
 #   Profile
@@ -114,6 +143,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *Org1
+        Policies:
+            <<: *DefaultPolicies
         Application:
             <<: *ApplicationDefaults
             Organizations:

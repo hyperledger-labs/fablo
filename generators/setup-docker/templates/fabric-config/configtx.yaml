@@ -34,22 +34,23 @@ Organizations:
       Name: <%= rootOrg.organization.name %>
       ID: <%= rootOrg.organization.mspName %>
       MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
-<% if(isHlf20) { %>
-      Policies:
+
+      Policies: &DefaultPolicies
           Readers:
-              Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+              Type: ImplicitMeta
+              Rule: "ANY Readers"
           Writers:
-              Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+              Type: ImplicitMeta
+              Rule: "ANY Writers"
           Admins:
-              Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.admin')"<%} orgs.forEach(function(org){ %>
+              Type: ImplicitMeta
+              Rule: "MAJORITY Admins"
+<% orgs.forEach(function(org){ %>
     - &<%= org.name %>
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-<% if(isHlf20) { %>
+
       Policies:
           Readers:
               Type: Signature
@@ -62,7 +63,8 @@ Organizations:
               Rule: "OR('<%= org.mspName %>.admin')"
           Endorsement:
               Type: Signature
-              Rule: "OR('<%= org.mspName %>.peer')"<% } %>
+              Rule: "OR('<%= org.mspName %>.peer')"
+
       AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
           - Host: <%= anchorPeer.address %>
             Port: <%= anchorPeer.port %><% })}) %>
@@ -72,6 +74,8 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
+    Policies:
+        <<: *DefaultPolicies
     Capabilities:
         <% if(!isHlf20) { %><<: *ApplicationCapabilities<% } %>
 <% if(isHlf20) { %>
@@ -108,25 +112,9 @@ Orderer: &OrdererDefaults
         MaxMessageCount: 10
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
-    Organizations:<% if(isHlf20) { %>
-    # Policies defines the set of policies at this level of the config tree
-    # For Orderer policies, their canonical path is
-    #   /Channel/Orderer/<PolicyName>
+    Organizations:
     Policies:
-        Readers:
-            Type: ImplicitMeta
-            Rule: "ANY Readers"
-        Writers:
-            Type: ImplicitMeta
-            Rule: "ANY Writers"
-        Admins:
-            Type: ImplicitMeta
-            Rule: "MAJORITY Admins"
-        # BlockValidation specifies what signatures must be included in the block
-        # from the orderer for the peer to validate it.
-        BlockValidation:
-            Type: ImplicitMeta
-            Rule: "ANY Writers"<% } %>
+        <<: *DefaultPolicies
 
 ################################################################################
 #   Profile
@@ -160,6 +148,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
+        Policies:
+            <<: *DefaultPolicies
         Application:
             <<: *ApplicationDefaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
