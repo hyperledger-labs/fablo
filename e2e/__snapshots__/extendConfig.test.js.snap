@@ -3305,7 +3305,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabricaConfig-2orgs-private-data.json 1`] = `
+exports[`extend config samples/fabricaConfig-2orgs-private-data-2chaincodes.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_4_2",
@@ -3451,7 +3451,7 @@ Object {
         ],
       },
       "lang": "node",
-      "name": "chaincode1",
+      "name": "or-policy-chaincode",
       "privateData": Array [
         Object {
           "blockToLive": 0,
@@ -3461,13 +3461,156 @@ Object {
           "policy": "OR('Org1MSP.member')",
           "requiredPeerCount": 1,
         },
+      ],
+      "version": "0.0.1",
+    },
+    Object {
+      "channel": Object {
+        "instantiatingOrg": Object {
+          "domain": "org1.com",
+          "headPeer": Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          "mspName": "Org1MSP",
+          "name": "Org1",
+          "peers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            Object {
+              "address": "peer1.org1.com",
+              "couchDbExposePort": 5081,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org1.com:7061",
+              "isAnchorPeer": false,
+              "name": "peer1",
+              "port": 7061,
+            },
+          ],
+        },
+        "key": "channel1",
+        "name": "my-channel1",
+        "orgs": Array [
+          Object {
+            "domain": "org1.com",
+            "headPeer": Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            "mspName": "Org1MSP",
+            "name": "Org1",
+            "peers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+              Object {
+                "address": "peer1.org1.com",
+                "couchDbExposePort": 5081,
+                "db": "LevelDb",
+                "fullAddress": "peer1.org1.com:7061",
+                "isAnchorPeer": false,
+                "name": "peer1",
+                "port": 7061,
+              },
+            ],
+          },
+          Object {
+            "domain": "org2.com",
+            "headPeer": Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+            "mspName": "Org2MSP",
+            "name": "Org2",
+            "peers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+          },
+        ],
+      },
+      "directory": "./chaincodes/chaincode-kv-node",
+      "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
+      "init": "{\\"Args\\":[]}",
+      "instantiatingOrg": Object {
+        "domain": "org1.com",
+        "headPeer": Object {
+          "address": "peer0.org1.com",
+          "couchDbExposePort": 5080,
+          "db": "LevelDb",
+          "fullAddress": "peer0.org1.com:7060",
+          "isAnchorPeer": true,
+          "name": "peer0",
+          "port": 7060,
+        },
+        "mspName": "Org1MSP",
+        "name": "Org1",
+        "peers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          Object {
+            "address": "peer1.org1.com",
+            "couchDbExposePort": 5081,
+            "db": "LevelDb",
+            "fullAddress": "peer1.org1.com:7061",
+            "isAnchorPeer": false,
+            "name": "peer1",
+            "port": 7061,
+          },
+        ],
+      },
+      "lang": "node",
+      "name": "and-policy-chaincode",
+      "privateData": Array [
         Object {
           "blockToLive": 0,
-          "maxPeerCount": 0,
+          "maxPeerCount": 1,
           "memberOnlyRead": true,
-          "name": "org2-collection",
-          "policy": "OR('Org2MSP.member')",
-          "requiredPeerCount": 0,
+          "name": "org1-collection",
+          "policy": "OR('Org1MSP.member')",
+          "requiredPeerCount": 1,
         },
       ],
       "version": "0.0.1",

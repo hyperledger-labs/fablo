@@ -12,6 +12,7 @@
 | Channels                  | 1         | 2         | 1         |
 | Node chaincode            | yes       | yes       | yes       |
 | Node chaincode upgrade    | yes       | yes       | no        |
+| Node chaincode endorsement| OR        | OR        | OR, AND   |
 | Private data              | no        | no        | yes       |
 | Java chaincode            | no        | yes       | no        |
 | Go chaincode              | no        | no        | no        |

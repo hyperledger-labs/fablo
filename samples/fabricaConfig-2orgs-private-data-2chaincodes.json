@@ -77,7 +77,7 @@
   ],
   "chaincodes": [
     {
-      "name": "chaincode1",
+      "name": "or-policy-chaincode",
       "version": "0.0.1",
       "lang": "node",
       "channel": "channel1",
@@ -90,11 +90,22 @@
           "orgNames": [
             "Org1"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "and-policy-chaincode",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "channel1",
+      "init": "{\"Args\":[]}",
+      "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": [
         {
-          "name": "org2-collection",
+          "name": "org1-collection",
           "orgNames": [
-            "Org2"
+            "Org1"
           ]
         }
       ]
