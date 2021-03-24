@@ -91,7 +91,11 @@ describe('extend config', () => {
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toMatchSnapshot();
+
+    const cleanedOutput = commandResult.output
+      .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
+      .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
+    expect(cleanedOutput).toMatchSnapshot();
   });
 
   it('should extend custom config', () => {
