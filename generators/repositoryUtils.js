@@ -29,25 +29,21 @@ const namedVersionsAsLast = (a, b) => {
   return 0;
 };
 
-function sortVersions(versions) {
-  return versions
-    .map(incrementVersionFragments)
-    .sort(namedVersionsAsLast)
-    .map(decrementVersionFragments)
-    .reverse();
-}
+const sortVersions = (versions) => versions
+  .map(incrementVersionFragments)
+  .sort(namedVersionsAsLast)
+  .map(decrementVersionFragments)
+  .reverse();
 
-function version(v) {
-  return {
-    isGreaterOrEqual(v2) {
-      const vStd = incrementVersionFragments(v).split('-')[0];
-      const v2Std = incrementVersionFragments(v2).split('-')[0];
-      return vStd >= v2Std;
-    },
-  };
-}
+const version = (v) => ({
+  isGreaterOrEqual(v2) {
+    const vStd = incrementVersionFragments(v).split('-')[0];
+    const v2Std = incrementVersionFragments(v2).split('-')[0];
+    return vStd >= v2Std;
+  },
+});
 
-async function getAvailableTags() {
+const getAvailableTags = async () => {
   const params = {
     searchParams: {
       tag_status: 'active',
@@ -64,7 +60,7 @@ async function getAvailableTags() {
     console.log(`Could not check for updates. Url: '${repositoryTagsListUrl}' not available`);
     return [];
   }
-}
+};
 
 module.exports = {
   getAvailableTags,

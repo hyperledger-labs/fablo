@@ -230,6 +230,10 @@ function isHlf20(fabricVersion) {
   return supported20Versions.includes(fabricVersion);
 }
 
+function getCaVersion(fabricVersion) {
+  return (version(fabricVersion).isGreaterOrEqual('1.4.10') ? '1.5.0' : fabricVersion);
+}
+
 function getEnvVarOrThrow(name) {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -246,7 +250,7 @@ function getPathsFromEnv() {
 function transformNetworkSettings(networkSettingsJson) {
   return {
     ...networkSettingsJson,
-    fabricCaVersion: '1.5.0',
+    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
     paths: getPathsFromEnv(),
     isHlf20: isHlf20(networkSettingsJson.fabricVersion),
   };

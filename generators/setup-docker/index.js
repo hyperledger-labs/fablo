@@ -114,7 +114,7 @@ module.exports = class extends Generator {
       networkSettings: { ...networkSettings, monitoring },
       orgs: orgsTransformed,
       paths: networkSettings.paths,
-      fabricaVersion: config.version,
+      fabricaVersion: config.fabricaVersion,
       fabricaBuild: buildUtil.getBuildInfo(),
     };
     this.fs.copyTpl(
