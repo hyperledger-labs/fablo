@@ -27,10 +27,7 @@ describe('extend config', () => {
       // when
       const extended = ExtendConfigGenerator.extendJsonConfig(json);
 
-      // const response = commands.fabricaExec(`extend-config "${commands.relativeRoot}/${file}"`);
-      // const cleaned = response.output
-      //   .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
-      //   .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
+      // then
       expect(extended).toMatchSnapshot();
     });
   });
