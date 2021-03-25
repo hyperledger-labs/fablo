@@ -126,11 +126,11 @@ function stopNetwork() {
 
 function generateChannelsArtifacts() {
   <% if (!channels || !channels.length) { -%>
-      echo "No channels"
+    echo "No channels"
   <% } else { -%>
     <% channels.forEach(function(channel){  -%>
-    printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-    createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+      printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
+      createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABRICA_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
   <% } -%>
 }

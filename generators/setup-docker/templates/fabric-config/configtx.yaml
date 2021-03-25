@@ -134,7 +134,7 @@ Orderer: &OrdererDefaults
 <% if(!isHlf20) { %>
     Capabilities:
         <<: *OrdererCapabilities
-<% } %>
+<% } -%>
 
 ################################################################################
 #   Profile
