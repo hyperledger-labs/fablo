@@ -44,7 +44,7 @@ module.exports = class extends Generator {
     // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(rootOrg);
     this._copyOrgCryptoConfig(orgs);
-    this._copyConfigTx(capabilities, networkSettings, rootOrg, orgs);
+    this._copyConfigTx(capabilities, networkSettings, rootOrg, orgs, channels);
     this._copyGitIgnore();
     this._createPrivateDataCollectionConfigs(chaincodes);
 
@@ -65,13 +65,14 @@ module.exports = class extends Generator {
     });
   }
 
-  _copyConfigTx(capabilities, networkSettings, rootOrg, orgs) {
+  _copyConfigTx(capabilities, networkSettings, rootOrg, orgs, channels) {
     const settings = {
       capabilities,
       isHlf20: networkSettings.isHlf20,
       networkSettings,
       rootOrg,
       orgs,
+      channels,
     };
     this.fs.copyTpl(
       this.templatePath('fabric-config/configtx.yaml'),

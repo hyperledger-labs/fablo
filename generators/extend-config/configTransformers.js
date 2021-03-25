@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { version } = require('../repositoryUtils');
 
 function createPrivateCollectionConfig(fabricVersion, channel, name, orgNames) {
@@ -182,6 +183,9 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
 }
 
 function transformChannelConfig(channelJsonFormat, orgsTransformed) {
+  const channelName = channelJsonFormat.name;
+  const profileName = _.chain(channelName).camelCase().upperFirst().value();
+
   const orgKeys = channelJsonFormat.orgs.map((o) => o.key);
   const orgPeers = channelJsonFormat.orgs.map((o) => o.peers)
     .reduce((a, b) => a.concat(b), []);
@@ -191,8 +195,11 @@ function transformChannelConfig(channelJsonFormat, orgsTransformed) {
 
   return {
     key: channelJsonFormat.key,
-    name: channelJsonFormat.name,
+    name: channelName,
     orgs: orgsForChannel,
+    profile: {
+      name: profileName,
+    },
     instantiatingOrg: orgsForChannel[0],
   };
 }
