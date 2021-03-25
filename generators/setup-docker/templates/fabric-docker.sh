@@ -7,7 +7,7 @@ FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
