@@ -12,8 +12,6 @@ function chaincodeInstall() {
 
   local ORDERER_URL=$8
 
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
-
   echo "Installing chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -23,10 +21,13 @@ function chaincodeInstall() {
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CHANNEL_NAME="$CHANNEL_NAME" -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
       "$CLI_NAME" peer chaincode install \
-      -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
+      -n "$CHAINCODE_NAME" \
+      -v "$CHAINCODE_VERSION" \
+      -l "$CHAINCODE_LANG" \
+      -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
       -o "$ORDERER_URL"
   else
     echo "Warning! Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty."
@@ -42,26 +43,26 @@ function chaincodeInstantiate() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
-
   echo "Instantiating chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode instantiate \
       -C "$CHANNEL_NAME" \
       -n "$CHAINCODE_NAME" \
@@ -69,7 +70,8 @@ function chaincodeInstantiate() {
       -l "$CHAINCODE_LANG" \
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
-      -P "$ENDORSEMENT"
+      -P "$ENDORSEMENT" \
+      --collections-config "$COLLECTIONS_CONFIG"
   else
     echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -85,26 +87,26 @@ function chaincodeUpgrade() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
-
   echo "Upgrading chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode upgrade \
       -C "$CHANNEL_NAME" \
       -n "$CHAINCODE_NAME" \
@@ -113,7 +115,8 @@ function chaincodeUpgrade() {
       -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
-      -P "$ENDORSEMENT"
+      -P "$ENDORSEMENT" \
+      --collections-config "$COLLECTIONS_CONFIG"
   else
     echo "Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
@@ -131,9 +134,7 @@ function chaincodeInstallTls() {
   local CHAINCODE_DIR_PATH=$7
 
   local ORDERER_URL=$8
-  local CA_CERT="/var/hyperledger/cli/"$9
-
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
+  local CA_CERT="/var/hyperledger/cli/$9"
 
   echo "Installing chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -145,11 +146,16 @@ function chaincodeInstallTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CHANNEL_NAME="$CHANNEL_NAME" -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
       "$CLI_NAME" peer chaincode install \
-      -n "$CHAINCODE_NAME" -v "$CHAINCODE_VERSION" -l "$CHAINCODE_LANG" -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
-      -o "$ORDERER_URL" --tls --cafile "$CA_CERT"
+      -n "$CHAINCODE_NAME" \
+      -v "$CHAINCODE_VERSION" \
+      -l "$CHAINCODE_LANG" \
+      -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
+      -o "$ORDERER_URL" \
+      --tls \
+      --cafile "$CA_CERT"
   else
     echo "Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty."
   fi
@@ -164,21 +170,21 @@ function chaincodeInstantiateTls() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=${10}
 
-  local CA_CERT="/var/hyperledger/cli/"${11}
-
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
+  local CA_CERT="/var/hyperledger/cli/${11}"
 
   echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
@@ -186,7 +192,7 @@ function chaincodeInstantiateTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode instantiate \
       -C "$CHANNEL_NAME" \
       -n "$CHAINCODE_NAME" \
@@ -195,6 +201,7 @@ function chaincodeInstantiateTls() {
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
+      --collections-config "$COLLECTIONS_CONFIG" \
       --tls \
       --cafile "$CA_CERT"
   else
@@ -212,6 +219,7 @@ function chaincodeUpgradeTls() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
   local INIT_PARAMS=$9
@@ -220,13 +228,12 @@ function chaincodeUpgradeTls() {
 
   local CA_CERT="/var/hyperledger/cli/"${11}
 
-  local CHAINCODE_DIR_CONTENT=$(ls "$CHAINCODE_DIR_PATH")
-
   echo "Upgrading chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
@@ -234,7 +241,7 @@ function chaincodeUpgradeTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  if [ -n "$CHAINCODE_DIR_CONTENT" ]; then
+  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode upgrade \
       -C "$CHANNEL_NAME" \
       -n "$CHAINCODE_NAME" \
@@ -244,6 +251,7 @@ function chaincodeUpgradeTls() {
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
+      --collections-config "$COLLECTIONS_CONFIG" \
       --tls \
       --cafile "$CA_CERT"
   else

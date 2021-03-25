@@ -110,6 +110,11 @@ validateConfig() {
   executeOnFabricaDocker validate "" "" "$fabrica_config"
 }
 
+extendConfig() {
+  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  executeOnFabricaDocker extend-config "" "" "$fabrica_config"
+}
+
 generateNetworkConfig() {
   local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
   local fabrica_target=${2:-$FABRICA_TARGET}
@@ -157,6 +162,9 @@ elif [ "$COMMAND" = "init" ]; then
 
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
+
+elif [ "$COMMAND" = "extend-config" ]; then
+  extendConfig "$2"
 
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2" "$3"
