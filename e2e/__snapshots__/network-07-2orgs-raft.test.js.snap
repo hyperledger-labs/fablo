@@ -32,6 +32,7 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Admins\\"
+
     Capabilities:
         <<: *ChannelCapabilities
 
@@ -44,10 +45,35 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/ordererOrganizations/root.com/msp
 
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.admin')\\"
+
     - &Org1
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.admin')\\"
+          Endorsement:
+              Type: Signature
+              Rule: \\"OR('Org1MSP.member')\\"
 
       AnchorPeers:
           - Host: peer0.org1.com
@@ -56,6 +82,20 @@ Organizations:
       Name: Org2MSP
       ID: Org2MSP
       MSPDir: crypto-config/peerOrganizations/org2.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.admin')\\"
+          Endorsement:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
 
       AnchorPeers:
           - Host: peer0.org2.com
@@ -66,6 +106,23 @@ Organizations:
 ################################################################################
 Application: &ApplicationDefaults
     Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Readers\\"
+        Writers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+        Admins:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Admins\\"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Endorsement\\"
+
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -101,6 +158,27 @@ Orderer: &OrdererDefaults
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Readers\\"
+        Writers:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+        Admins:
+            Type: ImplicitMeta
+            Rule: \\"MAJORITY Admins\\"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: \\"ANY Writers\\"
+
+    Capabilities:
+        <<: *OrdererCapabilities
 
 ################################################################################
 #   Profile
@@ -108,27 +186,66 @@ Orderer: &OrdererDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
+    # Profile used to create Genesis block for Orderer #
     OrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
+
             Capabilities:
                 <<: *OrdererCapabilities
+
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
                     - *Org2
-    AllOrgChannel:
+
+    # Profile used to create channeltx for my-channel1 #
+    MyChannel1:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org2
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
                 - *Org2
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    # Profile used to create channeltx for my-channel2 #
+    MyChannel2:
+        <<: *ChannelDefaults
+        Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org2
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+
             Capabilities:
                 <<: *ApplicationCapabilities
 "
@@ -341,10 +458,10 @@ function upgradeChaincode() {
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"MyChannel2\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"MyChannel2\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
   notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
@@ -395,9 +512,9 @@ function stopNetwork() {
 
 function generateChannelsArtifacts() {
   printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createChannelTx \\"my-channel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
   printHeadline \\"Generating config for 'my-channel2'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel2\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"AllOrgChannel\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createChannelTx \\"my-channel2\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"MyChannel2\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 }
 
 function installChannels() {
