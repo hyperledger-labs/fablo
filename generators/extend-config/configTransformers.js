@@ -1,24 +1,58 @@
 const _ = require('lodash');
+const { version } = require('../repositoryUtils');
 
-function singleOrListString(items) {
-  if (items.length === 1) {
-    return items[0];
-  }
-  return `"${items.join(' ')}"`;
+function createPrivateCollectionConfig(fabricVersion, channel, name, orgNames) {
+  // We need only orgs that can have access to private data
+  const relevantOrgs = (channel.orgs || []).filter((o) => !!orgNames.find((n) => n === o.name));
+  if (relevantOrgs.length < orgNames.length) { throw new Error(`Cannot find all orgs for names ${orgNames}`); }
+
+  const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(',')})`;
+  const peerCounts = relevantOrgs.map((o) => (o.peers || []).length);
+  const totalPeers = peerCounts.reduce((a, b) => a + b, 0);
+
+  // We need enough peers to exceed one org (max in org + 1) and up to totalPeers - 1
+  const requiredPeerCount = Math.min(
+    totalPeers - 1,
+    peerCounts.reduce((a, b) => Math.max(a, b), 0) + 1,
+  );
+
+  const maxPeerCount = Math.max(
+    requiredPeerCount,
+    Math.min(requiredPeerCount * 2, totalPeers - 1),
+  );
+
+  const memberOnlyRead = version(fabricVersion).isGreaterOrEqual('1.4.0') ? { memberOnlyRead: true } : {};
+  const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual('2.0.0') ? { memberOnlyWrite: true } : {};
+
+  return {
+    name,
+    policy,
+    requiredPeerCount,
+    maxPeerCount,
+    blockToLive: 0,
+    ...memberOnlyRead,
+    ...memberOnlyWrite,
+  };
 }
 
-function transformChaincodesConfig(chaincodes, transformedChannels) {
+function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
-    const matchingChannel = transformedChannels.find((c) => c.key === chaincode.channel);
+    const channel = transformedChannels.find((c) => c.key === chaincode.channel);
+    if (!channel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
+
+    const privateData = (chaincode.privateData || [])
+      .map((d) => createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames));
+
     return {
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
-      channel: matchingChannel,
+      channel,
       init: chaincode.init,
       endorsement: chaincode.endorsement,
-      instantiatingOrg: matchingChannel.instantiatingOrg,
+      instantiatingOrg: channel.instantiatingOrg,
+      privateData,
     };
   });
 }
@@ -125,7 +159,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers: singleOrListString(bootstrapPeersList),
+    bootstrapPeers: bootstrapPeersList.join(' '),
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };
@@ -204,16 +238,7 @@ function isHlf20(fabricVersion) {
 }
 
 function getCaVersion(fabricVersion) {
-  const caVersion = {
-    '2.2.1': '1.4.9',
-    '2.2.0': '1.4.9',
-    '2.1.1': '1.4.9',
-    '2.1.0': '1.4.9',
-    '2.0.1': '1.4.9',
-    '1.4.10': '1.4.9',
-    '1.4.11': '1.4.9',
-  };
-  return caVersion[fabricVersion] || fabricVersion;
+  return (version(fabricVersion).isGreaterOrEqual('1.4.10') ? '1.5.0' : fabricVersion);
 }
 
 function getEnvVarOrThrow(name) {
@@ -229,13 +254,20 @@ function getPathsFromEnv() {
   };
 }
 
+function transformNetworkSettings(networkSettingsJson) {
+  return {
+    ...networkSettingsJson,
+    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    paths: getPathsFromEnv(),
+    isHlf20: isHlf20(networkSettingsJson.fabricVersion),
+  };
+}
+
 module.exports = {
   transformChaincodesConfig,
   transformRootOrgConfig,
   transformOrgConfigs,
   transformChannelConfigs,
   getNetworkCapabilities,
-  getCaVersion,
-  getPathsFromEnv,
-  isHlf20,
+  transformNetworkSettings,
 };

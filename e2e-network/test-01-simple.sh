@@ -17,13 +17,8 @@ dumpLogs() {
 }
 
 networkDown() {
-  rm -rf "$TEST_TEST_LOGS" &&
-    dumpLogs "ca.root.com" &&
-    dumpLogs "orderer0.root.com" &&
-    dumpLogs "ca.org1.com" &&
-    dumpLogs "peer0.org1.com" &&
-    dumpLogs "peer1.org1.com" &&
-    dumpLogs "cli.org1.com" &&
+  rm -rf "$TEST_LOGS" &&
+    (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done) &&
     (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
@@ -36,7 +31,7 @@ waitForChaincode() {
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6"
+  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
 networkUpAsync
@@ -47,16 +42,15 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
   waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
-
   waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
   waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself" &&
   waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer1.org1.com:7061" &&
   waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
   waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.*peer0.org1.com:7060" &&
-
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1" &&
 
+  # Test simple chaincode
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
     '{\"success\":\"OK\"}' &&
@@ -64,23 +58,26 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
 
+  # Reboot and ensure the state is lost after reboot
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" reboot) &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1" &&
-
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"error\":\"NOT_FOUND\"}' &&
+
+  # Put some data again
   expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:put", "name", "James Bond"]}' \
     '{\"success\":\"OK\"}' &&
 
+  # Upgrade chaincode and check if the data is available
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2") &&
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.2" &&
-
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"James Bond\"}' &&
 
+  # Exit
   networkDown || (networkDown && exit 1)

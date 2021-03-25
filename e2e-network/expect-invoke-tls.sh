@@ -6,23 +6,36 @@ channel="$3"
 chaincode="$4"
 command="$5"
 expected="$6"
+transient="${7:-"{}"}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port] [channel] [chaincode] [command] [expected_substring]"
+  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
 label="Invoke $channel/$cli/$peer $command"
-echo "[testing] $label"
+echo ""
+echo "➜ testing: $label"
+
+peerAddresses="--peerAddresses ${peer/,/ --peerAddresses }"
+# shellcheck disable=SC2001
+peerNoPort="$(echo "$peer" | sed -e 's/:[[:digit:]]\{2,\}//g')"
+tlsRootCertFiles="--tlsRootCertFiles /var/hyperledger/cli/crypto/peers/${peerNoPort/,//tls/ca.crt --tlsRootCertFiles /var/hyperledger/cli/crypto/peers/}/tls/ca.crt"
+
+echo "$peerAddresses"
+echo "$tlsRootCertFiles"
 
 response="$(
+  # shellcheck disable=SC2086
   docker exec "$cli" peer chaincode invoke \
-    --peerAddresses "$peer" \
-    --tlsRootCertFiles "/var/hyperledger/cli/crypto/peers/${peer%?????}/tls/ca.crt" \
+    $peerAddresses \
+    $tlsRootCertFiles \
     -C "$channel" \
     -n "$chaincode" \
     -c "$command" \
+    --transient "$transient" \
     --waitForEvent \
+    --waitForEventTimeout 90s \
     --tls \
     --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem" \
     2>&1
@@ -31,8 +44,8 @@ response="$(
 echo "$response"
 
 if echo "$response" | grep -F "$expected"; then
-  echo "[ok] $label"
+  echo "✅ ok: $label"
 else
-  echo "[failed] $label | expected: $expected"
+  echo "❌ failed: $label | expected: $expected"
   exit 1
 fi
