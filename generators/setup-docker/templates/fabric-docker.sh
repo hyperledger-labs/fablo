@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eu
 
-FABRIKKA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
+FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/scripts/base-channel-functions.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
-source "$FABRIKKA_NETWORK_ROOT/fabric-docker/.env"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts
+  prepareChaincodeDirs
   startNetwork
   generateChannelsArtifacts
   installChannels
@@ -22,25 +24,24 @@ function networkUp() {
 
 if [ "$1" = "up" ]; then
   networkUp
-elif [ "$1" = "recreate" ]; then
-  networkDown
-  networkUp
 elif [ "$1" = "down" ]; then
   networkDown
+elif [ "$1" = "reboot" ]; then
+  networkDown
+  networkUp
 elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
-  installChaincodes
-<%- include('fabrikka-docker-channelScipts.sh.ejs', {tls: tls, orgs: orgs, channels: channels}); -%>
+elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
+  upgradeChaincode "$3" "$4"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
   printHelp
 else
   echo "No command specified"
-  echo "Basic commands are: up, down, start, stop, recreate"
+  echo "Basic commands are: up, down, start, stop, reboot"
   echo "To list channel query helper commands type: './fabrikka-docker.sh channel --help'"
   echo "Also check: 'chaincodes install'"
   echo "Use 'help' or '--help' for more information"

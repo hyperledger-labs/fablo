@@ -5,8 +5,6 @@
   "title": "Root",
   "default": {},
   "required": [
-    "fabrikkaVersion",
-    "fileVersion",
     "networkSettings",
     "rootOrg",
     "orgs",
@@ -14,28 +12,14 @@
     "chaincodes"
   ],
   "properties": {
-    "fabrikkaVersion": {
-      "$id": "#/properties/fabrikkaVersion",
-      "title": "Fabrikka version",
-      "type": "string",
-      "default": "alpha-0.0.1",
-      "readOnly": true
-    },
-    "fileVersion": {
-      "$id": "#/properties/fileVersion",
-      "title": "File version",
-      "type": "string",
-      "default": "0.1"
+    "$schema": {
+      "const": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json"
     },
     "networkSettings": {
       "$id": "#/properties/networkSettings",
       "title": "Network settings",
       "description": "Basic settings of the Hyperledger Fabric network",
       "type": "object",
-      "default": {
-        "tls": false,
-        "fabricVersion": "1.4.4"
-      },
       "required": [
         "fabricVersion",
         "tls"
@@ -56,11 +40,9 @@
             "1.4.6",
             "1.4.7",
             "1.4.8",
-            "2.0.1",
-            "2.1.0",
-            "2.1.1",
-            "2.2.0",
-            "2.2.1"
+            "1.4.9",
+            "1.4.10",
+            "1.4.11"
           ],
           "default": "1.4.6"
         },
@@ -69,8 +51,30 @@
           "title": "Use TLS",
           "type": "boolean",
           "default": true
+        },
+        "monitoring": {
+          "$id": "#/properties/monitoring",
+          "title": "Monitoring settings",
+          "description": "Optional settings for monitoring purposes",
+          "type": "object",
+          "required": [],
+          "properties": {
+            "loglevel": {
+              "$id": "#/properties/monitoring/properties/loglevel",
+              "title": "Log level for all components",
+              "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn"
+              ],
+              "default": "info"
+            }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "rootOrg": {
       "$id": "#/properties/rootOrg",
@@ -125,7 +129,8 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "ca": {
           "$id": "#/properties/rootOrg/properties/ca",
@@ -144,7 +149,8 @@
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             }
-          }
+          },
+          "additionalProperties": false
         },
         "orderer": {
           "$id": "#/properties/rootOrg/properties/orderer",
@@ -184,9 +190,11 @@
               "minimum": 1,
               "maximum": 10
             }
-          }
+          },
+          "additionalProperties": false
         }
-      }
+      },
+      "additionalProperties": false
     },
     "orgs": {
       "$id": "#/properties/orgs",
@@ -210,7 +218,6 @@
           }
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/orgs/items",
         "title": "Organization",
@@ -256,7 +263,8 @@
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
@@ -272,7 +280,8 @@
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "peer": {
             "$id": "#/properties/orgs/items/properties/peer",
@@ -313,9 +322,11 @@
                   "CouchDb"
                 ]
               }
-            }
+            },
+            "additionalProperties": false
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "channels": {
@@ -348,7 +359,6 @@
           "name": "my-channel2"
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/channels/items",
         "title": "Channel",
@@ -375,7 +385,6 @@
             "$id": "#/properties/channels/items/properties/orgs",
             "title": "Organizations in the channel",
             "type": "array",
-            "additionalItems": true,
             "items": {
               "$id": "#/properties/channels/items/properties/orgs/items",
               "title": "Organization",
@@ -405,7 +414,6 @@
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
                   "title": "Peers for ogranization",
                   "type": "array",
-                  "additionalItems": true,
                   "items": {
                     "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
                     "title": "Peer",
@@ -413,10 +421,12 @@
                     "pattern": "^[a-z0-9]+$"
                   }
                 }
-              }
+              },
+              "additionalProperties": false
             }
           }
-        }
+        },
+        "additionalProperties": false
       }
     },
     "chaincodes": {
@@ -434,7 +444,6 @@
           "directory": "chaincode1"
         }
       ],
-      "additionalItems": true,
       "items": {
         "$id": "#/properties/chaincodes/items",
         "title": "Chaincode",
@@ -453,7 +462,7 @@
             "$id": "#/properties/chaincodes/items/properties/name",
             "title": "Name",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9]+$"
+            "pattern": "^[a-zA-Z0-9_-]+$"
           },
           "version": {
             "$id": "#/properties/chaincodes/items/properties/version",
@@ -501,9 +510,55 @@
             "$id": "#/properties/chaincodes/items/properties/directory",
             "title": "Chaincode directory",
             "type": "string"
+          },
+          "privateData": {
+            "$id": "#/properties/chaincodes/items/properties/privateData",
+            "title": "Private data collections",
+            "type": "array",
+            "items": {
+              "$id": "#/properties/chaincodes/items/properties/privateData/items",
+              "title": "Private data collection",
+              "type": "object",
+              "required": [
+                "name",
+                "orgNames"
+              ],
+              "properties": {
+                "name": {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/name",
+                  "title": "Collection name",
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                "orgNames": {
+                  "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames",
+                  "title": "Organization names",
+                  "type": "array",
+                  "items": {
+                    "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames/items",
+                    "title": "Organization name",
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9]+$",
+                    "watch": {
+                      "orgs": "orgs"
+                    },
+                    "enumSource": [
+                      [],
+                      {
+                        "source": "orgs",
+                        "value": "{{item.organization.name}}"
+                      }
+                    ]
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
           }
-        }
+        },
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "additionalProperties": false
 }

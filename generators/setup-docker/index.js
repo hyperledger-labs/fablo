@@ -5,119 +5,75 @@
 */
 const Generator = require('yeoman-generator');
 const config = require('../config');
-const utils = require('../utils/utils');
+const buildUtil = require('../version/buildUtil');
+const ExtendConfigGenerator = require('../extend-config');
 
-const configTransformers = require('./configTransformers');
-
-const ValidateGeneratorType = require.resolve('../validate');
+const ValidateGeneratorPath = require.resolve('../validate');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-    this.argument('fabrikkaConfig', {
+    this.argument('fabricaConfig', {
       type: String,
       required: true,
-      description: 'fabrikka config file path',
+      description: 'fabrica config file path',
     });
 
-    this.composeWith(ValidateGeneratorType, { arguments: [this.options.fabrikkaConfig] });
-  }
-
-  initializing() {
-    this.log(config.splashScreen());
+    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabricaConfig] });
   }
 
   async writing() {
-    this.options.fabrikkaConfigPath = utils.getFullPathOf(
-      this.options.fabrikkaConfig, this.env.cwd,
-    );
-    const networkConfig = this.fs.readJSON(this.options.fabrikkaConfigPath);
+    const fabricaConfigPath = `${this.env.cwd}/${this.options.fabricaConfig}`;
+    const json = this.fs.readJSON(fabricaConfigPath);
+    const {
+      networkSettings,
+      capabilities,
+      rootOrg,
+      orgs,
+      channels,
+      chaincodes,
+    } = ExtendConfigGenerator.extendJsonConfig(json);
 
-    this.log(`Used network config: ${this.options.fabrikkaConfigPath}`);
-    this.log(`Fabric version is: ${networkConfig.networkSettings.fabricVersion}`);
-    this.log('Generating docker-compose network...');
+    const dateString = new Date().toISOString().substring(0, 16).replace(/[^0-9]+/g, '');
+    const composeNetworkName = `fabrica_network_${dateString}`;
 
-    const capabilities = configTransformers.getNetworkCapabilities(
-      networkConfig.networkSettings.fabricVersion,
-    );
-    const isHlf20 = configTransformers.isHlf20(networkConfig.networkSettings.fabricVersion);
-    const rootOrgTransformed = configTransformers.transformRootOrgConfig(networkConfig.rootOrg);
-    const orgsTransformed = networkConfig.orgs.map(configTransformers.transformOrgConfig);
-    const channelsTransformed = networkConfig.channels.map(
-      (channel) => configTransformers.transformChannelConfig(channel, networkConfig.orgs),
-    );
-    const chaincodesTransformed = configTransformers.transformChaincodesConfig(
-      networkConfig.chaincodes, channelsTransformed,
-    );
+    this.log(`Used network config: ${this.options.fabricaConfigPath}`);
+    this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
+    this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
-    this._copyRootOrgCryptoConfig(
-      {
-        rootOrg: rootOrgTransformed,
-      },
-    );
-
-    this._copyOrgCryptoConfig(orgsTransformed);
-    this._copyConfigTx(
-      {
-        capabilities,
-        isHlf20,
-        networkSettings: networkConfig.networkSettings,
-        rootOrg: rootOrgTransformed,
-        orgs: orgsTransformed,
-      },
-    );
+    this._copyRootOrgCryptoConfig(rootOrg);
+    this._copyOrgCryptoConfig(orgs);
+    this._copyConfigTx(capabilities, networkSettings, rootOrg, orgs, channels);
     this._copyGitIgnore();
+    this._createPrivateDataCollectionConfigs(chaincodes);
 
     // ======= fabric-docker ===========================================================
-    this._copyDockerComposeEnv(
-      {
-        fabricCaVersion: configTransformers.getCaVersion(
-          networkConfig.networkSettings.fabricVersion,
-        ),
-        networkSettings: networkConfig.networkSettings,
-        orgs: orgsTransformed,
-      },
-    );
-    this._copyDockerCompose(
-      {
-        networkSettings: networkConfig.networkSettings,
-        rootOrg: rootOrgTransformed,
-        orgs: networkConfig.orgs,
-        chaincodes: networkConfig.chaincodes,
-      },
-    );
+    this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
+    this._copyDockerCompose({
+      networkSettings, rootOrg, orgs, chaincodes,
+    });
 
     // ======= scripts ==================================================================
-    this._copyCommandsGeneratedScript(
-      {
-        networkSettings: networkConfig.networkSettings,
-        rootOrg: rootOrgTransformed,
-        orgs: orgsTransformed,
-        channels: channelsTransformed,
-        chaincodes: chaincodesTransformed,
-      },
-    );
-
-    this._copyFabrikkaDockerScript(
-      {
-        tls: networkConfig.networkSettings.tls,
-        rootOrg: rootOrgTransformed,
-        orgs: orgsTransformed,
-        channels: channelsTransformed,
-      },
-    );
-
+    this._copyCommandsGeneratedScript(networkSettings, rootOrg, orgs, channels, chaincodes);
     this._copyUtilityScripts();
 
     this.on('end', () => {
       this.log('Done & done !!! Try the network out: ');
-      this.log('-> fabric-docker.sh up - to start network');
-      this.log('-> fabric-docker.sh help - to view all commands');
+      this.log('-> fabrica.sh up - to start network');
+      this.log('-> fabrica.sh help - to view all commands');
     });
   }
 
-  _copyConfigTx(settings) {
+  _copyConfigTx(capabilities, networkSettings, rootOrg, orgs, channels) {
+    const settings = {
+      capabilities,
+      isHlf20: networkSettings.isHlf20,
+      networkSettings,
+      rootOrg,
+      orgs,
+      channels,
+    };
     this.fs.copyTpl(
       this.templatePath('fabric-config/configtx.yaml'),
       this.destinationPath('fabric-config/configtx.yaml'),
@@ -132,11 +88,11 @@ module.exports = class extends Generator {
     );
   }
 
-  _copyRootOrgCryptoConfig(settings) {
+  _copyRootOrgCryptoConfig(rootOrg) {
     this.fs.copyTpl(
       this.templatePath('fabric-config/crypto-config-root.yaml'),
       this.destinationPath('fabric-config/crypto-config-root.yaml'),
-      settings,
+      { rootOrg },
     );
   }
 
@@ -151,7 +107,17 @@ module.exports = class extends Generator {
     });
   }
 
-  _copyDockerComposeEnv(settings) {
+  _copyDockerComposeEnv(networkSettings, orgsTransformed, composeNetworkName) {
+    const monitoring = { loglevel: 'info', ...(networkSettings.monitoring || {}) };
+    const settings = {
+      composeNetworkName,
+      fabricCaVersion: networkSettings.fabricCaVersion,
+      networkSettings: { ...networkSettings, monitoring },
+      orgs: orgsTransformed,
+      paths: networkSettings.paths,
+      fabricaVersion: config.fabricaVersion,
+      fabricaBuild: buildUtil.getBuildInfo(),
+    };
     this.fs.copyTpl(
       this.templatePath('fabric-docker/.env'),
       this.destinationPath('fabric-docker/.env'),
@@ -167,7 +133,14 @@ module.exports = class extends Generator {
     );
   }
 
-  _copyCommandsGeneratedScript(settings) {
+  _copyCommandsGeneratedScript(networkSettings, rootOrg, orgs, channels, chaincodes) {
+    const settings = {
+      networkSettings,
+      rootOrg,
+      orgs,
+      channels,
+      chaincodes,
+    };
     this.fs.copyTpl(
       this.templatePath('fabric-docker/commands-generated.sh'),
       this.destinationPath('fabric-docker/commands-generated.sh'),
@@ -175,15 +148,21 @@ module.exports = class extends Generator {
     );
   }
 
-  _copyFabrikkaDockerScript(settings) {
-    this.fs.copyTpl(
-      this.templatePath('fabric-docker.sh'),
-      this.destinationPath('fabric-docker.sh'),
-      settings,
-    );
+  _createPrivateDataCollectionConfigs(chaincodes) {
+    chaincodes.forEach(({ name, privateData }) => {
+      this.fs.write(
+        this.destinationPath(`fabric-config/collections/${name}.json`),
+        JSON.stringify(privateData || [], undefined, 2),
+      );
+    });
   }
 
   _copyUtilityScripts() {
+    this.fs.copyTpl(
+      this.templatePath('fabric-docker.sh'),
+      this.destinationPath('fabric-docker.sh'),
+    );
+
     this.fs.copyTpl(
       this.templatePath('fabric-docker/scripts/cli/channel_fns.sh'),
       this.destinationPath('fabric-docker/scripts/cli/channel_fns.sh'),
@@ -208,14 +187,10 @@ module.exports = class extends Generator {
       this.templatePath('fabric-docker/scripts/base-help.sh'),
       this.destinationPath('fabric-docker/scripts/base-help.sh'),
     );
-  }
 
-  _getFullPathOf(configFile) {
-    const currentPath = this.env.cwd;
-    return `${currentPath}/${configFile}`;
-  }
-
-  _displayHelp() {
-    this.log('helpful help for this command !');
+    this.fs.copyTpl(
+      this.templatePath('fabric-docker/scripts/chaincode-functions.sh'),
+      this.destinationPath('fabric-docker/scripts/chaincode-functions.sh'),
+    );
   }
 };

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+  "networkSettings": {
+    "fabricVersion": "1.4.6",
+    "tls": true
+  },
+  "rootOrg": {
+    "organization": {
+      "key": "root",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
+      "domain": "root.com"
+    },
+    "ca": {
+      "prefix": "ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "type": "raft",
+      "instances": 3
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "key": "org1",
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    },
+    {
+      "organization": {
+        "key": "org2",
+        "name": "Org2",
+        "mspName": "Org2MSP",
+        "domain": "org2.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "channel2",
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer1"
+          ]
+        },
+        {
+          "key": "org2",
+          "peers": [
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "channel2",
+      "init": "{\"Args\":[]}",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node"
+    },
+    {
+      "name": "chaincode2",
+      "version": "0.0.1",
+      "lang": "java",
+      "channel": "channel2",
+      "init": "{\"Args\":[]}",
+      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-java-simple"
+    }
+  ]
+}
