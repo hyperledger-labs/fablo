@@ -72,18 +72,23 @@ def uuid = UUID.randomUUID().toString()
 
 try {
   node ('master') {
-    slackSend (color: '#aaaaaa', message: "🏭 Fabrikka tests started <${BUILD_URL}|${BUILD_TAG}>")
+    slackSend (color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
-  runOnNewPod("fabrikka", uuid, {
+  runOnNewPod("fabrica", uuid, {
     container('dind') {
 
       stage("Install libs") {
-        sh "apk add --no-cache nodejs npm bash docker-compose"
+        sh "apk add --no-cache nodejs npm make g++ bash docker-compose py-pip tar jq git"
+        sh "pip install yamllint"
+        sh "yamllint --version"
+        sh 'wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv'
+        sh 'cp "shellcheck-stable/shellcheck" /usr/bin/'
+        sh "shellcheck --version"
         sh "npm install"
       }
 
-      stage ("Build fabrikka") {
-        sh "./fabrikka-build.sh"
+      stage ("Build fabrica") {
+        sh "./fabrica-build.sh"
       }
 
       stage("Test simple network") {
@@ -96,11 +101,14 @@ try {
       }
 
       stage('Test generators') {
+        sh "CI=true npm run test:unit"
         sh "CI=true npm run test:e2e"
+        sh "./check-if-fabrica-version-matches.sh"
       }
 
       stage('Lint') {
         sh "npm run lint"
+        sh "./lint.sh"
       }
 
       stage("Test RAFT network (2 orgs)") {
@@ -112,14 +120,15 @@ try {
         }
       }
 
-      stage("Test HF 2.0 network (2 orgs & RAFT)") {
+      stage("Test private data") {
         try {
-          sh "e2e-network/test-03-raft-2orgs-hlf2.sh"
+          sh "e2e-network/test-03-private-data.sh"
         } finally {
-          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.tmpdir/**/*', fingerprint: true
-          archiveArtifacts artifacts: 'e2e-network/test-03-raft-2orgs-hlf2.sh.logs/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
         }
       }
+
     }
   })
 } catch (e) {
@@ -129,10 +138,10 @@ try {
   node ('master') {
     if (currentBuild.result == "FAILURE") {
       color = "#FF0000"
-      slackSend (color: '#df000f', message: "🛑 Fabrikka tests failed <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (color: '#df000f', message: "🛑 Fabrica tests failed <${BUILD_URL}|${BUILD_TAG}>")
     } else {
       color = "#00FF00"
-      slackSend (color: '#0bbd00', message: "🏭 Fabrikka tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (color: '#0bbd00', message: "🏭 Fabrica tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
     }
   }
 }

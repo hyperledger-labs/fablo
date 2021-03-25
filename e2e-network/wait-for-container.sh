@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 container="$1"
 expected_message="$2"
@@ -12,10 +12,10 @@ if [ -z "$expected_message" ]; then
 fi
 
 for i in $(seq 1 90); do
-  echo "Verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
+  echo "➜ verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
-    echo "Container $container is ready!"
+    echo "✅ ok: Container $container is ready!"
     exit 0
   else
     sleep 1
@@ -23,7 +23,7 @@ for i in $(seq 1 90); do
 done
 
 #timeout
-echo "Failed to verify $container"
+echo "❌ failed: Container $container logs does not contain ${darkGray}'$expected_message'${end}"
 echo "Last log messages:"
 docker logs "$container" | tail -n 30
 exit 1

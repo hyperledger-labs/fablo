@@ -21,7 +21,7 @@ module.exports = class extends Generator {
 
   async configuring() {
     const { setup } = this.options;
-    this.log(`This generator can also be run with: yo fabrikka:${setup.setupType}`);
+    this.log(`This generator can also be run with: yo fabrica:${setup.setupType}`);
     this.composeWith(require.resolve(`../${setup.setupType}`), this.options);
   }
 };

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+  "networkSettings": {
+    "fabricVersion": "1.4.6",
+    "tls": false
+  },
+  "rootOrg": {
+    "organization": {
+      "key": "root",
+      "name": "Orderer",
+      "mspName": "OrdererMSP",
+      "domain": "root.com"
+    },
+    "ca": {
+      "prefix": "ca"
+    },
+    "orderer": {
+      "prefix": "orderer",
+      "type": "solo",
+      "instances": 1
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "key": "org1",
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "key": "channel1",
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "key": "org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "channel1",
+      "init": "{\"Args\":[]}",
+      "endorsement": "AND ('Org1MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node"
+    },
+    {
+      "name": "chaincode2",
+      "version": "0.0.1",
+      "lang": "java",
+      "channel": "channel1",
+      "init": "{\"Args\":[]}",
+      "endorsement": "AND ('Org1MSP.member')",
+      "directory": "./chaincodes/chaincode-java-simple"
+    }
+  ]
+}

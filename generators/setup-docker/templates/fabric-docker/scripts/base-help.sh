@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
+
 function printHelp() {
-  echo "Fabrikka is powered by SoftwareMill"
+  echo "Fabrica is powered by SoftwareMill"
 
   echo ""
   echo "usage: ./fabric-docker.sh <command>"
@@ -20,8 +22,8 @@ function printHelp() {
   echo "./fabric-docker.sh stop"
   echo -e "\t Stops already running network."
   echo ""
-  echo "./fabric-docker.sh recreate"
-  echo -e "\t Fresh start - it destorys whole network, certs, configs and then reruns everything."
+  echo "./fabric-docker.sh reboot"
+  echo -e "\t Fresh start - it destroys whole network, certs, configs and then reruns everything."
   echo ""
   echo "./fabric-docker.sh channel --help"
   echo -e "\t Detailed help for channel management scripts."

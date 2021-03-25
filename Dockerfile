@@ -1,16 +1,18 @@
-FROM node:14-alpine
+FROM node:12.18.0-alpine3.12
 
-RUN apk add --no-cache sudo
+RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
 
-COPY docs /fabrikka/docs
-COPY generators /fabrikka/generators
-COPY docker-entrypoint.sh /fabrikka/docker-entrypoint.sh
-COPY package.json /fabrikka/package.json
-COPY package-lock.json /fabrikka/package-lock.json
-COPY README.md /fabrikka/README.md
+# copy fabrica files
+COPY generators /fabrica/generators
+COPY package.json /fabrica/package.json
+COPY package-lock.json /fabrica/package-lock.json
 
-WORKDIR /fabrikka
+# copy files for init network
+COPY samples/fabricaConfig-1org-1channel-1chaincode.json /fabrica/generators/init/templates/fabrica-config.json
+COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
+
+WORKDIR /fabrica
 RUN npm install --silent
 RUN npm link
 
@@ -24,7 +26,15 @@ RUN adduser -D -u 501 yeoman && \
   echo "yeoman ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Yeoman needs the use of a home directory for caching and certain config storage.
-ENV HOME /network/target
+ENV HOME /network/workspace
 
-WORKDIR /fabrikka
-ENTRYPOINT /fabrikka/docker-entrypoint.sh
+COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
+COPY docs /fabrica/docs
+COPY README.md /fabrica/README.md
+COPY samples /fabrica/samples/
+
+ARG VERSION_DETAILS
+RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
+RUN cat /fabrica/version.json
+
+CMD /fabrica/docker-entrypoint.sh
