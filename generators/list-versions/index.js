@@ -20,7 +20,7 @@ module.exports = class extends Generator {
   }
 
   _markAsCurrent(versionToCheck) {
-    if (versionToCheck === config.version) {
+    if (versionToCheck === config.fabricaVersion) {
       return `${versionToCheck} <== current`;
     }
     return versionToCheck;

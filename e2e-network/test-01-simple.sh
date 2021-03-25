@@ -18,7 +18,7 @@ dumpLogs() {
 
 networkDown() {
   rm -rf "$TEST_LOGS" &&
-    (for name in $(docker ps --format '{{.Names}}') ; do dumpLogs "$name"; done) &&
+    (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done) &&
     (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
@@ -42,13 +42,11 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054" &&
   waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
   waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations" &&
-
   waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
   waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself" &&
   waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer1.org1.com:7061" &&
   waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1" &&
   waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.*peer0.org1.com:7060" &&
-
   waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1" &&
   waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1" &&
 
@@ -59,23 +57,6 @@ waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054" &&
   expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
     '{"Args":["KVContract:get", "name"]}' \
     '{\"success\":\"Willy Wonka\"}' &&
-
-  # Test chaincode with transient fields and private data
-  expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
-    '{"Args":["KVContract:putPrivateMessage", "privateDataOrg1"]}' \
-    '{\"success\":\"OK\"}' \
-    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQ=="}' &&
-  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
-    '{"Args":["KVContract:getPrivateMessage", "privateDataOrg1"]}' \
-    '{\"success\":\"Very secret message\"}' &&
-  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
-    '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
-    '{\"success\":\"OK\"}' \
-    '{"message":"VmVyeSBzZWNyZXQgbWVzc2FnZQ=="}' &&
-  expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
-    '{"Args":["KVContract:verifyPrivateMessage", "privateDataOrg1"]}' \
-    '{\"error\":\"VERIFICATION_FAILED\"}' \
-    '{"message":"Tm90IHNvIHNlY3JldCBtZXNzYWdl"}' &&
 
   # Reboot and ensure the state is lost after reboot
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" reboot) &&

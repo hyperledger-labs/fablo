@@ -12,7 +12,7 @@ const repositoryUtils = require('../repositoryUtils');
 module.exports = class extends Generator {
   async checkForCompatibleUpdates() {
     const allNewerVersions = (await repositoryUtils.getAvailableTags())
-      .filter((name) => config.isFabricaVersionSupported(name) && name > config.version);
+      .filter((name) => config.isFabricaVersionSupported(name) && name > config.fabricaVersion);
 
     this._printVersions(allNewerVersions);
   }

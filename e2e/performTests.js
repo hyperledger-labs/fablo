@@ -13,16 +13,6 @@ const testSchemaMatch = (config) => {
   });
 };
 
-const testExtendConfig = (commands, config) => {
-  it('should extend config properly', () => {
-    const response = commands.fabricaExec(`extend-config "${commands.relativeRoot}/${config}"`);
-    const cleaned = response.output
-      .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
-      .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
-    expect(cleaned).toMatchSnapshot();
-  });
-};
-
 const testFilesExistence = (config, files) => {
   it(`should create proper files from ${config}`, () => {
     expect(files).toMatchSnapshot();
@@ -47,7 +37,6 @@ exports.performTests = (label, sample) => {
 
   const commands = new TestCommands(`e2e/__tmp__/${label}`, '../../..');
   commands.cleanupWorkdir();
-  testExtendConfig(commands, config);
   commands.fabricaExec(`generate "${commands.relativeRoot}/${config}"`);
 
   const files = commands.getFiles();

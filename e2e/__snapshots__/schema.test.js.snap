@@ -70,7 +70,7 @@ Object {
           },
           "name": Object {
             "$id": "#/properties/chaincodes/items/properties/name",
-            "pattern": "^[a-zA-Z0-9]+$",
+            "pattern": "^[a-zA-Z0-9_-]+$",
             "title": "Name",
             "type": "string",
           },
@@ -259,6 +259,9 @@ Object {
             "1.4.6",
             "1.4.7",
             "1.4.8",
+            "1.4.9",
+            "1.4.10",
+            "1.4.11",
           ],
           "title": "Hyperledger Fabric version",
           "type": "string",

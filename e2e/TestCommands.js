@@ -46,8 +46,8 @@ class TestCommands {
     return executeCommand(`cd ${this.workdir} && ${this.relativeRoot}/fabrica.sh ${command}`);
   }
 
-  getFiles() {
-    return executeCommand(`find '${this.workdir}' -type f`)
+  getFiles(dir) {
+    return executeCommand(`find ${dir || this.workdir} -type f`)
       .output
       .split('\n')
       .filter((s) => !!s.length)
