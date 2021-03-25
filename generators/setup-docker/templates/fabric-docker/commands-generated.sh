@@ -125,44 +125,46 @@ function stopNetwork() {
 }
 
 function generateChannelsArtifacts() {
-  <% channels.forEach(function(channel){  -%>
-  printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-  createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config/config"
-  <% }) -%>
+  <% if (!channels || !channels.length) { -%>
+    echo "No channels"
+  <% } else { -%>
+    <% channels.forEach(function(channel){  -%>
+      printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
+      createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "AllOrgChannel" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+    <% }) -%>
+  <% } -%>
 }
 
 function installChannels() {
-  <% channels.forEach(function(channel){  -%>
-
-  <% for (orgNo in channel.orgs) {
-      var org = channel.orgs[orgNo]
-  -%>
-  <% for (peerNo in org.peers) {
-      var peer = org.peers[peerNo]
-  -%>
-
-  <% if(orgNo==0 && peerNo==0) { -%>
-  printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
-  <% if(!networkSettings.tls) { -%>
-  docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
+  <% if (!channels || !channels.length) { -%>
+    echo "No channels"
   <% } else { -%>
-  docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
-  <% } %>
-  <% } else { -%>
-  printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
-  <% if(!networkSettings.tls) { -%>
-  docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
-  <% } else { -%>
-  docker exec -i cli.<%= org.domain %> bash -c \
-    "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
-  <% } %>
+    <% channels.forEach(function(channel){ -%>
+      <% channel.orgs.forEach(function(org, orgNo){ -%>
+        <% org.peers.forEach(function(peer, peerNo){ -%>
+          <% if(orgNo == 0 && peerNo == 0) { -%>
+            printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
+            <% if(!networkSettings.tls) { -%>
+              docker exec -i cli.<%= org.domain %> bash -c \
+                "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
+            <% } else { -%>
+              docker exec -i cli.<%= org.domain %> bash -c \
+                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+            <% } %>
+          <% } else { -%>
+            printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
+            <% if(!networkSettings.tls) { -%>
+              docker exec -i cli.<%= org.domain %> bash -c \
+                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
+            <% } else { -%>
+              docker exec -i cli.<%= org.domain %> bash -c \
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+            <% } %>
+          <% } -%>
+        <% }) -%>
+      <% }) -%>
+    <% }) -%>
   <% } -%>
-  <% } -%>
-  <% } -%>
-  <% }) -%>
 }
 
 function networkDown() {
