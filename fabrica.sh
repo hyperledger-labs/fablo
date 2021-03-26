@@ -181,5 +181,5 @@ elif [ "$COMMAND" = "recreate" ]; then
 
 else
   echo "Executing Fabrica docker command: $COMMAND"
-  "$FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
+  "$FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 fi
