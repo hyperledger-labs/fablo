@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 function peerChannelList() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
@@ -6,7 +8,7 @@ function peerChannelList() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel list
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list
 }
 
 function peerChannelGetInfo() {
@@ -19,8 +21,8 @@ function peerChannelGetInfo() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel getinfo \
-    -c $CHANNEL_NAME
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel getinfo \
+    -c "$CHANNEL_NAME"
 }
 
 function peerChannelFetchConfig() {
@@ -35,45 +37,21 @@ function peerChannelFetchConfig() {
   inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/assets/
   docker exec \
-    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
-    -c $CHANNEL_NAME
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
+    -c "$CHANNEL_NAME"
 
-  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec "$CLI_NAME" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
   docker exec \
-    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/assets/config_block_before.pb \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+    jq .data.data[0].payload.data.config > "$CONFIG_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchConfigDefault() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local CONFIG_FILE_NAME=$3
-
-  echo "Fetching config block from $CHANNEL_NAME using default cli's peer..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
-  docker exec \
-    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
-    -c $CHANNEL_NAME
-
-  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/assets/config_block_before.pb \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 function peerChannelFetchLastBlock() {
@@ -88,39 +66,17 @@ function peerChannelFetchLastBlock() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
-    -c $CHANNEL_NAME
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
+    -c "$CHANNEL_NAME"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/newest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchLastBlockDefault() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-
-  echo "Fetching last block from $CHANNEL_NAME using default cli's peer..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
-    -c $CHANNEL_NAME
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/newest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 function peerChannelFetchFirstBlock() {
@@ -135,39 +91,17 @@ function peerChannelFetchFirstBlock() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
+    -c "$CHANNEL_NAME"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/oldest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchFirstBlockDefault() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-
-  echo "Fetching first block from $CHANNEL_NAME using default cli's peer..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/oldest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 function peerChannelFetchBlock() {
@@ -183,40 +117,17 @@ function peerChannelFetchBlock() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
+    -c "$CHANNEL_NAME"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/oldest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchBlockDefault() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local BLOCK_NUMBER=$4
-
-  echo "Fetching first block from $CHANNEL_NAME using default cli's peer..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/oldest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 #=== TLS equivalents =========================================================
@@ -230,7 +141,7 @@ function peerChannelListTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel list --tls --cafile $CA_CERT
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list --tls --cafile "$CA_CERT"
 }
 
 function peerChannelGetInfoTls() {
@@ -245,8 +156,8 @@ function peerChannelGetInfoTls() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS $CLI_NAME peer channel getinfo \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel getinfo \
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
 }
 
 function peerChannelFetchConfigTls() {
@@ -262,46 +173,21 @@ function peerChannelFetchConfigTls() {
   inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/assets/
   docker exec \
-    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
 
-  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec "$CLI_NAME" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
   docker exec \
-    -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/assets/config_block_before.pb \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
+    jq .data.data[0].payload.data.config > "$CONFIG_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchConfigDefaultTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local CONFIG_FILE_NAME=$3
-  local CA_CERT=$4
-
-  echo "Fetching config block from $CHANNEL_NAME using default cli's peer (TLS)..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/assets/
-  docker exec \
-    $CLI_NAME peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-
-  docker exec $CLI_NAME chmod 777 /tmp/hyperledger/assets/config_block_before.pb
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/assets/config_block_before.pb \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $CONFIG_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 function peerChannelFetchLastBlockTls() {
@@ -317,40 +203,17 @@ function peerChannelFetchLastBlockTls() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/newest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchLastBlockDefaultTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local CA_CERT=$4
-
-  echo "Fetching last block from $CHANNEL_NAME using default cli's peer (TLS)..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch newest /tmp/hyperledger/blocks/newest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/newest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
 function peerChannelFetchFirstBlockTls() {
@@ -366,40 +229,17 @@ function peerChannelFetchFirstBlockTls() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/oldest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/1
-}
-
-function peerChannelFetchFirstBlockDefaultTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local CA_CERT=$4
-
-  echo "Fetching first block from $CHANNEL_NAME using default cli's peer (TLS)..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/oldest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/1
 }
 
 function peerChannelFetchBlockTls() {
@@ -415,38 +255,15 @@ function peerChannelFetchBlockTls() {
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec -e CORE_PEER_ADDRESS=$PEER_ADDRESS \
-    $CLI_NAME configtxlator proto_decode \
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
+    "$CLI_NAME" configtxlator proto_decode \
     --input /tmp/hyperledger/blocks/oldest.block \
     --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
+    jq .data.data[0].payload.data.config > "$BLOCK_FILE_NAME"
 
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchBlockDefaultTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local BLOCK_NUMBER=$4
-
-  echo "Fetching first block from $CHANNEL_NAME using default cli's peer..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
-
-  docker exec $CLI_NAME mkdir -p /tmp/hyperledger/blocks/
-  docker exec \
-    $CLI_NAME peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \
-    -c $CHANNEL_NAME --tls --cafile $CA_CERT
-  docker exec $CLI_NAME configtxlator proto_decode \
-    --input /tmp/hyperledger/blocks/oldest.block \
-    --type common.Block | \
-    jq .data.data[0].payload.data.config > $BLOCK_FILE_NAME
-
-  docker exec $CLI_NAME rm -rf /tmp/hyperledger/assets/
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }

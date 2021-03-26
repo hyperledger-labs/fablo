@@ -42,9 +42,9 @@ elif [ "$1" = "fetch" ] && [ "$2" = "lastBlock" ] && [ "$3" = "<%= channel.name 
 elif [ "$1" = "fetch" ] && [ "$2" = "firstBlock" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.name.toLowerCase(); %>" ] && [ "$5" = "<%= peer.name %>" ] && [ "$#" = 7 ]; then
   FILE_NAME=$6
   <% if(!networkSettings.tls) { %>
-    peerChannelFetchFirstBlockDefault "<%= channel.name %>" "<%= org.cli.address %>" "${FILE_NAME}" "<%= peer.fullAddress %>"
+    peerChannelFetchFirstBlock "<%= channel.name %>" "<%= org.cli.address %>" "${FILE_NAME}" "<%= peer.fullAddress %>"
   <% } else { %>
-    peerChannelFetchFirstBlockDefaultTls "<%= channel.name %>" "<%= org.cli.address %>" "${FILE_NAME}" "<%= peer.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    peerChannelFetchFirstBlockTls "<%= channel.name %>" "<%= org.cli.address %>" "${FILE_NAME}" "<%= peer.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } %>
 elif [ "$1" = "fetch" ] && [ "$2" = "block" ] && [ "$3" = "<%= channel.name %>" ] && [ "$4" = "<%= org.name.toLowerCase(); %>" ] && [ "$5" = "<%= peer.name %>" ] && [ "$#" = 8 ]; then
   FILE_NAME=$6
