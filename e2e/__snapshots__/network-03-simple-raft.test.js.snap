@@ -250,6 +250,8 @@ elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
+elif [ \\"$1\\" = \\"channel\\" ]; then
+  channelQuery \\"\${@:2}\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -257,7 +259,7 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
 else
   echo \\"No command specified\\"
   echo \\"Basic commands are: up, down, start, stop, reboot\\"
-  echo \\"To list channel query helper commands type: './fabrikka-docker.sh channel --help'\\"
+  echo \\"To list channel query helper commands type: 'fabrica channel --help'\\"
   echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
@@ -294,105 +296,119 @@ source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh
 set -eu
 
 function channelQuery() {
+  echo \\"-> Channel query: $@\\"
 
-  if [ \\"$#\\" -le 1 ]; then
+  if [ \\"$#\\" -eq 1 ]; then
     printChannelsHelp
 
-  elif [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"list\\" ] && [ \\"$3\\" = \\"org1msp\\" ] && [ -n \\"$4\\" ]; then
-    PEER_NAME=$4
-    peerChannelListTls \\"\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+  elif [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer0\\" ]; then
+
+    peerChannelListTls \\"cli.org1.com\\" \\"$peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif
+    [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer1\\" ]
+  then
+
+    peerChannelListTls \\"cli.org1.com\\" \\"$peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
   elif
 
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"getinfo\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1msp\\" ] && [ -n \\"$5\\" ]
+    [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer0\\" ]
   then
-    PEER_NAME=$5
-    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]
-  then
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
-    peerChannelFetchConfigDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"config\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]
-  then
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
-    PEER_NAME=$7
-    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]
-  then
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
-    peerChannelFetchLastBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"lastBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]
-  then
-    FILE_NAME=$6
-    PEER_NAME=$7
-    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 6 ]
-  then
-    FILE_NAME=$6
-    peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"firstBlock\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]
-  then
-    FILE_NAME=$6
-    PEER_NAME=$7
-    peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
-
-  elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 7 ]
-  then
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
-    peerChannelFetchBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7060\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
   elif
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"fetch\\" ] && [ \\"$3\\" = \\"block\\" ] && [ \\"$4\\" = \\"my-channel1\\" ] && [ \\"$5\\" = \\"org1msp\\" ] && [ \\"$#\\" = 8 ]
+    [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer1\\" ]
   then
+
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchFirstBlockDefaultTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
-    PEER_NAME=$8
-    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"\${PEER_NAME}.org1.com:7051\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-  elif
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7061\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
 
-    [ \\"$1\\" = \\"channel\\" ] && [ \\"$2\\" = \\"--help\\" ]
-  then
-    printChannelsHelp
   else
+
     printChannelsHelp
   fi
 
 }
 
 function printChannelsHelp() {
-  echo \\"Channel managment commands:\\"
+  echo \\"Channel management commands:\\"
   echo \\"\\"
 
-  echo \\"./fabric-docker.sh channel list org1msp <peer0>\\"
-  echo -e \\"\\\\t List channels on given peer of Org1MSP\\".
+  echo \\"fabrica channel list org1 peer0\\"
+  echo -e \\"\\\\t List channels on 'peer0' of 'Org1'\\".
   echo \\"\\"
 
-  echo \\"./fabric-docker.sh channel getinfo my-channel1 org1msp <peer0>\\"
-  echo -e \\"\\\\t Get channel info on given peer of Org1MSP\\".
+  echo \\"fabrica channel list org1 peer1\\"
+  echo -e \\"\\\\t List channels on 'peer1' of 'Org1'\\".
   echo \\"\\"
-  echo \\"./fabric-docker.sh channel fetch config my-channel1 org1msp <fileName.json> [peer0]\\"
-  echo -e \\"\\\\t Download latest config block to current dir. By default it uses first peer of Org1MSP\\".
+
+  echo \\"fabrica channel getinfo my-channel1 org1 peer0\\"
+  echo -e \\"\\\\t Get channel info on 'peer0' of 'Org1'\\".
   echo \\"\\"
-  echo \\"./fabric-docker.sh channel fetch lastBlock my-channel1 org1msp <fileName.json> [peer0]\\"
-  echo -e \\"\\\\t Download last, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"fabrica channel fetch config my-channel1 org1 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download latest config block to current dir. Uses first peer 'peer0' of 'Org1'\\".
   echo \\"\\"
-  echo \\"./fabric-docker.sh channel fetch firstBlock my-channel1 org1msp <fileName.json> [peer0]\\"
-  echo -e \\"\\\\t Download first, decrypted block to current dir. By default it uses first peer of Org1MSP\\".
+  echo \\"fabrica channel fetch lastBlock my-channel1 org1 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. Uses first peer 'peer0' of 'Org1'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch firstBlock my-channel1 org1 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer0' of 'Org1'\\".
+  echo \\"\\"
+
+  echo \\"fabrica channel getinfo my-channel1 org1 peer1\\"
+  echo -e \\"\\\\t Get channel info on 'peer1' of 'Org1'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch config my-channel1 org1 peer1 <fileName.json>\\"
+  echo -e \\"\\\\t Download latest config block to current dir. Uses first peer 'peer1' of 'Org1'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch lastBlock my-channel1 org1 peer1 <fileName.json>\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. Uses first peer 'peer1' of 'Org1'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch firstBlock my-channel1 org1 peer1 <fileName.json>\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer1' of 'Org1'\\".
   echo \\"\\"
 
 }
