@@ -5,7 +5,7 @@ source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 set -eu
 
 function channelQuery() {
-  echo "-> Channel query: $@"
+  echo "-> Channel query: " + "$@"
 
 if [ "$#" -eq 1 ]; then
   printChannelsHelp
@@ -14,7 +14,7 @@ elif [ "$1" = "list" ] && [ "$2" = "<%= org.name.toLowerCase(); %>" ] && [ "$3" 
   <% if(!networkSettings.tls) { %>
     peerChannelList "<%= org.cli.address %>" "<%= peer.fullAddress %>"
   <% } else { %>
-    peerChannelListTls "<%= org.cli.address %>" "$<%= peer.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+    peerChannelListTls "<%= org.cli.address %>" "<%= peer.fullAddress %>" "crypto/daTls/msp/tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
   <% } %>
 <% })}) %>
 

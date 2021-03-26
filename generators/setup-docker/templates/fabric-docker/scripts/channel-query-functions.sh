@@ -253,6 +253,7 @@ function peerChannelFetchBlockTls() {
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "BLOCK_FILE_NAME: $BLOCK_FILE_NAME"
+  inputLog "BLOCK_NUMBER: $BLOCK_NUMBER"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
 
   docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
