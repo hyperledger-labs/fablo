@@ -72,9 +72,9 @@ def uuid = UUID.randomUUID().toString()
 
 try {
   node ('master') {
-    slackSend (color: '#aaaaaa', message: "🏭 Fabrikka tests started <${BUILD_URL}|${BUILD_TAG}>")
+    slackSend (color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
-  runOnNewPod("fabrikka", uuid, {
+  runOnNewPod("fabrica", uuid, {
     container('dind') {
 
       stage("Install libs") {
@@ -87,8 +87,8 @@ try {
         sh "npm install"
       }
 
-      stage ("Build fabrikka") {
-        sh "./fabrikka-build.sh"
+      stage ("Build fabrica") {
+        sh "./fabrica-build.sh"
       }
 
       stage("Test simple network") {
@@ -124,8 +124,10 @@ try {
         try {
           sh "e2e-network/test-03-private-data.sh"
         } finally {
-          archiveArtifacts artifacts: 'e2e-network/test-03-collections.sh.tmpdir/**/*', fingerprint: true
-          archiveArtifacts artifacts: 'e2e-network/test-03-collections.sh.logs/*', fingerprint: true
+          sh "sleep 4"
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
+          sh "sleep 4"
         }
       }
 
@@ -138,10 +140,10 @@ try {
   node ('master') {
     if (currentBuild.result == "FAILURE") {
       color = "#FF0000"
-      slackSend (color: '#df000f', message: "🛑 Fabrikka tests failed <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (color: '#df000f', message: "🛑 Fabrica tests failed <${BUILD_URL}|${BUILD_TAG}>")
     } else {
       color = "#00FF00"
-      slackSend (color: '#0bbd00', message: "🏭 Fabrikka tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (color: '#0bbd00', message: "🏭 Fabrica tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
     }
   }
 }
