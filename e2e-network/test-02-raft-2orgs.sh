@@ -21,18 +21,7 @@ dumpLogs() {
 
 networkDown() {
   rm -rf "$TEST_LOGS" &&
-    dumpLogs "ca.root.com" &&
-    dumpLogs "orderer0.root.com" &&
-    dumpLogs "orderer1.root.com" &&
-    dumpLogs "orderer2.root.com" &&
-    dumpLogs "ca.org1.com" &&
-    dumpLogs "peer0.org1.com" &&
-    dumpLogs "peer1.org1.com" &&
-    dumpLogs "ca.org2.com" &&
-    dumpLogs "peer0.org2.com" &&
-    dumpLogs "peer1.org2.com" &&
-    dumpLogs "cli.org1.com" &&
-    dumpLogs "cli.org2.com" &&
+    (for name in $(docker ps --format '{{.Names}}') ; do dumpLogs "$name"; done) &&
     (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
@@ -45,7 +34,7 @@ waitForChaincode() {
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6"
+  sh "$TEST_TMP/../expect-invoke-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
 networkUpAsync

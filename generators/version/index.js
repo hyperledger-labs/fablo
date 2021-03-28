@@ -26,14 +26,14 @@ module.exports = class extends Generator {
 
   _basicInfo() {
     return {
-      version: config.version,
+      version: config.fabricaVersion,
       build: buildUtil.getBuildInfo(),
     };
   }
 
   _fullInfo() {
     return {
-      version: config.version,
+      version: config.fabricaVersion,
       build: buildUtil.getBuildInfo(),
       supported: {
         fabricaVersions: `${config.supportedVersionPrefix}x`,
