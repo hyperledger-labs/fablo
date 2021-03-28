@@ -1,5 +1,8 @@
+## main (0.1.0-unstable)
 
-## main (0.0.1)
+* Support for private data ([#104](https://github.com/softwaremill/fabrica/issues/104))
+
+## 0.0.1
 
 ### Features
 
