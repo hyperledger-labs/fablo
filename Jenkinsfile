@@ -124,8 +124,10 @@ try {
         try {
           sh "e2e-network/test-03-private-data.sh"
         } finally {
+          sh "sleep 4"
           archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
           archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
+          sh "sleep 4"
         }
       }
 
