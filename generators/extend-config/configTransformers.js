@@ -149,6 +149,9 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
   );
   const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
+  const bootstrapPeersStringParam = bootstrapPeersList.length === 1
+    ? bootstrapPeersList[0] // note no quotes in parameter
+    : `"${bootstrapPeersList.join(' ')}"`;
 
   return {
     key: orgJsonFormat.organization.key,
@@ -159,7 +162,7 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers: bootstrapPeersList.join(' '),
+    bootstrapPeers: bootstrapPeersStringParam,
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
     headPeer: peersExtended[0],
   };
