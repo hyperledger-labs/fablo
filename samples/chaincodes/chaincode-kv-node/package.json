@@ -9,12 +9,17 @@
   "scripts": {
     "start": "fabric-chaincode-node start",
     "build": "echo \"No need to build the chaincode\"",
-    "lint": "eslint . --fix --ext .js,.ts"
+    "lint": "eslint . --fix --ext .js",
+    "test": "CHAINCODE_LOGGING_LEVEL=DEBUG jest"
   },
   "author": "SoftwareMill",
   "dependencies": {
     "fabric-contract-api": "~1.4.5",
     "fabric-shim": "~1.4.5"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@theledger/fabric-mock-stub": "^5.0.1",
+    "jest": "^26.6.3",
+    "uuid": "^8.3.2"
+  }
 }
