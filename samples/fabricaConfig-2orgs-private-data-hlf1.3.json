@@ -1,8 +1,8 @@
 {
   "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
   "networkSettings": {
-    "fabricVersion": "1.4.6",
-    "tls": true
+    "fabricVersion": "1.3.0",
+    "tls": false
   },
   "rootOrg": {
     "organization": {
@@ -16,8 +16,8 @@
     },
     "orderer": {
       "prefix": "orderer",
-      "type": "raft",
-      "instances": 3
+      "type": "solo",
+      "instances": 1
     }
   },
   "orgs": [
@@ -34,7 +34,6 @@
       "peer": {
         "prefix": "peer",
         "instances": 2,
-        "anchorPeerInstances": 2,
         "db": "LevelDb"
       }
     },
@@ -50,8 +49,7 @@
       },
       "peer": {
         "prefix": "peer",
-        "instances": 2,
-        "anchorPeerInstances": 2,
+        "instances": 1,
         "db": "LevelDb"
       }
     }
@@ -64,31 +62,14 @@
         {
           "key": "org1",
           "peers": [
-            "peer0"
-          ]
-        },
-        {
-          "key": "org2",
-          "peers": [
-            "peer0"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "channel2",
-      "name": "my-channel2",
-      "orgs": [
-        {
-          "key": "org1",
-          "peers": [
+            "peer0",
             "peer1"
           ]
         },
         {
           "key": "org2",
           "peers": [
-            "peer1"
+            "peer0"
           ]
         }
       ]
@@ -99,19 +80,24 @@
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel2",
+      "channel": "channel1",
       "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
-    },
-    {
-      "name": "chaincode2",
-      "version": "0.0.1",
-      "lang": "java",
-      "channel": "channel2",
-      "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-java-simple"
+      "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": [
+        {
+          "name": "org1-collection",
+          "orgNames": [
+            "Org1"
+          ]
+        },
+        {
+          "name": "org2-collection",
+          "orgNames": [
+            "Org2"
+          ]
+        }
+      ]
     }
   ]
 }

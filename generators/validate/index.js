@@ -28,7 +28,7 @@ const validationCategories = {
   VALIDATION: 'Schema validation',
 };
 
-module.exports = class extends Generator {
+class ValidateGenerator extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
@@ -215,4 +215,6 @@ module.exports = class extends Generator {
       }
     });
   }
-};
+}
+
+module.exports = ValidateGenerator;

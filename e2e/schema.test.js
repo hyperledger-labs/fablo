@@ -17,6 +17,7 @@ describe('schema', () => {
   };
 
   const lettersOnly = 'lettersonly';
+  const underscore = 'under_score';
   const lettersAndNumber = 'lettersand4';
   const uppercase = 'UpperCase';
   const domain = 'domain.example.com';
@@ -264,7 +265,7 @@ describe('schema', () => {
     expect(withChannelKey(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate channel name - bez spacji i wlk liter', () => {
+  it('should validate channel name - no spaces and capital letters', () => {
     const withChannelName = (n) => updatedBase((json) => {
       json.channels[0].name = n;
     });
@@ -399,5 +400,36 @@ describe('schema', () => {
     expect(withChaincodeName(spaces)).toMatchSchema(schema);
     expect(withChaincodeName(specialCharacters1)).toMatchSchema(schema);
     expect(withChaincodeName(specialCharacters2)).toMatchSchema(schema);
+  });
+
+  it('should validate chaincode private data', () => {
+    const withNoPrivateData = () => updatedBase((json) => {
+      const { privateData, ...rest } = json.chaincodes[0];
+      json.chaincodes[0] = rest;
+    });
+    const withPrivateData = (d) => updatedBase((json) => {
+      json.chaincodes[0].privateData = d;
+    });
+    const privateData = (name, ...orgNames) => ({ name, orgNames });
+    const validOrgName = base.orgs[0].organization.name;
+    const withPrivateDataName = (name) => withPrivateData([privateData(name, validOrgName)]);
+
+    // various names
+    expect(withPrivateDataName(lettersOnly)).toMatchSchema(schema);
+    expect(withPrivateDataName(underscore)).toMatchSchema(schema);
+    expect(withPrivateDataName(lettersAndNumber)).toMatchSchema(schema);
+    expect(withPrivateDataName(uppercase)).toMatchSchema(schema);
+    expect(withPrivateDataName(domain)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(spaces)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withPrivateDataName(specialCharacters2)).not.toMatchSchema(schema);
+
+    // no private data, wrong object, two objects
+    expect(withNoPrivateData()).toMatchSchema(schema);
+    expect(withPrivateData({ wrong: 'obj' })).not.toMatchSchema(schema);
+    expect(withPrivateData([
+      privateData(lettersAndNumber, validOrgName),
+      privateData(lettersOnly, validOrgName),
+    ])).toMatchSchema(schema);
   });
 });

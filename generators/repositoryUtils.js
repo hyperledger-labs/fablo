@@ -1,7 +1,7 @@
 const got = require('got');
 const { repositoryTagsListUrl } = require('./config');
 
-const incrementVersionFragments = (versionFragment) => {
+const incrementVersionFragment = (versionFragment) => {
   if (versionFragment.includes('-')) {
     const splitted = versionFragment.split('-');
     return `${+splitted[0] + 100000}-${splitted[1]}`;
@@ -9,13 +9,17 @@ const incrementVersionFragments = (versionFragment) => {
   return +versionFragment + 100000;
 };
 
-const decrementVersionFragments = (incrementedVersionFragment) => {
+const incrementVersionFragments = (v) => v.split('.').map(incrementVersionFragment).join('.');
+
+const decrementVersionFragment = (incrementedVersionFragment) => {
   if (incrementedVersionFragment.includes('-')) {
     const splitted = incrementedVersionFragment.split('-');
     return `${+splitted[0] - 100000}-${splitted[1]}`;
   }
   return +incrementedVersionFragment - 100000;
 };
+
+const decrementVersionFragments = (v) => v.split('.').map(decrementVersionFragment).join('.');
 
 const namedVersionsAsLast = (a, b) => {
   if (/[a-z]/i.test(a) && !/[a-z]/i.test(b)) return -1;
@@ -25,14 +29,21 @@ const namedVersionsAsLast = (a, b) => {
   return 0;
 };
 
-function sortVersions(versions) {
-  return versions
-    .map((a) => a.split('.').map(incrementVersionFragments).join('.')).sort(namedVersionsAsLast)
-    .map((a) => a.split('.').map(decrementVersionFragments).join('.'))
-    .reverse();
-}
+const sortVersions = (versions) => versions
+  .map(incrementVersionFragments)
+  .sort(namedVersionsAsLast)
+  .map(decrementVersionFragments)
+  .reverse();
 
-async function getAvailableTags() {
+const version = (v) => ({
+  isGreaterOrEqual(v2) {
+    const vStd = incrementVersionFragments(v).split('-')[0];
+    const v2Std = incrementVersionFragments(v2).split('-')[0];
+    return vStd >= v2Std;
+  },
+});
+
+const getAvailableTags = async () => {
   const params = {
     searchParams: {
       tag_status: 'active',
@@ -41,7 +52,7 @@ async function getAvailableTags() {
   };
   try {
     const versionNames = (await got(repositoryTagsListUrl, params).json()).results
-      .filter((version) => version.name !== 'latest')
+      .filter((v) => v.name !== 'latest')
       .map((tag) => tag.name);
     return sortVersions(versionNames);
   } catch (err) {
@@ -49,9 +60,10 @@ async function getAvailableTags() {
     console.log(`Could not check for updates. Url: '${repositoryTagsListUrl}' not available`);
     return [];
   }
-}
+};
 
 module.exports = {
   getAvailableTags,
   sortVersions,
+  version,
 };
