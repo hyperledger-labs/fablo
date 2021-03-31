@@ -75,18 +75,18 @@ waitForContainer "peer1.org2.com" "Learning about the configured anchor peers of
 waitForContainer "peer1.org2.com" "Membership view has changed. peers went online:.*peer1.org1.com:7061"
 
 # check if chaincodes are instantiated on peers
-waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" "0.0.1"
 waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" "0.0.1"
 
 # invoke Node chaincode
-expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" \
-  '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
-  '{\"success\":\"OK\"}'
-expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" \
-  '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Jack Sparrow\"}'
+expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
+  '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
+  'status:200'
+expectInvoke "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" \
+  '{"Args":["PokeballContract:readPokeball", "id1"]}' \
+  '{\"value\":\"Pokeball 1\"}'
 
 # invoke Java chaincode
 expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" \
@@ -99,16 +99,16 @@ expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" stop && "$FABRICA_HOME/fabrica.sh" start)
 sleep 5
-waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.1"
 sleep 5
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2")
-waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" "0.0.2"
-waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode1" "0.0.2"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.2"
 
 # check if state is kept after update
-expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode1" \
+expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Jack Sparrow\"}'
