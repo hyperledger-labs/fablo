@@ -1,5 +1,7 @@
 const got = require('got');
-const { repositoryTagsListUrl } = require('./config');
+
+const repositoryName = 'softwaremill/fabrica';
+const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
 
 const incrementVersionFragments = (versionFragment) => {
   if (versionFragment.includes('-')) {

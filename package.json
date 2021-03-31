@@ -9,7 +9,7 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "lint": "eslint --fix generators e2e",
+    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e",
     "test:unit": "jest generators",
     "test:e2e-generate": "docker build --tag e2e-gen e2e/generator && docker run --name e2e-generate -v `[ -z \"$WORKSPACE\" ] && echo \"$PWD\" || echo \"$WORKSPACE\"`:/fabrikka e2e-gen && docker rm -f e2e-generate",
     "test:e2e": "jest e2e",
@@ -28,6 +28,7 @@
     "eslint-plugin-jest": "^23.7.0",
     "jest": "^25.1.0",
     "jest-json-schema": "^5.0.0",
+    "madge": "^4.0.2",
     "yeoman-test": "^2.1.0"
   }
 }
