@@ -261,6 +261,7 @@ function transformNetworkSettings(networkSettingsJson) {
   return {
     ...networkSettingsJson,
     fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    fabricTwoDigitVersion: `${networkSettingsJson.fabricVersion.split('.').slice(0, 2).join('.')}`,
     paths: getPathsFromEnv(),
     isHlf20: isHlf20(networkSettingsJson.fabricVersion),
   };
