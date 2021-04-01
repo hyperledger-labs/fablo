@@ -48,11 +48,8 @@ def runOnNewPod(String labelBase, String uuid, Closure closure) {
       node(label) {
         try {
           ansiColor('xterm') {
-            stage("Initialize") {
-              checkout scm
-              dockerTag = getDockerTag()
-            }
-
+            checkout scm
+            dockerTag = getDockerTag()
             closure()
           }
         } catch (e) {
@@ -70,27 +67,26 @@ String getDockerTag() {
 
 def uuid = UUID.randomUUID().toString()
 
+def installLibs() {
+  sh "apk add --no-cache nodejs npm make g++ bash docker-compose py-pip tar jq git"
+  sh "pip install yamllint"
+  sh "yamllint --version"
+  sh 'wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv'
+  sh 'cp "shellcheck-stable/shellcheck" /usr/bin/'
+  sh "shellcheck --version"
+  sh "npm install"
+}
+
 try {
   node ('master') {
     slackSend (color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
   runOnNewPod("fabrica", uuid, {
     container('dind') {
-
       stage("Install libs") {
-        sh "apk add --no-cache nodejs npm make g++ bash docker-compose py-pip tar jq git"
-        sh "pip install yamllint"
-        sh "yamllint --version"
-        sh 'wget -qO- "https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz" | tar -xJv'
-        sh 'cp "shellcheck-stable/shellcheck" /usr/bin/'
-        sh "shellcheck --version"
-        sh "npm install"
-      }
-
-      stage ("Build fabrica") {
+        installLibs()
         sh "./fabrica-build.sh"
       }
-
       stage("Test simple network") {
         try {
           sh "e2e-network/test-01-simple.sh"
@@ -99,18 +95,23 @@ try {
           archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
         }
       }
-
       stage('Test generators') {
         sh "CI=true npm run test:unit"
         sh "CI=true npm run test:e2e"
         sh "./check-if-fabrica-version-matches.sh"
       }
-
       stage('Lint') {
         sh "npm run lint"
         sh "./lint.sh"
       }
-
+    }
+  })
+  runOnNewPod("fabrica-02", uuid, {
+    container('dind') {
+      stage("Install libs") {
+        installLibs()
+        sh "./fabrica-build.sh"
+      }
       stage("Test RAFT network (2 orgs)") {
         try {
           sh "e2e-network/test-02-raft-2orgs.sh"
@@ -119,18 +120,14 @@ try {
           archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
         }
       }
-
       stage("Test private data") {
         try {
           sh "e2e-network/test-03-private-data.sh"
         } finally {
-          sh "sleep 4"
           archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
           archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
-          sh "sleep 4"
         }
       }
-
     }
   })
 } catch (e) {
