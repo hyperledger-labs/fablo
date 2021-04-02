@@ -81,70 +81,55 @@ try {
   node ('master') {
     slackSend (color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
-  parallel(
-    failFast: false,
-    "Main": {
-      runOnNewPod("fabrica", uuid, {
-        container('dind') {
-          stage("Install libs") {
-            installLibs()
-          }
-          stage ("Build fabrica") {
-            sh "./fabrica-build.sh"
-          }
-          stage("Test simple network") {
-            try {
-              sh "e2e-network/test-01-simple.sh"
-            } finally {
-              archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.tmpdir/**/*', fingerprint: true
-              archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
-            }
-          }
-          stage('Test generators') {
-            sh "CI=true npm run test:unit"
-            sh "CI=true npm run test:e2e"
-            sh "./check-if-fabrica-version-matches.sh"
-          }
-          stage('Lint') {
-            sh "npm run lint"
-            sh "./lint.sh"
-          }
+  runOnNewPod("fabrica", uuid, {
+    container('dind') {
+      stage("Install libs") {
+        installLibs()
+      }
+      stage ("Build fabrica") {
+        sh "./fabrica-build.sh"
+      }
+      stage("Test simple network") {
+        try {
+          sh "e2e-network/test-01-simple.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-01-simple.sh.logs/*', fingerprint: true
         }
-      })
-    },
-    "Network-02": {
-      runOnNewPod("fabrica-02", uuid, {
-        container('dind') {
-          stage("Test RAFT network (2 orgs)") {
-            try {
-              installLibs()
-              sh "e2e-network/test-02-raft-2orgs.sh"
-            } finally {
-              archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.tmpdir/**/*', fingerprint: true
-              archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
-            }
-          }
-        }
-      })
-    },
-    "Network-03": {
-      runOnNewPod("fabrica-03", uuid, {
-        container('dind') {
-          stage("Test private data") {
-            try {
-              installLibs()
-              sh "e2e-network/test-03-private-data.sh"
-            } finally {
-              sh "sleep 4"
-              archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
-              archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
-              sh "sleep 4"
-            }
-          }
-        }
-      })
+      }
+      stage('Test generators') {
+        sh "CI=true npm run test:unit"
+        sh "CI=true npm run test:e2e"
+        sh "./check-if-fabrica-version-matches.sh"
+      }
+      stage('Lint') {
+        sh "npm run lint"
+        sh "./lint.sh"
+      }
     }
-  )
+  })
+  runOnNewPod("fabrica-02", uuid, {
+    container('dind') {
+      stage("Test RAFT network (2 orgs)") {
+        installLibs()
+        try {
+          sh "e2e-network/test-02-raft-2orgs.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-02-raft-2orgs.sh.logs/*', fingerprint: true
+        }
+      }
+      stage("Test private data") {
+        try {
+          installLibs()
+          sh "e2e-network/test-03-private-data.sh"
+        } finally {
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.tmpdir/**/*', fingerprint: true
+          archiveArtifacts artifacts: 'e2e-network/test-03-private-data.sh.logs/*', fingerprint: true
+        }
+      }
+    }
+  })
 } catch (e) {
   currentBuild.result = 'FAILURE'
 }
