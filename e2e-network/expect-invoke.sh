@@ -6,7 +6,8 @@ channel="$3"
 chaincode="$4"
 command="$5"
 expected="$6"
-transient="${7:-"{}"}"
+transient_default="{}"
+transient="${7:-$transient_default}"
 
 if [ -z "$expected" ]; then
   echo "Usage: ./expect-invoke.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
@@ -17,7 +18,11 @@ label="Invoke $channel/$cli/$peer $command"
 echo ""
 echo "➜ testing: $label"
 
+echo "aaa: $transient"
+
 peerAddresses="--peerAddresses ${peer/,/ --peerAddresses }"
+
+echo "bbb: '$peerAddresses'"
 
 response="$(
   # shellcheck disable=SC2086
