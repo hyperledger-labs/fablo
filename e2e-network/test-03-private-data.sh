@@ -9,20 +9,20 @@ FABRICA_HOME="$TEST_TMP/../.."
 FABRICA_CONFIG="$FABRICA_HOME/samples/fabricaConfig-2orgs-private-data-2chaincodes.json"
 
 networkUp() {
-  "$FABRICA_HOME/fabrica-build.sh" &&
-    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up "$FABRICA_CONFIG")
+  "$FABRICA_HOME/fabrica-build.sh"
+  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up "$FABRICA_CONFIG")
 }
 
 dumpLogs() {
   echo "Saving logs of $1 to $TEST_LOGS/$1.log"
-  mkdir -p "$TEST_LOGS" &&
-    docker logs "$1" >"$TEST_LOGS/$1.log" 2>&1
+  mkdir -p "$TEST_LOGS"
+  docker logs "$1" >"$TEST_LOGS/$1.log" 2>&1
 }
 
 networkDown() {
-  rm -rf "$TEST_LOGS" &&
-    (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done) &&
-    (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
+  rm -rf "$TEST_LOGS"
+  (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
+  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
 }
 
 waitForContainer() {
@@ -37,13 +37,13 @@ expectInvoke() {
   sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
-trap networkDown EXIT SIGINT
-trap 'networkDown ; exit 1' ERR
+trap networkDown EXIT
+trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
 # start the network
 networkUp
 
-# wait for network to be ready
+# check if network is ready
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "orderer0.root.com" "Created and starting new chain my-channel1"
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
