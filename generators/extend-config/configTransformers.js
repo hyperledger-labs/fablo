@@ -164,6 +164,9 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
     anchorPeers,
     bootstrapPeers: bootstrapPeersStringParam,
     ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
+    cli: {
+      address: `cli.${orgJsonFormat.organization.domain}`,
+    },
     headPeer: peersExtended[0],
   };
 }
@@ -177,9 +180,7 @@ function filterToAvailablePeers(orgTransformedFormat, peersTransformedFormat) {
     (p) => peersTransformedFormat.includes(p.name),
   );
   return {
-    name: orgTransformedFormat.name,
-    mspName: orgTransformedFormat.mspName,
-    domain: orgTransformedFormat.domain,
+    ...orgTransformedFormat,
     peers: filteredPeers,
     headPeer: filteredPeers[0],
   };
