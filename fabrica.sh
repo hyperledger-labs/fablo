@@ -44,6 +44,9 @@ Usage:
   fabrica.sh chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
 
+  fabrica.sh channel --help
+    To list available channel query options which can be executed on running network.
+
   fabrica.sh use [version]
     Updates this Fabrica script to specified version. Prints all versions if no version parameter is provided.
 
@@ -181,5 +184,5 @@ elif [ "$COMMAND" = "recreate" ]; then
 
 else
   echo "Executing Fabrica docker command: $COMMAND"
-  "$FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4"
+  "$FABRICA_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 fi
