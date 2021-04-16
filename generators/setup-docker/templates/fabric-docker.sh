@@ -7,6 +7,7 @@ FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABRICA_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
@@ -34,6 +35,8 @@ elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincode "$3" "$4"
+elif [ "$1" = "channel" ]; then
+  channelQuery "${@:2}"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
@@ -41,5 +44,7 @@ elif [ "$1" = "--help" ]; then
 else
   echo "No command specified"
   echo "Basic commands are: up, down, start, stop, reboot"
+  echo "To list channel query helper commands type: 'fabrica channel --help'"
+  echo "Also check: 'chaincodes install'"
   echo "Use 'help' or '--help' for more information"
 fi

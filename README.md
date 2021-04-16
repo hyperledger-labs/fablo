@@ -138,6 +138,41 @@ fabrica chaincode upgrade chaincode-name version
 Upgrades and instantiates chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fabrica config file.
 
+## Managing channels
+
+### chaincode channel
+
+```bash
+fabrica channel --help
+```
+Use it to list all available channel commands.  
+Commands are generated using fabrica-config.json to cover all cases (queries for each channel. organization and peer)
+ 
+```bash
+fabrica channel list org1 peer0
+```
+lists all channels for given peer
+
+```bash
+fabrica channel getinfo channel_name org1 peer0
+```
+Prints channel info ei. current block height for given peer
+
+```bash
+fabrica channel fetch config channel_name org1 peer0 file_name.json
+```
+Fetches latest config block, decodes it and write to a json file.
+
+```bash
+fabrica channel fetch lastBlock channel_name org1 peer0 file_name.json
+```
+Fetches latest block, decodes it and write to a json file. It might be transaction block or config block.
+
+```bash
+fabrica channel fetch firstBlock channel_name org1 peer0 file_name.json
+```
+Fetches first block for given channel. Usually it will be initial channel configuration. 
+
 ## Utility commands
 
 ### version
