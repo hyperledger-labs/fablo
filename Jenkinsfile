@@ -44,7 +44,7 @@ spec:
 def runOnNewPod(String labelBase, String uuid, Closure closure) {
   def label = "${labelBase}-${uuid}"
   podTemplate(label: label, yaml: podTemplateYaml()) {
-    timeout(20) {
+    timeout(35) {
       node(label) {
         try {
           ansiColor('xterm') {
@@ -69,10 +69,12 @@ String getDockerTag() {
 }
 
 def uuid = UUID.randomUUID().toString()
+def slackChannelName="blockchain-dev-ntf"
 
 try {
+
   node ('master') {
-    slackSend (color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
+    slackSend (channel: slackChannelName, color: '#aaaaaa', message: "🏭 Fabrica tests started <${BUILD_URL}|${BUILD_TAG}>")
   }
   runOnNewPod("fabrica", uuid, {
     container('dind') {
@@ -140,10 +142,10 @@ try {
   node ('master') {
     if (currentBuild.result == "FAILURE") {
       color = "#FF0000"
-      slackSend (color: '#df000f', message: "🛑 Fabrica tests failed <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (channel: slackChannelName, color: '#df000f', message: "🛑 Fabrica tests failed <${BUILD_URL}|${BUILD_TAG}>")
     } else {
       color = "#00FF00"
-      slackSend (color: '#0bbd00', message: "🏭 Fabrica tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
+      slackSend (channel: slackChannelName, color: '#0bbd00', message: "🏭 Fabrica tests succeeded <${BUILD_URL}|${BUILD_TAG}>")
     }
   }
 }
