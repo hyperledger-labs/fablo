@@ -18,11 +18,8 @@ label="Invoke $channel/$cli/$peer $command"
 echo ""
 echo "➜ testing: $label"
 
-echo "aaa: $transient"
-
-peerAddresses="--peerAddresses ${peer/,/ --peerAddresses }"
-
-echo "bbb: '$peerAddresses'"
+# shellcheck disable=SC2001
+peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 
 response="$(
   # shellcheck disable=SC2086
