@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 cli="$1"
 peer="$2"
 channel="$3"
