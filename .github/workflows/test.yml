@@ -31,8 +31,10 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: test-01
-          path: e2e-network/test-01-simple.sh.*/**/*
+          name: test-main
+          path: |
+            e2e-network/test-01-simple.sh.logs/*
+            e2e-network/test-01-simple.sh.tmpdir/fabrica-target/**/*
 
       - name: Test generators
         run: |
@@ -74,8 +76,10 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: test-01
-          path: e2e-network/test-02-raft-2orgs.sh.*/**/*
+          name: test-02-raft
+          path: |
+            e2e-network/test-02-raft.sh.logs/*
+            e2e-network/test-02-raft.sh.tmpdir/fabrica-target/**/*
 
       - name: Send Slack notification
         if: always()
@@ -108,8 +112,10 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: test-01
-          path: e2e-network/test-03-private-data.*/**/*
+          name: test-03-private-data
+          path: |
+            e2e-network/test-03-private-data.sh.logs/*
+            e2e-network/test-03-private-data.sh.tmpdir/fabrica-target/**/*
 
       - name: Send Slack notification
         if: always()
