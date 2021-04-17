@@ -1,7 +1,7 @@
 name: Tests
 on: [ push ]
 jobs:
-  Tests-Main-Flow:
+  main:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
@@ -13,7 +13,7 @@ jobs:
           SLACK_COLOR: '#ffd963'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow ${{ github.workflow }} started>'
+          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}` started>'
 
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -52,4 +52,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow ${{ github.workflow }} ended with status: ${{ job.status }}>'
+          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
