@@ -1,3 +1,4 @@
+![Github Actions](https://github.com/softwaremill/fabrica/actions/workflows/test.yml/badge.svg?branch=main)
 [![Gitter](https://badges.gitter.im/softwaremill-fabrica/community.svg)](https://gitter.im/softwaremill-fabrica/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <h1><img src="./logo.svg" alt="Fabrica"/></h1>
