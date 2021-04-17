@@ -13,7 +13,7 @@ jobs:
           SLACK_COLOR: '#ffd963'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}` started>'
+          SLACK_FOOTER: 'Workflow <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}*> started'
 
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
 
   test-02-raft:
     needs: test-main
@@ -86,7 +86,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
 
   test-03-private-data:
     needs: test-main
@@ -120,4 +120,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
