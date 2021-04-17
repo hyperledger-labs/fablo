@@ -1,7 +1,7 @@
 name: Tests
 on: [ push ]
 jobs:
-  main:
+  test-main:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
@@ -28,6 +28,12 @@ jobs:
       - name: Test simple network
         run: e2e-network/test-01-simple.sh
 
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-01
+          path: e2e-network/test-01-simple.sh.*/**/*
+
       - name: Test generators
         run: |
           npm run test:unit && \
@@ -37,11 +43,73 @@ jobs:
       - name: Lint
         run: npm run lint && ./lint.sh
 
+      - name: Send Slack notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_USERNAME: Fabrica CI
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          MSG_MINIMAL: true
+          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
+
+  test-02-raft:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Build Fabrica
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fabrica-build.sh
+
+      - name: Test RAFT network
+        run: e2e-network/test-02-raft-2orgs.sh
+
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-01
           path: e2e-network/test-02-raft-2orgs.sh.*/**/*
+
+      - name: Send Slack notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_USERNAME: Fabrica CI
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          MSG_MINIMAL: true
+          SLACK_FOOTER: '<https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|Workflow `${{ github.workflow }}`, job `${{ github.job }}` ended with status: `${{ job.status }}`>'
+
+  test-03-private-data:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Build Fabrica
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fabrica-build.sh
+
+      - name: Test RAFT network
+        run: e2e-network/test-03-private-data.sh
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-01
+          path: e2e-network/test-03-private-data.*/**/*
 
       - name: Send Slack notification
         if: always()
