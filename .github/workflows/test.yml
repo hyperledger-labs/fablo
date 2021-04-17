@@ -54,7 +54,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-02-raft:
     needs: test-main
@@ -90,7 +90,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-03-private-data:
     needs: test-main
@@ -126,4 +126,4 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: true
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: `${{ job.status }}`'
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
