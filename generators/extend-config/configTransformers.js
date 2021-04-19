@@ -79,10 +79,11 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
 }
 
 function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposePort) {
-  const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`;
+  const { prefix } = caJsonFormat || { prefix: 'ca' };
+  const address = `${prefix}.${orgDomainJsonFormat}`;
   const port = 7054;
   return {
-    prefix: caJsonFormat.prefix,
+    prefix,
     address,
     port,
     exposePort: caExposePort,
@@ -93,17 +94,18 @@ function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposeP
 }
 
 function transformRootOrgConfig(rootOrgJsonFormat) {
-  const { domain } = rootOrgJsonFormat.organization;
+  const { domain, name } = rootOrgJsonFormat.organization;
+  const mspName = rootOrgJsonFormat.organization.mspName || `${name}MSP`;
   const orderersExtended = transformOrderersConfig(
     rootOrgJsonFormat.orderer,
     domain,
   );
   const ordererHead = orderersExtended[0];
   return {
-    name: rootOrgJsonFormat.organization.name,
-    mspName: rootOrgJsonFormat.organization.mspName,
+    name,
+    mspName,
     domain,
-    organization: rootOrgJsonFormat.organization,
+    organization: { name, mspName, domain }, // FIXME ???
     ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,
@@ -124,7 +126,7 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCou
       return {
         name: `peer${i}`,
         address,
-        db: peerJsonFormat.db,
+        db: peerJsonFormat.db || 'LevelDb',
         isAnchorPeer: i < anchorPeerInstances,
         port,
         fullAddress: `${address}:${port}`,
@@ -138,28 +140,31 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
   const headPeerPort = 7060 + 10 * orgNumber;
   const headPeerCouchDbExposePort = 5080 + 10 * orgNumber;
   const caExposePort = 7031 + orgNumber;
-  const orgName = orgJsonFormat.organization.name;
-  const orgDomain = orgJsonFormat.organization.domain;
+  const { domain, name } = orgJsonFormat.organization;
+  const mspName = orgJsonFormat.organization.mspName || `${name}MSP`;
 
   const peersExtended = extendPeers(
     orgJsonFormat.peer,
-    orgDomain,
+    domain,
     headPeerPort,
     headPeerCouchDbExposePort,
   );
   const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
+  const bootstrapPeersStringParam = bootstrapPeersList.length === 1
+    ? bootstrapPeersList[0] // note no quotes in parameter
+    : `"${bootstrapPeersList.join(' ')}"`;
 
   return {
-    name: orgName,
-    mspName: orgJsonFormat.organization.mspName,
-    domain: orgDomain,
+    name,
+    mspName,
+    domain,
     cryptoConfigFileName: orgsCryptoConfigFileName,
     peersCount: peersExtended.length,
     peers: peersExtended,
     anchorPeers,
-    bootstrapPeers: bootstrapPeersList.join(' '),
-    ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
+    bootstrapPeers: bootstrapPeersStringParam,
+    ca: transformCaConfig(orgJsonFormat.ca, name, domain, caExposePort),
     cli: {
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
