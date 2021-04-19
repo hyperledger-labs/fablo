@@ -48,7 +48,6 @@ Validation warnings count: 0
     \\"mspName\\": \\"OrdererMSP\\",
     \\"domain\\": \\"root.com\\",
     \\"organization\\": {
-      \\"key\\": \\"root\\",
       \\"name\\": \\"Orderer\\",
       \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"root.com\\"
@@ -83,7 +82,6 @@ Validation warnings count: 0
   },
   \\"orgs\\": [
     {
-      \\"key\\": \\"org1\\",
       \\"name\\": \\"Org1\\",
       \\"mspName\\": \\"Org1MSP\\",
       \\"domain\\": \\"org1.com\\",
@@ -146,11 +144,9 @@ Validation warnings count: 0
   ],
   \\"channels\\": [
     {
-      \\"key\\": \\"channel1\\",
       \\"name\\": \\"my-channel1\\",
       \\"orgs\\": [
         {
-          \\"key\\": \\"org1\\",
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
           \\"domain\\": \\"org1.com\\",
@@ -215,7 +211,6 @@ Validation warnings count: 0
         \\"name\\": \\"MyChannel1\\"
       },
       \\"instantiatingOrg\\": {
-        \\"key\\": \\"org1\\",
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
         \\"domain\\": \\"org1.com\\",
@@ -284,11 +279,9 @@ Validation warnings count: 0
       \\"version\\": \\"0.0.1\\",
       \\"lang\\": \\"node\\",
       \\"channel\\": {
-        \\"key\\": \\"channel1\\",
         \\"name\\": \\"my-channel1\\",
         \\"orgs\\": [
           {
-            \\"key\\": \\"org1\\",
             \\"name\\": \\"Org1\\",
             \\"mspName\\": \\"Org1MSP\\",
             \\"domain\\": \\"org1.com\\",
@@ -353,7 +346,6 @@ Validation warnings count: 0
           \\"name\\": \\"MyChannel1\\"
         },
         \\"instantiatingOrg\\": {
-          \\"key\\": \\"org1\\",
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
           \\"domain\\": \\"org1.com\\",
@@ -417,7 +409,6 @@ Validation warnings count: 0
       \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
       \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
       \\"instantiatingOrg\\": {
-        \\"key\\": \\"org1\\",
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
         \\"domain\\": \\"org1.com\\",
@@ -493,7 +484,6 @@ exports[`init should init simple fabrica config 1`] = `
   },
   \\"rootOrg\\": {
     \\"organization\\": {
-      \\"key\\": \\"root\\",
       \\"name\\": \\"Orderer\\",
       \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"root.com\\"
@@ -510,7 +500,6 @@ exports[`init should init simple fabrica config 1`] = `
   \\"orgs\\": [
     {
       \\"organization\\": {
-        \\"key\\": \\"org1\\",
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
         \\"domain\\": \\"org1.com\\"
@@ -527,11 +516,10 @@ exports[`init should init simple fabrica config 1`] = `
   ],
   \\"channels\\": [
     {
-      \\"key\\": \\"channel1\\",
       \\"name\\": \\"my-channel1\\",
       \\"orgs\\": [
         {
-          \\"key\\": \\"org1\\",
+          \\"name\\": \\"Org1\\",
           \\"peers\\": [
             \\"peer0\\",
             \\"peer1\\"
@@ -545,7 +533,7 @@ exports[`init should init simple fabrica config 1`] = `
       \\"name\\": \\"chaincode1\\",
       \\"version\\": \\"0.0.1\\",
       \\"lang\\": \\"node\\",
-      \\"channel\\": \\"channel1\\",
+      \\"channel\\": \\"my-channel1\\",
       \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
       \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
       \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
