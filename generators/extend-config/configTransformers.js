@@ -37,8 +37,8 @@ function createPrivateCollectionConfig(fabricVersion, channel, name, orgNames) {
 
 function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannels) {
   return chaincodes.map((chaincode) => {
-    const channel = transformedChannels.find((c) => c.key === chaincode.channel);
-    if (!channel) throw new Error(`No matching channel with key '${chaincode.channel}'`);
+    const channel = transformedChannels.find((c) => c.name === chaincode.channel);
+    if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
     const privateData = (chaincode.privateData || [])
       .map((d) => createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames));
@@ -151,7 +151,6 @@ function transformOrgConfig(orgJsonFormat, orgNumber) {
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
 
   return {
-    key: orgJsonFormat.organization.key,
     name: orgName,
     mspName: orgJsonFormat.organization.mspName,
     domain: orgDomain,
@@ -187,15 +186,14 @@ function transformChannelConfig(channelJsonFormat, orgsTransformed) {
   const channelName = channelJsonFormat.name;
   const profileName = _.chain(channelName).camelCase().upperFirst().value();
 
-  const orgKeys = channelJsonFormat.orgs.map((o) => o.key);
+  const orgNames = channelJsonFormat.orgs.map((o) => o.name);
   const orgPeers = channelJsonFormat.orgs.map((o) => o.peers)
     .reduce((a, b) => a.concat(b), []);
   const orgsForChannel = orgsTransformed
-    .filter((org) => orgKeys.includes(org.key))
+    .filter((org) => orgNames.includes(org.name))
     .map((org) => filterToAvailablePeers(org, orgPeers));
 
   return {
-    key: channelJsonFormat.key,
     name: channelName,
     orgs: orgsForChannel,
     profile: {

@@ -6,7 +6,6 @@
   },
   "rootOrg": {
     "organization": {
-      "key": "root",
       "name": "Orderer",
       "mspName": "OrdererMSP",
       "domain": "root.com"
@@ -23,7 +22,6 @@
   "orgs": [
     {
       "organization": {
-        "key": "org1",
         "name": "Org1",
         "mspName": "Org1MSP",
         "domain": "org1.com"
@@ -40,17 +38,16 @@
   ],
   "channels": [
     {
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": [
         {
-          "key": "org1",
+          "name": "Org1",
           "peers": [
             "peer0"
           ]
         },
         {
-          "key": "org2",
+          "name": "Org2",
           "peers": [
             "peer0",
             "peer1"
@@ -64,7 +61,7 @@
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel1",
+      "channel": "my-channel1",
       "init": "{\"Args\":[]}",
       "endorsement": "AND ('Org1MSP.member')",
       "directory": "./chaincodes/chaincode-kv-node"

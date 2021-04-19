@@ -40,20 +40,6 @@ describe('schema', () => {
     expect(withFabricVersion('2.0.0')).not.toMatchSchema(schema);
   });
 
-  it('should validate root org key', () => {
-    const withRootOrgKey = (k) => updatedBase((json) => {
-      json.rootOrg.organization.key = k;
-    });
-
-    expect(withRootOrgKey(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgKey(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgKey(uppercase)).not.toMatchSchema(schema);
-    expect(withRootOrgKey(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgKey(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgKey(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgKey(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
   it('should validate root org name', () => {
     const withRootOrgName = (n) => updatedBase((json) => {
       json.rootOrg.organization.name = n;
@@ -144,20 +130,6 @@ describe('schema', () => {
     expect(withRootOrdererNoOfInstances(10)).toMatchSchema(schema);
     expect(withRootOrdererNoOfInstances(0)).not.toMatchSchema(schema);
     expect(withRootOrdererNoOfInstances(11)).not.toMatchSchema(schema);
-  });
-
-  it('should validate org key', () => {
-    const withOrgKey = (k) => updatedBase((json) => {
-      json.orgs[0].organization.key = k;
-    });
-
-    expect(withOrgKey(lettersOnly)).toMatchSchema(schema);
-    expect(withOrgKey(lettersAndNumber)).toMatchSchema(schema);
-    expect(withOrgKey(uppercase)).not.toMatchSchema(schema);
-    expect(withOrgKey(domain)).not.toMatchSchema(schema);
-    expect(withOrgKey(spaces)).not.toMatchSchema(schema);
-    expect(withOrgKey(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withOrgKey(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it('should validate org name', () => {
@@ -251,20 +223,6 @@ describe('schema', () => {
     expect(withPeerDatabaseType('MongoDb')).not.toMatchSchema(schema);
   });
 
-  it('should validate channel key', () => {
-    const withChannelKey = (k) => updatedBase((json) => {
-      json.channels[0].key = k;
-    });
-
-    expect(withChannelKey(lettersOnly)).toMatchSchema(schema);
-    expect(withChannelKey(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChannelKey(uppercase)).not.toMatchSchema(schema);
-    expect(withChannelKey(domain)).not.toMatchSchema(schema);
-    expect(withChannelKey(spaces)).not.toMatchSchema(schema);
-    expect(withChannelKey(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChannelKey(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
   it('should validate channel name - no spaces and capital letters', () => {
     const withChannelName = (n) => updatedBase((json) => {
       json.channels[0].name = n;
@@ -277,34 +235,6 @@ describe('schema', () => {
     expect(withChannelName(spaces)).not.toMatchSchema(schema);
     expect(withChannelName(specialCharacters1)).not.toMatchSchema(schema);
     expect(withChannelName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it('should validate channel ogranization key', () => {
-    const withChannelOrgKey = (k) => updatedBase((json) => {
-      json.channels[0].orgs[0].key = k;
-    });
-
-    expect(withChannelOrgKey(lettersOnly)).toMatchSchema(schema);
-    expect(withChannelOrgKey(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChannelOrgKey(uppercase)).not.toMatchSchema(schema);
-    expect(withChannelOrgKey(domain)).not.toMatchSchema(schema);
-    expect(withChannelOrgKey(spaces)).not.toMatchSchema(schema);
-    expect(withChannelOrgKey(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChannelOrgKey(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it('should validate channel organization peer key', () => {
-    const withChannelPeerKey = (k) => updatedBase((json) => {
-      json.channels[0].key = k;
-    });
-
-    expect(withChannelPeerKey(lettersOnly)).toMatchSchema(schema);
-    expect(withChannelPeerKey(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChannelPeerKey(uppercase)).not.toMatchSchema(schema);
-    expect(withChannelPeerKey(domain)).not.toMatchSchema(schema);
-    expect(withChannelPeerKey(spaces)).not.toMatchSchema(schema);
-    expect(withChannelPeerKey(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChannelPeerKey(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it('should validate chaincode name', () => {
@@ -344,20 +274,6 @@ describe('schema', () => {
     expect(withChaincodeLanguage('javascript')).toMatchSchema(schema);
     expect(withChaincodeLanguage('golang')).toMatchSchema(schema);
     expect(withChaincodeLanguage('cobol')).not.toMatchSchema(schema);
-  });
-
-  it('should validate chaincode channel key', () => {
-    const withChaincodeChannel = (k) => updatedBase((json) => {
-      json.chaincodes[0].channel = k;
-    });
-
-    expect(withChaincodeChannel(lettersOnly)).toMatchSchema(schema);
-    expect(withChaincodeChannel(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChaincodeChannel(uppercase)).not.toMatchSchema(schema);
-    expect(withChaincodeChannel(domain)).not.toMatchSchema(schema);
-    expect(withChaincodeChannel(spaces)).not.toMatchSchema(schema);
-    expect(withChaincodeChannel(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChaincodeChannel(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it('should validate chaincode initialization arguments', () => {
