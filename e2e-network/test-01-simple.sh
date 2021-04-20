@@ -8,7 +8,7 @@ FABRICA_HOME="$TEST_TMP/../.."
 
 networkUp() {
   "$FABRICA_HOME/fabrica-build.sh"
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" init)
+  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" init node)
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up)
 }
 
