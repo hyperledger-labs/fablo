@@ -57,11 +57,13 @@ In this case, however, you should use generated `fabrica-docker.sh` instead of `
 ### init
 
 ```bash
-fabrica init
+fabrica init [node]
 ```
 
 Creates simple network config file in current dir.
 Good step to start your adventure with Fabrica or set up a fast prototype. 
+
+Option `node` makes Fabrica to generate a sample Node.js chaincode as well.
 
 ### generate
 
