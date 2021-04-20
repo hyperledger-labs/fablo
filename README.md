@@ -66,11 +66,11 @@ Good step to start your adventure with Fabrica or set up a fast prototype.
 ### generate
 
 ```bash
-fabrica generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
+fabrica generate [/path/to/fabrica-config.json|yaml [/path/to/fabrica/target]]
 ```
 
 Generates network configuration files in the given directory.
-Default config file path is `$(pwd)/fabrica-config.json`, default directory is `$(pwd)/fabrica-target`.
+Default config file path is `$(pwd)/fabrica-config.json` or `\$(pwd)/fabrica-config.yaml`, default directory is `$(pwd)/fabrica-target`.
 If you specify a different directory, you loose Fabrica support for other commands.
 
 If you want to use Fabrica only to kick off the Hyperledger Fabric network, you may provide target directory parameter or just copy generated Fabrica target directory content to desired directory and add it to version control.
@@ -80,7 +80,7 @@ Review the files before submitting to version control system.
 ### up
 
 ```bash
-fabrica up [/path/to/fabrica-config.json]
+fabrica up [/path/to/fabrica-config.json|yaml]
 ```
 
 Starts the Hyperledger Fabric network for given Fabrica configuration file, creates channels, installs and instantiates chaincodes.
@@ -107,7 +107,7 @@ Downs the network and removes `fabrica-target` directory.
 
 ```bash
 fabrica reboot
-fabrica recreate [/path/to/fabrica-config.json]
+fabrica recreate [/path/to/fabrica-config.json|yaml]
 ```
 
 * `reboot` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
@@ -116,7 +116,7 @@ fabrica recreate [/path/to/fabrica-config.json]
 ### validate
 
 ```bash
-fabrica validate [/path/to/fabrica-config.json]
+fabrica validate [/path/to/fabrica-config.json|yaml]
 ```
 
 Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks.
@@ -202,7 +202,7 @@ Switches current script to selected version.
 
 ## Fabrica config
 
-Fabrica config is a single JSON file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
+Fabrica config is a single JSON or YAML file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
 It has to be compatible with the [schema].
 You may generate a basic config with `./fabrica init` command.
 See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/) directory for more complex examples.
@@ -211,7 +211,7 @@ The basic structure of Fabrica config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.0.1/schema.json",
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -336,4 +336,55 @@ Example:
       "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
+```
+
+### Sample YAML config file
+
+```yaml
+---
+"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
+networkSettings:
+  fabricVersion: 1.4.11
+  tls: false
+rootOrg:
+  organization:
+    name: Orderer
+    domain: root.com
+  orderer:
+    prefix: orderer
+    type: solo
+    instances: 1
+orgs:
+  - organization:
+      name: Org1
+      domain: org1.com
+    peer:
+      instances: 2
+  - organization:
+      name: Org2
+      domain: org2.com
+    peer:
+      instances: 1
+channels:
+  - name: my-channel1
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+          - peer1
+      - name: Org2
+        peers:
+          - peer0
+chaincodes:
+  - name: and-policy-chaincode
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    init: '{"Args":[]}'
+    endorsement: AND('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node"
+    privateData:
+      - name: org1-collection
+        orgNames:
+          - Org1
 ```
