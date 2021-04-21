@@ -11,6 +11,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -43,11 +68,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -80,6 +130,7 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -90,6 +141,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -122,6 +198,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -132,6 +209,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -164,11 +266,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -201,6 +328,7 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -209,7 +337,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -241,6 +369,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -252,7 +383,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -309,12 +439,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -330,6 +454,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -362,11 +511,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -399,6 +573,7 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -409,6 +584,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -441,6 +641,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -451,6 +652,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -483,11 +709,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -520,6 +771,7 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -528,7 +780,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -560,6 +812,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -571,7 +826,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -628,12 +882,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -649,6 +897,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -681,11 +954,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -718,6 +1016,7 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -728,6 +1027,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -760,6 +1084,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -770,6 +1095,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -802,11 +1152,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -839,6 +1214,7 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -847,7 +1223,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "monitoring": Object {
@@ -882,6 +1258,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -893,7 +1272,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -950,12 +1328,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -971,6 +1343,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -1003,11 +1400,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -1040,6 +1462,7 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -1050,6 +1473,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -1082,6 +1530,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -1091,6 +1540,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -1123,11 +1597,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -1160,6 +1659,7 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -1170,6 +1670,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -1202,6 +1727,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "java",
       "name": "chaincode2",
@@ -1212,6 +1738,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -1244,11 +1795,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -1281,6 +1857,7 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -1289,7 +1866,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -1321,6 +1898,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -1332,7 +1912,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -1389,12 +1968,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -2000,11 +2573,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -2020,6 +2588,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -2043,11 +2636,36 @@ Object {
               "port": 7060,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -2071,8 +2689,34 @@ Object {
                 "port": 7060,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+            "bootstrapPeers": "peer0.org2.com:7070",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer0.org2.com",
@@ -2096,6 +2740,7 @@ Object {
                 "port": 7070,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -2106,6 +2751,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -2129,6 +2799,7 @@ Object {
             "port": 7060,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -2139,6 +2810,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -2162,11 +2858,36 @@ Object {
             "port": 7060,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -2190,8 +2911,34 @@ Object {
               "port": 7060,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer0.org2.com",
@@ -2215,6 +2962,7 @@ Object {
               "port": 7070,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -2223,6 +2971,31 @@ Object {
     },
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer1.org1.com",
@@ -2246,11 +3019,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel2",
       "name": "my-channel2",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer1.org1.com",
@@ -2274,8 +3072,34 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer1.org2.com",
@@ -2299,6 +3123,7 @@ Object {
               "port": 7071,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -2307,7 +3132,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -2339,6 +3164,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -2350,7 +3178,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -2397,6 +3224,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org2.com",
+      },
       "cryptoConfigFileName": "crypto-config-org2",
       "domain": "org2.com",
       "headPeer": Object {
@@ -2408,7 +3238,6 @@ Object {
         "name": "peer0",
         "port": 7070,
       },
-      "key": "org2",
       "mspName": "Org2MSP",
       "name": "Org2",
       "peers": Array [
@@ -2465,12 +3294,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -2486,6 +3309,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -2509,11 +3357,36 @@ Object {
               "port": 7060,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -2537,8 +3410,34 @@ Object {
                 "port": 7060,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+            "bootstrapPeers": "peer0.org2.com:7070",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer0.org2.com",
@@ -2562,6 +3461,7 @@ Object {
                 "port": 7070,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -2572,6 +3472,31 @@ Object {
       "endorsement": "AND ('Org1MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -2595,6 +3520,7 @@ Object {
             "port": 7060,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -2605,6 +3531,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -2628,11 +3579,36 @@ Object {
             "port": 7060,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -2656,8 +3632,34 @@ Object {
               "port": 7060,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer0.org2.com",
@@ -2681,6 +3683,7 @@ Object {
               "port": 7070,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -2689,6 +3692,31 @@ Object {
     },
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer1.org1.com",
@@ -2712,11 +3740,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel2",
       "name": "my-channel2",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer1.org1.com",
@@ -2740,8 +3793,34 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer1.org2.com",
@@ -2765,6 +3844,7 @@ Object {
               "port": 7071,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -2773,7 +3853,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -2805,6 +3885,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -2816,7 +3899,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -2863,6 +3945,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org2.com",
+      },
       "cryptoConfigFileName": "crypto-config-org2",
       "domain": "org2.com",
       "headPeer": Object {
@@ -2874,7 +3959,6 @@ Object {
         "name": "peer0",
         "port": 7070,
       },
-      "key": "org2",
       "mspName": "Org2MSP",
       "name": "Org2",
       "peers": Array [
@@ -2931,443 +4015,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
-  },
-}
-`;
-
-exports[`extend config samples/fabricaConfig-2orgs-2channels-1chaincode-tls-raft-private-data.json 1`] = `
-Object {
-  "capabilities": Object {
-    "application": "V1_4_2",
-    "channel": "V1_4_3",
-    "orderer": "V1_4_2",
-  },
-  "chaincodes": Array [
-    Object {
-      "channel": Object {
-        "instantiatingOrg": Object {
-          "domain": "org1.com",
-          "headPeer": Object {
-            "address": "peer0.org1.com",
-            "couchDbExposePort": 5080,
-            "db": "CouchDb",
-            "fullAddress": "peer0.org1.com:7060",
-            "isAnchorPeer": true,
-            "name": "peer0",
-            "port": 7060,
-          },
-          "mspName": "Org1MSP",
-          "name": "Org1",
-          "peers": Array [
-            Object {
-              "address": "peer0.org1.com",
-              "couchDbExposePort": 5080,
-              "db": "CouchDb",
-              "fullAddress": "peer0.org1.com:7060",
-              "isAnchorPeer": true,
-              "name": "peer0",
-              "port": 7060,
-            },
-            Object {
-              "address": "peer1.org1.com",
-              "couchDbExposePort": 5081,
-              "db": "CouchDb",
-              "fullAddress": "peer1.org1.com:7061",
-              "isAnchorPeer": false,
-              "name": "peer1",
-              "port": 7061,
-            },
-          ],
-        },
-        "key": "channel1",
-        "name": "my-channel1",
-        "orgs": Array [
-          Object {
-            "domain": "org1.com",
-            "headPeer": Object {
-              "address": "peer0.org1.com",
-              "couchDbExposePort": 5080,
-              "db": "CouchDb",
-              "fullAddress": "peer0.org1.com:7060",
-              "isAnchorPeer": true,
-              "name": "peer0",
-              "port": 7060,
-            },
-            "mspName": "Org1MSP",
-            "name": "Org1",
-            "peers": Array [
-              Object {
-                "address": "peer0.org1.com",
-                "couchDbExposePort": 5080,
-                "db": "CouchDb",
-                "fullAddress": "peer0.org1.com:7060",
-                "isAnchorPeer": true,
-                "name": "peer0",
-                "port": 7060,
-              },
-              Object {
-                "address": "peer1.org1.com",
-                "couchDbExposePort": 5081,
-                "db": "CouchDb",
-                "fullAddress": "peer1.org1.com:7061",
-                "isAnchorPeer": false,
-                "name": "peer1",
-                "port": 7061,
-              },
-            ],
-          },
-          Object {
-            "domain": "org2.com",
-            "headPeer": Object {
-              "address": "peer0.org2.com",
-              "couchDbExposePort": 5090,
-              "db": "CouchDb",
-              "fullAddress": "peer0.org2.com:7070",
-              "isAnchorPeer": true,
-              "name": "peer0",
-              "port": 7070,
-            },
-            "mspName": "Org2MSP",
-            "name": "Org2",
-            "peers": Array [
-              Object {
-                "address": "peer0.org2.com",
-                "couchDbExposePort": 5090,
-                "db": "CouchDb",
-                "fullAddress": "peer0.org2.com:7070",
-                "isAnchorPeer": true,
-                "name": "peer0",
-                "port": 7070,
-              },
-            ],
-          },
-        ],
-      },
-      "directory": "./chaincodes/chaincode-kv-node",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "init": "{\\"Args\\":[]}",
-      "instantiatingOrg": Object {
-        "domain": "org1.com",
-        "headPeer": Object {
-          "address": "peer0.org1.com",
-          "couchDbExposePort": 5080,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org1.com:7060",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7060,
-        },
-        "mspName": "Org1MSP",
-        "name": "Org1",
-        "peers": Array [
-          Object {
-            "address": "peer0.org1.com",
-            "couchDbExposePort": 5080,
-            "db": "CouchDb",
-            "fullAddress": "peer0.org1.com:7060",
-            "isAnchorPeer": true,
-            "name": "peer0",
-            "port": 7060,
-          },
-          Object {
-            "address": "peer1.org1.com",
-            "couchDbExposePort": 5081,
-            "db": "CouchDb",
-            "fullAddress": "peer1.org1.com:7061",
-            "isAnchorPeer": false,
-            "name": "peer1",
-            "port": 7061,
-          },
-        ],
-      },
-      "lang": "node",
-      "name": "chaincode1",
-      "privateData": Array [],
-      "version": "0.0.1",
-    },
-  ],
-  "channels": Array [
-    Object {
-      "instantiatingOrg": Object {
-        "domain": "org1.com",
-        "headPeer": Object {
-          "address": "peer0.org1.com",
-          "couchDbExposePort": 5080,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org1.com:7060",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7060,
-        },
-        "mspName": "Org1MSP",
-        "name": "Org1",
-        "peers": Array [
-          Object {
-            "address": "peer0.org1.com",
-            "couchDbExposePort": 5080,
-            "db": "CouchDb",
-            "fullAddress": "peer0.org1.com:7060",
-            "isAnchorPeer": true,
-            "name": "peer0",
-            "port": 7060,
-          },
-          Object {
-            "address": "peer1.org1.com",
-            "couchDbExposePort": 5081,
-            "db": "CouchDb",
-            "fullAddress": "peer1.org1.com:7061",
-            "isAnchorPeer": false,
-            "name": "peer1",
-            "port": 7061,
-          },
-        ],
-      },
-      "key": "channel1",
-      "name": "my-channel1",
-      "orgs": Array [
-        Object {
-          "domain": "org1.com",
-          "headPeer": Object {
-            "address": "peer0.org1.com",
-            "couchDbExposePort": 5080,
-            "db": "CouchDb",
-            "fullAddress": "peer0.org1.com:7060",
-            "isAnchorPeer": true,
-            "name": "peer0",
-            "port": 7060,
-          },
-          "mspName": "Org1MSP",
-          "name": "Org1",
-          "peers": Array [
-            Object {
-              "address": "peer0.org1.com",
-              "couchDbExposePort": 5080,
-              "db": "CouchDb",
-              "fullAddress": "peer0.org1.com:7060",
-              "isAnchorPeer": true,
-              "name": "peer0",
-              "port": 7060,
-            },
-            Object {
-              "address": "peer1.org1.com",
-              "couchDbExposePort": 5081,
-              "db": "CouchDb",
-              "fullAddress": "peer1.org1.com:7061",
-              "isAnchorPeer": false,
-              "name": "peer1",
-              "port": 7061,
-            },
-          ],
-        },
-        Object {
-          "domain": "org2.com",
-          "headPeer": Object {
-            "address": "peer0.org2.com",
-            "couchDbExposePort": 5090,
-            "db": "CouchDb",
-            "fullAddress": "peer0.org2.com:7070",
-            "isAnchorPeer": true,
-            "name": "peer0",
-            "port": 7070,
-          },
-          "mspName": "Org2MSP",
-          "name": "Org2",
-          "peers": Array [
-            Object {
-              "address": "peer0.org2.com",
-              "couchDbExposePort": 5090,
-              "db": "CouchDb",
-              "fullAddress": "peer0.org2.com:7070",
-              "isAnchorPeer": true,
-              "name": "peer0",
-              "port": 7070,
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
-    "fabricVersion": "1.4.6",
-    "isHlf20": false,
-    "monitoring": Object {
-      "loglevel": "info",
-    },
-    "paths": Object {
-      "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
-    },
-    "tls": true,
-  },
-  "orgs": Array [
-    Object {
-      "anchorPeers": Array [
-        Object {
-          "address": "peer0.org1.com",
-          "couchDbExposePort": 5080,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org1.com:7060",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7060,
-        },
-      ],
-      "bootstrapPeers": "peer0.org1.com:7060",
-      "ca": Object {
-        "address": "ca.org1.com",
-        "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
-        "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-        "exposePort": 7031,
-        "fullAddress": "ca.org1.com:7054",
-        "port": 7054,
-        "prefix": "ca",
-      },
-      "cryptoConfigFileName": "crypto-config-org1",
-      "domain": "org1.com",
-      "headPeer": Object {
-        "address": "peer0.org1.com",
-        "couchDbExposePort": 5080,
-        "db": "CouchDb",
-        "fullAddress": "peer0.org1.com:7060",
-        "isAnchorPeer": true,
-        "name": "peer0",
-        "port": 7060,
-      },
-      "key": "org1",
-      "mspName": "Org1MSP",
-      "name": "Org1",
-      "peers": Array [
-        Object {
-          "address": "peer0.org1.com",
-          "couchDbExposePort": 5080,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org1.com:7060",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7060,
-        },
-        Object {
-          "address": "peer1.org1.com",
-          "couchDbExposePort": 5081,
-          "db": "CouchDb",
-          "fullAddress": "peer1.org1.com:7061",
-          "isAnchorPeer": false,
-          "name": "peer1",
-          "port": 7061,
-        },
-      ],
-      "peersCount": 2,
-    },
-    Object {
-      "anchorPeers": Array [
-        Object {
-          "address": "peer0.org2.com",
-          "couchDbExposePort": 5090,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org2.com:7070",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7070,
-        },
-      ],
-      "bootstrapPeers": "peer0.org2.com:7070",
-      "ca": Object {
-        "address": "ca.org2.com",
-        "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
-        "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
-        "exposePort": 7032,
-        "fullAddress": "ca.org2.com:7054",
-        "port": 7054,
-        "prefix": "ca",
-      },
-      "cryptoConfigFileName": "crypto-config-org2",
-      "domain": "org2.com",
-      "headPeer": Object {
-        "address": "peer0.org2.com",
-        "couchDbExposePort": 5090,
-        "db": "CouchDb",
-        "fullAddress": "peer0.org2.com:7070",
-        "isAnchorPeer": true,
-        "name": "peer0",
-        "port": 7070,
-      },
-      "key": "org2",
-      "mspName": "Org2MSP",
-      "name": "Org2",
-      "peers": Array [
-        Object {
-          "address": "peer0.org2.com",
-          "couchDbExposePort": 5090,
-          "db": "CouchDb",
-          "fullAddress": "peer0.org2.com:7070",
-          "isAnchorPeer": true,
-          "name": "peer0",
-          "port": 7070,
-        },
-      ],
-      "peersCount": 1,
-    },
-  ],
-  "rootOrg": Object {
-    "ca": Object {
-      "address": "ca.root.com",
-      "caAdminNameVar": "ORDERER_CA_ADMIN_NAME",
-      "caAdminPassVar": "ORDERER_CA_ADMIN_PASSWORD",
-      "exposePort": 7030,
-      "fullAddress": "ca.root.com:7054",
-      "port": 7054,
-      "prefix": "ca",
-    },
-    "domain": "root.com",
-    "mspName": "OrdererMSP",
-    "name": "Orderer",
-    "ordererHead": Object {
-      "address": "orderer0.root.com",
-      "consensus": "etcdraft",
-      "domain": "root.com",
-      "fullAddress": "orderer0.root.com:7050",
-      "name": "orderer0",
-      "port": 7050,
-    },
-    "orderers": Array [
-      Object {
-        "address": "orderer0.root.com",
-        "consensus": "etcdraft",
-        "domain": "root.com",
-        "fullAddress": "orderer0.root.com:7050",
-        "name": "orderer0",
-        "port": 7050,
-      },
-      Object {
-        "address": "orderer1.root.com",
-        "consensus": "etcdraft",
-        "domain": "root.com",
-        "fullAddress": "orderer1.root.com:7051",
-        "name": "orderer1",
-        "port": 7051,
-      },
-      Object {
-        "address": "orderer2.root.com",
-        "consensus": "etcdraft",
-        "domain": "root.com",
-        "fullAddress": "orderer2.root.com:7052",
-        "name": "orderer2",
-        "port": 7052,
-      },
-    ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -3383,6 +4030,40 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            Object {
+              "address": "peer1.org1.com",
+              "couchDbExposePort": 5081,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org1.com:7061",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7061,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer1.org1.com",
@@ -3406,11 +4087,45 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel2",
         "name": "my-channel2",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+              Object {
+                "address": "peer1.org1.com",
+                "couchDbExposePort": 5081,
+                "db": "LevelDb",
+                "fullAddress": "peer1.org1.com:7061",
+                "isAnchorPeer": true,
+                "name": "peer1",
+                "port": 7061,
+              },
+            ],
+            "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer1.org1.com",
@@ -3434,8 +4149,43 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+              Object {
+                "address": "peer1.org2.com",
+                "couchDbExposePort": 5091,
+                "db": "LevelDb",
+                "fullAddress": "peer1.org2.com:7071",
+                "isAnchorPeer": true,
+                "name": "peer1",
+                "port": 7071,
+              },
+            ],
+            "bootstrapPeers": "\\"peer0.org2.com:7070 peer1.org2.com:7071\\"",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer1.org2.com",
@@ -3459,6 +4209,7 @@ Object {
                 "port": 7071,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -3469,6 +4220,40 @@ Object {
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          Object {
+            "address": "peer1.org1.com",
+            "couchDbExposePort": 5081,
+            "db": "LevelDb",
+            "fullAddress": "peer1.org1.com:7061",
+            "isAnchorPeer": true,
+            "name": "peer1",
+            "port": 7061,
+          },
+        ],
+        "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer1.org1.com",
@@ -3492,6 +4277,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -3501,6 +4287,40 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            Object {
+              "address": "peer1.org1.com",
+              "couchDbExposePort": 5081,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org1.com:7061",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7061,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer1.org1.com",
@@ -3524,11 +4344,45 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel2",
         "name": "my-channel2",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+              Object {
+                "address": "peer1.org1.com",
+                "couchDbExposePort": 5081,
+                "db": "LevelDb",
+                "fullAddress": "peer1.org1.com:7061",
+                "isAnchorPeer": true,
+                "name": "peer1",
+                "port": 7061,
+              },
+            ],
+            "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer1.org1.com",
@@ -3552,8 +4406,43 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+              Object {
+                "address": "peer1.org2.com",
+                "couchDbExposePort": 5091,
+                "db": "LevelDb",
+                "fullAddress": "peer1.org2.com:7071",
+                "isAnchorPeer": true,
+                "name": "peer1",
+                "port": 7071,
+              },
+            ],
+            "bootstrapPeers": "\\"peer0.org2.com:7070 peer1.org2.com:7071\\"",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer1.org2.com",
@@ -3577,6 +4466,7 @@ Object {
                 "port": 7071,
               },
             ],
+            "peersCount": 2,
           },
         ],
         "profile": Object {
@@ -3587,6 +4477,40 @@ Object {
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          Object {
+            "address": "peer1.org1.com",
+            "couchDbExposePort": 5081,
+            "db": "LevelDb",
+            "fullAddress": "peer1.org1.com:7061",
+            "isAnchorPeer": true,
+            "name": "peer1",
+            "port": 7061,
+          },
+        ],
+        "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer1.org1.com",
@@ -3610,6 +4534,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "java",
       "name": "chaincode2",
@@ -3620,6 +4545,40 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          Object {
+            "address": "peer1.org1.com",
+            "couchDbExposePort": 5081,
+            "db": "LevelDb",
+            "fullAddress": "peer1.org1.com:7061",
+            "isAnchorPeer": true,
+            "name": "peer1",
+            "port": 7061,
+          },
+        ],
+        "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -3643,11 +4602,45 @@ Object {
             "port": 7060,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            Object {
+              "address": "peer1.org1.com",
+              "couchDbExposePort": 5081,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org1.com:7061",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7061,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -3671,8 +4664,43 @@ Object {
               "port": 7060,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+            Object {
+              "address": "peer1.org2.com",
+              "couchDbExposePort": 5091,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org2.com:7071",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7071,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org2.com:7070 peer1.org2.com:7071\\"",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer0.org2.com",
@@ -3696,6 +4724,7 @@ Object {
               "port": 7070,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -3704,6 +4733,40 @@ Object {
     },
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+          Object {
+            "address": "peer1.org1.com",
+            "couchDbExposePort": 5081,
+            "db": "LevelDb",
+            "fullAddress": "peer1.org1.com:7061",
+            "isAnchorPeer": true,
+            "name": "peer1",
+            "port": 7061,
+          },
+        ],
+        "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer1.org1.com",
@@ -3727,11 +4790,45 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel2",
       "name": "my-channel2",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+            Object {
+              "address": "peer1.org1.com",
+              "couchDbExposePort": 5081,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org1.com:7061",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7061,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org1.com:7060 peer1.org1.com:7061\\"",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer1.org1.com",
@@ -3755,8 +4852,43 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+            Object {
+              "address": "peer1.org2.com",
+              "couchDbExposePort": 5091,
+              "db": "LevelDb",
+              "fullAddress": "peer1.org2.com:7071",
+              "isAnchorPeer": true,
+              "name": "peer1",
+              "port": 7071,
+            },
+          ],
+          "bootstrapPeers": "\\"peer0.org2.com:7070 peer1.org2.com:7071\\"",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer1.org2.com",
@@ -3780,6 +4912,7 @@ Object {
               "port": 7071,
             },
           ],
+          "peersCount": 2,
         },
       ],
       "profile": Object {
@@ -3788,7 +4921,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.4.6",
     "fabricVersion": "1.4.6",
     "isHlf20": false,
     "paths": Object {
@@ -3829,6 +4962,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -3840,7 +4976,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -3896,6 +5031,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org2.com",
+      },
       "cryptoConfigFileName": "crypto-config-org2",
       "domain": "org2.com",
       "headPeer": Object {
@@ -3907,7 +5045,6 @@ Object {
         "name": "peer0",
         "port": 7070,
       },
-      "key": "org2",
       "mspName": "Org2MSP",
       "name": "Org2",
       "peers": Array [
@@ -3980,12 +5117,6 @@ Object {
         "port": 7052,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -4001,6 +5132,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -4033,11 +5189,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -4070,8 +5251,34 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+            "bootstrapPeers": "peer0.org2.com:7070",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer0.org2.com",
@@ -4095,6 +5302,7 @@ Object {
                 "port": 7070,
               },
             ],
+            "peersCount": 1,
           },
         ],
         "profile": Object {
@@ -4105,6 +5313,31 @@ Object {
       "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -4137,6 +5370,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "or-policy-chaincode",
@@ -4155,6 +5389,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -4187,11 +5446,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -4224,8 +5508,34 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+            "bootstrapPeers": "peer0.org2.com:7070",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer0.org2.com",
@@ -4249,6 +5559,7 @@ Object {
                 "port": 7070,
               },
             ],
+            "peersCount": 1,
           },
         ],
         "profile": Object {
@@ -4259,6 +5570,31 @@ Object {
       "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -4291,6 +5627,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "and-policy-chaincode",
@@ -4310,6 +5647,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -4342,11 +5704,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -4379,8 +5766,34 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer0.org2.com",
@@ -4404,6 +5817,7 @@ Object {
               "port": 7070,
             },
           ],
+          "peersCount": 1,
         },
       ],
       "profile": Object {
@@ -4444,6 +5858,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -4455,7 +5872,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -4502,6 +5918,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org2.com",
+      },
       "cryptoConfigFileName": "crypto-config-org2",
       "domain": "org2.com",
       "headPeer": Object {
@@ -4513,7 +5932,6 @@ Object {
         "name": "peer0",
         "port": 7070,
       },
-      "key": "org2",
       "mspName": "Org2MSP",
       "name": "Org2",
       "peers": Array [
@@ -4561,12 +5979,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
@@ -4582,6 +5994,31 @@ Object {
     Object {
       "channel": Object {
         "instantiatingOrg": Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -4614,11 +6051,36 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
-        "key": "channel1",
         "name": "my-channel1",
         "orgs": Array [
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org1.com",
+                "couchDbExposePort": 5080,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org1.com:7060",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7060,
+              },
+            ],
+            "bootstrapPeers": "peer0.org1.com:7060",
+            "ca": Object {
+              "address": "ca.org1.com",
+              "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+              "exposePort": 7031,
+              "fullAddress": "ca.org1.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org1.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.com",
             "headPeer": Object {
               "address": "peer0.org1.com",
@@ -4651,8 +6113,34 @@ Object {
                 "port": 7061,
               },
             ],
+            "peersCount": 2,
           },
           Object {
+            "anchorPeers": Array [
+              Object {
+                "address": "peer0.org2.com",
+                "couchDbExposePort": 5090,
+                "db": "LevelDb",
+                "fullAddress": "peer0.org2.com:7070",
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7070,
+              },
+            ],
+            "bootstrapPeers": "peer0.org2.com:7070",
+            "ca": Object {
+              "address": "ca.org2.com",
+              "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+              "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+              "exposePort": 7032,
+              "fullAddress": "ca.org2.com:7054",
+              "port": 7054,
+              "prefix": "ca",
+            },
+            "cli": Object {
+              "address": "cli.org2.com",
+            },
+            "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.com",
             "headPeer": Object {
               "address": "peer0.org2.com",
@@ -4676,6 +6164,7 @@ Object {
                 "port": 7070,
               },
             ],
+            "peersCount": 1,
           },
         ],
         "profile": Object {
@@ -4686,6 +6175,31 @@ Object {
       "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -4718,6 +6232,7 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
       "lang": "node",
       "name": "chaincode1",
@@ -4743,6 +6258,31 @@ Object {
   "channels": Array [
     Object {
       "instantiatingOrg": Object {
+        "anchorPeers": Array [
+          Object {
+            "address": "peer0.org1.com",
+            "couchDbExposePort": 5080,
+            "db": "LevelDb",
+            "fullAddress": "peer0.org1.com:7060",
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7060,
+          },
+        ],
+        "bootstrapPeers": "peer0.org1.com:7060",
+        "ca": Object {
+          "address": "ca.org1.com",
+          "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+          "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+          "exposePort": 7031,
+          "fullAddress": "ca.org1.com:7054",
+          "port": 7054,
+          "prefix": "ca",
+        },
+        "cli": Object {
+          "address": "cli.org1.com",
+        },
+        "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.com",
         "headPeer": Object {
           "address": "peer0.org1.com",
@@ -4775,11 +6315,36 @@ Object {
             "port": 7061,
           },
         ],
+        "peersCount": 2,
       },
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": Array [
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org1.com",
+              "couchDbExposePort": 5080,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org1.com:7060",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7060,
+            },
+          ],
+          "bootstrapPeers": "peer0.org1.com:7060",
+          "ca": Object {
+            "address": "ca.org1.com",
+            "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
+            "exposePort": 7031,
+            "fullAddress": "ca.org1.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org1.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.com",
           "headPeer": Object {
             "address": "peer0.org1.com",
@@ -4812,8 +6377,34 @@ Object {
               "port": 7061,
             },
           ],
+          "peersCount": 2,
         },
         Object {
+          "anchorPeers": Array [
+            Object {
+              "address": "peer0.org2.com",
+              "couchDbExposePort": 5090,
+              "db": "LevelDb",
+              "fullAddress": "peer0.org2.com:7070",
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7070,
+            },
+          ],
+          "bootstrapPeers": "peer0.org2.com:7070",
+          "ca": Object {
+            "address": "ca.org2.com",
+            "caAdminNameVar": "ORG2_CA_ADMIN_NAME",
+            "caAdminPassVar": "ORG2_CA_ADMIN_PASSWORD",
+            "exposePort": 7032,
+            "fullAddress": "ca.org2.com:7054",
+            "port": 7054,
+            "prefix": "ca",
+          },
+          "cli": Object {
+            "address": "cli.org2.com",
+          },
+          "cryptoConfigFileName": "crypto-config-org2",
           "domain": "org2.com",
           "headPeer": Object {
             "address": "peer0.org2.com",
@@ -4837,6 +6428,7 @@ Object {
               "port": 7070,
             },
           ],
+          "peersCount": 1,
         },
       ],
       "profile": Object {
@@ -4845,7 +6437,7 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricCaVersion": "1.5.0",
+    "fabricCaVersion": "1.3.0",
     "fabricVersion": "1.3.0",
     "isHlf20": false,
     "paths": Object {
@@ -4877,6 +6469,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org1.com",
+      },
       "cryptoConfigFileName": "crypto-config-org1",
       "domain": "org1.com",
       "headPeer": Object {
@@ -4888,7 +6483,6 @@ Object {
         "name": "peer0",
         "port": 7060,
       },
-      "key": "org1",
       "mspName": "Org1MSP",
       "name": "Org1",
       "peers": Array [
@@ -4935,6 +6529,9 @@ Object {
         "port": 7054,
         "prefix": "ca",
       },
+      "cli": Object {
+        "address": "cli.org2.com",
+      },
       "cryptoConfigFileName": "crypto-config-org2",
       "domain": "org2.com",
       "headPeer": Object {
@@ -4946,7 +6543,6 @@ Object {
         "name": "peer0",
         "port": 7070,
       },
-      "key": "org2",
       "mspName": "Org2MSP",
       "name": "Org2",
       "peers": Array [
@@ -4994,12 +6590,6 @@ Object {
         "port": 7050,
       },
     ],
-    "organization": Object {
-      "domain": "root.com",
-      "key": "root",
-      "mspName": "OrdererMSP",
-      "name": "Orderer",
-    },
   },
 }
 `;
