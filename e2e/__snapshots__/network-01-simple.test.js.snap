@@ -6,6 +6,8 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "
 `;
 
+exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/collections/chaincode1.json from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `"[]"`;
+
 exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/configtx.yaml from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
 "################################################################################
 #   CHANNEL Defaults
@@ -401,43 +403,15 @@ function installChaincodes() {
   else
     echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
   fi
+
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\\\
-    \\"cli.org1.com\\" \\\\
-    \\"peer0.org1.com:7060\\" \\\\
-    \\"my-channel1\\" \\\\
-    \\"chaincode1\\" \\\\
-    \\"0.0.1\\" \\\\
-    \\"node\\" \\\\
-    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-    \\"orderer0.root.com:7050\\" \\\\
-    \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
+
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\\\
-    \\"cli.org1.com\\" \\\\
-    \\"peer1.org1.com:7061\\" \\\\
-    \\"my-channel1\\" \\\\
-    \\"chaincode1\\" \\\\
-    \\"0.0.1\\" \\\\
-    \\"node\\" \\\\
-    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-    \\"orderer0.root.com:7050\\" \\\\
-    \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\\\
-    \\"cli.org1.com\\" \\\\
-    \\"peer0.org1.com:7060\\" \\\\
-    \\"my-channel1\\" \\\\
-    \\"chaincode1\\" \\\\
-    \\"0.0.1\\" \\\\
-    \\"node\\" \\\\
-    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-    \\"orderer0.root.com:7050\\" \\\\
-    '{\\"Args\\":[]}' \\\\
-    \\"AND ('Org1MSP.member')\\" \\\\
-    \\"\\" \\\\
-    \\"\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"false\\"
 
 }
 
@@ -467,82 +441,39 @@ function upgradeChaincode() {
     else
       echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
     fi
+
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\\\
-      \\"cli.org1.com\\" \\\\
-      \\"peer0.org1.com:7060\\" \\\\
-      \\"my-channel1\\" \\\\
-      \\"chaincode1\\" \\\\
-      \\"$version\\" \\\\
-      \\"node\\" \\\\
-      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-      \\"orderer0.root.com:7050\\" \\\\
-      \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
+
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\\\
-      \\"cli.org1.com\\" \\\\
-      \\"peer1.org1.com:7061\\" \\\\
-      \\"my-channel1\\" \\\\
-      \\"chaincode1\\" \\\\
-      \\"$version\\" \\\\
-      \\"node\\" \\\\
-      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-      \\"orderer0.root.com:7050\\" \\\\
-      \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\\\
-      \\"cli.org1.com\\" \\\\
-      \\"peer0.org1.com:7060\\" \\\\
-      \\"my-channel1\\" \\"chaincode1\\" \\\\
-      \\"$version\\" \\\\
-      \\"node\\" \\\\
-      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
-      \\"orderer0.root.com:7050\\" \\\\
-      '{\\"Args\\":[]}' \\\\
-      \\"AND ('Org1MSP.member')\\" \\\\
-      \\"\\" \\\\
-      \\"\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"false\\"
+
   fi
 
 }
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\\\
-    \\"my-channel1\\" \\\\
-    \\"Org1MSP\\" \\\\
-    \\"MyChannel1\\" \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannel \\\\
-    \\"my-channel1\\" \\\\
-    \\"Org1MSP\\" \\\\
-    \\"cli.org1.com\\" \\\\
-    \\"peer0.org1.com\\" \\\\
-    \\"orderer0.root.com:7050\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+
 }
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
   printItalics \\"Generating crypto material for org Orderer\\" \\"U1F512\\"
-  certsGenerate \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
-    \\"crypto-config-root.yaml\\" \\\\
-    \\"ordererOrganizations/root.com\\" \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
-  certsGenerate \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
-    \\"crypto-config-org1.yaml\\" \\\\
-    \\"peerOrganizations/org1.com\\" \\\\
-    \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
   genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
@@ -551,18 +482,18 @@ function generateArtifacts() {
 function startNetwork() {
   printHeadline \\"Starting network\\" \\"U1F680\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
-      docker-compose up -d &&
-      sleep 4
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
+    docker-compose up -d
+    sleep 4
   )
 }
 
 function stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
-      docker-compose stop &&
-      sleep 4
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
+    docker-compose stop
+    sleep 4
   )
 }
 
@@ -579,22 +510,25 @@ function installChannels() {
   printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
   docker exec -i cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7061' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+
 }
 
 function networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
-      docker-compose down
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
+    docker-compose down
   )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+
   docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
+
   docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
@@ -699,6 +633,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
       - basic
 
@@ -1091,16 +1026,163 @@ function chaincodeInstall() {
 
   local ORDERER_URL=$8
 
-  local CA_CERT
-  local CA_CERT_PARAMS
+  echo \\"Installing chaincode on $CHANNEL_NAME...\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
 
-  if [ -n \\"$9\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/$9\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
+    docker exec -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
+      \\"$CLI_NAME\\" peer chaincode install \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+      -o \\"$ORDERER_URL\\"
   else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
+    echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' installation. Chaincode's directory is empty.\\"
   fi
+}
+
+function chaincodeInstantiate() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
+  local INIT_PARAMS=$9
+  local ENDORSEMENT=\${10}
+  local ADD_COLLECTIONS_CONFIG=\${11}
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
+
+  echo \\"Instantiating chaincode on $CHANNEL_NAME...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
+
+  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  fi
+
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
+    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --collections-config \\"$COLLECTIONS_CONFIG\\"
+    else
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\"
+    fi
+  else
+    echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
+  fi
+}
+
+function chaincodeUpgrade() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+
+  local INIT_PARAMS=$9
+  local ENDORSEMENT=\${10}
+
+  local ADD_COLLECTIONS_CONFIG=\${11}
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
+
+  echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
+
+  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  fi
+
+  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
+    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --collections-config \\"$COLLECTIONS_CONFIG\\"
+    else
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\"
+    fi
+  else
+    echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
+  fi
+}
+
+function chaincodeInstallTls() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local CHAINCODE_DIR_PATH=$7
+
+  local ORDERER_URL=$8
+  local CA_CERT=\\"/var/hyperledger/cli/$9\\"
 
   echo \\"Installing chaincode on $CHANNEL_NAME (TLS)...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
@@ -1120,13 +1202,14 @@ function chaincodeInstall() {
       -l \\"$CHAINCODE_LANG\\" \\\\
       -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
       -o \\"$ORDERER_URL\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      --tls \\\\
+      --cafile \\"$CA_CERT\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty.\\"
   fi
 }
 
-function chaincodeInstantiate() {
+function chaincodeInstantiateTls() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1137,30 +1220,14 @@ function chaincodeInstantiate() {
   local CHAINCODE_DIR_PATH=$7
 
   local ORDERER_URL=$8
+
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local CA_CERT
-  local CA_CERT_PARAMS
+  local ADD_COLLECTIONS_CONFIG=\${11}
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
-  if [ -n \\"\${11}\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
-  else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
-  fi
-
-  local COLLECTIONS_CONFIG
-  local COLLECTIONS_CONFIG_PARAMS
-
-  if [ -n \\"\${12}\\" ]; then
-    COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/\${12}\\"
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  else
-    COLLECTIONS_CONFIG=\\"<none>\\"
-    COLLECTIONS_CONFIG_PARAMS=()
-  fi
+  local CA_CERT=\\"/var/hyperledger/cli/\${12}\\"
 
   echo \\"Instantiating chaincode on $CHANNEL_NAME (TLS)...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
@@ -1169,32 +1236,48 @@ function chaincodeInstantiate() {
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
+  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  fi
+
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-      -C \\"$CHANNEL_NAME\\" \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
+        --tls \\\\
+        --cafile \\"$CA_CERT\\"
+    else
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --tls \\\\
+        --cafile \\"$CA_CERT\\"
+    fi
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
   fi
 }
 
-function chaincodeUpgrade() {
+function chaincodeUpgradeTls() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1206,29 +1289,13 @@ function chaincodeUpgrade() {
 
   local ORDERER_URL=$8
   local INIT_PARAMS=$9
+
   local ENDORSEMENT=\${10}
 
-  local CA_CERT
-  local CA_CERT_PARAMS
+  local ADD_COLLECTIONS_CONFIG=\${11}
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
-  if [ -n \\"\${11}\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
-  else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
-  fi
-
-  local COLLECTIONS_CONFIG
-  local COLLECTIONS_CONFIG_PARAMS
-
-  if [ -n \\"\${12}\\" ]; then
-    COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/\${12}\\"
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  else
-    COLLECTIONS_CONFIG=\\"<none>\\"
-    COLLECTIONS_CONFIG_PARAMS=()
-  fi
+  local CA_CERT=\\"/var/hyperledger/cli/\\"\${12}
 
   echo \\"Upgrading chaincode on $CHANNEL_NAME (TLS)...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
@@ -1237,26 +1304,43 @@ function chaincodeUpgrade() {
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
+  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+  fi
+
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-      -C \\"$CHANNEL_NAME\\" \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
+        --tls \\\\
+        --cafile \\"$CA_CERT\\"
+    else
+      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+        -C \\"$CHANNEL_NAME\\" \\\\
+        -n \\"$CHAINCODE_NAME\\" \\\\
+        -v \\"$CHAINCODE_VERSION\\" \\\\
+        -l \\"$CHAINCODE_LANG\\" \\\\
+        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+        -o \\"$ORDERER_URL\\" \\\\
+        -c \\"$INIT_PARAMS\\" \\\\
+        -P \\"$ENDORSEMENT\\" \\\\
+        --tls \\\\
+        --cafile \\"$CA_CERT\\"
+    fi
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -1672,6 +1756,7 @@ function fetchChannelAndJoinTls() {
 exports[`network-01-simple should create proper files from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
 Array [
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/.gitignore",
+  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/collections/chaincode1.json",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-root.yaml",
