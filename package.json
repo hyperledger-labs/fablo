@@ -9,7 +9,7 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "lint": "eslint --fix generators e2e",
+    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e",
     "test:unit": "jest generators",
     "test:e2e": "jest e2e -i",
     "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
@@ -28,6 +28,7 @@
     "eslint-plugin-jest": "^23.7.0",
     "jest": "^25.1.0",
     "jest-json-schema": "^5.0.0",
+    "madge": "^4.0.2",
     "yeoman-test": "^2.1.0"
   }
 }
