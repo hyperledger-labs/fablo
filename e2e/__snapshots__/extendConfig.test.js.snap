@@ -3730,7 +3730,7 @@ Object {
           "name": "MyChannel1",
         },
       },
-      "directory": "./chaincodes/chaincode-java-simple",
+      "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
@@ -3794,7 +3794,7 @@ Object {
         ],
         "peersCount": 2,
       },
-      "lang": "java",
+      "lang": "node",
       "name": "chaincode1",
       "privateData": Array [],
       "privateDataEnabled": false,
