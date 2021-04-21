@@ -189,7 +189,6 @@ FABRICA_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh\\"
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh\\"
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh\\"
-source \\"$FABRICA_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh\\"
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/.env\\"
 
@@ -217,8 +216,6 @@ elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"channel\\" ]; then
-  channelQuery \\"\${@:2}\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -226,8 +223,6 @@ elif [ \\"$1\\" = \\"--help\\" ]; then
 else
   echo \\"No command specified\\"
   echo \\"Basic commands are: up, down, start, stop, reboot\\"
-  echo \\"To list channel query helper commands type: 'fabrica channel --help'\\"
-  echo \\"Also check: 'chaincodes install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
 "
@@ -245,7 +240,6 @@ LOGGING_LEVEL=info
 
 FABRIC_VERSION=2.2.1
 FABRIC_CA_VERSION=1.5.0
-FABRIC_TWO_DIGIT_VERSION=2.2.1
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -253,133 +247,6 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
-"
-`;
-
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
-"#!/usr/bin/env bash
-
-source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
-
-set -eu
-
-function channelQuery() {
-  echo \\"-> Channel query: \\" + \\"$@\\"
-
-  if [ \\"$#\\" -eq 1 ]; then
-    printChannelsHelp
-
-  elif [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer0\\" ]; then
-
-    peerChannelList \\"cli.org1.com\\" \\"peer0.org1.com:7060\\"
-
-  elif
-    [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer1\\" ]
-  then
-
-    peerChannelList \\"cli.org1.com\\" \\"peer1.org1.com:7061\\"
-
-  elif
-
-    [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer0\\" ]
-  then
-
-    peerChannelGetInfo \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7060\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchConfig \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchLastBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchFirstBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7060\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
-    FILE_NAME=$6
-    BLOCK_NUMBER=$7
-
-    peerChannelFetchBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7060\\"
-
-  elif
-    [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer1\\" ]
-  then
-
-    peerChannelGetInfo \\"my-channel1\\" \\"cli.org1.com\\" \\"peer1.org1.com:7061\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchConfig \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchLastBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
-    FILE_NAME=$6
-
-    peerChannelFetchFirstBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7061\\"
-
-  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 8 ]; then
-    FILE_NAME=$6
-    BLOCK_NUMBER=$7
-
-    peerChannelFetchBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7061\\"
-
-  else
-
-    printChannelsHelp
-  fi
-
-}
-
-function printChannelsHelp() {
-  echo \\"Channel management commands:\\"
-  echo \\"\\"
-
-  echo \\"fabrica channel list org1 peer0\\"
-  echo -e \\"\\\\t List channels on 'peer0' of 'Org1'\\".
-  echo \\"\\"
-
-  echo \\"fabrica channel list org1 peer1\\"
-  echo -e \\"\\\\t List channels on 'peer1' of 'Org1'\\".
-  echo \\"\\"
-
-  echo \\"fabrica channel getinfo my-channel1 org1 peer0\\"
-  echo -e \\"\\\\t Get channel info on 'peer0' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch config my-channel1 org1 peer0 <fileName.json>\\"
-  echo -e \\"\\\\t Download latest config block to current dir. Uses first peer 'peer0' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch lastBlock my-channel1 org1 peer0 <fileName.json>\\"
-  echo -e \\"\\\\t Download last, decrypted block to current dir. Uses first peer 'peer0' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch firstBlock my-channel1 org1 peer0 <fileName.json>\\"
-  echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer0' of 'Org1'\\".
-  echo \\"\\"
-
-  echo \\"fabrica channel getinfo my-channel1 org1 peer1\\"
-  echo -e \\"\\\\t Get channel info on 'peer1' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch config my-channel1 org1 peer1 <fileName.json>\\"
-  echo -e \\"\\\\t Download latest config block to current dir. Uses first peer 'peer1' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch lastBlock my-channel1 org1 peer1 <fileName.json>\\"
-  echo -e \\"\\\\t Download last, decrypted block to current dir. Uses first peer 'peer1' of 'Org1'\\".
-  echo \\"\\"
-  echo \\"fabrica channel fetch firstBlock my-channel1 org1 peer1 <fileName.json>\\"
-  echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer1' of 'Org1'\\".
-  echo \\"\\"
-
-}
 "
 `;
 
@@ -411,7 +278,7 @@ function installChaincodes() {
   chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"false\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
 }
 
@@ -449,7 +316,7 @@ function upgradeChaincode() {
     chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"false\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
 
   fi
 
@@ -650,9 +517,7 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_TWO_DIGIT_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_TWO_DIGIT_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_TWO_DIGIT_VERSION}
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -690,9 +555,7 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_TWO_DIGIT_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_TWO_DIGIT_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_TWO_DIGIT_VERSION}
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -1004,9 +867,6 @@ function printHelp() {
   echo \\"./fabric-docker.sh reboot\\"
   echo -e \\"\\\\t Fresh start - it destroys whole network, certs, configs and then reruns everything.\\"
   echo \\"\\"
-  echo \\"./fabric-docker.sh channel --help\\"
-  echo -e \\"\\\\t Detailed help for channel management scripts.\\"
-  echo \\"\\"
 }
 "
 `;
@@ -1057,51 +917,35 @@ function chaincodeInstantiate() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
-  local ADD_COLLECTIONS_CONFIG=\${11}
-  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   echo \\"Instantiating chaincode on $CHANNEL_NAME...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
-
-  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-  fi
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
 
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --collections-config \\"$COLLECTIONS_CONFIG\\"
-    else
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\"
-    fi
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+      -C \\"$CHANNEL_NAME\\" \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -c \\"$INIT_PARAMS\\" \\\\
+      -P \\"$ENDORSEMENT\\" \\\\
+      --collections-config \\"$COLLECTIONS_CONFIG\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -1117,54 +961,36 @@ function chaincodeUpgrade() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local ADD_COLLECTIONS_CONFIG=\${11}
-  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
-
   echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
-
-  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-  fi
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
 
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --collections-config \\"$COLLECTIONS_CONFIG\\"
-    else
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\"
-    fi
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+      -C \\"$CHANNEL_NAME\\" \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -c \\"$INIT_PARAMS\\" \\\\
+      -P \\"$ENDORSEMENT\\" \\\\
+      --collections-config \\"$COLLECTIONS_CONFIG\\"
   else
     echo \\"Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -1218,59 +1044,40 @@ function chaincodeInstantiateTls() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   local ORDERER_URL=$8
 
   local INIT_PARAMS=$9
   local ENDORSEMENT=\${10}
 
-  local ADD_COLLECTIONS_CONFIG=\${11}
-  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
-
-  local CA_CERT=\\"/var/hyperledger/cli/\${12}\\"
+  local CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
 
   echo \\"Instantiating chaincode on $CHANNEL_NAME (TLS)...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-  fi
-
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
-        --tls \\\\
-        --cafile \\"$CA_CERT\\"
-    else
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --tls \\\\
-        --cafile \\"$CA_CERT\\"
-    fi
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+      -C \\"$CHANNEL_NAME\\" \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -c \\"$INIT_PARAMS\\" \\\\
+      -P \\"$ENDORSEMENT\\" \\\\
+      --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
+      --tls \\\\
+      --cafile \\"$CA_CERT\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
@@ -1286,338 +1093,45 @@ function chaincodeUpgradeTls() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
+  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
 
   local ORDERER_URL=$8
   local INIT_PARAMS=$9
 
   local ENDORSEMENT=\${10}
 
-  local ADD_COLLECTIONS_CONFIG=\${11}
-  local COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/collections/$CHAINCODE_NAME.json\\"
-
-  local CA_CERT=\\"/var/hyperledger/cli/\\"\${12}
+  local CA_CERT=\\"/var/hyperledger/cli/\\"\${11}
 
   echo \\"Upgrading chaincode on $CHANNEL_NAME (TLS)...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"ADD_COLLECTIONS_CONFIG: $ADD_COLLECTIONS_CONFIG\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-    inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-  fi
-
   if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    if [ \\"$ADD_COLLECTIONS_CONFIG\\" == true ]; then
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
-        --tls \\\\
-        --cafile \\"$CA_CERT\\"
-    else
-      docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-        -C \\"$CHANNEL_NAME\\" \\\\
-        -n \\"$CHAINCODE_NAME\\" \\\\
-        -v \\"$CHAINCODE_VERSION\\" \\\\
-        -l \\"$CHAINCODE_LANG\\" \\\\
-        -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-        -o \\"$ORDERER_URL\\" \\\\
-        -c \\"$INIT_PARAMS\\" \\\\
-        -P \\"$ENDORSEMENT\\" \\\\
-        --tls \\\\
-        --cafile \\"$CA_CERT\\"
-    fi
+    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+      -C \\"$CHANNEL_NAME\\" \\\\
+      -n \\"$CHAINCODE_NAME\\" \\\\
+      -v \\"$CHAINCODE_VERSION\\" \\\\
+      -l \\"$CHAINCODE_LANG\\" \\\\
+      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+      -o \\"$ORDERER_URL\\" \\\\
+      -c \\"$INIT_PARAMS\\" \\\\
+      -P \\"$ENDORSEMENT\\" \\\\
+      --collections-config \\"$COLLECTIONS_CONFIG\\" \\\\
+      --tls \\\\
+      --cafile \\"$CA_CERT\\"
   else
     echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
   fi
-}
-"
-`;
-
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
-"#!/usr/bin/env bash
-
-function peerChannelList() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-
-  echo \\"Listing channels using $CLI_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel list
-}
-
-function peerChannelGetInfo() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local PEER_ADDRESS=$3
-
-  echo \\"Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel getinfo \\\\
-    -c \\"$CHANNEL_NAME\\"
-}
-
-function peerChannelFetchConfig() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local CONFIG_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-
-  echo \\"Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/assets/
-  docker exec \\\\
-    -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
-    -c \\"$CHANNEL_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
-  docker exec \\\\
-    -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$CONFIG_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchLastBlock() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-
-  echo \\"Fetching last block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
-    -c \\"$CHANNEL_NAME\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/newest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchFirstBlock() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-
-  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
-    -c \\"$CHANNEL_NAME\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/oldest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchBlock() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local BLOCK_NUMBER=$4
-  local PEER_ADDRESS=$5
-
-  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
-    -c \\"$CHANNEL_NAME\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/oldest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-#=== TLS equivalents =========================================================
-
-function peerChannelListTls() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CA_CERT=$3
-
-  echo \\"Listing channels using $CLI_NAME using peer $PEER_ADDRESS (TLS)...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel list --tls --cafile \\"$CA_CERT\\"
-}
-
-function peerChannelGetInfoTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local PEER_ADDRESS=$3
-  local CA_CERT=$4
-
-  echo \\"Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel getinfo \\\\
-    -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
-}
-
-function peerChannelFetchConfigTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local CONFIG_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-  local CA_CERT=$5
-
-  echo \\"Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"CONFIG_FILE_NAME: $CONFIG_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/assets/
-  docker exec \\\\
-    -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\\\
-    -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
-
-  docker exec \\"$CLI_NAME\\" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
-  docker exec \\\\
-    -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/assets/config_block_before.pb \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$CONFIG_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchLastBlockTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-  local CA_CERT=$5
-
-  echo \\"Fetching last block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch newest /tmp/hyperledger/blocks/newest.block \\\\
-    -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/newest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
-}
-
-function peerChannelFetchFirstBlockTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local PEER_ADDRESS=$4
-  local CA_CERT=$5
-
-  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
-    -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/oldest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/1
-}
-
-function peerChannelFetchBlockTls() {
-  local CHANNEL_NAME=$1
-  local CLI_NAME=$2
-  local BLOCK_FILE_NAME=$3
-  local BLOCK_NUMBER=$4
-  local PEER_ADDRESS=$5
-
-  echo \\"Fetching first block from $CHANNEL_NAME using peer $PEER_ADDRESS...\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"BLOCK_FILE_NAME: $BLOCK_FILE_NAME\\"
-  inputLog \\"BLOCK_NUMBER: $BLOCK_NUMBER\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-
-  docker exec \\"$CLI_NAME\\" mkdir -p /tmp/hyperledger/blocks/
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" peer channel fetch oldest /tmp/hyperledger/blocks/oldest.block \\\\
-    -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
-  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-    \\"$CLI_NAME\\" configtxlator proto_decode \\\\
-    --input /tmp/hyperledger/blocks/oldest.block \\\\
-    --type common.Block |
-    jq .data.data[0].payload.data.config >\\"$BLOCK_FILE_NAME\\"
-
-  docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 "
 `;
@@ -1762,13 +1276,11 @@ Array [
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-root.yaml",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/.env",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/channel-query-scripts.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/commands-generated.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/docker-compose.yaml",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-functions.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-help.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
   "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
