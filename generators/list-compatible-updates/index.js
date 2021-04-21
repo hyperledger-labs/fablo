@@ -1,5 +1,3 @@
-/* eslint no-underscore-dangle: 0 */
-
 /*
 * License-Identifier: Apache-2.0
 */
