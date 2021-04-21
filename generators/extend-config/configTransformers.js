@@ -105,7 +105,6 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
     name,
     mspName,
     domain,
-    organization: { name, mspName, domain }, // FIXME ???
     ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,
