@@ -19,57 +19,32 @@ function installChaincodes() {
       <% chaincode.channel.orgs.forEach(function (org) { -%>
         <% org.peers.forEach(function (peer) { -%>
           printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          <% if(!networkSettings.tls) { -%>
-            chaincodeInstall \
-              "cli.<%= org.domain %>" \
-              "<%= peer.fullAddress %>" \
-              "<%= chaincode.channel.name %>" \
-              "<%= chaincode.name %>" \
-              "<%= chaincode.version %>" \
-              "<%= chaincode.lang %>" \
-              "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-              "<%= rootOrg.ordererHead.fullAddress %>"
-          <% } else { -%>
-            chaincodeInstallTls \
-              "cli.<%= org.domain %>" \
-              "<%= peer.fullAddress %>" \
-              "<%= chaincode.channel.name %>" \
-              "<%= chaincode.name %>" \
-              "<%= chaincode.version %>" \
-              "<%= chaincode.lang %>" \
-              "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-              "<%= rootOrg.ordererHead.fullAddress %>" \
-              "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-          <% } -%>
+          chaincodeInstall \
+            "cli.<%= org.domain %>" \
+            "<%= peer.fullAddress %>" \
+            "<%= chaincode.channel.name %>" \
+            "<%= chaincode.name %>" \
+            "<%= chaincode.version %>" \
+            "<%= chaincode.lang %>" \
+            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
+            "<%= rootOrg.ordererHead.fullAddress %>" \
+            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
         <% }) -%>
       <% }) -%>
 
       printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-      <% if(!networkSettings.tls) { -%>
-        chaincodeInstantiate \
-          "cli.<%= chaincode.instantiatingOrg.domain %>" \
-          "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" \
-          "<%= chaincode.channel.name %>" \
-          "<%= chaincode.name %>" \
-          "<%= chaincode.version %>" \
-          "<%= chaincode.lang %>" \
-          "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-          "<%= rootOrg.ordererHead.fullAddress %>" \
-          '<%- chaincode.init %>' \
-          "<%- chaincode.endorsement %>"
-      <% } else { -%>
-        chaincodeInstantiateTls \
-          "cli.<%= chaincode.instantiatingOrg.domain %>" \
-          "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" \
-          "<%= chaincode.channel.name %>" "<%= chaincode.name %>" \
-          "<%= chaincode.version %>" \
-          "<%= chaincode.lang %>" \
-          "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-          "<%= rootOrg.ordererHead.fullAddress %>" \
-          '<%- chaincode.init %>' \
-          "<%- chaincode.endorsement %>" \
-          "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-      <% } -%>
+      chaincodeInstantiate \
+        "cli.<%= chaincode.instantiatingOrg.domain %>" \
+        "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" \
+        "<%= chaincode.channel.name %>" \
+        "<%= chaincode.name %>" \
+        "<%= chaincode.version %>" \
+        "<%= chaincode.lang %>" \
+        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
+        "<%= rootOrg.ordererHead.fullAddress %>" \
+        '<%- chaincode.init %>' \
+        "<%- chaincode.endorsement %>" \
+        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
     <% }) %>
   <% } -%>
 }
@@ -94,57 +69,31 @@ function upgradeChaincode() {
       <% chaincode.channel.orgs.forEach(function (org) { -%>
         <% org.peers.forEach(function (peer) { -%>
           printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          <% if(!networkSettings.tls) { -%>
-            chaincodeInstall \
-              "cli.<%= org.domain %>" \
-              "<%= peer.fullAddress %>" \
-              "<%= chaincode.channel.name %>" \
-              "<%= chaincode.name %>" \
-              "$version" \
-              "<%= chaincode.lang %>" \
-              "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-              "<%= rootOrg.ordererHead.fullAddress %>"
-          <% } else { -%>
-            chaincodeInstallTls \
-              "cli.<%= org.domain %>" \
-              "<%= peer.fullAddress %>" \
-              "<%= chaincode.channel.name %>" \
-              "<%= chaincode.name %>" \
-              "$version" \
-              "<%= chaincode.lang %>" \
-              "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-              "<%= rootOrg.ordererHead.fullAddress %>" \
-              "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-          <% } -%>
+          chaincodeInstall \
+            "cli.<%= org.domain %>" \
+            "<%= peer.fullAddress %>" \
+            "<%= chaincode.channel.name %>" \
+            "<%= chaincode.name %>" \
+            "$version" \
+            "<%= chaincode.lang %>" \
+            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
+            "<%= rootOrg.ordererHead.fullAddress %>" \
+            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
         <% }) -%>
       <% }) -%>
 
       printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
-      <% if(!networkSettings.tls) { -%>
-        chaincodeUpgrade \
-          "cli.<%= chaincode.instantiatingOrg.domain %>" \
-          "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" \
-          "<%= chaincode.channel.name %>" "<%= chaincode.name %>" \
-          "$version" \
-          "<%= chaincode.lang %>" \
-          "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-          "<%= rootOrg.ordererHead.fullAddress %>" \
-          '<%- chaincode.init %>' \
-          "<%- chaincode.endorsement %>"
-      <% } else { -%>
-        chaincodeUpgradeTls \
-          "cli.<%= chaincode.instantiatingOrg.domain %>" \
-          "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" \
-          "<%= chaincode.channel.name %>" \
-          "<%= chaincode.name %>" \
-          "$version" \
-          "<%= chaincode.lang %>" \
-          "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
-          "<%= rootOrg.ordererHead.fullAddress %>" \
-          '<%- chaincode.init %>' \
-          "<%- chaincode.endorsement %>" \
-          "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
-      <% } %>
+      chaincodeUpgrade \
+        "cli.<%= chaincode.instantiatingOrg.domain %>" \
+        "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" \
+        "<%= chaincode.channel.name %>" "<%= chaincode.name %>" \
+        "$version" \
+        "<%= chaincode.lang %>" \
+        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
+        "<%= rootOrg.ordererHead.fullAddress %>" \
+        '<%- chaincode.init %>' \
+        "<%- chaincode.endorsement %>" \
+        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
     fi
   <% }) %>
 }
