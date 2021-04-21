@@ -428,15 +428,39 @@ function installChaincodes() {
   else
     echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
   fi
-
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
-
+  chaincodeInstall \\\\
+    \\"cli.org1.com\\" \\\\
+    \\"peer0.org1.com:7060\\" \\\\
+    \\"my-channel1\\" \\\\
+    \\"chaincode1\\" \\\\
+    \\"0.0.1\\" \\\\
+    \\"node\\" \\\\
+    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+    \\"orderer0.root.com:7050\\"
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
+  chaincodeInstall \\\\
+    \\"cli.org1.com\\" \\\\
+    \\"peer1.org1.com:7061\\" \\\\
+    \\"my-channel1\\" \\\\
+    \\"chaincode1\\" \\\\
+    \\"0.0.1\\" \\\\
+    \\"node\\" \\\\
+    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+    \\"orderer0.root.com:7050\\"
 
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+  chaincodeInstantiate \\\\
+    \\"cli.org1.com\\" \\\\
+    \\"peer0.org1.com:7060\\" \\\\
+    \\"my-channel1\\" \\\\
+    \\"chaincode1\\" \\\\
+    \\"0.0.1\\" \\\\
+    \\"node\\" \\\\
+    \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+    \\"orderer0.root.com:7050\\" \\\\
+    '{\\"Args\\":[]}' \\\\
+    \\"AND ('Org1MSP.member')\\"
 
 }
 
@@ -466,15 +490,38 @@ function upgradeChaincode() {
     else
       echo \\"Skipping chaincode './chaincodes/chaincode-kv-node' build. Directory $curr_chaincode_dir is empty.\\"
     fi
-
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
-
+    chaincodeInstall \\\\
+      \\"cli.org1.com\\" \\\\
+      \\"peer0.org1.com:7060\\" \\\\
+      \\"my-channel1\\" \\\\
+      \\"chaincode1\\" \\\\
+      \\"$version\\" \\\\
+      \\"node\\" \\\\
+      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+      \\"orderer0.root.com:7050\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\"
+    chaincodeInstall \\\\
+      \\"cli.org1.com\\" \\\\
+      \\"peer1.org1.com:7061\\" \\\\
+      \\"my-channel1\\" \\\\
+      \\"chaincode1\\" \\\\
+      \\"$version\\" \\\\
+      \\"node\\" \\\\
+      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+      \\"orderer0.root.com:7050\\"
 
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\"
+    chaincodeUpgrade \\\\
+      \\"cli.org1.com\\" \\\\
+      \\"peer0.org1.com:7060\\" \\\\
+      \\"my-channel1\\" \\"chaincode1\\" \\\\
+      \\"$version\\" \\\\
+      \\"node\\" \\\\
+      \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\\\
+      \\"orderer0.root.com:7050\\" \\\\
+      '{\\"Args\\":[]}' \\\\
+      \\"AND ('Org1MSP.member')\\"
 
   fi
 
@@ -482,23 +529,40 @@ function upgradeChaincode() {
 
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\\\
+    \\"my-channel1\\" \\\\
+    \\"Org1MSP\\" \\\\
+    \\"MyChannel1\\" \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
+  notifyOrgAboutNewChannel \\\\
+    \\"my-channel1\\" \\\\
+    \\"Org1MSP\\" \\\\
+    \\"cli.org1.com\\" \\\\
+    \\"peer0.org1.com\\" \\\\
+    \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
-
 }
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
   printItalics \\"Generating crypto material for org Orderer\\" \\"U1F512\\"
-  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  certsGenerate \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
+    \\"crypto-config-root.yaml\\" \\\\
+    \\"ordererOrganizations/root.com\\" \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
-  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  certsGenerate \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\\\
+    \\"crypto-config-org1.yaml\\" \\\\
+    \\"peerOrganizations/org1.com\\" \\\\
+    \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
   genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
@@ -507,18 +571,18 @@ function generateArtifacts() {
 function startNetwork() {
   printHeadline \\"Starting network\\" \\"U1F680\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
-    docker-compose up -d
-    sleep 4
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
+      docker-compose up -d &&
+      sleep 4
   )
 }
 
 function stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
-    docker-compose stop
-    sleep 4
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
+      docker-compose stop &&
+      sleep 4
   )
 }
 
@@ -535,25 +599,22 @@ function installChannels() {
   printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
   docker exec -i cli.org1.com bash -c \\\\
     \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7061' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
-
 }
 
 function networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (
-    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker
-    docker-compose down
+    cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker &&
+      docker-compose down
   )
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-
   docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
   docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
-
   docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || {
     echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   }
