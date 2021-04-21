@@ -16,6 +16,11 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
+<<<<<<< HEAD
+=======
+    'class-methods-use-this': 'off',
+    'no-underscore-dangle': 'off',
+>>>>>>> minor cleanup in generators
   },
   plugins: ['jest']
 };
