@@ -1,5 +1,3 @@
-/* eslint no-underscore-dangle: 0 */
-
 /*
 * License-Identifier: Apache-2.0
 */
@@ -109,11 +107,10 @@ module.exports = class extends Generator {
   }
 
   _copyDockerComposeEnv(networkSettings, orgsTransformed, composeNetworkName) {
-    const monitoring = { loglevel: 'info', ...(networkSettings.monitoring || {}) };
     const settings = {
       composeNetworkName,
       fabricCaVersion: networkSettings.fabricCaVersion,
-      networkSettings: { ...networkSettings, monitoring },
+      networkSettings,
       orgs: orgsTransformed,
       paths: networkSettings.paths,
       fabricaVersion: config.fabricaVersion,
