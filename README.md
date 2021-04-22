@@ -1,3 +1,4 @@
+![Github Actions](https://github.com/softwaremill/fabrica/actions/workflows/test.yml/badge.svg?branch=main)
 [![Gitter](https://badges.gitter.im/softwaremill-fabrica/community.svg)](https://gitter.im/softwaremill-fabrica/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 <h1><img src="./logo.svg" alt="Fabrica"/></h1>
@@ -56,11 +57,13 @@ In this case, however, you should use generated `fabrica-docker.sh` instead of `
 ### init
 
 ```bash
-fabrica init
+fabrica init [node]
 ```
 
 Creates simple network config file in current dir.
 Good step to start your adventure with Fabrica or set up a fast prototype. 
+
+Option `node` makes Fabrica to generate a sample Node.js chaincode as well.
 
 ### generate
 
@@ -137,6 +140,41 @@ fabrica chaincode upgrade chaincode-name version
 
 Upgrades and instantiates chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fabrica config file.
+
+## Managing channels
+
+### chaincode channel
+
+```bash
+fabrica channel --help
+```
+Use it to list all available channel commands.  
+Commands are generated using fabrica-config.json to cover all cases (queries for each channel. organization and peer)
+ 
+```bash
+fabrica channel list org1 peer0
+```
+lists all channels for given peer
+
+```bash
+fabrica channel getinfo channel_name org1 peer0
+```
+Prints channel info ei. current block height for given peer
+
+```bash
+fabrica channel fetch config channel_name org1 peer0 file_name.json
+```
+Fetches latest config block, decodes it and write to a json file.
+
+```bash
+fabrica channel fetch lastBlock channel_name org1 peer0 file_name.json
+```
+Fetches latest block, decodes it and write to a json file. It might be transaction block or config block.
+
+```bash
+fabrica channel fetch firstBlock channel_name org1 peer0 file_name.json
+```
+Fetches first block for given channel. Usually it will be initial channel configuration. 
 
 ## Utility commands
 

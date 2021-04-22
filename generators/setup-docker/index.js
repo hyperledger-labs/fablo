@@ -141,6 +141,13 @@ module.exports = class extends Generator {
       channels,
       chaincodes,
     };
+
+    this.fs.copyTpl(
+      this.templatePath('fabric-docker/channel-query-scripts.sh'),
+      this.destinationPath('fabric-docker/channel-query-scripts.sh'),
+      settings,
+    );
+
     this.fs.copyTpl(
       this.templatePath('fabric-docker/commands-generated.sh'),
       this.destinationPath('fabric-docker/commands-generated.sh'),
@@ -178,6 +185,11 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('fabric-docker/scripts/base-functions.sh'),
       this.destinationPath('fabric-docker/scripts/base-functions.sh'),
+    );
+
+    this.fs.copyTpl(
+      this.templatePath('fabric-docker/scripts/channel-query-functions.sh'),
+      this.destinationPath('fabric-docker/scripts/channel-query-functions.sh'),
     );
 
     this.fs.copyTpl(
