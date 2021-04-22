@@ -1,4 +1,3 @@
-/* eslint no-underscore-dangle: 0 */
 const Generator = require('yeoman-generator');
 const config = require('../config');
 
@@ -7,53 +6,10 @@ module.exports = class extends Generator {
     this.log(config.splashScreen());
   }
 
-  async displayManual() {
-    this.log(this.arguments);
-    this.log(this.options);
-
-    const questions = [{
-      type: 'list',
-      name: 'manualOption',
-      message: 'Welcome to the manual! Select option for more details :',
-      choices: [
-        {
-          name: "yo fabrica:version \t\t\t\t: prints Fabrica's version",
-          value: 'version',
-        },
-        {
-          name: 'yo fabrica:setup-docker configFile.json \t: create docker-compose network based on config',
-          value: 'setupCompose',
-        },
-        {
-          name: 'exit',
-          value: 'exit',
-        },
-      ],
-      when: () => !this.options.manualOption,
-    }];
-    const answers = await this.prompt(questions);
-    this.options.answers = answers;
-    this._printHelp();
-  }
-
-  _printHelp() {
-    const { manualOption } = this.options.answers;
-    switch (manualOption) {
-      case 'version':
-        this._versionHelp();
-        break;
-      case 'setupCompose':
-        this._setupComposeHelp();
-        break;
-      default:
-    }
-  }
-
-  _versionHelp() {
-    this.log('yo fabrica:version : robie ważne rzeczy. serio. '); // FIXME
-  }
-
-  _setupComposeHelp() {
-    this.log('yo fabrica:setup-docker : robie ważne rzeczy. serio. '); // FIXME
+  async displayInfo() {
+    const url = 'https://github.com/softwaremill/fabrica';
+    this.log('This is main entry point for Yeoman app used in Fabrica.');
+    this.log('Visit the project page to get more information.');
+    this.log(`---\n${url}\n---`);
   }
 };
