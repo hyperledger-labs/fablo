@@ -111,7 +111,7 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
 
 function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCouchDbExposePort) {
   const peerPrefix = peerJsonFormat.prefix || defaults.peer.prefix;
-  const db = peerJsonFormat.db || defaults.peer.prefix;
+  const db = peerJsonFormat.db || defaults.peer.db;
   const anchorPeerInstances = peerJsonFormat.anchorPeerInstances
     || defaults.peer.anchorPeerInstances;
 
