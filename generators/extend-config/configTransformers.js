@@ -42,6 +42,7 @@ function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannel
 
     const privateData = (chaincode.privateData || [])
       .map((d) => createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames));
+    const privateDataEnabled = privateData.length > 0;
 
     return {
       directory: chaincode.directory,
@@ -52,6 +53,7 @@ function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannel
       init: chaincode.init,
       endorsement: chaincode.endorsement,
       instantiatingOrg: channel.instantiatingOrg,
+      privateDataEnabled,
       privateData,
     };
   });

@@ -157,10 +157,12 @@ module.exports = class extends Generator {
 
   _createPrivateDataCollectionConfigs(chaincodes) {
     chaincodes.forEach(({ name, privateData }) => {
-      this.fs.write(
-        this.destinationPath(`fabric-config/collections/${name}.json`),
-        JSON.stringify(privateData || [], undefined, 2),
-      );
+      if (privateData !== []) {
+        this.fs.write(
+          this.destinationPath(`fabric-config/collections/${name}.json`),
+          JSON.stringify(privateData, undefined, 2),
+        );
+      }
     });
   }
 
