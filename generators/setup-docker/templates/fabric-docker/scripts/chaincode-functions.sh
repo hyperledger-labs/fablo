@@ -73,6 +73,17 @@ function chaincodeInstantiate() {
     CA_CERT_PARAMS=()
   fi
 
+  local COLLECTIONS_CONFIG
+  local COLLECTIONS_CONFIG_PARAMS
+
+  if [ -n "${12}" ]; then
+    COLLECTIONS_CONFIG="/var/hyperledger/cli/${12}"
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
+  else
+    COLLECTIONS_CONFIG="<none>"
+    COLLECTIONS_CONFIG_PARAMS=()
+  fi
+
   echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -95,7 +106,7 @@ function chaincodeInstantiate() {
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
-      --collections-config "$COLLECTIONS_CONFIG"  \
+      "${COLLECTIONS_CONFIG_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   else
     echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
@@ -112,7 +123,6 @@ function chaincodeUpgrade() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
-  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
   local INIT_PARAMS=$9
@@ -127,6 +137,17 @@ function chaincodeUpgrade() {
   else
     CA_CERT="<none>"
     CA_CERT_PARAMS=()
+  fi
+
+  local COLLECTIONS_CONFIG
+  local COLLECTIONS_CONFIG_PARAMS
+
+  if [ -n "${12}" ]; then
+    COLLECTIONS_CONFIG="/var/hyperledger/cli/${12}"
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
+  else
+    COLLECTIONS_CONFIG="<none>"
+    COLLECTIONS_CONFIG_PARAMS=()
   fi
 
   echo "Upgrading chaincode on $CHANNEL_NAME (TLS)..."
@@ -152,7 +173,7 @@ function chaincodeUpgrade() {
       -o "$ORDERER_URL" \
       -c "$INIT_PARAMS" \
       -P "$ENDORSEMENT" \
-      --collections-config "$COLLECTIONS_CONFIG"  \
+      "${COLLECTIONS_CONFIG_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   else
     echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
