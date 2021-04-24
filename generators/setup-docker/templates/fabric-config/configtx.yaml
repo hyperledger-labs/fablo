@@ -34,20 +34,20 @@ Channel: &ChannelDefaults
 ################################################################################
 Organizations:
     - &OrdererOrg
-      Name: <%= rootOrg.organization.name %>
-      ID: <%= rootOrg.organization.mspName %>
-      MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.organization.domain %>/msp
+      Name: <%= rootOrg.name %>
+      ID: <%= rootOrg.mspName %>
+      MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.domain %>/msp
 
       Policies:
           Readers:
               Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+              Rule: "OR('<%= rootOrg.mspName %>.member')"
           Writers:
               Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.member')"
+              Rule: "OR('<%= rootOrg.mspName %>.member')"
           Admins:
               Type: Signature
-              Rule: "OR('<%= rootOrg.organization.mspName %>.admin')"
+              Rule: "OR('<%= rootOrg.mspName %>.admin')"
 
 <% orgs.forEach(function(org){ %>
     - &<%= org.name %>
