@@ -6,7 +6,6 @@
   },
   "rootOrg": {
     "organization": {
-      "key": "root",
       "name": "Orderer",
       "mspName": "OrdererMSP",
       "domain": "root.com"
@@ -23,7 +22,6 @@
   "orgs": [
     {
       "organization": {
-        "key": "org1",
         "name": "Org1",
         "mspName": "Org1MSP",
         "domain": "org1.com"
@@ -39,7 +37,6 @@
     },
     {
       "organization": {
-        "key": "org2",
         "name": "Org2",
         "mspName": "Org2MSP",
         "domain": "org2.com"
@@ -56,18 +53,17 @@
   ],
   "channels": [
     {
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": [
         {
-          "key": "org1",
+          "name": "Org1",
           "peers": [
             "peer0",
             "peer1"
           ]
         },
         {
-          "key": "org2",
+          "name": "Org2",
           "peers": [
             "peer0"
           ]
@@ -80,7 +76,7 @@
       "name": "or-policy-chaincode",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel1",
+      "channel": "my-channel1",
       "init": "{\"Args\":[]}",
       "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
       "directory": "./chaincodes/chaincode-kv-node",
@@ -97,7 +93,7 @@
       "name": "and-policy-chaincode",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel1",
+      "channel": "my-channel1",
       "init": "{\"Args\":[]}",
       "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
       "directory": "./chaincodes/chaincode-kv-node",

@@ -56,7 +56,6 @@ function chaincodeInstantiate() {
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
   local CHAINCODE_DIR_PATH=$7
-  local COLLECTIONS_CONFIG="/var/hyperledger/cli/collections/$CHAINCODE_NAME.json"
 
   local ORDERER_URL=$8
   local INIT_PARAMS=$9
@@ -74,6 +73,8 @@ function chaincodeInstantiate() {
   fi
 
   echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
@@ -130,6 +131,8 @@ function chaincodeUpgrade() {
   fi
 
   echo "Upgrading chaincode on $CHANNEL_NAME (TLS)..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"

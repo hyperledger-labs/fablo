@@ -83,7 +83,6 @@
       "type": "object",
       "required": [
         "organization",
-        "ca",
         "orderer"
       ],
       "properties": {
@@ -92,24 +91,15 @@
           "title": "Basic information",
           "type": "object",
           "default": {
-            "key": "root",
             "name": "Orderer",
             "mspName": "OrdererMSP",
             "domain": "root.com"
           },
           "required": [
-            "key",
             "name",
-            "mspName",
             "domain"
           ],
           "properties": {
-            "key": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/key",
-              "title": "Key",
-              "type": "string",
-              "pattern": "^[a-z0-9]+$"
-            },
             "name": {
               "$id": "#/properties/rootOrg/properties/organization/properties/name",
               "title": "Name",
@@ -206,14 +196,13 @@
             "prefix": "ca"
           },
           "peer": {
-            "instances": 2.0,
+            "instances": 2,
             "prefix": "peer",
             "db": "LevelDb"
           },
           "organization": {
             "domain": "org1.com",
             "mspName": "Org1MSP",
-            "key": "org1",
             "name": "Org1"
           }
         }
@@ -224,7 +213,6 @@
         "type": "object",
         "required": [
           "organization",
-          "ca",
           "peer"
         ],
         "properties": {
@@ -233,18 +221,10 @@
             "title": "Basic information",
             "type": "object",
             "required": [
-              "key",
               "name",
-              "mspName",
               "domain"
             ],
             "properties": {
-              "key": {
-                "$id": "#/properties/orgs/items/properties/organization/properties/key",
-                "title": "Key",
-                "type": "string",
-                "pattern": "^[a-z0-9]+$"
-              },
               "name": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/name",
                 "title": "Name",
@@ -288,9 +268,7 @@
             "type": "object",
             "title": "Peer",
             "required": [
-              "prefix",
-              "instances",
-              "db"
+              "instances"
             ],
             "properties": {
               "prefix": {
@@ -335,28 +313,26 @@
       "title": "Channels",
       "default": [
         {
-          "key": "channel1",
           "name": "my-channel1",
           "orgs": [
             {
               "peers": [
                 "peer0"
               ],
-              "key": "org1"
+              "name": "Org1"
             }
           ]
         },
         {
+          "name": "my-channel2",
           "orgs": [
             {
-              "key": "org1",
+              "name": "Org1",
               "peers": [
                 "peer1"
               ]
             }
-          ],
-          "key": "channel2",
-          "name": "my-channel2"
+          ]
         }
       ],
       "items": {
@@ -364,22 +340,15 @@
         "title": "Channel",
         "type": "object",
         "required": [
-          "key",
           "name",
           "orgs"
         ],
         "properties": {
-          "key": {
-            "$id": "#/properties/channels/items/properties/key",
-            "title": "Key",
-            "type": "string",
-            "pattern": "^[a-z0-9]+$"
-          },
           "name": {
             "$id": "#/properties/channels/items/properties/name",
             "type": "string",
             "title": "Name",
-            "pattern": "^[a-z0-9\\-]+$"
+            "pattern": "^[a-z0-9_-]+$"
           },
           "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",
@@ -390,15 +359,15 @@
               "title": "Organization",
               "type": "object",
               "required": [
-                "key",
+                "name",
                 "peers"
               ],
               "properties": {
-                "key": {
-                  "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
-                  "title": "Organization key",
+                "name": {
+                  "$id": "#/properties/channels/items/properties/orgs/items/properties/name",
+                  "title": "Organization name",
                   "type": "string",
-                  "pattern": "^[a-z0-9]+$",
+                  "pattern": "^[a-zA-Z0-9]+$",
                   "watch": {
                     "orgs": "orgs"
                   },
@@ -406,7 +375,7 @@
                     [],
                     {
                       "source": "orgs",
-                      "value": "{{item.organization.key}}"
+                      "value": "{{item.organization.name}}"
                     }
                   ]
                 },
@@ -438,7 +407,7 @@
           "name": "chaincode1",
           "version": "0.0.1",
           "lang": "java",
-          "channel": "channel1",
+          "channel": "my-channel1",
           "init": "{'Args':[]}",
           "endorsement": "AND ('Org1.member')",
           "directory": "chaincode1"
@@ -482,9 +451,9 @@
           },
           "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
-            "title": "Channel key",
+            "title": "Channel name",
             "type": "string",
-            "pattern": "^[a-z0-9]+$",
+            "pattern": "^[a-z0-9_-]+$",
             "watch": {
               "channels": "channels"
             },
@@ -492,7 +461,7 @@
               [],
               {
                 "source": "channels",
-                "value": "{{item.key}}"
+                "value": "{{item.name}}"
               }
             ]
           },
