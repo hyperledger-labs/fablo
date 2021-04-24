@@ -116,7 +116,7 @@ useVersion() {
 }
 
 initConfig() {
-  executeOnFabricaDocker init
+  executeOnFabricaDocker init "$1"
   cp -R -i "$FABRICA_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
@@ -173,7 +173,7 @@ elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
 
 elif [ "$COMMAND" = "init" ]; then
-  initConfig
+  initConfig "$2"
 
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
