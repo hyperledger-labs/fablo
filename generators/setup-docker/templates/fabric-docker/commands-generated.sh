@@ -28,7 +28,7 @@ function installChaincodes() {
             "<%= chaincode.lang %>" \
             "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
             "<%= rootOrg.ordererHead.fullAddress %>" \
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
+            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
         <% }) -%>
       <% }) -%>
 
@@ -44,7 +44,8 @@ function installChaincodes() {
         "<%= rootOrg.ordererHead.fullAddress %>" \
         '<%- chaincode.init %>' \
         "<%- chaincode.endorsement %>" \
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
+        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" \
+        "<%= chaincode.privateDataConfigFile || '' %>"
     <% }) %>
   <% } -%>
 }
@@ -78,7 +79,7 @@ function upgradeChaincode() {
             "<%= chaincode.lang %>" \
             "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" \
             "<%= rootOrg.ordererHead.fullAddress %>" \
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
+            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>"
         <% }) -%>
       <% }) -%>
 
@@ -93,7 +94,8 @@ function upgradeChaincode() {
         "<%= rootOrg.ordererHead.fullAddress %>" \
         '<%- chaincode.init %>' \
         "<%- chaincode.endorsement %>" \
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.organization.domain+ '-cert.pem' %>"
+        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>" \
+        "<%= chaincode.privateDataConfigFile || '' %>"
     fi
   <% }) %>
 }
@@ -128,7 +130,7 @@ function notifyOrgsAboutChannels() {
          "cli.<%= org.domain %>" \
          "peer0.<%= org.domain %>" \
          "<%= rootOrg.ordererHead.fullAddress %>" \
-         "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.organization.domain %>-cert.pem"
+         "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem"
      <% } -%>
     <% }) -%>
   <% }) %>
@@ -143,11 +145,11 @@ function notifyOrgsAboutChannels() {
 
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
-  printItalics "Generating crypto material for org <%= rootOrg.organization.name %>" "U1F512"
+  printItalics "Generating crypto material for org <%= rootOrg.name %>" "U1F512"
   certsGenerate \
     "$FABRICA_NETWORK_ROOT/fabric-config" \
     "crypto-config-root.yaml" \
-    "ordererOrganizations/<%= rootOrg.organization.domain %>" \
+    "ordererOrganizations/<%= rootOrg.domain %>" \
     "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/"
 
   <% orgs.forEach(function(org){ -%>
