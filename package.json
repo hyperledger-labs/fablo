@@ -1,14 +1,30 @@
 {
   "name": "generator-fabrica",
   "version": "0.1.0-unstable",
-  "description": "",
+  "description": "Fabrica is a simple tool to generate the Hyperledger Fabric blockchain network and run it on Docker. It supports RAFT and solo consensus protocols, multiple organizations and channels, chaincode installation and upgrade.",
+  "author": "Piotr Hejwowski <piotr.hejwowski@softwaremill.com>, Jakub Dzikowski <jakub.dzikowski@softwaremill.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softwaremill/fabrica.git"
+  },
+  "keywords": [
+    "hyperledger fabric",
+    "blockchain",
+    "blockchain network",
+    "config generator",
+    "CI"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/softwaremill/fabrica/issues"
+  },
+  "homepage": "https://github.com/softwaremill/fabrica#readme",
   "files": [
     "generators"
   ],
-  "keywords": [
-    "yeoman-generator"
-  ],
   "scripts": {
+    "clean": "rimraf generators-dist",
+    "build": "tsc",
     "lint": "eslint --fix generators e2e",
     "test:unit": "jest generators",
     "test:e2e": "jest e2e -i",
@@ -23,12 +39,26 @@
     "yeoman-generator": "^4.5.0"
   },
   "devDependencies": {
-    "eslint": "^7.10.0",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "@types/jest": "^26.0.22",
+    "@types/node-fetch": "^2.5.10",
+    "@types/yeoman-generator": "^4.11.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^23.7.0",
-    "jest": "^25.1.0",
+    "eslint-plugin-json": "^2.1.2",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^26.6.3",
     "jest-json-schema": "^5.0.0",
-    "yeoman-test": "^2.1.0"
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.5",
+    "ts-loader": "^9.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "yeoman-test": "^5.1.0"
   }
 }
