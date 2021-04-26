@@ -2,9 +2,9 @@
 
 | Test case                 | 01-simple | 02-raft   | 03-private|
 | ------------------------- |:---------:|:---------:|:---------:|
-| Fabric versions           | 1.4.6     | 1.4.6     | 1.4.11    |
+| Fabric versions           | 2.2.1     | 1.4.6     | 1.4.11    |
 | TLS                       | no        | yes       | no        |
-| Channel capabilities      | v1_4_3    | v1_4_3    | v1_4_3    |
+| Channel capabilities      | -         | v1_4_3    | v1_4_3    |
 | Consensus                 | solo      | RAFT      | solo      |
 | Orderer nodes             | 1         | 3         | 1         |
 | Organizations             | 1         | 2         | 2         |
