@@ -29,14 +29,14 @@ Validation warnings count: 0
 ===========================================================
 {
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"1.4.6\\",
+    \\"fabricVersion\\": \\"2.2.1\\",
     \\"tls\\": false,
-    \\"fabricCaVersion\\": \\"1.4.6\\",
+    \\"fabricCaVersion\\": \\"1.5.0\\",
     \\"paths\\": {
       \\"fabricaConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
-    \\"isHlf20\\": false
+    \\"isHlf20\\": true
   },
   \\"capabilities\\": {
     \\"channel\\": \\"V1_4_3\\",
@@ -286,7 +286,7 @@ exports[`init should init simple fabrica config 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"1.4.6\\",
+    \\"fabricVersion\\": \\"2.2.1\\",
     \\"tls\\": false
   },
   \\"rootOrg\\": {
@@ -346,7 +346,7 @@ exports[`init should init simple fabrica config with node chaincode 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"1.4.6\\",
+    \\"fabricVersion\\": \\"2.2.1\\",
     \\"tls\\": false
   },
   \\"rootOrg\\": {
