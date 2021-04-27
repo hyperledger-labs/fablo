@@ -1,12 +1,10 @@
-/* eslint-disable no-param-reassign */
-
-const { matchers } = require('jest-json-schema');
-const schema = require('../docs/schema');
-const docsSample = require('../docs/sample');
+import { matchers } from "jest-json-schema";
+import schema from "../docs/schema.json";
+import docsSample from "../docs/sample.json";
 
 expect.extend(matchers);
 
-describe('schema', () => {
+describe("schema", () => {
   const base = docsSample;
   expect(base).toMatchSchema(schema);
 
@@ -16,34 +14,36 @@ describe('schema', () => {
     return json;
   };
 
-  const lettersOnly = 'lettersonly';
-  const underscore = 'under_score';
-  const lettersAndNumber = 'lettersand4';
-  const uppercase = 'UpperCase';
-  const domain = 'domain.example.com';
-  const spaces = 'with spaces';
-  const specialCharacters1 = 'with!characters';
-  const specialCharacters2 = 'withspecial@';
+  const lettersOnly = "lettersonly";
+  const underscore = "under_score";
+  const lettersAndNumber = "lettersand4";
+  const uppercase = "UpperCase";
+  const domain = "domain.example.com";
+  const spaces = "with spaces";
+  const specialCharacters1 = "with!characters";
+  const specialCharacters2 = "withspecial@";
 
-  it('should match snapshot', () => {
+  it("should match snapshot", () => {
     expect(schema).toMatchSnapshot();
   });
 
-  it('should validate fabric version', () => {
-    const withFabricVersion = (v) => updatedBase((json) => {
-      json.networkSettings.fabricVersion = v;
-    });
+  it("should validate fabric version", () => {
+    const withFabricVersion = (v) =>
+      updatedBase((json) => {
+        json.networkSettings.fabricVersion = v;
+      });
 
-    expect(withFabricVersion('1.4.3')).toMatchSchema(schema);
-    expect(withFabricVersion('1.4.4')).toMatchSchema(schema);
-    expect(withFabricVersion('1.3.1')).not.toMatchSchema(schema);
-    expect(withFabricVersion('2.0.0')).not.toMatchSchema(schema);
+    expect(withFabricVersion("1.4.3")).toMatchSchema(schema);
+    expect(withFabricVersion("1.4.4")).toMatchSchema(schema);
+    expect(withFabricVersion("1.3.1")).not.toMatchSchema(schema);
+    expect(withFabricVersion("2.0.0")).not.toMatchSchema(schema);
   });
 
-  it('should validate root org name', () => {
-    const withRootOrgName = (n) => updatedBase((json) => {
-      json.rootOrg.organization.name = n;
-    });
+  it("should validate root org name", () => {
+    const withRootOrgName = (n) =>
+      updatedBase((json) => {
+        json.rootOrg.organization.name = n;
+      });
 
     expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
     expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
@@ -54,10 +54,11 @@ describe('schema', () => {
     expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate root org MSP name', () => {
-    const withRootOrgMSPName = (n) => updatedBase((json) => {
-      json.rootOrg.organization.mspName = n;
-    });
+  it("should validate root org MSP name", () => {
+    const withRootOrgMSPName = (n) =>
+      updatedBase((json) => {
+        json.rootOrg.organization.mspName = n;
+      });
 
     expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
     expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
@@ -68,10 +69,11 @@ describe('schema', () => {
     expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate root org domain', () => {
-    const withRootOrgDomain = (d) => updatedBase((json) => {
-      json.rootOrg.organization.domain = d;
-    });
+  it("should validate root org domain", () => {
+    const withRootOrgDomain = (d) =>
+      updatedBase((json) => {
+        json.rootOrg.organization.domain = d;
+      });
 
     expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
     expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
@@ -82,10 +84,11 @@ describe('schema', () => {
     expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate root CA domain prefix', () => {
-    const withRootCADomainPrefix = (d) => updatedBase((json) => {
-      json.rootOrg.ca.prefix = d;
-    });
+  it("should validate root CA domain prefix", () => {
+    const withRootCADomainPrefix = (d) =>
+      updatedBase((json) => {
+        json.rootOrg.ca.prefix = d;
+      });
 
     expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
     expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
@@ -96,10 +99,11 @@ describe('schema', () => {
     expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate root orderer domain prefix', () => {
-    const withRootOrdererDomainPrefix = (d) => updatedBase((json) => {
-      json.rootOrg.orderer.prefix = d;
-    });
+  it("should validate root orderer domain prefix", () => {
+    const withRootOrdererDomainPrefix = (d) =>
+      updatedBase((json) => {
+        json.rootOrg.orderer.prefix = d;
+      });
 
     expect(withRootOrdererDomainPrefix(lettersOnly)).toMatchSchema(schema);
     expect(withRootOrdererDomainPrefix(lettersAndNumber)).toMatchSchema(schema);
@@ -110,21 +114,23 @@ describe('schema', () => {
     expect(withRootOrdererDomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate root orderer consensus type ', () => {
-    const withRootOrdererConsensus = (c) => updatedBase((json) => {
-      json.rootOrg.orderer.type = c;
-    });
+  it("should validate root orderer consensus type ", () => {
+    const withRootOrdererConsensus = (c) =>
+      updatedBase((json) => {
+        json.rootOrg.orderer.type = c;
+      });
 
-    expect(withRootOrdererConsensus('solo')).toMatchSchema(schema);
-    expect(withRootOrdererConsensus('raft')).toMatchSchema(schema);
-    expect(withRootOrdererConsensus('kafka')).not.toMatchSchema(schema);
+    expect(withRootOrdererConsensus("solo")).toMatchSchema(schema);
+    expect(withRootOrdererConsensus("raft")).toMatchSchema(schema);
+    expect(withRootOrdererConsensus("kafka")).not.toMatchSchema(schema);
     expect(withRootOrdererConsensus(lettersOnly)).not.toMatchSchema(schema);
   });
 
-  it('should validate root orderer number of instances', () => {
-    const withRootOrdererNoOfInstances = (i) => updatedBase((json) => {
-      json.rootOrg.orderer.instances = i;
-    });
+  it("should validate root orderer number of instances", () => {
+    const withRootOrdererNoOfInstances = (i) =>
+      updatedBase((json) => {
+        json.rootOrg.orderer.instances = i;
+      });
 
     expect(withRootOrdererNoOfInstances(1)).toMatchSchema(schema);
     expect(withRootOrdererNoOfInstances(10)).toMatchSchema(schema);
@@ -132,10 +138,11 @@ describe('schema', () => {
     expect(withRootOrdererNoOfInstances(11)).not.toMatchSchema(schema);
   });
 
-  it('should validate org name', () => {
-    const withOrgName = (n) => updatedBase((json) => {
-      json.orgs[0].organization.name = n;
-    });
+  it("should validate org name", () => {
+    const withOrgName = (n) =>
+      updatedBase((json) => {
+        json.orgs[0].organization.name = n;
+      });
 
     expect(withOrgName(lettersOnly)).toMatchSchema(schema);
     expect(withOrgName(lettersAndNumber)).toMatchSchema(schema);
@@ -146,10 +153,11 @@ describe('schema', () => {
     expect(withOrgName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate org MSP name', () => {
-    const withOrgMSPName = (n) => updatedBase((json) => {
-      json.orgs[0].organization.mspName = n;
-    });
+  it("should validate org MSP name", () => {
+    const withOrgMSPName = (n) =>
+      updatedBase((json) => {
+        json.orgs[0].organization.mspName = n;
+      });
 
     expect(withOrgMSPName(lettersOnly)).toMatchSchema(schema);
     expect(withOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
@@ -160,10 +168,11 @@ describe('schema', () => {
     expect(withOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate org domain', () => {
-    const withOrgDomain = (d) => updatedBase((json) => {
-      json.orgs[0].organization.domain = d;
-    });
+  it("should validate org domain", () => {
+    const withOrgDomain = (d) =>
+      updatedBase((json) => {
+        json.orgs[0].organization.domain = d;
+      });
 
     expect(withOrgDomain(lettersOnly)).toMatchSchema(schema);
     expect(withOrgDomain(lettersAndNumber)).toMatchSchema(schema);
@@ -174,10 +183,11 @@ describe('schema', () => {
     expect(withOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate ca domain prefix', () => {
-    const withCADomainPrefix = (d) => updatedBase((json) => {
-      json.orgs[0].ca.prefix = d;
-    });
+  it("should validate ca domain prefix", () => {
+    const withCADomainPrefix = (d) =>
+      updatedBase((json) => {
+        json.orgs[0].ca.prefix = d;
+      });
 
     expect(withCADomainPrefix(lettersOnly)).toMatchSchema(schema);
     expect(withCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
@@ -188,10 +198,11 @@ describe('schema', () => {
     expect(withCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate peer domain prefix', () => {
-    const withPeerDomainPrefix = (d) => updatedBase((json) => {
-      json.orgs[0].peer.prefix = d;
-    });
+  it("should validate peer domain prefix", () => {
+    const withPeerDomainPrefix = (d) =>
+      updatedBase((json) => {
+        json.orgs[0].peer.prefix = d;
+      });
 
     expect(withPeerDomainPrefix(lettersOnly)).toMatchSchema(schema);
     expect(withPeerDomainPrefix(lettersAndNumber)).toMatchSchema(schema);
@@ -202,10 +213,11 @@ describe('schema', () => {
     expect(withPeerDomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate peer number of instances', () => {
-    const withPeerNoOfInstances = (i) => updatedBase((json) => {
-      json.orgs[0].peer.instances = i;
-    });
+  it("should validate peer number of instances", () => {
+    const withPeerNoOfInstances = (i) =>
+      updatedBase((json) => {
+        json.orgs[0].peer.instances = i;
+      });
 
     expect(withPeerNoOfInstances(1)).toMatchSchema(schema);
     expect(withPeerNoOfInstances(100)).toMatchSchema(schema);
@@ -213,20 +225,22 @@ describe('schema', () => {
     expect(withPeerNoOfInstances(101)).not.toMatchSchema(schema);
   });
 
-  it('should validate peer database type', () => {
-    const withPeerDatabaseType = (db) => updatedBase((json) => {
-      json.orgs[0].peer.db = db;
-    });
+  it("should validate peer database type", () => {
+    const withPeerDatabaseType = (db) =>
+      updatedBase((json) => {
+        json.orgs[0].peer.db = db;
+      });
 
-    expect(withPeerDatabaseType('LevelDb')).toMatchSchema(schema);
-    expect(withPeerDatabaseType('CouchDb')).toMatchSchema(schema);
-    expect(withPeerDatabaseType('MongoDb')).not.toMatchSchema(schema);
+    expect(withPeerDatabaseType("LevelDb")).toMatchSchema(schema);
+    expect(withPeerDatabaseType("CouchDb")).toMatchSchema(schema);
+    expect(withPeerDatabaseType("MongoDb")).not.toMatchSchema(schema);
   });
 
-  it('should validate channel name - no spaces and capital letters', () => {
-    const withChannelName = (n) => updatedBase((json) => {
-      json.channels[0].name = n;
-    });
+  it("should validate channel name - no spaces and capital letters", () => {
+    const withChannelName = (n) =>
+      updatedBase((json) => {
+        json.channels[0].name = n;
+      });
 
     expect(withChannelName(lettersOnly)).toMatchSchema(schema);
     expect(withChannelName(lettersAndNumber)).toMatchSchema(schema);
@@ -237,10 +251,11 @@ describe('schema', () => {
     expect(withChannelName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate chaincode name', () => {
-    const withChaincodeName = (n) => updatedBase((json) => {
-      json.chaincodes[0].name = n;
-    });
+  it("should validate chaincode name", () => {
+    const withChaincodeName = (n) =>
+      updatedBase((json) => {
+        json.chaincodes[0].name = n;
+      });
 
     expect(withChaincodeName(lettersOnly)).toMatchSchema(schema);
     expect(withChaincodeName(lettersAndNumber)).toMatchSchema(schema);
@@ -251,10 +266,11 @@ describe('schema', () => {
     expect(withChaincodeName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate chaincode version', () => {
-    const withChaincodeVersion = (n) => updatedBase((json) => {
-      json.chaincodes[0].version = n;
-    });
+  it("should validate chaincode version", () => {
+    const withChaincodeVersion = (n) =>
+      updatedBase((json) => {
+        json.chaincodes[0].version = n;
+      });
 
     expect(withChaincodeVersion(lettersOnly)).toMatchSchema(schema);
     expect(withChaincodeVersion(lettersAndNumber)).toMatchSchema(schema);
@@ -265,21 +281,23 @@ describe('schema', () => {
     expect(withChaincodeVersion(specialCharacters2)).not.toMatchSchema(schema);
   });
 
-  it('should validate chaincode language', () => {
-    const withChaincodeLanguage = (l) => updatedBase((json) => {
-      json.chaincodes[0].lang = l;
-    });
+  it("should validate chaincode language", () => {
+    const withChaincodeLanguage = (l) =>
+      updatedBase((json) => {
+        json.chaincodes[0].lang = l;
+      });
 
-    expect(withChaincodeLanguage('java')).toMatchSchema(schema);
-    expect(withChaincodeLanguage('node')).toMatchSchema(schema);
-    expect(withChaincodeLanguage('golang')).toMatchSchema(schema);
-    expect(withChaincodeLanguage('cobol')).not.toMatchSchema(schema);
+    expect(withChaincodeLanguage("java")).toMatchSchema(schema);
+    expect(withChaincodeLanguage("node")).toMatchSchema(schema);
+    expect(withChaincodeLanguage("golang")).toMatchSchema(schema);
+    expect(withChaincodeLanguage("cobol")).not.toMatchSchema(schema);
   });
 
-  it('should validate chaincode initialization arguments', () => {
-    const withChaincodeInitialization = (i) => updatedBase((json) => {
-      json.chaincodes[0].init = i;
-    });
+  it("should validate chaincode initialization arguments", () => {
+    const withChaincodeInitialization = (i) =>
+      updatedBase((json) => {
+        json.chaincodes[0].init = i;
+      });
 
     expect(withChaincodeInitialization(lettersOnly)).toMatchSchema(schema);
     expect(withChaincodeInitialization(lettersAndNumber)).toMatchSchema(schema);
@@ -290,10 +308,11 @@ describe('schema', () => {
     expect(withChaincodeInitialization(specialCharacters2)).toMatchSchema(schema);
   });
 
-  it('should validate chaincode endorsement configuration', () => {
-    const withChaincodeName = (n) => updatedBase((json) => {
-      json.chaincodes[0].endorsement = n;
-    });
+  it("should validate chaincode endorsement configuration", () => {
+    const withChaincodeName = (n) =>
+      updatedBase((json) => {
+        json.chaincodes[0].endorsement = n;
+      });
 
     expect(withChaincodeName(lettersOnly)).toMatchSchema(schema);
     expect(withChaincodeName(lettersAndNumber)).toMatchSchema(schema);
@@ -304,10 +323,11 @@ describe('schema', () => {
     expect(withChaincodeName(specialCharacters2)).toMatchSchema(schema);
   });
 
-  it('should validate chaincode directory', () => {
-    const withChaincodeName = (n) => updatedBase((json) => {
-      json.chaincodes[0].directory = n;
-    });
+  it("should validate chaincode directory", () => {
+    const withChaincodeName = (n) =>
+      updatedBase((json) => {
+        json.chaincodes[0].directory = n;
+      });
 
     expect(withChaincodeName(lettersOnly)).toMatchSchema(schema);
     expect(withChaincodeName(lettersAndNumber)).toMatchSchema(schema);
@@ -318,14 +338,15 @@ describe('schema', () => {
     expect(withChaincodeName(specialCharacters2)).toMatchSchema(schema);
   });
 
-  it('should validate chaincode private data', () => {
-    const withNoPrivateData = () => updatedBase((json) => {
-      const { privateData, ...rest } = json.chaincodes[0];
-      json.chaincodes[0] = rest;
-    });
-    const withPrivateData = (d) => updatedBase((json) => {
-      json.chaincodes[0].privateData = d;
-    });
+  it("should validate chaincode private data", () => {
+    const withNoPrivateData = () =>
+      updatedBase((json) => {
+        json.chaincodes[0] = { ...json.chaincodes[0], privateData: undefined };
+      });
+    const withPrivateData = (d) =>
+      updatedBase((json) => {
+        json.chaincodes[0].privateData = d;
+      });
     const privateData = (name, ...orgNames) => ({ name, orgNames });
     const validOrgName = base.orgs[0].organization.name;
     const withPrivateDataName = (name) => withPrivateData([privateData(name, validOrgName)]);
@@ -342,10 +363,9 @@ describe('schema', () => {
 
     // no private data, wrong object, two objects
     expect(withNoPrivateData()).toMatchSchema(schema);
-    expect(withPrivateData({ wrong: 'obj' })).not.toMatchSchema(schema);
-    expect(withPrivateData([
-      privateData(lettersAndNumber, validOrgName),
-      privateData(lettersOnly, validOrgName),
-    ])).toMatchSchema(schema);
+    expect(withPrivateData({ wrong: "obj" })).not.toMatchSchema(schema);
+    expect(
+      withPrivateData([privateData(lettersAndNumber, validOrgName), privateData(lettersOnly, validOrgName)]),
+    ).toMatchSchema(schema);
   });
 });
