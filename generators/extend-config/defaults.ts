@@ -1,18 +1,18 @@
-module.exports = {
+export default {
   networkSettings: {
     monitoring: {
-      loglevel: 'info',
+      loglevel: "info",
     },
   },
   organization: {
-    mspName: (name) => `${name}MSP`,
+    mspName: (name: string): string => `${name}MSP`,
   },
   ca: {
-    prefix: 'ca',
+    prefix: "ca",
   },
   peer: {
-    prefix: 'peer',
-    db: 'LevelDb',
+    prefix: "peer",
+    db: "LevelDb",
     anchorPeerInstances: 1,
   },
 };
