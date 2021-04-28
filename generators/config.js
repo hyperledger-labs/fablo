@@ -1,8 +1,6 @@
-const repositoryName = 'softwaremill/fabrica';
-const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
-
 const { version: fabricaVersion } = require('../package.json');
 const schema = require('../docs/schema.json');
+const { version } = require('./repositoryUtils');
 
 const supportedVersionPrefix = `${fabricaVersion.split('.').slice(0, 2).join('.')}.`;
 
@@ -15,7 +13,7 @@ const isFabricaVersionSupported = (versionName) => versionName.startsWith(suppor
 
 const supportedFabricVersions = schema.properties.networkSettings.properties.fabricVersion.enum;
 
-const versionsSupportingRaft = supportedFabricVersions.filter((v) => v !== '1.3.0' && v !== '1.4.0');
+const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).isGreaterOrEqual('1.4.3'));
 
 const splashScreen = () => `${'Fabrica is powered by :\n'
   + ' _____        __ _                         ___  ____ _ _ \n'
@@ -27,7 +25,6 @@ const splashScreen = () => `${'Fabrica is powered by :\n'
   + '=========================================================== v: '}${fabricaVersion}`;
 
 module.exports = {
-  repositoryTagsListUrl,
   splashScreen,
   fabricaVersion,
   supportedFabricVersions,
