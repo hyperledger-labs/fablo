@@ -14,7 +14,7 @@ Object {
       "$id": "#/properties/chaincodes",
       "default": Array [
         Object {
-          "channel": "channel1",
+          "channel": "my-channel1",
           "directory": "chaincode1",
           "endorsement": "AND ('Org1.member')",
           "init": "{'Args':[]}",
@@ -33,11 +33,11 @@ Object {
               Array [],
               Object {
                 "source": "channels",
-                "value": "{{item.key}}",
+                "value": "{{item.name}}",
               },
             ],
-            "pattern": "^[a-z0-9]+$",
-            "title": "Channel key",
+            "pattern": "^[a-z0-9_-]+$",
+            "title": "Channel name",
             "type": "string",
             "watch": Object {
               "channels": "channels",
@@ -144,11 +144,10 @@ Object {
       "$id": "#/properties/channels",
       "default": Array [
         Object {
-          "key": "channel1",
           "name": "my-channel1",
           "orgs": Array [
             Object {
-              "key": "org1",
+              "name": "Org1",
               "peers": Array [
                 "peer0",
               ],
@@ -156,11 +155,10 @@ Object {
           ],
         },
         Object {
-          "key": "channel2",
           "name": "my-channel2",
           "orgs": Array [
             Object {
-              "key": "org1",
+              "name": "Org1",
               "peers": Array [
                 "peer1",
               ],
@@ -172,15 +170,9 @@ Object {
         "$id": "#/properties/channels/items",
         "additionalProperties": false,
         "properties": Object {
-          "key": Object {
-            "$id": "#/properties/channels/items/properties/key",
-            "pattern": "^[a-z0-9]+$",
-            "title": "Key",
-            "type": "string",
-          },
           "name": Object {
             "$id": "#/properties/channels/items/properties/name",
-            "pattern": "^[a-z0-9\\\\-]+$",
+            "pattern": "^[a-z0-9_-]+$",
             "title": "Name",
             "type": "string",
           },
@@ -190,17 +182,17 @@ Object {
               "$id": "#/properties/channels/items/properties/orgs/items",
               "additionalProperties": false,
               "properties": Object {
-                "key": Object {
-                  "$id": "#/properties/channels/items/properties/orgs/items/properties/key",
+                "name": Object {
+                  "$id": "#/properties/channels/items/properties/orgs/items/properties/name",
                   "enumSource": Array [
                     Array [],
                     Object {
                       "source": "orgs",
-                      "value": "{{item.organization.key}}",
+                      "value": "{{item.organization.name}}",
                     },
                   ],
-                  "pattern": "^[a-z0-9]+$",
-                  "title": "Organization key",
+                  "pattern": "^[a-zA-Z0-9]+$",
+                  "title": "Organization name",
                   "type": "string",
                   "watch": Object {
                     "orgs": "orgs",
@@ -219,7 +211,7 @@ Object {
                 },
               },
               "required": Array [
-                "key",
+                "name",
                 "peers",
               ],
               "title": "Organization",
@@ -230,7 +222,6 @@ Object {
           },
         },
         "required": Array [
-          "key",
           "name",
           "orgs",
         ],
@@ -320,7 +311,6 @@ Object {
           },
           "organization": Object {
             "domain": "org1.com",
-            "key": "org1",
             "mspName": "Org1MSP",
             "name": "Org1",
           },
@@ -362,12 +352,6 @@ Object {
                 "title": "Domain",
                 "type": "string",
               },
-              "key": Object {
-                "$id": "#/properties/orgs/items/properties/organization/properties/key",
-                "pattern": "^[a-z0-9]+$",
-                "title": "Key",
-                "type": "string",
-              },
               "mspName": Object {
                 "$id": "#/properties/orgs/items/properties/organization/properties/mspName",
                 "pattern": "^[a-zA-Z0-9]+$",
@@ -382,7 +366,6 @@ Object {
               },
             },
             "required": Array [
-              "key",
               "name",
               "mspName",
               "domain",
@@ -515,7 +498,6 @@ Object {
           "additionalProperties": false,
           "default": Object {
             "domain": "root.com",
-            "key": "root",
             "mspName": "OrdererMSP",
             "name": "Orderer",
           },
@@ -524,12 +506,6 @@ Object {
               "$id": "#/properties/rootOrg/properties/organization/properties/domain",
               "pattern": "^[a-z0-9\\\\.\\\\-]+$",
               "title": "Domain",
-              "type": "string",
-            },
-            "key": Object {
-              "$id": "#/properties/rootOrg/properties/organization/properties/key",
-              "pattern": "^[a-z0-9]+$",
-              "title": "Key",
               "type": "string",
             },
             "mspName": Object {
@@ -547,7 +523,6 @@ Object {
             },
           },
           "required": Array [
-            "key",
             "name",
             "mspName",
             "domain",
