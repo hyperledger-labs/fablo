@@ -93,7 +93,6 @@
       "type": "object",
       "required": [
         "organization",
-        "ca",
         "orderer"
       ],
       "properties": {
@@ -108,7 +107,6 @@
           },
           "required": [
             "name",
-            "mspName",
             "domain"
           ],
           "properties": {
@@ -208,7 +206,7 @@
             "prefix": "ca"
           },
           "peer": {
-            "instances": 2.0,
+            "instances": 2,
             "prefix": "peer",
             "db": "LevelDb"
           },
@@ -225,7 +223,6 @@
         "type": "object",
         "required": [
           "organization",
-          "ca",
           "peer"
         ],
         "properties": {
@@ -235,7 +232,6 @@
             "type": "object",
             "required": [
               "name",
-              "mspName",
               "domain"
             ],
             "properties": {
@@ -282,9 +278,7 @@
             "type": "object",
             "title": "Peer",
             "required": [
-              "prefix",
-              "instances",
-              "db"
+              "instances"
             ],
             "properties": {
               "prefix": {
