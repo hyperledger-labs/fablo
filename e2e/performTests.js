@@ -1,17 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { matchers } = require('jest-json-schema');
-const schema = require('../docs/schema');
 const { TestCommands } = require('./TestCommands');
-
-expect.extend(matchers);
-
-const testSchemaMatch = (config) => {
-  it(`should be compliant with schema (${config})`, () => {
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    const json = require(`../${config}`);
-    expect(json).toMatchSchema(schema);
-  });
-};
 
 const testFilesExistence = (config, files) => {
   it(`should create proper files from ${config}`, () => {
@@ -33,7 +21,6 @@ const testFilesContent = (commands, config, files) => files.forEach((f) => {
 
 exports.performTests = (label, sample) => {
   const config = `samples/${sample}`;
-  testSchemaMatch(config);
 
   const commands = new TestCommands(`e2e/__tmp__/${label}`, '../../..');
   commands.cleanupWorkdir();

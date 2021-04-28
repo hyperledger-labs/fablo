@@ -9,7 +9,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fabrica CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: '#ffd963'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
@@ -50,7 +50,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fabrica CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
@@ -86,7 +86,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fabrica CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
@@ -122,7 +122,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fabrica CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/issue-134/github-actions/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref

@@ -36,7 +36,10 @@ Validation warnings count: 0
       \\"fabricaConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
-    \\"isHlf20\\": true
+    \\"isHlf20\\": true,
+    \\"monitoring\\": {
+      \\"loglevel\\": \\"info\\"
+    }
   },
   \\"capabilities\\": {
     \\"channel\\": \\"V1_4_3\\",
@@ -47,11 +50,6 @@ Validation warnings count: 0
     \\"name\\": \\"Orderer\\",
     \\"mspName\\": \\"OrdererMSP\\",
     \\"domain\\": \\"root.com\\",
-    \\"organization\\": {
-      \\"name\\": \\"Orderer\\",
-      \\"mspName\\": \\"OrdererMSP\\",
-      \\"domain\\": \\"root.com\\"
-    },
     \\"ca\\": {
       \\"prefix\\": \\"ca\\",
       \\"address\\": \\"ca.root.com\\",

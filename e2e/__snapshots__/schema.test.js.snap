@@ -367,7 +367,6 @@ Object {
             },
             "required": Array [
               "name",
-              "mspName",
               "domain",
             ],
             "title": "Basic information",
@@ -408,9 +407,7 @@ Object {
               },
             },
             "required": Array [
-              "prefix",
               "instances",
-              "db",
             ],
             "title": "Peer",
             "type": "object",
@@ -418,7 +415,6 @@ Object {
         },
         "required": Array [
           "organization",
-          "ca",
           "peer",
         ],
         "title": "Organization",
@@ -524,7 +520,6 @@ Object {
           },
           "required": Array [
             "name",
-            "mspName",
             "domain",
           ],
           "title": "Basic information",
@@ -533,7 +528,6 @@ Object {
       },
       "required": Array [
         "organization",
-        "ca",
         "orderer",
       ],
       "title": "Root organization",

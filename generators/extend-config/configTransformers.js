@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { version } = require('../repositoryUtils');
+const defaults = require('./defaults');
 
 function createPrivateCollectionConfig(fabricVersion, channel, name, orgNames) {
   // We need only orgs that can have access to private data
@@ -60,7 +61,7 @@ function transformChaincodesConfig(fabricVersion, chaincodes, transformedChannel
 }
 
 function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFormat) {
-  const type = ordererJsonConfigFormat.type === 'raft' ? 'etcdraft' : ordererJsonConfigFormat.type;
+  const consensus = ordererJsonConfigFormat.type === 'raft' ? 'etcdraft' : ordererJsonConfigFormat.type;
 
   return Array(ordererJsonConfigFormat.instances)
     .fill()
@@ -73,7 +74,7 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
         name,
         domain: rootDomainJsonConfigFormat,
         address,
-        consensus: type,
+        consensus,
         port,
         fullAddress: `${address}:${port}`,
       };
@@ -81,10 +82,11 @@ function transformOrderersConfig(ordererJsonConfigFormat, rootDomainJsonConfigFo
 }
 
 function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposePort) {
-  const address = `${caJsonFormat.prefix}.${orgDomainJsonFormat}`;
+  const ca = caJsonFormat || defaults.ca;
+  const address = `${ca.prefix}.${orgDomainJsonFormat}`;
   const port = 7054;
   return {
-    prefix: caJsonFormat.prefix,
+    prefix: ca.prefix,
     address,
     port,
     exposePort: caExposePort,
@@ -95,17 +97,14 @@ function transformCaConfig(caJsonFormat, orgName, orgDomainJsonFormat, caExposeP
 }
 
 function transformRootOrgConfig(rootOrgJsonFormat) {
-  const { domain } = rootOrgJsonFormat.organization;
-  const orderersExtended = transformOrderersConfig(
-    rootOrgJsonFormat.orderer,
-    domain,
-  );
+  const { domain, name } = rootOrgJsonFormat.organization;
+  const mspName = rootOrgJsonFormat.organization.mspName || defaults.organization.mspName(name);
+  const orderersExtended = transformOrderersConfig(rootOrgJsonFormat.orderer, domain);
   const ordererHead = orderersExtended[0];
   return {
-    name: rootOrgJsonFormat.organization.name,
-    mspName: rootOrgJsonFormat.organization.mspName,
+    name,
+    mspName,
     domain,
-    organization: rootOrgJsonFormat.organization,
     ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,
@@ -113,20 +112,20 @@ function transformRootOrgConfig(rootOrgJsonFormat) {
 }
 
 function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCouchDbExposePort) {
-  let { anchorPeerInstances } = peerJsonFormat;
-  if (typeof anchorPeerInstances === 'undefined' || anchorPeerInstances === null) {
-    anchorPeerInstances = 1;
-  }
+  const peerPrefix = peerJsonFormat.prefix || defaults.peer.prefix;
+  const db = peerJsonFormat.db || defaults.peer.db;
+  const anchorPeerInstances = peerJsonFormat.anchorPeerInstances
+    || defaults.peer.anchorPeerInstances;
+
   return Array(peerJsonFormat.instances)
     .fill()
-    .map((x, i) => i)
-    .map((i) => {
-      const address = `peer${i}.${domainJsonFormat}`;
+    .map((_x, i) => {
+      const address = `${peerPrefix}${i}.${domainJsonFormat}`;
       const port = headPeerPort + i;
       return {
-        name: `peer${i}`,
+        name: `${peerPrefix}${i}`,
         address,
-        db: peerJsonFormat.db,
+        db,
         isAnchorPeer: i < anchorPeerInstances,
         port,
         fullAddress: `${address}:${port}`,
@@ -136,39 +135,33 @@ function extendPeers(peerJsonFormat, domainJsonFormat, headPeerPort, headPeerCou
 }
 
 function transformOrgConfig(orgJsonFormat, orgNumber) {
-  const orgsCryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
+  const cryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
   const headPeerPort = 7060 + 10 * orgNumber;
-  const headPeerCouchDbExposePort = 5080 + 10 * orgNumber;
-  const caExposePort = 7031 + orgNumber;
-  const orgName = orgJsonFormat.organization.name;
-  const orgDomain = orgJsonFormat.organization.domain;
-
-  const peersExtended = extendPeers(
-    orgJsonFormat.peer,
-    orgDomain,
-    headPeerPort,
-    headPeerCouchDbExposePort,
-  );
-  const anchorPeers = peersExtended.filter((p) => p.isAnchorPeer);
+  const headPeerCouchDbPort = 5080 + 10 * orgNumber;
+  const caPort = 7031 + orgNumber;
+  const { domain, name } = orgJsonFormat.organization;
+  const mspName = orgJsonFormat.organization.mspName || defaults.organization.mspName(name);
+  const peers = extendPeers(orgJsonFormat.peer, domain, headPeerPort, headPeerCouchDbPort);
+  const anchorPeers = peers.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
   const bootstrapPeersStringParam = bootstrapPeersList.length === 1
     ? bootstrapPeersList[0] // note no quotes in parameter
     : `"${bootstrapPeersList.join(' ')}"`;
 
   return {
-    name: orgName,
-    mspName: orgJsonFormat.organization.mspName,
-    domain: orgDomain,
-    cryptoConfigFileName: orgsCryptoConfigFileName,
-    peersCount: peersExtended.length,
-    peers: peersExtended,
+    name,
+    mspName,
+    domain,
+    cryptoConfigFileName,
+    peersCount: peers.length,
+    peers,
     anchorPeers,
     bootstrapPeers: bootstrapPeersStringParam,
-    ca: transformCaConfig(orgJsonFormat.ca, orgName, orgDomain, caExposePort),
+    ca: transformCaConfig(orgJsonFormat.ca, name, domain, caPort),
     cli: {
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
-    headPeer: peersExtended[0],
+    headPeer: peers[0],
   };
 }
 
@@ -259,11 +252,17 @@ function getPathsFromEnv() {
 }
 
 function transformNetworkSettings(networkSettingsJson) {
+  const monitoring = {
+    ...defaults.networkSettings.monitoring,
+    ...networkSettingsJson.monitoring,
+  };
+
   return {
     ...networkSettingsJson,
     fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
     paths: getPathsFromEnv(),
     isHlf20: isHlf20(networkSettingsJson.fabricVersion),
+    monitoring,
   };
 }
 
