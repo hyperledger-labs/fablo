@@ -1,7 +1,11 @@
 ## main (0.1.0-unstable)
 
+### Features
+
 * Support for private data ([#104](https://github.com/softwaremill/fabrica/issues/104))
 * Added channel query scripts  ([#169](https://github.com/softwaremill/fabrica/issues/169))
+* Support for Hyperledger Fabric 2.x (still with 1_4_x channel capabilities)
+* Support for fabrica config in YAML format
 
 ## 0.0.1
 

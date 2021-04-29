@@ -25,7 +25,7 @@
   "scripts": {
     "clean": "rimraf generators-dist",
     "build": "tsc",
-    "lint": "eslint --fix generators e2e",
+    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e && ejslint generators",
     "test:unit": "jest generators",
     "test:e2e": "jest e2e -i",
     "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
@@ -46,6 +46,7 @@
     "@types/yeoman-generator": "^4.11.3",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "ejs-lint": "^1.2.0",
     "eslint": "^7.24.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.2.0",
@@ -55,6 +56,8 @@
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^26.6.3",
     "jest-json-schema": "^5.0.0",
+    "madge": "^4.0.2",
+    "yeoman-test": "^2.1.0"
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.5",
