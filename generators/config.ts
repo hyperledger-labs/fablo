@@ -4,9 +4,7 @@ import { version as fabricaVersion } from "../package.json";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as schema from "../docs/schema.json";
-
-const repositoryName = "softwaremill/fabrica";
-const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
+import { version } from "./repositoryUtils";
 
 const supportedVersionPrefix = `${fabricaVersion.split(".").slice(0, 2).join(".")}.`;
 
@@ -19,7 +17,7 @@ const isFabricaVersionSupported = (versionName: string): boolean => versionName.
 
 const supportedFabricVersions = schema.properties.networkSettings.properties.fabricVersion.enum;
 
-const versionsSupportingRaft = supportedFabricVersions.filter((v) => v !== "1.3.0" && v !== "1.4.0");
+const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).isGreaterOrEqual("1.4.3"));
 
 const splashScreen = (): string =>
   `${
@@ -34,7 +32,6 @@ const splashScreen = (): string =>
   }${fabricaVersion}`;
 
 export {
-  repositoryTagsListUrl,
   splashScreen,
   fabricaVersion,
   supportedFabricVersions,

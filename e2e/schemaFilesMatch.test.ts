@@ -7,18 +7,6 @@ expect.extend(matchers);
 const commands = new TestCommands("./e2e/__tmp__/schema-files-match-tests", "../../..");
 
 describe("schema files match", () => {
-  beforeEach(() => commands.cleanupWorkdir());
-
-  beforeAll(() => {
-    process.env.FABRICA_CONFIG = "<absolute path>";
-    process.env.CHAINCODES_BASE_DIR = "<absolute path>";
-  });
-
-  afterAll(() => {
-    delete process.env.FABRICA_CONFIG;
-    delete process.env.CHAINCODES_BASE_DIR;
-  });
-
   const files = commands.getFiles("samples/*.json");
 
   files.forEach((file) => {
