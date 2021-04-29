@@ -9,6 +9,7 @@ const utils = require('../utils/utils');
 
 const schema = require('../../docs/schema.json');
 const config = require('../config');
+const { parseFabricaConfig } = require('../utils/parseFabricaConfig');
 
 const ListCompatibleUpdatesGeneratorType = require.resolve('../list-compatible-updates');
 
@@ -58,7 +59,7 @@ class ValidateGenerator extends Generator {
   async validate() {
     this._validateIfConfigFileExists(this.options.fabricaConfig);
 
-    const networkConfig = this.fs.readJSON(this.options.fabricaConfigPath);
+    const networkConfig = parseFabricaConfig(this.fs.read(this.options.fabricaConfigPath));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabricaVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
