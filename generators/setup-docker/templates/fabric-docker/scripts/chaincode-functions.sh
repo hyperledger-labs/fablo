@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+function chaincodeBuild() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_LANG=$2
+  local CHAINCODE_DIR_PATH=$3
+
+  mkdir -p "$CHAINCODE_DIR_PATH"
+
+  if [ "$CHAINCODE_LANG" = "node" ]; then
+    echo "Buiding chaincode '$CHAINCODE_NAME'..."
+    inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+    inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+    inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+
+    if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
+      if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
+        (cd "$CHAINCODE_DIR_PATH" && yarn install && yarn build)
+      else
+        (cd "$CHAINCODE_DIR_PATH" && npm install --unsafe-perm=true && npm run build)
+      fi
+    else
+      echo "Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty."
+    fi
+  fi
+}
+
 function chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
@@ -23,7 +48,7 @@ function chaincodeInstall() {
     CA_CERT_PARAMS=()
   fi
 
-  echo "Installing chaincode on $CHANNEL_NAME (TLS)..."
+  echo "Installing chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
@@ -83,7 +108,7 @@ function chaincodeInstantiate() {
     COLLECTIONS_CONFIG_PARAMS=()
   fi
 
-  echo "Instantiating chaincode on $CHANNEL_NAME (TLS)..."
+  echo "Instantiating chaincode on $CHANNEL_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -110,7 +135,7 @@ function chaincodeInstantiate() {
       "${COLLECTIONS_CONFIG_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }
@@ -151,7 +176,7 @@ function chaincodeUpgrade() {
     COLLECTIONS_CONFIG_PARAMS=()
   fi
 
-  echo "Upgrading chaincode on $CHANNEL_NAME (TLS)..."
+  echo "Upgrading chaincode on $CHANNEL_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
@@ -179,7 +204,7 @@ function chaincodeUpgrade() {
       "${COLLECTIONS_CONFIG_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate (TLS). Chaincode's directory is empty."
+    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
     echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
   fi
 }

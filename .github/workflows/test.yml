@@ -12,7 +12,7 @@ jobs:
           SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: '#ffd963'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          MSG_MINIMAL: true
+          MSG_MINIMAL: ref
           SLACK_FOOTER: 'Workflow <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}*> started'
 
       - name: Check out repository code
@@ -53,7 +53,7 @@ jobs:
           SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          MSG_MINIMAL: true
+          MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-02-raft:
@@ -89,7 +89,7 @@ jobs:
           SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          MSG_MINIMAL: true
+          MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-03-private-data:
@@ -125,5 +125,5 @@ jobs:
           SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          MSG_MINIMAL: true
+          MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
