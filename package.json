@@ -9,7 +9,7 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e",
+    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e && ejslint generators",
     "test:unit": "jest generators",
     "test:e2e": "jest e2e -i",
     "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
@@ -22,6 +22,7 @@
     "yeoman-generator": "^4.5.0"
   },
   "devDependencies": {
+    "ejs-lint": "^1.2.0",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
