@@ -9,12 +9,24 @@ FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
 COMMAND="$1"
 COMMAND_CALL_ROOT="$(pwd)"
 FABRICA_TARGET="$COMMAND_CALL_ROOT/fabrica-target"
-DEFAULT_FABRICA_CONFIG="$COMMAND_CALL_ROOT/fabrica-config.json"
 
 # Create temporary directory and remove it after script execution
 FABRICA_TEMP_DIR="$(mktemp -d -t fabrica.XXXXXXXX)"
 # shellcheck disable=SC2064
 trap "rm -rf \"$FABRICA_TEMP_DIR\"" EXIT
+
+getDefaultFabricaConfig() {
+  local fabrica_config_json="$COMMAND_CALL_ROOT/fabrica-config.json"
+  local fabrica_config_yaml="$COMMAND_CALL_ROOT/fabrica-config.yaml"
+
+  if [ -f "$fabrica_config_json" ]; then
+    echo "$fabrica_config_json"
+  elif [ -f "$fabrica_config_yaml" ]; then
+    echo "$fabrica_config_yaml"
+  else
+    echo "$fabrica_config_json"
+  fi
+}
 
 printHelp() {
   echo "Fabrica -- kick-off and manage your Hyperledger Fabric network
@@ -23,10 +35,10 @@ Usage:
   fabrica.sh init
     Creates simple Fabrica config in current directory.
 
-  fabrica.sh generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
-    Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json', default (and recommended) directory '\$(pwd)/fabrica-target'.
+  fabrica.sh generate [/path/to/fabrica-config.json|yaml [/path/to/fabrica/target]]
+    Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fabrica-config.json' or '\$(pwd)/fabrica-config.yaml', default (and recommended) directory '\$(pwd)/fabrica-target'.
 
-  fabrica.sh up [/path/to/fabrica-config.json]
+  fabrica.sh up [/path/to/fabrica-config.json|yaml]
     Starts the Hyperledger Fabric network for given Fabrica configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call 'generate' command for given config file.
 
   fabrica.sh <down | start | stop>
@@ -38,8 +50,8 @@ Usage:
   fabrica.sh prune
     Downs the network and removes all generated files.
 
-  fabrica.sh recreate [/path/to/fabrica-config.json]
-    Prunes and ups the network. Default config file path is '\$(pwd)/fabrica-config.json'
+  fabrica.sh recreate [/path/to/fabrica-config.json|yaml]
+    Prunes and ups the network. Default config file path is '\$(pwd)/fabrica-config.json' or '\$(pwd)/fabrica-config.yaml'.
 
   fabrica.sh chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fabrica config file.
@@ -109,17 +121,17 @@ initConfig() {
 }
 
 validateConfig() {
-  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  local fabrica_config=${1:-$(getDefaultFabricaConfig)}
   executeOnFabricaDocker validate "" "" "$fabrica_config"
 }
 
 extendConfig() {
-  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  local fabrica_config=${1:-$(getDefaultFabricaConfig)}
   executeOnFabricaDocker extend-config "" "" "$fabrica_config"
 }
 
 generateNetworkConfig() {
-  local fabrica_config=${1:-$DEFAULT_FABRICA_CONFIG}
+  local fabrica_config=${1:-$(getDefaultFabricaConfig)}
   local fabrica_target=${2:-$FABRICA_TARGET}
 
   echo "Generating network config"

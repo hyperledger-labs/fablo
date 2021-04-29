@@ -1,5 +1,6 @@
 const { TestCommands } = require('./TestCommands');
 const ExtendConfigGenerator = require('../generators/extend-config');
+const { parseFabricaConfig } = require('../generators/utils/parseFabricaConfig');
 
 const commands = new TestCommands('./e2e/__tmp__/extend-config-tests', '../../..');
 
@@ -16,13 +17,13 @@ describe('extend config', () => {
     delete process.env.CHAINCODES_BASE_DIR;
   });
 
-  const files = commands.getFiles('samples/*.json');
+  const files = commands.getFiles('samples/*.json')
+    .concat(commands.getFiles('samples/*.yaml'));
 
   files.forEach((file) => {
     it(file, () => {
-      // given
-      // eslint-disable-next-line global-require,import/no-dynamic-require
-      const json = require(`../${file}`);
+      const fileContent = commands.getFileContent(`${commands.relativeRoot}/${file}`);
+      const json = parseFabricaConfig(fileContent);
 
       // when
       const extended = ExtendConfigGenerator.extendJsonConfig(json);

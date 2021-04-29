@@ -5,6 +5,7 @@ const Generator = require('yeoman-generator');
 const config = require('../config');
 const buildUtil = require('../version/buildUtil');
 const ExtendConfigGenerator = require('../extend-config');
+const { parseFabricaConfig } = require('../utils/parseFabricaConfig');
 
 const ValidateGeneratorPath = require.resolve('../validate');
 
@@ -22,7 +23,7 @@ module.exports = class extends Generator {
 
   async writing() {
     const fabricaConfigPath = `${this.env.cwd}/${this.options.fabricaConfig}`;
-    const json = this.fs.readJSON(fabricaConfigPath);
+    const json = parseFabricaConfig(this.fs.read(fabricaConfigPath));
     const {
       networkSettings,
       capabilities,
