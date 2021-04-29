@@ -1,5 +1,7 @@
 import got from "got";
-import { repositoryTagsListUrl } from "./config";
+
+const repositoryName = "softwaremill/fabrica";
+const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
 
 const incrementVersionFragment = (versionFragment: string) => {
   if (versionFragment.includes("-")) {
