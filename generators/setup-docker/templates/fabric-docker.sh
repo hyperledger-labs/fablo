@@ -13,7 +13,6 @@ source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts
-  prepareChaincodeDirs
   startNetwork
   generateChannelsArtifacts
   installChannels
