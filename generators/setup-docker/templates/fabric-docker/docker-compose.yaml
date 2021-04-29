@@ -106,7 +106,9 @@ services:
       <%_ } _%>
       <%_ chaincodes.forEach(function(chaincode) { _%>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
-      - "../fabric-config/collections/<%= chaincode.name %>.json:/var/hyperledger/cli/collections/<%= chaincode.name %>.json"
+      <%_ if(chaincode.privateDataConfigFile) { _%>
+      - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
+      <%_ } _%>
       <%_ }) _%>
     networks:
       - basic
