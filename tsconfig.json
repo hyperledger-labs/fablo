@@ -1,34 +1,26 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "rootDir": "./generators",
-    "outDir": "./generators-dist",
-    "noEmit": false,
-    "lib": [
-      "es2019",
-      "es2020.promise",
-      "es2020.bigint",
-      "es2020.string"
-    ],
+    "target": "esnext",
     "module": "commonjs",
-    "target": "es2019",
+    "rootDir": "./src",
+    "outDir": "./generators",
+    "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "declaration": true,
+    "declarationMap": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "Node"
+    "resolveJsonModule": true
   },
   "include": [
-    "generators/**/*"
+    "src"
   ],
   "exclude": [
     "node_modules",
-    "generators-dist",
+    "generators",
+    "src/*/templates",
     "**/*.test.ts",
     "**/*.spec.ts",
     "e2e"

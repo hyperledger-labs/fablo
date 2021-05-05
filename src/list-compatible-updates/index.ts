@@ -1,5 +1,5 @@
-import Generator from "yeoman-generator";
-import chalk from "chalk";
+import * as Generator from "yeoman-generator";
+import * as chalk from "chalk";
 import * as config from "../config";
 import * as repositoryUtils from "../repositoryUtils";
 

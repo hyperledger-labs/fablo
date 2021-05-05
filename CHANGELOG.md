@@ -1,16 +1,17 @@
 ## main (0.1.0-unstable)
 
 ### Features
-
 * Support for private data ([#104](https://github.com/softwaremill/fabrica/issues/104))
 * Added channel query scripts  ([#169](https://github.com/softwaremill/fabrica/issues/169))
 * Support for Hyperledger Fabric 2.x (still with 1_4_x channel capabilities)
 * Support for fabrica config in YAML format
 
+### Chore & Maintenance
+* Rewrite Yeoman generators to use TypeScript
+
 ## 0.0.1
 
 ### Features
-
 * Generate simple Hyperledger Fabric network
 * Support for multiple organizations
 * Support for solo consensus protocol
@@ -22,11 +23,9 @@
 * Proper exposing Orderer and Peers ports for service discovery ([#116](https://github.com/softwaremill/fabrica/issues/116))  
 
 ### Fixes
-
 * Missing notify anchor peers step ([#26](https://github.com/softwaremill/fabrica/issues/26))
 
 ### Chore & Maintenance
-
 * Lint bash and YAML files ([#48](https://github.com/softwaremill/fabrica/issues/48))
 * Format generated scripts and YAML files ([#75](https://github.com/softwaremill/fabrica/issues/75))
 * Test Java chaincode on generated network ([#25](https://github.com/softwaremill/fabrica/issues/25))

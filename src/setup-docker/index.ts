@@ -1,4 +1,4 @@
-import Generator from "yeoman-generator";
+import * as Generator from "yeoman-generator";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
 import { extendConfig } from "../extend-config";

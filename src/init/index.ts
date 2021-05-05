@@ -1,5 +1,5 @@
-import Generator from "yeoman-generator";
-import chalk from "chalk";
+import * as Generator from "yeoman-generator";
+import * as chalk from "chalk";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
 
 export default class InitGenerator extends Generator {
@@ -11,7 +11,8 @@ export default class InitGenerator extends Generator {
     if (this.args.length && this.args[0] === "node") {
       this.fs.copy(this.templatePath(), this.destinationPath());
     } else {
-      const json = parseFabricaConfig(this.templatePath("fabrica-config.json"));
+      const content = this.fs.read(this.templatePath("fabrica-config.json"));
+      const json = parseFabricaConfig(content);
       this.fs.write(
         this.destinationPath("fabrica-config.json"),
         JSON.stringify({ ...json, chaincodes: [] }, undefined, 2),

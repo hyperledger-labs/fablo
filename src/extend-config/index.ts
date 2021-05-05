@@ -1,4 +1,4 @@
-import Generator from "yeoman-generator";
+import * as Generator from "yeoman-generator";
 import * as configTransformers from "./configTransformers";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
 import { FabricaConfigJson } from "../types/FabricaConfigJson";

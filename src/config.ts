@@ -15,7 +15,7 @@ const getVersionFromSchemaUrl = (url?: string): string => {
 
 const isFabricaVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
 
-const supportedFabricVersions = schema.properties.networkSettings.properties.fabricVersion.enum;
+const supportedFabricVersions = schema.properties.networkSettings.properties.fabricVersion.enum as string[];
 
 const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).isGreaterOrEqual("1.4.3"));
 
