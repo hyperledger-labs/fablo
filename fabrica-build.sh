@@ -17,6 +17,9 @@ echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
 IMAGE_BASE_NAME="softwaremill/fabrica:$FABRICA_VERSION"
 
+npm run clean
+npm run build
+
 docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
   --tag "$IMAGE_BASE_NAME" "$FABRICA_HOME"

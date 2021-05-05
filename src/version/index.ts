@@ -1,4 +1,4 @@
-import Generator from "yeoman-generator";
+import * as Generator from "yeoman-generator";
 import { basicInfo, fullInfo } from "./buildUtil";
 
 export default class VersionGenerator extends Generator {

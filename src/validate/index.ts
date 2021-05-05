@@ -1,6 +1,6 @@
-import Generator from "yeoman-generator";
+import * as Generator from "yeoman-generator";
 import { Schema, Validator as SchemaValidator } from "jsonschema";
-import chalk from "chalk";
+import * as chalk from "chalk";
 import schema from "../../docs/schema.json";
 import * as config from "../config";
 import parseFabricaConfig from "../utils/parseFabricaConfig";

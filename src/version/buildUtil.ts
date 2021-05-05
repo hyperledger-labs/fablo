@@ -5,7 +5,7 @@ const getBuildInfo = (): Record<string, unknown> => require("/fabrica/version.js
 const basicInfo = (): Record<string, unknown> => {
   return {
     version: config.fabricaVersion,
-    build: getBuildInfo(),
+    build: getBuildInfo().buildInfo,
   };
 };
 

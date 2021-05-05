@@ -1,6 +1,7 @@
 import { matchers } from "jest-json-schema";
-import schema from "../docs/schema.json";
-import docsSample from "../docs/sample.json";
+import * as schema from "../docs/schema.json";
+import * as docsSample from "../docs/sample.json";
+import { FabricaConfigJson, PrivateDataJson } from "../src/types/FabricaConfigJson";
 
 expect.extend(matchers);
 
@@ -8,9 +9,9 @@ describe("schema", () => {
   const base = docsSample;
   expect(base).toMatchSchema(schema);
 
-  const updatedBase = (updateJson) => {
+  const updatedBase = (updateJson: (_: FabricaConfigJson) => void): Record<string, unknown> => {
     const json = JSON.parse(JSON.stringify(base));
-    updateJson(json);
+    updateJson(json as FabricaConfigJson);
     return json;
   };
 
@@ -28,8 +29,8 @@ describe("schema", () => {
   });
 
   it("should validate fabric version", () => {
-    const withFabricVersion = (v) =>
-      updatedBase((json) => {
+    const withFabricVersion = (v: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.networkSettings.fabricVersion = v;
       });
 
@@ -40,8 +41,8 @@ describe("schema", () => {
   });
 
   it("should validate root org name", () => {
-    const withRootOrgName = (n) =>
-      updatedBase((json) => {
+    const withRootOrgName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.organization.name = n;
       });
 
@@ -55,8 +56,8 @@ describe("schema", () => {
   });
 
   it("should validate root org MSP name", () => {
-    const withRootOrgMSPName = (n) =>
-      updatedBase((json) => {
+    const withRootOrgMSPName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.organization.mspName = n;
       });
 
@@ -70,8 +71,8 @@ describe("schema", () => {
   });
 
   it("should validate root org domain", () => {
-    const withRootOrgDomain = (d) =>
-      updatedBase((json) => {
+    const withRootOrgDomain = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.organization.domain = d;
       });
 
@@ -85,8 +86,8 @@ describe("schema", () => {
   });
 
   it("should validate root CA domain prefix", () => {
-    const withRootCADomainPrefix = (d) =>
-      updatedBase((json) => {
+    const withRootCADomainPrefix = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.ca.prefix = d;
       });
 
@@ -100,8 +101,8 @@ describe("schema", () => {
   });
 
   it("should validate root orderer domain prefix", () => {
-    const withRootOrdererDomainPrefix = (d) =>
-      updatedBase((json) => {
+    const withRootOrdererDomainPrefix = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.orderer.prefix = d;
       });
 
@@ -115,9 +116,9 @@ describe("schema", () => {
   });
 
   it("should validate root orderer consensus type ", () => {
-    const withRootOrdererConsensus = (c) =>
-      updatedBase((json) => {
-        json.rootOrg.orderer.type = c;
+    const withRootOrdererConsensus = (c: string) =>
+      updatedBase((json: FabricaConfigJson) => {
+        json.rootOrg.orderer.type = c as "solo" | "raft";
       });
 
     expect(withRootOrdererConsensus("solo")).toMatchSchema(schema);
@@ -127,8 +128,8 @@ describe("schema", () => {
   });
 
   it("should validate root orderer number of instances", () => {
-    const withRootOrdererNoOfInstances = (i) =>
-      updatedBase((json) => {
+    const withRootOrdererNoOfInstances = (i: number) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.rootOrg.orderer.instances = i;
       });
 
@@ -139,8 +140,8 @@ describe("schema", () => {
   });
 
   it("should validate org name", () => {
-    const withOrgName = (n) =>
-      updatedBase((json) => {
+    const withOrgName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].organization.name = n;
       });
 
@@ -154,8 +155,8 @@ describe("schema", () => {
   });
 
   it("should validate org MSP name", () => {
-    const withOrgMSPName = (n) =>
-      updatedBase((json) => {
+    const withOrgMSPName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].organization.mspName = n;
       });
 
@@ -169,8 +170,8 @@ describe("schema", () => {
   });
 
   it("should validate org domain", () => {
-    const withOrgDomain = (d) =>
-      updatedBase((json) => {
+    const withOrgDomain = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].organization.domain = d;
       });
 
@@ -184,8 +185,8 @@ describe("schema", () => {
   });
 
   it("should validate ca domain prefix", () => {
-    const withCADomainPrefix = (d) =>
-      updatedBase((json) => {
+    const withCADomainPrefix = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].ca.prefix = d;
       });
 
@@ -199,8 +200,8 @@ describe("schema", () => {
   });
 
   it("should validate peer domain prefix", () => {
-    const withPeerDomainPrefix = (d) =>
-      updatedBase((json) => {
+    const withPeerDomainPrefix = (d: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].peer.prefix = d;
       });
 
@@ -214,8 +215,8 @@ describe("schema", () => {
   });
 
   it("should validate peer number of instances", () => {
-    const withPeerNoOfInstances = (i) =>
-      updatedBase((json) => {
+    const withPeerNoOfInstances = (i: number) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.orgs[0].peer.instances = i;
       });
 
@@ -226,9 +227,9 @@ describe("schema", () => {
   });
 
   it("should validate peer database type", () => {
-    const withPeerDatabaseType = (db) =>
-      updatedBase((json) => {
-        json.orgs[0].peer.db = db;
+    const withPeerDatabaseType = (db: string) =>
+      updatedBase((json: FabricaConfigJson) => {
+        json.orgs[0].peer.db = db as "LevelDb" | "CouchDb";
       });
 
     expect(withPeerDatabaseType("LevelDb")).toMatchSchema(schema);
@@ -237,8 +238,8 @@ describe("schema", () => {
   });
 
   it("should validate channel name - no spaces and capital letters", () => {
-    const withChannelName = (n) =>
-      updatedBase((json) => {
+    const withChannelName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.channels[0].name = n;
       });
 
@@ -252,8 +253,8 @@ describe("schema", () => {
   });
 
   it("should validate chaincode name", () => {
-    const withChaincodeName = (n) =>
-      updatedBase((json) => {
+    const withChaincodeName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].name = n;
       });
 
@@ -267,8 +268,8 @@ describe("schema", () => {
   });
 
   it("should validate chaincode version", () => {
-    const withChaincodeVersion = (n) =>
-      updatedBase((json) => {
+    const withChaincodeVersion = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].version = n;
       });
 
@@ -282,9 +283,9 @@ describe("schema", () => {
   });
 
   it("should validate chaincode language", () => {
-    const withChaincodeLanguage = (l) =>
-      updatedBase((json) => {
-        json.chaincodes[0].lang = l;
+    const withChaincodeLanguage = (l: string) =>
+      updatedBase((json: FabricaConfigJson) => {
+        json.chaincodes[0].lang = l as "java" | "golang" | "node";
       });
 
     expect(withChaincodeLanguage("java")).toMatchSchema(schema);
@@ -294,8 +295,8 @@ describe("schema", () => {
   });
 
   it("should validate chaincode initialization arguments", () => {
-    const withChaincodeInitialization = (i) =>
-      updatedBase((json) => {
+    const withChaincodeInitialization = (i: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].init = i;
       });
 
@@ -309,8 +310,8 @@ describe("schema", () => {
   });
 
   it("should validate chaincode endorsement configuration", () => {
-    const withChaincodeName = (n) =>
-      updatedBase((json) => {
+    const withChaincodeName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].endorsement = n;
       });
 
@@ -324,8 +325,8 @@ describe("schema", () => {
   });
 
   it("should validate chaincode directory", () => {
-    const withChaincodeName = (n) =>
-      updatedBase((json) => {
+    const withChaincodeName = (n: string) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].directory = n;
       });
 
@@ -340,16 +341,18 @@ describe("schema", () => {
 
   it("should validate chaincode private data", () => {
     const withNoPrivateData = () =>
-      updatedBase((json) => {
+      updatedBase((json: FabricaConfigJson) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         json.chaincodes[0] = { ...json.chaincodes[0], privateData: undefined };
       });
-    const withPrivateData = (d) =>
-      updatedBase((json) => {
+    const withPrivateData = (d: PrivateDataJson[]) =>
+      updatedBase((json: FabricaConfigJson) => {
         json.chaincodes[0].privateData = d;
       });
-    const privateData = (name, ...orgNames) => ({ name, orgNames });
+    const privateData = (name: string, ...orgNames: string[]) => ({ name, orgNames });
     const validOrgName = base.orgs[0].organization.name;
-    const withPrivateDataName = (name) => withPrivateData([privateData(name, validOrgName)]);
+    const withPrivateDataName = (name: string) => withPrivateData([privateData(name, validOrgName)]);
 
     // various names
     expect(withPrivateDataName(lettersOnly)).toMatchSchema(schema);
@@ -363,6 +366,8 @@ describe("schema", () => {
 
     // no private data, wrong object, two objects
     expect(withNoPrivateData()).toMatchSchema(schema);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     expect(withPrivateData({ wrong: "obj" })).not.toMatchSchema(schema);
     expect(
       withPrivateData([privateData(lettersAndNumber, validOrgName), privateData(lettersOnly, validOrgName)]),

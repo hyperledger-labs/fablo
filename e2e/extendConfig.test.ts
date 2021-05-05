@@ -1,6 +1,6 @@
 import TestCommands from "./TestCommands";
-import { extendConfig } from "../generators/extend-config";
-import parseFabricaConfig from "../generators/utils/parseFabricaConfig";
+import { extendConfig } from "../src/extend-config";
+import parseFabricaConfig from "../src/utils/parseFabricaConfig";
 
 const commands = new TestCommands("./e2e/__tmp__/extend-config-tests", "../../..");
 
