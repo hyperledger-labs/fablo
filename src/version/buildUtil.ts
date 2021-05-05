@@ -1,11 +1,12 @@
 import * as config from "../config";
 
-const getBuildInfo = (): Record<string, unknown> => require("/fabrica/version.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const getBuildInfo = (): Record<string, unknown> => require("/fabrica/version.json").buildInfo;
 
 const basicInfo = (): Record<string, unknown> => {
   return {
     version: config.fabricaVersion,
-    build: getBuildInfo().buildInfo,
+    build: getBuildInfo(),
   };
 };
 
