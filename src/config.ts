@@ -8,7 +8,7 @@ import { version } from "./repositoryUtils";
 
 const supportedVersionPrefix = `${fabricaVersion.split(".").slice(0, 2).join(".")}.`;
 
-const getVersionFromSchemaUrl = (url: string): string => {
+const getVersionFromSchemaUrl = (url?: string): string => {
   const matches = (url || "").match(/\d+\.\d+\.\d+/g);
   return matches?.length ? matches[0] : fabricaVersion;
 };
