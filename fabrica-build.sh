@@ -17,8 +17,7 @@ echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
 IMAGE_BASE_NAME="softwaremill/fabrica:$FABRICA_VERSION"
 
-npm run clean
-npm run build
+npm run build:dist
 
 docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \

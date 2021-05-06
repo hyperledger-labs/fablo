@@ -1,10 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "noEmit": true,
     "target": "esnext",
     "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./generators",
     "sourceMap": true,
     "strict": true,
     "allowJs": true,
@@ -15,14 +14,11 @@
     "resolveJsonModule": true
   },
   "include": [
-    "src"
+    "src",
+    "e2e"
   ],
   "exclude": [
     "node_modules",
-    "generators",
-    "src/*/templates",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "e2e"
+    "generators"
   ]
 }
