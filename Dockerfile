@@ -13,8 +13,7 @@ COPY samples/fabricaConfig-1org-1channel-1chaincode.json /fabrica/generators/ini
 COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
 
 WORKDIR /fabrica
-RUN npm install --silent
-# npm install --only=prod
+RUN npm install --silent --only=prod
 RUN npm link
 
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
