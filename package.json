@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "clean": "rimraf generators",
-    "build": "tsc && npm run copydeps",
+    "build": "tsc",
+    "build:dist": "npm run clean && tsc -p tsconfig-dist.json && npm run copydeps",
     "copydeps": "copyfiles --all --up 1 'src/*/templates/**' generators",
     "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
     "test:unit": "jest src",
