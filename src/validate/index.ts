@@ -1,7 +1,6 @@
 import * as Generator from "yeoman-generator";
-import { Schema, Validator as SchemaValidator } from "jsonschema";
+import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
-import schema from "../../docs/schema.json";
 import * as config from "../config";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
 import { FabricaConfigJson, NetworkSettingsJson, OrdererJson, OrgJson } from "../types/FabricaConfigJson";
@@ -127,7 +126,7 @@ class ValidateGenerator extends Generator {
 
   _validateJsonSchema(configToValidate: FabricaConfigJson) {
     const validator = new SchemaValidator();
-    const results = validator.validate(configToValidate, schema as Schema);
+    const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
       const msg = `${result.property} : ${result.message}`;
       const objectToEmit = {

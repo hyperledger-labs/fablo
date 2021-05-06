@@ -3,8 +3,11 @@
 import { version as fabricaVersion } from "../package.json";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import * as schema from "../docs/schema.json";
+import * as schemaJson from "../docs/schema.json";
+import { Schema } from "jsonschema";
 import { version } from "./repositoryUtils";
+
+const schema: Schema = schemaJson as Schema;
 
 const supportedVersionPrefix = `${fabricaVersion.split(".").slice(0, 2).join(".")}.`;
 
@@ -15,7 +18,7 @@ const getVersionFromSchemaUrl = (url?: string): string => {
 
 const isFabricaVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
 
-const supportedFabricVersions = schema.properties.networkSettings.properties.fabricVersion.enum as string[];
+const supportedFabricVersions = schemaJson.properties.networkSettings.properties.fabricVersion.enum as string[];
 
 const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).isGreaterOrEqual("1.4.3"));
 
@@ -32,6 +35,7 @@ const splashScreen = (): string =>
   }${fabricaVersion}`;
 
 export {
+  schema,
   splashScreen,
   fabricaVersion,
   supportedFabricVersions,
