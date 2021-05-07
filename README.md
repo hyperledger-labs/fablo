@@ -28,13 +28,13 @@ sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fa
 To get a copy of Fabrica for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica.sh
+curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica && chmod +x ./fabrica
 ```
 
 ## Basic usage
 
 ```bash
-fabrica.sh up /path/to/fabrica-config.json
+fabrica up /path/to/fabrica-config.json
 ```
 
 The `up` command creates initial configuration and starts Hyperledger Fabric network on Docker.
@@ -57,20 +57,22 @@ In this case, however, you should use generated `fabrica-docker.sh` instead of `
 ### init
 
 ```bash
-fabrica init
+fabrica init [node]
 ```
 
 Creates simple network config file in current dir.
 Good step to start your adventure with Fabrica or set up a fast prototype. 
 
+Option `node` makes Fabrica to generate a sample Node.js chaincode as well.
+
 ### generate
 
 ```bash
-fabrica generate [/path/to/fabrica-config.json [/path/to/fabrica/target]]
+fabrica generate [/path/to/fabrica-config.json|yaml [/path/to/fabrica/target]]
 ```
 
 Generates network configuration files in the given directory.
-Default config file path is `$(pwd)/fabrica-config.json`, default directory is `$(pwd)/fabrica-target`.
+Default config file path is `$(pwd)/fabrica-config.json` or `\$(pwd)/fabrica-config.yaml`, default directory is `$(pwd)/fabrica-target`.
 If you specify a different directory, you loose Fabrica support for other commands.
 
 If you want to use Fabrica only to kick off the Hyperledger Fabric network, you may provide target directory parameter or just copy generated Fabrica target directory content to desired directory and add it to version control.
@@ -80,7 +82,7 @@ Review the files before submitting to version control system.
 ### up
 
 ```bash
-fabrica up [/path/to/fabrica-config.json]
+fabrica up [/path/to/fabrica-config.json|yaml]
 ```
 
 Starts the Hyperledger Fabric network for given Fabrica configuration file, creates channels, installs and instantiates chaincodes.
@@ -103,10 +105,20 @@ fabrica prune
 
 Downs the network and removes `fabrica-target` directory.
 
+### reboot and recreate
+
+```bash
+fabrica reboot
+fabrica recreate [/path/to/fabrica-config.json|yaml]
+```
+
+* `reboot` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
+* `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fabrica-config` file and want to start newer network version in one command.    
+
 ### validate
 
 ```bash
-fabrica validate [/path/to/fabrica-config.json]
+fabrica validate [/path/to/fabrica-config.json|yaml]
 ```
 
 Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks.
@@ -115,9 +127,8 @@ Please note that this step is also executed automatically before each `generate`
 ### fabric-docker.sh
 
 The script `fabric-docker.sh` is generated among docker network configuration.
-It does not support `generate` command, however other commands work in same way as in `fabrica.sh`.
-Basically `fabrica.sh` forwards commands other than `generate` to this script.
-In most cases you can use `fabrica.sh docker` and `fabric-docker.sh` interchangebly.
+It does not support `generate` command, however other commands work in same way as in `fabrica`.
+Basically `fabrica` forwards some commands to this script.
 
 ## Managing chaincodes
 
@@ -193,16 +204,16 @@ Switches current script to selected version.
 
 ## Fabrica config
 
-Fabrica config is a single JSON file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
+Fabrica config is a single JSON or YAML file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
 It has to be compatible with the [schema].
-You may generate a basic config with `./fabrica.sh init` command.
+You may generate a basic config with `./fabrica init` command.
 See the [samples](https://github.com/softwaremill/fabrica/blob/main/samples/) directory for more complex examples.
 
 The basic structure of Fabrica config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.0.1/schema.json",
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -315,7 +326,7 @@ Example:
       "channel": "channel2",
       "init": "{\"Args\":[]}",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node-1.4"
     },
     {
       "name": "chaincode2",
@@ -327,4 +338,55 @@ Example:
       "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
+```
+
+### Sample YAML config file
+
+```yaml
+---
+"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
+networkSettings:
+  fabricVersion: 1.4.11
+  tls: false
+rootOrg:
+  organization:
+    name: Orderer
+    domain: root.com
+  orderer:
+    prefix: orderer
+    type: solo
+    instances: 1
+orgs:
+  - organization:
+      name: Org1
+      domain: org1.com
+    peer:
+      instances: 2
+  - organization:
+      name: Org2
+      domain: org2.com
+    peer:
+      instances: 1
+channels:
+  - name: my-channel1
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+          - peer1
+      - name: Org2
+        peers:
+          - peer0
+chaincodes:
+  - name: and-policy-chaincode
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    init: '{"Args":[]}'
+    endorsement: AND('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node-1.4"
+    privateData:
+      - name: org1-collection
+        orgNames:
+          - Org1
 ```
