@@ -525,24 +525,24 @@ exports[`network-08-2orgs-private-data should create proper e2e/__tmp__/network-
 "#!/usr/bin/env bash
 
 function installChaincodes() {
-  chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+  chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
   printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printItalics \\"Instantiating chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
-  chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
+  chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
   printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printItalics \\"Instantiating chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
 
 }
 
@@ -561,32 +561,32 @@ function upgradeChaincode() {
   fi
 
   if [ \\"$chaincodeName\\" = \\"or-policy-chaincode\\" ]; then
-    chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
 
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
 
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
 
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
     printItalics \\"Upgrading as 'Org1'. 'or-policy-chaincode' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
   fi
   if [ \\"$chaincodeName\\" = \\"and-policy-chaincode\\" ]; then
-    chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
 
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
 
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
 
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
     printItalics \\"Upgrading as 'Org1'. 'and-policy-chaincode' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
   fi
 }
 
@@ -759,9 +759,9 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/or-policy-chaincode/\\"
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/and-policy-chaincode/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
     networks:
       - basic
@@ -886,9 +886,9 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/or-policy-chaincode/\\"
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/and-policy-chaincode/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
     networks:
       - basic

@@ -326,7 +326,7 @@ Example:
       "channel": "channel2",
       "init": "{\"Args\":[]}",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node-1.4"
     },
     {
       "name": "chaincode2",
@@ -384,7 +384,7 @@ chaincodes:
     channel: my-channel1
     init: '{"Args":[]}'
     endorsement: AND('Org1MSP.member', 'Org2MSP.member')
-    directory: "./chaincodes/chaincode-kv-node"
+    directory: "./chaincodes/chaincode-kv-node-1.4"
     privateData:
       - name: org1-collection
         orgNames:
