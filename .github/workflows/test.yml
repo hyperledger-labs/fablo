@@ -128,3 +128,35 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+
+  node-chaincodes-unit-tests:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Test chaincode for Fabric 1.4.x
+        run: |
+          cd samples/chaincodes/chaincode-kv-node-1.4 && \
+            npm install && \
+            npm run build && \
+            npm run test
+
+      - name: Test chaincode for Fabric 2.x
+        run: |
+          cd samples/chaincodes/chaincode-kv-node && \
+            npm install && \
+            npm run build && \
+            npm run test
+
+      - name: Send Slack notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_USERNAME: Fabrica CI
+          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fabrica/main/logo-sygnet-192.png'
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          MSG_MINIMAL: ref
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
