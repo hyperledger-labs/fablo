@@ -1,8 +1,8 @@
-const { JSONSerializer } = require('fabric-contract-api');
-const { ChaincodeMockStub } = require('@theledger/fabric-mock-stub');
-const ChaincodeFromContract = require('fabric-shim/lib/contract-spi/chaincodefromcontract');
-const uuid = require('uuid');
-const { contracts } = require('./index');
+const { JSONSerializer } = require("fabric-contract-api");
+const { ChaincodeMockStub } = require("@theledger/fabric-mock-stub");
+const ChaincodeFromContract = require("fabric-shim/lib/contract-spi/chaincodefromcontract");
+const uuid = require("uuid");
+const { contracts } = require("./index");
 
 const [KVContract] = contracts;
 
@@ -11,7 +11,7 @@ const getChaincodeForContract = (contract) => {
     serializers: {
       jsonSerializer: JSONSerializer,
     },
-    transaction: 'jsonSerializer',
+    transaction: "jsonSerializer",
   };
   return new ChaincodeFromContract([contract], serializers, { info: {} });
 };
@@ -30,64 +30,71 @@ class KVContractMockStub extends ChaincodeMockStub {
       ? undefined
       : Object.keys(transient).reduce((map, k) => map.set(k, transient[k]), new Map());
     const { payload } = await this.mockInvoke(uuid.v1(), args, transientMap);
-    return JSON.parse(payload.toString());
+    console.log(args, transient, payload)
+    try {
+      return JSON.parse(payload.toString());
+    } catch (_e) {
+      throw payload.toBuffer();
+    }
   }
 }
 
-describe('KVContract', () => {
-  it('should put and get value', async () => {
+describe("KVContract", () => {
+  it("should put and get value", async () => {
     // Given
     const stub = new KVContractMockStub();
-    const key = 'ship';
-    const value = 'Black Pearl';
+    const key = "ship";
+    const value = "Black Pearl";
 
     // When
-    const putResponse = await stub.mockInvokeJson(['put', key, value]);
-    const getResponse = await stub.mockInvokeJson(['get', key]);
+    const putResponse = await stub.mockInvokeJson(["put", key, value]);
+    const getResponse = await stub.mockInvokeJson(["get", key]);
 
     // Then
-    expect(putResponse).toEqual({ success: 'OK' });
-    expect(getResponse).toEqual({ success: 'Black Pearl' });
+    expect(putResponse).toEqual({ success: "OK" });
+    expect(getResponse).toEqual({ success: "Black Pearl" });
   });
 
-  it('should return missing value error', async () => {
+  it("should return missing value error", async () => {
     // Given
     const stub = new KVContractMockStub();
-    const key = 'ship';
+    const key = "ship";
 
     // When
-    const getResponse = await stub.mockInvokeJson(['get', key]);
+    const getResponse = await stub.mockInvokeJson(["get", key]);
 
     // Then
-    expect(getResponse).toEqual({ error: 'NOT_FOUND' });
+    expect(getResponse).toEqual({ error: "NOT_FOUND" });
   });
 
-  it('should put private data', async () => {
+  it("should put private data", async () => {
     // Given
     const stub = new KVContractMockStub();
-    const key = 'diary';
-    const details = 'Black Pearl was initially owned by Jack Sparrow';
+    const key = "diary";
+    const message = "Black Pearl was initially owned by Jack Sparrow";
 
     // When
-    const response = await stub.mockInvokeJson(['putPrivate', key], { details });
+    const response = await stub.mockInvokeJson(["putPrivateMessage", key], { message });
 
     // Then
-    expect(response).toEqual({ success: 'OK' });
+    expect(response).toEqual({ success: "OK" });
   });
 
-  it('should verify private data', async () => {
+  // Just for the reference. Method 'getPrivateDataHash' is not implemented in @theledger/fabric-mock-stub lib
+  it.skip("should verify private data", async () => {
     // Given
     const stub = new KVContractMockStub();
-    const key = 'diary';
-    const details = 'Black Pearl was initially owned by Jack Sparrow';
-    await stub.mockInvokeJson(['putPrivate', key], { details });
+    const key = "diary";
+    const message = { message: "Black Pearl was initially owned by Jack Sparrow" };
+    const wrongMessage = { message: "Owned by Willy Wonka" };
+    await stub.mockInvokeJson(["putPrivateMessage", key], message);
 
     // When
-    const validResponse = await stub.mockInvokeJson(['verifyPrivate', key], { details });
-    const invalidResponse = await stub.mockInvokeJson(['verifyPrivate', key], { details: 'Owned by Willy Wonka' });
+    const validResponse = await stub.mockInvokeJson(["verifyPrivateMessage", key], message);
+    const invalidResponse = await stub.mockInvokeJson(["verifyPrivateMessage", key], wrongMessage);
 
     // Then
-    expect(validResponse).toEqual({ success: 'OK' });
-    expect(invalidResponse).toEqual({ success: 'OK' });
+    expect(validResponse).toEqual({ success: "OK" });
+    expect(invalidResponse).toEqual({ success: "OK" });
   });
 });
