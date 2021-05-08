@@ -228,7 +228,7 @@ Example:
 
 ```json
   "networkSettings": {
-    "fabricVersion": "1.4.6",
+    "fabricVersion": "2.3.0",
     "tls": false,
     "monitoring": {
       "loglevel": "debug"
@@ -326,7 +326,7 @@ Example:
       "channel": "channel2",
       "init": "{\"Args\":[]}",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node-1.4"
+      "directory": "./chaincodes/chaincode-kv-node"
     },
     {
       "name": "chaincode2",
@@ -346,7 +346,7 @@ Example:
 ---
 "$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
 networkSettings:
-  fabricVersion: 1.4.11
+  fabricVersion: 2.3.0
   tls: false
 rootOrg:
   organization:
@@ -384,7 +384,7 @@ chaincodes:
     channel: my-channel1
     init: '{"Args":[]}'
     endorsement: AND('Org1MSP.member', 'Org2MSP.member')
-    directory: "./chaincodes/chaincode-kv-node-1.4"
+    directory: "./chaincodes/chaincode-kv-node"
     privateData:
       - name: org1-collection
         orgNames:
