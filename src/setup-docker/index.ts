@@ -72,7 +72,6 @@ export default class SetupDockerGenerator extends Generator {
   ): void {
     const settings = {
       capabilities,
-      isHlf20: networkSettings.isHlf20,
       networkSettings,
       rootOrg,
       orgs,

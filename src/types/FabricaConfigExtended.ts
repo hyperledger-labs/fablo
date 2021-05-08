@@ -4,13 +4,12 @@ export interface NetworkSettings {
   tls: boolean;
   monitoring: { loglevel: string };
   paths: { fabricaConfig: string; chaincodesBaseDir: string };
-  isHlf20: boolean;
 }
 
 export interface Capabilities {
-  application: "V1_3" | "V1_4_2";
-  channel: "V1_3" | "V1_4_2" | "V1_4_3";
-  orderer: "V1_1" | "V1_4_2";
+  application: "V1_3" | "V1_4_2" | "V2_0";
+  channel: "V1_3" | "V1_4_2" | "V1_4_3" | "V2_0";
+  orderer: "V1_1" | "V1_4_2" | "V2_0";
 }
 
 export interface OrdererConfig {
