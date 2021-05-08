@@ -29,12 +29,14 @@ class KVContractMockStub extends ChaincodeMockStub {
     const transientMap = !transient
       ? undefined
       : Object.keys(transient).reduce((map, k) => map.set(k, transient[k]), new Map());
-    const { payload } = await this.mockInvoke(uuid.v1(), args, transientMap);
-    try {
-      return JSON.parse(payload.toString());
-    } catch (_e) {
-      throw payload.toBuffer();
+    const response = await this.mockInvoke(uuid.v1(), args, transientMap);
+
+    if (response.status !== 200) {
+      console.error(`Error invoking chaincode. Status: ${response.status}, message:`, response.message);
+      throw response.message;
     }
+
+    return JSON.parse(response.payload.toString());
   }
 }
 

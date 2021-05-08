@@ -1,0 +1,25 @@
+{
+  "name": "chaincode-kv-node-1.4",
+  "version": "0.1.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "scripts": {
+    "start": "fabric-chaincode-node start",
+    "build": "echo \"No need to build the chaincode\"",
+    "lint": "eslint . --fix --ext .js",
+    "test": "CHAINCODE_LOGGING_LEVEL=DEBUG jest"
+  },
+  "author": "SoftwareMill",
+  "dependencies": {
+    "fabric-contract-api": "^2.3.0",
+    "fabric-shim": "^2.3.0"
+  },
+  "devDependencies": {
+    "@theledger/fabric-mock-stub": "^5.0.1",
+    "jest": "^26.6.3",
+    "uuid": "^8.3.2"
+  }
+}
