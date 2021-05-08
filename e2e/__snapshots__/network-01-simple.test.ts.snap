@@ -383,13 +383,13 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "#!/usr/bin/env bash
 
 function installChaincodes() {
-  chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+  chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
   printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
+  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
 
 }
 
@@ -408,15 +408,15 @@ function upgradeChaincode() {
   fi
 
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
 
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
     printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
   fi
 }
 
@@ -574,7 +574,7 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
     networks:
       - basic
 
@@ -963,19 +963,28 @@ function chaincodeBuild() {
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
-    inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-    inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-    inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-
-    if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-      if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-        (cd \\"$CHAINCODE_DIR_PATH\\" && yarn install && yarn build)
-      else
-        (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --unsafe-perm=true && npm run build)
-      fi
-    else
+    if [ -z \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
       echo \\"Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty.\\"
+    else
+      NODE_VERSION=\\"12\\"
+      COMMAND=\\"npm install && npm run build\\"
+
+      USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
+      if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
+        NODE_VERSION=\\"8\\"
+      fi
+
+      if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
+        COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
+      fi
+
+      echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
+      inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+      inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+      inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+      inputLog \\"NODE_VERSION: $NODE_VERSION\\"
+
+      docker run -it --rm -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
     fi
   fi
 }
