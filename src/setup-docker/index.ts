@@ -37,7 +37,7 @@ export default class SetupDockerGenerator extends Generator {
       .replace(/[^0-9]+/g, "");
     const composeNetworkName = `fabrica_network_${dateString}`;
 
-    this.log(`Used network config: ${this.options.fabricaConfigPath}`);
+    this.log(`Used network config: ${fabricaConfigPath}`);
     this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 

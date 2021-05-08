@@ -1455,19 +1455,28 @@ function chaincodeBuild() {
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
-    inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-    inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-    inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-
-    if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-      if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-        (cd \\"$CHAINCODE_DIR_PATH\\" && yarn install && yarn build)
-      else
-        (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --unsafe-perm=true && npm run build)
-      fi
-    else
+    if [ -z \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
       echo \\"Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty.\\"
+    else
+      NODE_VERSION=\\"12\\"
+      COMMAND=\\"npm install && npm run build\\"
+
+      USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
+      if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
+        NODE_VERSION=\\"8\\"
+      fi
+
+      if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
+        COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
+      fi
+
+      echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
+      inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+      inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+      inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+      inputLog \\"NODE_VERSION: $NODE_VERSION\\"
+
+      docker run -it --rm -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
     fi
   fi
 }
