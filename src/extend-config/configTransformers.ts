@@ -243,6 +243,9 @@ const transformChannelConfigs = (
 
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
+  if (version(fabricVersion).isGreaterOrEqual("2.0.0"))
+    return { channel: "V2_0", orderer: "V2_0", application: "V2_0" };
+
   if (version(fabricVersion).isGreaterOrEqual("1.4.3"))
     return { channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2" };
 
@@ -251,8 +254,6 @@ const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
 
   return { channel: "V1_3", orderer: "V1_1", application: "V1_3" };
 };
-
-const isHlf20 = (fabricVersion: string) => version(fabricVersion).isGreaterOrEqual("2.0.0");
 
 const getCaVersion = (fabricVersion: string) =>
   version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.0" : fabricVersion;
@@ -277,7 +278,6 @@ const transformNetworkSettings = (networkSettingsJson: NetworkSettingsJson): Net
     ...networkSettingsJson,
     fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
     paths: getPathsFromEnv(),
-    isHlf20: isHlf20(networkSettingsJson.fabricVersion),
     monitoring,
   };
 };

@@ -1,4 +1,3 @@
-<% if(!isHlf20) { %>
 ################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -9,7 +8,7 @@ Capabilities:
         <%=  capabilities.orderer %>: true
     Application: &ApplicationCapabilities
         <%=  capabilities.application %>: true
-<% } %>
+
 ################################################################################
 #   CHANNEL Defaults
 ################################################################################
@@ -24,10 +23,8 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-<% if(!isHlf20) { %>
     Capabilities:
         <<: *ChannelCapabilities
-<% } %>
 
 ################################################################################
 #   Section: Organizations
@@ -94,10 +91,8 @@ Application: &ApplicationDefaults
         Endorsement:
             Type: ImplicitMeta
             Rule: "MAJORITY Endorsement"
-<% if(!isHlf20) { %>
     Capabilities:
         <<: *ApplicationCapabilities
-<% } %>
 
 ################################################################################
 #   SECTION: Orderer
@@ -131,10 +126,8 @@ Orderer: &OrdererDefaults
         BlockValidation:
             Type: ImplicitMeta
             Rule: "ANY Writers"
-<% if(!isHlf20) { %>
     Capabilities:
         <<: *OrdererCapabilities
-<% } -%>
 
 ################################################################################
 #   Profile
@@ -149,10 +142,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-<% if(!isHlf20) { %>
             Capabilities:
                 <<: *OrdererCapabilities
-<% } %>
         Consortiums:
             SampleConsortium:
                 Organizations:<% orgs.forEach(function(org){ %>
@@ -174,8 +165,6 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
-<% if(!isHlf20) { %>
             Capabilities:
                 <<: *ApplicationCapabilities
-<% } %>
 <% }) %>
