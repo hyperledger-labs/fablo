@@ -36,7 +36,6 @@ Validation warnings count: 0
       \\"fabricaConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
-    \\"isHlf20\\": true,
     \\"monitoring\\": {
       \\"loglevel\\": \\"info\\"
     }
@@ -44,7 +43,8 @@ Validation warnings count: 0
   \\"capabilities\\": {
     \\"channel\\": \\"V2_0\\",
     \\"orderer\\": \\"V2_0\\",
-    \\"application\\": \\"V2_0\\"
+    \\"application\\": \\"V2_0\\",
+    \\"isV2\\": true
   },
   \\"rootOrg\\": {
     \\"name\\": \\"Orderer\\",

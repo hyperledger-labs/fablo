@@ -32,7 +32,6 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Admins\\"
-
     Capabilities:
         <<: *ChannelCapabilities
 
@@ -100,7 +99,6 @@ Application: &ApplicationDefaults
         Endorsement:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Endorsement\\"
-
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -135,7 +133,6 @@ Orderer: &OrdererDefaults
         BlockValidation:
             Type: ImplicitMeta
             Rule: \\"ANY Writers\\"
-
     Capabilities:
         <<: *OrdererCapabilities
 
@@ -152,10 +149,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-
             Capabilities:
                 <<: *OrdererCapabilities
-
         Consortiums:
             SampleConsortium:
                 Organizations:
@@ -177,7 +172,6 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *Org1
-
             Capabilities:
                 <<: *ApplicationCapabilities
 "

@@ -32,7 +32,6 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Admins\\"
-
     Capabilities:
         <<: *ChannelCapabilities
 
@@ -100,7 +99,6 @@ Application: &ApplicationDefaults
         Endorsement:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Endorsement\\"
-
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -135,7 +133,6 @@ Orderer: &OrdererDefaults
         BlockValidation:
             Type: ImplicitMeta
             Rule: \\"ANY Writers\\"
-
     Capabilities:
         <<: *OrdererCapabilities
 
@@ -152,10 +149,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-
             Capabilities:
                 <<: *OrdererCapabilities
-
         Consortiums:
             SampleConsortium:
                 Organizations:
@@ -177,7 +172,6 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *Org1
-
             Capabilities:
                 <<: *ApplicationCapabilities
 "
@@ -416,6 +410,7 @@ function installChaincodes() {
   chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
   chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+
   chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
   printHeadline \\"Installing 'chaincode2' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"orderer0.root.com:7050\\" \\"\\"
