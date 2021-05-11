@@ -5,39 +5,7 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      chaincodeBuild <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
-      <% chaincode.channel.orgs.forEach(function (org) { -%>
-        <% org.peers.forEach(function (peer) { -%>
-          printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          chaincodeInstall <% -%>
-            "cli.<%= org.domain %>" <% -%>
-            "<%= peer.fullAddress %>" <% -%>
-            "<%= chaincode.channel.name %>" <% -%>
-            "<%= chaincode.name %>" <% -%>
-            "<%= chaincode.version %>" <% -%>
-            "<%= chaincode.lang %>" <% -%>
-            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-            "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
-        <% }) -%>
-      <% }) -%>
-      printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-      chaincodeInstantiate <% -%>
-        "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
-        "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-        "<%= chaincode.channel.name %>" <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.version %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-        "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-        '<%- chaincode.init %>' <% -%>
-        "<%- chaincode.endorsement %>" <% -%>
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
-        "<%= chaincode.privateDataConfigFile || '' %>"
+      <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode: chaincode, rootOrg: rootOrg, networkSettings: networkSettings }); %>
     <% }) %>
   <% } -%>
 }

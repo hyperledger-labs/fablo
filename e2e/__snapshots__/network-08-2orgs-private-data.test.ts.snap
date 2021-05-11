@@ -58,7 +58,6 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Admins\\"
-
     Capabilities:
         <<: *ChannelCapabilities
 
@@ -148,7 +147,6 @@ Application: &ApplicationDefaults
         Endorsement:
             Type: ImplicitMeta
             Rule: \\"MAJORITY Endorsement\\"
-
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -183,7 +181,6 @@ Orderer: &OrdererDefaults
         BlockValidation:
             Type: ImplicitMeta
             Rule: \\"ANY Writers\\"
-
     Capabilities:
         <<: *OrdererCapabilities
 
@@ -200,10 +197,8 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
-
             Capabilities:
                 <<: *OrdererCapabilities
-
         Consortiums:
             SampleConsortium:
                 Organizations:
@@ -229,7 +224,6 @@ Profiles:
             Organizations:
                 - *Org1
                 - *Org2
-
             Capabilities:
                 <<: *ApplicationCapabilities
 "
@@ -534,6 +528,7 @@ function installChaincodes() {
   chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
   printItalics \\"Instantiating chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
   chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
+
   chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
   printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
   chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"orderer0.root.com:7050\\" \\"\\"
