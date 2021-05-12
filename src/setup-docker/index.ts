@@ -4,9 +4,8 @@ import { getBuildInfo } from "../version/buildUtil";
 import { extendConfig } from "../extend-config";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
 import {
-  Capabilities,
   ChaincodeConfig,
-  ChannelConfig,
+  FabricaConfigExtended,
   NetworkSettings,
   OrgConfig,
   RootOrgConfig,
@@ -29,7 +28,8 @@ export default class SetupDockerGenerator extends Generator {
   async writing(): Promise<void> {
     const fabricaConfigPath = `${this.env.cwd}/${this.options.fabricaConfig}`;
     const json = parseFabricaConfig(this.fs.read(fabricaConfigPath));
-    const { networkSettings, capabilities, rootOrg, orgs, channels, chaincodes } = extendConfig(json);
+    const config = extendConfig(json);
+    const { networkSettings, rootOrg, orgs, chaincodes } = config;
 
     const dateString = new Date()
       .toISOString()
@@ -44,7 +44,7 @@ export default class SetupDockerGenerator extends Generator {
     // ======= fabric-config ============================================================
     this._copyRootOrgCryptoConfig(rootOrg);
     this._copyOrgCryptoConfig(orgs);
-    this._copyConfigTx(capabilities, networkSettings, rootOrg, orgs, channels);
+    this._copyConfigTx(config);
     this._copyGitIgnore();
     this._createPrivateDataCollectionConfigs(chaincodes);
 
@@ -53,7 +53,7 @@ export default class SetupDockerGenerator extends Generator {
     this._copyDockerCompose(networkSettings, rootOrg, orgs, chaincodes);
 
     // ======= scripts ==================================================================
-    this._copyCommandsGeneratedScript(networkSettings, rootOrg, orgs, channels, chaincodes);
+    this._copyCommandsGeneratedScript(config);
     this._copyUtilityScripts();
 
     this.on("end", () => {
@@ -63,24 +63,11 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _copyConfigTx(
-    capabilities: Capabilities,
-    networkSettings: NetworkSettings,
-    rootOrg: RootOrgConfig,
-    orgs: OrgConfig[],
-    channels: ChannelConfig[],
-  ): void {
-    const settings = {
-      capabilities,
-      networkSettings,
-      rootOrg,
-      orgs,
-      channels,
-    };
+  _copyConfigTx(config: FabricaConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-config/configtx.yaml"),
       this.destinationPath("fabric-config/configtx.yaml"),
-      settings,
+      config,
     );
   }
 
@@ -137,31 +124,16 @@ export default class SetupDockerGenerator extends Generator {
     );
   }
 
-  _copyCommandsGeneratedScript(
-    networkSettings: NetworkSettings,
-    rootOrg: RootOrgConfig,
-    orgs: OrgConfig[],
-    channels: ChannelConfig[],
-    chaincodes: ChaincodeConfig[],
-  ): void {
-    const settings = {
-      networkSettings,
-      rootOrg,
-      orgs,
-      channels,
-      chaincodes,
-    };
-
+  _copyCommandsGeneratedScript(config: FabricaConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-docker/channel-query-scripts.sh"),
       this.destinationPath("fabric-docker/channel-query-scripts.sh"),
-      settings,
+      config,
     );
-
     this.fs.copyTpl(
       this.templatePath("fabric-docker/commands-generated.sh"),
       this.destinationPath("fabric-docker/commands-generated.sh"),
-      settings,
+      config,
     );
   }
 
