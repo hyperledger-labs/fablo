@@ -5,7 +5,7 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode: chaincode, rootOrg: rootOrg, networkSettings: networkSettings }); %>
+      <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
     <% }) %>
   <% } -%>
 }
