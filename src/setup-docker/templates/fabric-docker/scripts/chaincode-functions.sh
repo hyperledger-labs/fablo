@@ -244,8 +244,7 @@ function chaincodeInstallV1() {
   fi
 
   if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-    docker exec "$CLI_NAME" peer chaincode install \
-      -C "$CHANNEL_NAME" \
+    docker exec -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
       -n "$CHAINCODE_NAME" \
       -v "$CHAINCODE_VERSION" \
       -l "$CHAINCODE_LANG" \
