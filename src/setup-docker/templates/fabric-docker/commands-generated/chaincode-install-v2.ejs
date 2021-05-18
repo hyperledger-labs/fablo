@@ -1,3 +1,5 @@
+# TODO get version from env vars
+
 printHeadline "Packaging chaincode '<%= chaincode.label %>'" "U1F60E"
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
@@ -7,10 +9,10 @@ chaincodePackage <% -%>
   "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.name %>" <% -%>
-  "<%= chaincode.label %>" <% -%>
+  "<%= chaincode.version %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
   "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-  "<%= rootOrg.ordererHead.fullAddress %>" <% /* required? */ -%>
+  "<%= rootOrg.ordererHead.fullAddress %>" <% /* TODO required? */ -%>
   "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
 <% chaincode.channel.orgs.forEach(function (org) { -%>
   printHeadline "Installing '<%= chaincode.label %>' for <%= org.name %>" "U1F60E"
@@ -19,7 +21,7 @@ chaincodePackage <% -%>
       "cli.<%= org.domain %>" <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
-      "<%= chaincode.label %>" <% -%>
+      "<%= chaincode.version %>" <% -%>
       "<%= rootOrg.ordererHead.fullAddress %>" <% /* required? */ -%>
       "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
   <% }) -%>
@@ -29,7 +31,6 @@ chaincodePackage <% -%>
     "<%= chaincode.channel.name %>" <% -%>
     "<%= chaincode.name %>" <% -%>
     "<%= chaincode.version %>" <% -%>
-    "<%= chaincode.label %>" <% -%>
     "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement %>" <% -%>
     "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
