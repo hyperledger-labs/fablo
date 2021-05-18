@@ -18,10 +18,8 @@ label="Invoke $channel/$cli/$peer $command"
 echo ""
 echo "➜ testing: $label"
 
-# shellcheck disable=SC2001
 peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 
-# shellcheck disable=SC2001
 peerNoPort="$(echo "$peer" | sed -e 's/:[[:digit:]]\{2,\}//g')"
 tlsRootCertFiles="--tlsRootCertFiles /var/hyperledger/cli/crypto/peers/$(echo "$peerNoPort" | sed 's/,/\/tls\/ca.crt --tlsRootCertFiles \/var\/hyperledger\/cli\/crypto\/peers\//g')/tls/ca.crt"
 

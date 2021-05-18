@@ -5,7 +5,7 @@ chaincodeBuild <% -%>
 <% chaincode.channel.orgs.forEach(function (org) { -%>
   <% org.peers.forEach(function (peer) { -%>
     printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-    chaincodeInstall <% -%>
+    chaincodeInstallV1 <% -%>
       "cli.<%= org.domain %>" <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.channel.name %>" <% -%>
@@ -18,7 +18,7 @@ chaincodeBuild <% -%>
   <% }) -%>
 <% }) -%>
 printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-chaincodeInstantiate <% -%>
+chaincodeInstantiateV1 <% -%>
   "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.channel.name %>" <% -%>

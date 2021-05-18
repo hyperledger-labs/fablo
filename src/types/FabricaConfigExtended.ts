@@ -98,6 +98,7 @@ export interface ChaincodeConfig {
   directory: string;
   name: string;
   version: string;
+  label: string;
   lang: string;
   channel: ChannelConfig;
   init: string;
