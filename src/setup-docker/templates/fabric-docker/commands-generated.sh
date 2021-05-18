@@ -5,7 +5,11 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% if (capabilities.isV2) { -%>
+        <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } else { -%>
+        <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } -%>
     <% }) %>
   <% } -%>
 }
@@ -33,7 +37,7 @@ function upgradeChaincode() {
       <% chaincode.channel.orgs.forEach(function (org) { -%>
         <% org.peers.forEach(function (peer) { %>
           printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          chaincodeInstall <% -%>
+          chaincodeInstallV1 <% -%>
             "cli.<%= org.domain %>" <% -%>
             "<%= peer.fullAddress %>" <% -%>
             "<%= chaincode.channel.name %>" <% -%>
@@ -46,7 +50,7 @@ function upgradeChaincode() {
         <% }) -%>
       <% }) -%>
       printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
-      chaincodeUpgrade <% -%>
+      chaincodeUpgradeV1 <% -%>
         "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
         "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
         "<%= chaincode.channel.name %>" "<%= chaincode.name %>" <% -%>
