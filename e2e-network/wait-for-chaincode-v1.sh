@@ -13,13 +13,14 @@ if [ -z "$version" ]; then
 fi
 
 listChaincodes() {
-  docker exec "$cli" peer lifecycle chaincode querycommitted \
+  docker exec "$cli" peer chaincode list \
     --peerAddresses="$peer" \
-    --channelID "$channel"
+    -C "$channel" \
+    --instantiated
 }
 
 for i in $(seq 1 90); do
-  echo "➜ verifying if chaincode ($chaincode/$version) is committed on $channel/$cli/$peer ($i)..."
+  echo "➜ verifying if chaincode ($chaincode/$version) is instantiated on $channel/$cli/$peer ($i)..."
 
   if listChaincodes 2>&1 | grep "$search_string"; then
     echo "✅ ok: Chaincode $chaincode/$version is ready on $channel/$cli/$peer!"
