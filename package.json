@@ -1,16 +1,31 @@
 {
   "name": "generator-fabrica",
   "version": "0.1.0-unstable",
-  "description": "",
-  "files": [
-    "generators"
-  ],
+  "description": "Fabrica is a simple tool to generate the Hyperledger Fabric blockchain network and run it on Docker. It supports RAFT and solo consensus protocols, multiple organizations and channels, chaincode installation and upgrade.",
+  "author": "Piotr Hejwowski <piotr.hejwowski@softwaremill.com>, Jakub Dzikowski <jakub.dzikowski@softwaremill.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softwaremill/fabrica.git"
+  },
   "keywords": [
-    "yeoman-generator"
+    "hyperledger fabric",
+    "blockchain",
+    "blockchain network",
+    "config generator",
+    "CI"
   ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/softwaremill/fabrica/issues"
+  },
+  "homepage": "https://github.com/softwaremill/fabrica#readme",
   "scripts": {
-    "lint": "eslint --fix generators e2e && madge --circular --warning generators e2e && ejslint generators",
-    "test:unit": "jest generators",
+    "clean": "rimraf generators",
+    "build": "tsc",
+    "build:dist": "npm run clean && tsc -p tsconfig-dist.json && npm run copydeps",
+    "copydeps": "copyfiles --all --up 1 'src/*/templates/**' generators",
+    "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
+    "test:unit": "jest src",
     "test:e2e": "jest e2e -i",
     "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
   },
@@ -23,14 +38,32 @@
     "yeoman-generator": "^4.5.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/jest-json-schema": "^2.1.3",
+    "@types/js-yaml": "^4.0.1",
+    "@types/lodash": "^4.14.168",
+    "@types/node-fetch": "^2.5.10",
+    "@types/yeoman-generator": "^4.11.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "copyfiles": "2.4.1",
     "ejs-lint": "^1.2.0",
-    "eslint": "^7.10.0",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^23.7.0",
-    "jest": "^25.1.0",
+    "eslint-plugin-json": "^2.1.2",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^26.6.3",
     "jest-json-schema": "^5.0.0",
     "madge": "^4.0.2",
-    "yeoman-test": "^2.1.0"
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.5",
+    "ts-loader": "^9.1.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "yeoman-test": "^5.1.0"
   }
 }
