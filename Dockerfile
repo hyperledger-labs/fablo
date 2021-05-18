@@ -1,4 +1,4 @@
-FROM node:12.18.0-alpine3.12
+FROM node:14.16-alpine3.12
 
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
@@ -13,7 +13,7 @@ COPY samples/fabricaConfig-1org-1channel-1chaincode.json /fabrica/generators/ini
 COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
 
 WORKDIR /fabrica
-RUN npm install --silent
+RUN npm install --silent --only=prod
 RUN npm link
 
 # Add a yeoman user because Yeoman freaks out and runs setuid(501).
