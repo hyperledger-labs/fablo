@@ -30,7 +30,7 @@ waitForContainer() {
 }
 
 waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+  sh "$TEST_TMP/../wait-for-chaincode-v1.sh" "$1" "$2" "$3" "$4" "$5"
 }
 
 expectInvoke() {
