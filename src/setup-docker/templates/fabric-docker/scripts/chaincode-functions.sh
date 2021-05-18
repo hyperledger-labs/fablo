@@ -38,14 +38,15 @@ function chaincodePackage() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
-  local CHAINCODE_LABEL=$4
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
   local CHAINCODE_DIR_PATH=$6
   local ORDERER_URL=$7
   local CA_CERT=$8
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
-  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
@@ -78,12 +79,13 @@ function chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
-  local CHAINCODE_LABEL=$4
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$5
   local CA_CERT=$6
 
   echo "Installing chaincode $CHAINCODE_NAME..."
-  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CA_CERT: $CA_CERT"
@@ -108,11 +110,11 @@ function chaincodeApprove() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL=$6
-  local ORDERER_URL=$7
-  local ENDORSEMENT=$8
-  local CA_CERT=$9
-  local COLLECTIONS_CONFIG=${10}
+  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local ORDERER_URL=$6
+  local ENDORSEMENT=$7
+  local CA_CERT=$8
+  local COLLECTIONS_CONFIG=$9
 
   echo "Approving chaincode $CHAINCODE_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -120,7 +122,6 @@ function chaincodeApprove() {
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
   inputLog "CA_CERT: $CA_CERT"
@@ -144,11 +145,28 @@ function chaincodeApprove() {
 
   QUERYINSTALLED_RESPONSE="$(
     docker exec "$CLI_NAME" peer lifecycle chaincode queryinstalled \
+      --output json \
       "${PEER_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   )"
-  CC_PACKAGE_ID="$(echo "$QUERYINSTALLED_RESPONSE" | grep -E -o "$CHAINCODE_LABEL:[^,]+")"
+  echo "$QUERYINSTALLED_RESPONSE"
+  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<< "$QUERYINSTALLED_RESPONSE")"
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
+
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE="$(
+    docker exec "$CLI_NAME" peer lifecycle chaincode querycommitted \
+      --channelID "$CHANNEL_NAME" \
+      --output json \
+      "${PEER_PARAMS[@]}" \
+      "${CA_CERT_PARAMS[@]}"
+  )"
+  echo "$QUERYCOMMITTED_RESPONSE"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<< "$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog "SEQUENCE: $SEQUENCE"
 
   docker exec -e CC_PACKAGE_ID="$CC_PACKAGE_ID" "$CLI_NAME" peer lifecycle chaincode approveformyorg \
     -o "$ORDERER_URL" \
@@ -156,7 +174,7 @@ function chaincodeApprove() {
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
     --package-id "$CC_PACKAGE_ID" \
-    --sequence 1 \
+    --sequence "$SEQUENCE" \
     --signature-policy "$ENDORSEMENT" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${PEER_PARAMS[@]}" \
@@ -202,12 +220,27 @@ function chaincodeCommit() {
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
   fi
 
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE="$(
+    docker exec "$CLI_NAME" peer lifecycle chaincode querycommitted \
+      --channelID "$CHANNEL_NAME" \
+      --output json \
+      "${PEER_PARAMS[@]}" \
+      "${CA_CERT_PARAMS[@]}"
+  )"
+  echo "$QUERYCOMMITTED_RESPONSE"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<< "$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog "SEQUENCE: $SEQUENCE"
+
   docker exec "$CLI_NAME" peer lifecycle chaincode commit \
     -o "$ORDERER_URL" \
     -C "$CHANNEL_NAME" \
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
-    --sequence 1 \
+    --sequence "$SEQUENCE" \
     --signature-policy "$ENDORSEMENT" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${PEER_PARAMS[@]}" \
