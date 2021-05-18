@@ -5,59 +5,29 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% if (capabilities.isV2) { -%>
+        <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } else { -%>
+        <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } -%>
     <% }) %>
   <% } -%>
 }
 
 function upgradeChaincode() {
   chaincodeName="$1"
+  if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
+
   version="$2"
-
-  if [ -z "$chaincodeName" ]; then
-    echo "Error: chaincode name is not provided"
-    exit 1
-  fi
-
-  if [ -z "$version" ]; then
-    echo "Error: chaincode version is not provided"
-    exit 1
-  fi
+  if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
 
   <% chaincodes.forEach(function(chaincode) { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
-      chaincodeBuild <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
-      <% chaincode.channel.orgs.forEach(function (org) { -%>
-        <% org.peers.forEach(function (peer) { %>
-          printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          chaincodeInstall <% -%>
-            "cli.<%= org.domain %>" <% -%>
-            "<%= peer.fullAddress %>" <% -%>
-            "<%= chaincode.channel.name %>" <% -%>
-            "<%= chaincode.name %>" <% -%>
-            "$version" <% -%>
-            "<%= chaincode.lang %>" <% -%>
-            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-            "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>"
-        <% }) -%>
-      <% }) -%>
-      printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
-      chaincodeUpgrade <% -%>
-        "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
-        "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-        "<%= chaincode.channel.name %>" "<%= chaincode.name %>" <% -%>
-        "$version" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-        "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-        '<%- chaincode.init %>' <% -%>
-        "<%- chaincode.endorsement %>" <% -%>
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>" <% -%>
-        "<%= chaincode.privateDataConfigFile || '' %>"
+      <% if (capabilities.isV2) { -%>
+        <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } else { -%>
+        <%- include('commands-generated/chaincode-upgrade-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+      <% } -%>
     fi
   <% }) -%>
 }
