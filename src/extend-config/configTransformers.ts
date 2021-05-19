@@ -76,7 +76,6 @@ const transformChaincodesConfig = (
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
-      label: `${chaincode.name}-${chaincode.version}`,
       lang: chaincode.lang,
       channel,
       init: chaincode.init,

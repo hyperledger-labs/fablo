@@ -98,7 +98,6 @@ export interface ChaincodeConfig {
   directory: string;
   name: string;
   version: string;
-  label: string; // TODO remove label
   lang: string;
   channel: ChannelConfig;
   init: string;
