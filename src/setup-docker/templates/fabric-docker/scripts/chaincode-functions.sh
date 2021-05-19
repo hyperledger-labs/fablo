@@ -8,29 +8,25 @@ function chaincodeBuild() {
   mkdir -p "$CHAINCODE_DIR_PATH"
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
-    if [ -z "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-      echo "Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty."
-    else
-      NODE_VERSION="12"
-      COMMAND="npm install && npm run build"
+    local NODE_VERSION="12"
+    local COMMAND="npm install && npm run build"
 
-      USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
-      if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
-        NODE_VERSION="8"
-      fi
-
-      if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
-        COMMAND="npm install -g yarn && yarn install && yarn build"
-      fi
-
-      echo "Buiding chaincode '$CHAINCODE_NAME'..."
-      inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
-      inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-      inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
-      inputLog "NODE_VERSION: $NODE_VERSION"
-
-      docker run --rm -v "$CHAINCODE_DIR_PATH:/chaincode" -w /chaincode "node:$NODE_VERSION" sh -c "$COMMAND"
+    local USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
+    if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
+      NODE_VERSION="8"
     fi
+
+    if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
+      COMMAND="npm install -g yarn && yarn install && yarn build"
+    fi
+
+    echo "Buiding chaincode '$CHAINCODE_NAME'..."
+    inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+    inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+    inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+    inputLog "NODE_VERSION: $NODE_VERSION"
+
+    docker run --rm -v "$CHAINCODE_DIR_PATH:/chaincode" -w /chaincode "node:$NODE_VERSION" sh -c "$COMMAND"
   fi
 }
 
@@ -41,14 +37,12 @@ function chaincodePackage() {
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
-  local CHAINCODE_DIR_PATH=$6
-  local ORDERER_URL=$7
-  local CA_CERT=$8
+  local ORDERER_URL=$6
+  local CA_CERT=$7
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
@@ -62,17 +56,13 @@ function chaincodePackage() {
     read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
   fi
 
-  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-    docker exec "$CLI_NAME" peer lifecycle chaincode package \
-      "/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz" \
-      --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \
-      --lang "$CHAINCODE_LANG" \
-      --label "$CHAINCODE_LABEL" \
-      "${PEER_PARAMS[@]}" \
-      "${CA_CERT_PARAMS[@]}"
-  else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' packaging. Chaincode's directory is empty."
-  fi
+  docker exec "$CLI_NAME" peer lifecycle chaincode package \
+    "/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz" \
+    --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \
+    --lang "$CHAINCODE_LANG" \
+    --label "$CHAINCODE_LABEL" \
+    "${PEER_PARAMS[@]}" \
+    "${CA_CERT_PARAMS[@]}"
 }
 
 function chaincodeInstall() {
@@ -150,7 +140,7 @@ function chaincodeApprove() {
       "${CA_CERT_PARAMS[@]}"
   )"
   echo "$QUERYINSTALLED_RESPONSE"
-  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<< "$QUERYINSTALLED_RESPONSE")"
+  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<<"$QUERYINSTALLED_RESPONSE")"
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
 
   local QUERYCOMMITTED_RESPONSE
@@ -164,7 +154,7 @@ function chaincodeApprove() {
       "${CA_CERT_PARAMS[@]}"
   )"
   echo "$QUERYCOMMITTED_RESPONSE"
-  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<< "$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
   inputLog "SEQUENCE: $SEQUENCE"
 
@@ -231,7 +221,7 @@ function chaincodeCommit() {
       "${CA_CERT_PARAMS[@]}"
   )"
   echo "$QUERYCOMMITTED_RESPONSE"
-  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<< "$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
   inputLog "SEQUENCE: $SEQUENCE"
 
@@ -254,15 +244,13 @@ function chaincodeInstallV1() {
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-  local ORDERER_URL=$8
-  local CA_CERT=$9
+  local ORDERER_URL=$7
+  local CA_CERT=$8
 
   echo "Installing chaincode on $CHANNEL_NAME..."
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
@@ -276,18 +264,14 @@ function chaincodeInstallV1() {
     read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
   fi
 
-  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-    docker exec -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
-      -n "$CHAINCODE_NAME" \
-      -v "$CHAINCODE_VERSION" \
-      -l "$CHAINCODE_LANG" \
-      -p "/var/hyperledger/cli/$CHAINCODE_NAME/" \
-      -o "$ORDERER_URL" \
-      "${PEER_PARAMS[@]}" \
-      "${CA_CERT_PARAMS[@]}"
-  else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty."
-  fi
+  docker exec -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
+    -n "$CHAINCODE_NAME" \
+    -v "$CHAINCODE_VERSION" \
+    -l "$CHAINCODE_LANG" \
+    -p "/var/hyperledger/cli/$CHAINCODE_NAME/" \
+    -o "$ORDERER_URL" \
+    "${PEER_PARAMS[@]}" \
+    "${CA_CERT_PARAMS[@]}"
 }
 
 function chaincodeInstantiateV1() {
@@ -297,12 +281,11 @@ function chaincodeInstantiateV1() {
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-  local ORDERER_URL=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=${10}
-  local CA_CERT=${11}
-  local COLLECTIONS_CONFIG=${12}
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=${10}
+  local COLLECTIONS_CONFIG=${11}
 
   echo "Instantiating chaincode on $CHANNEL_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -310,7 +293,6 @@ function chaincodeInstantiateV1() {
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
@@ -332,22 +314,17 @@ function chaincodeInstantiateV1() {
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
   fi
 
-  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-    docker exec "$CLI_NAME" peer chaincode instantiate \
-      -C "$CHANNEL_NAME" \
-      -n "$CHAINCODE_NAME" \
-      -v "$CHAINCODE_VERSION" \
-      -l "$CHAINCODE_LANG" \
-      -o "$ORDERER_URL" \
-      -c "$INIT_PARAMS" \
-      -P "$ENDORSEMENT" \
-      "${PEER_PARAMS[@]}" \
-      "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-      "${CA_CERT_PARAMS[@]}"
-  else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
-    echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
-  fi
+  docker exec "$CLI_NAME" peer chaincode instantiate \
+    -C "$CHANNEL_NAME" \
+    -n "$CHAINCODE_NAME" \
+    -v "$CHAINCODE_VERSION" \
+    -l "$CHAINCODE_LANG" \
+    -o "$ORDERER_URL" \
+    -c "$INIT_PARAMS" \
+    -P "$ENDORSEMENT" \
+    "${PEER_PARAMS[@]}" \
+    "${COLLECTIONS_CONFIG_PARAMS[@]}" \
+    "${CA_CERT_PARAMS[@]}"
 }
 
 function chaincodeUpgradeV1() {
@@ -357,12 +334,11 @@ function chaincodeUpgradeV1() {
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-  local ORDERER_URL=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=${10}
-  local CA_CERT=${11}
-  local COLLECTIONS_CONFIG=${12}
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=${10}
+  local COLLECTIONS_CONFIG=${11}
 
   echo "Upgrading chaincode on $CHANNEL_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -370,7 +346,6 @@ function chaincodeUpgradeV1() {
   inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
   inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
   inputLog "INIT_PARAMS: $INIT_PARAMS"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
@@ -392,22 +367,16 @@ function chaincodeUpgradeV1() {
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
   fi
 
-  # TODO move this check to commands generated everywhere
-  if [ -n "$(ls "$CHAINCODE_DIR_PATH")" ]; then
-    docker exec "$CLI_NAME" peer chaincode upgrade \
-      -C "$CHANNEL_NAME" \
-      -n "$CHAINCODE_NAME" \
-      -v "$CHAINCODE_VERSION" \
-      -l "$CHAINCODE_LANG" \
-      -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
-      -o "$ORDERER_URL" \
-      -c "$INIT_PARAMS" \
-      -P "$ENDORSEMENT" \
-      "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-      "${PEER_PARAMS[@]}" \
-      "${CA_CERT_PARAMS[@]}"
-  else
-    echo "Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty."
-    echo "Looked in dir: '$CHAINCODE_DIR_PATH'"
-  fi
+  docker exec "$CLI_NAME" peer chaincode upgrade \
+    -C "$CHANNEL_NAME" \
+    -n "$CHAINCODE_NAME" \
+    -v "$CHAINCODE_VERSION" \
+    -l "$CHAINCODE_LANG" \
+    -p /var/hyperledger/cli/"$CHAINCODE_NAME"/ \
+    -o "$ORDERER_URL" \
+    -c "$INIT_PARAMS" \
+    -P "$ENDORSEMENT" \
+    "${COLLECTIONS_CONFIG_PARAMS[@]}" \
+    "${PEER_PARAMS[@]}" \
+    "${CA_CERT_PARAMS[@]}"
 }
