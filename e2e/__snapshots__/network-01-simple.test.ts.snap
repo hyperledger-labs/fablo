@@ -232,6 +232,8 @@ elif [ \\"$1\\" = \\"start\\" ]; then
   startNetwork
 elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
+elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+  installChaincodes
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"channel\\" ]; then
@@ -244,7 +246,7 @@ else
   echo \\"No command specified\\"
   echo \\"Basic commands are: up, down, start, stop, reboot\\"
   echo \\"To list channel query helper commands type: 'fabrica channel --help'\\"
-  echo \\"Also check: 'chaincodes install'\\"
+  echo \\"Also check: 'chaincode install'\\"
   echo \\"Use 'help' or '--help' for more information\\"
 fi
 "
@@ -403,40 +405,53 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "#!/usr/bin/env bash
 
 function installChaincodes() {
-  chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
-  printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-  chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
-  printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-  chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+    local version=\\"0.0.1\\"
+    printHeadline \\"Packaging chaincode ''\\" \\"U1F60E\\"
+    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"\\"
+    printHeadline \\"Installing '' for Org1\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+    printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+  else
+    echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
+  fi
 
 }
 
 function upgradeChaincode() {
-  chaincodeName=\\"$1\\"
-  version=\\"$2\\"
-
+  local chaincodeName=\\"$1\\"
   if [ -z \\"$chaincodeName\\" ]; then
     echo \\"Error: chaincode name is not provided\\"
     exit 1
   fi
 
+  local version=\\"$2\\"
   if [ -z \\"$version\\" ]; then
     echo \\"Error: chaincode version is not provided\\"
     exit 1
   fi
 
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+      printHeadline \\"Packaging chaincode ''\\" \\"U1F60E\\"
+      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
+      chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"\\"
+      printHeadline \\"Installing '' for Org1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+      printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
 
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
-
-    printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" \\"\\"
-    printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-    chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+    else
+      echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
+    fi
   fi
 }
 
@@ -975,6 +990,8 @@ function printHelp() {
 exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
+# TODO move '/var/hyperledger/cli/' to commands-generated?
+
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
@@ -983,114 +1000,273 @@ function chaincodeBuild() {
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    if [ -z \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-      echo \\"Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty.\\"
-    else
-      NODE_VERSION=\\"12\\"
-      COMMAND=\\"npm install && npm run build\\"
+    local NODE_VERSION=\\"12\\"
+    local COMMAND=\\"npm install && npm run build\\"
 
-      USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
-      if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
-        NODE_VERSION=\\"8\\"
-      fi
-
-      if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-        COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
-      fi
-
-      echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
-      inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-      inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-      inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-      inputLog \\"NODE_VERSION: $NODE_VERSION\\"
-
-      docker run --rm -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
+    local USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
+    if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
+      NODE_VERSION=\\"8\\"
     fi
+
+    if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
+      COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
+    fi
+
+    echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
+    inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+    inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+    inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
+    inputLog \\"NODE_VERSION: $NODE_VERSION\\"
+
+    docker run --rm -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
   fi
+}
+
+function chaincodePackage() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
+  local CHAINCODE_LANG=$5
+  local CA_CERT=$6
+
+  echo \\"Packaging chaincode $CHAINCODE_NAME...\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
+
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
+  fi
+
+  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode package \\\\
+    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
+    --path \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
+    --lang \\"$CHAINCODE_LANG\\" \\\\
+    --label \\"$CHAINCODE_LABEL\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
 function chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
-  local CHANNEL_NAME=$3
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
+  local CA_CERT=$5
 
+  echo \\"Installing chaincode $CHAINCODE_NAME...\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
+
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
+  fi
+
+  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode install \\\\
+    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
+}
+
+function chaincodeApprove() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=\\"$3\\"
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
+  local ORDERER_URL=$6
+  local ENDORSEMENT=$7
+  local CA_CERT=$8
+  local COLLECTIONS_CONFIG=$9
+
+  echo \\"Approving chaincode $CHAINCODE_NAME...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
+  fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
+  fi
+
+  local QUERYINSTALLED_RESPONSE
+  local CC_PACKAGE_ID
+
+  QUERYINSTALLED_RESPONSE=\\"$(
+    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode queryinstalled \\\\
+      --output json \\\\
+      \\"\${PEER_PARAMS[@]}\\" \\\\
+      \\"\${CA_CERT_PARAMS[@]}\\"
+  )\\"
+  CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
+  inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
+
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE=\\"$(
+    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
+      --channelID \\"$CHANNEL_NAME\\" \\\\
+      --output json \\\\
+      \\"\${PEER_PARAMS[@]}\\" \\\\
+      \\"\${CA_CERT_PARAMS[@]}\\"
+  )\\"
+  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog \\"SEQUENCE: $SEQUENCE\\"
+
+  docker exec -e CC_PACKAGE_ID=\\"$CC_PACKAGE_ID\\" \\"$CLI_NAME\\" peer lifecycle chaincode approveformyorg \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -C \\"$CHANNEL_NAME\\" \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    --package-id \\"$CC_PACKAGE_ID\\" \\\\
+    --sequence \\"$SEQUENCE\\" \\\\
+    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
+}
+
+function chaincodeCommit() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=\\"$3\\"
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local ORDERER_URL=$6
+  local ENDORSEMENT=$7
+  local CA_CERT=$8
+  local COLLECTIONS_CONFIG=$9
+
+  echo \\"Committing chaincode $CHAINCODE_NAME...\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
+  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
+  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
+
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
+  fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
+  fi
+
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE=\\"$(
+    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
+      --channelID \\"$CHANNEL_NAME\\" \\\\
+      --output json \\\\
+      \\"\${PEER_PARAMS[@]}\\" \\\\
+      \\"\${CA_CERT_PARAMS[@]}\\"
+  )\\"
+  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog \\"SEQUENCE: $SEQUENCE\\"
+
+  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode commit \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -C \\"$CHANNEL_NAME\\" \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    --sequence \\"$SEQUENCE\\" \\\\
+    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
+}
+
+function chaincodeInstallV1() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-
-  local ORDERER_URL=$8
-
-  local CA_CERT
-  local CA_CERT_PARAMS
-
-  if [ -n \\"$9\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/$9\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
-  else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
-  fi
+  local ORDERER_URL=$7
+  local CA_CERT=$8
 
   echo \\"Installing chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
   inputLog \\"ORDERER_URL: $ORDERER_URL\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    docker exec -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\\\
-      \\"$CLI_NAME\\" peer chaincode install \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  else
-    echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' installation (TLS). Chaincode's directory is empty.\\"
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
   fi
+
+  docker exec -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" \\"$CLI_NAME\\" peer chaincode install \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -p \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeInstantiate() {
+function chaincodeInstantiateV1() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
-
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-
-  local ORDERER_URL=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
-
-  local CA_CERT
-  local CA_CERT_PARAMS
-
-  if [ -n \\"\${11}\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
-  else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
-  fi
-
-  local COLLECTIONS_CONFIG
-  local COLLECTIONS_CONFIG_PARAMS
-
-  if [ -n \\"\${12}\\" ]; then
-    COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/\${12}\\"
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  else
-    COLLECTIONS_CONFIG=\\"<none>\\"
-    COLLECTIONS_CONFIG_PARAMS=()
-  fi
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=\${10}
+  local COLLECTIONS_CONFIG=\${11}
 
   echo \\"Instantiating chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
@@ -1098,7 +1274,6 @@ function chaincodeInstantiate() {
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
   inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
@@ -1107,58 +1282,44 @@ function chaincodeInstantiate() {
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
-      -C \\"$CHANNEL_NAME\\" \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  else
-    echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
   fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
+  fi
+
+  docker exec \\"$CLI_NAME\\" peer chaincode instantiate \\\\
+    -C \\"$CHANNEL_NAME\\" \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -c \\"$INIT_PARAMS\\" \\\\
+    -P \\"$ENDORSEMENT\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeUpgrade() {
+function chaincodeUpgradeV1() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
-
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
   local CHAINCODE_LANG=$6
-  local CHAINCODE_DIR_PATH=$7
-
-  local ORDERER_URL=$8
-  local INIT_PARAMS=$9
-  local ENDORSEMENT=\${10}
-
-  local CA_CERT
-  local CA_CERT_PARAMS
-
-  if [ -n \\"\${11}\\" ]; then
-    CA_CERT=\\"/var/hyperledger/cli/\${11}\\"
-    CA_CERT_PARAMS=(--tls --cafile \\"$CA_CERT\\")
-  else
-    CA_CERT=\\"<none>\\"
-    CA_CERT_PARAMS=()
-  fi
-
-  local COLLECTIONS_CONFIG
-  local COLLECTIONS_CONFIG_PARAMS
-
-  if [ -n \\"\${12}\\" ]; then
-    COLLECTIONS_CONFIG=\\"/var/hyperledger/cli/\${12}\\"
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  else
-    COLLECTIONS_CONFIG=\\"<none>\\"
-    COLLECTIONS_CONFIG_PARAMS=()
-  fi
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=\${10}
+  local COLLECTIONS_CONFIG=\${11}
 
   echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
@@ -1166,7 +1327,6 @@ function chaincodeUpgrade() {
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
   inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
   inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
   inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
   inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
@@ -1175,22 +1335,31 @@ function chaincodeUpgrade() {
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
-  if [ -n \\"$(ls \\"$CHAINCODE_DIR_PATH\\")\\" ]; then
-    docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
-      -C \\"$CHANNEL_NAME\\" \\\\
-      -n \\"$CHAINCODE_NAME\\" \\\\
-      -v \\"$CHAINCODE_VERSION\\" \\\\
-      -l \\"$CHAINCODE_LANG\\" \\\\
-      -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
-      -o \\"$ORDERER_URL\\" \\\\
-      -c \\"$INIT_PARAMS\\" \\\\
-      -P \\"$ENDORSEMENT\\" \\\\
-      \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  else
-    echo \\"Warning! Skipping chaincode '$CHAINCODE_NAME' instantiate. Chaincode's directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODE_DIR_PATH'\\"
+  local PEER_PARAMS=()
+  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+
+  local CA_CERT_PARAMS=()
+  if [ -n \\"$CA_CERT\\" ]; then
+    read -r -a CA_CERT_PARAMS <<<\\"--tls --cafile /var/hyperledger/cli/$(echo \\"$CA_CERT_FILES\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
   fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
+  fi
+
+  docker exec \\"$CLI_NAME\\" peer chaincode upgrade \\\\
+    -C \\"$CHANNEL_NAME\\" \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -c \\"$INIT_PARAMS\\" \\\\
+    -P \\"$ENDORSEMENT\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
+    \\"\${PEER_PARAMS[@]}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]}\\"
 }
 "
 `;
