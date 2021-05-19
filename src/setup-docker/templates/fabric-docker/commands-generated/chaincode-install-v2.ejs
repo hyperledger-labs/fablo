@@ -1,5 +1,14 @@
-# TODO get version from env vars
+<%/*
+  This template is responsible to create generated commands for chaincode installation
+  and upgrade for V2 capabilities.
 
+  Required bash variables:
+   - version
+  Required template parameters:
+   - chaincode
+   - rootOrg
+   - networkSettings
+*/-%>
 printHeadline "Packaging chaincode '<%= chaincode.label %>'" "U1F60E"
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
@@ -9,9 +18,8 @@ chaincodePackage <% -%>
   "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.name %>" <% -%>
-  "<%= chaincode.version %>" <% -%>
+  "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% /* TODO required? */ -%>
   "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
 <% chaincode.channel.orgs.forEach(function (org) { -%>
@@ -21,7 +29,7 @@ chaincodePackage <% -%>
       "cli.<%= org.domain %>" <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
-      "<%= chaincode.version %>" <% -%>
+      "$version" <% -%>
       "<%= rootOrg.ordererHead.fullAddress %>" <% /* required? */ -%>
       "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
   <% }) -%>
@@ -30,7 +38,7 @@ chaincodePackage <% -%>
     "<%= org.headPeer.fullAddress %>" <% -%>
     "<%= chaincode.channel.name %>" <% -%>
     "<%= chaincode.name %>" <% -%>
-    "<%= chaincode.version %>" <% -%>
+    "$version" <% -%>
     "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement %>" <% -%>
     "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
@@ -42,7 +50,7 @@ chaincodeCommit <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.channel.name %>" <% -%>
   "<%= chaincode.name %>" <% -%>
-  "<%= chaincode.version %>" <% -%>
+  "$version" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement %>" <% -%>
   "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>

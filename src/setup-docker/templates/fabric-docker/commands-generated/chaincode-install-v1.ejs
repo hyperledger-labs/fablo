@@ -12,7 +12,6 @@ chaincodeBuild <% -%>
       "<%= chaincode.name %>" <% -%>
       "<%= chaincode.version %>" <% -%>
       "<%= chaincode.lang %>" <% -%>
-      "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
       "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
       "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
   <% }) -%>
@@ -25,7 +24,6 @@ chaincodeInstantiateV1 <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.version %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   '<%- chaincode.init %>' <% -%>
   "<%- chaincode.endorsement %>" <% -%>
