@@ -20,7 +20,6 @@ chaincodePackage <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "<%= rootOrg.ordererHead.fullAddress %>" <% /* TODO required? */ -%>
   "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
 <% chaincode.channel.orgs.forEach(function (org) { -%>
   printHeadline "Installing '<%= chaincode.label %>' for <%= org.name %>" "U1F60E"
@@ -30,7 +29,6 @@ chaincodePackage <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= rootOrg.ordererHead.fullAddress %>" <% /* required? */ -%>
       "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
   <% }) -%>
   chaincodeApprove <% -%>

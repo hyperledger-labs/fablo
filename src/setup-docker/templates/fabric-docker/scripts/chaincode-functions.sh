@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO move '/var/hyperledger/cli/' to commands-generated?
+
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
@@ -37,14 +39,12 @@ function chaincodePackage() {
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
-  local ORDERER_URL=$6
-  local CA_CERT=$7
+  local CA_CERT=$6
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
-  inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
@@ -71,13 +71,11 @@ function chaincodeInstall() {
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local ORDERER_URL=$5
-  local CA_CERT=$6
+  local CA_CERT=$5
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
-  inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "CA_CERT: $CA_CERT"
 
   local PEER_PARAMS=()
@@ -139,7 +137,6 @@ function chaincodeApprove() {
       "${PEER_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   )"
-  echo "$QUERYINSTALLED_RESPONSE"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<<"$QUERYINSTALLED_RESPONSE")"
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
 
@@ -153,7 +150,6 @@ function chaincodeApprove() {
       "${PEER_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   )"
-  echo "$QUERYCOMMITTED_RESPONSE"
   SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
   inputLog "SEQUENCE: $SEQUENCE"
@@ -169,10 +165,6 @@ function chaincodeApprove() {
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${PEER_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
-  # ??? FIXME sequence
-  # ??? --ordererTLSHostnameOverride orderer.example.com ???
-  # TODO which methods require the organization admin role
-  # TODO paths with tls certs are wrong?
 }
 
 function chaincodeCommit() {
@@ -220,7 +212,6 @@ function chaincodeCommit() {
       "${PEER_PARAMS[@]}" \
       "${CA_CERT_PARAMS[@]}"
   )"
-  echo "$QUERYCOMMITTED_RESPONSE"
   SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
   inputLog "SEQUENCE: $SEQUENCE"
