@@ -5,29 +5,40 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      <% if (capabilities.isV2) { -%>
-        <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
-      <% } else { -%>
-        <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
-      <% } -%>
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (capabilities.isV2) { -%>
+          local version="<%= chaincode.version %>"
+          <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); -%>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); -%>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
     <% }) %>
   <% } -%>
 }
 
 function upgradeChaincode() {
-  chaincodeName="$1"
+  local chaincodeName="$1"
   if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
 
-  version="$2"
+  local version="$2"
   if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
 
   <% chaincodes.forEach(function(chaincode) { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
-      <% if (capabilities.isV2) { -%>
-        <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
-      <% } else { -%>
-        <%- include('commands-generated/chaincode-upgrade-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
-      <% } -%>
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (capabilities.isV2) { -%>
+          <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-upgrade-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
     fi
   <% }) -%>
 }
