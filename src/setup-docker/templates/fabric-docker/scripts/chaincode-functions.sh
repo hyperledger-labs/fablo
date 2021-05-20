@@ -53,7 +53,8 @@ function chaincodePackage() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
   fi
 
   docker exec "$CLI_NAME" peer lifecycle chaincode package \
@@ -83,7 +84,8 @@ function chaincodeInstall() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
   fi
 
   docker exec "$CLI_NAME" peer lifecycle chaincode install \
@@ -120,7 +122,8 @@ function chaincodeApprove() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
   fi
 
   local COLLECTIONS_CONFIG_PARAMS=()
@@ -194,7 +197,8 @@ function chaincodeCommit() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
   fi
 
   local COLLECTIONS_CONFIG_PARAMS=()
@@ -252,8 +256,10 @@ function chaincodeInstallV1() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g'))
   fi
+  echo "${CA_CERT_PARAMS[@]}"
 
   docker exec -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
     -n "$CHAINCODE_NAME" \
@@ -297,8 +303,10 @@ function chaincodeInstantiateV1() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g'))
   fi
+  inputLog "${CA_CERT_PARAMS[@]}"
 
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
@@ -350,8 +358,10 @@ function chaincodeUpgradeV1() {
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    read -r -a CA_CERT_PARAMS <<<"--tls --cafile /var/hyperledger/cli/$(echo "$CA_CERT_FILES" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g')"
+    # shellcheck disable=SC2207
+    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
   fi
+  inputLog "${CA_CERT_PARAMS[@]}"
 
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
