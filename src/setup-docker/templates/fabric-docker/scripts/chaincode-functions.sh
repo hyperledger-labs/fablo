@@ -251,23 +251,17 @@ function chaincodeInstallV1() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<"--peerAddresses $(echo "$PEER_ADDRESS" | sed 's/,/ --peerAddresses /g')"
-
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g'))
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
   fi
-  echo "${CA_CERT_PARAMS[@]}"
 
-  docker exec -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" -e CHANNEL_NAME="$CHANNEL_NAME" "$CLI_NAME" peer chaincode install \
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
     -l "$CHAINCODE_LANG" \
     -p "/var/hyperledger/cli/$CHAINCODE_NAME/" \
     -o "$ORDERER_URL" \
-    "${PEER_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
 }
 
@@ -298,22 +292,17 @@ function chaincodeInstantiateV1() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<"--peerAddresses $(echo "$PEER_ADDRESS" | sed 's/,/ --peerAddresses /g')"
-
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g'))
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
   fi
-  inputLog "${CA_CERT_PARAMS[@]}"
 
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
   fi
 
-  docker exec "$CLI_NAME" peer chaincode instantiate \
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode instantiate \
     -C "$CHANNEL_NAME" \
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
@@ -321,7 +310,6 @@ function chaincodeInstantiateV1() {
     -o "$ORDERER_URL" \
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
-    "${PEER_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
 }
@@ -353,22 +341,17 @@ function chaincodeUpgradeV1() {
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CA_CERT: $CA_CERT"
 
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<"--peerAddresses $(echo "$PEER_ADDRESS" | sed 's/,/ --peerAddresses /g')"
-
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo ",$CA_CERT" | sed 's/,/ --cafile \/var\/hyperledger\/cli\//g'))
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
   fi
-  inputLog "${CA_CERT_PARAMS[@]}"
 
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
   fi
 
-  docker exec "$CLI_NAME" peer chaincode upgrade \
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer chaincode upgrade \
     -C "$CHANNEL_NAME" \
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
@@ -378,6 +361,5 @@ function chaincodeUpgradeV1() {
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-    "${PEER_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
 }
