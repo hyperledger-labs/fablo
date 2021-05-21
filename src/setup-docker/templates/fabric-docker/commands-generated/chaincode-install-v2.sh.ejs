@@ -1,6 +1,5 @@
 <%/*
-  This template is responsible to create generated commands for chaincode installation
-  and upgrade for V2 capabilities.
+  Chaincode install and upgrade for V2 capabilities.
 
   Required bash variables:
    - version
@@ -20,7 +19,7 @@ chaincodePackage <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
+  "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>"
 <% chaincode.channel.orgs.forEach(function (org) { -%>
   printHeadline "Installing '<%= chaincode.label %>' for <%= org.name %>" "U1F60E"
   <% org.peers.forEach(function (peer) { -%>
@@ -29,7 +28,7 @@ chaincodePackage <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
+      "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>"
   <% }) -%>
   chaincodeApprove <% -%>
     "cli.<%= org.domain %>" <% -%>
@@ -39,7 +38,7 @@ chaincodePackage <% -%>
     "$version" <% -%>
     "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement %>" <% -%>
-    "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
+    "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
@@ -51,5 +50,5 @@ chaincodeCommit <% -%>
   "$version" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement %>" <% -%>
-  "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
+  "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
