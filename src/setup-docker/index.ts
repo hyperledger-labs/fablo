@@ -4,6 +4,7 @@ import { getBuildInfo } from "../version/buildUtil";
 import { extendConfig } from "../extend-config";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
 import {
+  Capabilities,
   ChaincodeConfig,
   FabricaConfigExtended,
   NetworkSettings,
@@ -54,7 +55,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts();
+    this._copyUtilityScripts(config.capabilities);
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
@@ -148,7 +149,7 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _copyUtilityScripts(): void {
+  _copyUtilityScripts(capabilities: Capabilities): void {
     this.fs.copyTpl(this.templatePath("fabric-docker.sh"), this.destinationPath("fabric-docker.sh"));
 
     this.fs.copyTpl(
@@ -177,7 +178,7 @@ export default class SetupDockerGenerator extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath("fabric-docker/scripts/chaincode-functions.sh"),
+      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
     );
   }

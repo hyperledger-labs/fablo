@@ -597,11 +597,11 @@ function installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
     chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstallV1 \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-    chaincodeInstallV1 \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiateV1 \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+    chaincodeInstantiat \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
@@ -609,11 +609,11 @@ function installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
     chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstallV1 \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
-    chaincodeInstallV1 \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     printItalics \\"Instantiating chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiateV1 \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+    chaincodeInstantiat \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
@@ -639,12 +639,12 @@ function upgradeChaincode() {
       chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
 
       printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-      chaincodeInstallV1 \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
       printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-      chaincodeInstallV1 \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-      chaincodeUpgradeV1 \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -656,12 +656,12 @@ function upgradeChaincode() {
       chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
 
       printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
-      chaincodeInstallV1 \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
 
       printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
-      chaincodeInstallV1 \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       printItalics \\"Upgrading as 'Org1'. 'chaincode2' on channel 'my-channel2'\\" \\"U1F618\\"
-      chaincodeUpgradeV1 \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty.\\"
@@ -1463,8 +1463,6 @@ function printHelp() {
 exports[`network-07-2orgs-raft should create proper e2e/__tmp__/network-07-2orgs-raft/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-# TODO move '/var/hyperledger/cli/' to commands-generated?
-
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
@@ -1495,207 +1493,7 @@ function chaincodeBuild() {
   fi
 }
 
-function chaincodePackage() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHAINCODE_NAME=$3
-  local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local CHAINCODE_LANG=$5
-  local CA_CERT=$6
-
-  echo \\"Packaging chaincode $CHAINCODE_NAME...\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
-
-  local CA_CERT_PARAMS=()
-  if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
-  fi
-
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode package \\\\
-    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    --path \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
-    --lang \\"$CHAINCODE_LANG\\" \\\\
-    --label \\"$CHAINCODE_LABEL\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
-}
-
 function chaincodeInstall() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHAINCODE_NAME=$3
-  local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local CA_CERT=$5
-
-  echo \\"Installing chaincode $CHAINCODE_NAME...\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
-
-  local CA_CERT_PARAMS=()
-  if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
-  fi
-
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode install \\\\
-    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
-}
-
-function chaincodeApprove() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHANNEL_NAME=\\"$3\\"
-  local CHAINCODE_NAME=$4
-  local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local ORDERER_URL=$6
-  local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COLLECTIONS_CONFIG=$9
-
-  echo \\"Approving chaincode $CHAINCODE_NAME...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
-
-  local CA_CERT_PARAMS=()
-  if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
-  fi
-
-  local COLLECTIONS_CONFIG_PARAMS=()
-  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  fi
-
-  local QUERYINSTALLED_RESPONSE
-  local CC_PACKAGE_ID
-
-  QUERYINSTALLED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode queryinstalled \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
-  inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
-
-  local QUERYCOMMITTED_RESPONSE
-  local SEQUENCE
-
-  QUERYCOMMITTED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
-      --channelID \\"$CHANNEL_NAME\\" \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
-  SEQUENCE=$((SEQUENCE + 1))
-  inputLog \\"SEQUENCE: $SEQUENCE\\"
-
-  docker exec -e CC_PACKAGE_ID=\\"$CC_PACKAGE_ID\\" \\"$CLI_NAME\\" peer lifecycle chaincode approveformyorg \\\\
-    -o \\"$ORDERER_URL\\" \\\\
-    -C \\"$CHANNEL_NAME\\" \\\\
-    -n \\"$CHAINCODE_NAME\\" \\\\
-    -v \\"$CHAINCODE_VERSION\\" \\\\
-    --package-id \\"$CC_PACKAGE_ID\\" \\\\
-    --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
-}
-
-function chaincodeCommit() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHANNEL_NAME=\\"$3\\"
-  local CHAINCODE_NAME=$4
-  local CHAINCODE_VERSION=$5
-  local ORDERER_URL=$6
-  local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COLLECTIONS_CONFIG=$9
-
-  echo \\"Committing chaincode $CHAINCODE_NAME...\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
-  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-  inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
-
-  local CA_CERT_PARAMS=()
-  if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
-  fi
-
-  local COLLECTIONS_CONFIG_PARAMS=()
-  if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
-    COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
-  fi
-
-  local QUERYCOMMITTED_RESPONSE
-  local SEQUENCE
-
-  QUERYCOMMITTED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
-      --channelID \\"$CHANNEL_NAME\\" \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
-  SEQUENCE=$((SEQUENCE + 1))
-  inputLog \\"SEQUENCE: $SEQUENCE\\"
-
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode commit \\\\
-    -o \\"$ORDERER_URL\\" \\\\
-    -C \\"$CHANNEL_NAME\\" \\\\
-    -n \\"$CHAINCODE_NAME\\" \\\\
-    -v \\"$CHAINCODE_VERSION\\" \\\\
-    --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
-}
-
-function chaincodeInstallV1() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1728,7 +1526,7 @@ function chaincodeInstallV1() {
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeInstantiateV1() {
+function chaincodeInstantiate() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1777,7 +1575,7 @@ function chaincodeInstantiateV1() {
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeUpgradeV1() {
+function chaincodeUpgrade() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
