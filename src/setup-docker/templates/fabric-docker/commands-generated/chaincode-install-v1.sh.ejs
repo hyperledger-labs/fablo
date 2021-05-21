@@ -1,3 +1,11 @@
+<%/*
+  Chaincode install for V1 capabilities.
+
+  Required template parameters:
+   - chaincode
+   - rootOrg
+   - networkSettings
+*/-%>
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
@@ -13,11 +21,11 @@ chaincodeBuild <% -%>
       "<%= chaincode.version %>" <% -%>
       "<%= chaincode.lang %>" <% -%>
       "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-      "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
+      "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>"
   <% }) -%>
 <% }) -%>
 printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-chaincodeInstantiate <% -%>
+chaincodeInstantiat <% -%>
   "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.channel.name %>" <% -%>
@@ -27,5 +35,5 @@ chaincodeInstantiate <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   '<%- chaincode.init %>' <% -%>
   "<%- chaincode.endorsement %>" <% -%>
-  "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
+  "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"

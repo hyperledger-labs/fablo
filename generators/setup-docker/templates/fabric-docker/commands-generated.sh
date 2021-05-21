@@ -8,9 +8,9 @@ function installChaincodes() {
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (capabilities.isV2) { -%>
           local version="<%= chaincode.version %>"
-          <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v2.sh.ejs', { chaincode, rootOrg, networkSettings }); -%>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.ejs', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v1.sh.ejs', { chaincode, rootOrg, networkSettings }); -%>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
@@ -31,9 +31,9 @@ function upgradeChaincode() {
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.ejs', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-install-v2.sh.ejs', { chaincode, rootOrg, networkSettings }); %>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.ejs', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-upgrade-v1.sh.ejs', { chaincode, rootOrg, networkSettings }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
@@ -171,7 +171,7 @@ function networkDown() {
   <% chaincodes.forEach(function(chaincode) { -%>
     <% chaincode.channel.orgs.forEach(function (org) { -%>
       <% org.peers.forEach(function (peer) { -%>
-        <% const chaincodeContainerName="dev-"+peer.address+"-"+chaincode.name+"-"+chaincode.version -%>
+        <% const chaincodeContainerName=`dev-${peer.address}-${chaincode.name}-${chaincode.version}` -%>
         docker rm -f $(docker ps -a | grep <%= chaincodeContainerName %>-* | awk '{print $1}') || echo "docker rm failed, Check if all fabric dockers properly was deleted"
         docker rmi $(docker images <%= chaincodeContainerName %>-* -q) || echo "docker rm failed, Check if all fabric dockers properly was deleted"
       <% }) -%>
