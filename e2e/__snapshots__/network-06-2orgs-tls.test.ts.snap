@@ -1345,12 +1345,14 @@ function chaincodeBuild() {
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    local NODE_VERSION=\\"12\\"
-    local COMMAND=\\"npm install && npm run build\\"
+    # We need to adjust Node.js version to Fabric Shim version, see:
+    # https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md
+    NODE_VERSION=\\"12\\"
+    COMMAND=\\"npm install && npm run build\\"
 
-    local USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
+    USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
     if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
-      NODE_VERSION=\\"8\\"
+      NODE_VERSION=\\"8.9\\"
     fi
 
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
