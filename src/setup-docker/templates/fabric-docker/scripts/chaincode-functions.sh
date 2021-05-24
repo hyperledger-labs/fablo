@@ -11,6 +11,8 @@ function chaincodeBuild() {
     if [ -z "$(ls "$CHAINCODE_DIR_PATH")" ]; then
       echo "Skipping chaincode '$CHAINCODE_NAME' build. Directory '$CHAINCODE_DIR_PATH' is empty."
     else
+      # We need to adjust Node.js version to Fabric Shim version, see:
+      # https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md
       NODE_VERSION="12"
       COMMAND="npm install && npm run build"
 
