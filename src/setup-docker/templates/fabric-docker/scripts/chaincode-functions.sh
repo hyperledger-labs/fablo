@@ -18,7 +18,7 @@ function chaincodeBuild() {
 
       USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
       if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
-        NODE_VERSION="8"
+        NODE_VERSION="8.9"
       fi
 
       if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
