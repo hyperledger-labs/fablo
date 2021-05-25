@@ -23,9 +23,6 @@ peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 peerNoPort="$(echo "$peer" | sed -e 's/:[[:digit:]]\{2,\}//g')"
 tlsRootCertFiles="--tlsRootCertFiles /var/hyperledger/cli/crypto/peers/$(echo "$peerNoPort" | sed 's/,/\/tls\/ca.crt --tlsRootCertFiles \/var\/hyperledger\/cli\/crypto\/peers\//g')/tls/ca.crt"
 
-echo "$peerAddresses"
-echo "$tlsRootCertFiles"
-
 response="$(
   # shellcheck disable=SC2086
   docker exec "$cli" peer chaincode invoke \
