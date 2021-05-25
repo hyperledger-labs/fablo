@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/.gitignore from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/.gitignore from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/configtx.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/configtx.yaml from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -77,6 +77,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7060
+          - Host: peer1.org1.com
+            Port: 7061
     - &Org2
       Name: Org2MSP
       ID: Org2MSP
@@ -99,6 +101,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org2.com
             Port: 7070
+          - Host: peer1.org2.com
+            Port: 7071
 
 ################################################################################
 #   SECTION: Application
@@ -128,9 +132,28 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &OrdererDefaults
-    OrdererType: solo
+    OrdererType: etcdraft
     Addresses:
         - orderer0.root.com:7050
+        - orderer1.root.com:7051
+        - orderer2.root.com:7052
+    EtcdRaft:
+        Consenters:
+            - Host: orderer0.root.com
+              Port: 7050
+              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
+              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
+
+            - Host: orderer1.root.com
+              Port: 7051
+              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
+              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
+
+            - Host: orderer2.root.com
+              Port: 7052
+              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
+              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
+
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
@@ -225,7 +248,7 @@ Profiles:
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -236,7 +259,7 @@ exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org2.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-org2.yaml from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "PeerOrgs:
   - Name: Org2
     Domain: org2.com
@@ -247,16 +270,20 @@ exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
     Specs:
       - Hostname: orderer0
+
+      - Hostname: orderer1
+
+      - Hostname: orderer2
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -311,7 +338,7 @@ fi
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/.env from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/.env from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "FABRICA_VERSION=\\"0.1.0-unstable\\"
 FABRICA_BUILD=<date with git hash>
 
@@ -336,7 +363,7 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
@@ -563,7 +590,7 @@ function printChannelsHelp() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/commands-generated.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 function installChaincodes() {
@@ -574,10 +601,22 @@ function installChaincodes() {
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiat \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+    chaincodeInstantiat \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+  fi
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
+    chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
+    printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+    printItalics \\"Instantiating chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
+    chaincodeInstantiat \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+  else
+    echo \\"Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
   fi
 
 }
@@ -605,11 +644,28 @@ function upgradeChaincode() {
       printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
       chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
       echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+    fi
+  fi
+  if [ \\"$chaincodeName\\" = \\"chaincode2\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
+      chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
+
+      printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+
+      printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
+      printItalics \\"Upgrading as 'Org1'. 'chaincode2' on channel 'my-channel2'\\" \\"U1F618\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
+
+    else
+      echo \\"Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
     fi
   fi
 }
@@ -689,6 +745,10 @@ function networkDown() {
   docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   docker rm -f $(docker ps -a | grep dev-peer0.org2.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
   docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode2-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer1.org1.com-chaincode2-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer1.org2.com-chaincode2-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer1.org2.com-chaincode2-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
@@ -699,7 +759,7 @@ function networkDown() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -755,6 +815,68 @@ services:
     networks:
       - basic
 
+  orderer1.root.com:
+    container_name: orderer1.root.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7051
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7051:7051
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  orderer2.root.com:
+    container_name: orderer2.root.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7052
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7052:7052
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
   ca.org1.com:
     container_name: ca.org1.com
     image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
@@ -802,6 +924,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
 
@@ -815,7 +938,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7060
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -861,7 +984,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.com:7061
       - CORE_PEER_LISTENADDRESS=peer1.org1.com:7061
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7061
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7061
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -945,6 +1069,7 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
 
@@ -958,7 +1083,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7070
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070 peer1.org2.com:7071\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -1004,7 +1129,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org2.com:7071
       - CORE_PEER_LISTENADDRESS=peer1.org2.com:7071
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org2.com:7071
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.com:7071
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070 peer1.org2.com:7071\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_VERSION}
@@ -1043,7 +1169,7 @@ services:
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 function certsGenerate() {
@@ -1299,7 +1425,7 @@ function removeContainer() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 function printHelp() {
@@ -1334,7 +1460,7 @@ function printHelp() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 function chaincodeBuild() {
@@ -1503,7 +1629,7 @@ function chaincodeUpgrade() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 function peerChannelList() {
@@ -1776,7 +1902,7 @@ function peerChannelFetchBlockTls() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -1907,22 +2033,22 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-06-2orgs-tls should create proper files from samples/fabricaConfig-2orgs-2channels-1chaincode-tls.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-raft.json should create proper files from samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
 Array [
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/.gitignore",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-org2.yaml",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/.env",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/channel-query-scripts.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
-  "e2e/__tmp__/network-06-2orgs-tls/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-org2.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-raft.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;

@@ -49,8 +49,8 @@ class TestCommands {
     return executeCommand(command);
   }
 
-  fabricaExec(command: string): CommandOutput {
-    return executeCommand(`cd ${this.workdir} && ${this.relativeRoot}/fabrica.sh ${command}`);
+  fabricaExec(command: string, noConsole = false): CommandOutput {
+    return executeCommand(`cd ${this.workdir} && ${this.relativeRoot}/fabrica.sh ${command}`, noConsole);
   }
 
   getFiles(dir?: string): string[] {

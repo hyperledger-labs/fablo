@@ -68,7 +68,7 @@ describe("validate", () => {
 
   it("should validate custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf1.4-1org-raft.json`;
 
     // When
     const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
@@ -98,7 +98,7 @@ describe("extend config", () => {
     commands.fabricaExec("init");
 
     // When
-    const commandResult = commands.fabricaExec("extend-config");
+    const commandResult = commands.fabricaExec("extend-config", true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
@@ -111,18 +111,21 @@ describe("extend config", () => {
 
   it("should extend custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf2-2orgs-raft.yaml`;
 
     // When
-    const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
+    const commandResult = commands.fabricaExec(`extend-config ${fabricaConfig}`, true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toMatchSnapshot();
+    const cleanedOutput = commandResult.output
+      .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
+      .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
+    expect(cleanedOutput).toMatchSnapshot();
   });
 
   it("should fail to extend if config file is missing", () => {
-    const commandResult = commands.fabricaExec("validate");
+    const commandResult = commands.fabricaExec("extend-config", true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.failure());
