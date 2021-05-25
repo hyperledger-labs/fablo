@@ -25,7 +25,7 @@ chaincodeBuild <% -%>
   <% }) -%>
 <% }) -%>
 printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-chaincodeInstantiat <% -%>
+chaincodeInstantiate <% -%>
   "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.channel.name %>" <% -%>
