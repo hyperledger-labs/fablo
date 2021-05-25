@@ -530,7 +530,7 @@ function installChaincodes() {
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
     printItalics \\"Instantiating chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiat \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
   else
     echo \\"Warning! Skipping chaincode 'or-policy-chaincode' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
@@ -544,7 +544,7 @@ function installChaincodes() {
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
     printItalics \\"Instantiating chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiat \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
   else
     echo \\"Warning! Skipping chaincode 'and-policy-chaincode' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
