@@ -1,0 +1,62 @@
+---
+"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
+networkSettings:
+  fabricVersion: 2.3.1
+  tls: true
+rootOrg:
+  organization:
+    name: Orderer
+    domain: root.com
+  orderer:
+    prefix: orderer
+    type: raft
+    instances: 3
+orgs:
+  - organization:
+      name: Org1
+      domain: org1.com
+    peer:
+      prefix: peer
+      instances: 2
+      anchorPeerInstances: 2
+      db: LevelDb
+  - organization:
+      name: Org2
+      domain: org2.com
+    peer:
+      prefix: peer
+      instances: 2
+      anchorPeerInstances: 2
+      db: LevelDb
+channels:
+  - name: my-channel1
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+      - name: Org2
+        peers:
+          - peer0
+  - name: my-channel2
+    orgs:
+      - name: Org1
+        peers:
+          - peer1
+      - name: Org2
+        peers:
+          - peer1
+chaincodes:
+  - name: chaincode1
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    init: '{"Args":[]}'
+    endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node-1.4"
+  - name: chaincode2
+    version: 0.0.1
+    lang: java
+    channel: my-channel2
+    init: '{"Args":[]}'
+    endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-java-simple"
