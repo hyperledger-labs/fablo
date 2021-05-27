@@ -63,14 +63,14 @@ function notifyOrgsAboutChannels() {
        notifyOrgAboutNewChannel <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
-         "cli.<%= org.domain %>" <% -%>
+         "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= rootOrg.ordererHead.fullAddress %>"
      <% } else { -%>
        notifyOrgAboutNewChannelTls <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
-         "cli.<%= org.domain %>" <% -%>
+         "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
          "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem"
@@ -81,7 +81,7 @@ function notifyOrgsAboutChannels() {
   printHeadline "Deleting new channel config blocks" "U1F52A"
   <% channels.forEach(function(channel){ -%>
     <% channel.orgs.forEach(function(org){ -%>
-      deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>"
+      deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "<%= org.cli.address %>"
     <% }) -%>
   <% }) -%>
 }
@@ -141,19 +141,19 @@ function installChannels() {
           <% if(orgNo == 0 && peerNo == 0) { -%>
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
             <% if(!networkSettings.tls) { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } else { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } %>
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
             <% if(!networkSettings.tls) { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } else { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } -%>
           <% } -%>
