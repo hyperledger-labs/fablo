@@ -74,15 +74,15 @@ services:
     networks:
       - basic
 
-  cli.<%= org.domain %>:
-    container_name: cli.<%= org.domain %>
+  <%= org.cli.address %>:
+    container_name: <%= org.cli.address %>
     image: hyperledger/fabric-tools:${FABRIC_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-      - CORE_PEER_ID=cli.<%= org.domain %>
+      - CORE_PEER_ID=<%= org.cli.address %>
       - CORE_CHAINCODE_KEEPALIVE=10
       #
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
