@@ -1,0 +1,1509 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`extend config should extend custom config 1`] = `
+"Fabrica is powered by :
+ _____        __ _                         ___  ____ _ _ 
+/  ___|      / _| |                        |  \\\\/  (_) | |
+\\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
+ \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
+/\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
+\\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
+=========================================================== v: 0.1.0-unstable
+Validation errors count: 0
+Validation warnings count: 0
+===========================================================
+{
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"2.3.1\\",
+    \\"tls\\": true,
+    \\"fabricCaVersion\\": \\"1.5.0\\",
+    \\"fabricCcenvVersion\\": \\"2.3.1\\",
+    \\"fabricBaseosVersion\\": \\"2.3.1\\",
+    \\"fabricJavaenvVersion\\": \\"2.3.0\\",
+    \\"paths\\": {
+      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"chaincodesBaseDir\\": \\"<absolute path>\\"
+    },
+    \\"monitoring\\": {
+      \\"loglevel\\": \\"info\\"
+    }
+  },
+  \\"capabilities\\": {
+    \\"channel\\": \\"V2_0\\",
+    \\"orderer\\": \\"V2_0\\",
+    \\"application\\": \\"V2_0\\",
+    \\"isV2\\": true
+  },
+  \\"rootOrg\\": {
+    \\"name\\": \\"Orderer\\",
+    \\"mspName\\": \\"OrdererMSP\\",
+    \\"domain\\": \\"root.com\\",
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\",
+      \\"address\\": \\"ca.root.com\\",
+      \\"port\\": 7054,
+      \\"exposePort\\": 7030,
+      \\"fullAddress\\": \\"ca.root.com:7054\\",
+      \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
+      \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+    },
+    \\"orderers\\": [
+      {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"root.com\\",
+        \\"address\\": \\"orderer0.root.com\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"port\\": 7050,
+        \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+      },
+      {
+        \\"name\\": \\"orderer1\\",
+        \\"domain\\": \\"root.com\\",
+        \\"address\\": \\"orderer1.root.com\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"port\\": 7051,
+        \\"fullAddress\\": \\"orderer1.root.com:7051\\"
+      },
+      {
+        \\"name\\": \\"orderer2\\",
+        \\"domain\\": \\"root.com\\",
+        \\"address\\": \\"orderer2.root.com\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"port\\": 7052,
+        \\"fullAddress\\": \\"orderer2.root.com:7052\\"
+      }
+    ],
+    \\"ordererHead\\": {
+      \\"name\\": \\"orderer0\\",
+      \\"domain\\": \\"root.com\\",
+      \\"address\\": \\"orderer0.root.com\\",
+      \\"consensus\\": \\"etcdraft\\",
+      \\"port\\": 7050,
+      \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"name\\": \\"Org1\\",
+      \\"mspName\\": \\"Org1MSP\\",
+      \\"domain\\": \\"org1.com\\",
+      \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+      \\"peersCount\\": 2,
+      \\"peers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      ],
+      \\"anchorPeers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      ],
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.org1.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7031,
+        \\"fullAddress\\": \\"ca.org1.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+      },
+      \\"cli\\": {
+        \\"address\\": \\"cli.org1.com\\"
+      },
+      \\"headPeer\\": {
+        \\"name\\": \\"peer0\\",
+        \\"address\\": \\"peer0.org1.com\\",
+        \\"db\\": \\"LevelDb\\",
+        \\"isAnchorPeer\\": true,
+        \\"port\\": 7060,
+        \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+        \\"couchDbExposePort\\": 5080
+      }
+    },
+    {
+      \\"name\\": \\"Org2\\",
+      \\"mspName\\": \\"Org2MSP\\",
+      \\"domain\\": \\"org2.com\\",
+      \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+      \\"peersCount\\": 2,
+      \\"peers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7070,
+          \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+          \\"couchDbExposePort\\": 5090
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7071,
+          \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+          \\"couchDbExposePort\\": 5091
+        }
+      ],
+      \\"anchorPeers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7070,
+          \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+          \\"couchDbExposePort\\": 5090
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org2.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7071,
+          \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+          \\"couchDbExposePort\\": 5091
+        }
+      ],
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7070 peer1.org2.com:7071\\\\\\"\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.org2.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7032,
+        \\"fullAddress\\": \\"ca.org2.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+      },
+      \\"cli\\": {
+        \\"address\\": \\"cli.org2.com\\"
+      },
+      \\"headPeer\\": {
+        \\"name\\": \\"peer0\\",
+        \\"address\\": \\"peer0.org2.com\\",
+        \\"db\\": \\"LevelDb\\",
+        \\"isAnchorPeer\\": true,
+        \\"port\\": 7070,
+        \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+        \\"couchDbExposePort\\": 5090
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7031,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        },
+        {
+          \\"name\\": \\"Org2\\",
+          \\"mspName\\": \\"Org2MSP\\",
+          \\"domain\\": \\"org2.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7070 peer1.org2.com:7071\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org2.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7032,
+            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org2.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org2.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7070,
+            \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+            \\"couchDbExposePort\\": 5090
+          }
+        }
+      ],
+      \\"profile\\": {
+        \\"name\\": \\"MyChannel1\\"
+      },
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7031,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      }
+    },
+    {
+      \\"name\\": \\"my-channel2\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7031,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        },
+        {
+          \\"name\\": \\"Org2\\",
+          \\"mspName\\": \\"Org2MSP\\",
+          \\"domain\\": \\"org2.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7070 peer1.org2.com:7071\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org2.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7032,
+            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org2.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org2.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7071,
+            \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+            \\"couchDbExposePort\\": 5091
+          }
+        }
+      ],
+      \\"profile\\": {
+        \\"name\\": \\"MyChannel2\\"
+      },
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7031,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      }
+    }
+  ],
+  \\"chaincodes\\": [
+    {
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node-1.4\\",
+      \\"name\\": \\"chaincode1\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"node\\",
+      \\"channel\\": {
+        \\"name\\": \\"my-channel1\\",
+        \\"orgs\\": [
+          {
+            \\"name\\": \\"Org1\\",
+            \\"mspName\\": \\"Org1MSP\\",
+            \\"domain\\": \\"org1.com\\",
+            \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+            \\"peersCount\\": 2,
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7060,
+                \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+                \\"couchDbExposePort\\": 5080
+              }
+            ],
+            \\"anchorPeers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7060,
+                \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+                \\"couchDbExposePort\\": 5080
+              },
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7061,
+                \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+                \\"couchDbExposePort\\": 5081
+              }
+            ],
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+            \\"ca\\": {
+              \\"prefix\\": \\"ca\\",
+              \\"address\\": \\"ca.org1.com\\",
+              \\"port\\": 7054,
+              \\"exposePort\\": 7031,
+              \\"fullAddress\\": \\"ca.org1.com:7054\\",
+              \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            },
+            \\"cli\\": {
+              \\"address\\": \\"cli.org1.com\\"
+            },
+            \\"headPeer\\": {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          },
+          {
+            \\"name\\": \\"Org2\\",
+            \\"mspName\\": \\"Org2MSP\\",
+            \\"domain\\": \\"org2.com\\",
+            \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+            \\"peersCount\\": 2,
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7070,
+                \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+                \\"couchDbExposePort\\": 5090
+              }
+            ],
+            \\"anchorPeers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7070,
+                \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+                \\"couchDbExposePort\\": 5090
+              },
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7071,
+                \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+                \\"couchDbExposePort\\": 5091
+              }
+            ],
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7070 peer1.org2.com:7071\\\\\\"\\",
+            \\"ca\\": {
+              \\"prefix\\": \\"ca\\",
+              \\"address\\": \\"ca.org2.com\\",
+              \\"port\\": 7054,
+              \\"exposePort\\": 7032,
+              \\"fullAddress\\": \\"ca.org2.com:7054\\",
+              \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+            },
+            \\"cli\\": {
+              \\"address\\": \\"cli.org2.com\\"
+            },
+            \\"headPeer\\": {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7070,
+              \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+              \\"couchDbExposePort\\": 5090
+            }
+          }
+        ],
+        \\"profile\\": {
+          \\"name\\": \\"MyChannel1\\"
+        },
+        \\"instantiatingOrg\\": {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7031,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        }
+      },
+      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"endorsement\\": \\"OR ('Org1MSP.member', 'Org2MSP.member')\\",
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7031,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      },
+      \\"privateData\\": []
+    },
+    {
+      \\"directory\\": \\"./chaincodes/chaincode-java-simple\\",
+      \\"name\\": \\"chaincode2\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"java\\",
+      \\"channel\\": {
+        \\"name\\": \\"my-channel2\\",
+        \\"orgs\\": [
+          {
+            \\"name\\": \\"Org1\\",
+            \\"mspName\\": \\"Org1MSP\\",
+            \\"domain\\": \\"org1.com\\",
+            \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+            \\"peersCount\\": 2,
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7061,
+                \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+                \\"couchDbExposePort\\": 5081
+              }
+            ],
+            \\"anchorPeers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7060,
+                \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+                \\"couchDbExposePort\\": 5080
+              },
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org1.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7061,
+                \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+                \\"couchDbExposePort\\": 5081
+              }
+            ],
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+            \\"ca\\": {
+              \\"prefix\\": \\"ca\\",
+              \\"address\\": \\"ca.org1.com\\",
+              \\"port\\": 7054,
+              \\"exposePort\\": 7031,
+              \\"fullAddress\\": \\"ca.org1.com:7054\\",
+              \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            },
+            \\"cli\\": {
+              \\"address\\": \\"cli.org1.com\\"
+            },
+            \\"headPeer\\": {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          },
+          {
+            \\"name\\": \\"Org2\\",
+            \\"mspName\\": \\"Org2MSP\\",
+            \\"domain\\": \\"org2.com\\",
+            \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+            \\"peersCount\\": 2,
+            \\"peers\\": [
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7071,
+                \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+                \\"couchDbExposePort\\": 5091
+              }
+            ],
+            \\"anchorPeers\\": [
+              {
+                \\"name\\": \\"peer0\\",
+                \\"address\\": \\"peer0.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7070,
+                \\"fullAddress\\": \\"peer0.org2.com:7070\\",
+                \\"couchDbExposePort\\": 5090
+              },
+              {
+                \\"name\\": \\"peer1\\",
+                \\"address\\": \\"peer1.org2.com\\",
+                \\"db\\": \\"LevelDb\\",
+                \\"isAnchorPeer\\": true,
+                \\"port\\": 7071,
+                \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+                \\"couchDbExposePort\\": 5091
+              }
+            ],
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7070 peer1.org2.com:7071\\\\\\"\\",
+            \\"ca\\": {
+              \\"prefix\\": \\"ca\\",
+              \\"address\\": \\"ca.org2.com\\",
+              \\"port\\": 7054,
+              \\"exposePort\\": 7032,
+              \\"fullAddress\\": \\"ca.org2.com:7054\\",
+              \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+            },
+            \\"cli\\": {
+              \\"address\\": \\"cli.org2.com\\"
+            },
+            \\"headPeer\\": {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer1.org2.com:7071\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          }
+        ],
+        \\"profile\\": {
+          \\"name\\": \\"MyChannel2\\"
+        },
+        \\"instantiatingOrg\\": {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7031,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        }
+      },
+      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"endorsement\\": \\"OR ('Org1MSP.member', 'Org2MSP.member')\\",
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7031,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      },
+      \\"privateData\\": []
+    }
+  ]
+}
+"
+`;
+
+exports[`extend config should extend default config 1`] = `
+"Fabrica is powered by :
+ _____        __ _                         ___  ____ _ _ 
+/  ___|      / _| |                        |  \\\\/  (_) | |
+\\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
+ \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
+/\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
+\\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
+=========================================================== v: 0.1.0-unstable
+Validation errors count: 0
+Validation warnings count: 0
+===========================================================
+{
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"tls\\": false,
+    \\"fabricCaVersion\\": \\"1.5.0\\",
+    \\"fabricCcenvVersion\\": \\"2.2.1\\",
+    \\"fabricBaseosVersion\\": \\"2.2.1\\",
+    \\"fabricJavaenvVersion\\": \\"2.2.1\\",
+    \\"paths\\": {
+      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"chaincodesBaseDir\\": \\"<absolute path>\\"
+    },
+    \\"monitoring\\": {
+      \\"loglevel\\": \\"info\\"
+    }
+  },
+  \\"capabilities\\": {
+    \\"channel\\": \\"V2_0\\",
+    \\"orderer\\": \\"V2_0\\",
+    \\"application\\": \\"V2_0\\",
+    \\"isV2\\": true
+  },
+  \\"rootOrg\\": {
+    \\"name\\": \\"Orderer\\",
+    \\"mspName\\": \\"OrdererMSP\\",
+    \\"domain\\": \\"root.com\\",
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\",
+      \\"address\\": \\"ca.root.com\\",
+      \\"port\\": 7054,
+      \\"exposePort\\": 7030,
+      \\"fullAddress\\": \\"ca.root.com:7054\\",
+      \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
+      \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+    },
+    \\"orderers\\": [
+      {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"root.com\\",
+        \\"address\\": \\"orderer0.root.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7050,
+        \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+      }
+    ],
+    \\"ordererHead\\": {
+      \\"name\\": \\"orderer0\\",
+      \\"domain\\": \\"root.com\\",
+      \\"address\\": \\"orderer0.root.com\\",
+      \\"consensus\\": \\"solo\\",
+      \\"port\\": 7050,
+      \\"fullAddress\\": \\"orderer0.root.com:7050\\"
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"name\\": \\"Org1\\",
+      \\"mspName\\": \\"Org1MSP\\",
+      \\"domain\\": \\"org1.com\\",
+      \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+      \\"peersCount\\": 2,
+      \\"peers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": false,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
+        }
+      ],
+      \\"anchorPeers\\": [
+        {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      ],
+      \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.org1.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7031,
+        \\"fullAddress\\": \\"ca.org1.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+      },
+      \\"cli\\": {
+        \\"address\\": \\"cli.org1.com\\"
+      },
+      \\"headPeer\\": {
+        \\"name\\": \\"peer0\\",
+        \\"address\\": \\"peer0.org1.com\\",
+        \\"db\\": \\"LevelDb\\",
+        \\"isAnchorPeer\\": true,
+        \\"port\\": 7060,
+        \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+        \\"couchDbExposePort\\": 5080
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": false,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7060,
+              \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+              \\"couchDbExposePort\\": 5080
+            }
+          ],
+          \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7031,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        }
+      ],
+      \\"profile\\": {
+        \\"name\\": \\"MyChannel1\\"
+      },
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": false,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7060,
+            \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+            \\"couchDbExposePort\\": 5080
+          }
+        ],
+        \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7031,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7060,
+          \\"fullAddress\\": \\"peer0.org1.com:7060\\",
+          \\"couchDbExposePort\\": 5080
+        }
+      }
+    }
+  ],
+  \\"chaincodes\\": []
+}
+"
+`;
+
+exports[`init should init simple fabrica config 1`] = `
+"{
+  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"tls\\": false
+  },
+  \\"rootOrg\\": {
+    \\"organization\\": {
+      \\"name\\": \\"Orderer\\",
+      \\"mspName\\": \\"OrdererMSP\\",
+      \\"domain\\": \\"root.com\\"
+    },
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\"
+    },
+    \\"orderer\\": {
+      \\"prefix\\": \\"orderer\\",
+      \\"type\\": \\"solo\\",
+      \\"instances\\": 1
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"organization\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\"
+      },
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\"
+      },
+      \\"peer\\": {
+        \\"prefix\\": \\"peer\\",
+        \\"instances\\": 2,
+        \\"db\\": \\"LevelDb\\"
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"peers\\": [
+            \\"peer0\\",
+            \\"peer1\\"
+          ]
+        }
+      ]
+    }
+  ],
+  \\"chaincodes\\": []
+}"
+`;
+
+exports[`init should init simple fabrica config with node chaincode 1`] = `
+"{
+  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"tls\\": false
+  },
+  \\"rootOrg\\": {
+    \\"organization\\": {
+      \\"name\\": \\"Orderer\\",
+      \\"mspName\\": \\"OrdererMSP\\",
+      \\"domain\\": \\"root.com\\"
+    },
+    \\"ca\\": {
+      \\"prefix\\": \\"ca\\"
+    },
+    \\"orderer\\": {
+      \\"prefix\\": \\"orderer\\",
+      \\"type\\": \\"solo\\",
+      \\"instances\\": 1
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"organization\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\"
+      },
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\"
+      },
+      \\"peer\\": {
+        \\"prefix\\": \\"peer\\",
+        \\"instances\\": 2,
+        \\"db\\": \\"LevelDb\\"
+      }
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"peers\\": [
+            \\"peer0\\",
+            \\"peer1\\"
+          ]
+        }
+      ]
+    }
+  ],
+  \\"chaincodes\\": [
+    {
+      \\"name\\": \\"chaincode1\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"node\\",
+      \\"channel\\": \\"my-channel1\\",
+      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"endorsement\\": \\"AND ('Org1MSP.member')\\",
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
+    }
+  ]
+}
+"
+`;
