@@ -16,6 +16,7 @@ import {
   Capabilities,
   ChaincodeConfig,
   ChannelConfig,
+  FabricVersions,
   NetworkSettings,
   OrdererConfig,
   OrgConfig,
@@ -254,8 +255,27 @@ const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
 
 const isHlf20 = (fabricVersion: string) => version(fabricVersion).isGreaterOrEqual("2.0.0");
 
-const getCaVersion = (fabricVersion: string) =>
-  version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.0" : fabricVersion;
+const getVersions = (fabricVersion: string): FabricVersions => {
+  const fabricJavaenvExceptions: Record<string, string> = {
+    "1.4.5": "1.4.4",
+    "1.4.9": "1.4.8",
+    "1.4.10": "1.4.8",
+    "1.4.11": "1.4.8",
+    "1.4.12": "1.4.8",
+    "2.2.2": "2.2.1",
+    "2.2.3": "2.2.1",
+    "2.3.1": "2.3.0",
+    "2.3.2": "2.3.0",
+  };
+
+  return {
+    fabricVersion,
+    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.0" : fabricVersion,
+    fabricCcenvVersion: fabricVersion,
+    fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
+    fabricJavaenvVersion: fabricJavaenvExceptions[fabricVersion] ?? fabricVersion,
+  };
+};
 
 const getEnvVarOrThrow = (name: string): string => {
   const value = process.env[name];
@@ -275,7 +295,7 @@ const transformNetworkSettings = (networkSettingsJson: NetworkSettingsJson): Net
 
   return {
     ...networkSettingsJson,
-    fabricCaVersion: getCaVersion(networkSettingsJson.fabricVersion),
+    ...getVersions(networkSettingsJson.fabricVersion),
     paths: getPathsFromEnv(),
     isHlf20: isHlf20(networkSettingsJson.fabricVersion),
     monitoring,

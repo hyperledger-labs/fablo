@@ -36,6 +36,7 @@ const sortVersions = (versions: string[]): string[] =>
 
 interface Version {
   isGreaterOrEqual(v2: string): boolean;
+  isOneOf(vs: string[]): boolean;
 }
 
 const version = (v: string): Version => ({
@@ -43,6 +44,9 @@ const version = (v: string): Version => ({
     const vStd = incrementVersionFragments(v).split("-")[0];
     const v2Std = incrementVersionFragments(v2).split("-")[0];
     return vStd >= v2Std;
+  },
+  isOneOf(vs: string[]): boolean {
+    return vs.includes(v);
   },
 });
 
