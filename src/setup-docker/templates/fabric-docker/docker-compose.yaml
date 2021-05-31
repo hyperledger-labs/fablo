@@ -132,9 +132,9 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=<%- org.bootstrapPeers %>
       - CORE_PEER_CHAINCODELISTENADDRESS=<%= peer.address %>:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_VERSION}
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
