@@ -103,6 +103,11 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       <%_ if(networkSettings.tls) { _%>
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
+      <%_ orgs.forEach(function(org) { _%>
+      <%_ org.peers.forEach(function(peer) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls/ca.crt:/var/hyperledger/cli/crypto/peers/<%= peer.address %>/tls/ca.crt
+      <%_ }) _%>
+      <%_ }) _%>
       <%_ } _%>
       <%_ chaincodes.forEach(function(chaincode) { _%>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
