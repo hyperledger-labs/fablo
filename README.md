@@ -228,7 +228,7 @@ Example:
 
 ```json
   "networkSettings": {
-    "fabricVersion": "1.4.6",
+    "fabricVersion": "2.3.0",
     "tls": false,
     "monitoring": {
       "loglevel": "debug"
@@ -346,7 +346,7 @@ Example:
 ---
 "$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
 networkSettings:
-  fabricVersion: 1.4.11
+  fabricVersion: 2.3.0
   tls: false
 rootOrg:
   organization:
