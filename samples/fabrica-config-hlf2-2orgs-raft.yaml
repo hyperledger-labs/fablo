@@ -3,6 +3,8 @@
 networkSettings:
   fabricVersion: 2.3.1
   tls: true
+  monitoring:
+    loglevel: debug
 rootOrg:
   organization:
     name: Orderer
@@ -52,7 +54,7 @@ chaincodes:
     channel: my-channel1
     init: '{"Args":[]}'
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
-    directory: "./chaincodes/chaincode-kv-node-1.4"
+    directory: "./chaincodes/chaincode-kv-node"
   - name: chaincode2
     version: 0.0.1
     lang: java
