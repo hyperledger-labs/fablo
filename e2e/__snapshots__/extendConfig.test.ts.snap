@@ -4440,7 +4440,7 @@ Object {
           "name": "MyChannel1",
         },
       },
-      "directory": "./chaincodes/chaincode-kv-node-1.4",
+      "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
@@ -5153,7 +5153,7 @@ Object {
     "fabricJavaenvVersion": "2.3.0",
     "fabricVersion": "2.3.1",
     "monitoring": Object {
-      "loglevel": "info",
+      "loglevel": "debug",
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",

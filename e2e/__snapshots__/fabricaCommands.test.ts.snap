@@ -16,6 +16,9 @@ Validation warnings count: 0
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.1\\",
     \\"tls\\": true,
+    \\"monitoring\\": {
+      \\"loglevel\\": \\"debug\\"
+    },
     \\"fabricCaVersion\\": \\"1.5.0\\",
     \\"fabricCcenvVersion\\": \\"2.3.1\\",
     \\"fabricBaseosVersion\\": \\"2.3.1\\",
@@ -23,9 +26,6 @@ Validation warnings count: 0
     \\"paths\\": {
       \\"fabricaConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
-    },
-    \\"monitoring\\": {
-      \\"loglevel\\": \\"info\\"
     }
   },
   \\"capabilities\\": {
@@ -602,7 +602,7 @@ Validation warnings count: 0
   ],
   \\"chaincodes\\": [
     {
-      \\"directory\\": \\"./chaincodes/chaincode-kv-node-1.4\\",
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\",
       \\"name\\": \\"chaincode1\\",
       \\"version\\": \\"0.0.1\\",
       \\"lang\\": \\"node\\",
