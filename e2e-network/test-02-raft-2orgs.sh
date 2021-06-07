@@ -22,6 +22,7 @@ dumpLogs() {
 }
 
 networkDown() {
+  sleep 2
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
