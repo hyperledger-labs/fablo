@@ -51,5 +51,5 @@ chaincodeCommit <% -%>
   "<%- chaincode.endorsement %>" <% -%>
   "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
-  "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto/peers/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
+  "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peers/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
