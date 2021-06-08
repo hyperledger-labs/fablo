@@ -608,7 +608,7 @@ function installChaincodes() {
     chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     chaincodeApprove \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto/peers/peer0.org1.com/tls/ca.crt,crypto/peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto-peers/peer0.org1.com/tls/ca.crt,crypto-peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
@@ -624,7 +624,7 @@ function installChaincodes() {
     chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"chaincode2\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     chaincodeApprove \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto/peers/peer1.org1.com/tls/ca.crt,crypto/peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto-peers/peer1.org1.com/tls/ca.crt,crypto-peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
@@ -656,7 +656,7 @@ function upgradeChaincode() {
       chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       chaincodeApprove \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto/peers/peer0.org1.com/tls/ca.crt,crypto/peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto-peers/peer0.org1.com/tls/ca.crt,crypto-peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -674,7 +674,7 @@ function upgradeChaincode() {
       chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"chaincode2\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       chaincodeApprove \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto/peers/peer1.org1.com/tls/ca.crt,crypto/peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto-peers/peer1.org1.com/tls/ca.crt,crypto-peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty.\\"
@@ -936,10 +936,10 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org1.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org1.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org2.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org2.com/tls/ca.crt:ro
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
@@ -1085,10 +1085,10 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org1.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org1.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org2.com/tls/ca.crt:ro
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org2.com/tls/ca.crt:ro
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
