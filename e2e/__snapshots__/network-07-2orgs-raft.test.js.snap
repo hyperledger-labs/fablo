@@ -346,7 +346,7 @@ FABRICA_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
 
 COMPOSE_PROJECT_NAME=<name with timestamp>
-LOGGING_LEVEL=info
+LOGGING_LEVEL=debug
 
 FABRIC_VERSION=2.3.1
 FABRIC_CA_VERSION=1.5.0
@@ -597,10 +597,10 @@ exports[`samples/fabrica-config-hlf2-2orgs-raft.yaml should create proper e2e/__
 "#!/usr/bin/env bash
 
 function installChaincodes() {
-  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
     local version=\\"0.0.1\\"
     printHeadline \\"Packaging chaincode 'chaincode1'\\" \\"U1F60E\\"
-    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
     chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
@@ -608,10 +608,10 @@ function installChaincodes() {
     chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     chaincodeApprove \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto/peers/peer0.org1.com/tls/ca.crt,crypto/peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto-peers/peer0.org1.com/tls/ca.crt,crypto-peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
   fi
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
     local version=\\"0.0.1\\"
@@ -624,7 +624,7 @@ function installChaincodes() {
     chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"chaincode2\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
     chaincodeApprove \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto/peers/peer1.org1.com/tls/ca.crt,crypto/peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto-peers/peer1.org1.com/tls/ca.crt,crypto-peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
@@ -646,9 +646,9 @@ function upgradeChaincode() {
   fi
 
   if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
       printHeadline \\"Packaging chaincode 'chaincode1'\\" \\"U1F60E\\"
-      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
       chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
       chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
@@ -656,11 +656,11 @@ function upgradeChaincode() {
       chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"chaincode1\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       chaincodeApprove \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto/peers/peer0.org1.com/tls/ca.crt,crypto/peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer0.org1.com:7060,peer0.org2.com:7070\\" \\"crypto-peers/peer0.org1.com/tls/ca.crt,crypto-peers/peer0.org2.com/tls/ca.crt\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
-      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
     fi
   fi
   if [ \\"$chaincodeName\\" = \\"chaincode2\\" ]; then
@@ -674,7 +674,7 @@ function upgradeChaincode() {
       chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"chaincode2\\" \\"$version\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\"
       chaincodeApprove \\"cli.org2.com\\" \\"peer1.org2.com:7071\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto/peers/peer1.org1.com/tls/ca.crt,crypto/peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto/orderer-tlscacerts/tlsca.root.com-cert.pem\\" \\"peer1.org1.com:7061,peer1.org2.com:7071\\" \\"crypto-peers/peer1.org1.com/tls/ca.crt,crypto-peers/peer1.org2.com/tls/ca.crt\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty.\\"
@@ -935,12 +935,12 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org1.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org1.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org2.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org2.com/tls/ca.crt
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org2.com/tls/ca.crt:ro
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic
@@ -1084,12 +1084,12 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org1.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org1.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer0.org2.com/tls/ca.crt
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto/peers/peer1.org2.com/tls/ca.crt
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer0.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peers/peer1.org2.com/tls/ca.crt:ro
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
     networks:
       - basic

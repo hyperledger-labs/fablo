@@ -12,6 +12,7 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=<%= rootOrg.ca.address %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
     ports:
       - <%= rootOrg.ca.exposePort %>:<%= rootOrg.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -20,18 +21,15 @@ services:
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
     networks:
       - basic
-    <% for (ordererNo in rootOrg.orderers) {
-      var orderer=rootOrg.orderers[ordererNo]
-      var ordererHostPort=7050+parseInt(ordererNo,10)
-    %>
 
+  <% rootOrg.orderers.forEach(function(orderer){ %>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=<%= ordererHostPort %>
+      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
       - ORDERER_GENERAL_LOCALMSPID=<%= rootOrg.mspName %>
@@ -48,13 +46,14 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - <%= ordererHostPort %>:<%= ordererHostPort %>
+      - <%= orderer.port %>:<%= orderer.port %>
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
-      - basic<% } %>
+      - basic
+  <% }) %>
 
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
@@ -65,6 +64,7 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.address %>
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
     ports:
       - <%= org.ca.exposePort %>:<%= org.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -100,11 +100,21 @@ services:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
-      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's<% if(networkSettings.tls) { %>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts<% } %><% chaincodes.forEach(function(chaincode) { %>
-      - "$CHAINCODES_BASE_DIR/<%= chaincode.privateData.filepath %>/:<%= chaincode.privateData.dockerFilepath %>"
-      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"<% }) %>
-    # TODO 3 ^ private data mapping
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      <%_ if(networkSettings.tls) { _%>
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts:ro
+      <%_ orgs.forEach(function(org) { _%>
+      <%_ org.peers.forEach(function(peer) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls/ca.crt:/var/hyperledger/cli/crypto-peers/<%= peer.address %>/tls/ca.crt:ro
+      <%_ }) _%>
+      <%_ }) _%>
+      <%_ } _%>
+      <%_ chaincodes.forEach(function(chaincode) { _%>
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
+      <%_ if(chaincode.privateDataConfigFile) { _%>
+      - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
+      <%_ } _%>
+      <%_ }) _%>
     networks:
       - basic
 
@@ -126,8 +136,8 @@ services:
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
       #
-      - CORE_LOGGING_PEER=${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
       #
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
@@ -144,7 +154,7 @@ services:
       <% if(peer.db==="CouchDb") { %>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=<%= peer.name %>.couchdb.<%= org.domain %>:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.<%= peer.name %>.<%= org.domain %>:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=<%= peer.name %>
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=<%= peer.name %>Password
       <% } %>
@@ -163,8 +173,8 @@ services:
     networks:
       - basic
   <% if(peer.db==="CouchDb") { %>
-  <%= peer.name %>.couchdb.<%= org.domain %>:
-    container_name: <%= peer.name %>.couchdb.<%= org.domain %>
+  couchdb.<%= peer.name %>.<%= org.domain %>:
+    container_name: couchdb.<%= peer.name %>.<%= org.domain %>
     image: hyperledger/fabric-couchdb:0.4.18
     environment:
       - COUCHDB_USER=<%= peer.name %>
