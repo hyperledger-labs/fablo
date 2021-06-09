@@ -181,6 +181,7 @@ function networkDown() {
   printf "\nRemoving generated configs... \U1F5D1 \n"
   rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/config
   rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/crypto-config
+  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/chaincode-packages
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }

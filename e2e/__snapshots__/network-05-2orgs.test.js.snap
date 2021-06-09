@@ -639,6 +639,7 @@ function networkDown() {
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
   rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/crypto-config
+  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/chaincode-packages
 
   printHeadline \\"Done! Network was purged\\" \\"U1F5D1\\"
 }
@@ -730,8 +731,9 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
@@ -855,8 +857,9 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
