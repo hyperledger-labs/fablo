@@ -47,7 +47,7 @@ function chaincodePackage() {
   inputLog "CLI_NAME: $CLI_NAME"
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode package \
-    "/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz" \
+    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
     --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \
     --lang "$CHAINCODE_LANG" \
     --label "$CHAINCODE_LABEL"
@@ -72,7 +72,7 @@ function chaincodeInstall() {
   fi
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \
-    "/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz" \
+    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
     "${CA_CERT_PARAMS[@]}"
 }
 

@@ -99,8 +99,8 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       <%_ if(networkSettings.tls) { _%>
       - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto-orderer:ro
       <%_ orgs.forEach(function(org) { _%>
@@ -109,6 +109,7 @@ services:
       <%_ }) _%>
       <%_ }) _%>
       <%_ } _%>
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       <%_ chaincodes.forEach(function(chaincode) { _%>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
       <%_ if(chaincode.privateDataConfigFile) { _%>
