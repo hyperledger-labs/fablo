@@ -16,7 +16,7 @@ listChaincodes() {
   docker exec -e CORE_PEER_ADDRESS="$peer" "$cli" peer lifecycle chaincode querycommitted \
     --channelID "$channel" \
     --tls \
-    --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem"
+    --cafile "/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem"
 }
 
 for i in $(seq 1 90); do

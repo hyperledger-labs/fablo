@@ -27,7 +27,7 @@ chaincodePackage <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>"
+      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>"
   <% }) -%>
   chaincodeApprove <% -%>
     "<%= org.cli.address %>" <% -%>
@@ -37,7 +37,7 @@ chaincodePackage <% -%>
     "$version" <% -%>
     "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement %>" <% -%>
-    "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
+    "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
@@ -49,7 +49,7 @@ chaincodeCommit <% -%>
   "$version" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement %>" <% -%>
-  "<%= !networkSettings.tls ? '' : `crypto/orderer-tlscacerts/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
+  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
-  "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peers/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
+  "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
