@@ -2,7 +2,10 @@
   "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
   "networkSettings": {
     "fabricVersion": "1.4.6",
-    "tls": true
+    "tls": true,
+    "monitoring": {
+      "loglevel": "debug"
+    }
   },
   "rootOrg": {
     "organization": {
@@ -15,8 +18,8 @@
     },
     "orderer": {
       "prefix": "orderer",
-      "type": "solo",
-      "instances": 1
+      "type": "raft",
+      "instances": 3
     }
   },
   "orgs": [
@@ -25,21 +28,6 @@
         "name": "Org1",
         "mspName": "Org1MSP",
         "domain": "org1.com"
-      },
-      "ca": {
-        "prefix": "ca"
-      },
-      "peer": {
-        "prefix": "peer",
-        "instances": 2,
-        "db": "LevelDb"
-      }
-    },
-    {
-      "organization": {
-        "name": "Org2",
-        "mspName": "Org2MSP",
-        "domain": "org2.com"
       },
       "ca": {
         "prefix": "ca"
@@ -64,23 +52,7 @@
         {
           "name": "Org2",
           "peers": [
-            "peer0"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "my-channel2",
-      "orgs": [
-        {
-          "name": "Org1",
-          "peers": [
-            "peer1"
-          ]
-        },
-        {
-          "name": "Org2",
-          "peers": [
+            "peer0",
             "peer1"
           ]
         }

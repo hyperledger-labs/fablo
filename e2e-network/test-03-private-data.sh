@@ -6,7 +6,7 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRICA_HOME="$TEST_TMP/../.."
 
-FABRICA_CONFIG="$FABRICA_HOME/samples/fabricaConfig-2orgs-private-data-2chaincodes.yaml"
+FABRICA_CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml"
 
 networkUp() {
   "$FABRICA_HOME/fabrica-build.sh"
