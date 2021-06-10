@@ -49,7 +49,7 @@ function genesisBlockCreate() {
   inputLog "OUTPUT_PATH: $OUTPUT_PATH"
 
   if [ -d "$OUTPUT_PATH" ]; then
-    echo "Cant't generate genesis block, directory already exists : $OUTPUT_PATH"
+    echo "Cant't generate genesis block, directory already exists: $OUTPUT_PATH"
     echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
