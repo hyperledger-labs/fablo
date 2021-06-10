@@ -52,7 +52,7 @@ function chaincodePackage() {
     --lang "$CHAINCODE_LANG" \
     --label "$CHAINCODE_LABEL"
 
-  # set package owner as current (host) user to allow to remove it in down command and related
+  # set package owner as current (host) user to fix permission issues
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 

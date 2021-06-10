@@ -649,6 +649,9 @@ function generateArtifacts() {
 
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
   genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+
+  # Create directory for chaincode packages to avoid permission errors on linux
+  mkdir -p \\"$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages\\"
 }
 
 function startNetwork() {
@@ -694,9 +697,9 @@ function networkDown() {
   docker rmi $(docker images dev-peer0.org2.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
-  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/crypto-config
-  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/chaincode-packages
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config\\"
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages\\"
 
   printHeadline \\"Done! Network was purged\\" \\"U1F5D1\\"
 }
@@ -1055,7 +1058,7 @@ function genesisBlockCreate() {
   inputLog \\"OUTPUT_PATH: $OUTPUT_PATH\\"
 
   if [ -d \\"$OUTPUT_PATH\\" ]; then
-    echo \\"Cant't generate genesis block, directory already exists : $OUTPUT_PATH\\"
+    echo \\"Cant't generate genesis block, directory already exists: $OUTPUT_PATH\\"
     echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
