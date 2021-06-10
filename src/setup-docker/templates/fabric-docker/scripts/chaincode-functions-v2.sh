@@ -107,6 +107,11 @@ function chaincodeApprove() {
     CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
   fi
 
+  local ENDORSEMENT_PARAMS=()
+  if [ -n "$ENDORSEMENT" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
+  fi
+
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
@@ -143,7 +148,7 @@ function chaincodeApprove() {
     -v "$CHAINCODE_VERSION" \
     --package-id "$CC_PACKAGE_ID" \
     --sequence "$SEQUENCE" \
-    --signature-policy "$ENDORSEMENT" \
+    "${ENDORSEMENT_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
 }
@@ -192,6 +197,11 @@ function chaincodeCommit() {
     TLS_ROOT_CERT_PARAMS=(--tls $(echo ",$TLS_ROOT_CERT_FILES" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g'))
   fi
 
+  local ENDORSEMENT_PARAMS=()
+  if [ -n "$ENDORSEMENT" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
+  fi
+
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
@@ -216,7 +226,7 @@ function chaincodeCommit() {
     -n "$CHAINCODE_NAME" \
     -v "$CHAINCODE_VERSION" \
     --sequence "$SEQUENCE" \
-    --signature-policy "$ENDORSEMENT" \
+    "${ENDORSEMENT_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${COMMIT_PEER_PARAMS[@]}" \
     "${TLS_ROOT_CERT_PARAMS[@]}" \

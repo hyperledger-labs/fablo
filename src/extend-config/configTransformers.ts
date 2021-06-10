@@ -63,12 +63,13 @@ const transformChaincodesConfig = (
   fabricVersion: string,
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
+  capabilities: Capabilities,
 ): ChaincodeConfig[] => {
   return chaincodes.map((chaincode) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
-    const endorsement = chaincode.endorsement ?? defaults.chaincodeEndorsement(channel.orgs);
+    const endorsement = chaincode.endorsement ?? defaults.chaincodeEndorsement(channel.orgs, capabilities);
 
     const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames),

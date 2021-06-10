@@ -107,7 +107,7 @@ export interface ChaincodeConfig {
   lang: string;
   channel: ChannelConfig;
   init: string;
-  endorsement: string;
+  endorsement: string | undefined;
   instantiatingOrg: OrgConfig;
   privateDataConfigFile?: string;
   privateData: PrivateCollectionConfig[];
