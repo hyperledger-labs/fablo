@@ -1,22 +1,48 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/.gitignore from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/.gitignore from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/configtx.yaml from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/collections/and-policy-chaincode.json from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
+"[
+  {
+    \\"name\\": \\"org1-collection\\",
+    \\"policy\\": \\"OR('Org1MSP.member')\\",
+    \\"requiredPeerCount\\": 1,
+    \\"maxPeerCount\\": 1,
+    \\"blockToLive\\": 0,
+    \\"memberOnlyRead\\": true
+  }
+]"
+`;
+
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/collections/or-policy-chaincode.json from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
+"[
+  {
+    \\"name\\": \\"org1-collection\\",
+    \\"policy\\": \\"OR('Org1MSP.member')\\",
+    \\"requiredPeerCount\\": 1,
+    \\"maxPeerCount\\": 1,
+    \\"blockToLive\\": 0,
+    \\"memberOnlyRead\\": true
+  }
+]"
+`;
+
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/configtx.yaml from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
 Capabilities:
     Channel: &ChannelCapabilities
-        V2_0: true
+        V1_4_3: true
     Orderer: &OrdererCapabilities
-        V2_0: true
+        V1_4_2: true
     Application: &ApplicationCapabilities
-        V2_0: true
+        V1_4_2: true
 
 ################################################################################
 #   CHANNEL Defaults
@@ -77,6 +103,28 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7060
+    - &Org2
+      Name: Org2MSP
+      ID: Org2MSP
+      MSPDir: crypto-config/peerOrganizations/org2.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.admin')\\"
+          Endorsement:
+              Type: Signature
+              Rule: \\"OR('Org2MSP.member')\\"
+
+      AnchorPeers:
+          - Host: peer0.org2.com
+            Port: 7070
 
 ################################################################################
 #   SECTION: Application
@@ -155,6 +203,7 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
+                    - *Org2
 
     # Profile used to create channeltx for my-channel1 #
     MyChannel1:
@@ -164,20 +213,23 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
+                    - *Org2
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
+                - *Org2
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *Org1
+                - *Org2
             Capabilities:
                 <<: *ApplicationCapabilities
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -188,7 +240,18 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-org2.yaml from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
+"PeerOrgs:
+  - Name: Org2
+    Domain: org2.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+"
+`;
+
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -197,7 +260,7 @@ exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fa
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -252,7 +315,7 @@ fi
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/.env from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/.env from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "FABRICA_VERSION=\\"0.1.0-unstable\\"
 FABRICA_BUILD=<date with git hash>
 
@@ -262,11 +325,11 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=2.2.1
+FABRIC_VERSION=1.4.11
 FABRIC_CA_VERSION=1.5.0
-FABRIC_CCENV_VERSION=2.2.1
-FABRIC_BASEOS_VERSION=2.2.1
-FABRIC_JAVAENV_VERSION=2.2.1
+FABRIC_CCENV_VERSION=1.4.11
+FABRIC_BASEOS_VERSION=0.4.9
+FABRIC_JAVAENV_VERSION=1.4.8
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -274,10 +337,13 @@ ROOT_CA_ADMIN_PASSWORD=adminpw
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
+ORG2_CA_ADMIN_NAME=admin
+ORG2_CA_ADMIN_PASSWORD=adminpw
+
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
@@ -299,6 +365,12 @@ function channelQuery() {
   then
 
     peerChannelList \\"cli.org1.com\\" \\"peer1.org1.com:7061\\"
+
+  elif
+    [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org2\\" ] && [ \\"$3\\" = \\"peer0\\" ]
+  then
+
+    peerChannelList \\"cli.org2.com\\" \\"peer0.org2.com:7070\\"
 
   elif
 
@@ -355,6 +427,33 @@ function channelQuery() {
 
     peerChannelFetchBlock \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7061\\"
 
+  elif
+    [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org2\\" ] && [ \\"$4\\" = \\"peer0\\" ]
+  then
+
+    peerChannelGetInfo \\"my-channel1\\" \\"cli.org2.com\\" \\"peer0.org2.com:7070\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchConfig \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7070\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchLastBlock \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7070\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
+    FILE_NAME=$6
+
+    peerChannelFetchFirstBlock \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7070\\"
+
+  elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
+    FILE_NAME=$6
+    BLOCK_NUMBER=$7
+
+    peerChannelFetchBlock \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org2.com:7070\\"
+
   else
 
     printChannelsHelp
@@ -372,6 +471,10 @@ function printChannelsHelp() {
 
   echo \\"fabrica channel list org1 peer1\\"
   echo -e \\"\\\\t List channels on 'peer1' of 'Org1'\\".
+  echo \\"\\"
+
+  echo \\"fabrica channel list org2 peer0\\"
+  echo -e \\"\\\\t List channels on 'peer0' of 'Org2'\\".
   echo \\"\\"
 
   echo \\"fabrica channel getinfo my-channel1 org1 peer0\\"
@@ -400,28 +503,54 @@ function printChannelsHelp() {
   echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer1' of 'Org1'\\".
   echo \\"\\"
 
+  echo \\"fabrica channel getinfo my-channel1 org2 peer0\\"
+  echo -e \\"\\\\t Get channel info on 'peer0' of 'Org2'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch config my-channel1 org2 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download latest config block to current dir. Uses first peer 'peer0' of 'Org2'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch lastBlock my-channel1 org2 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download last, decrypted block to current dir. Uses first peer 'peer0' of 'Org2'\\".
+  echo \\"\\"
+  echo \\"fabrica channel fetch firstBlock my-channel1 org2 peer0 <fileName.json>\\"
+  echo -e \\"\\\\t Download first, decrypted block to current dir. Uses first peer 'peer0' of 'Org2'\\".
+  echo \\"\\"
+
 }
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/commands-generated.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/commands-generated.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 function installChaincodes() {
-  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
-    local version=\\"0.0.1\\"
-    printHeadline \\"Packaging chaincode ''\\" \\"U1F60E\\"
-    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-    chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"\\"
-    printHeadline \\"Installing '' for Org1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
-    printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+    chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printItalics \\"Instantiating chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
   else
-    echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
-    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
+    echo \\"Warning! Skipping chaincode 'or-policy-chaincode' installation. Chaincode directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+  fi
+  if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+    chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+    printItalics \\"Instantiating chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
+  else
+    echo \\"Warning! Skipping chaincode 'and-policy-chaincode' installation. Chaincode directory is empty.\\"
+    echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
   fi
 
 }
@@ -439,21 +568,44 @@ function upgradeChaincode() {
     exit 1
   fi
 
-  if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
-    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
-      printHeadline \\"Packaging chaincode ''\\" \\"U1F60E\\"
-      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
-      chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"\\"
-      printHeadline \\"Installing '' for Org1\\" \\"U1F60E\\"
-      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
-      printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+  if [ \\"$chaincodeName\\" = \\"or-policy-chaincode\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+      chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+
+      printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+
+      printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+
+      printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+      printItalics \\"Upgrading as 'Org1'. 'or-policy-chaincode' on channel 'my-channel1'\\" \\"U1F618\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"OR('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/or-policy-chaincode.json\\"
 
     else
-      echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
-      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
+      echo \\"Warning! Skipping chaincode 'or-policy-chaincode' upgrade. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+    fi
+  fi
+  if [ \\"$chaincodeName\\" = \\"and-policy-chaincode\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+      chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+
+      printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+
+      printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+
+      printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7070\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" \\"\\"
+      printItalics \\"Upgrading as 'Org1'. 'and-policy-chaincode' on channel 'my-channel1'\\" \\"U1F618\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"$version\\" \\"node\\" \\"orderer0.root.com:7050\\" '{\\"Args\\":[]}' \\"AND('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"collections/and-policy-chaincode.json\\"
+
+    else
+      echo \\"Warning! Skipping chaincode 'and-policy-chaincode' upgrade. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
     fi
   fi
 }
@@ -461,12 +613,15 @@ function upgradeChaincode() {
 function notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
   createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"MyChannel1\\" \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
   notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.root.com:7050\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.root.com:7050\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\"
 }
 
 function generateArtifacts() {
@@ -476,9 +631,14 @@ function generateArtifacts() {
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
   certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  printItalics \\"Generating crypto material for Org2\\" \\"U1F512\\"
+  certsGenerate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org2.yaml\\" \\"peerOrganizations/org2.com\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating genesis block\\" \\"U1F3E0\\"
   genesisBlockCreate \\"$FABRICA_NETWORK_ROOT/fabric-config\\" \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+
+  # Create directory for chaincode packages to avoid permission errors on linux
+  mkdir -p \\"$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages\\"
 }
 
 function startNetwork() {
@@ -504,6 +664,8 @@ function installChannels() {
 
   printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
   docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7061' 'crypto/users/Admin@org1.com/msp' 'orderer0.root.com:7050';\\"
+  printItalics \\"Joining 'my-channel1' on  Org2/peer0\\" \\"U1F638\\"
+  docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org2MSP' 'peer0.org2.com:7070' 'crypto/users/Admin@org2.com/msp' 'orderer0.root.com:7050';\\"
 }
 
 function networkDown() {
@@ -511,21 +673,30 @@ function networkDown() {
   (cd \\"$FABRICA_NETWORK_ROOT\\"/fabric-docker && docker-compose down)
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer0.org1.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer1.org1.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-or-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer0.org1.com-or-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-or-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer1.org1.com-or-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-or-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer0.org2.com-or-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer0.org1.com-and-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer0.org1.com-and-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer1.org1.com-and-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer1.org1.com-and-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rm -f $(docker ps -a | grep dev-peer0.org2.com-and-policy-chaincode-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  docker rmi $(docker images dev-peer0.org2.com-and-policy-chaincode-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
-  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/config
-  rm -rf \\"$FABRICA_NETWORK_ROOT\\"/fabric-config/crypto-config
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/config\\"
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/crypto-config\\"
+  rm -rf \\"$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages\\"
 
   printHeadline \\"Done! Network was purged\\" \\"U1F5D1\\"
 }
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "version: '2.2'
 
 networks:
@@ -610,9 +781,13 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
-      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/or-policy-chaincode/\\"
+      - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
+      - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
     networks:
       - basic
 
@@ -696,10 +871,98 @@ services:
       - orderer0.root.com
     networks:
       - basic
+
+  ca.org2.com:
+    container_name: ca.org2.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.org2.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org2.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+    ports:
+      - 7032:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    networks:
+      - basic
+
+  cli.org2.com:
+    container_name: cli.org2.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.org2.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org2.com/msp
+      - CORE_PEER_ADDRESS=peer0.org2.com:7070
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/or-policy-chaincode/\\"
+      - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
+      - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
+    networks:
+      - basic
+
+  peer0.org2.com:
+    container_name: peer0.org2.com
+    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_ID=peer0.org2.com
+      - CORE_PEER_ADDRESS=peer0.org2.com:7070
+      - CORE_PEER_LISTENADDRESS=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start
+    ports:
+      - 7070:7070
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    depends_on:
+      - orderer0.root.com
+    networks:
+      - basic
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 function certsGenerate() {
@@ -751,7 +1014,7 @@ function genesisBlockCreate() {
   inputLog \\"OUTPUT_PATH: $OUTPUT_PATH\\"
 
   if [ -d \\"$OUTPUT_PATH\\" ]; then
-    echo \\"Cant't generate genesis block, directory already exists : $OUTPUT_PATH\\"
+    echo \\"Cant't generate genesis block, directory already exists: $OUTPUT_PATH\\"
     echo \\"Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it\\"
     exit 1
   fi
@@ -955,7 +1218,7 @@ function removeContainer() {
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 function printHelp() {
@@ -990,7 +1253,7 @@ function printHelp() {
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 function chaincodeBuild() {
@@ -1025,98 +1288,69 @@ function chaincodeBuild() {
   fi
 }
 
-function chaincodePackage() {
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHAINCODE_NAME=$3
-  local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local CHAINCODE_LANG=$5
-  local CA_CERT=$6
-
-  echo \\"Packaging chaincode $CHAINCODE_NAME...\\"
-  inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CLI_NAME: $CLI_NAME\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
-
-  local CA_CERT_PARAMS=()
-  if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
-  fi
-
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode package \\\\
-    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    --path \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
-    --lang \\"$CHAINCODE_LANG\\" \\\\
-    --label \\"$CHAINCODE_LABEL\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
-}
-
 function chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
-  local CHAINCODE_NAME=$3
-  local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local CA_CERT=$5
+  local CHANNEL_NAME=$3
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LANG=$6
+  local ORDERER_URL=$7
+  local CA_CERT=$8
 
-  echo \\"Installing chaincode $CHAINCODE_NAME...\\"
+  echo \\"Installing chaincode on $CHANNEL_NAME...\\"
+  inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
 
   local CA_CERT_PARAMS=()
   if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
+    CA_CERT_PARAMS=(--tls --cafile \\"/var/hyperledger/cli/$CA_CERT\\")
   fi
 
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode install \\\\
-    \\"/var/hyperledger/cli/$CHAINCODE_NAME/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
+  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" -e CHANNEL_NAME=\\"$CHANNEL_NAME\\" \\"$CLI_NAME\\" peer chaincode install \\\\
+    -n \\"$CHAINCODE_NAME\\" \\\\
+    -v \\"$CHAINCODE_VERSION\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -p \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
+    -o \\"$ORDERER_URL\\" \\\\
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeApprove() {
+function chaincodeInstantiate() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
-  local CHANNEL_NAME=\\"$3\\"
+  local CHANNEL_NAME=$3
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local ORDERER_URL=$6
-  local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COLLECTIONS_CONFIG=$9
+  local CHAINCODE_LANG=$6
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=\${10}
+  local COLLECTIONS_CONFIG=\${11}
 
-  echo \\"Approving chaincode $CHAINCODE_NAME...\\"
+  echo \\"Instantiating chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
 
   local CA_CERT_PARAMS=()
   if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
+    CA_CERT_PARAMS=(--tls --cafile \\"/var/hyperledger/cli/$CA_CERT\\")
   fi
 
   local COLLECTIONS_CONFIG_PARAMS=()
@@ -1124,74 +1358,48 @@ function chaincodeApprove() {
     COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
   fi
 
-  local QUERYINSTALLED_RESPONSE
-  local CC_PACKAGE_ID
-
-  QUERYINSTALLED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode queryinstalled \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
-  inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
-
-  local QUERYCOMMITTED_RESPONSE
-  local SEQUENCE
-
-  QUERYCOMMITTED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
-      --channelID \\"$CHANNEL_NAME\\" \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
-  SEQUENCE=$((SEQUENCE + 1))
-  inputLog \\"SEQUENCE: $SEQUENCE\\"
-
-  docker exec -e CC_PACKAGE_ID=\\"$CC_PACKAGE_ID\\" \\"$CLI_NAME\\" peer lifecycle chaincode approveformyorg \\\\
-    -o \\"$ORDERER_URL\\" \\\\
+  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode instantiate \\\\
     -C \\"$CHANNEL_NAME\\" \\\\
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
-    --package-id \\"$CC_PACKAGE_ID\\" \\\\
-    --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -c \\"$INIT_PARAMS\\" \\\\
+    -P \\"$ENDORSEMENT\\" \\\\
     \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
 
-function chaincodeCommit() {
+function chaincodeUpgrade() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
-  local CHANNEL_NAME=\\"$3\\"
+  local CHANNEL_NAME=$3
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local ORDERER_URL=$6
-  local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COLLECTIONS_CONFIG=$9
+  local CHAINCODE_LANG=$6
+  local ORDERER_URL=$7
+  local INIT_PARAMS=$8
+  local ENDORSEMENT=$9
+  local CA_CERT=\${10}
+  local COLLECTIONS_CONFIG=\${11}
 
-  echo \\"Committing chaincode $CHAINCODE_NAME...\\"
+  echo \\"Upgrading chaincode on $CHANNEL_NAME...\\"
   inputLog \\"CLI_NAME: $CLI_NAME\\"
   inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
-  inputLog \\"CHANNEL_NAME: $CHANNEL_NAME\\"
   inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
   inputLog \\"CHAINCODE_VERSION: $CHAINCODE_VERSION\\"
-  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
-  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
-  inputLog \\"CA_CERT: $CA_CERT\\"
+  inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
   inputLog \\"COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG\\"
-
-  local PEER_PARAMS=()
-  read -r -a PEER_PARAMS <<<\\"--peerAddresses $(echo \\"$PEER_ADDRESS\\" | sed 's/,/ --peerAddresses /g')\\"
+  inputLog \\"INIT_PARAMS: $INIT_PARAMS\\"
+  inputLog \\"ENDORSEMENT: $ENDORSEMENT\\"
+  inputLog \\"PEER_ADDRESS: $PEER_ADDRESS\\"
+  inputLog \\"ORDERER_URL: $ORDERER_URL\\"
+  inputLog \\"CLI_NAME: $CLI_NAME\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
 
   local CA_CERT_PARAMS=()
   if [ -n \\"$CA_CERT\\" ]; then
-    # shellcheck disable=SC2207
-    CA_CERT_PARAMS=('--tls' $(echo \\",$CA_CERT\\" | sed 's/,/ --cafile \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
+    CA_CERT_PARAMS=(--tls --cafile \\"/var/hyperledger/cli/$CA_CERT\\")
   fi
 
   local COLLECTIONS_CONFIG_PARAMS=()
@@ -1199,35 +1407,22 @@ function chaincodeCommit() {
     COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
   fi
 
-  local QUERYCOMMITTED_RESPONSE
-  local SEQUENCE
-
-  QUERYCOMMITTED_RESPONSE=\\"$(
-    docker exec \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
-      --channelID \\"$CHANNEL_NAME\\" \\\\
-      --output json \\\\
-      \\"\${PEER_PARAMS[@]}\\" \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
-  )\\"
-  SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
-  SEQUENCE=$((SEQUENCE + 1))
-  inputLog \\"SEQUENCE: $SEQUENCE\\"
-
-  docker exec \\"$CLI_NAME\\" peer lifecycle chaincode commit \\\\
-    -o \\"$ORDERER_URL\\" \\\\
+  docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer chaincode upgrade \\\\
     -C \\"$CHANNEL_NAME\\" \\\\
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
-    --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    -l \\"$CHAINCODE_LANG\\" \\\\
+    -p /var/hyperledger/cli/\\"$CHAINCODE_NAME\\"/ \\\\
+    -o \\"$ORDERER_URL\\" \\\\
+    -c \\"$INIT_PARAMS\\" \\\\
+    -P \\"$ENDORSEMENT\\" \\\\
     \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${PEER_PARAMS[@]}\\" \\\\
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 function peerChannelList() {
@@ -1500,7 +1695,7 @@ function peerChannelFetchBlockTls() {
 "
 `;
 
-exports[`network-01-simple should create proper e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -1631,21 +1826,24 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`network-01-simple should create proper files from samples/fabricaConfig-1org-1channel-1chaincode.json 1`] = `
+exports[`samples/fabrica-config-hlf1.4-2orgs-private-data.yaml should create proper files from samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
 Array [
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/.gitignore",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/.env",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/channel-query-scripts.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
-  "e2e/__tmp__/network-01-simple/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/collections/and-policy-chaincode.json",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/collections/or-policy-chaincode.json",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-org2.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf1.4-2orgs-private-data.yaml.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;

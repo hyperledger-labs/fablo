@@ -12,18 +12,9 @@ FABRICA_HOME="$(dirname "$0")"
 shellcheck "$FABRICA_HOME"/*.sh
 shellcheck "$FABRICA_HOME"/e2e-network/*.sh
 
-EXPECTED_NETWORKS=(
-  "$FABRICA_HOME/e2e/__tmp__/network-01-simple"
-  "$FABRICA_HOME/e2e/__tmp__/network-02-simple-tls"
-  "$FABRICA_HOME/e2e/__tmp__/network-03-simple-raft"
-  "$FABRICA_HOME/e2e/__tmp__/network-04-simple-2chaincodes"
-  "$FABRICA_HOME/e2e/__tmp__/network-05-2orgs"
-  "$FABRICA_HOME/e2e/__tmp__/network-06-2orgs-tls"
-  "$FABRICA_HOME/e2e/__tmp__/network-07-2orgs-raft"
-  "$FABRICA_HOME/e2e/__tmp__/network-08-2orgs-private-data"
-)
+for config in samples/fabrica-config-*; do
+  network="$FABRICA_HOME/e2e/__tmp__/${config}.tmpdir"
 
-for network in "${EXPECTED_NETWORKS[@]}"; do
   if [ -z "$(ls -A "$network")" ]; then
     echo "Missing network $network"
     exit 1
