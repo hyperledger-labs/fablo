@@ -1,3 +1,5 @@
+import { OrgConfig } from "../types/FabricaConfigExtended";
+
 export default {
   networkSettings: {
     monitoring: {
@@ -14,5 +16,8 @@ export default {
     prefix: "peer",
     db: "LevelDb",
     anchorPeerInstances: 1,
+  },
+  chaincodeEndorsement(orgs: OrgConfig[]) {
+    return `AND (${orgs.map((o) => `'${o.mspName}.member'`).join(", ")})`;
   },
 };
