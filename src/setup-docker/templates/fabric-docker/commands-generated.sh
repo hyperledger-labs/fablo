@@ -106,6 +106,9 @@ function generateArtifacts() {
 
   printItalics "Generating genesis block" "U1F3E0"
   genesisBlockCreate "$FABRICA_NETWORK_ROOT/fabric-config" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+
+  # Create directory for chaincode packages to avoid permission errors on linux
+  mkdir -p "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
 }
 
 function startNetwork() {
@@ -179,9 +182,9 @@ function networkDown() {
   <% }) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/config
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/crypto-config
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/chaincode-packages
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config"
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }
