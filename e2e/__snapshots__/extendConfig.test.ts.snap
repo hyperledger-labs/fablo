@@ -1256,7 +1256,7 @@ Object {
         },
       },
       "directory": "./chaincodes/chaincode-kv-node-1.4",
-      "endorsement": "AND ('Org1MSP.member')",
+      "endorsement": "AND ('Org1MSP.member', 'Org2MSP.member')",
       "init": "{\\"Args\\":[]}",
       "instantiatingOrg": Object {
         "anchorPeers": Array [
