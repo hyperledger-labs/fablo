@@ -68,7 +68,9 @@ const transformChaincodesConfig = (
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
-    const privateData = (chaincode.privateData || []).map((d) =>
+    const endorsement = chaincode.endorsement ?? defaults.chaincodeEndorsement(channel.orgs);
+
+    const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames),
     );
     const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
@@ -80,7 +82,7 @@ const transformChaincodesConfig = (
       lang: chaincode.lang,
       channel,
       init: chaincode.init,
-      endorsement: chaincode.endorsement,
+      endorsement,
       instantiatingOrg: channel.instantiatingOrg,
       privateDataConfigFile,
       privateData,
