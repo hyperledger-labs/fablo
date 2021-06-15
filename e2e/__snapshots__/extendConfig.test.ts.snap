@@ -3932,7 +3932,7 @@ Object {
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": undefined,
-      "init": "{\\"Args\\":[]}",
+      "initRequired": false,
       "instantiatingOrg": Object {
         "anchorPeers": Array [
           Object {
@@ -4442,7 +4442,7 @@ Object {
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "init": "{\\"Args\\":[]}",
+      "initRequired": false,
       "instantiatingOrg": Object {
         "anchorPeers": Array [
           Object {
@@ -4700,7 +4700,7 @@ Object {
       },
       "directory": "./chaincodes/chaincode-java-simple",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "init": "{\\"Args\\":[]}",
+      "initRequired": false,
       "instantiatingOrg": Object {
         "anchorPeers": Array [
           Object {

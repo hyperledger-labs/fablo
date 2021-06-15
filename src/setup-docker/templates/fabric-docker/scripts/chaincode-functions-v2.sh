@@ -88,8 +88,9 @@ function chaincodeApprove() {
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COLLECTIONS_CONFIG=$9
+  local INIT_REQUIRED=$8
+  local CA_CERT=$9
+  local COLLECTIONS_CONFIG=${10}
 
   echo "Approving chaincode $CHAINCODE_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -99,6 +100,7 @@ function chaincodeApprove() {
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
+  inputLog "INIT_REQUIRED: $INIT_REQUIRED"
   inputLog "CA_CERT: $CA_CERT"
   inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
 
@@ -110,6 +112,11 @@ function chaincodeApprove() {
   local ENDORSEMENT_PARAMS=()
   if [ -n "$ENDORSEMENT" ]; then
     ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
+  fi
+
+  local INIT_REQUIRED_PARAMS=()
+  if [ "$INIT_REQUIRED" = "true" ]; then
+    INIT_REQUIRED_PARAMS=(--init-required)
   fi
 
   local COLLECTIONS_CONFIG_PARAMS=()
@@ -149,12 +156,12 @@ function chaincodeApprove() {
     --package-id "$CC_PACKAGE_ID" \
     --sequence "$SEQUENCE" \
     "${ENDORSEMENT_PARAMS[@]}" \
+    "${INIT_REQUIRED_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${CA_CERT_PARAMS[@]}"
 }
 
 function chaincodeCommit() {
-  # TODO commands generated ma przyjmować te parametry (brakuje tls)
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME="$3"
@@ -162,10 +169,11 @@ function chaincodeCommit() {
   local CHAINCODE_VERSION=$5
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
-  local CA_CERT=$8
-  local COMMIT_PEER_ADDRESSES=$9
-  local TLS_ROOT_CERT_FILES=${10}
-  local COLLECTIONS_CONFIG=${11}
+  local INIT_REQUIRED=$8
+  local CA_CERT=$9
+  local COMMIT_PEER_ADDRESSES=${10}
+  local TLS_ROOT_CERT_FILES=${11}
+  local COLLECTIONS_CONFIG=${12}
 
   echo "Committing chaincode $CHAINCODE_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -175,6 +183,7 @@ function chaincodeCommit() {
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "ORDERER_URL: $ORDERER_URL"
   inputLog "ENDORSEMENT: $ENDORSEMENT"
+  inputLog "INIT_REQUIRED: $INIT_REQUIRED"
   inputLog "CA_CERT: $CA_CERT"
   inputLog "COMMIT_PEER_ADDRESSES: $COMMIT_PEER_ADDRESSES"
   inputLog "TLS_ROOT_CERT_FILES: $TLS_ROOT_CERT_FILES"
@@ -202,6 +211,11 @@ function chaincodeCommit() {
     ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
   fi
 
+  local INIT_REQUIRED_PARAMS=()
+  if [ "$INIT_REQUIRED" = "true" ]; then
+    INIT_REQUIRED_PARAMS=(--init-required)
+  fi
+
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n "$COLLECTIONS_CONFIG" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
@@ -227,6 +241,7 @@ function chaincodeCommit() {
     -v "$CHAINCODE_VERSION" \
     --sequence "$SEQUENCE" \
     "${ENDORSEMENT_PARAMS[@]}" \
+    "${INIT_REQUIRED_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${COMMIT_PEER_PARAMS[@]}" \
     "${TLS_ROOT_CERT_PARAMS[@]}" \

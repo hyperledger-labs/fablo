@@ -17,7 +17,11 @@ export default {
     db: "LevelDb",
     anchorPeerInstances: 1,
   },
-  chaincodeEndorsement(orgs: OrgConfig[], capabilities: Capabilities): string | undefined {
-    return capabilities.isV2 ? undefined : `AND (${orgs.map((o) => `'${o.mspName}.member'`).join(", ")})`;
+  chaincode: {
+    init: '{"Args":[]}',
+    initRequired: false,
+    endorsement(orgs: OrgConfig[], capabilities: Capabilities): string | undefined {
+      return capabilities.isV2 ? undefined : `AND (${orgs.map((o) => `'${o.mspName}.member'`).join(", ")})`;
+    },
   },
 };
