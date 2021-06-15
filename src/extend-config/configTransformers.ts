@@ -63,12 +63,17 @@ const transformChaincodesConfig = (
   fabricVersion: string,
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
+  capabilities: Capabilities,
 ): ChaincodeConfig[] => {
   return chaincodes.map((chaincode) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
-    const endorsement = chaincode.endorsement ?? defaults.chaincodeEndorsement(channel.orgs);
+    const initParams: { initRequired: boolean } | { init: string } = capabilities.isV2
+      ? { initRequired: chaincode.initRequired || defaults.chaincode.initRequired }
+      : { init: chaincode.init || defaults.chaincode.init };
+
+    const endorsement = chaincode.endorsement ?? defaults.chaincode.endorsement(channel.orgs, capabilities);
 
     const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(fabricVersion, channel, d.name, d.orgNames),
@@ -81,7 +86,7 @@ const transformChaincodesConfig = (
       version: chaincode.version,
       lang: chaincode.lang,
       channel,
-      init: chaincode.init,
+      ...initParams,
       endorsement,
       instantiatingOrg: channel.instantiatingOrg,
       privateDataConfigFile,
@@ -246,16 +251,17 @@ const transformChannelConfigs = (
 
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
+  if (version(fabricVersion).isGreaterOrEqual("2.0.0"))
+    return { channel: "V2_0", orderer: "V2_0", application: "V2_0", isV2: true };
+
   if (version(fabricVersion).isGreaterOrEqual("1.4.3"))
-    return { channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2" };
+    return { channel: "V1_4_3", orderer: "V1_4_2", application: "V1_4_2", isV2: false };
 
   if (version(fabricVersion).isGreaterOrEqual("1.4.2"))
-    return { channel: "V1_4_2", orderer: "V1_4_2", application: "V1_4_2" };
+    return { channel: "V1_4_2", orderer: "V1_4_2", application: "V1_4_2", isV2: false };
 
-  return { channel: "V1_3", orderer: "V1_1", application: "V1_3" };
+  return { channel: "V1_3", orderer: "V1_1", application: "V1_3", isV2: false };
 };
-
-const isHlf20 = (fabricVersion: string) => version(fabricVersion).isGreaterOrEqual("2.0.0");
 
 const getVersions = (fabricVersion: string): FabricVersions => {
   const fabricJavaenvExceptions: Record<string, string> = {
@@ -299,7 +305,6 @@ const transformNetworkSettings = (networkSettingsJson: NetworkSettingsJson): Net
     ...networkSettingsJson,
     ...getVersions(networkSettingsJson.fabricVersion),
     paths: getPathsFromEnv(),
-    isHlf20: isHlf20(networkSettingsJson.fabricVersion),
     monitoring,
   };
 };

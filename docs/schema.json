@@ -427,7 +427,6 @@
           "version",
           "lang",
           "channel",
-          "init",
           "directory"
         ],
         "properties": {
@@ -471,8 +470,13 @@
           },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
-            "title": "Initialization arguments",
+            "title": "Initialization arguments (for Hyperledger Fabric below 2.0)",
             "type": "string"
+          },
+          "initRequired": {
+            "$id": "#/properties/chaincodes/items/properties/initRequired",
+            "title": "Whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater)",
+            "type": "boolean"
           },
           "endorsement": {
             "$id": "#/properties/chaincodes/items/properties/endorsement",

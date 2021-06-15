@@ -55,8 +55,13 @@ Object {
           },
           "init": Object {
             "$id": "#/properties/chaincodes/items/properties/init",
-            "title": "Initialization arguments",
+            "title": "Initialization arguments (for Hyperledger Fabric below 2.0)",
             "type": "string",
+          },
+          "initRequired": Object {
+            "$id": "#/properties/chaincodes/items/properties/initRequired",
+            "title": "Whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater)",
+            "type": "boolean",
           },
           "lang": Object {
             "$id": "#/properties/chaincodes/items/properties/lang",
@@ -130,7 +135,6 @@ Object {
           "version",
           "lang",
           "channel",
-          "init",
           "directory",
         ],
         "title": "Chaincode",

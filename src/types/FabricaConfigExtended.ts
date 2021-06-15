@@ -1,6 +1,12 @@
-export interface NetworkSettings {
+export interface FabricVersions {
   fabricVersion: string;
   fabricCaVersion: string;
+  fabricCcenvVersion: string;
+  fabricBaseosVersion: string;
+  fabricJavaenvVersion: string;
+}
+
+export interface NetworkSettings extends FabricVersions {
   tls: boolean;
   monitoring: { loglevel: string };
   paths: { fabricaConfig: string; chaincodesBaseDir: string };
@@ -98,11 +104,11 @@ export interface ChaincodeConfig {
   directory: string;
   name: string;
   version: string;
-  label: string; // TODO remove label
   lang: string;
   channel: ChannelConfig;
-  init: string;
-  endorsement: string;
+  init?: string;
+  initRequired?: boolean;
+  endorsement?: string;
   instantiatingOrg: OrgConfig;
   privateDataConfigFile?: string;
   privateData: PrivateCollectionConfig[];
