@@ -54,8 +54,9 @@ export interface ChaincodeJson {
   version: string;
   lang: "node" | "java" | "golang";
   channel: string;
-  init: string;
-  endorsement: string;
+  init?: string;
+  initRequired?: boolean;
+  endorsement?: string;
   directory: string;
   privateData: PrivateDataJson[];
 }

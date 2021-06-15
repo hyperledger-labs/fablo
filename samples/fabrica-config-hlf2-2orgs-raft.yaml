@@ -52,13 +52,11 @@ chaincodes:
     version: 0.0.1
     lang: node
     channel: my-channel1
-    init: '{"Args":[]}'
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-kv-node"
   - name: chaincode2
     version: 0.0.1
     lang: java
     channel: my-channel2
-    init: '{"Args":[]}'
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-java-simple"
