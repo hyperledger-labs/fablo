@@ -6,7 +6,7 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRICA_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf2-2orgs-raft.yaml"
+CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
   # separate generate and up is intentional

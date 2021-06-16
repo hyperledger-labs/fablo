@@ -8,9 +8,9 @@ function installChaincodes() {
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (capabilities.isV2) { -%>
           local version="<%= chaincode.version %>"
-          <%- include('commands-generated/chaincode-install-v2.sh.ejs', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); -%>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.sh.ejs', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, rootOrg, networkSettings }); -%>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
@@ -31,9 +31,9 @@ function upgradeChaincode() {
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh.ejs', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); %>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.sh.ejs', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, rootOrg, networkSettings }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."

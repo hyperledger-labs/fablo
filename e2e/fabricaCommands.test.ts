@@ -1,7 +1,7 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabricaVersion } from "../package.json";
 
-const commands = new TestCommands("./e2e/__tmp__/commands-tests", "../../..");
+const commands = new TestCommands("e2e/__tmp__/commands-tests");
 
 describe("init", () => {
   beforeEach(() => commands.cleanupWorkdir());
@@ -13,7 +13,7 @@ describe("init", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Sample config file created! :)");
-    expect(commands.getFiles()).toEqual(["./e2e/__tmp__/commands-tests/fabrica-config.json"]);
+    expect(commands.getFiles()).toEqual(["e2e/__tmp__/commands-tests/fabrica-config.json"]);
     expect(commands.getFileContent("fabrica-config.json")).toMatchSnapshot();
   });
 
@@ -25,10 +25,10 @@ describe("init", () => {
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Sample config file created! :)");
     expect(commands.getFiles()).toEqual([
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
-      "./e2e/__tmp__/commands-tests/fabrica-config.json",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
+      "e2e/__tmp__/commands-tests/fabrica-config.json",
     ]);
     expect(commands.getFileContent("fabrica-config.json")).toMatchSnapshot();
   });
@@ -63,12 +63,12 @@ describe("validate", () => {
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Validation errors count: 0");
     expect(commandResult.output).toContain("Validation warnings count: 0");
-    expect(commands.getFiles()).toContain("./e2e/__tmp__/commands-tests/fabrica-config.json");
+    expect(commands.getFiles()).toContain("e2e/__tmp__/commands-tests/fabrica-config.json");
   });
 
   it("should validate custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf1.4-1org-raft.json`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf1.4-1org-1chaincode-raft.json`;
 
     // When
     const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
@@ -111,7 +111,7 @@ describe("extend config", () => {
 
   it("should extend custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf2-2orgs-raft.yaml`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf2-2orgs-2chaincodes-raft.yaml`;
 
     // When
     const commandResult = commands.fabricaExec(`extend-config ${fabricaConfig}`, true);
