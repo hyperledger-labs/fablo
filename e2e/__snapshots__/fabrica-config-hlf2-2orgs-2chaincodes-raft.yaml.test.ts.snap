@@ -1499,26 +1499,38 @@ function chaincodeBuild() {
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
     # We need to adjust Node.js version to Fabric Shim version, see:
-    # https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md
-    NODE_VERSION=\\"12\\"
-    COMMAND=\\"npm install && npm run build\\"
+    RECOMMENDED_NODE_VERSION=\\"12\\"
+    NODE_VERSION=\\"$(node --version)\\"
 
     USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
     if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
-      NODE_VERSION=\\"8.9\\"
+      RECOMMENDED_NODE_VERSION=\\"8.9\\"
     fi
 
-    if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
+    nvm=~/.nvm/nvm.sh
+    if [ -n \\"$($nvm --version)\\" ]; then
+      echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
+      $nvm use \\"$RECOMMENDED_NODE_VERSION\\"
+      NODE_VERSION=\\"$(node --version)\\"
+    else
+      echo \\"Warning: Cannot set Node.js to $NODE_VERSION with nvm. Your Node.js version is $NODE_VERSION)\\"
+      echo \\"See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md\\"
+      echo \\"You can install nvm and we will take appropriate Node.js version automatically.\\"
+      echo \\"If you have already installed the nvm, see https://github.com/nvm-sh/nvm/issues/576\\"
     fi
 
     echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
     inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
     inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
     inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-    inputLog \\"NODE_VERSION: $NODE_VERSION\\"
+    inputLog \\"NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)\\"
 
-    docker run --rm -e \\"NODE_ENV=production\\" -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
+    # We have different commands for npm and yarn
+    if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
+      (cd \\"$CHAINCODE_DIR_PATH\\" && NODE_ENV=production npm install -g yarn && yarn install && yarn build)
+    else
+      (cd \\"$CHAINCODE_DIR_PATH\\" && NODE_ENV=production npm install && npm run build)
+    fi
   fi
 }
 
