@@ -4,8 +4,16 @@ import * as chalk from "chalk";
 import schema from "../../docs/schema.json";
 import * as config from "../config";
 import parseFabricaConfig from "../utils/parseFabricaConfig";
-import { FabricaConfigJson, NetworkSettingsJson, OrdererJson, OrgJson } from "../types/FabricaConfigJson";
+import {
+  ChaincodeJson,
+  FabricaConfigJson,
+  NetworkSettingsJson,
+  OrdererJson,
+  OrgJson,
+} from "../types/FabricaConfigJson";
 import * as _ from "lodash";
+import { getNetworkCapabilities } from "../extend-config/configTransformers";
+import { Capabilities } from "../types/FabricaConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 
@@ -20,6 +28,7 @@ const validationCategories = {
   GENERAL: "General",
   ORDERER: "Orderer",
   PEER: "Peer",
+  CHAINCODE: "Chaincode",
   VALIDATION: "Schema validation",
 };
 
@@ -88,6 +97,9 @@ class ValidateGenerator extends Generator {
     this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
+
+    const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
+    this._validateChaincodes(capabilities, networkConfig.chaincodes);
   }
 
   async shortSummary() {
@@ -229,6 +241,25 @@ class ValidateGenerator extends Generator {
           message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
         };
         this.emit(validationErrorType.ERROR, objectToEmit);
+      }
+    });
+  }
+
+  _validateChaincodes(capabilities: Capabilities, chaincodes: ChaincodeJson[]) {
+    chaincodes.forEach((chaincode) => {
+      if (!!chaincode.init && capabilities.isV2) {
+        const objectToEmit = {
+          category: validationCategories.CHAINCODE,
+          message: `Chaincode 'init' parameters are only supported in Fabric prior to 2.0 (${chaincode.name})`,
+        };
+        this.emit(validationErrorType.WARN, objectToEmit);
+      }
+      if (!!chaincode.initRequired && !capabilities.isV2) {
+        const objectToEmit = {
+          category: validationCategories.CHAINCODE,
+          message: `Chaincode 'initRequired' parameter is supported only in Fabric prior to 2.0 and will be ignored (${chaincode.name})`,
+        };
+        this.emit(validationErrorType.WARN, objectToEmit);
       }
     });
   }
