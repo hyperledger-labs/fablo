@@ -12,3 +12,6 @@ disable=SC2046
 
 # SC2062: Quote the grep pattern so the shell won't interpret it.
 disable=SC2062
+
+# SC2001: See if you can use ${variable//search/replace} instead.
+disable=SC2001

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache2.0
  */
 plugins {
-    id 'com.github.johnrengelman.shadow' version '2.0.3'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'java'
 }
 
@@ -13,7 +13,6 @@ sourceCompatibility = 1.8
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     maven {
         url 'https://jitpack.io'
     }
@@ -23,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.hyperledger.fabric-chaincode-java', name: 'fabric-chaincode-shim', version: '1.4.4'
-    compile group: 'org.json', name: 'json', version: '20180813'
+    implementation group: 'org.hyperledger.fabric-chaincode-java', name: 'fabric-chaincode-shim', version: '2.3.0'
+    implementation group: 'org.json', name: 'json', version: '20180813'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.mockito:mockito-core:2.+'

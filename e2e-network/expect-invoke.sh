@@ -18,7 +18,6 @@ label="Invoke $channel/$cli/$peer $command"
 echo ""
 echo "➜ testing: $label"
 
-# shellcheck disable=SC2001
 peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 
 response="$(

@@ -4,7 +4,7 @@ import schema from "../docs/schema.json";
 
 expect.extend(matchers);
 
-const commands = new TestCommands("./e2e/__tmp__/schema-files-match-tests", "../../..");
+const commands = new TestCommands("./e2e/__tmp__/schema-files-match-tests");
 
 describe("schema files match", () => {
   const files = commands.getFiles("samples/*.json");

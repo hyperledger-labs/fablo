@@ -18,15 +18,10 @@ label="Invoke $channel/$cli/$peer $command"
 echo ""
 echo "➜ testing: $label"
 
-# shellcheck disable=SC2001
 peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 
-# shellcheck disable=SC2001
 peerNoPort="$(echo "$peer" | sed -e 's/:[[:digit:]]\{2,\}//g')"
 tlsRootCertFiles="--tlsRootCertFiles /var/hyperledger/cli/crypto/peers/$(echo "$peerNoPort" | sed 's/,/\/tls\/ca.crt --tlsRootCertFiles \/var\/hyperledger\/cli\/crypto\/peers\//g')/tls/ca.crt"
-
-echo "$peerAddresses"
-echo "$tlsRootCertFiles"
 
 response="$(
   # shellcheck disable=SC2086
@@ -40,7 +35,7 @@ response="$(
     --waitForEvent \
     --waitForEventTimeout 90s \
     --tls \
-    --cafile "/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.root.com-cert.pem" \
+    --cafile "/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem" \
     2>&1
 )"
 
