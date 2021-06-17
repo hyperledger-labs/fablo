@@ -24,6 +24,7 @@ const extendConfig = (json: FabricaConfigJson): FabricaConfigExtended => {
     networkSettingsJson.fabricVersion,
     chaincodesJson,
     channels,
+    capabilities,
   );
 
   return {
