@@ -178,7 +178,7 @@ export default class SetupDockerGenerator extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1"}.sh`),
+      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
     );
   }

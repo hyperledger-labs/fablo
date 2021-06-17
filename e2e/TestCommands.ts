@@ -43,7 +43,11 @@ class TestCommands {
 
   static failure = (): unknown => expect.objectContaining({ status: 1 });
 
-  constructor(readonly workdir: string, readonly relativeRoot: string) {}
+  readonly relativeRoot: string;
+
+  constructor(readonly workdir: string) {
+    this.relativeRoot = workdir.replace(/[^\/]+/g, "..");
+  }
 
   execute(command: string): CommandOutput {
     return executeCommand(command);

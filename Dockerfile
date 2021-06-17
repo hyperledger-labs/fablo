@@ -9,7 +9,7 @@ COPY package.json /fabrica/package.json
 COPY package-lock.json /fabrica/package-lock.json
 
 # copy files for init network
-COPY samples/fabrica-config-hlf2-1org-simple.json /fabrica/generators/init/templates/fabrica-config.json
+COPY samples/fabrica-config-hlf2-1org-1chaincode.json /fabrica/generators/init/templates/fabrica-config.json
 COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
 
 WORKDIR /fabrica

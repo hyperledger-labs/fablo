@@ -20,8 +20,7 @@ const testFilesContent = (commands: TestCommands, config: string, files: string[
   });
 
 export default (config: string): void => {
-  const additionalParents = config.replace(/[^\/]+/g, "..");
-  const commands = new TestCommands(`e2e/__tmp__/${config}.tmpdir`, "../../" + additionalParents);
+  const commands = new TestCommands(`e2e/__tmp__/${config}.tmpdir`);
   commands.cleanupWorkdir();
   commands.fabricaExec(`generate "${commands.relativeRoot}/${config}"`);
 
