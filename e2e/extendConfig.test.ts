@@ -2,7 +2,7 @@ import TestCommands from "./TestCommands";
 import { extendConfig } from "../src/extend-config";
 import parseFabricaConfig from "../src/utils/parseFabricaConfig";
 
-const commands = new TestCommands("./e2e/__tmp__/extend-config-tests", "../../..");
+const commands = new TestCommands("e2e/__tmp__/extend-config-tests");
 
 describe("extend config", () => {
   beforeEach(() => commands.cleanupWorkdir());
