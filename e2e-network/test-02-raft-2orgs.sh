@@ -6,7 +6,7 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABRICA_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRICA_HOME/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json"
+CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
   # separate generate and up is intentional
@@ -22,6 +22,7 @@ dumpLogs() {
 }
 
 networkDown() {
+  sleep 2
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
@@ -32,7 +33,7 @@ waitForContainer() {
 }
 
 waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+  sh "$TEST_TMP/../wait-for-chaincode-tls.sh" "$1" "$2" "$3" "$4" "$5"
 }
 
 expectInvoke() {
@@ -58,7 +59,7 @@ waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel2"
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
-waitForContainer "peer0.org1.com" "Anchor peer with same endpoint, skipping connecting to myself"
+waitForContainer "peer0.org1.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
 waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer0.org2.com:7070"
 waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
@@ -68,10 +69,11 @@ waitForContainer "peer1.org1.com" "Membership view has changed. peers went onlin
 waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org2.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel1"
-waitForContainer "peer0.org2.com" "Anchor peer with same endpoint, skipping connecting to myself"
+waitForContainer "peer0.org2.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
 waitForContainer "peer0.org2.com" "Membership view has changed. peers went online:.*peer0.org1.com:7060"
 waitForContainer "peer1.org2.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
+waitForContainer "peer1.org2.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
 waitForContainer "peer1.org2.com" "Membership view has changed. peers went online:.*peer1.org1.com:7061"
 
 # check if chaincodes are instantiated on peers

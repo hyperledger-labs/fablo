@@ -5,91 +5,40 @@ function installChaincodes() {
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
-      chaincodeBuild <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
-      <% chaincode.channel.orgs.forEach(function (org) { -%>
-        <% org.peers.forEach(function (peer) { -%>
-          printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          chaincodeInstall <% -%>
-            "cli.<%= org.domain %>" <% -%>
-            "<%= peer.fullAddress %>" <% -%>
-            "<%= chaincode.channel.name %>" <% -%>
-            "<%= chaincode.name %>" <% -%>
-            "<%= chaincode.version %>" <% -%>
-            "<%= chaincode.lang %>" <% -%>
-            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-            "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>"
-        <% }) -%>
-      <% }) -%>
-      printItalics "Instantiating chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
-      chaincodeInstantiate <% -%>
-        "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
-        "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-        "<%= chaincode.channel.name %>" <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.version %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-        "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-        '<%- chaincode.init %>' <% -%>
-        "<%- chaincode.endorsement %>" <% -%>
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain + '-cert.pem' %>" <% -%>
-        "<%= chaincode.privateDataConfigFile || '' %>"
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (capabilities.isV2) { -%>
+          local version="<%= chaincode.version %>"
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); -%>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, rootOrg, networkSettings }); -%>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
     <% }) %>
   <% } -%>
 }
 
 function upgradeChaincode() {
-  chaincodeName="$1"
-  version="$2"
+  local chaincodeName="$1"
+  if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
 
-  if [ -z "$chaincodeName" ]; then
-    echo "Error: chaincode name is not provided"
-    exit 1
-  fi
-
-  if [ -z "$version" ]; then
-    echo "Error: chaincode version is not provided"
-    exit 1
-  fi
+  local version="$2"
+  if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
 
   <% chaincodes.forEach(function(chaincode) { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
-      chaincodeBuild <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
-      <% chaincode.channel.orgs.forEach(function (org) { -%>
-        <% org.peers.forEach(function (peer) { %>
-          printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"
-          chaincodeInstall <% -%>
-            "cli.<%= org.domain %>" <% -%>
-            "<%= peer.fullAddress %>" <% -%>
-            "<%= chaincode.channel.name %>" <% -%>
-            "<%= chaincode.name %>" <% -%>
-            "$version" <% -%>
-            "<%= chaincode.lang %>" <% -%>
-            "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-            "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-            "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>"
-        <% }) -%>
-      <% }) -%>
-      printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
-      chaincodeUpgrade <% -%>
-        "cli.<%= chaincode.instantiatingOrg.domain %>" <% -%>
-        "<%=  chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-        "<%= chaincode.channel.name %>" "<%= chaincode.name %>" <% -%>
-        "$version" <% -%>
-        "<%= chaincode.lang %>" <% -%>
-        "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-        "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-        '<%- chaincode.init %>' <% -%>
-        "<%- chaincode.endorsement %>" <% -%>
-        "<%= !networkSettings.tls ? '' : 'crypto/orderer-tlscacerts/tlsca.' + rootOrg.domain+ '-cert.pem' %>" <% -%>
-        "<%= chaincode.privateDataConfigFile || '' %>"
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (capabilities.isV2) { -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); %>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, rootOrg, networkSettings }); %>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
     fi
   <% }) -%>
 }
@@ -114,17 +63,17 @@ function notifyOrgsAboutChannels() {
        notifyOrgAboutNewChannel <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
-         "cli.<%= org.domain %>" <% -%>
+         "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= rootOrg.ordererHead.fullAddress %>"
      <% } else { -%>
        notifyOrgAboutNewChannelTls <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
-         "cli.<%= org.domain %>" <% -%>
+         "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-         "crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem"
+         "crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem"
      <% } -%>
     <% }) -%>
   <% }) %>
@@ -132,7 +81,7 @@ function notifyOrgsAboutChannels() {
   printHeadline "Deleting new channel config blocks" "U1F52A"
   <% channels.forEach(function(channel){ -%>
     <% channel.orgs.forEach(function(org){ -%>
-      deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "cli.<%= org.domain %>"
+      deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "<%= org.cli.address %>"
     <% }) -%>
   <% }) -%>
 }
@@ -157,6 +106,9 @@ function generateArtifacts() {
 
   printItalics "Generating genesis block" "U1F3E0"
   genesisBlockCreate "$FABRICA_NETWORK_ROOT/fabric-config" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+
+  # Create directory for chaincode packages to avoid permission errors on linux
+  mkdir -p "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
 }
 
 function startNetwork() {
@@ -192,20 +144,20 @@ function installChannels() {
           <% if(orgNo == 0 && peerNo == 0) { -%>
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
             <% if(!networkSettings.tls) { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } else { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } %>
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
             <% if(!networkSettings.tls) { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } else { -%>
-              docker exec -i cli.<%= org.domain %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
             <% } -%>
           <% } -%>
         <% }) -%>
@@ -222,7 +174,7 @@ function networkDown() {
   <% chaincodes.forEach(function(chaincode) { -%>
     <% chaincode.channel.orgs.forEach(function (org) { -%>
       <% org.peers.forEach(function (peer) { -%>
-        <% const chaincodeContainerName="dev-"+peer.address+"-"+chaincode.name+"-"+chaincode.version -%>
+        <% const chaincodeContainerName=`dev-${peer.address}-${chaincode.name}-${chaincode.version}` -%>
         docker rm -f $(docker ps -a | grep <%= chaincodeContainerName %>-* | awk '{print $1}') || echo "docker rm failed, Check if all fabric dockers properly was deleted"
         docker rmi $(docker images <%= chaincodeContainerName %>-* -q) || echo "docker rm failed, Check if all fabric dockers properly was deleted"
       <% }) -%>
@@ -230,8 +182,9 @@ function networkDown() {
   <% }) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/config
-  rm -rf "$FABRICA_NETWORK_ROOT"/fabric-config/crypto-config
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config"
+  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }

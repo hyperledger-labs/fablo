@@ -74,15 +74,15 @@ services:
     networks:
       - basic
 
-  cli.<%= org.domain %>:
-    container_name: cli.<%= org.domain %>
+  <%= org.cli.address %>:
+    container_name: <%= org.cli.address %>
     image: hyperledger/fabric-tools:${FABRIC_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-      - CORE_PEER_ID=cli.<%= org.domain %>
+      - CORE_PEER_ID=<%= org.cli.address %>
       - CORE_CHAINCODE_KEEPALIVE=10
       #
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
@@ -93,17 +93,23 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto/orderer-tlscacerts/tlsca.<%= rootOrg.domain %>-cert.pem<% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem<% } %>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       <%_ if(networkSettings.tls) { _%>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto/orderer-tlscacerts
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto-orderer:ro
+      <%_ orgs.forEach(function(org) { _%>
+      <%_ org.peers.forEach(function(peer) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls/ca.crt:/var/hyperledger/cli/crypto-peer/<%= peer.address %>/tls/ca.crt:ro
+      <%_ }) _%>
+      <%_ }) _%>
       <%_ } _%>
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       <%_ chaincodes.forEach(function(chaincode) { _%>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
       <%_ if(chaincode.privateDataConfigFile) { _%>

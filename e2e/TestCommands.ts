@@ -43,14 +43,18 @@ class TestCommands {
 
   static failure = (): unknown => expect.objectContaining({ status: 1 });
 
-  constructor(readonly workdir: string, readonly relativeRoot: string) {}
+  readonly relativeRoot: string;
+
+  constructor(readonly workdir: string) {
+    this.relativeRoot = workdir.replace(/[^\/]+/g, "..");
+  }
 
   execute(command: string): CommandOutput {
     return executeCommand(command);
   }
 
-  fabricaExec(command: string): CommandOutput {
-    return executeCommand(`cd ${this.workdir} && ${this.relativeRoot}/fabrica.sh ${command}`);
+  fabricaExec(command: string, noConsole = false): CommandOutput {
+    return executeCommand(`cd ${this.workdir} && ${this.relativeRoot}/fabrica.sh ${command}`, noConsole);
   }
 
   getFiles(dir?: string): string[] {

@@ -10,14 +10,23 @@ export interface NetworkSettings extends FabricVersions {
   tls: boolean;
   monitoring: { loglevel: string };
   paths: { fabricaConfig: string; chaincodesBaseDir: string };
-  isHlf20: boolean;
 }
 
-export interface Capabilities {
+interface CapabilitiesV1 {
   application: "V1_3" | "V1_4_2";
   channel: "V1_3" | "V1_4_2" | "V1_4_3";
   orderer: "V1_1" | "V1_4_2";
+  isV2: false;
 }
+
+interface CapabilitiesV2 {
+  application: "V2_0";
+  channel: "V2_0";
+  orderer: "V2_0";
+  isV2: true;
+}
+
+export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
 
 export interface OrdererConfig {
   name: string;

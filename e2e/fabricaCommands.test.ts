@@ -1,7 +1,7 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabricaVersion } from "../package.json";
 
-const commands = new TestCommands("./e2e/__tmp__/commands-tests", "../../..");
+const commands = new TestCommands("e2e/__tmp__/commands-tests");
 
 describe("init", () => {
   beforeEach(() => commands.cleanupWorkdir());
@@ -13,7 +13,7 @@ describe("init", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Sample config file created! :)");
-    expect(commands.getFiles()).toEqual(["./e2e/__tmp__/commands-tests/fabrica-config.json"]);
+    expect(commands.getFiles()).toEqual(["e2e/__tmp__/commands-tests/fabrica-config.json"]);
     expect(commands.getFileContent("fabrica-config.json")).toMatchSnapshot();
   });
 
@@ -25,10 +25,10 @@ describe("init", () => {
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Sample config file created! :)");
     expect(commands.getFiles()).toEqual([
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
-      "./e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
-      "./e2e/__tmp__/commands-tests/fabrica-config.json",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
+      "e2e/__tmp__/commands-tests/fabrica-config.json",
     ]);
     expect(commands.getFileContent("fabrica-config.json")).toMatchSnapshot();
   });
@@ -63,12 +63,12 @@ describe("validate", () => {
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Validation errors count: 0");
     expect(commandResult.output).toContain("Validation warnings count: 0");
-    expect(commands.getFiles()).toContain("./e2e/__tmp__/commands-tests/fabrica-config.json");
+    expect(commands.getFiles()).toContain("e2e/__tmp__/commands-tests/fabrica-config.json");
   });
 
   it("should validate custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf1.4-1org-1chaincode-raft.json`;
 
     // When
     const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
@@ -98,7 +98,7 @@ describe("extend config", () => {
     commands.fabricaExec("init");
 
     // When
-    const commandResult = commands.fabricaExec("extend-config");
+    const commandResult = commands.fabricaExec("extend-config", true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
@@ -111,18 +111,21 @@ describe("extend config", () => {
 
   it("should extend custom config", () => {
     // Given
-    const fabricaConfig = `${commands.relativeRoot}/samples/fabricaConfig-2orgs-2channels-2chaincodes-tls-raft.json`;
+    const fabricaConfig = `${commands.relativeRoot}/samples/fabrica-config-hlf2-2orgs-2chaincodes-raft.yaml`;
 
     // When
-    const commandResult = commands.fabricaExec(`validate ${fabricaConfig}`);
+    const commandResult = commands.fabricaExec(`extend-config ${fabricaConfig}`, true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toMatchSnapshot();
+    const cleanedOutput = commandResult.output
+      .replace(/"fabricaConfig": "(.*?)"/g, '"fabricaConfig": "<absolute path>"')
+      .replace(/"chaincodesBaseDir": "(.*?)"/g, '"chaincodesBaseDir": "<absolute path>"');
+    expect(cleanedOutput).toMatchSnapshot();
   });
 
   it("should fail to extend if config file is missing", () => {
-    const commandResult = commands.fabricaExec("validate");
+    const commandResult = commands.fabricaExec("extend-config", true);
 
     // Then
     expect(commandResult).toEqual(TestCommands.failure());
