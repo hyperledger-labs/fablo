@@ -3,7 +3,8 @@
 ### Features
 * Support for private data ([#104](https://github.com/softwaremill/fabrica/issues/104))
 * Added channel query scripts  ([#169](https://github.com/softwaremill/fabrica/issues/169))
-* Support for Hyperledger Fabric 2.x (still with 1_4_x channel capabilities)
+* Support for Hyperledger Fabric 2.x ([#132](https://github.com/softwaremill/fabrica/issues/132), [#178](https://github.com/softwaremill/fabrica/issues/178), [#190](https://github.com/softwaremill/fabrica/issues/178))
+* Support default endorsement policy ([#189](https://github.com/softwaremill/fabrica/issues/189))
 * Support for fabrica config in YAML format
 
 ### Chore & Maintenance
