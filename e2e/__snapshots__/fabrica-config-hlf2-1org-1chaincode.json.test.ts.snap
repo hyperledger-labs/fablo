@@ -415,9 +415,9 @@ function installChaincodes() {
     chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
     chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"\\" \\"\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"peer0.org1.com:7060\\" \\"\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"\\" \\"\\" \\"peer0.org1.com:7060\\" \\"\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
@@ -445,9 +445,9 @@ function upgradeChaincode() {
       chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
       chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"chaincode1\\" \\"$version\\" \\"\\"
       chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7061\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"\\"
+      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"\\" \\"\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"AND ('Org1MSP.member')\\" \\"\\" \\"peer0.org1.com:7060\\" \\"\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7060\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.root.com:7050\\" \\"\\" \\"\\" \\"peer0.org1.com:7060\\" \\"\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -1103,6 +1103,11 @@ function chaincodeApprove() {
     CA_CERT_PARAMS=(--tls --cafile \\"/var/hyperledger/cli/$CA_CERT\\")
   fi
 
+  local ENDORSEMENT_PARAMS=()
+  if [ -n \\"$ENDORSEMENT\\" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy \\"$ENDORSEMENT\\")
+  fi
+
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
@@ -1139,7 +1144,7 @@ function chaincodeApprove() {
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --package-id \\"$CC_PACKAGE_ID\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
     \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
     \\"\${CA_CERT_PARAMS[@]}\\"
 }
@@ -1188,6 +1193,11 @@ function chaincodeCommit() {
     TLS_ROOT_CERT_PARAMS=(--tls $(echo \\",$TLS_ROOT_CERT_FILES\\" | sed 's/,/ --tlsRootCertFiles \\\\/var\\\\/hyperledger\\\\/cli\\\\//g'))
   fi
 
+  local ENDORSEMENT_PARAMS=()
+  if [ -n \\"$ENDORSEMENT\\" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy \\"$ENDORSEMENT\\")
+  fi
+
   local COLLECTIONS_CONFIG_PARAMS=()
   if [ -n \\"$COLLECTIONS_CONFIG\\" ]; then
     COLLECTIONS_CONFIG_PARAMS=(--collections-config \\"$COLLECTIONS_CONFIG\\")
@@ -1212,7 +1222,7 @@ function chaincodeCommit() {
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    --signature-policy \\"$ENDORSEMENT\\" \\\\
+    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
     \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
     \\"\${COMMIT_PEER_PARAMS[@]}\\" \\\\
     \\"\${TLS_ROOT_CERT_PARAMS[@]}\\" \\\\
