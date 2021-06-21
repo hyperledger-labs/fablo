@@ -37,6 +37,7 @@ chaincodePackage <% -%>
     "$version" <% -%>
     "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement || '' %>" <% -%>
+    "<%= `${chaincode.initRequired}` %>" <% -%>
     "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>"
 <% }) -%>
@@ -49,6 +50,7 @@ chaincodeCommit <% -%>
   "$version" <% -%>
   "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement || '' %>" <% -%>
+  "<%= `${chaincode.initRequired}` %>" <% -%>
   "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
   "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>

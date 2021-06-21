@@ -794,7 +794,7 @@ Validation warnings count: 0
           }
         }
       },
-      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"initRequired\\": false,
       \\"endorsement\\": \\"OR ('Org1MSP.member', 'Org2MSP.member')\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
@@ -1051,7 +1051,7 @@ Validation warnings count: 0
           }
         }
       },
-      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
+      \\"initRequired\\": false,
       \\"endorsement\\": \\"OR ('Org1MSP.member', 'Org2MSP.member')\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
@@ -1499,7 +1499,6 @@ exports[`init should init simple fabrica config with node chaincode 1`] = `
       \\"version\\": \\"0.0.1\\",
       \\"lang\\": \\"node\\",
       \\"channel\\": \\"my-channel1\\",
-      \\"init\\": \\"{\\\\\\"Args\\\\\\":[]}\\",
       \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
     }
   ]
