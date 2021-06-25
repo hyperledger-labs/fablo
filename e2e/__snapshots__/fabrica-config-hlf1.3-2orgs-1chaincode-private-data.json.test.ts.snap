@@ -1222,10 +1222,9 @@ function chaincodeBuild() {
       RECOMMENDED_NODE_VERSION=\\"8.9\\"
     fi
 
-    nvm=~/.nvm/nvm.sh
-    if [ -n \\"$($nvm --version)\\" ]; then
+    if [ -n \\"$(nvm --version)\\" ]; then
       echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
-      $nvm use \\"$RECOMMENDED_NODE_VERSION\\"
+      nvm use \\"$RECOMMENDED_NODE_VERSION\\"
       NODE_VERSION=\\"$(node --version)\\"
     else
       echo \\"Warning: Cannot set Node.js to $RECOMMENDED_NODE_VERSION with nvm. Your Node.js version is $NODE_VERSION)\\"
