@@ -1506,7 +1506,7 @@ function chaincodeBuild() {
       RECOMMENDED_NODE_VERSION=\\"8.9\\"
     fi
 
-    if [ -z \\"$(echo \\"$NODE_VERSION\\" | grep \\"v$RECOMMENDED_NODE_VERSION\\")\\" ]; then
+    if ! echo \\"$NODE_VERSION\\" | grep -q \\"v$RECOMMENDED_NODE_VERSION\\"; then
       echo \\"Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)\\"
       echo \\"See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md\\"
     fi
