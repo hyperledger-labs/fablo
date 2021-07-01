@@ -7,14 +7,9 @@
   "rootOrg": {
     "organization": {
       "name": "Orderer",
-      "mspName": "OrdererMSP",
       "domain": "root.com"
     },
-    "ca": {
-      "prefix": "ca"
-    },
     "orderer": {
-      "prefix": "orderer",
       "type": "solo",
       "instances": 1
     }
@@ -23,14 +18,9 @@
     {
       "organization": {
         "name": "Org1",
-        "mspName": "Org1MSP",
         "domain": "org1.com"
       },
-      "ca": {
-        "prefix": "ca"
-      },
       "peer": {
-        "prefix": "peer",
         "instances": 2,
         "db": "LevelDb"
       }

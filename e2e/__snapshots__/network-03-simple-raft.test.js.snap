@@ -109,24 +109,12 @@ Orderer: &OrdererDefaults
     OrdererType: etcdraft
     Addresses:
         - orderer0.root.com:7050
-        - orderer1.root.com:7051
-        - orderer2.root.com:7052
     EtcdRaft:
         Consenters:
             - Host: orderer0.root.com
               Port: 7050
               ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
               ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/server.crt
-
-            - Host: orderer1.root.com
-              Port: 7051
-              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
-              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/server.crt
-
-            - Host: orderer2.root.com
-              Port: 7052
-              ClientTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
-              ServerTLSCert: crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/server.crt
 
     BatchTimeout: 2s
     BatchSize:
@@ -213,10 +201,6 @@ exports[`samples/fabrica-config-hlf1.4-1org-raft.json should create proper e2e/_
     Domain: root.com
     Specs:
       - Hostname: orderer0
-
-      - Hostname: orderer1
-
-      - Hostname: orderer2
 "
 `;
 
@@ -602,68 +586,6 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
-    networks:
-      - basic
-
-  orderer1.root.com:
-    container_name: orderer1.root.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
-    environment:
-      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
-      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7051
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # enabled TLS
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-    working_dir: /var/hyperledger/orderer
-    command: orderer
-    ports:
-      - 7051:7051
-    volumes:
-      - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/:/var/hyperledger/orderer/tls
-    networks:
-      - basic
-
-  orderer2.root.com:
-    container_name: orderer2.root.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
-    environment:
-      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
-      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7052
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # enabled TLS
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-    working_dir: /var/hyperledger/orderer
-    command: orderer
-    ports:
-      - 7052:7052
-    volumes:
-      - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
 

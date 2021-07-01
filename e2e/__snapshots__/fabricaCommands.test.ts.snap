@@ -1393,14 +1393,9 @@ exports[`init should init simple fabrica config 1`] = `
   \\"rootOrg\\": {
     \\"organization\\": {
       \\"name\\": \\"Orderer\\",
-      \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"root.com\\"
     },
-    \\"ca\\": {
-      \\"prefix\\": \\"ca\\"
-    },
     \\"orderer\\": {
-      \\"prefix\\": \\"orderer\\",
       \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
@@ -1409,14 +1404,9 @@ exports[`init should init simple fabrica config 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Org1\\",
-        \\"mspName\\": \\"Org1MSP\\",
         \\"domain\\": \\"org1.com\\"
       },
-      \\"ca\\": {
-        \\"prefix\\": \\"ca\\"
-      },
       \\"peer\\": {
-        \\"prefix\\": \\"peer\\",
         \\"instances\\": 2,
         \\"db\\": \\"LevelDb\\"
       }
@@ -1450,14 +1440,9 @@ exports[`init should init simple fabrica config with node chaincode 1`] = `
   \\"rootOrg\\": {
     \\"organization\\": {
       \\"name\\": \\"Orderer\\",
-      \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"root.com\\"
     },
-    \\"ca\\": {
-      \\"prefix\\": \\"ca\\"
-    },
     \\"orderer\\": {
-      \\"prefix\\": \\"orderer\\",
       \\"type\\": \\"solo\\",
       \\"instances\\": 1
     }
@@ -1466,14 +1451,9 @@ exports[`init should init simple fabrica config with node chaincode 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Org1\\",
-        \\"mspName\\": \\"Org1MSP\\",
         \\"domain\\": \\"org1.com\\"
       },
-      \\"ca\\": {
-        \\"prefix\\": \\"ca\\"
-      },
       \\"peer\\": {
-        \\"prefix\\": \\"peer\\",
         \\"instances\\": 2,
         \\"db\\": \\"LevelDb\\"
       }
