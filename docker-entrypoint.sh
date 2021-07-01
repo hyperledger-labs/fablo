@@ -29,7 +29,7 @@ formatGeneratedFiles() {
   # Since the templates should obey good practices, we don't use linters here
   # (i.e. shellcheck and yamllint).
   echo "Formatting generated files"
-  shfmt -i=2 -l -w "$yeoman_target_dir"
+  shfmt -i=2 -l -w "$yeoman_target_dir" >/dev/null
 
   for yaml in "$yeoman_target_dir"/**/*.yaml; do
     # remove trailing spaces
