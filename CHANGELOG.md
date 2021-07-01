@@ -8,6 +8,7 @@
 * Support for fabrica config in YAML format
 
 ### Chore & Maintenance
+* Use different config format and provide defaults
 * Rewrite Yeoman generators to use TypeScript
 
 ## 0.0.1
