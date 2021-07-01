@@ -65,6 +65,9 @@ Good step to start your adventure with Fabrica or set up a fast prototype.
 
 Option `node` makes Fabrica to generate a sample Node.js chaincode as well.
 
+Generated `fabrica-config.json` file uses single node Solo consensus and no TLS support.
+This is the simplest way to start with Hyperledger Fabric, since Raft consensus requires TLS and TLS itself adds a lot of complexity to the blockchain network and integration with it.
+
 ### generate
 
 ```bash

@@ -9,6 +9,9 @@ export default {
   organization: {
     mspName: (name: string): string => `${name}MSP`,
   },
+  orderer: {
+    prefix: "orderer",
+  },
   ca: {
     prefix: "ca",
   },
