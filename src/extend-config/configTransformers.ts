@@ -95,21 +95,19 @@ const transformChaincodesConfig = (
   });
 };
 
-const transformOrderersConfig = (
-  ordererJsonConfigFormat: OrdererJson,
-  rootDomainJsonConfigFormat: string,
-): OrdererConfig[] => {
-  const consensus = ordererJsonConfigFormat.type === "raft" ? "etcdraft" : ordererJsonConfigFormat.type;
+const transformOrderersConfig = (ordererJson: OrdererJson, rootDomainJson: string): OrdererConfig[] => {
+  const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
+  const prefix = ordererJson.prefix ?? defaults.orderer.prefix;
 
-  return Array(ordererJsonConfigFormat.instances)
+  return Array(ordererJson.instances)
     .fill(undefined)
     .map((_x, i) => {
-      const name = `${ordererJsonConfigFormat.prefix}${i}`;
-      const address = `${name}.${rootDomainJsonConfigFormat}`;
+      const name = `${prefix}${i}`;
+      const address = `${name}.${rootDomainJson}`;
       const port = 7050 + i;
       return {
         name,
-        domain: rootDomainJsonConfigFormat,
+        domain: rootDomainJson,
         address,
         consensus,
         port,
