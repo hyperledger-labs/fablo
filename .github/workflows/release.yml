@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ${{ github.workspace }}
-          push: false
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             VERSION_DETAILS=${{ env.VERSION_DETAILS }}
