@@ -215,7 +215,7 @@ The basic structure of Fabrica config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -346,7 +346,7 @@ Example:
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
+"$schema": https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json
 networkSettings:
   fabricVersion: 2.3.0
   tls: false
