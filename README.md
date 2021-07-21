@@ -21,13 +21,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o /usr/local/bin/fabrica && sudo chmod +x /usr/local/bin/fabrica
+sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.0/fabrica.sh -o /usr/local/bin/fabrica && sudo chmod +x /usr/local/bin/fabrica
 ```
 
 To get a copy of Fabrica for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.0.1/fabrica.sh -o ./fabrica && chmod +x ./fabrica
+curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.0/fabrica.sh -o ./fabrica && chmod +x ./fabrica
 ```
 
 ## Basic usage
@@ -215,7 +215,7 @@ The basic structure of Fabrica config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.1.0/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -245,21 +245,22 @@ Example:
 ```json
   "rootOrg": {
     "organization": {
-      "key": "root",
       "name": "Orderer",
-      "mspName": "OrdererMSP",
       "domain": "root.com"
     },
-    "ca": {
-      "prefix": "ca"
-    },
     "orderer": {
-      "prefix": "orderer",
-      "type": "raft",
-      "instances": 3
+      "type": "solo",
+      "instances": 1
     }
   },
 ```
+
+The other available parameters for `rootOrg` are:
+ * `organization.mspName` (default: `organization.name + 'MSP'`)
+ * `orderer.prefix` (default: `orderer`)
+ * `ca.prefix` (default: `ca`)
+
+The property `orderer.consensus` may be `solo` or `raft`. We do not support the Kafka orderer.
 
 ### orgs
 
@@ -269,16 +270,10 @@ Example:
   "orgs": [
     {
       "organization": {
-        "key": "org1",
         "name": "Org1",
-        "mspName": "Org1MSP",
         "domain": "org1.com"
       },
-      "ca": {
-        "prefix": "ca"
-      },
       "peer": {
-        "prefix": "peer",
         "instances": 2,
         "db": "LevelDb"
       }
@@ -287,6 +282,15 @@ Example:
   ],
 ```
 
+The other available parameters for entries in `orgs` array are:
+
+ * `organization.mspName` (default: `organization.name + 'MSP'`)
+ * `ca.prefix` (default: `ca`)
+ * `peer.prefix` (default: `peer`)
+ * `peer.anchorPeerInstances` (default: `1`)
+
+The property `peer.db` may be `LevelDb` (default) or `CouchDb`.
+
 ### channels
 
 Example:
@@ -294,17 +298,17 @@ Example:
 ```json
   "channels": [
     {
-      "key": "channel1",
       "name": "my-channel1",
       "orgs": [
         {
-          "key": "org1",
+          "name": "Org1",
           "peers": [
-            "peer0"
+            "peer0",
+            "peer1"
           ]
         },
         {
-          "key": "org2",
+          "name": "Org2",
           "peers": [
             "peer0"
           ]
@@ -325,30 +329,40 @@ Example:
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
-      "channel": "channel2",
-      "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": {
+        "name": "org1-collection",
+        "orgNames": ["Org1"]
+      }
     },
     {
       "name": "chaincode2",
       "version": "0.0.1",
       "lang": "java",
-      "channel": "channel2",
-      "init": "{\"Args\":[]}",
-      "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "channel": "my-channel2",
       "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
 ```
 
+The other available parameters for entries in `orgs` array are:
+
+ * `init` - initialization arguments (for Hyperledger Fabric below 2.0; default: `{"Args":[]}`)
+ * `initRequired` - whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater; default: `false`)
+ * `endorsement` - the endorsement policy for the chaincode (in case of missing value for Hyperledger Fabric 2.0 and greater there is no default value - Hyperledger by default will take the majority of organizations; for Hyperledger Fabric below 2.0 Fabrica generates an endorsement policy where all organizations need to endorse)
+
+The property `lang` may be `golang`, `java` or `node`.
+
+The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none.
+
 ### Sample YAML config file
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json
+"$schema": https://github.com/softwaremill/fabrica/releases/download/0.1.0/schema.json
 networkSettings:
-  fabricVersion: 2.3.0
+  fabricVersion: 1.4.11
   tls: false
 rootOrg:
   organization:
@@ -384,9 +398,8 @@ chaincodes:
     version: 0.0.1
     lang: node
     channel: my-channel1
-    init: '{"Args":[]}'
     endorsement: AND('Org1MSP.member', 'Org2MSP.member')
-    directory: "./chaincodes/chaincode-kv-node"
+    directory: "./chaincodes/chaincode-kv-node-1.4"
     privateData:
       - name: org1-collection
         orgNames:

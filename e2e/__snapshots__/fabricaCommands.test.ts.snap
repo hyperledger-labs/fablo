@@ -8,9 +8,16 @@ exports[`extend config should extend custom config 1`] = `
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 0.1.0-unstable
+=========================================================== v: 0.1.0
 Validation errors count: 0
 Validation warnings count: 0
+===========================================================
+====== !Compatible Fabrica versions found! :) =============
+Compatible versions:
+- 0.1.0-unstable
+
+To update just run command:
+	fabrica use [version]
 ===========================================================
 {
   \\"networkSettings\\": {
@@ -1128,18 +1135,25 @@ exports[`extend config should extend default config 1`] = `
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 0.1.0-unstable
+=========================================================== v: 0.1.0
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+====== !Compatible Fabrica versions found! :) =============
+Compatible versions:
+- 0.1.0-unstable
+
+To update just run command:
+	fabrica use [version]
+===========================================================
 {
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false,
     \\"fabricCaVersion\\": \\"1.5.0\\",
-    \\"fabricCcenvVersion\\": \\"2.2.1\\",
-    \\"fabricBaseosVersion\\": \\"2.2.1\\",
-    \\"fabricJavaenvVersion\\": \\"2.2.1\\",
+    \\"fabricCcenvVersion\\": \\"2.3.2\\",
+    \\"fabricBaseosVersion\\": \\"2.3.2\\",
+    \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
       \\"fabricaConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -1385,9 +1399,9 @@ Validation warnings count: 0
 
 exports[`init should init simple fabrica config 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
   },
   \\"rootOrg\\": {
@@ -1432,9 +1446,9 @@ exports[`init should init simple fabrica config 1`] = `
 
 exports[`init should init simple fabrica config with node chaincode 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.1.0/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.2.1\\",
+    \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
   },
   \\"rootOrg\\": {
