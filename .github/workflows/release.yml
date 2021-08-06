@@ -2,7 +2,8 @@ name: Publish docker image
 
 on:
   release:
-    types: [published, prereleased]
+    types:
+      - published
 
 env:
   IMAGE_NAME: ${{ github.repository }}
@@ -13,6 +14,22 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=false
+            prefix=
+            suffix=
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Validate release version
+        run: |
+          ./check-if-fabrica-version-matches-with-tag.sh ${{ steps.meta.outputs.tags }}
 
       - name: Build Fabrica
         run: |
@@ -36,7 +53,7 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           flavor: |
-            latest=true
+            latest=false
             prefix=
             suffix=
           tags: |
