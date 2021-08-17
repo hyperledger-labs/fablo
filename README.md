@@ -346,7 +346,7 @@ Example:
   ]
 ```
 
-The other available parameters for entries in `orgs` array are:
+The other available parameters for entries in `chaincodes` array are:
 
  * `init` - initialization arguments (for Hyperledger Fabric below 2.0; default: `{"Args":[]}`)
  * `initRequired` - whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater; default: `false`)
@@ -354,7 +354,7 @@ The other available parameters for entries in `orgs` array are:
 
 The property `lang` may be `golang`, `java` or `node`.
 
-The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none.
+The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none (just the implicit private data collection in Fabric 2.x).
 
 ### Sample YAML config file
 
