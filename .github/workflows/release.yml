@@ -46,18 +46,6 @@ jobs:
           BUILD_DATE=$(date +'%Y-%m-%d-%H:%M:%S')
           echo "VERSION_DETAILS=$BUILD_DATE-$COMMIT_HASH" >> $GITHUB_ENV
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          flavor: |
-            latest=false
-            prefix=
-            suffix=
-          tags: |
-            type=semver,pattern={{version}}
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
