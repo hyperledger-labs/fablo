@@ -2,7 +2,7 @@
 
 set -e
 
-FABRICA_VERSION="0.1.0-unstable"
+FABRICA_VERSION="0.2.0-unstable"
 FABRICA_IMAGE_NAME="softwaremill/fabrica"
 FABRICA_IMAGE="$FABRICA_IMAGE_NAME:$FABRICA_VERSION"
 
