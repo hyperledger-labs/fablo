@@ -38,12 +38,9 @@ const createPrivateCollectionConfig = (
   }
 
   const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
-  const peerCounts = relevantOrgs.map((o) => (o.peers || []).length);
-  const totalPeers = peerCounts.reduce((a, b) => a + b, 0);
-
-  // We need enough peers to exceed one org (max in org + 1) and up to totalPeers - 1
-  const requiredPeerCount = Math.min(totalPeers - 1, peerCounts.reduce((a, b) => Math.max(a, b), 0) + 1);
-  const maxPeerCount = Math.max(requiredPeerCount, Math.min(requiredPeerCount * 2, totalPeers - 1));
+  const peerCounts = relevantOrgs.map((o) => (o.anchorPeers || []).length);
+  const maxPeerCount = peerCounts.reduce((a, b) => a + b, 0);
+  const requiredPeerCount = maxPeerCount <= 2 ? Math.max(1, maxPeerCount) : Math.trunc(maxPeerCount / 2);
 
   const memberOnlyRead = version(fabricVersion).isGreaterOrEqual("1.4.0") ? { memberOnlyRead: true } : {};
   const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual("2.0.0") ? { memberOnlyWrite: true } : {};
