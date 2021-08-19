@@ -38,7 +38,7 @@ const createPrivateCollectionConfig = (
   }
 
   const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
-  const peerCounts = relevantOrgs.map((o) => (o.peers || []).length);
+  const peerCounts = relevantOrgs.map((o) => (o.anchorPeers || []).length);
   const maxPeerCount = peerCounts.reduce((a, b) => a + b, 0);
   const requiredPeerCount = peerCounts.reduce((a, b) => Math.min(a, b), maxPeerCount) || 1;
 

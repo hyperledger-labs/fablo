@@ -257,10 +257,10 @@ Object {
       "privateData": Array [
         Object {
           "blockToLive": 0,
-          "maxPeerCount": 2,
+          "maxPeerCount": 1,
           "name": "org1-collection",
           "policy": "OR('Org1MSP.member')",
-          "requiredPeerCount": 2,
+          "requiredPeerCount": 1,
         },
         Object {
           "blockToLive": 0,
@@ -2053,11 +2053,11 @@ Object {
       "privateData": Array [
         Object {
           "blockToLive": 0,
-          "maxPeerCount": 2,
+          "maxPeerCount": 1,
           "memberOnlyRead": true,
           "name": "org1-collection",
           "policy": "OR('Org1MSP.member')",
-          "requiredPeerCount": 2,
+          "requiredPeerCount": 1,
         },
       ],
       "privateDataConfigFile": "collections/or-policy-chaincode.json",
@@ -2311,11 +2311,11 @@ Object {
       "privateData": Array [
         Object {
           "blockToLive": 0,
-          "maxPeerCount": 2,
+          "maxPeerCount": 1,
           "memberOnlyRead": true,
           "name": "org1-collection",
           "policy": "OR('Org1MSP.member')",
-          "requiredPeerCount": 2,
+          "requiredPeerCount": 1,
         },
       ],
       "privateDataConfigFile": "collections/and-policy-chaincode.json",
