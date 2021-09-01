@@ -309,7 +309,7 @@ fi
 `;
 
 exports[`samples/fabrica-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fabrica-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fabrica-target/fabric-docker/.env from samples/fabrica-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
-"FABRICA_VERSION=\\"0.1.0\\"
+"FABRICA_VERSION=\\"0.1.1\\"
 FABRICA_BUILD=<date with git hash>
 
 FABRICA_CONFIG=<absolute path>
@@ -1234,9 +1234,9 @@ function chaincodeBuild() {
 
     # We have different commands for npm and yarn
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      (cd \\"$CHAINCODE_DIR_PATH\\" && NODE_ENV=production npm install -g yarn && yarn install && yarn build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
     else
-      (cd \\"$CHAINCODE_DIR_PATH\\" && NODE_ENV=production npm install && npm run build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
     fi
   fi
 }
