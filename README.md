@@ -21,13 +21,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.0/fabrica.sh -o /usr/local/bin/fabrica && sudo chmod +x /usr/local/bin/fabrica
+sudo curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.1/fabrica.sh -o /usr/local/bin/fabrica && sudo chmod +x /usr/local/bin/fabrica
 ```
 
 To get a copy of Fabrica for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.0/fabrica.sh -o ./fabrica && chmod +x ./fabrica
+curl -Lf https://github.com/softwaremill/fabrica/releases/download/0.1.1/fabrica.sh -o ./fabrica && chmod +x ./fabrica
 ```
 
 ## Basic usage
