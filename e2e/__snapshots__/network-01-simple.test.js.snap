@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/.gitignore from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/.gitignore from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/configtx.yaml from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/configtx.yaml from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -177,7 +177,7 @@ Profiles:
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
@@ -188,7 +188,7 @@ exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/_
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "OrdererOrgs:
   - Name: Orderer
     Domain: root.com
@@ -197,7 +197,7 @@ exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/_
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -252,8 +252,8 @@ fi
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/.env from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
-"FABRICA_VERSION=\\"0.1.0-unstable\\"
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/.env from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
+"FABRICA_VERSION=\\"0.2.0-unstable\\"
 FABRICA_BUILD=<date with git hash>
 
 FABRICA_CONFIG=<absolute path>
@@ -262,11 +262,11 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=2.2.1
+FABRIC_VERSION=2.3.2
 FABRIC_CA_VERSION=1.5.0
-FABRIC_CCENV_VERSION=2.2.1
-FABRIC_BASEOS_VERSION=2.2.1
-FABRIC_JAVAENV_VERSION=2.2.1
+FABRIC_CCENV_VERSION=2.3.2
+FABRIC_BASEOS_VERSION=2.3.2
+FABRIC_JAVAENV_VERSION=2.3.0
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -277,7 +277,7 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 source \\"$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
@@ -404,7 +404,7 @@ function printChannelsHelp() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 function installChaincodes() {
@@ -527,7 +527,7 @@ function networkDown() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -702,7 +702,7 @@ services:
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 function certsGenerate() {
@@ -958,7 +958,7 @@ function removeContainer() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 function printHelp() {
@@ -993,7 +993,7 @@ function printHelp() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 function chaincodeBuild() {
@@ -1004,27 +1004,31 @@ function chaincodeBuild() {
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    # We need to adjust Node.js version to Fabric Shim version, see:
-    # https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md
-    NODE_VERSION=\\"12\\"
-    COMMAND=\\"npm install && npm run build\\"
+    NODE_VERSION=\\"$(node --version)\\"
+    RECOMMENDED_NODE_VERSION=\\"12\\"
 
     USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
     if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
-      NODE_VERSION=\\"8.9\\"
+      RECOMMENDED_NODE_VERSION=\\"8.9\\"
     fi
 
-    if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      COMMAND=\\"npm install -g yarn && yarn install && yarn build\\"
+    if ! echo \\"$NODE_VERSION\\" | grep -q \\"v$RECOMMENDED_NODE_VERSION\\"; then
+      echo \\"Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)\\"
+      echo \\"See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md\\"
     fi
 
     echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
     inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
     inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
     inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-    inputLog \\"NODE_VERSION: $NODE_VERSION\\"
+    inputLog \\"NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)\\"
 
-    docker run --rm -v \\"$CHAINCODE_DIR_PATH:/chaincode\\" -w /chaincode \\"node:$NODE_VERSION\\" sh -c \\"$COMMAND\\"
+    # We have different commands for npm and yarn
+    if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
+    else
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+    fi
   fi
 }
 
@@ -1246,7 +1250,7 @@ function chaincodeCommit() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 function peerChannelList() {
@@ -1519,7 +1523,7 @@ function peerChannelFetchBlockTls() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -1650,21 +1654,21 @@ function fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`samples/fabrica-config-hlf2-1org-simple.json should create proper files from samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`samples/fabrica-config-hlf2-1org-1chaincode.json should create proper files from samples/fabrica-config-hlf2-1org-1chaincode.json 1`] = `
 Array [
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/.gitignore",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/.env",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
-  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-simple.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-config/crypto-config-root.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fabrica-config-hlf2-1org-1chaincode.json.tmpdir/fabrica-target/fabric-docker/scripts/cli/channel_fns.sh",
 ]
 `;
