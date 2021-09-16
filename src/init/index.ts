@@ -1,6 +1,6 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
-import parseFabricaConfig from "../utils/parseFabricaConfig";
+import parseFabloConfig from "../utils/parseFabloConfig";
 
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
@@ -11,10 +11,10 @@ export default class InitGenerator extends Generator {
     if (this.args.length && this.args[0] === "node") {
       this.fs.copy(this.templatePath(), this.destinationPath());
     } else {
-      const content = this.fs.read(this.templatePath("fabrica-config.json"));
-      const json = parseFabricaConfig(content);
+      const content = this.fs.read(this.templatePath("fablo-config.json"));
+      const json = parseFabloConfig(content);
       this.fs.write(
-        this.destinationPath("fabrica-config.json"),
+        this.destinationPath("fablo-config.json"),
         JSON.stringify({ ...json, chaincodes: [] }, undefined, 2),
       );
     }
@@ -22,7 +22,7 @@ export default class InitGenerator extends Generator {
     this.on("end", () => {
       this.log("===========================================================");
       this.log(chalk.bold("Sample config file created! :)"));
-      this.log("You can start your network with 'fabrica up' command");
+      this.log("You can start your network with 'fablo up' command");
       this.log("===========================================================");
     });
   }

@@ -1,6 +1,6 @@
 import performTests from "./performTests";
 
-const config = "samples/fabrica-config-hlf1.3-2orgs-1chaincode-private-data.json";
+const config = "samples/fablo-config-hlf1.4-1org-1chaincode-raft.json";
 
 describe(config, () => {
   performTests(config);

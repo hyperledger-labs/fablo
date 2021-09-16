@@ -7,8 +7,8 @@ export default class extends Generator {
   }
 
   displayInfo(): void {
-    const url = "https://github.com/softwaremill/fabrica";
-    this.log("This is main entry point for Yeoman app used in Fabrica.");
+    const url = "https://github.com/softwaremill/fablo";
+    this.log("This is main entry point for Yeoman app used in Fablo.");
     this.log("Visit the project page to get more information.");
     this.log(`---\n${url}\n---`);
   }

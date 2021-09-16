@@ -10,7 +10,7 @@ import {
   OrgJson,
   PeerJson,
   RootOrgJson,
-} from "../types/FabricaConfigJson";
+} from "../types/FabloConfigJson";
 import {
   CAConfig,
   Capabilities,
@@ -23,7 +23,7 @@ import {
   PeerConfig,
   PrivateCollectionConfig,
   RootOrgConfig,
-} from "../types/FabricaConfigExtended";
+} from "../types/FabloConfigExtended";
 
 const createPrivateCollectionConfig = (
   fabricVersion: string,
@@ -290,7 +290,7 @@ const getEnvVarOrThrow = (name: string): string => {
 };
 
 const getPathsFromEnv = () => ({
-  fabricaConfig: getEnvVarOrThrow("FABRICA_CONFIG"),
+  fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
 });
 

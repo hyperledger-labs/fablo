@@ -13,10 +13,10 @@ executeYeomanCommand() {
   if [ "$(id -u)" = 0 ]; then
     # root user detected, running as yeoman user
     sudo chown -R yeoman:yeoman "$yeoman_target_dir"
-    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fabrica:$command" "$param")
+    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fablo:$command" "$param")
     sudo chown -R root:root "$yeoman_target_dir"
   else
-    (cd "$yeoman_target_dir" && yo --no-insight "fabrica:$command" "$param")
+    (cd "$yeoman_target_dir" && yo --no-insight "fablo:$command" "$param")
   fi
 }
 
@@ -42,9 +42,9 @@ formatGeneratedFiles() {
 }
 
 yeoman_target_dir="/network/workspace"
-fabrica_config_path="../../network/fabrica-config.json"
+fablo_config_path="../../network/fablo-config.json"
 yeoman_command=${1:-setup-docker}
-yeoman_param=${2:-"$fabrica_config_path"}
+yeoman_param=${2:-"$fablo_config_path"}
 
 executeYeomanCommand "$yeoman_command" "$yeoman_param"
 
