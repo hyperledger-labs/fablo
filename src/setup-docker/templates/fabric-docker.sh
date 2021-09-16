@@ -2,14 +2,14 @@
 
 set -eu
 
-FABRICA_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
+FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/commands-generated.sh"
-source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts
@@ -45,7 +45,7 @@ elif [ "$1" = "--help" ]; then
 else
   echo "No command specified"
   echo "Basic commands are: up, down, start, stop, reboot"
-  echo "To list channel query helper commands type: 'fabrica channel --help'"
+  echo "To list channel query helper commands type: 'fablo channel --help'"
   echo "Also check: 'chaincode install'"
   echo "Use 'help' or '--help' for more information"
 fi

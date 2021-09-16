@@ -1,7 +1,7 @@
 import * as yaml from "js-yaml";
-import { FabricaConfigJson } from "../types/FabricaConfigJson";
+import { FabloConfigJson } from "../types/FabloConfigJson";
 
-const parseFabricaConfig = (str: string): FabricaConfigJson => {
+const parseFabloConfig = (str: string): FabloConfigJson => {
   try {
     return JSON.parse(str);
   } catch (e) {
@@ -14,4 +14,4 @@ const parseFabricaConfig = (str: string): FabricaConfigJson => {
   }
 };
 
-export default parseFabricaConfig;
+export default parseFabloConfig;

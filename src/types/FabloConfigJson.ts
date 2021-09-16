@@ -61,7 +61,7 @@ export interface ChaincodeJson {
   privateData: PrivateDataJson[];
 }
 
-export interface FabricaConfigJson {
+export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
   rootOrg: RootOrgJson;

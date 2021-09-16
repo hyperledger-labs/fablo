@@ -1,4 +1,4 @@
-import { Capabilities, OrgConfig } from "../types/FabricaConfigExtended";
+import { Capabilities, OrgConfig } from "../types/FabloConfigExtended";
 
 export default {
   networkSettings: {

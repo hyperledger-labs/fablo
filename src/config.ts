@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { version as fabricaVersion } from "../package.json";
+import { version as fabloVersion } from "../package.json";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as schemaJson from "../docs/schema.json";
@@ -9,14 +9,14 @@ import { version } from "./repositoryUtils";
 
 const schema: Schema = schemaJson as Schema;
 
-const supportedVersionPrefix = `${fabricaVersion.split(".").slice(0, 2).join(".")}.`;
+const supportedVersionPrefix = `${fabloVersion.split(".").slice(0, 2).join(".")}.`;
 
 const getVersionFromSchemaUrl = (url?: string): string => {
   const matches = (url || "").match(/\d+\.\d+\.\d+/g);
-  return matches?.length ? matches[0] : fabricaVersion;
+  return matches?.length ? matches[0] : fabloVersion;
 };
 
-const isFabricaVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
+const isFabloVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
 
 const supportedFabricVersions = schemaJson.properties.networkSettings.properties.fabricVersion.enum as string[];
 
@@ -24,7 +24,7 @@ const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).
 
 const splashScreen = (): string =>
   `${
-    "Fabrica is powered by :\n" +
+    "Fablo is powered by :\n" +
     " _____        __ _                         ___  ____ _ _ \n" +
     "/  ___|      / _| |                        |  \\/  (_) | |\n" +
     "\\ `--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |\n" +
@@ -32,15 +32,15 @@ const splashScreen = (): string =>
     "/\\__/ / (_) | | | |_ \\ V  V / (_| | | |  __/ |  | | | | |\n" +
     "\\____/ \\___/|_|  \\__| \\_/\\_/ \\__,_|_|  \\___\\_|  |_/_|_|_|\n" +
     "=========================================================== v: "
-  }${fabricaVersion}`;
+  }${fabloVersion}`;
 
 export {
   schema,
   splashScreen,
-  fabricaVersion,
+  fabloVersion,
   supportedFabricVersions,
   versionsSupportingRaft,
   getVersionFromSchemaUrl,
-  isFabricaVersionSupported,
+  isFabloVersionSupported,
   supportedVersionPrefix,
 };

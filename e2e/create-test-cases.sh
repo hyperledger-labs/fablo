@@ -2,11 +2,11 @@
 
 set -e
 
-FABRICA_HOME="$(dirname "$0")/.."
+FABLO_HOME="$(dirname "$0")/.."
 
 (
-  cd "$FABRICA_HOME/samples"
-  for f in fabrica-config-*; do
+  cd "$FABLO_HOME/samples"
+  for f in fablo-config-*; do
     echo "import performTests from \"./performTests\";
 
 const config = \"samples/$f\";
