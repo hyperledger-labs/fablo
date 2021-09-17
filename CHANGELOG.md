@@ -1,11 +1,13 @@
-## main (0.2.0-unstable)
-
+## 0.3.0-unstable
 ### Features
-
 ### Fixes
-* Broken Node.js chaincode build ([#211](https://github.com/softwaremill/fablo/pull/211))
-
 ### Chore & Maintenance
+
+## 0.2.0
+* Rename Fabrica to Fablo
+
+## 0.1.1
+* Broken Node.js chaincode build ([#211](https://github.com/softwaremill/fablo/pull/211))
 
 ## 0.1.0
 
