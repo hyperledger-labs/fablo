@@ -1,7 +1,7 @@
 {
-  "$schema": "https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
   "networkSettings": {
-    "fabricVersion": "1.4.11",
+    "fabricVersion": "1.3.0",
     "tls": false
   },
   "rootOrg": {
@@ -73,7 +73,7 @@
   ],
   "chaincodes": [
     {
-      "name": "or-policy-chaincode",
+      "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
       "channel": "my-channel1",
@@ -86,22 +86,11 @@
           "orgNames": [
             "Org1"
           ]
-        }
-      ]
-    },
-    {
-      "name": "and-policy-chaincode",
-      "version": "0.0.1",
-      "lang": "node",
-      "channel": "my-channel1",
-      "init": "{\"Args\":[]}",
-      "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
-      "directory": "./chaincodes/chaincode-kv-node",
-      "privateData": [
+        },
         {
-          "name": "org1-collection",
+          "name": "org2-collection",
           "orgNames": [
-            "Org1"
+            "Org2"
           ]
         }
       ]

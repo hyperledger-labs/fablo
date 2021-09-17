@@ -43,8 +43,6 @@ describe("use", () => {
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toContain("0.0.1\n");
-    expect(commandResult.output).toContain("0.1.0\n");
     expect(commands.getFiles()).toEqual([]);
   });
 });

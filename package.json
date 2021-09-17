@@ -1,11 +1,11 @@
 {
-  "name": "generator-fabrica",
-  "version": "0.2.0-unstable",
-  "description": "Fabrica is a simple tool to generate the Hyperledger Fabric blockchain network and run it on Docker. It supports RAFT and solo consensus protocols, multiple organizations and channels, chaincode installation and upgrade.",
+  "name": "generator-fablo",
+  "version": "0.3.0-unstable",
+  "description": "Fablo is a simple tool to generate the Hyperledger Fabric blockchain network and run it on Docker. It supports RAFT and solo consensus protocols, multiple organizations and channels, chaincode installation and upgrade.",
   "author": "Piotr Hejwowski <piotr.hejwowski@softwaremill.com>, Jakub Dzikowski <jakub.dzikowski@softwaremill.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/softwaremill/fabrica.git"
+    "url": "git+https://github.com/softwaremill/fablo.git"
   },
   "keywords": [
     "hyperledger fabric",
@@ -16,12 +16,9 @@
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/softwaremill/fabrica/issues"
+    "url": "https://github.com/softwaremill/fablo/issues"
   },
-  "homepage": "https://github.com/softwaremill/fabrica#readme",
-  "files": [
-    "src"
-  ],
+  "homepage": "https://github.com/softwaremill/fablo#readme",
   "scripts": {
     "clean": "rimraf generators",
     "build": "tsc",
@@ -30,7 +27,7 @@
     "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
     "test:unit": "jest src",
     "test:e2e": "jest e2e -i",
-    "test:e2e-update": "./fabrica-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
+    "test:e2e-update": "./fablo-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
   },
   "dependencies": {
     "chalk": "^4.1.0",

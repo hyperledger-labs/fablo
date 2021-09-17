@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`extend config should extend custom config 1`] = `
-"Fabrica is powered by :
- _____        __ _                         ___  ____ _ _ 
+"Fablo is powered by :
+ _____        __ _                         ___  ____ _ _
 /  ___|      / _| |                        |  \\\\/  (_) | |
 \\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 0.2.0-unstable
+=========================================================== v: 0.3.0-unstable
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
@@ -16,16 +16,16 @@ Validation warnings count: 0
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.1\\",
     \\"tls\\": true,
+    \\"monitoring\\": {
+      \\"loglevel\\": \\"info\\"
+    },
     \\"fabricCaVersion\\": \\"1.5.0\\",
     \\"fabricCcenvVersion\\": \\"2.3.1\\",
     \\"fabricBaseosVersion\\": \\"2.3.1\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
-      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
-    },
-    \\"monitoring\\": {
-      \\"loglevel\\": \\"info\\"
     }
   },
   \\"capabilities\\": {
@@ -602,7 +602,7 @@ Validation warnings count: 0
   ],
   \\"chaincodes\\": [
     {
-      \\"directory\\": \\"./chaincodes/chaincode-kv-node-1.4\\",
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\",
       \\"name\\": \\"chaincode1\\",
       \\"version\\": \\"0.0.1\\",
       \\"lang\\": \\"node\\",
@@ -1121,14 +1121,14 @@ Validation warnings count: 0
 `;
 
 exports[`extend config should extend default config 1`] = `
-"Fabrica is powered by :
- _____        __ _                         ___  ____ _ _ 
+"Fablo is powered by :
+ _____        __ _                         ___  ____ _ _
 /  ___|      / _| |                        |  \\\\/  (_) | |
 \\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 0.2.0-unstable
+=========================================================== v: 0.3.0-unstable
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
@@ -1141,7 +1141,7 @@ Validation warnings count: 0
     \\"fabricBaseosVersion\\": \\"2.3.2\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
-      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
     \\"monitoring\\": {
@@ -1383,9 +1383,9 @@ Validation warnings count: 0
 "
 `;
 
-exports[`init should init simple fabrica config 1`] = `
+exports[`init should init simple fablo config 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json\\",
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
@@ -1430,9 +1430,9 @@ exports[`init should init simple fabrica config 1`] = `
 }"
 `;
 
-exports[`init should init simple fabrica config with node chaincode 1`] = `
+exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json\\",
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
