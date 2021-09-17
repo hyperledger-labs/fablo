@@ -4,13 +4,13 @@ set -e
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABRICA_HOME="$TEST_TMP/../.."
+FABLO_HOME="$TEST_TMP/../.."
 
-FABRICA_CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf1.4-2orgs-2chaincodes-private-data.yaml"
+FABLO_CONFIG="$FABLO_HOME/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml"
 
 networkUp() {
-  "$FABRICA_HOME/fabrica-build.sh"
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up "$FABRICA_CONFIG")
+  "$FABLO_HOME/fablo-build.sh"
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up "$FABLO_CONFIG")
 }
 
 dumpLogs() {
@@ -22,7 +22,7 @@ dumpLogs() {
 networkDown() {
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
 waitForContainer() {

@@ -51,8 +51,8 @@ function notifyOrgsAboutChannels() {
         "<%= channel.name %>" <% -%>
         "<%= org.mspName %>" <% -%>
         "<%= channel.profile.name %>" <% -%>
-        "$FABRICA_NETWORK_ROOT/fabric-config" <% -%>
-        "$FABRICA_NETWORK_ROOT/fabric-config/config"
+        "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
+        "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
   <% }) %>
 
@@ -90,36 +90,36 @@ function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
   printItalics "Generating crypto material for org <%= rootOrg.name %>" "U1F512"
   certsGenerate <% -%>
-    "$FABRICA_NETWORK_ROOT/fabric-config" <% -%>
+    "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
     "crypto-config-root.yaml" <% -%>
     "ordererOrganizations/<%= rootOrg.domain %>" <% -%>
-    "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/"
+    "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 
   <% orgs.forEach(function(org){ -%>
     printItalics "Generating crypto material for <%= org.name %>" "U1F512"
     certsGenerate <% -%>
-      "$FABRICA_NETWORK_ROOT/fabric-config" <% -%>
+      "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
       "<%= org.cryptoConfigFileName %>.yaml" <% -%>
       "peerOrganizations/<%= org.domain %>" <% -%>
-      "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config/"
+      "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
   <% }) -%>
 
   printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$FABRICA_NETWORK_ROOT/fabric-config" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
 
   # Create directory for chaincode packages to avoid permission errors on linux
-  mkdir -p "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
+  mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
 }
 
 function startNetwork() {
   printHeadline "Starting network" "U1F680"
-  (cd "$FABRICA_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
   sleep 4
 }
 
 function stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
-  (cd "$FABRICA_NETWORK_ROOT"/fabric-docker && docker-compose stop)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
   sleep 4
 }
 
@@ -129,7 +129,7 @@ function generateChannelsArtifacts() {
   <% } else { -%>
     <% channels.forEach(function(channel){  -%>
       printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-      createChannelTx "<%= channel.name %>" "$FABRICA_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABRICA_NETWORK_ROOT/fabric-config/config"
+      createChannelTx "<%= channel.name %>" "$FABLO_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
   <% } -%>
 }
@@ -168,7 +168,7 @@ function installChannels() {
 
 function networkDown() {
   printHeadline "Destroying network" "U1F916"
-  (cd "$FABRICA_NETWORK_ROOT"/fabric-docker && docker-compose down)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
 
   printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
   <% chaincodes.forEach(function(chaincode) { -%>
@@ -182,9 +182,9 @@ function networkDown() {
   <% }) -%>
 
   printf "\nRemoving generated configs... \U1F5D1 \n"
-  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/config"
-  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/crypto-config"
-  rm -rf "$FABRICA_NETWORK_ROOT/fabric-config/chaincode-packages"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
 
   printHeadline "Done! Network was purged" "U1F5D1"
 }

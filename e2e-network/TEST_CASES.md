@@ -16,4 +16,4 @@
 | Private data              | no        | no        | yes       |
 | Java chaincode            | no        | yes       | no        |
 | Go chaincode              | no        | no        | no        |
-| Other Fabrica commands    | init, reboot | stop, start | -    |
+| Other Fablo commands    | init, reboot | stop, start | -    |

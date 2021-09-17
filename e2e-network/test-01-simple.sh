@@ -4,12 +4,12 @@ set -e
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABRICA_HOME="$TEST_TMP/../.."
+FABLO_HOME="$TEST_TMP/../.."
 
 networkUp() {
-  "$FABRICA_HOME/fabrica-build.sh"
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" init node)
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up)
+  "$FABLO_HOME/fablo-build.sh"
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
 dumpLogs() {
@@ -21,7 +21,7 @@ dumpLogs() {
 networkDown() {
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
 waitForContainer() {
@@ -62,7 +62,7 @@ expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" \
   '{\"success\":\"Willy Wonka\"}'
 
 # Reboot and ensure the state is lost after reboot
-(cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" reboot)
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reboot)
 waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel1" "chaincode1" "0.0.1"
 expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \

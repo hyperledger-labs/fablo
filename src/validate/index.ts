@@ -2,17 +2,17 @@ import * as Generator from "yeoman-generator";
 import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
 import * as config from "../config";
-import parseFabricaConfig from "../utils/parseFabricaConfig";
+import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   ChaincodeJson,
-  FabricaConfigJson,
+  FabloConfigJson,
   NetworkSettingsJson,
   OrdererJson,
   OrgJson,
-} from "../types/FabricaConfigJson";
+} from "../types/FabloConfigJson";
 import * as _ from "lodash";
 import { getNetworkCapabilities } from "../extend-config/configTransformers";
-import { Capabilities } from "../types/FabricaConfigExtended";
+import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 
@@ -61,10 +61,10 @@ class ValidateGenerator extends Generator {
   constructor(args: string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
 
-    this.argument("fabricaConfig", {
+    this.argument("fabloConfig", {
       type: String,
       required: true,
-      description: "fabrica config file path",
+      description: "fablo config file path",
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
@@ -85,11 +85,11 @@ class ValidateGenerator extends Generator {
   }
 
   async validate() {
-    this._validateIfConfigFileExists(this.options.fabricaConfig);
+    this._validateIfConfigFileExists(this.options.fabloConfig);
 
-    const networkConfig = parseFabricaConfig(this.fs.read(this.options.fabricaConfigPath));
+    const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabricaVersion(networkConfig.$schema);
+    this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
     this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
@@ -132,11 +132,11 @@ class ValidateGenerator extends Generator {
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     } else {
-      this.options.fabricaConfigPath = configFilePathAbsolute;
+      this.options.fabloConfigPath = configFilePathAbsolute;
     }
   }
 
-  _validateJsonSchema(configToValidate: FabricaConfigJson) {
+  _validateJsonSchema(configToValidate: FabloConfigJson) {
     const validator = new SchemaValidator();
     const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
@@ -169,10 +169,10 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateSupportedFabricaVersion(schemaUrl: string) {
+  _validateSupportedFabloVersion(schemaUrl: string) {
     const version = config.getVersionFromSchemaUrl(schemaUrl);
-    if (!config.isFabricaVersionSupported(version)) {
-      const msg = `Config file points to '${version}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
+    if (!config.isFabloVersionSupported(version)) {
+      const msg = `Config file points to '${version}' Fablo version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`extend config should extend custom config 1`] = `
-"Fabrica is powered by :
+"Fablo is powered by :
  _____        __ _                         ___  ____ _ _ 
 /  ___|      / _| |                        |  \\\\/  (_) | |
 \\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
@@ -24,7 +24,7 @@ Validation warnings count: 0
     \\"fabricBaseosVersion\\": \\"2.3.1\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
-      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     }
   },
@@ -1121,7 +1121,7 @@ Validation warnings count: 0
 `;
 
 exports[`extend config should extend default config 1`] = `
-"Fabrica is powered by :
+"Fablo is powered by :
  _____        __ _                         ___  ____ _ _ 
 /  ___|      / _| |                        |  \\\\/  (_) | |
 \\\\ \`--.  ___ | |_| |___      ____ _ _ __ ___| .  . |_| | |
@@ -1141,7 +1141,7 @@ Validation warnings count: 0
     \\"fabricBaseosVersion\\": \\"2.3.2\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
-      \\"fabricaConfig\\": \\"<absolute path>\\",
+      \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
     },
     \\"monitoring\\": {
@@ -1383,9 +1383,9 @@ Validation warnings count: 0
 "
 `;
 
-exports[`init should init simple fabrica config 1`] = `
+exports[`init should init simple fablo config 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.2.0-unstable/schema.json\\",
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
@@ -1430,9 +1430,9 @@ exports[`init should init simple fabrica config 1`] = `
 }"
 `;
 
-exports[`init should init simple fabrica config with node chaincode 1`] = `
+exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fabrica/releases/download/0.2.0-unstable/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.2.0-unstable/schema.json\\",
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
