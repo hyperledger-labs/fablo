@@ -215,7 +215,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.2.0/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -359,7 +359,7 @@ The `privateData` parameter is optional. You don't need to define the private da
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json
+"$schema": https://github.com/softwaremill/fablo/releases/download/0.2.0/schema.json
 networkSettings:
   fabricVersion: 2.3.0
   tls: false

@@ -1,8 +1,3 @@
-## 0.3.0-unstable
-### Features
-### Fixes
-### Chore & Maintenance
-
 ## 0.2.0
 * Rename Fabrica to Fablo
 
