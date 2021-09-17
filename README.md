@@ -21,13 +21,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/softwaremill/fablo/releases/download/0.1.1/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/softwaremill/fablo/releases/download/0.2.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fablo/releases/download/0.1.1/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/softwaremill/fablo/releases/download/0.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Basic usage
@@ -215,7 +215,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.2.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
   "networkSettings": { ... },
   "rootOrg": { ... },
   "orgs": [ ... ],
@@ -359,7 +359,7 @@ The `privateData` parameter is optional. You don't need to define the private da
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fablo/releases/download/0.2.0-unstable/schema.json
+"$schema": https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json
 networkSettings:
   fabricVersion: 2.3.0
   tls: false
