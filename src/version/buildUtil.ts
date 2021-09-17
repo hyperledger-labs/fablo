@@ -1,21 +1,21 @@
 import * as config from "../config";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const getBuildInfo = (): Record<string, unknown> => require("/fabrica/version.json").buildInfo;
+const getBuildInfo = (): Record<string, unknown> => require("/fablo/version.json").buildInfo;
 
 const basicInfo = (): Record<string, unknown> => {
   return {
-    version: config.fabricaVersion,
+    version: config.fabloVersion,
     build: getBuildInfo(),
   };
 };
 
 const fullInfo = (): Record<string, unknown> => {
   return {
-    version: config.fabricaVersion,
+    version: config.fabloVersion,
     build: getBuildInfo(),
     supported: {
-      fabricaVersions: `${config.supportedVersionPrefix}x`,
+      fabloVersions: `${config.supportedVersionPrefix}x`,
       hyperledgerFabricVersions: config.supportedFabricVersions,
     },
   };

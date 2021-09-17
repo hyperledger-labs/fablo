@@ -9,7 +9,7 @@ export interface FabricVersions {
 export interface NetworkSettings extends FabricVersions {
   tls: boolean;
   monitoring: { loglevel: string };
-  paths: { fabricaConfig: string; chaincodesBaseDir: string };
+  paths: { fabloConfig: string; chaincodesBaseDir: string };
 }
 
 interface CapabilitiesV1 {
@@ -114,7 +114,7 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
-export interface FabricaConfigExtended {
+export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   capabilities: Capabilities;
   rootOrg: RootOrgConfig;

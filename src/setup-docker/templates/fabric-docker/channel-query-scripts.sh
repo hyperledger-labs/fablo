@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$FABRICA_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 
 set -eu
 
@@ -65,21 +65,21 @@ function printChannelsHelp() {
   echo "Channel management commands:"
   echo ""
   <% orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
-    echo "fabrica channel list <%= org.name.toLowerCase(); %> <%= peer.name %>"
+    echo "fablo channel list <%= org.name.toLowerCase(); %> <%= peer.name %>"
     echo -e "\t List channels on '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
   <% })}) %>
   <% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
-    echo "fabrica channel getinfo <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %>"
+    echo "fablo channel getinfo <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %>"
     echo -e "\t Get channel info on '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
-    echo "fabrica channel fetch config <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
+    echo "fablo channel fetch config <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
     echo -e "\t Download latest config block to current dir. Uses first peer '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
-    echo "fabrica channel fetch lastBlock <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
+    echo "fablo channel fetch lastBlock <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
     echo -e "\t Download last, decrypted block to current dir. Uses first peer '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
-    echo "fabrica channel fetch firstBlock <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
+    echo "fablo channel fetch firstBlock <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %> <fileName.json>"
     echo -e "\t Download first, decrypted block to current dir. Uses first peer '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
   <% })})}) %>

@@ -1,12 +1,12 @@
 import * as Generator from "yeoman-generator";
 import * as configTransformers from "./configTransformers";
-import parseFabricaConfig from "../utils/parseFabricaConfig";
-import { FabricaConfigJson } from "../types/FabricaConfigJson";
-import { FabricaConfigExtended } from "../types/FabricaConfigExtended";
+import parseFabloConfig from "../utils/parseFabloConfig";
+import { FabloConfigJson } from "../types/FabloConfigJson";
+import { FabloConfigExtended } from "../types/FabloConfigExtended";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
-const extendConfig = (json: FabricaConfigJson): FabricaConfigExtended => {
+const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
     networkSettings: networkSettingsJson,
     rootOrg: rootOrgJson,
@@ -40,18 +40,18 @@ const extendConfig = (json: FabricaConfigJson): FabricaConfigExtended => {
 class ExtendConfigGenerator extends Generator {
   constructor(args: string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
-    this.argument("fabricaConfig", {
+    this.argument("fabloConfig", {
       type: String,
       required: true,
-      description: "fabrica config file path",
+      description: "fablo config file path",
     });
 
-    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabricaConfig] });
+    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });
   }
 
   async writing(): Promise<void> {
-    const fabricaConfigPath = `${this.env.cwd}/${this.options.fabricaConfig}`;
-    const json = parseFabricaConfig(this.fs.read(fabricaConfigPath));
+    const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
+    const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const transformedConfig = extendConfig(json);
     this.log(JSON.stringify(transformedConfig, undefined, 2));
   }

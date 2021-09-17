@@ -3,16 +3,16 @@ FROM node:14.16-alpine3.12
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
 
-# copy fabrica files
-COPY generators /fabrica/generators
-COPY package.json /fabrica/package.json
-COPY package-lock.json /fabrica/package-lock.json
+# copy fablo files
+COPY generators /fablo/generators
+COPY package.json /fablo/package.json
+COPY package-lock.json /fablo/package-lock.json
 
 # copy files for init network
-COPY samples/fabrica-config-hlf2-1org-1chaincode.json /fabrica/generators/init/templates/fabrica-config.json
-COPY samples/chaincodes/chaincode-kv-node /fabrica/generators/init/templates/chaincodes/chaincode-kv-node
+COPY samples/fablo-config-hlf2-1org-1chaincode.json /fablo/generators/init/templates/fablo-config.json
+COPY samples/chaincodes/chaincode-kv-node /fablo/generators/init/templates/chaincodes/chaincode-kv-node
 
-WORKDIR /fabrica
+WORKDIR /fablo
 RUN npm install --silent --only=prod
 RUN npm link
 
@@ -28,13 +28,13 @@ RUN adduser -D -u 501 yeoman && \
 # Yeoman needs the use of a home directory for caching and certain config storage.
 ENV HOME /network/workspace
 
-COPY docker-entrypoint.sh /fabrica/docker-entrypoint.sh
-COPY docs /fabrica/docs
-COPY README.md /fabrica/README.md
-COPY samples /fabrica/samples/
+COPY docker-entrypoint.sh /fablo/docker-entrypoint.sh
+COPY docs /fablo/docs
+COPY README.md /fablo/README.md
+COPY samples /fablo/samples/
 
 ARG VERSION_DETAILS
-RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fabrica/version.json
-RUN cat /fabrica/version.json
+RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fablo/version.json
+RUN cat /fablo/version.json
 
-CMD /fabrica/docker-entrypoint.sh
+CMD /fablo/docker-entrypoint.sh

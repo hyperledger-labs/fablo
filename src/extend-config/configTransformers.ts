@@ -10,7 +10,7 @@ import {
   OrgJson,
   PeerJson,
   RootOrgJson,
-} from "../types/FabricaConfigJson";
+} from "../types/FabloConfigJson";
 import {
   CAConfig,
   Capabilities,
@@ -23,7 +23,7 @@ import {
   PeerConfig,
   PrivateCollectionConfig,
   RootOrgConfig,
-} from "../types/FabricaConfigExtended";
+} from "../types/FabloConfigExtended";
 
 const createPrivateCollectionConfig = (
   fabricVersion: string,
@@ -38,12 +38,9 @@ const createPrivateCollectionConfig = (
   }
 
   const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
-  const peerCounts = relevantOrgs.map((o) => (o.peers || []).length);
-  const totalPeers = peerCounts.reduce((a, b) => a + b, 0);
-
-  // We need enough peers to exceed one org (max in org + 1) and up to totalPeers - 1
-  const requiredPeerCount = Math.min(totalPeers - 1, peerCounts.reduce((a, b) => Math.max(a, b), 0) + 1);
-  const maxPeerCount = Math.max(requiredPeerCount, Math.min(requiredPeerCount * 2, totalPeers - 1));
+  const peerCounts = relevantOrgs.map((o) => (o.anchorPeers || []).length);
+  const maxPeerCount = peerCounts.reduce((a, b) => a + b, 0);
+  const requiredPeerCount = peerCounts.reduce((a, b) => Math.min(a, b), maxPeerCount) || 1;
 
   const memberOnlyRead = version(fabricVersion).isGreaterOrEqual("1.4.0") ? { memberOnlyRead: true } : {};
   const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual("2.0.0") ? { memberOnlyWrite: true } : {};
@@ -290,7 +287,7 @@ const getEnvVarOrThrow = (name: string): string => {
 };
 
 const getPathsFromEnv = () => ({
-  fabricaConfig: getEnvVarOrThrow("FABRICA_CONFIG"),
+  fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
 });
 

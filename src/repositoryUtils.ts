@@ -1,6 +1,6 @@
 import got from "got";
 
-const repositoryName = "softwaremill/fabrica";
+const repositoryName = "softwaremill/fablo";
 const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
 
 const incrementVersionFragment = (versionFragment: string) => {

@@ -4,15 +4,15 @@ set -e
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABRICA_HOME="$TEST_TMP/../.."
+FABLO_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABRICA_HOME/samples/fabrica-config-hlf2-2orgs-2chaincodes-raft.yaml"
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
   # separate generate and up is intentional
-  "$FABRICA_HOME/fabrica-build.sh"
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" generate "$CONFIG")
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" up)
+  "$FABLO_HOME/fablo-build.sh"
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
 dumpLogs() {
@@ -25,7 +25,7 @@ networkDown() {
   sleep 2
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  (cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" down)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
 waitForContainer() {
@@ -99,12 +99,12 @@ expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
   '{\"value\":\"Pokeball 1\"}'
 
 # restart the network and wait for chaincodes
-(cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" stop && "$FABRICA_HOME/fabrica.sh" start)
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
 waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.1"
 
 # upgrade chaincode
-(cd "$TEST_TMP" && "$FABRICA_HOME/fabrica.sh" chaincode upgrade "chaincode1" "0.0.2")
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")
 waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2"
 waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.2"
 

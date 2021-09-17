@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script runs linter for bash and YAML files in Fabrica root and for
+# This script runs linter for bash and YAML files in Fablo root and for
 # generated network configs in 'e2e/__tmp__' directory. It fails if generated
 # network configs are missing.
 #
@@ -8,12 +8,12 @@
 
 set -e
 
-FABRICA_HOME="$(dirname "$0")"
-shellcheck "$FABRICA_HOME"/*.sh
-shellcheck "$FABRICA_HOME"/e2e-network/*.sh
+FABLO_HOME="$(dirname "$0")"
+shellcheck "$FABLO_HOME"/*.sh
+shellcheck "$FABLO_HOME"/e2e-network/*.sh
 
-for config in samples/fabrica-config-*; do
-  network="$FABRICA_HOME/e2e/__tmp__/${config}.tmpdir"
+for config in samples/fablo-config-*; do
+  network="$FABLO_HOME/e2e/__tmp__/${config}.tmpdir"
 
   if [ -z "$(ls -A "$network")" ]; then
     echo "Missing network $network"
