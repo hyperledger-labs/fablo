@@ -17,7 +17,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
 
   const capabilities = configTransformers.getNetworkCapabilities(networkSettingsJson.fabricVersion);
   const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
-  const orgs = configTransformers.transformOrgConfigs(orgsJson);
+  const orgs = configTransformers.transformOrgConfigs(orgsJson, networkSettingsJson.tls);
   const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
   const networkSettings = configTransformers.transformNetworkSettings(networkSettingsJson);
   const chaincodes = configTransformers.transformChaincodesConfig(
