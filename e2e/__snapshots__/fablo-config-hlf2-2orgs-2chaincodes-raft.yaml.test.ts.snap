@@ -341,6 +341,7 @@ fi
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "FABLO_VERSION=\\"0.3.0-unstable\\"
 FABLO_BUILD=<date with git hash>
+FABLO_REST_VERSION=\\"0.0.6\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -950,6 +951,28 @@ services:
     networks:
       - basic
 
+  fablo-rest.org1.com:
+    container_name: fablo-rest.org1.com
+    image: softwaemill/fablo-rest:\${FABLO_REST_VERSION}
+    tty: true
+    environment:
+      - PORT: 8000
+      - AFFILIATION: fablo-rest.org1.com
+      - MSP_ID: fablo-rest.org1.com
+      - FABRIC_CA_URL: fablo-rest.org1.com
+      - FABRIC_CA_NAME: fablo-rest.org1.com
+      - AS_LOCALHOST: false
+      - DISCOVERY_URLS: fablo-rest.org1.com
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES: fablo-rest.org1.com
+      - DISCOVERY_TLS_CA_CERT_FILES: fablo-rest.org1.com
+    volumes:
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
+    ports:
+      - 8800:8000
+    networks:
+      - basic
+
   peer0.org1.com:
     container_name: peer0.org1.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -1097,6 +1120,28 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
+    networks:
+      - basic
+
+  fablo-rest.org2.com:
+    container_name: fablo-rest.org2.com
+    image: softwaemill/fablo-rest:\${FABLO_REST_VERSION}
+    tty: true
+    environment:
+      - PORT: 8000
+      - AFFILIATION: fablo-rest.org2.com
+      - MSP_ID: fablo-rest.org2.com
+      - FABRIC_CA_URL: fablo-rest.org2.com
+      - FABRIC_CA_NAME: fablo-rest.org2.com
+      - AS_LOCALHOST: false
+      - DISCOVERY_URLS: fablo-rest.org2.com
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES: fablo-rest.org2.com
+      - DISCOVERY_TLS_CA_CERT_FILES: fablo-rest.org2.com
+    volumes:
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
+    ports:
+      - 8801:8000
     networks:
       - basic
 

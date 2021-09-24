@@ -161,7 +161,7 @@ Validation warnings count: 0
           \\"fabricCaName\\": \\"ca.org1.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
           \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
         }
       }
     },
@@ -243,7 +243,7 @@ Validation warnings count: 0
           \\"fabricCaName\\": \\"ca.org2.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
           \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
         }
       }
     }
@@ -321,7 +321,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         },
@@ -394,7 +394,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         }
@@ -471,7 +471,7 @@ Validation warnings count: 0
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
           }
         }
       }
@@ -548,7 +548,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         },
@@ -621,7 +621,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         }
@@ -698,7 +698,7 @@ Validation warnings count: 0
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
           }
         }
       }
@@ -782,7 +782,7 @@ Validation warnings count: 0
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
               }
             }
           },
@@ -855,7 +855,7 @@ Validation warnings count: 0
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
               }
             }
           }
@@ -932,7 +932,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         }
@@ -1008,7 +1008,7 @@ Validation warnings count: 0
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
           }
         }
       },
@@ -1091,7 +1091,7 @@ Validation warnings count: 0
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
               }
             }
           },
@@ -1164,7 +1164,7 @@ Validation warnings count: 0
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
               }
             }
           }
@@ -1241,7 +1241,7 @@ Validation warnings count: 0
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
             }
           }
         }
@@ -1317,7 +1317,7 @@ Validation warnings count: 0
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\"
           }
         }
       },

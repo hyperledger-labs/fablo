@@ -178,7 +178,7 @@ const extendPeers = (
 
 interface AnchorPeerConfig extends PeerConfig {
   isAnchorPeer: true;
-  orgName: string;
+  orgDomain: string;
 }
 
 const transformOrgConfig = (
@@ -204,7 +204,9 @@ const transformOrgConfig = (
     ? {
         discoveryUrls: anchorPeersAllOrgs.map((p) => `grpcs://${p.address}:${p.port}`).join(","),
         discoverySslTargetNameOverrides: "",
-        discoveryTlsCaCertFiles: anchorPeersAllOrgs.map((p) => `${p.orgName}/peers/${p.address}/tls/ca.crt`).join(","),
+        discoveryTlsCaCertFiles: anchorPeersAllOrgs
+          .map((p) => `/crypto/${p.orgDomain}/peers/${p.address}/tls/ca.crt`)
+          .join(","),
       }
     : {
         discoveryUrls: anchorPeersAllOrgs.map((p) => `grpc://${p.address}:${p.port}`).join(","),
@@ -260,7 +262,7 @@ const transformOrgConfigs = (orgsJsonConfigFormat: OrgJson[], tls: boolean): Org
   const anchorPeers = orgsJsonConfigFormat.reduce((peers, org) => {
     const newAnchorPeers: AnchorPeerConfig[] = peersByOrgDomain[org.organization.domain].peers
       .filter((p) => p.isAnchorPeer)
-      .map((p) => ({ ...p, isAnchorPeer: true, orgName: org.organization.name }));
+      .map((p) => ({ ...p, isAnchorPeer: true, orgDomain: org.organization.domain }));
     return peers.concat(newAnchorPeers);
   }, [] as AnchorPeerConfig[]);
 
