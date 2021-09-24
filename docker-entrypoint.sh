@@ -3,8 +3,7 @@
 set -e
 
 executeYeomanCommand() {
-  command=$1
-  param=$2
+  command_with_params=$1
 
   # cleanup yeoman files after execution
   # shellcheck disable=SC2064
@@ -13,10 +12,10 @@ executeYeomanCommand() {
   if [ "$(id -u)" = 0 ]; then
     # root user detected, running as yeoman user
     sudo chown -R yeoman:yeoman "$yeoman_target_dir"
-    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight "fablo:$command" "$param")
+    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight $command_with_params)
     sudo chown -R root:root "$yeoman_target_dir"
   else
-    (cd "$yeoman_target_dir" && yo --no-insight "fablo:$command" "$param")
+    (cd "$yeoman_target_dir" && yo --no-insight $command_with_params)
   fi
 }
 

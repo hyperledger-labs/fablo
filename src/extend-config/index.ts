@@ -42,8 +42,9 @@ class ExtendConfigGenerator extends Generator {
     super(args, opts);
     this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fablo config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
     this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });
