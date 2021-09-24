@@ -119,6 +119,32 @@ services:
     networks:
       - basic
 
+  <% if (org.tools.fabloRest) { %>
+  <%= org.tools.fabloRest.address %>:
+    container_name: <%= org.tools.fabloRest.address %>
+    image: softwaemill/fablo-rest:${FABLO_REST_VERSION}
+    tty: true
+    environment:
+      - PORT: 8000
+      - AFFILIATION: <%= org.tools.fabloRest.address %>
+      - MSP_ID: <%= org.tools.fabloRest.address %>
+      - FABRIC_CA_URL: <%= org.tools.fabloRest.address %>
+      - FABRIC_CA_NAME: <%= org.tools.fabloRest.address %>
+      - AS_LOCALHOST: false
+      - DISCOVERY_URLS: <%= org.tools.fabloRest.address %>
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES: <%= org.tools.fabloRest.address %>
+      - DISCOVERY_TLS_CA_CERT_FILES: <%= org.tools.fabloRest.address %>
+    volumes:
+      <%_ if(networkSettings.tls) { _%>
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
+      <%_ } _%>
+    ports:
+      - <%= org.tools.fabloRest.port %>:8000
+    networks:
+      - basic
+  <% } _%>
+
   <% org.peers.forEach(function(peer){ %>
   <%= peer.address %>:
     container_name: <%= peer.address %>

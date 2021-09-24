@@ -107,6 +107,7 @@ export default class SetupDockerGenerator extends Generator {
       paths: networkSettings.paths,
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
+      fabloRestVersion: "0.0.6",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
