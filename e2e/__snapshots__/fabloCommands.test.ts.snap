@@ -150,6 +150,19 @@ Validation warnings count: 0
         \\"port\\": 7060,
         \\"fullAddress\\": \\"peer0.org1.com:7060\\",
         \\"couchDbExposePort\\": 5080
+      },
+      \\"tools\\": {
+        \\"fabloRest\\": {
+          \\"address\\": \\"fablo-rest.org1.com\\",
+          \\"port\\": 8800,
+          \\"affiliation\\": \\"Org1\\",
+          \\"mspId\\": \\"Org1MSP\\",
+          \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+          \\"fabricCaName\\": \\"ca.org1.com\\",
+          \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+          \\"discoverySslTargetNameOverrides\\": \\"\\",
+          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+        }
       }
     },
     {
@@ -219,6 +232,19 @@ Validation warnings count: 0
         \\"port\\": 7070,
         \\"fullAddress\\": \\"peer0.org2.com:7070\\",
         \\"couchDbExposePort\\": 5090
+      },
+      \\"tools\\": {
+        \\"fabloRest\\": {
+          \\"address\\": \\"fablo-rest.org2.com\\",
+          \\"port\\": 8801,
+          \\"affiliation\\": \\"Org2\\",
+          \\"mspId\\": \\"Org2MSP\\",
+          \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+          \\"fabricCaName\\": \\"ca.org2.com\\",
+          \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+          \\"discoverySslTargetNameOverrides\\": \\"\\",
+          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+        }
       }
     }
   ],
@@ -284,6 +310,19 @@ Validation warnings count: 0
             \\"port\\": 7060,
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"port\\": 8800,
+              \\"affiliation\\": \\"Org1\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         },
         {
@@ -344,6 +383,19 @@ Validation warnings count: 0
             \\"port\\": 7070,
             \\"fullAddress\\": \\"peer0.org2.com:7070\\",
             \\"couchDbExposePort\\": 5090
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org2.com\\",
+              \\"port\\": 8801,
+              \\"affiliation\\": \\"Org2\\",
+              \\"mspId\\": \\"Org2MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+              \\"fabricCaName\\": \\"ca.org2.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         }
       ],
@@ -408,6 +460,19 @@ Validation warnings count: 0
           \\"port\\": 7060,
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"port\\": 8800,
+            \\"affiliation\\": \\"Org1\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          }
         }
       }
     },
@@ -472,6 +537,19 @@ Validation warnings count: 0
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer1.org1.com:7061\\",
             \\"couchDbExposePort\\": 5081
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"port\\": 8800,
+              \\"affiliation\\": \\"Org1\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         },
         {
@@ -532,6 +610,19 @@ Validation warnings count: 0
             \\"port\\": 7071,
             \\"fullAddress\\": \\"peer1.org2.com:7071\\",
             \\"couchDbExposePort\\": 5091
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org2.com\\",
+              \\"port\\": 8801,
+              \\"affiliation\\": \\"Org2\\",
+              \\"mspId\\": \\"Org2MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+              \\"fabricCaName\\": \\"ca.org2.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         }
       ],
@@ -596,6 +687,19 @@ Validation warnings count: 0
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer1.org1.com:7061\\",
           \\"couchDbExposePort\\": 5081
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"port\\": 8800,
+            \\"affiliation\\": \\"Org1\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          }
         }
       }
     }
@@ -667,6 +771,19 @@ Validation warnings count: 0
               \\"port\\": 7060,
               \\"fullAddress\\": \\"peer0.org1.com:7060\\",
               \\"couchDbExposePort\\": 5080
+            },
+            \\"tools\\": {
+              \\"fabloRest\\": {
+                \\"address\\": \\"fablo-rest.org1.com\\",
+                \\"port\\": 8800,
+                \\"affiliation\\": \\"Org1\\",
+                \\"mspId\\": \\"Org1MSP\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+                \\"fabricCaName\\": \\"ca.org1.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+                \\"discoverySslTargetNameOverrides\\": \\"\\",
+                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              }
             }
           },
           {
@@ -727,6 +844,19 @@ Validation warnings count: 0
               \\"port\\": 7070,
               \\"fullAddress\\": \\"peer0.org2.com:7070\\",
               \\"couchDbExposePort\\": 5090
+            },
+            \\"tools\\": {
+              \\"fabloRest\\": {
+                \\"address\\": \\"fablo-rest.org2.com\\",
+                \\"port\\": 8801,
+                \\"affiliation\\": \\"Org2\\",
+                \\"mspId\\": \\"Org2MSP\\",
+                \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+                \\"fabricCaName\\": \\"ca.org2.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+                \\"discoverySslTargetNameOverrides\\": \\"\\",
+                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              }
             }
           }
         ],
@@ -791,6 +921,19 @@ Validation warnings count: 0
             \\"port\\": 7060,
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"port\\": 8800,
+              \\"affiliation\\": \\"Org1\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         }
       },
@@ -854,6 +997,19 @@ Validation warnings count: 0
           \\"port\\": 7060,
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"port\\": 8800,
+            \\"affiliation\\": \\"Org1\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          }
         }
       },
       \\"privateData\\": []
@@ -924,6 +1080,19 @@ Validation warnings count: 0
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer1.org1.com:7061\\",
               \\"couchDbExposePort\\": 5081
+            },
+            \\"tools\\": {
+              \\"fabloRest\\": {
+                \\"address\\": \\"fablo-rest.org1.com\\",
+                \\"port\\": 8800,
+                \\"affiliation\\": \\"Org1\\",
+                \\"mspId\\": \\"Org1MSP\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+                \\"fabricCaName\\": \\"ca.org1.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+                \\"discoverySslTargetNameOverrides\\": \\"\\",
+                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              }
             }
           },
           {
@@ -984,6 +1153,19 @@ Validation warnings count: 0
               \\"port\\": 7071,
               \\"fullAddress\\": \\"peer1.org2.com:7071\\",
               \\"couchDbExposePort\\": 5091
+            },
+            \\"tools\\": {
+              \\"fabloRest\\": {
+                \\"address\\": \\"fablo-rest.org2.com\\",
+                \\"port\\": 8801,
+                \\"affiliation\\": \\"Org2\\",
+                \\"mspId\\": \\"Org2MSP\\",
+                \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+                \\"fabricCaName\\": \\"ca.org2.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+                \\"discoverySslTargetNameOverrides\\": \\"\\",
+                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              }
             }
           }
         ],
@@ -1048,6 +1230,19 @@ Validation warnings count: 0
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer1.org1.com:7061\\",
             \\"couchDbExposePort\\": 5081
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"port\\": 8800,
+              \\"affiliation\\": \\"Org1\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            }
           }
         }
       },
@@ -1111,6 +1306,19 @@ Validation warnings count: 0
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer1.org1.com:7061\\",
           \\"couchDbExposePort\\": 5081
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"port\\": 8800,
+            \\"affiliation\\": \\"Org1\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          }
         }
       },
       \\"privateData\\": []
@@ -1245,6 +1453,19 @@ Validation warnings count: 0
         \\"port\\": 7060,
         \\"fullAddress\\": \\"peer0.org1.com:7060\\",
         \\"couchDbExposePort\\": 5080
+      },
+      \\"tools\\": {
+        \\"fabloRest\\": {
+          \\"address\\": \\"fablo-rest.org1.com\\",
+          \\"port\\": 8800,
+          \\"affiliation\\": \\"Org1\\",
+          \\"mspId\\": \\"Org1MSP\\",
+          \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+          \\"fabricCaName\\": \\"ca.org1.com\\",
+          \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
+          \\"discoverySslTargetNameOverrides\\": \\"\\",
+          \\"discoveryTlsCaCertFiles\\": \\"\\"
+        }
       }
     }
   ],
@@ -1310,6 +1531,19 @@ Validation warnings count: 0
             \\"port\\": 7060,
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"port\\": 8800,
+              \\"affiliation\\": \\"Org1\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"\\"
+            }
           }
         }
       ],
@@ -1374,6 +1608,19 @@ Validation warnings count: 0
           \\"port\\": 7060,
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"port\\": 8800,
+            \\"affiliation\\": \\"Org1\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"\\"
+          }
         }
       }
     }
@@ -1409,6 +1656,9 @@ exports[`init should init simple fablo config 1`] = `
       \\"peer\\": {
         \\"instances\\": 2,
         \\"db\\": \\"LevelDb\\"
+      },
+      \\"tools\\": {
+        \\"fabloRest\\": true
       }
     }
   ],
@@ -1456,6 +1706,9 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       \\"peer\\": {
         \\"instances\\": 2,
         \\"db\\": \\"LevelDb\\"
+      },
+      \\"tools\\": {
+        \\"fabloRest\\": true
       }
     }
   ],

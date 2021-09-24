@@ -237,6 +237,18 @@ describe("schema", () => {
     expect(withPeerDatabaseType("MongoDb")).not.toMatchSchema(schema);
   });
 
+  it("should validate peer tools", () => {
+    const withTools = (tools: object) =>
+      updatedBase((json: FabloConfigJson) => {
+        json.orgs[0].tools = tools;
+      });
+
+    expect(withTools({ fabloRest: true })).toMatchSchema(schema);
+    expect(withTools({ fabloRest: false })).toMatchSchema(schema);
+    expect(withTools({})).toMatchSchema(schema);
+    expect(withTools({ unknown: true })).not.toMatchSchema(schema);
+  });
+
   it("should validate channel name - no spaces and capital letters", () => {
     const withChannelName = (n: string) =>
       updatedBase((json: FabloConfigJson) => {
