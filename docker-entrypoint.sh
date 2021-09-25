@@ -12,9 +12,11 @@ executeYeomanCommand() {
   if [ "$(id -u)" = 0 ]; then
     # root user detected, running as yeoman user
     sudo chown -R yeoman:yeoman "$yeoman_target_dir"
+    # shellcheck disable=SC2086
     (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight $command_with_params)
     sudo chown -R root:root "$yeoman_target_dir"
   else
+    # shellcheck disable=SC2086
     (cd "$yeoman_target_dir" && yo --no-insight $command_with_params)
   fi
 }
@@ -41,12 +43,10 @@ formatGeneratedFiles() {
 }
 
 yeoman_target_dir="/network/workspace"
-fablo_config_path="../../network/fablo-config.json"
-yeoman_command=${1:-setup-docker}
-yeoman_param=${2:-"$fablo_config_path"}
+yeoman_command=${1:-Fablo:setup-docker}
 
-executeYeomanCommand "$yeoman_command" "$yeoman_param"
+executeYeomanCommand "$yeoman_command"
 
-if [ "$yeoman_command" = setup-docker ]; then
+if echo "$yeoman_command" | grep "setup-docker"; then
   formatGeneratedFiles
 fi

@@ -341,7 +341,7 @@ fi
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "FABLO_VERSION=\\"0.3.0-unstable\\"
 FABLO_BUILD=<date with git hash>
-FABLO_REST_VERSION=\\"0.0.6\\"
+FABLO_REST_VERSION=\\"0.1.0\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -820,9 +820,10 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - ca.root.com
     networks:
       - basic
-
   orderer1.root.com:
     container_name: orderer1.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -851,9 +852,10 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - ca.root.com
     networks:
       - basic
-
   orderer2.root.com:
     container_name: orderer2.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
@@ -882,6 +884,8 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -900,6 +904,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -938,6 +944,10 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
+    depends_on:
+      - ca.org1.com
+      - peer0.org1.com
+      - peer1.org1.com
     networks:
       - basic
 
@@ -966,13 +976,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -985,6 +993,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -1013,13 +1023,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -1032,6 +1040,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -1050,6 +1060,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -1088,6 +1100,10 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
+    depends_on:
+      - ca.org2.com
+      - peer0.org2.com
+      - peer1.org2.com
     networks:
       - basic
 
@@ -1116,13 +1132,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -1135,6 +1149,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org2.com
+
     networks:
       - basic
 
@@ -1163,13 +1179,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -1182,6 +1196,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org2.com
+
     networks:
       - basic
 "
@@ -1510,9 +1526,9 @@ function chaincodeBuild() {
 
     # We have different commands for npm and yarn
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent -g yarn && yarn install --silent && yarn build)
     else
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent && npm run build)
     fi
   fi
 }
