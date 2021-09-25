@@ -96,6 +96,12 @@ export interface FabloRestConfig {
   discoveryUrls: string;
   discoverySslTargetNameOverrides: string;
   discoveryTlsCaCertFiles: string;
+  logging: {
+    info?: "console" | string;
+    warn?: "console" | string;
+    error?: "console" | string;
+    debug?: "console" | string;
+  };
 }
 
 export interface OrgConfig {

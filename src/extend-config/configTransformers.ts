@@ -183,7 +183,7 @@ interface AnchorPeerConfig extends PeerConfig {
 
 const transformOrgConfig = (
   orgJsonFormat: OrgJson,
-  caPort: number,
+  caExposePort: number,
   fabloRestPort: number,
   peers: PeerConfig[],
   anchorPeersAllOrgs: AnchorPeerConfig[],
@@ -191,7 +191,7 @@ const transformOrgConfig = (
 ): OrgConfig => {
   const cryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
   const { domain, name } = orgJsonFormat.organization;
-  const ca = transformCaConfig(orgJsonFormat.ca, name, domain, caPort);
+  const ca = transformCaConfig(orgJsonFormat.ca, name, domain, caExposePort);
   const mspName = orgJsonFormat.organization.mspName || defaults.organization.mspName(name);
   const anchorPeers = peers.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
@@ -221,9 +221,10 @@ const transformOrgConfig = (
         port: fabloRestPort,
         affiliation: name,
         mspId: mspName,
-        fabricCaUrl: `http://${ca.address}:${caPort}`,
+        fabricCaUrl: `http://${ca.address}:${ca.port}`,
         fabricCaName: ca.address,
         ...discoveryEndpointsConfig,
+        logging: { debug: "console" }, // fixme
       };
 
   return {

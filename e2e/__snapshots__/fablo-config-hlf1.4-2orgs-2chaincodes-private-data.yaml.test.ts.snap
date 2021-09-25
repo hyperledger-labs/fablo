@@ -318,7 +318,7 @@ fi
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 "FABLO_VERSION=\\"0.3.0-unstable\\"
 FABLO_BUILD=<date with git hash>
-FABLO_REST_VERSION=\\"0.0.6\\"
+FABLO_REST_VERSION=\\"0.1.0\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -742,6 +742,8 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -760,6 +762,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -789,6 +793,10 @@ services:
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
+    depends_on:
+      - ca.org1.com
+      - peer0.org1.com
+      - peer1.org1.com
     networks:
       - basic
 
@@ -817,7 +825,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -830,6 +837,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -857,7 +866,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -870,6 +878,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -888,6 +898,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -917,6 +929,9 @@ services:
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
+    depends_on:
+      - ca.org2.com
+      - peer0.org2.com
     networks:
       - basic
 
@@ -945,7 +960,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -958,6 +972,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org2.com
+
     networks:
       - basic
 "
@@ -1286,9 +1302,9 @@ function chaincodeBuild() {
 
     # We have different commands for npm and yarn
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent -g yarn && yarn install --silent && yarn build)
     else
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent && npm run build)
     fi
   fi
 }
