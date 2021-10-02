@@ -2,12 +2,6 @@
 
 exports[`extend config samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V1_3",
-    "channel": "V1_3",
-    "isV2": false,
-    "orderer": "V1_1",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -477,6 +471,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V1_3",
+      "channel": "V1_3",
+      "isV2": false,
+      "orderer": "V1_1",
+    },
     "fabricBaseosVersion": "0.4.9",
     "fabricCaVersion": "1.3.0",
     "fabricCcenvVersion": "1.3.0",
@@ -647,12 +647,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V1_4_2",
-    "channel": "V1_4_3",
-    "isV2": false,
-    "orderer": "V1_4_2",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -999,6 +993,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V1_4_2",
+      "channel": "V1_4_3",
+      "isV2": false,
+      "orderer": "V1_4_2",
+    },
     "fabricBaseosVersion": "0.4.9",
     "fabricCaVersion": "1.4.6",
     "fabricCcenvVersion": "1.4.6",
@@ -1115,12 +1115,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf1.4-2orgs-1chaincode.json 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V1_4_2",
-    "channel": "V1_4_3",
-    "isV2": false,
-    "orderer": "V1_4_2",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -1700,6 +1694,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V1_4_2",
+      "channel": "V1_4_3",
+      "isV2": false,
+      "orderer": "V1_4_2",
+    },
     "fabricBaseosVersion": "0.4.9",
     "fabricCaVersion": "1.4.6",
     "fabricCcenvVersion": "1.4.6",
@@ -1879,12 +1879,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V1_4_2",
-    "channel": "V1_4_3",
-    "isV2": false,
-    "orderer": "V1_4_2",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -2618,6 +2612,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V1_4_2",
+      "channel": "V1_4_3",
+      "isV2": false,
+      "orderer": "V1_4_2",
+    },
     "fabricBaseosVersion": "0.4.9",
     "fabricCaVersion": "1.5.0",
     "fabricCcenvVersion": "1.4.11",
@@ -2788,12 +2788,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V1_4_2",
-    "channel": "V1_4_3",
-    "isV2": false,
-    "orderer": "V1_4_2",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -3733,6 +3727,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V1_4_2",
+      "channel": "V1_4_3",
+      "isV2": false,
+      "orderer": "V1_4_2",
+    },
     "fabricBaseosVersion": "0.4.9",
     "fabricCaVersion": "1.4.6",
     "fabricCcenvVersion": "1.4.6",
@@ -3946,12 +3946,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V2_0",
-    "channel": "V2_0",
-    "isV2": true,
-    "orderer": "V2_0",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -4298,6 +4292,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V2_0",
+      "channel": "V2_0",
+      "isV2": true,
+      "orderer": "V2_0",
+    },
     "fabricBaseosVersion": "2.3.2",
     "fabricCaVersion": "1.5.0",
     "fabricCcenvVersion": "2.3.2",
@@ -4414,12 +4414,6 @@ Object {
 
 exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 Object {
-  "capabilities": Object {
-    "application": "V2_0",
-    "channel": "V2_0",
-    "isV2": true,
-    "orderer": "V2_0",
-  },
   "chaincodes": Array [
     Object {
       "channel": Object {
@@ -4485,7 +4479,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4566,7 +4559,6 @@ Object {
             "tools": Object {
               "fabloRest": Object {
                 "address": "fablo-rest.org1.com",
-                "affiliation": "Org1",
                 "discoverySslTargetNameOverrides": "",
                 "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4645,7 +4637,6 @@ Object {
             "tools": Object {
               "fabloRest": Object {
                 "address": "fablo-rest.org2.com",
-                "affiliation": "Org2",
                 "discoverySslTargetNameOverrides": "",
                 "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4732,7 +4723,6 @@ Object {
         "tools": Object {
           "fabloRest": Object {
             "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
             "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4819,7 +4809,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4900,7 +4889,6 @@ Object {
             "tools": Object {
               "fabloRest": Object {
                 "address": "fablo-rest.org1.com",
-                "affiliation": "Org1",
                 "discoverySslTargetNameOverrides": "",
                 "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -4979,7 +4967,6 @@ Object {
             "tools": Object {
               "fabloRest": Object {
                 "address": "fablo-rest.org2.com",
-                "affiliation": "Org2",
                 "discoverySslTargetNameOverrides": "",
                 "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5066,7 +5053,6 @@ Object {
         "tools": Object {
           "fabloRest": Object {
             "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
             "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5154,7 +5140,6 @@ Object {
         "tools": Object {
           "fabloRest": Object {
             "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
             "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5235,7 +5220,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5314,7 +5298,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org2.com",
-              "affiliation": "Org2",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5399,7 +5382,6 @@ Object {
         "tools": Object {
           "fabloRest": Object {
             "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
             "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5480,7 +5462,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5559,7 +5540,6 @@ Object {
           "tools": Object {
             "fabloRest": Object {
               "address": "fablo-rest.org2.com",
-              "affiliation": "Org2",
               "discoverySslTargetNameOverrides": "",
               "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5583,6 +5563,12 @@ Object {
     },
   ],
   "networkSettings": Object {
+    "capabilities": Object {
+      "application": "V2_0",
+      "channel": "V2_0",
+      "isV2": true,
+      "orderer": "V2_0",
+    },
     "fabricBaseosVersion": "2.3.2",
     "fabricCaVersion": "1.5.0",
     "fabricCcenvVersion": "2.3.2",
@@ -5669,7 +5655,6 @@ Object {
       "tools": Object {
         "fabloRest": Object {
           "address": "fablo-rest.org1.com",
-          "affiliation": "Org1",
           "discoverySslTargetNameOverrides": "",
           "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
           "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
@@ -5757,7 +5742,6 @@ Object {
       "tools": Object {
         "fabloRest": Object {
           "address": "fablo-rest.org2.com",
-          "affiliation": "Org2",
           "discoverySslTargetNameOverrides": "",
           "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
           "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",

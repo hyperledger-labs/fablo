@@ -6,12 +6,6 @@ export interface FabricVersions {
   fabricJavaenvVersion: string;
 }
 
-export interface NetworkSettings extends FabricVersions {
-  tls: boolean;
-  monitoring: { loglevel: string };
-  paths: { fabloConfig: string; chaincodesBaseDir: string };
-}
-
 interface CapabilitiesV1 {
   application: "V1_3" | "V1_4_2";
   channel: "V1_3" | "V1_4_2" | "V1_4_3";
@@ -27,6 +21,13 @@ interface CapabilitiesV2 {
 }
 
 export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
+
+export interface NetworkSettings extends FabricVersions {
+  tls: boolean;
+  monitoring: { loglevel: string };
+  paths: { fabloConfig: string; chaincodesBaseDir: string };
+  capabilities: Capabilities;
+}
 
 export interface OrdererConfig {
   name: string;
@@ -96,7 +97,6 @@ export interface FabloRestLoggingConfig {
 export interface FabloRestConfig {
   address: string;
   port: number;
-  affiliation: string;
   mspId: string;
   fabricCaUrl: string;
   fabricCaName: string;
@@ -137,7 +137,6 @@ export interface ChaincodeConfig {
 
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  capabilities: Capabilities;
   rootOrg: RootOrgConfig;
   orgs: OrgConfig[];
   channels: ChannelConfig[];

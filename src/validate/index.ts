@@ -5,7 +5,7 @@ import * as config from "../config";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import { ChaincodeJson, FabloConfigJson, NetworkSettingsJson, OrdererJson, OrgJson } from "../types/FabloConfigJson";
 import * as _ from "lodash";
-import { getNetworkCapabilities } from "../extend-config/configTransformers";
+import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
