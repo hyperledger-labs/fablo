@@ -40,7 +40,8 @@ response=$(
     --header 'Content-Type: application/json' \
     --data "{
       \"method\": \"$method\",
-      \"args\": $args_json_array
+      \"args\": $args_json_array,
+      \"transient\": $transient
     }"
 )
 

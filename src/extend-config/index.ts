@@ -15,13 +15,13 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     chaincodes: chaincodesJson,
   } = json;
 
-  const capabilities = configTransformers.getNetworkCapabilities(networkSettingsJson.fabricVersion);
-  const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
-  const orgs = configTransformers.transformOrgConfigs(orgsJson, networkSettingsJson.tls);
-  const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
   const networkSettings = configTransformers.transformNetworkSettings(networkSettingsJson);
+  const capabilities = configTransformers.getNetworkCapabilities(networkSettings.fabricVersion);
+  const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
+  const orgs = configTransformers.transformOrgConfigs(orgsJson, networkSettings);
+  const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
   const chaincodes = configTransformers.transformChaincodesConfig(
-    networkSettingsJson.fabricVersion,
+    networkSettings.fabricVersion,
     chaincodesJson,
     channels,
     capabilities,
