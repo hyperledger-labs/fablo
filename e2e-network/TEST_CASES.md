@@ -16,5 +16,5 @@
 | Private data              | no        | no        | yes       |
 | Java chaincode            | no        | yes       | no        |
 | Go chaincode              | no        | no        | no        |
-| Fablo REST                | no        | true      | no        |
+| Fablo REST                | no        | yes       | no        |
 | Other Fablo commands    | init, reboot | stop, start | -      |

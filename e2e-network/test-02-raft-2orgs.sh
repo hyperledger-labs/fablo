@@ -9,7 +9,7 @@ FABLO_HOME="$TEST_TMP/../.."
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
-  # separate generate and up is intentional
+  # separate generate and up is intentional just to check if it works
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
@@ -87,18 +87,18 @@ fablo_rest_org1="localhost:8800"
 fablo_rest_org2="localhost:8801"
 expectInvoke "$fablo_rest_org1" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Jack Sparrow"]' \
-  '{\"success\":\"OK\"}'
+  '{"response":{"success":"OK"}}'
 expectInvoke "$fablo_rest_org2" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
-  '{\"success\":\"Jack Sparrow\"}'
+  '{"response":{"success":"Jack Sparrow"}}'
 
 # invoke Java chaincode
 expectInvoke "$fablo_rest_org1" "my-channel2" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
-  'status:200'
+  '{"response":""}'
 expectInvoke "$fablo_rest_org2" "my-channel2" "chaincode2" \
   "PokeballContract:readPokeball" '["id1"]' \
-  '{"value":"Pokeball 1"}'
+  '{"response":{"value":"Pokeball 1"}}'
 
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
@@ -113,4 +113,4 @@ waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1"
 # check if state is kept after update
 expectInvoke "$fablo_rest_org2" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
-  '{\"success\":\"Jack Sparrow\"}'
+  '{"response":{"success":"Jack Sparrow"}}'
