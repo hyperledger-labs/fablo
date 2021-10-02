@@ -228,7 +228,6 @@ const transformOrgConfig = (
     : {
         address: `fablo-rest.${domain}`,
         port: fabloRestPort,
-        affiliation: name,
         mspId: mspName,
         fabricCaUrl: `http://${ca.address}:${ca.port}`,
         fabricCaName: ca.address,

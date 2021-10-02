@@ -96,7 +96,6 @@ export interface FabloRestLoggingConfig {
 export interface FabloRestConfig {
   address: string;
   port: number;
-  affiliation: string;
   mspId: string;
   fabricCaUrl: string;
   fabricCaName: string;
