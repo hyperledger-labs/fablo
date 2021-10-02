@@ -26,13 +26,13 @@ Validation warnings count: 0
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
-    },
-    \\"capabilities\\": {
-      \\"channel\\": \\"V2_0\\",
-      \\"orderer\\": \\"V2_0\\",
-      \\"application\\": \\"V2_0\\",
-      \\"isV2\\": true
     }
+  },
+  \\"capabilities\\": {
+    \\"channel\\": \\"V2_0\\",
+    \\"orderer\\": \\"V2_0\\",
+    \\"application\\": \\"V2_0\\",
+    \\"isV2\\": true
   },
   \\"rootOrg\\": {
     \\"name\\": \\"Orderer\\",
@@ -154,8 +154,8 @@ Validation warnings count: 0
       \\"tools\\": {
         \\"fabloRest\\": {
           \\"address\\": \\"fablo-rest.org1.com\\",
-          \\"mspId\\": \\"Org1MSP\\",
           \\"port\\": 8800,
+          \\"mspId\\": \\"Org1MSP\\",
           \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
           \\"fabricCaName\\": \\"ca.org1.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -241,8 +241,8 @@ Validation warnings count: 0
       \\"tools\\": {
         \\"fabloRest\\": {
           \\"address\\": \\"fablo-rest.org2.com\\",
-          \\"mspId\\": \\"Org2MSP\\",
           \\"port\\": 8801,
+          \\"mspId\\": \\"Org2MSP\\",
           \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
           \\"fabricCaName\\": \\"ca.org2.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -324,8 +324,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8800,
+              \\"mspId\\": \\"Org1MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -402,8 +402,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org2.com\\",
-              \\"mspId\\": \\"Org2MSP\\",
               \\"port\\": 8801,
+              \\"mspId\\": \\"Org2MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -484,8 +484,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8800,
+            \\"mspId\\": \\"Org1MSP\\",
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -566,8 +566,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8800,
+              \\"mspId\\": \\"Org1MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -644,8 +644,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org2.com\\",
-              \\"mspId\\": \\"Org2MSP\\",
               \\"port\\": 8801,
+              \\"mspId\\": \\"Org2MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -726,8 +726,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8800,
+            \\"mspId\\": \\"Org1MSP\\",
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -815,8 +815,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
-                \\"mspId\\": \\"Org1MSP\\",
                 \\"port\\": 8800,
+                \\"mspId\\": \\"Org1MSP\\",
                 \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -893,8 +893,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org2.com\\",
-                \\"mspId\\": \\"Org2MSP\\",
                 \\"port\\": 8801,
+                \\"mspId\\": \\"Org2MSP\\",
                 \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -975,8 +975,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8800,
+              \\"mspId\\": \\"Org1MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1056,8 +1056,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8800,
+            \\"mspId\\": \\"Org1MSP\\",
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1144,8 +1144,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
-                \\"mspId\\": \\"Org1MSP\\",
                 \\"port\\": 8800,
+                \\"mspId\\": \\"Org1MSP\\",
                 \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1222,8 +1222,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org2.com\\",
-                \\"mspId\\": \\"Org2MSP\\",
                 \\"port\\": 8801,
+                \\"mspId\\": \\"Org2MSP\\",
                 \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1304,8 +1304,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8800,
+              \\"mspId\\": \\"Org1MSP\\",
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1385,8 +1385,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8800,
+            \\"mspId\\": \\"Org1MSP\\",
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1434,13 +1434,13 @@ Validation warnings count: 0
     },
     \\"monitoring\\": {
       \\"loglevel\\": \\"info\\"
-    },
-    \\"capabilities\\": {
-      \\"channel\\": \\"V2_0\\",
-      \\"orderer\\": \\"V2_0\\",
-      \\"application\\": \\"V2_0\\",
-      \\"isV2\\": true
     }
+  },
+  \\"capabilities\\": {
+    \\"channel\\": \\"V2_0\\",
+    \\"orderer\\": \\"V2_0\\",
+    \\"application\\": \\"V2_0\\",
+    \\"isV2\\": true
   },
   \\"rootOrg\\": {
     \\"name\\": \\"Orderer\\",

@@ -135,7 +135,6 @@ services:
     tty: true
     environment:
       - PORT=8000
-      - AFFILIATION=<%= org.tools.fabloRest.affiliation %>
       - MSP_ID=<%= org.tools.fabloRest.mspId %>
       - FABRIC_CA_URL=<%= org.tools.fabloRest.fabricCaUrl %>
       - FABRIC_CA_NAME=<%= org.tools.fabloRest.fabricCaName %>
