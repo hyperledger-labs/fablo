@@ -967,7 +967,6 @@ services:
     tty: true
     environment:
       - PORT=8000
-      - AFFILIATION=
       - MSP_ID=Org1MSP
       - FABRIC_CA_URL=http://ca.org1.com:7054
       - FABRIC_CA_NAME=ca.org1.com
@@ -1150,7 +1149,6 @@ services:
     tty: true
     environment:
       - PORT=8000
-      - AFFILIATION=
       - MSP_ID=Org2MSP
       - FABRIC_CA_URL=http://ca.org2.com:7054
       - FABRIC_CA_NAME=ca.org2.com
