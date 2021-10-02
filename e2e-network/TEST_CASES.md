@@ -17,4 +17,4 @@
 | Java chaincode            | no        | yes       | no        |
 | Go chaincode              | no        | no        | no        |
 | Fablo REST                | no        | yes       | no        |
-| Other Fablo commands    | init, reboot | stop, start | -      |
+| Other Fablo commands      | init, reboot | stop, start | -    |
