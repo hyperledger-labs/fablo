@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`extend config samples/fabrica-config-hlf1.3-2orgs-private-data.json 1`] = `
+exports[`extend config samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_3",
@@ -487,7 +487,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": false,
   },
@@ -645,7 +645,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf1.4-1org-raft.json 1`] = `
+exports[`extend config samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_4_2",
@@ -1009,7 +1009,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": true,
   },
@@ -1113,7 +1113,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf1.4-2orgs.json 1`] = `
+exports[`extend config samples/fablo-config-hlf1.4-2orgs-1chaincode.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_4_2",
@@ -1710,7 +1710,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": false,
   },
@@ -1877,7 +1877,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf1.4-2orgs-private-data.yaml 1`] = `
+exports[`extend config samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_4_2",
@@ -2628,7 +2628,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": false,
   },
@@ -2786,7 +2786,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf1.4-2orgs-raft.json 1`] = `
+exports[`extend config samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V1_4_2",
@@ -3743,7 +3743,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": true,
   },
@@ -3944,7 +3944,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf2-1org-simple.json 1`] = `
+exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 Object {
   "capabilities": Object {
     "application": "V2_0",
@@ -4015,17 +4015,7 @@ Object {
           ],
           "peersCount": 2,
           "tools": Object {
-            "fabloRest": Object {
-              "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
-              "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "",
-              "discoveryUrls": "grpc://peer0.org1.com:7060",
-              "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
-              "mspId": "Org1MSP",
-              "port": 8800,
-            },
+            "fabloRest": undefined,
           },
         },
         "name": "my-channel1",
@@ -4090,17 +4080,7 @@ Object {
             ],
             "peersCount": 2,
             "tools": Object {
-              "fabloRest": Object {
-                "address": "fablo-rest.org1.com",
-                "affiliation": "Org1",
-                "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "",
-                "discoveryUrls": "grpc://peer0.org1.com:7060",
-                "fabricCaName": "ca.org1.com",
-                "fabricCaUrl": "http://ca.org1.com:7031",
-                "mspId": "Org1MSP",
-                "port": 8800,
-              },
+              "fabloRest": undefined,
             },
           },
         ],
@@ -4171,17 +4151,7 @@ Object {
         ],
         "peersCount": 2,
         "tools": Object {
-          "fabloRest": Object {
-            "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
-            "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "",
-            "discoveryUrls": "grpc://peer0.org1.com:7060",
-            "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
-            "mspId": "Org1MSP",
-            "port": 8800,
-          },
+          "fabloRest": undefined,
         },
       },
       "lang": "node",
@@ -4253,17 +4223,7 @@ Object {
         ],
         "peersCount": 2,
         "tools": Object {
-          "fabloRest": Object {
-            "address": "fablo-rest.org1.com",
-            "affiliation": "Org1",
-            "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "",
-            "discoveryUrls": "grpc://peer0.org1.com:7060",
-            "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
-            "mspId": "Org1MSP",
-            "port": 8800,
-          },
+          "fabloRest": undefined,
         },
       },
       "name": "my-channel1",
@@ -4328,17 +4288,7 @@ Object {
           ],
           "peersCount": 2,
           "tools": Object {
-            "fabloRest": Object {
-              "address": "fablo-rest.org1.com",
-              "affiliation": "Org1",
-              "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "",
-              "discoveryUrls": "grpc://peer0.org1.com:7060",
-              "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
-              "mspId": "Org1MSP",
-              "port": 8800,
-            },
+            "fabloRest": undefined,
           },
         },
       ],
@@ -4358,7 +4308,7 @@ Object {
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": false,
   },
@@ -4423,17 +4373,7 @@ Object {
       ],
       "peersCount": 2,
       "tools": Object {
-        "fabloRest": Object {
-          "address": "fablo-rest.org1.com",
-          "affiliation": "Org1",
-          "discoverySslTargetNameOverrides": "",
-          "discoveryTlsCaCertFiles": "",
-          "discoveryUrls": "grpc://peer0.org1.com:7060",
-          "fabricCaName": "ca.org1.com",
-          "fabricCaUrl": "http://ca.org1.com:7031",
-          "mspId": "Org1MSP",
-          "port": 8800,
-        },
+        "fabloRest": undefined,
       },
     },
   ],
@@ -4472,7 +4412,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fabrica-config-hlf2-2orgs-raft.yaml 1`] = `
+exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 Object {
   "capabilities": Object {
     "application": "V2_0",
@@ -4547,10 +4487,16 @@ Object {
               "address": "fablo-rest.org1.com",
               "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
+              "fabricCaUrl": "http://ca.org1.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org1MSP",
               "port": 8800,
             },
@@ -4622,10 +4568,16 @@ Object {
                 "address": "fablo-rest.org1.com",
                 "affiliation": "Org1",
                 "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+                "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
                 "fabricCaName": "ca.org1.com",
-                "fabricCaUrl": "http://ca.org1.com:7031",
+                "fabricCaUrl": "http://ca.org1.com:7054",
+                "logging": Object {
+                  "debug": "console",
+                  "error": "console",
+                  "info": "console",
+                  "warn": "console",
+                },
                 "mspId": "Org1MSP",
                 "port": 8800,
               },
@@ -4695,10 +4647,16 @@ Object {
                 "address": "fablo-rest.org2.com",
                 "affiliation": "Org2",
                 "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+                "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
                 "fabricCaName": "ca.org2.com",
-                "fabricCaUrl": "http://ca.org2.com:7032",
+                "fabricCaUrl": "http://ca.org2.com:7054",
+                "logging": Object {
+                  "debug": "console",
+                  "error": "console",
+                  "info": "console",
+                  "warn": "console",
+                },
                 "mspId": "Org2MSP",
                 "port": 8801,
               },
@@ -4776,10 +4734,16 @@ Object {
             "address": "fablo-rest.org1.com",
             "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+            "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
             "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
+            "fabricCaUrl": "http://ca.org1.com:7054",
+            "logging": Object {
+              "debug": "console",
+              "error": "console",
+              "info": "console",
+              "warn": "console",
+            },
             "mspId": "Org1MSP",
             "port": 8800,
           },
@@ -4857,10 +4821,16 @@ Object {
               "address": "fablo-rest.org1.com",
               "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
+              "fabricCaUrl": "http://ca.org1.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org1MSP",
               "port": 8800,
             },
@@ -4932,10 +4902,16 @@ Object {
                 "address": "fablo-rest.org1.com",
                 "affiliation": "Org1",
                 "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+                "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
                 "fabricCaName": "ca.org1.com",
-                "fabricCaUrl": "http://ca.org1.com:7031",
+                "fabricCaUrl": "http://ca.org1.com:7054",
+                "logging": Object {
+                  "debug": "console",
+                  "error": "console",
+                  "info": "console",
+                  "warn": "console",
+                },
                 "mspId": "Org1MSP",
                 "port": 8800,
               },
@@ -5005,10 +4981,16 @@ Object {
                 "address": "fablo-rest.org2.com",
                 "affiliation": "Org2",
                 "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+                "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
                 "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
                 "fabricCaName": "ca.org2.com",
-                "fabricCaUrl": "http://ca.org2.com:7032",
+                "fabricCaUrl": "http://ca.org2.com:7054",
+                "logging": Object {
+                  "debug": "console",
+                  "error": "console",
+                  "info": "console",
+                  "warn": "console",
+                },
                 "mspId": "Org2MSP",
                 "port": 8801,
               },
@@ -5086,10 +5068,16 @@ Object {
             "address": "fablo-rest.org1.com",
             "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+            "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
             "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
+            "fabricCaUrl": "http://ca.org1.com:7054",
+            "logging": Object {
+              "debug": "console",
+              "error": "console",
+              "info": "console",
+              "warn": "console",
+            },
             "mspId": "Org1MSP",
             "port": 8800,
           },
@@ -5168,10 +5156,16 @@ Object {
             "address": "fablo-rest.org1.com",
             "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+            "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
             "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
+            "fabricCaUrl": "http://ca.org1.com:7054",
+            "logging": Object {
+              "debug": "console",
+              "error": "console",
+              "info": "console",
+              "warn": "console",
+            },
             "mspId": "Org1MSP",
             "port": 8800,
           },
@@ -5243,10 +5237,16 @@ Object {
               "address": "fablo-rest.org1.com",
               "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
+              "fabricCaUrl": "http://ca.org1.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org1MSP",
               "port": 8800,
             },
@@ -5316,10 +5316,16 @@ Object {
               "address": "fablo-rest.org2.com",
               "affiliation": "Org2",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org2.com",
-              "fabricCaUrl": "http://ca.org2.com:7032",
+              "fabricCaUrl": "http://ca.org2.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org2MSP",
               "port": 8801,
             },
@@ -5395,10 +5401,16 @@ Object {
             "address": "fablo-rest.org1.com",
             "affiliation": "Org1",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+            "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
             "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
             "fabricCaName": "ca.org1.com",
-            "fabricCaUrl": "http://ca.org1.com:7031",
+            "fabricCaUrl": "http://ca.org1.com:7054",
+            "logging": Object {
+              "debug": "console",
+              "error": "console",
+              "info": "console",
+              "warn": "console",
+            },
             "mspId": "Org1MSP",
             "port": 8800,
           },
@@ -5470,10 +5482,16 @@ Object {
               "address": "fablo-rest.org1.com",
               "affiliation": "Org1",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org1.com",
-              "fabricCaUrl": "http://ca.org1.com:7031",
+              "fabricCaUrl": "http://ca.org1.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org1MSP",
               "port": 8800,
             },
@@ -5543,10 +5561,16 @@ Object {
               "address": "fablo-rest.org2.com",
               "affiliation": "Org2",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+              "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
               "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
               "fabricCaName": "ca.org2.com",
-              "fabricCaUrl": "http://ca.org2.com:7032",
+              "fabricCaUrl": "http://ca.org2.com:7054",
+              "logging": Object {
+                "debug": "console",
+                "error": "console",
+                "info": "console",
+                "warn": "console",
+              },
               "mspId": "Org2MSP",
               "port": 8801,
             },
@@ -5559,17 +5583,17 @@ Object {
     },
   ],
   "networkSettings": Object {
-    "fabricBaseosVersion": "2.3.1",
+    "fabricBaseosVersion": "2.3.2",
     "fabricCaVersion": "1.5.0",
-    "fabricCcenvVersion": "2.3.1",
+    "fabricCcenvVersion": "2.3.2",
     "fabricJavaenvVersion": "2.3.0",
-    "fabricVersion": "2.3.1",
+    "fabricVersion": "2.3.2",
     "monitoring": Object {
-      "loglevel": "info",
+      "loglevel": "debug",
     },
     "paths": Object {
       "chaincodesBaseDir": "<absolute path>",
-      "fabricaConfig": "<absolute path>",
+      "fabloConfig": "<absolute path>",
     },
     "tls": true,
   },
@@ -5647,10 +5671,16 @@ Object {
           "address": "fablo-rest.org1.com",
           "affiliation": "Org1",
           "discoverySslTargetNameOverrides": "",
-          "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+          "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
           "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
           "fabricCaName": "ca.org1.com",
-          "fabricCaUrl": "http://ca.org1.com:7031",
+          "fabricCaUrl": "http://ca.org1.com:7054",
+          "logging": Object {
+            "debug": "console",
+            "error": "console",
+            "info": "console",
+            "warn": "console",
+          },
           "mspId": "Org1MSP",
           "port": 8800,
         },
@@ -5729,10 +5759,16 @@ Object {
           "address": "fablo-rest.org2.com",
           "affiliation": "Org2",
           "discoverySslTargetNameOverrides": "",
-          "discoveryTlsCaCertFiles": "Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt",
+          "discoveryTlsCaCertFiles": "/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt",
           "discoveryUrls": "grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071",
           "fabricCaName": "ca.org2.com",
-          "fabricCaUrl": "http://ca.org2.com:7032",
+          "fabricCaUrl": "http://ca.org2.com:7054",
+          "logging": Object {
+            "debug": "console",
+            "error": "console",
+            "info": "console",
+            "warn": "console",
+          },
           "mspId": "Org2MSP",
           "port": 8801,
         },

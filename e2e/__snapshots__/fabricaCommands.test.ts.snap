@@ -14,14 +14,14 @@ Validation warnings count: 0
 ===========================================================
 {
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.3.1\\",
+    \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": true,
     \\"monitoring\\": {
-      \\"loglevel\\": \\"info\\"
+      \\"loglevel\\": \\"debug\\"
     },
     \\"fabricCaVersion\\": \\"1.5.0\\",
-    \\"fabricCcenvVersion\\": \\"2.3.1\\",
-    \\"fabricBaseosVersion\\": \\"2.3.1\\",
+    \\"fabricCcenvVersion\\": \\"2.3.2\\",
+    \\"fabricBaseosVersion\\": \\"2.3.2\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
@@ -157,11 +157,17 @@ Validation warnings count: 0
           \\"port\\": 8800,
           \\"affiliation\\": \\"Org1\\",
           \\"mspId\\": \\"Org1MSP\\",
-          \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+          \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
           \\"fabricCaName\\": \\"ca.org1.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
           \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+          \\"logging\\": {
+            \\"error\\": \\"console\\",
+            \\"warn\\": \\"console\\",
+            \\"info\\": \\"console\\",
+            \\"debug\\": \\"console\\"
+          }
         }
       }
     },
@@ -239,11 +245,17 @@ Validation warnings count: 0
           \\"port\\": 8801,
           \\"affiliation\\": \\"Org2\\",
           \\"mspId\\": \\"Org2MSP\\",
-          \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+          \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
           \\"fabricCaName\\": \\"ca.org2.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
           \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+          \\"logging\\": {
+            \\"error\\": \\"console\\",
+            \\"warn\\": \\"console\\",
+            \\"info\\": \\"console\\",
+            \\"debug\\": \\"console\\"
+          }
         }
       }
     }
@@ -317,11 +329,17 @@ Validation warnings count: 0
               \\"port\\": 8800,
               \\"affiliation\\": \\"Org1\\",
               \\"mspId\\": \\"Org1MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         },
@@ -390,11 +408,17 @@ Validation warnings count: 0
               \\"port\\": 8801,
               \\"affiliation\\": \\"Org2\\",
               \\"mspId\\": \\"Org2MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         }
@@ -467,11 +491,17 @@ Validation warnings count: 0
             \\"port\\": 8800,
             \\"affiliation\\": \\"Org1\\",
             \\"mspId\\": \\"Org1MSP\\",
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"logging\\": {
+              \\"error\\": \\"console\\",
+              \\"warn\\": \\"console\\",
+              \\"info\\": \\"console\\",
+              \\"debug\\": \\"console\\"
+            }
           }
         }
       }
@@ -544,11 +574,17 @@ Validation warnings count: 0
               \\"port\\": 8800,
               \\"affiliation\\": \\"Org1\\",
               \\"mspId\\": \\"Org1MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         },
@@ -617,11 +653,17 @@ Validation warnings count: 0
               \\"port\\": 8801,
               \\"affiliation\\": \\"Org2\\",
               \\"mspId\\": \\"Org2MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
               \\"fabricCaName\\": \\"ca.org2.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         }
@@ -694,11 +736,17 @@ Validation warnings count: 0
             \\"port\\": 8800,
             \\"affiliation\\": \\"Org1\\",
             \\"mspId\\": \\"Org1MSP\\",
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"logging\\": {
+              \\"error\\": \\"console\\",
+              \\"warn\\": \\"console\\",
+              \\"info\\": \\"console\\",
+              \\"debug\\": \\"console\\"
+            }
           }
         }
       }
@@ -778,11 +826,17 @@ Validation warnings count: 0
                 \\"port\\": 8800,
                 \\"affiliation\\": \\"Org1\\",
                 \\"mspId\\": \\"Org1MSP\\",
-                \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"logging\\": {
+                  \\"error\\": \\"console\\",
+                  \\"warn\\": \\"console\\",
+                  \\"info\\": \\"console\\",
+                  \\"debug\\": \\"console\\"
+                }
               }
             }
           },
@@ -851,11 +905,17 @@ Validation warnings count: 0
                 \\"port\\": 8801,
                 \\"affiliation\\": \\"Org2\\",
                 \\"mspId\\": \\"Org2MSP\\",
-                \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+                \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"logging\\": {
+                  \\"error\\": \\"console\\",
+                  \\"warn\\": \\"console\\",
+                  \\"info\\": \\"console\\",
+                  \\"debug\\": \\"console\\"
+                }
               }
             }
           }
@@ -928,11 +988,17 @@ Validation warnings count: 0
               \\"port\\": 8800,
               \\"affiliation\\": \\"Org1\\",
               \\"mspId\\": \\"Org1MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         }
@@ -1004,11 +1070,17 @@ Validation warnings count: 0
             \\"port\\": 8800,
             \\"affiliation\\": \\"Org1\\",
             \\"mspId\\": \\"Org1MSP\\",
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"logging\\": {
+              \\"error\\": \\"console\\",
+              \\"warn\\": \\"console\\",
+              \\"info\\": \\"console\\",
+              \\"debug\\": \\"console\\"
+            }
           }
         }
       },
@@ -1087,11 +1159,17 @@ Validation warnings count: 0
                 \\"port\\": 8800,
                 \\"affiliation\\": \\"Org1\\",
                 \\"mspId\\": \\"Org1MSP\\",
-                \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"logging\\": {
+                  \\"error\\": \\"console\\",
+                  \\"warn\\": \\"console\\",
+                  \\"info\\": \\"console\\",
+                  \\"debug\\": \\"console\\"
+                }
               }
             }
           },
@@ -1160,11 +1238,17 @@ Validation warnings count: 0
                 \\"port\\": 8801,
                 \\"affiliation\\": \\"Org2\\",
                 \\"mspId\\": \\"Org2MSP\\",
-                \\"fabricCaUrl\\": \\"http://ca.org2.com:7032\\",
+                \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org2.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"logging\\": {
+                  \\"error\\": \\"console\\",
+                  \\"warn\\": \\"console\\",
+                  \\"info\\": \\"console\\",
+                  \\"debug\\": \\"console\\"
+                }
               }
             }
           }
@@ -1237,11 +1321,17 @@ Validation warnings count: 0
               \\"port\\": 8800,
               \\"affiliation\\": \\"Org1\\",
               \\"mspId\\": \\"Org1MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
             }
           }
         }
@@ -1313,11 +1403,17 @@ Validation warnings count: 0
             \\"port\\": 8800,
             \\"affiliation\\": \\"Org1\\",
             \\"mspId\\": \\"Org1MSP\\",
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"Org1/peers/peer0.org1.com/tls/ca.crt,Org1/peers/peer1.org1.com/tls/ca.crt,Org2/peers/peer0.org2.com/tls/ca.crt,Org2/peers/peer1.org2.com/tls/ca.crt\\"
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"logging\\": {
+              \\"error\\": \\"console\\",
+              \\"warn\\": \\"console\\",
+              \\"info\\": \\"console\\",
+              \\"debug\\": \\"console\\"
+            }
           }
         }
       },
@@ -1454,19 +1550,7 @@ Validation warnings count: 0
         \\"fullAddress\\": \\"peer0.org1.com:7060\\",
         \\"couchDbExposePort\\": 5080
       },
-      \\"tools\\": {
-        \\"fabloRest\\": {
-          \\"address\\": \\"fablo-rest.org1.com\\",
-          \\"port\\": 8800,
-          \\"affiliation\\": \\"Org1\\",
-          \\"mspId\\": \\"Org1MSP\\",
-          \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
-          \\"fabricCaName\\": \\"ca.org1.com\\",
-          \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
-          \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"\\"
-        }
-      }
+      \\"tools\\": {}
     }
   ],
   \\"channels\\": [
@@ -1532,19 +1616,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
           },
-          \\"tools\\": {
-            \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"port\\": 8800,
-              \\"affiliation\\": \\"Org1\\",
-              \\"mspId\\": \\"Org1MSP\\",
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
-              \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"\\"
-            }
-          }
+          \\"tools\\": {}
         }
       ],
       \\"profile\\": {
@@ -1609,19 +1681,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
         },
-        \\"tools\\": {
-          \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"port\\": 8800,
-            \\"affiliation\\": \\"Org1\\",
-            \\"mspId\\": \\"Org1MSP\\",
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7031\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpc://peer0.org1.com:7060\\",
-            \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"\\"
-          }
-        }
+        \\"tools\\": {}
       }
     }
   ],
@@ -1657,9 +1717,7 @@ exports[`init should init simple fablo config 1`] = `
         \\"instances\\": 2,
         \\"db\\": \\"LevelDb\\"
       },
-      \\"tools\\": {
-        \\"fabloRest\\": true
-      }
+      \\"tools\\": {}
     }
   ],
   \\"channels\\": [
@@ -1681,6 +1739,62 @@ exports[`init should init simple fablo config 1`] = `
 `;
 
 exports[`init should init simple fablo config with node chaincode 1`] = `
+"{
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json\\",
+  \\"networkSettings\\": {
+    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"tls\\": false
+  },
+  \\"rootOrg\\": {
+    \\"organization\\": {
+      \\"name\\": \\"Orderer\\",
+      \\"domain\\": \\"root.com\\"
+    },
+    \\"orderer\\": {
+      \\"type\\": \\"solo\\",
+      \\"instances\\": 1
+    }
+  },
+  \\"orgs\\": [
+    {
+      \\"organization\\": {
+        \\"name\\": \\"Org1\\",
+        \\"domain\\": \\"org1.com\\"
+      },
+      \\"peer\\": {
+        \\"instances\\": 2,
+        \\"db\\": \\"LevelDb\\"
+      },
+      \\"tools\\": {}
+    }
+  ],
+  \\"channels\\": [
+    {
+      \\"name\\": \\"my-channel1\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"peers\\": [
+            \\"peer0\\",
+            \\"peer1\\"
+          ]
+        }
+      ]
+    }
+  ],
+  \\"chaincodes\\": [
+    {
+      \\"name\\": \\"chaincode1\\",
+      \\"version\\": \\"0.0.1\\",
+      \\"lang\\": \\"node\\",
+      \\"channel\\": \\"my-channel1\\",
+      \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
+    }
+  ]
+}"
+`;
+
+exports[`init should init simple fablo config with node chaincode and rest api 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json\\",
   \\"networkSettings\\": {
@@ -1735,6 +1849,5 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       \\"directory\\": \\"./chaincodes/chaincode-kv-node\\"
     }
   ]
-}
-"
+}"
 `;

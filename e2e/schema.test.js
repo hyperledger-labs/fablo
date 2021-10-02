@@ -238,7 +238,7 @@ describe("schema", () => {
   });
 
   it("should validate peer tools", () => {
-    const withTools = (tools: object) =>
+    const withTools = (tools: Record<string, unknown>) =>
       updatedBase((json: FabloConfigJson) => {
         json.orgs[0].tools = tools;
       });
