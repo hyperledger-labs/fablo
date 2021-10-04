@@ -34,7 +34,7 @@ waitForChaincode() {
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
+  sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
 trap networkDown EXIT
