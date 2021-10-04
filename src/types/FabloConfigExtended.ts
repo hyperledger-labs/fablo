@@ -86,6 +86,25 @@ export interface RootOrgConfig {
   ordererHead: OrdererConfig;
 }
 
+export interface FabloRestLoggingConfig {
+  info?: "console" | string;
+  warn?: "console" | string;
+  error?: "console" | string;
+  debug?: "console" | string;
+}
+
+export interface FabloRestConfig {
+  address: string;
+  port: number;
+  mspId: string;
+  fabricCaUrl: string;
+  fabricCaName: string;
+  discoveryUrls: string;
+  discoverySslTargetNameOverrides: string;
+  discoveryTlsCaCertFiles: string;
+  logging: FabloRestLoggingConfig;
+}
+
 export interface OrgConfig {
   anchorPeers: PeerConfig[];
   bootstrapPeers: string;
@@ -98,6 +117,7 @@ export interface OrgConfig {
   name: string;
   peers: PeerConfig[];
   peersCount: number;
+  tools: { fabloRest: FabloRestConfig | undefined };
 }
 
 export interface ChaincodeConfig {

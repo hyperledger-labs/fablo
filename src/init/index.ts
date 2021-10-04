@@ -8,16 +8,26 @@ export default class InitGenerator extends Generator {
   }
 
   async copySampleConfig(): Promise<void> {
-    if (this.args.length && this.args[0] === "node") {
-      this.fs.copy(this.templatePath(), this.destinationPath());
+    let fabloConfigJson = parseFabloConfig(this.fs.read(this.templatePath("fablo-config.json")));
+
+    const shouldInitWithNodeChaincode = this.args.length && this.args.find((v) => v === "node");
+    if (shouldInitWithNodeChaincode) {
+      this.log("Creating sample Node.js chaincode");
+      this.fs.copy(this.templatePath("chaincodes"), this.destinationPath("chaincodes"));
     } else {
-      const content = this.fs.read(this.templatePath("fablo-config.json"));
-      const json = parseFabloConfig(content);
-      this.fs.write(
-        this.destinationPath("fablo-config.json"),
-        JSON.stringify({ ...json, chaincodes: [] }, undefined, 2),
-      );
+      fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
     }
+
+    const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
+    if (shouldAddFabloRest) {
+      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
+      fabloConfigJson = { ...fabloConfigJson, orgs };
+    } else {
+      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: {} }));
+      fabloConfigJson = { ...fabloConfigJson, orgs };
+    }
+
+    this.fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
 
     this.on("end", () => {
       this.log("===========================================================");

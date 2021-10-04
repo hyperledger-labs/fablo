@@ -16,6 +16,8 @@ import {
   Capabilities,
   ChaincodeConfig,
   ChannelConfig,
+  FabloRestConfig,
+  FabloRestLoggingConfig,
   FabricVersions,
   NetworkSettings,
   OrdererConfig,
@@ -175,20 +177,63 @@ const extendPeers = (
     });
 };
 
-const transformOrgConfig = (orgJsonFormat: OrgJson, orgIndex: number): OrgConfig => {
+interface AnchorPeerConfig extends PeerConfig {
+  isAnchorPeer: true;
+  orgDomain: string;
+}
+
+const fabloRestLoggingConfig = (network: NetworkSettings): FabloRestLoggingConfig => {
+  const console = "console";
+  if (network.monitoring.loglevel.toLowerCase() === "error") return { error: console };
+  if (network.monitoring.loglevel.toLowerCase() === "warn") return { error: console, warn: console };
+  if (network.monitoring.loglevel.toLowerCase() === "info") return { error: console, warn: console, info: console };
+  return { error: console, warn: console, info: console, debug: console };
+};
+
+const transformOrgConfig = (
+  orgJsonFormat: OrgJson,
+  caExposePort: number,
+  fabloRestPort: number,
+  peers: PeerConfig[],
+  anchorPeersAllOrgs: AnchorPeerConfig[],
+  networkSettings: NetworkSettings,
+): OrgConfig => {
   const cryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
-  const headPeerPort = 7060 + 10 * orgIndex;
-  const headPeerCouchDbPort = 5080 + 10 * orgIndex;
-  const caPort = 7031 + orgIndex;
   const { domain, name } = orgJsonFormat.organization;
+  const ca = transformCaConfig(orgJsonFormat.ca, name, domain, caExposePort);
   const mspName = orgJsonFormat.organization.mspName || defaults.organization.mspName(name);
-  const peers = extendPeers(orgJsonFormat.peer, domain, headPeerPort, headPeerCouchDbPort);
   const anchorPeers = peers.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
   const bootstrapPeersStringParam =
     bootstrapPeersList.length === 1
       ? bootstrapPeersList[0] // note no quotes in parameter
       : `"${bootstrapPeersList.join(" ")}"`;
+
+  const discoveryEndpointsConfig = networkSettings.tls
+    ? {
+        discoveryUrls: anchorPeersAllOrgs.map((p) => `grpcs://${p.address}:${p.port}`).join(","),
+        discoverySslTargetNameOverrides: "",
+        discoveryTlsCaCertFiles: anchorPeersAllOrgs
+          .map((p) => `/crypto/${p.orgDomain}/peers/${p.address}/tls/ca.crt`)
+          .join(","),
+      }
+    : {
+        discoveryUrls: anchorPeersAllOrgs.map((p) => `grpc://${p.address}:${p.port}`).join(","),
+        discoverySslTargetNameOverrides: "",
+        discoveryTlsCaCertFiles: "",
+      };
+
+  const fabloRest: FabloRestConfig | undefined = !orgJsonFormat?.tools?.fabloRest
+    ? undefined
+    : {
+        address: `fablo-rest.${domain}`,
+        port: fabloRestPort,
+        mspId: mspName,
+        fabricCaUrl: `http://${ca.address}:${ca.port}`,
+        fabricCaName: ca.address,
+        ...discoveryEndpointsConfig,
+        logging: fabloRestLoggingConfig(networkSettings),
+      };
 
   return {
     name,
@@ -199,16 +244,42 @@ const transformOrgConfig = (orgJsonFormat: OrgJson, orgIndex: number): OrgConfig
     peers,
     anchorPeers,
     bootstrapPeers: bootstrapPeersStringParam,
-    ca: transformCaConfig(orgJsonFormat.ca, name, domain, caPort),
+    ca,
     cli: {
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
     headPeer: peers[0],
+    tools: { fabloRest },
   };
 };
 
-const transformOrgConfigs = (orgsJsonConfigFormat: OrgJson[]): OrgConfig[] =>
-  orgsJsonConfigFormat.map(transformOrgConfig);
+const getPortsForOrg = (orgIndex: number) => ({
+  headPeerPort: 7060 + 10 * orgIndex,
+  headPeerCouchDbPort: 5080 + 10 * orgIndex,
+  caPort: 7031 + orgIndex,
+  fabloRestPort: 8800 + orgIndex,
+});
+
+const transformOrgConfigs = (orgsJsonConfigFormat: OrgJson[], networkSettings: NetworkSettings): OrgConfig[] => {
+  const peersByOrgDomain = orgsJsonConfigFormat.reduce((all, orgJson, orgIndex) => {
+    const domain = orgJson.organization.domain;
+    const { headPeerPort, headPeerCouchDbPort, caPort, fabloRestPort } = getPortsForOrg(orgIndex);
+    const peers = extendPeers(orgJson.peer, domain, headPeerPort, headPeerCouchDbPort);
+    return { ...all, [domain]: { peers, caPort, fabloRestPort } };
+  }, {} as Record<string, { peers: PeerConfig[]; caPort: number; fabloRestPort: number }>);
+
+  const anchorPeers = orgsJsonConfigFormat.reduce((peers, org) => {
+    const newAnchorPeers: AnchorPeerConfig[] = peersByOrgDomain[org.organization.domain].peers
+      .filter((p) => p.isAnchorPeer)
+      .map((p) => ({ ...p, isAnchorPeer: true, orgDomain: org.organization.domain }));
+    return peers.concat(newAnchorPeers);
+  }, [] as AnchorPeerConfig[]);
+
+  return orgsJsonConfigFormat.map((org) => {
+    const { peers, caPort, fabloRestPort } = peersByOrgDomain[org.organization.domain];
+    return transformOrgConfig(org, caPort, fabloRestPort, peers, anchorPeers, networkSettings);
+  });
+};
 
 const filterToAvailablePeers = (orgTransformedFormat: OrgConfig, peersTransformedFormat: string[]) => {
   const filteredPeers = orgTransformedFormat.peers.filter((p) => peersTransformedFormat.includes(p.name));

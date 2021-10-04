@@ -15,13 +15,13 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     chaincodes: chaincodesJson,
   } = json;
 
-  const capabilities = configTransformers.getNetworkCapabilities(networkSettingsJson.fabricVersion);
-  const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
-  const orgs = configTransformers.transformOrgConfigs(orgsJson);
-  const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
   const networkSettings = configTransformers.transformNetworkSettings(networkSettingsJson);
+  const capabilities = configTransformers.getNetworkCapabilities(networkSettings.fabricVersion);
+  const rootOrg = configTransformers.transformRootOrgConfig(rootOrgJson);
+  const orgs = configTransformers.transformOrgConfigs(orgsJson, networkSettings);
+  const channels = configTransformers.transformChannelConfigs(channelsJson, orgs);
   const chaincodes = configTransformers.transformChaincodesConfig(
-    networkSettingsJson.fabricVersion,
+    networkSettings.fabricVersion,
     chaincodesJson,
     channels,
     capabilities,
@@ -42,8 +42,9 @@ class ExtendConfigGenerator extends Generator {
     super(args, opts);
     this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fablo config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
     this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });

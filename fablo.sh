@@ -32,8 +32,8 @@ printHelp() {
   echo "Fablo -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fablo.sh init
-    Creates simple Fablo config in current directory.
+  fablo.sh init [node] [rest]
+    Creates simple Fablo config in current directory with optional Node.js sample chaincode and REST API.
 
   fablo.sh generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
@@ -70,10 +70,9 @@ Usage:
 }
 
 executeOnFabloDocker() {
-  local passed_command="$1"
-  local passed_param="$2"
-  local fablo_workspace="${3:-$FABLO_TEMP_DIR}"
-  local fablo_config="$4"
+  local command_with_params="$1"
+  local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
+  local fablo_config="$3"
 
   local fablo_workspace_params=(
     -v "$fablo_workspace":/network/workspace
@@ -99,7 +98,7 @@ executeOnFabloDocker() {
     "${fablo_workspace_params[@]}" \
     "${fablo_config_params[@]}" \
     -u "$(id -u):$(id -g)" \
-    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh \"$passed_command\" \"$passed_param\"" \
+    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh \"$command_with_params\"" \
     2>&1
 }
 
@@ -111,23 +110,23 @@ useVersion() {
     set +e
     curl -Lf https://github.com/softwaremill/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
   else
-    executeOnFabloDocker list-versions
+    executeOnFabloDocker "fablo:list-versions"
   fi
 }
 
 initConfig() {
-  executeOnFabloDocker init "$1"
+  executeOnFabloDocker "fablo:init $1 $2"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker validate "" "" "$fablo_config"
+  executeOnFabloDocker "fablo:validate" "" "$fablo_config"
 }
 
 extendConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker extend-config "" "" "$fablo_config"
+  executeOnFabloDocker "fablo:extend-config" "" "$fablo_config"
 }
 
 generateNetworkConfig() {
@@ -140,7 +139,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeOnFabloDocker "" "" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "fablo:setup-docker" "$fablo_target" "$fablo_config"
 }
 
 networkPrune() {
@@ -167,13 +166,13 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "version" ]; then
-  executeOnFabloDocker version "$2"
+  executeOnFabloDocker "fablo:version $2"
 
 elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
 
 elif [ "$COMMAND" = "init" ]; then
-  initConfig "$2"
+  initConfig "$2" "$3"
 
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
