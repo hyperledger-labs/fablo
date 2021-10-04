@@ -151,19 +151,19 @@ const transformRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig =
 };
 
 const extendPeers = (
-  peerJsonFormat: PeerJson,
-  domainJsonFormat: string,
+  peerJson: PeerJson,
+  domain: string,
   headPeerPort: number,
   headPeerCouchDbExposePort: number,
 ): PeerConfig[] => {
-  const peerPrefix = peerJsonFormat.prefix || defaults.peer.prefix;
-  const db = peerJsonFormat.db || defaults.peer.db;
-  const anchorPeerInstances = peerJsonFormat.anchorPeerInstances || defaults.peer.anchorPeerInstances;
+  const peerPrefix = peerJson.prefix || defaults.peer.prefix;
+  const db = peerJson.db || defaults.peer.db;
+  const anchorPeerInstances = peerJson.anchorPeerInstances || defaults.peer.anchorPeerInstances(peerJson.instances);
 
-  return Array(peerJsonFormat.instances)
+  return Array(peerJson.instances)
     .fill(undefined)
     .map((_x, i) => {
-      const address = `${peerPrefix}${i}.${domainJsonFormat}`;
+      const address = `${peerPrefix}${i}.${domain}`;
       const port = headPeerPort + i;
       return {
         name: `${peerPrefix}${i}`,
