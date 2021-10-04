@@ -11,8 +11,8 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
   {
     \\"name\\": \\"org1-collection\\",
     \\"policy\\": \\"OR('Org1MSP.member')\\",
-    \\"requiredPeerCount\\": 2,
-    \\"maxPeerCount\\": 2,
+    \\"requiredPeerCount\\": 1,
+    \\"maxPeerCount\\": 3,
     \\"blockToLive\\": 0,
     \\"memberOnlyRead\\": true
   }
@@ -24,8 +24,8 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
   {
     \\"name\\": \\"org1-collection\\",
     \\"policy\\": \\"OR('Org1MSP.member')\\",
-    \\"requiredPeerCount\\": 2,
-    \\"maxPeerCount\\": 2,
+    \\"requiredPeerCount\\": 1,
+    \\"maxPeerCount\\": 3,
     \\"blockToLive\\": 0,
     \\"memberOnlyRead\\": true
   }
