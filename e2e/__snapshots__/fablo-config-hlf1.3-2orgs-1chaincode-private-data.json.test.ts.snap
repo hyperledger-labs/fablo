@@ -11,8 +11,8 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
   {
     \\"name\\": \\"org1-collection\\",
     \\"policy\\": \\"OR('Org1MSP.member')\\",
-    \\"requiredPeerCount\\": 1,
-    \\"maxPeerCount\\": 1,
+    \\"requiredPeerCount\\": 2,
+    \\"maxPeerCount\\": 2,
     \\"blockToLive\\": 0
   },
   {
@@ -96,6 +96,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7060
+          - Host: peer1.org1.com
+            Port: 7061
     - &Org2
       Name: Org2MSP
       ID: Org2MSP
@@ -752,7 +754,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7060
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -792,7 +794,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.com:7061
       - CORE_PEER_LISTENADDRESS=peer1.org1.com:7061
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7061
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7061
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
