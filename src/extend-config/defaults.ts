@@ -18,7 +18,7 @@ export default {
   peer: {
     prefix: "peer",
     db: "LevelDb",
-    anchorPeerInstances: 1,
+    anchorPeerInstances: (peerCount: number) => peerCount,
   },
   chaincode: {
     init: '{"Args":[]}',
