@@ -20,6 +20,13 @@ export interface OrdererJson {
   instances: number;
 }
 
+export interface OrdererGroupJson {
+  groupName: string;
+  prefix: string;
+  type: "solo" | "raft";
+  instances: number;
+}
+
 export interface PeerJson {
   prefix: string;
   instances: number;
@@ -31,6 +38,7 @@ export interface RootOrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
   orderer: OrdererJson;
+  ordererGroups: OrdererGroupJson[];
 }
 
 export interface OrgJson {

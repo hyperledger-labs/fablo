@@ -1,3 +1,5 @@
+import {OrdererGroupJson} from "./FabloConfigJson";
+
 export interface FabricVersions {
   fabricVersion: string;
   fabricCaVersion: string;
@@ -35,6 +37,14 @@ export interface OrdererConfig {
   consensus: "solo" | "etcdraft";
   port: number;
   fullAddress: string;
+}
+
+export interface OrdererGroupConfig {
+  groupName: string;
+  consensus: "solo" | "etcdraft";
+  head: OrdererConfig;
+  domain: string;
+  orderers: OrdererConfig[];
 }
 
 export interface CAConfig {
@@ -84,6 +94,7 @@ export interface RootOrgConfig {
   ca: CAConfig;
   orderers: OrdererConfig[];
   ordererHead: OrdererConfig;
+  ordererGroups: OrdererGroupJson[];
 }
 
 export interface FabloRestLoggingConfig {
