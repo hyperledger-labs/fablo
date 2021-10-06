@@ -263,7 +263,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
-set -eu
+set -e
 
 FABLO_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
@@ -348,7 +348,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 
 source \\"$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
 
-set -eu
+set -e
 
 function channelQuery() {
   echo \\"-> Channel query: \\" + \\"$@\\"
