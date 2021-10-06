@@ -742,8 +742,6 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -762,8 +760,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -793,10 +789,6 @@ services:
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
@@ -835,10 +827,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -876,10 +864,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -898,8 +882,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -929,9 +911,6 @@ services:
       - \\"../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/and-policy-chaincode/\\"
       - \\"../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json\\"
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
     networks:
       - basic
 
@@ -970,10 +949,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org2.com
-
     networks:
       - basic
 "
