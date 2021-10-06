@@ -561,6 +561,40 @@ services:
     networks:
       - basic
 
+  cli.root.com:
+    container_name: cli.root.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.root.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@root.com/msp
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@root.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@root.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@root.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem
+      # Orderer TLS certs
+      - OSN_TLS_CA_ROOT_CERT=/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem #by default first Orderer's cert is used
+      - ADMIN_TLS_SIGN_CERT=/var/hyperledger/cli/crypto/users/Admin@root.com/tls/client.crt
+      - ADMIN_TLS_PRIVATE_KEY=/var/hyperledger/cli/crypto/users/Admin@root.com/tls/client.key
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/tlscacerts/:/var/hyperledger/cli/crypto-orderer:ro
+    networks:
+      - basic
+
   orderer0.root.com:
     container_name: orderer0.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}

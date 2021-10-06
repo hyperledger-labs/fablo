@@ -61,6 +61,9 @@ const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
     name,
     mspName,
     domain,
+    cli: {
+      address: `cli.${rootOrgJsonFormat.organization.domain}`,
+    },
     ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,

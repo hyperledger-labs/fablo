@@ -82,6 +82,7 @@ export interface RootOrgConfig {
   name: string;
   mspName: string;
   domain: string;
+  cli: CLIConfig;
   ca: CAConfig;
   orderers: OrdererConfig[];
   ordererHead: OrdererConfig;

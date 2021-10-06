@@ -22,6 +22,44 @@ services:
     networks:
       - basic
 
+  <%= rootOrg.cli.address %>:
+    container_name: <%= rootOrg.cli.address %>
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - CORE_PEER_ID=<%= rootOrg.cli.address %>
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=<%= rootOrg.mspName %>
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/msp
+      <%_ if(networkSettings.tls) { _%>
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem
+      # Orderer TLS certs
+      - OSN_TLS_CA_ROOT_CERT=/var/hyperledger/cli/crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem #by default first Orderer's cert is used
+      - ADMIN_TLS_SIGN_CERT=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/tls/client.crt
+      - ADMIN_TLS_PRIVATE_KEY=/var/hyperledger/cli/crypto/users/Admin@<%= rootOrg.domain %>/tls/client.key
+      <%_ } _%>
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>:/var/hyperledger/cli/crypto/
+      <%_ if(networkSettings.tls) { _%>
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/orderers/<%= rootOrg.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto-orderer:ro
+      <%_ } _%>
+    networks:
+      - basic
+
   <%_ rootOrg.orderers.forEach(function(orderer){ _%>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>

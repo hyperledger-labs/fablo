@@ -724,6 +724,29 @@ services:
     networks:
       - basic
 
+  cli.root.com:
+    container_name: cli.root.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.root.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@root.com/msp
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com:/var/hyperledger/cli/crypto/
+    networks:
+      - basic
+
   orderer0.root.com:
     container_name: orderer0.root.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
