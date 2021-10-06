@@ -259,7 +259,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-1chaincode.json should create proper 
 exports[`samples/fablo-config-hlf1.4-2orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf1.4-2orgs-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
-set -eu
+set -e
 
 FABLO_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
 
@@ -344,7 +344,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-1chaincode.json should create proper 
 
 source \\"$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
 
-set -eu
+set -e
 
 function channelQuery() {
   echo \\"-> Channel query: \\" + \\"$@\\"

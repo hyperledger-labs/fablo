@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -e
 
 FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
