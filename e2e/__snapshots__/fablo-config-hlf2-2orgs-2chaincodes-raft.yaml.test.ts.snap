@@ -830,8 +830,6 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
-    depends_on:
-      - ca.root.com
     networks:
       - basic
   orderer1.root.com:
@@ -862,8 +860,6 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer1.root.com/tls/:/var/hyperledger/orderer/tls
-    depends_on:
-      - ca.root.com
     networks:
       - basic
   orderer2.root.com:
@@ -894,8 +890,6 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer2.root.com/tls/:/var/hyperledger/orderer/tls
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -914,8 +908,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -954,17 +946,12 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
   fablo-rest.org1.com:
     container_name: fablo-rest.org1.com
     image: softwaremill/fablo-rest:\${FABLO_REST_VERSION}
-    tty: true
     environment:
       - PORT=8000
       - MSP_ID=Org1MSP
@@ -980,10 +967,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
     ports:
       - 8800:8000
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
@@ -1027,10 +1010,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -1074,10 +1053,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -1096,8 +1071,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -1136,36 +1109,6 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
-      - peer1.org2.com
-    networks:
-      - basic
-
-  fablo-rest.org2.com:
-    container_name: fablo-rest.org2.com
-    image: softwaremill/fablo-rest:\${FABLO_REST_VERSION}
-    tty: true
-    environment:
-      - PORT=8000
-      - MSP_ID=Org2MSP
-      - FABRIC_CA_URL=http://ca.org2.com:7054
-      - FABRIC_CA_NAME=ca.org2.com
-      - AS_LOCALHOST=false
-      - DISCOVERY_URLS=grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071
-      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=
-      - DISCOVERY_TLS_CA_CERT_FILES=/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt
-      - HFC_LOGGING={\\"error\\":\\"console\\",\\"warn\\":\\"console\\",\\"info\\":\\"console\\",\\"debug\\":\\"console\\"}
-    volumes:
-      # note: fablo needs access to all anchor peer certs
-      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
-    ports:
-      - 8801:8000
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
-      - peer1.org2.com
     networks:
       - basic
 
@@ -1209,10 +1152,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org2.com
-
     networks:
       - basic
 
@@ -1256,10 +1195,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
-      - ca.org2.com
-
     networks:
       - basic
 "
