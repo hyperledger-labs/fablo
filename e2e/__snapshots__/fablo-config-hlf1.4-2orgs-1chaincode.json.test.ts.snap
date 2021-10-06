@@ -77,6 +77,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7060
+          - Host: peer1.org1.com
+            Port: 7061
     - &Org2
       Name: Org2MSP
       ID: Org2MSP
@@ -99,6 +101,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org2.com
             Port: 7070
+          - Host: peer1.org2.com
+            Port: 7071
 
 ################################################################################
 #   SECTION: Application
@@ -314,6 +318,7 @@ fi
 exports[`samples/fablo-config-hlf1.4-2orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-2orgs-1chaincode.json 1`] = `
 "FABLO_VERSION=\\"0.3.0-unstable\\"
 FABLO_BUILD=<date with git hash>
+FABLO_REST_VERSION=\\"0.1.0\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -751,6 +756,8 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/root.com/orderers/orderer0.root.com/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -769,6 +776,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -795,6 +804,10 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+    depends_on:
+      - ca.org1.com
+      - peer0.org1.com
+      - peer1.org1.com
     networks:
       - basic
 
@@ -808,7 +821,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7060
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -823,7 +836,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -836,6 +848,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -848,7 +862,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.com:7061
       - CORE_PEER_LISTENADDRESS=peer1.org1.com:7061
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7061
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7061
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -863,7 +878,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -876,6 +890,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org1.com
+
     networks:
       - basic
 
@@ -894,6 +910,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
@@ -920,6 +938,10 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+    depends_on:
+      - ca.org2.com
+      - peer0.org2.com
+      - peer1.org2.com
     networks:
       - basic
 
@@ -933,7 +955,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7070
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7070
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070 peer1.org2.com:7071\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -948,7 +970,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -961,6 +982,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org2.com
+
     networks:
       - basic
 
@@ -973,7 +996,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org2.com:7071
       - CORE_PEER_LISTENADDRESS=peer1.org2.com:7071
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org2.com:7071
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.com:7070
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.com:7071
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7070 peer1.org2.com:7071\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -988,7 +1012,6 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -1001,6 +1024,8 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - orderer0.root.com
+      - ca.org2.com
+
     networks:
       - basic
 "
@@ -1329,9 +1354,9 @@ function chaincodeBuild() {
 
     # We have different commands for npm and yarn
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent -g yarn && yarn install --silent && yarn build)
     else
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent && npm run build)
     fi
   fi
 }
