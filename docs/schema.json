@@ -312,6 +312,20 @@
               }
             },
             "additionalProperties": false
+          },
+          "tools": {
+            "$id": "#/properties/orgs/items/properties/tools",
+            "type": "object",
+            "title": "Tools",
+            "required": [],
+            "properties": {
+              "fabloRest": {
+                "$id": "#/properties/orgs/items/properties/tools/properties/fabloRest",
+                "title": "Fablo REST enabled",
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
           }
         },
         "additionalProperties": false

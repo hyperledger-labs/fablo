@@ -8,12 +8,6 @@ export interface FabricVersions {
   fabricJavaenvVersion: string;
 }
 
-export interface NetworkSettings extends FabricVersions {
-  tls: boolean;
-  monitoring: { loglevel: string };
-  paths: { fabloConfig: string; chaincodesBaseDir: string };
-}
-
 interface CapabilitiesV1 {
   application: "V1_3" | "V1_4_2";
   channel: "V1_3" | "V1_4_2" | "V1_4_3";
@@ -29,6 +23,13 @@ interface CapabilitiesV2 {
 }
 
 export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
+
+export interface NetworkSettings extends FabricVersions {
+  tls: boolean;
+  monitoring: { loglevel: string };
+  paths: { fabloConfig: string; chaincodesBaseDir: string };
+  capabilities: Capabilities;
+}
 
 export interface OrdererConfig {
   name: string;
@@ -97,6 +98,25 @@ export interface RootOrgConfig {
   ordererGroups: OrdererGroupJson[];
 }
 
+export interface FabloRestLoggingConfig {
+  info?: "console" | string;
+  warn?: "console" | string;
+  error?: "console" | string;
+  debug?: "console" | string;
+}
+
+export interface FabloRestConfig {
+  address: string;
+  port: number;
+  mspId: string;
+  fabricCaUrl: string;
+  fabricCaName: string;
+  discoveryUrls: string;
+  discoverySslTargetNameOverrides: string;
+  discoveryTlsCaCertFiles: string;
+  logging: FabloRestLoggingConfig;
+}
+
 export interface OrgConfig {
   anchorPeers: PeerConfig[];
   bootstrapPeers: string;
@@ -109,6 +129,7 @@ export interface OrgConfig {
   name: string;
   peers: PeerConfig[];
   peersCount: number;
+  tools: { fabloRest: FabloRestConfig | undefined };
 }
 
 export interface ChaincodeConfig {
@@ -127,7 +148,6 @@ export interface ChaincodeConfig {
 
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  capabilities: Capabilities;
   rootOrg: RootOrgConfig;
   orgs: OrgConfig[];
   channels: ChannelConfig[];

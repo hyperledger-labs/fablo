@@ -22,7 +22,7 @@ services:
     networks:
       - basic
 
-  <% rootOrg.orderers.forEach(function(orderer){ %>
+  <%_ rootOrg.orderers.forEach(function(orderer){ _%>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
@@ -51,9 +51,11 @@ services:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
       - ../fabric-config/crypto-config/ordererOrganizations/<%= orderer.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - <%= rootOrg.ca.address %>
     networks:
       - basic
-  <% }) %>
+  <%_ }) _%>
 
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
@@ -71,6 +73,8 @@ services:
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      - <%= rootOrg.ca.address %>
     networks:
       - basic
 
@@ -116,10 +120,48 @@ services:
       - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
       <%_ } _%>
       <%_ }) _%>
+    depends_on:
+      - <%= org.ca.address %>
+      <%_ org.peers.forEach(function(peer){ _%>
+      - <%= peer.address %>
+      <%_ }) _%>
     networks:
       - basic
 
-  <% org.peers.forEach(function(peer){ %>
+  <%_ if (org.tools.fabloRest) { _%>
+  <%= org.tools.fabloRest.address %>:
+    container_name: <%= org.tools.fabloRest.address %>
+    image: softwaremill/fablo-rest:${FABLO_REST_VERSION}
+    tty: true
+    environment:
+      - PORT=8000
+      - MSP_ID=<%= org.tools.fabloRest.mspId %>
+      - FABRIC_CA_URL=<%= org.tools.fabloRest.fabricCaUrl %>
+      - FABRIC_CA_NAME=<%= org.tools.fabloRest.fabricCaName %>
+      - AS_LOCALHOST=false
+      - DISCOVERY_URLS=<%= org.tools.fabloRest.discoveryUrls %>
+    <%_ if(networkSettings.tls) { _%>
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=<%= org.tools.fabloRest.discoverySslTargetNameOverrides %>
+      - DISCOVERY_TLS_CA_CERT_FILES=<%= org.tools.fabloRest.discoveryTlsCaCertFiles %>
+    <%_ } _%>
+      - HFC_LOGGING=<%- JSON.stringify(org.tools.fabloRest.logging) %>
+    <%_ if(networkSettings.tls) { _%>
+    volumes:
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
+    <%_ } _%>
+    ports:
+      - <%= org.tools.fabloRest.port %>:8000
+    depends_on:
+      - <%= org.ca.address %>
+      <%_ org.peers.forEach(function(peer){ _%>
+      - <%= peer.address %>
+      <%_ }) _%>
+    networks:
+      - basic
+  <%_ } _%>
+
+  <%_ org.peers.forEach(function(peer){ _%>
   <%= peer.address %>:
     container_name: <%= peer.address %>
     image: hyperledger/fabric-peer:${FABRIC_VERSION}
@@ -145,20 +187,20 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-      <% if(networkSettings.tls) { %>
+      <%_ if(networkSettings.tls) { _%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-      <% } %>
-      <% if(peer.db==="CouchDb") { %>
+      <%_ } _%>
+      <%_ if(peer.db==="CouchDb") { _%>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.<%= peer.name %>.<%= org.domain %>:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=<%= peer.name %>
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=<%= peer.name %>Password
-      <% } %>
+      <%_ } _%>
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -171,9 +213,14 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     depends_on:
       - <%= rootOrg.ordererHead.address %>
+      - <%= org.ca.address %>
+      <%_ if(peer.db==="CouchDb") { _%>
+      - couchdb.<%= peer.name %>.<%= org.domain %>
+      <%_ } %>
     networks:
       - basic
-  <% if(peer.db==="CouchDb") { %>
+
+  <%_ if(peer.db==="CouchDb") { _%>
   couchdb.<%= peer.name %>.<%= org.domain %>:
     container_name: couchdb.<%= peer.name %>.<%= org.domain %>
     image: hyperledger/fabric-couchdb:0.4.18
@@ -184,6 +231,6 @@ services:
       - <%= peer.couchDbExposePort %>:5984
     networks:
       - basic
-  <% } %>
-  <% }) %>
-<% }) %>
+  <%_ } _%>
+  <%_ }) _%>
+<%_ }) _%>
