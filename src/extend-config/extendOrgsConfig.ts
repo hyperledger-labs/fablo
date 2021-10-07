@@ -1,10 +1,11 @@
 import defaults from "./defaults";
-import { CAJson, OrdererJson, OrgJson, PeerJson, RootOrgJson } from "../types/FabloConfigJson";
+import { CAJson, Orderer2Json, OrdererJson, OrgJson, PeerJson, RootOrgJson } from "../types/FabloConfigJson";
 import {
   CAConfig,
   FabloRestConfig,
   FabloRestLoggingConfig,
   NetworkSettings,
+  Orderer2Config,
   OrdererConfig,
   OrgConfig,
   PeerConfig,
@@ -30,6 +31,41 @@ const extendOrderersConfig = (ordererJson: OrdererJson, rootDomainJson: string):
         fullAddress: `${address}:${port}`,
       };
     });
+};
+
+const extendOrderers2Config = (ordererJson: Orderer2Json, rootDomainJson: string): Orderer2Config => {
+  const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
+  const prefix = ordererJson.prefix ?? defaults.orderer.prefix;
+  const domain = `${ordererJson.groupName}.${rootDomainJson}`;
+  const groupName = ordererJson.groupName;
+  const groupNameC = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+  const mspName = groupNameC + "MSP";
+
+  const orderers = Array(ordererJson.instances)
+    .fill(undefined)
+    .map((_x, i) => {
+      const name = `${prefix}${i}`;
+      const address = `${name}.${domain}`;
+      const port = 7053 + i;
+      return {
+        name,
+        domain,
+        address,
+        consensus,
+        port,
+        fullAddress: `${address}:${port}`,
+      };
+    });
+
+  return {
+    groupName,
+    groupNameC,
+    mspName,
+    consensus,
+    domain,
+    head: orderers[0],
+    orderers,
+  };
 };
 
 const transformCaConfig = (
@@ -64,6 +100,7 @@ const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
     ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7030),
     orderers: orderersExtended,
     ordererHead,
+    orderers2: rootOrgJsonFormat.orderers2.map((v) => extendOrderers2Config(v, domain)),
   };
 };
 
