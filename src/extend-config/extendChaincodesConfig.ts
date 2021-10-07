@@ -7,18 +7,21 @@ const createPrivateCollectionConfig = (
   fabricVersion: string,
   channel: ChannelConfig,
   name: string,
-  orgNames: string[],
+  collectionOrgNames: string[],
 ): PrivateCollectionConfig => {
-  // We need only orgs that can have access to private data
-  const relevantOrgs = (channel.orgs || []).filter((o) => !!orgNames.find((n) => n === o.name));
-  if (relevantOrgs.length < orgNames.length) {
-    throw new Error(`Cannot find all orgs for names ${orgNames}`);
+  // Organizations that will host the actual data
+  const collectionOrgs = (channel.orgs || []).filter((o) => !!collectionOrgNames.find((n) => n === o.name));
+  if (collectionOrgs.length < collectionOrgNames.length) {
+    throw new Error(`Cannot find all orgs for names ${collectionOrgNames}`);
   }
+  const policy = `OR(${collectionOrgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
 
-  const policy = `OR(${relevantOrgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
-  const peerCounts = relevantOrgs.map((o) => (o.anchorPeers || []).length);
-  const maxPeerCount = peerCounts.reduce((a, b) => a + b, 0);
-  const requiredPeerCount = peerCounts.reduce((a, b) => Math.min(a, b), maxPeerCount) || 1;
+  // We need to know the number of anchor peers per org in a channel to determine the following parameters:
+  //  - maxPeerCount -> all peers
+  //  - requiredPeerCount -> minimal number of anchor peers from one organization in a channel
+  const anchorPeerCountsInChannel = channel.orgs.map((o) => (o.anchorPeers || []).length);
+  const maxPeerCount = anchorPeerCountsInChannel.reduce((a, b) => a + b, 0);
+  const requiredPeerCount = anchorPeerCountsInChannel.reduce((a, b) => Math.min(a, b), maxPeerCount) || 1;
 
   const memberOnlyRead = version(fabricVersion).isGreaterOrEqual("1.4.0") ? { memberOnlyRead: true } : {};
   const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual("2.0.0") ? { memberOnlyWrite: true } : {};
