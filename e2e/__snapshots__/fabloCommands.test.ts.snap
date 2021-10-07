@@ -26,13 +26,13 @@ Validation warnings count: 0
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
+    },
+    \\"capabilities\\": {
+      \\"channel\\": \\"V2_0\\",
+      \\"orderer\\": \\"V2_0\\",
+      \\"application\\": \\"V2_0\\",
+      \\"isV2\\": true
     }
-  },
-  \\"capabilities\\": {
-    \\"channel\\": \\"V2_0\\",
-    \\"orderer\\": \\"V2_0\\",
-    \\"application\\": \\"V2_0\\",
-    \\"isV2\\": true
   },
   \\"rootOrg\\": {
     \\"name\\": \\"Orderer\\",
@@ -154,8 +154,8 @@ Validation warnings count: 0
       \\"tools\\": {
         \\"fabloRest\\": {
           \\"address\\": \\"fablo-rest.org1.com\\",
-          \\"port\\": 8800,
           \\"mspId\\": \\"Org1MSP\\",
+          \\"port\\": 8800,
           \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
           \\"fabricCaName\\": \\"ca.org1.com\\",
           \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -307,8 +307,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"port\\": 8800,
               \\"mspId\\": \\"Org1MSP\\",
+              \\"port\\": 8800,
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -450,8 +450,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"port\\": 8800,
             \\"mspId\\": \\"Org1MSP\\",
+            \\"port\\": 8800,
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -532,8 +532,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"port\\": 8800,
               \\"mspId\\": \\"Org1MSP\\",
+              \\"port\\": 8800,
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -675,8 +675,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"port\\": 8800,
             \\"mspId\\": \\"Org1MSP\\",
+            \\"port\\": 8800,
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -764,8 +764,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
-                \\"port\\": 8800,
                 \\"mspId\\": \\"Org1MSP\\",
+                \\"port\\": 8800,
                 \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -907,8 +907,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"port\\": 8800,
               \\"mspId\\": \\"Org1MSP\\",
+              \\"port\\": 8800,
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -988,8 +988,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"port\\": 8800,
             \\"mspId\\": \\"Org1MSP\\",
+            \\"port\\": 8800,
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1076,8 +1076,8 @@ Validation warnings count: 0
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
-                \\"port\\": 8800,
                 \\"mspId\\": \\"Org1MSP\\",
+                \\"port\\": 8800,
                 \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
                 \\"fabricCaName\\": \\"ca.org1.com\\",
                 \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1219,8 +1219,8 @@ Validation warnings count: 0
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
-              \\"port\\": 8800,
               \\"mspId\\": \\"Org1MSP\\",
+              \\"port\\": 8800,
               \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
               \\"fabricCaName\\": \\"ca.org1.com\\",
               \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1300,8 +1300,8 @@ Validation warnings count: 0
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
-            \\"port\\": 8800,
             \\"mspId\\": \\"Org1MSP\\",
+            \\"port\\": 8800,
             \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
             \\"fabricCaName\\": \\"ca.org1.com\\",
             \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7060,grpcs://peer1.org1.com:7061,grpcs://peer0.org2.com:7070,grpcs://peer1.org2.com:7071\\",
@@ -1349,13 +1349,13 @@ Validation warnings count: 0
     },
     \\"monitoring\\": {
       \\"loglevel\\": \\"info\\"
+    },
+    \\"capabilities\\": {
+      \\"channel\\": \\"V2_0\\",
+      \\"orderer\\": \\"V2_0\\",
+      \\"application\\": \\"V2_0\\",
+      \\"isV2\\": true
     }
-  },
-  \\"capabilities\\": {
-    \\"channel\\": \\"V2_0\\",
-    \\"orderer\\": \\"V2_0\\",
-    \\"application\\": \\"V2_0\\",
-    \\"isV2\\": true
   },
   \\"rootOrg\\": {
     \\"name\\": \\"Orderer\\",
@@ -1410,7 +1410,7 @@ Validation warnings count: 0
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.com\\",
           \\"db\\": \\"LevelDb\\",
-          \\"isAnchorPeer\\": false,
+          \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer1.org1.com:7061\\",
           \\"couchDbExposePort\\": 5081
@@ -1425,9 +1425,18 @@ Validation warnings count: 0
           \\"port\\": 7060,
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
         }
       ],
-      \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
         \\"address\\": \\"ca.org1.com\\",
@@ -1476,7 +1485,7 @@ Validation warnings count: 0
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.com\\",
               \\"db\\": \\"LevelDb\\",
-              \\"isAnchorPeer\\": false,
+              \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer1.org1.com:7061\\",
               \\"couchDbExposePort\\": 5081
@@ -1491,9 +1500,18 @@ Validation warnings count: 0
               \\"port\\": 7060,
               \\"fullAddress\\": \\"peer0.org1.com:7060\\",
               \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
             }
           ],
-          \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
             \\"address\\": \\"ca.org1.com\\",
@@ -1541,7 +1559,7 @@ Validation warnings count: 0
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.com\\",
             \\"db\\": \\"LevelDb\\",
-            \\"isAnchorPeer\\": false,
+            \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer1.org1.com:7061\\",
             \\"couchDbExposePort\\": 5081
@@ -1556,9 +1574,18 @@ Validation warnings count: 0
             \\"port\\": 7060,
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
           }
         ],
-        \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
           \\"address\\": \\"ca.org1.com\\",
