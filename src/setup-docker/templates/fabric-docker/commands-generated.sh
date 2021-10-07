@@ -6,7 +6,7 @@ function installChaincodes() {
   <% } else { -%>
     <% chaincodes.forEach(function(chaincode) { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (capabilities.isV2) { -%>
+        <% if (networkSettings.capabilities.isV2) { -%>
           local version="<%= chaincode.version %>"
           <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); -%>
         <% } else { -%>
@@ -30,7 +30,7 @@ function upgradeChaincode() {
   <% chaincodes.forEach(function(chaincode) { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (capabilities.isV2) { -%>
+        <% if (networkSettings.capabilities.isV2) { -%>
           <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); %>
         <% } else { -%>
           <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, rootOrg, networkSettings }); %>

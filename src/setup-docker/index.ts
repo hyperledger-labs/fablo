@@ -1,7 +1,6 @@
 import * as Generator from "yeoman-generator";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
-import { extendConfig } from "../extend-config";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   Capabilities,
@@ -11,6 +10,7 @@ import {
   OrgConfig,
   RootOrgConfig,
 } from "../types/FabloConfigExtended";
+import { extendConfig } from "../extend-config/";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -56,7 +56,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.capabilities);
+    this._copyUtilityScripts(config.networkSettings.capabilities);
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
