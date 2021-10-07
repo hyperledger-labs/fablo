@@ -1,5 +1,3 @@
-import {OrdererGroupJson} from "./FabloConfigJson";
-
 export interface FabricVersions {
   fabricVersion: string;
   fabricCaVersion: string;
@@ -39,12 +37,23 @@ export interface OrdererConfig {
   fullAddress: string;
 }
 
-export interface OrdererGroupConfig {
-  groupName: string;
-  consensus: "solo" | "etcdraft";
-  head: OrdererConfig;
+export interface SingleOrdererConfig {
+  name: string;
   domain: string;
-  orderers: OrdererConfig[];
+  address: string;
+  consensus: string;
+  port: number;
+  fullAddress: string;
+}
+
+export interface Orderer2Config {
+  groupName: string;
+  groupNameC: string;
+  mspName: string;
+  consensus: "solo" | "etcdraft";
+  domain: string;
+  head: SingleOrdererConfig;
+  orderers: SingleOrdererConfig[];
 }
 
 export interface CAConfig {
@@ -94,7 +103,7 @@ export interface RootOrgConfig {
   ca: CAConfig;
   orderers: OrdererConfig[];
   ordererHead: OrdererConfig;
-  ordererGroups: OrdererGroupJson[];
+  orderers2: Orderer2Config[];
 }
 
 export interface FabloRestLoggingConfig {
