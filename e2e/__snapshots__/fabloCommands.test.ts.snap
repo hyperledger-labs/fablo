@@ -1410,7 +1410,7 @@ Validation warnings count: 0
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.com\\",
           \\"db\\": \\"LevelDb\\",
-          \\"isAnchorPeer\\": false,
+          \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer1.org1.com:7061\\",
           \\"couchDbExposePort\\": 5081
@@ -1425,9 +1425,18 @@ Validation warnings count: 0
           \\"port\\": 7060,
           \\"fullAddress\\": \\"peer0.org1.com:7060\\",
           \\"couchDbExposePort\\": 5080
+        },
+        {
+          \\"name\\": \\"peer1\\",
+          \\"address\\": \\"peer1.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7061,
+          \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+          \\"couchDbExposePort\\": 5081
         }
       ],
-      \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
         \\"address\\": \\"ca.org1.com\\",
@@ -1476,7 +1485,7 @@ Validation warnings count: 0
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.com\\",
               \\"db\\": \\"LevelDb\\",
-              \\"isAnchorPeer\\": false,
+              \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer1.org1.com:7061\\",
               \\"couchDbExposePort\\": 5081
@@ -1491,9 +1500,18 @@ Validation warnings count: 0
               \\"port\\": 7060,
               \\"fullAddress\\": \\"peer0.org1.com:7060\\",
               \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7061,
+              \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+              \\"couchDbExposePort\\": 5081
             }
           ],
-          \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
             \\"address\\": \\"ca.org1.com\\",
@@ -1541,7 +1559,7 @@ Validation warnings count: 0
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.com\\",
             \\"db\\": \\"LevelDb\\",
-            \\"isAnchorPeer\\": false,
+            \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer1.org1.com:7061\\",
             \\"couchDbExposePort\\": 5081
@@ -1556,9 +1574,18 @@ Validation warnings count: 0
             \\"port\\": 7060,
             \\"fullAddress\\": \\"peer0.org1.com:7060\\",
             \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7061,
+            \\"fullAddress\\": \\"peer1.org1.com:7061\\",
+            \\"couchDbExposePort\\": 5081
           }
         ],
-        \\"bootstrapPeers\\": \\"peer0.org1.com:7060\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7060 peer1.org1.com:7061\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
           \\"address\\": \\"ca.org1.com\\",

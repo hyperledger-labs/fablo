@@ -68,16 +68,16 @@ const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
 };
 
 const extendPeers = (
-  peerJsonFormat: PeerJson,
+  peerJson: PeerJson,
   domainJsonFormat: string,
   headPeerPort: number,
   headPeerCouchDbExposePort: number,
 ): PeerConfig[] => {
-  const peerPrefix = peerJsonFormat.prefix || defaults.peer.prefix;
-  const db = peerJsonFormat.db || defaults.peer.db;
-  const anchorPeerInstances = peerJsonFormat.anchorPeerInstances || defaults.peer.anchorPeerInstances;
+  const peerPrefix = peerJson.prefix || defaults.peer.prefix;
+  const db = peerJson.db || defaults.peer.db;
+  const anchorPeerInstances = peerJson.anchorPeerInstances || defaults.peer.anchorPeerInstances(peerJson.instances);
 
-  return Array(peerJsonFormat.instances)
+  return Array(peerJson.instances)
     .fill(undefined)
     .map((_x, i) => {
       const address = `${peerPrefix}${i}.${domainJsonFormat}`;
