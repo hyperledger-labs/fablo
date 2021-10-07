@@ -55,6 +55,45 @@ services:
       - basic
   <% }) %>
 
+  <%_ rootOrg.orderers2.forEach(function(ordererGroup){ _%>
+  <%_ ordererGroup.orderers.forEach(function(orderer){ _%>
+  <%= orderer.address %>:
+    container_name: <%= orderer.address %>
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=<%= ordererGroup.mspName %>
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+      <%_ if(networkSettings.tls) { _%>
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      <%_ } _%>
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - <%= orderer.port %>:<%= orderer.port %>
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererGroup.groupName %>.<%= rootOrg.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererGroup.groupName %>.<%= rootOrg.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+    depends_on:
+      - <%= rootOrg.ca.address %>
+    networks:
+      - basic
+  <%_ }) _%>
+  <%_ }) _%>
+
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
