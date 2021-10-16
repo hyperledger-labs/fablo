@@ -3,15 +3,9 @@ import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
 import * as config from "../config";
 import parseFabloConfig from "../utils/parseFabloConfig";
-import {
-  ChaincodeJson,
-  FabloConfigJson,
-  NetworkSettingsJson,
-  OrdererJson,
-  OrgJson,
-} from "../types/FabloConfigJson";
+import { ChaincodeJson, FabloConfigJson, NetworkSettingsJson, OrdererJson, OrgJson } from "../types/FabloConfigJson";
 import * as _ from "lodash";
-import { getNetworkCapabilities } from "../extend-config/configTransformers";
+import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
@@ -63,8 +57,9 @@ class ValidateGenerator extends Generator {
 
     this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fablo config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {

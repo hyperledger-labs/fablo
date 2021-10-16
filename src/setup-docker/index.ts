@@ -1,7 +1,6 @@
 import * as Generator from "yeoman-generator";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
-import { extendConfig } from "../extend-config";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   Capabilities,
@@ -11,6 +10,7 @@ import {
   OrgConfig,
   RootOrgConfig,
 } from "../types/FabloConfigExtended";
+import { extendConfig } from "../extend-config/";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -19,8 +19,9 @@ export default class SetupDockerGenerator extends Generator {
     super(args, opts);
     this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fablo config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
     this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });
@@ -55,7 +56,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.capabilities);
+    this._copyUtilityScripts(config.networkSettings.capabilities);
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
@@ -107,6 +108,7 @@ export default class SetupDockerGenerator extends Generator {
       paths: networkSettings.paths,
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
+      fabloRestVersion: "0.1.0",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }

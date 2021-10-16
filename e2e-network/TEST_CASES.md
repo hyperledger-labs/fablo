@@ -2,7 +2,7 @@
 
 | Test case                 | 01-simple | 02-raft   | 03-private|
 | ------------------------- |:---------:|:---------:|:---------:|
-| Fabric versions           | 2.2.1     | 2.3.1     | 1.4.11    |
+| Fabric versions           | 2.3.2     | 2.3.2     | 1.4.11    |
 | TLS                       | no        | yes       | no        |
 | Channel capabilities      | v2        | v2        | v1_4_3    |
 | Consensus                 | solo      | RAFT      | solo      |
@@ -16,4 +16,5 @@
 | Private data              | no        | no        | yes       |
 | Java chaincode            | no        | yes       | no        |
 | Go chaincode              | no        | no        | no        |
-| Other Fablo commands    | init, reboot | stop, start | -    |
+| Fablo REST                | no        | yes       | no        |
+| Other Fablo commands      | init, reboot | stop, start | -    |

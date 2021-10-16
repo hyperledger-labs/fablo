@@ -9,7 +9,7 @@ FABLO_HOME="$TEST_TMP/../.."
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
-  # separate generate and up is intentional
+  # separate generate and up is intentional just to check if it works
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
@@ -36,8 +36,12 @@ waitForChaincode() {
   sh "$TEST_TMP/../wait-for-chaincode-tls.sh" "$1" "$2" "$3" "$4" "$5"
 }
 
-expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
+expectInvokeRest() {
+  sh "$TEST_TMP/../expect-invoke-rest.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
+}
+
+expectInvokeCli() {
+  sh "$TEST_TMP/../expect-invoke-cli-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
 trap networkDown EXIT
@@ -82,19 +86,21 @@ waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1"
 waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" "0.0.1"
 waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" "0.0.1"
 
+fablo_rest_org1="localhost:8800"
+
 # invoke Node chaincode
-expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
-  '{"Args":["KVContract:put", "name", "Jack Sparrow"]}' \
-  '{\"success\":\"OK\"}'
-expectInvoke "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+  "KVContract:put" '["name", "Jack Sparrow"]' \
+  '{"response":{"success":"OK"}}'
+expectInvokeCli "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Jack Sparrow\"}'
 
 # invoke Java chaincode
-expectInvoke "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" \
-  '{"Args":["PokeballContract:createPokeball", "id1", "Pokeball 1"]}' \
-  'status:200'
-expectInvoke "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
+expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
+  "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
+  '{"response":""}'
+expectInvokeCli "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 
@@ -109,6 +115,6 @@ waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1"
 waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.2"
 
 # check if state is kept after update
-expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" \
-  '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Jack Sparrow\"}'
+expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+  "KVContract:get" '["name"]' \
+  '{"response":{"success":"Jack Sparrow"}}'
