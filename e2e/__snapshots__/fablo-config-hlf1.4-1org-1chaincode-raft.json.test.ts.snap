@@ -77,6 +77,8 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7060
+          - Host: peer1.org1.com
+            Port: 7061
 
 ################################################################################
 #   SECTION: Application
@@ -262,6 +264,7 @@ fi
 exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-1org-1chaincode-raft.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
 "FABLO_VERSION=\\"0.3.0-unstable\\"
 FABLO_BUILD=<date with git hash>
+FABLO_REST_VERSION=\\"0.1.0\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -652,7 +655,7 @@ services:
       - CORE_PEER_LISTENADDRESS=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7060
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7060
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -667,13 +670,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -684,8 +685,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
     networks:
       - basic
 
@@ -698,7 +697,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.org1.com:7061
       - CORE_PEER_LISTENADDRESS=peer1.org1.com:7061
       - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7061
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.com:7060
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7061
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7060 peer1.org1.com:7061\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -713,13 +713,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
-
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -730,8 +728,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - orderer0.root.com
     networks:
       - basic
 "
@@ -1060,9 +1056,9 @@ function chaincodeBuild() {
 
     # We have different commands for npm and yarn
     if [ -f \\"$CHAINCODE_DIR_PATH/yarn.lock\\" ]; then
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install -g yarn && yarn install && yarn build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent -g yarn && yarn install --silent && yarn build)
     else
-      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+      (cd \\"$CHAINCODE_DIR_PATH\\" && npm install --silent && npm run build)
     fi
   fi
 }

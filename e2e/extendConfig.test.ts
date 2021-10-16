@@ -1,6 +1,6 @@
 import TestCommands from "./TestCommands";
-import { extendConfig } from "../src/extend-config";
 import parseFabloConfig from "../src/utils/parseFabloConfig";
+import extendConfig from "../src/extend-config/extendConfig";
 
 const commands = new TestCommands("e2e/__tmp__/extend-config-tests");
 

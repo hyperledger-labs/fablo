@@ -37,6 +37,7 @@ export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
   peer: PeerJson;
+  tools?: { fabloRest?: boolean };
 }
 
 export interface ChannelJson {
