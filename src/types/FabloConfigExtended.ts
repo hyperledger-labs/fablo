@@ -118,7 +118,7 @@ export interface OrgConfig {
   name: string;
   peers: PeerConfig[];
   peersCount: number;
-  tools: { fabloRest: FabloRestConfig | undefined };
+  tools: { fabloRest?: FabloRestConfig };
 }
 
 export interface ChaincodeConfig {
