@@ -7,8 +7,12 @@ networkSettings:
     loglevel: debug
 rootOrg:
   organization:
-    name: Orderer
+    name: Root
     domain: root.com
+ordererOrgs:
+  organization:
+    name: Orderer
+    domain: orderer.com
   orderer:
     type: raft
     instances: 3

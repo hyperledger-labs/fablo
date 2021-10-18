@@ -5,8 +5,12 @@ networkSettings:
   tls: false
 rootOrg:
   organization:
-    name: Orderer
+    name: Root
     domain: root.com
+ordererOrgs:
+  organization:
+    name: Orderer
+    domain: orderer.com
   orderer:
     prefix: orderer
     type: solo
