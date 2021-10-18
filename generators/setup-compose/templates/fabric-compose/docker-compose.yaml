@@ -109,7 +109,9 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       <%_ if(networkSettings.tls) { _%>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererOrgHead.domain %>/orderers/<%= ordererOrgHead.ordererHead.address %>/msp/tlscacerts/:/var/hyperledger/cli/crypto-orderer:ro
+      <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/orderers/<%= ordererOrg.ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererOrg.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererOrg.domain %>-cert.pem:ro
+      <%_ }) _%>
       <%_ orgs.forEach(function(org) { _%>
       <%_ org.peers.forEach(function(peer) { _%>
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls/ca.crt:/var/hyperledger/cli/crypto-peer/<%= peer.address %>/tls/ca.crt:ro
