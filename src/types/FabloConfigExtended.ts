@@ -38,24 +38,24 @@ export interface OrdererConfig {
   fullAddress: string;
 }
 
-export interface SingleOrdererConfig {
-  name: string;
-  domain: string;
-  address: string;
-  consensus: string;
-  port: number;
-  fullAddress: string;
-}
-
-export interface Orderer2Config {
-  groupName: string;
-  groupNameC: string;
-  mspName: string;
-  consensus: "solo" | "etcdraft";
-  domain: string;
-  head: SingleOrdererConfig;
-  orderers: SingleOrdererConfig[];
-}
+// export interface SingleOrdererConfig {
+//   name: string;
+//   domain: string;
+//   address: string;
+//   consensus: string;
+//   port: number;
+//   fullAddress: string;
+// }
+//
+// export interface Orderer2Config {
+//   groupName: string;
+//   groupNameC: string;
+//   mspName: string;
+//   consensus: "solo" | "etcdraft";
+//   domain: string;
+//   head: SingleOrdererConfig;
+//   orderers: SingleOrdererConfig[];
+// }
 
 export interface CAConfig {
   address: string;
@@ -102,9 +102,6 @@ export interface RootOrgConfig {
   mspName: string;
   domain: string;
   ca: CAConfig;
-  orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
-  orderers2: Orderer2Config[];
 }
 
 export interface FabloRestLoggingConfig {
@@ -155,9 +152,21 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
+export interface OrdererOrgConfig {
+  name: string;
+  mspName: string;
+  domain: string;
+  ca: CAConfig;
+  consensus: "solo" | "etcdraft";
+  orderers: OrdererConfig[];
+  ordererHead: OrdererConfig;
+}
+
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   rootOrg: RootOrgConfig;
+  ordererOrgHead: OrdererOrgConfig;
+  ordererOrgs: OrdererOrgConfig[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
