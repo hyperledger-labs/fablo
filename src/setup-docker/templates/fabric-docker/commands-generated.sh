@@ -73,7 +73,7 @@ function notifyOrgsAboutChannels() {
          "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= ordererOrgHead.ordererHead.fullAddress %>" <% -%>
-         "crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem"
+         "crypto-orderer/tlsca.<%= ordererOrgHead.domain %>-cert.pem"
      <% } -%>
     <% }) -%>
   <% }) %>
@@ -148,7 +148,7 @@ function installChannels() {
                 "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
             <% } else { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= ordererOrgHead.domain %>-cert.pem' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
             <% } %>
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
@@ -157,7 +157,7 @@ function installChannels() {
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
             <% } else { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= ordererOrgHead.domain %>-cert.pem' '<%= ordererOrgHead.ordererHead.fullAddress %>';"
             <% } -%>
           <% } -%>
         <% }) -%>
