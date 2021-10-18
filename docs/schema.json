@@ -93,8 +93,7 @@
       "description": "The configuration of the root organization for the Hyperledger Fabric network.",
       "type": "object",
       "required": [
-        "organization",
-        "orderer"
+        "organization"
       ],
       "properties": {
         "organization": {
@@ -152,9 +151,78 @@
             }
           },
           "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ordererOrgs": {
+      "$id": "#/properties/ordererOrgs",
+      "title": "Root organization",
+      "description": "The configuration of the root organization for the Hyperledger Fabric network.",
+      "type": "array",
+      "required": [
+        "organization",
+        "orderer"
+      ],
+      "items": {
+        "organization": {
+          "$id": "#/properties/ordererOrgs/items/organization",
+          "title": "Basic information",
+          "type": "object",
+          "default": {
+            "name": "Orderer",
+            "mspName": "OrdererMSP",
+            "domain": "orderer.com"
+          },
+          "required": [
+            "name",
+            "domain"
+          ],
+          "properties": {
+            "name": {
+              "$id": "#/properties/ordererOrgs/items/organization/properties/name",
+              "title": "Name",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            "mspName": {
+              "$id": "#/properties/ordererOrgs/items/organization/properties/mspName",
+              "title": "MSP Name",
+              "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            "domain": {
+              "$id": "#/properties/ordererOrgs/items/organization/properties/domain",
+              "title": "Domain",
+              "type": "string",
+              "pattern": "^[a-z0-9\\.\\-]+$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ca": {
+          "$id": "#/properties/ordererOrgs/items/ca",
+          "type": "object",
+          "title": "Root Certificate Authority (CA)",
+          "default": {
+            "prefix": "ca"
+          },
+          "required": [
+            "prefix"
+          ],
+          "properties": {
+            "prefix": {
+              "$id": "#/properties/ordererOrgs/items/ca/properties/prefix",
+              "title": "Domain prefix",
+              "type": "string",
+              "pattern": "^[a-z0-9\\.\\-]+$"
+            }
+          },
+          "additionalProperties": false
         },
         "orderer": {
-          "$id": "#/properties/rootOrg/properties/orderer",
+          "$id": "#/properties/ordererOrgs/items/orderer",
           "title": "Orderer",
           "type": "object",
           "default": {
@@ -168,13 +236,13 @@
           ],
           "properties": {
             "prefix": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/prefix",
+              "$id": "#/properties/ordererOrgs/items/orderer/properties/prefix",
               "title": "Domain prefix",
               "type": "string",
               "pattern": "^[a-z0-9\\.\\-]+$"
             },
             "type": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/type",
+              "$id": "#/properties/ordererOrgs/items/orderer/properties/type",
               "type": "string",
               "title": "Orderer type",
               "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
@@ -184,17 +252,17 @@
               ]
             },
             "instances": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/instances",
+              "$id": "#/properties/ordererOrgs/items/orderer/properties/instances",
               "title": "Number of instances",
               "type": "integer",
               "minimum": 1,
-              "maximum": 10
+              "maximum": 9
             }
           },
           "additionalProperties": false
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
     "orgs": {
       "$id": "#/properties/orgs",
@@ -292,14 +360,14 @@
                 "title": "Number of instances",
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 9
               },
               "anchorPeerInstances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
                 "title": "Number of anchor peer instances",
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 9
               },
               "db": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/db",

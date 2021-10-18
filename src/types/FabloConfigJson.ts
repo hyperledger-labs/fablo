@@ -20,12 +20,12 @@ export interface OrdererJson {
   instances: number;
 }
 
-export interface Orderer2Json {
-  groupName: string;
-  prefix: string;
-  type: "solo" | "raft";
-  instances: number;
-}
+// export interface Orderer2Json {
+//   groupName: string;
+//   prefix: string;
+//   type: "solo" | "raft";
+//   instances: number;
+// }
 
 export interface PeerJson {
   prefix: string;
@@ -37,8 +37,6 @@ export interface PeerJson {
 export interface RootOrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
-  orderer: OrdererJson;
-  orderers2: Orderer2Json[];
 }
 
 export interface OrgJson {
@@ -70,10 +68,17 @@ export interface ChaincodeJson {
   privateData: PrivateDataJson[];
 }
 
+export interface OrdererOrgJson {
+  organization: OrganizationDetailsJson;
+  ca: CAJson;
+  orderer: OrdererJson;
+}
+
 export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
   rootOrg: RootOrgJson;
+  ordererOrgs: OrdererOrgJson[];
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];

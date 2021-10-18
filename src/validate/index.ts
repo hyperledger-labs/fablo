@@ -87,8 +87,10 @@ class ValidateGenerator extends Generator {
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
-    this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
-    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
+    networkConfig.ordererOrgs.forEach((ordererOrg) => this._validateOrdererCountForSoloType(ordererOrg.orderer));
+    networkConfig.ordererOrgs.forEach((ordererOrg) =>
+      this._validateOrdererForRaftType(ordererOrg.orderer, networkConfig.networkSettings),
+    );
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
 
