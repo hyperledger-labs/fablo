@@ -6,14 +6,22 @@
   },
   "rootOrg": {
     "organization": {
-      "name": "Orderer",
+      "name": "Root",
       "domain": "root.com"
-    },
-    "orderer": {
-      "type": "solo",
-      "instances": 1
     }
   },
+  "ordererOrgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.com"
+      },
+      "orderer": {
+        "type": "solo",
+        "instances": 1
+      }
+    }
+  ],
   "orgs": [
     {
       "organization": {
