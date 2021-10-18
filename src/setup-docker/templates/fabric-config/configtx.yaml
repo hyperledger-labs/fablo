@@ -156,6 +156,7 @@ Profiles:
                 <%_ orgs.forEach(function(org){ _%>
                     - *<%= org.name %>
                 <%_ }) _%>
+
 <%_ }) _%>
 <% channels.forEach(function(channel) { %>
     # Profile used to create channeltx for <%= channel.name %> #
