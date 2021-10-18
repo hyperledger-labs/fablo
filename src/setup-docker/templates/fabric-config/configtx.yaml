@@ -140,15 +140,14 @@ Orderer: &<%= ordererOrg.mspName %>Defaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-    # Profile used to create Genesis block for Orderer #
-    OrdererGenesis:
+<%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+    # Profile used to create Genesis block for group <%= ordererOrg.name %>#
+    <%= ordererOrg.profile %>:
         <<: *ChannelDefaults
         Orderer:
-            <<: *<%= ordererOrgs[0].mspName %>Defaults
+            <<: *<%= ordererOrg.mspName %>Defaults
             Organizations:
-                <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
                 - *<%= ordererOrg.name %>Org
-                <%_ }) _%>
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
@@ -157,6 +156,7 @@ Profiles:
                 <%_ orgs.forEach(function(org){ _%>
                     - *<%= org.name %>
                 <%_ }) _%>
+<%_ }) _%>
 <% channels.forEach(function(channel) { %>
     # Profile used to create channeltx for <%= channel.name %> #
     <%= channel.profile.name %>:

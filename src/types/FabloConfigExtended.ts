@@ -156,6 +156,8 @@ export interface OrdererOrgConfig {
   name: string;
   mspName: string;
   domain: string;
+  profile: string;
+  genesisBlockName: string;
   ca: CAConfig;
   consensus: "solo" | "etcdraft";
   orderers: OrdererConfig[];

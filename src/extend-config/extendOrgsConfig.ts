@@ -66,6 +66,7 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
   const { caPort, headOrdererPort } = getPortsForOrdererOrg(ordererOrgIndex);
 
   const { domain, name } = ordererOrgJson.organization;
+  const profile = `${name}Genesis`;
   const mspName = ordererOrgJson.organization.mspName || defaults.organization.mspName(name);
   const consensus = ordererOrgJson.orderer.type === "raft" ? "etcdraft" : ordererOrgJson.orderer.type;
 
@@ -76,6 +77,8 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
     name,
     mspName,
     domain,
+    profile,
+    genesisBlockName: `${profile}.block`,
     ca: transformCaConfig(ordererOrgJson.ca, ordererOrgJson.organization.name, domain, caPort),
     consensus,
     orderers: orderersExtended,

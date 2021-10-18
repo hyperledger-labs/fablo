@@ -104,9 +104,10 @@ function generateArtifacts() {
       "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
   <% }) -%>
 
-  printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-
+  <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+  printItalics "Generating genesis block for group <%= ordererOrg.name %>" "U1F3E0"
+  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "<%= ordererOrg.profile %>"
+  <%_ }) _%>
   # Create directory for chaincode packages to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
 }
