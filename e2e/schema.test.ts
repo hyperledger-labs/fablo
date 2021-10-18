@@ -103,7 +103,7 @@ describe("schema", () => {
   it("should validate root orderer domain prefix", () => {
     const withRootOrdererDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.prefix = d;
+        json.ordererOrgs[0].orderer.prefix = d;
       });
 
     expect(withRootOrdererDomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -118,7 +118,7 @@ describe("schema", () => {
   it("should validate root orderer consensus type ", () => {
     const withRootOrdererConsensus = (c: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.type = c as "solo" | "raft";
+        json.ordererOrgs[0].orderer.type = c as "solo" | "raft";
       });
 
     expect(withRootOrdererConsensus("solo")).toMatchSchema(schema);
@@ -130,7 +130,7 @@ describe("schema", () => {
   it("should validate root orderer number of instances", () => {
     const withRootOrdererNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.instances = i;
+        json.ordererOrgs[0].orderer.instances = i;
       });
 
     expect(withRootOrdererNoOfInstances(1)).toMatchSchema(schema);
