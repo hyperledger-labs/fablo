@@ -1460,6 +1460,8 @@ Validation warnings count: 0
     \\"name\\": \\"Orderer\\",
     \\"mspName\\": \\"OrdererMSP\\",
     \\"domain\\": \\"orderer.com\\",
+    \\"profile\\": \\"OrdererGenesis\\",
+    \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
     \\"ca\\": {
       \\"prefix\\": \\"ca\\",
       \\"address\\": \\"ca.orderer.com\\",
@@ -1494,6 +1496,8 @@ Validation warnings count: 0
       \\"name\\": \\"Orderer\\",
       \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"orderer.com\\",
+      \\"profile\\": \\"OrdererGenesis\\",
+      \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
         \\"address\\": \\"ca.orderer.com\\",
@@ -1671,9 +1675,15 @@ Validation warnings count: 0
           \\"tools\\": {}
         }
       ],
-      \\"profile\\": {
-        \\"name\\": \\"MyChannel1\\"
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"orderer.com\\",
+        \\"address\\": \\"orderer0.orderer.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7021,
+        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
       },
+      \\"profileName\\": \\"MyChannel1\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
