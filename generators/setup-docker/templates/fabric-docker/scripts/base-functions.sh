@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function certsGenerate() {
   local CONTAINER_NAME=certsGenerate
@@ -43,13 +43,17 @@ function genesisBlockCreate() {
 
   local CONFIG_PATH=$1
   local OUTPUT_PATH=$2
+  local GENESIS_PROFILE_NAME=$3
+  local GENESIS_FILE_NAME=$GENESIS_PROFILE_NAME.block
 
   echo "Creating genesis block..."
   inputLog "CONFIG_PATH: $CONFIG_PATH"
   inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "GENESIS_PROFILE_NAME: $GENESIS_PROFILE_NAME"
+  inputLog "GENESIS_FILE_NAME: $GENESIS_FILE_NAME"
 
-  if [ -d "$OUTPUT_PATH" ]; then
-    echo "Cant't generate genesis block, directory already exists: $OUTPUT_PATH"
+  if [ -f "$OUTPUT_PATH/$GENESIS_FILE_NAME" ]; then
+    echo "Cant't generate genesis block, file already exists: $OUTPUT_PATH/$GENESIS_FILE_NAME"
     echo "Try using 'reboot' or 'down' to remove whole network or 'start' to reuse it"
     exit 1
   fi
@@ -58,9 +62,10 @@ function genesisBlockCreate() {
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile OrdererGenesis -outputBlock ./config/genesis.block -channelID system-channel || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "$GENESIS_PROFILE_NAME" -outputBlock "./config/$GENESIS_FILE_NAME" -channelID system-channel || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config "$OUTPUT_PATH" || removeContainer $CONTAINER_NAME
+  mkdir -p "$OUTPUT_PATH"
+  docker cp "$CONTAINER_NAME:/config/$GENESIS_FILE_NAME" "$OUTPUT_PATH/$GENESIS_FILE_NAME" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
