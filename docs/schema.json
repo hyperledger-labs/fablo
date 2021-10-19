@@ -374,6 +374,12 @@
             "title": "Name",
             "pattern": "^[a-z0-9_-]+$"
           },
+          "ordererOrg": {
+            "$id": "#/properties/channels/items/properties/ordererOrg",
+            "type": "string",
+            "title": "Name of Orderer Org handling the channel",
+            "pattern": "^[a-zA-Z0-9]+$"
+          },
           "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",
             "title": "Organizations in the channel",

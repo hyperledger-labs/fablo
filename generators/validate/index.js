@@ -1,19 +1,20 @@
 import * as Generator from "yeoman-generator";
-import { Schema, Validator as SchemaValidator } from "jsonschema";
+import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
-import schema from "../../docs/schema.json";
 import * as config from "../config";
-import parseFabricaConfig from "../utils/parseFabricaConfig";
+import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   ChaincodeJson,
-  FabricaConfigJson,
+  ChannelJson,
+  FabloConfigJson,
   NetworkSettingsJson,
   OrdererJson,
+  OrdererOrgJson,
   OrgJson,
-} from "../types/FabricaConfigJson";
+} from "../types/FabloConfigJson";
 import * as _ from "lodash";
-import { getNetworkCapabilities } from "../extend-config/configTransformers";
-import { Capabilities } from "../types/FabricaConfigExtended";
+import { getNetworkCapabilities } from "../extend-config/";
+import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 
@@ -29,6 +30,7 @@ const validationCategories = {
   ORDERER: "Orderer",
   PEER: "Peer",
   CHAINCODE: "Chaincode",
+  CHANNEL: "Channel",
   VALIDATION: "Schema validation",
 };
 
@@ -62,10 +64,11 @@ class ValidateGenerator extends Generator {
   constructor(args: string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
 
-    this.argument("fabricaConfig", {
+    this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fabrica config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
@@ -86,17 +89,20 @@ class ValidateGenerator extends Generator {
   }
 
   async validate() {
-    this._validateIfConfigFileExists(this.options.fabricaConfig);
+    this._validateIfConfigFileExists(this.options.fabloConfig);
 
-    const networkConfig = parseFabricaConfig(this.fs.read(this.options.fabricaConfigPath));
+    const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabricaVersion(networkConfig.$schema);
+    this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
-    this._validateOrdererCountForSoloType(networkConfig.rootOrg.orderer);
-    this._validateOrdererForRaftType(networkConfig.rootOrg.orderer, networkConfig.networkSettings);
+    networkConfig.ordererOrgs.forEach((ordererOrg) => this._validateOrdererCountForSoloType(ordererOrg.orderer));
+    networkConfig.ordererOrgs.forEach((ordererOrg) =>
+      this._validateOrdererForRaftType(ordererOrg.orderer, networkConfig.networkSettings),
+    );
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
+    this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.channels);
 
     const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
@@ -133,13 +139,13 @@ class ValidateGenerator extends Generator {
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     } else {
-      this.options.fabricaConfigPath = configFilePathAbsolute;
+      this.options.fabloConfigPath = configFilePathAbsolute;
     }
   }
 
-  _validateJsonSchema(configToValidate: FabricaConfigJson) {
+  _validateJsonSchema(configToValidate: FabloConfigJson) {
     const validator = new SchemaValidator();
-    const results = validator.validate(configToValidate, schema as Schema);
+    const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
       const msg = `${result.property} : ${result.message}`;
       const objectToEmit = {
@@ -170,10 +176,10 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateSupportedFabricaVersion(schemaUrl: string) {
+  _validateSupportedFabloVersion(schemaUrl: string) {
     const version = config.getVersionFromSchemaUrl(schemaUrl);
-    if (!config.isFabricaVersionSupported(version)) {
-      const msg = `Config file points to '${version}' Fabrica version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
+    if (!config.isFabloVersionSupported(version)) {
+      const msg = `Config file points to '${version}' Fablo version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: msg,
@@ -260,6 +266,22 @@ class ValidateGenerator extends Generator {
           message: `Chaincode 'initRequired' parameter is supported only in Fabric prior to 2.0 and will be ignored (${chaincode.name})`,
         };
         this.emit(validationErrorType.WARN, objectToEmit);
+      }
+    });
+  }
+
+  _validateChannelOrdererGroup(ordererOrgs: OrdererOrgJson[], channels: ChannelJson[]) {
+    const ordrererOrgNames = ordererOrgs.map((org) => org.organization.name);
+
+    channels.forEach((channel) => {
+      if (typeof channel.ordererOrg != "undefined") {
+        if (!ordrererOrgNames.includes(channel.ordererOrg)) {
+          const objectToEmit = {
+            category: validationCategories.CHANNEL,
+            message: `Channel '${channel.name}' has non valid ordererOrg defined. ordererOrg: '${channel.ordererOrg}', proper options: [${ordrererOrgNames}]`,
+          };
+          this.emit(validationErrorType.ERROR, objectToEmit);
+        }
       }
     });
   }
