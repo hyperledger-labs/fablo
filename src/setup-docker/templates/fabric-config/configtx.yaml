@@ -32,20 +32,20 @@ Channel: &ChannelDefaults
 Organizations:
 <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
     - &<%= ordererOrg.name %>Org
-        Name: <%= ordererOrg.mspName %>
-        ID: <%= ordererOrg.mspName %>
-        MSPDir: crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/msp
+      Name: <%= ordererOrg.mspName %>
+      ID: <%= ordererOrg.mspName %>
+      MSPDir: crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/msp
 
-        Policies:
-            Readers:
-                Type: Signature
-                Rule: "OR('<%= ordererOrg.mspName %>.member')"
-            Writers:
-                Type: Signature
-                Rule: "OR('<%= ordererOrg.mspName %>.member')"
-            Admins:
-                Type: Signature
-                Rule: "OR('<%= ordererOrg.mspName %>.admin')"
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('<%= ordererOrg.mspName %>.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('<%= ordererOrg.mspName %>.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('<%= ordererOrg.mspName %>.admin')"
 
 <%_ }) _%>
 

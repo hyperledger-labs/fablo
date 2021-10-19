@@ -40,20 +40,20 @@ Channel: &ChannelDefaults
 ################################################################################
 Organizations:
     - &OrdererOrg
-        Name: OrdererMSP
-        ID: OrdererMSP
-        MSPDir: crypto-config/ordererOrganizations/orderer.com/msp
+      Name: OrdererMSP
+      ID: OrdererMSP
+      MSPDir: crypto-config/ordererOrganizations/orderer.com/msp
 
-        Policies:
-            Readers:
-                Type: Signature
-                Rule: \\"OR('OrdererMSP.member')\\"
-            Writers:
-                Type: Signature
-                Rule: \\"OR('OrdererMSP.member')\\"
-            Admins:
-                Type: Signature
-                Rule: \\"OR('OrdererMSP.admin')\\"
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Writers:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+          Admins:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.admin')\\"
 
     - &Org1
       Name: Org1MSP
@@ -199,6 +199,8 @@ exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create pro
 
 exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-1org-1chaincode-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-root.yaml from samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
 "OrdererOrgs:
+  - Name: Root
+    Domain: root.com
   - Name: Orderer
     Domain: orderer.com
     Specs:
@@ -543,23 +545,23 @@ networks:
   basic:
 
 services:
- # ca.root.com:
-   # container_name: ca.root.com
-   # image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
-   # environment:
-     # - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-     # - FABRIC_CA_SERVER_CA_NAME=ca.root.com
-     # - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.root.com-cert.pem
-     # - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
-     # - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
-   # ports:
-     # - 7010:7054
-   # working_dir: /etc/hyperledger/fabric-ca-server
-   # command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
-   # volumes:
-     # - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto:ro
-   # networks:
-     # - basic
+  ca.root.com:
+    container_name: ca.root.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.root.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.root.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+    ports:
+      - 7010:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto/:ro
+    networks:
+      - basic
 
   orderer0.orderer.com:
     container_name: orderer0.orderer.com
@@ -607,8 +609,8 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    # depends_on:
-      # - ca.root.com
+    depends_on:
+      - ca.root.com
     networks:
       - basic
 
