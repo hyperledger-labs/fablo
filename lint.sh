@@ -27,6 +27,6 @@ for config in samples/fablo-config-*; do
     shellcheck "$file"
   done
 
-  yamllint "$network"
+#  yamllint "$network"
 
 done
