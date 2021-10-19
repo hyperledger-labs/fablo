@@ -10,12 +10,12 @@ rootOrg:
     name: Root
     domain: root.com
 ordererOrgs:
-  organization:
-    name: Orderer
-    domain: orderer.com
-  orderer:
-    type: raft
-    instances: 3
+  - organization:
+      name: Orderer
+      domain: orderer.com
+    orderer:
+      type: raft
+      instances: 3
 orgs:
   - organization:
       name: Org1

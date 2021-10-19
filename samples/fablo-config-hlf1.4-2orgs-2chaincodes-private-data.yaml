@@ -8,13 +8,13 @@ rootOrg:
     name: Root
     domain: root.com
 ordererOrgs:
-  organization:
-    name: Orderer
-    domain: orderer.com
-  orderer:
-    prefix: orderer
-    type: solo
-    instances: 1
+  - organization:
+      name: Orderer
+      domain: orderer.com
+    orderer:
+      prefix: orderer
+      type: solo
+      instances: 1
 orgs:
   - organization:
       name: Org1
