@@ -1,49 +1,51 @@
 import * as Generator from "yeoman-generator";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
-import { extendConfig } from "../extend-config";
-import parseFabricaConfig from "../utils/parseFabricaConfig";
+import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   Capabilities,
   ChaincodeConfig,
-  FabricaConfigExtended,
+  FabloConfigExtended,
   NetworkSettings,
+  OrdererOrgConfig,
   OrgConfig,
   RootOrgConfig,
-} from "../types/FabricaConfigExtended";
+} from "../types/FabloConfigExtended";
+import { extendConfig } from "../extend-config/";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
 export default class SetupDockerGenerator extends Generator {
   constructor(args: string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
-    this.argument("fabricaConfig", {
+    this.argument("fabloConfig", {
       type: String,
-      required: true,
-      description: "fabrica config file path",
+      optional: true,
+      description: "Fablo config file path",
+      default: "../../network/fablo-config.json",
     });
 
-    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabricaConfig] });
+    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });
   }
 
   async writing(): Promise<void> {
-    const fabricaConfigPath = `${this.env.cwd}/${this.options.fabricaConfig}`;
-    const json = parseFabricaConfig(this.fs.read(fabricaConfigPath));
+    const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
+    const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const config = extendConfig(json);
-    const { networkSettings, rootOrg, orgs, chaincodes } = config;
+    const { networkSettings, rootOrg, ordererOrgHead, ordererOrgs, orgs, chaincodes } = config;
 
     const dateString = new Date()
       .toISOString()
       .substring(0, 16)
       .replace(/[^0-9]+/g, "");
-    const composeNetworkName = `fabrica_network_${dateString}`;
+    const composeNetworkName = `fablo_network_${dateString}`;
 
-    this.log(`Used network config: ${fabricaConfigPath}`);
+    this.log(`Used network config: ${fabloConfigPath}`);
     this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
-    this._copyRootOrgCryptoConfig(rootOrg);
+    this._copyRootOrgCryptoConfig(rootOrg, ordererOrgs);
     this._copyOrgCryptoConfig(orgs);
     this._copyConfigTx(config);
     this._copyGitIgnore();
@@ -51,20 +53,20 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
-    this._copyDockerCompose(networkSettings, rootOrg, orgs, chaincodes);
+    this._copyDockerCompose(networkSettings, rootOrg, ordererOrgHead, ordererOrgs, orgs, chaincodes);
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.capabilities);
+    this._copyUtilityScripts(config.networkSettings.capabilities);
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
-      this.log("-> fabrica.sh up - to start network");
-      this.log("-> fabrica.sh help - to view all commands");
+      this.log("-> fablo.sh up - to start network");
+      this.log("-> fablo.sh help - to view all commands");
     });
   }
 
-  _copyConfigTx(config: FabricaConfigExtended): void {
+  _copyConfigTx(config: FabloConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-config/configtx.yaml"),
       this.destinationPath("fabric-config/configtx.yaml"),
@@ -76,11 +78,11 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-config/.gitignore"), this.destinationPath("fabric-config/.gitignore"));
   }
 
-  _copyRootOrgCryptoConfig(rootOrg: RootOrgConfig): void {
+  _copyRootOrgCryptoConfig(rootOrg: RootOrgConfig, ordererOrgs: OrdererOrgConfig[]): void {
     this.fs.copyTpl(
       this.templatePath("fabric-config/crypto-config-root.yaml"),
       this.destinationPath("fabric-config/crypto-config-root.yaml"),
-      { rootOrg },
+      { rootOrg, ordererOrgs },
     );
   }
 
@@ -105,8 +107,9 @@ export default class SetupDockerGenerator extends Generator {
       networkSettings,
       orgs: orgsTransformed,
       paths: networkSettings.paths,
-      fabricaVersion: config.fabricaVersion,
-      fabricaBuild: getBuildInfo(),
+      fabloVersion: config.fabloVersion,
+      fabloBuild: getBuildInfo(),
+      fabloRestVersion: "0.1.0",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
@@ -114,10 +117,12 @@ export default class SetupDockerGenerator extends Generator {
   _copyDockerCompose(
     networkSettings: NetworkSettings,
     rootOrg: RootOrgConfig,
+    ordererOrgHead: OrdererOrgConfig,
+    ordererOrgs: OrdererOrgConfig[],
     orgs: OrgConfig[],
     chaincodes: ChaincodeConfig[],
   ): void {
-    const settings = { networkSettings, rootOrg, orgs, chaincodes };
+    const settings = { networkSettings, rootOrg, ordererOrgHead, ordererOrgs, orgs, chaincodes };
     this.fs.copyTpl(
       this.templatePath("fabric-docker/docker-compose.yaml"),
       this.destinationPath("fabric-docker/docker-compose.yaml"),
@@ -125,7 +130,7 @@ export default class SetupDockerGenerator extends Generator {
     );
   }
 
-  _copyCommandsGeneratedScript(config: FabricaConfigExtended): void {
+  _copyCommandsGeneratedScript(config: FabloConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-docker/channel-query-scripts.sh"),
       this.destinationPath("fabric-docker/channel-query-scripts.sh"),
@@ -178,7 +183,7 @@ export default class SetupDockerGenerator extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1"}.sh`),
+      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
     );
   }

@@ -18,7 +18,7 @@ services:
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
     volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto/:ro
     networks:
       - basic
 
@@ -32,7 +32,7 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererOrg.genesisBlockName %>
       - ORDERER_GENERAL_LOCALMSPID=<%= ordererOrg.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
