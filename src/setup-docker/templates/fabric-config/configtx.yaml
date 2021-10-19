@@ -160,7 +160,7 @@ Profiles:
 <%_ }) _%>
 <% channels.forEach(function(channel) { %>
     # Profile used to create channeltx for <%= channel.name %> #
-    <%= channel.profile.name %>:
+    <%= channel.profileName %>:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Consortiums:

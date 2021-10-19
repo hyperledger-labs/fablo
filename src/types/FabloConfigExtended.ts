@@ -38,25 +38,6 @@ export interface OrdererConfig {
   fullAddress: string;
 }
 
-// export interface SingleOrdererConfig {
-//   name: string;
-//   domain: string;
-//   address: string;
-//   consensus: string;
-//   port: number;
-//   fullAddress: string;
-// }
-//
-// export interface Orderer2Config {
-//   groupName: string;
-//   groupNameC: string;
-//   mspName: string;
-//   consensus: "solo" | "etcdraft";
-//   domain: string;
-//   head: SingleOrdererConfig;
-//   orderers: SingleOrdererConfig[];
-// }
-
 export interface CAConfig {
   address: string;
   caAdminNameVar: string;
@@ -83,6 +64,8 @@ export interface CLIConfig {
 
 export interface ChannelConfig {
   name: string;
+  ordererHead: OrdererConfig;
+  profileName: string;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }
