@@ -6,12 +6,6 @@ export interface FabricVersions {
   fabricJavaenvVersion: string;
 }
 
-export interface NetworkSettings extends FabricVersions {
-  tls: boolean;
-  monitoring: { loglevel: string };
-  paths: { fabloConfig: string; chaincodesBaseDir: string };
-}
-
 interface CapabilitiesV1 {
   application: "V1_3" | "V1_4_2";
   channel: "V1_3" | "V1_4_2" | "V1_4_3";
@@ -28,6 +22,13 @@ interface CapabilitiesV2 {
 
 export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
 
+export interface NetworkSettings extends FabricVersions {
+  tls: boolean;
+  monitoring: { loglevel: string };
+  paths: { fabloConfig: string; chaincodesBaseDir: string };
+  capabilities: Capabilities;
+}
+
 export interface OrdererConfig {
   name: string;
   domain: string;
@@ -35,25 +36,6 @@ export interface OrdererConfig {
   consensus: "solo" | "etcdraft";
   port: number;
   fullAddress: string;
-}
-
-export interface SingleOrdererConfig {
-  name: string;
-  domain: string;
-  address: string;
-  consensus: string;
-  port: number;
-  fullAddress: string;
-}
-
-export interface Orderer2Config {
-  groupName: string;
-  groupNameC: string;
-  mspName: string;
-  consensus: "solo" | "etcdraft";
-  domain: string;
-  head: SingleOrdererConfig;
-  orderers: SingleOrdererConfig[];
 }
 
 export interface CAConfig {
@@ -82,6 +64,8 @@ export interface CLIConfig {
 
 export interface ChannelConfig {
   name: string;
+  ordererHead: OrdererConfig;
+  profileName: string;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }
@@ -101,9 +85,6 @@ export interface RootOrgConfig {
   mspName: string;
   domain: string;
   ca: CAConfig;
-  orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
-  orderers2: Orderer2Config[];
 }
 
 export interface FabloRestLoggingConfig {
@@ -137,7 +118,7 @@ export interface OrgConfig {
   name: string;
   peers: PeerConfig[];
   peersCount: number;
-  tools: { fabloRest?: FabloRestConfig };
+  tools: { fabloRest: FabloRestConfig | undefined };
 }
 
 export interface ChaincodeConfig {
@@ -154,10 +135,23 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
+export interface OrdererOrgConfig {
+  name: string;
+  mspName: string;
+  domain: string;
+  profile: string;
+  genesisBlockName: string;
+  ca: CAConfig;
+  consensus: "solo" | "etcdraft";
+  orderers: OrdererConfig[];
+  ordererHead: OrdererConfig;
+}
+
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  capabilities: Capabilities;
   rootOrg: RootOrgConfig;
+  ordererOrgHead: OrdererOrgConfig;
+  ordererOrgs: OrdererOrgConfig[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
