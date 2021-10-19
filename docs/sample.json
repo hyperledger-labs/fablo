@@ -6,19 +6,28 @@
   },
   "rootOrg": {
     "organization": {
-      "name": "Orderer",
-      "mspName": "OrdererMSP",
+      "name": "Root",
+      "mspName": "RootMSP",
       "domain": "root.com"
     },
     "ca": {
       "prefix": "ca"
-    },
-    "orderer": {
-      "prefix": "orderer",
-      "type": "solo",
-      "instances": 1
     }
   },
+  "ordererOrgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "mspName": "OrdererMSP",
+        "domain": "root.com"
+      },
+      "orderer": {
+        "prefix": "orderer",
+        "type": "solo",
+        "instances": 1
+      }
+    }
+  ],
   "orgs": [
     {
       "organization": {
