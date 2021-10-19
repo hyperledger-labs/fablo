@@ -20,13 +20,6 @@ export interface OrdererJson {
   instances: number;
 }
 
-// export interface Orderer2Json {
-//   groupName: string;
-//   prefix: string;
-//   type: "solo" | "raft";
-//   instances: number;
-// }
-
 export interface PeerJson {
   prefix: string;
   instances: number;
@@ -48,6 +41,7 @@ export interface OrgJson {
 
 export interface ChannelJson {
   name: string;
+  ordererOrg: string;
   orgs: { name: string; peers: string[] }[];
 }
 

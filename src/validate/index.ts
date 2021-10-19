@@ -3,7 +3,15 @@ import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
 import * as config from "../config";
 import parseFabloConfig from "../utils/parseFabloConfig";
-import { ChaincodeJson, FabloConfigJson, NetworkSettingsJson, OrdererJson, OrgJson } from "../types/FabloConfigJson";
+import {
+  ChaincodeJson,
+  ChannelJson,
+  FabloConfigJson,
+  NetworkSettingsJson,
+  OrdererJson,
+  OrdererOrgJson,
+  OrgJson,
+} from "../types/FabloConfigJson";
 import * as _ from "lodash";
 import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
@@ -22,6 +30,7 @@ const validationCategories = {
   ORDERER: "Orderer",
   PEER: "Peer",
   CHAINCODE: "Chaincode",
+  CHANNEL: "Channel",
   VALIDATION: "Schema validation",
 };
 
@@ -93,6 +102,7 @@ class ValidateGenerator extends Generator {
     );
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
+    this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.channels);
 
     const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
@@ -256,6 +266,22 @@ class ValidateGenerator extends Generator {
           message: `Chaincode 'initRequired' parameter is supported only in Fabric prior to 2.0 and will be ignored (${chaincode.name})`,
         };
         this.emit(validationErrorType.WARN, objectToEmit);
+      }
+    });
+  }
+
+  _validateChannelOrdererGroup(ordererOrgs: OrdererOrgJson[], channels: ChannelJson[]) {
+    const ordrererOrgNames = ordererOrgs.map((org) => org.organization.name);
+
+    channels.forEach((channel) => {
+      if (typeof channel.ordererOrg != "undefined") {
+        if (!ordrererOrgNames.includes(channel.ordererOrg)) {
+          const objectToEmit = {
+            category: validationCategories.CHANNEL,
+            message: `Channel '${channel.name}' has non valid ordererOrg defined. ordererOrg: '${channel.ordererOrg}', proper options: [${ordrererOrgNames}]`,
+          };
+          this.emit(validationErrorType.ERROR, objectToEmit);
+        }
       }
     });
   }
