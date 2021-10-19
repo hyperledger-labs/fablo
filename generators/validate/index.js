@@ -17,6 +17,7 @@ import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
+const findDuplicatedNames = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) != index);
 
 const validationErrorType = {
   CRITICAL: "validation-critical",
@@ -100,6 +101,9 @@ class ValidateGenerator extends Generator {
     networkConfig.ordererOrgs.forEach((ordererOrg) =>
       this._validateOrdererForRaftType(ordererOrg.orderer, networkConfig.networkSettings),
     );
+
+    this._validateChannelNames(networkConfig.channels);
+    this._validateChaincodeNames(networkConfig.chaincodes);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
     this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.channels);
@@ -283,6 +287,32 @@ class ValidateGenerator extends Generator {
           this.emit(validationErrorType.ERROR, objectToEmit);
         }
       }
+    });
+  }
+
+  _validateChannelNames(channels: ChannelJson[]) {
+    const channelNames = channels.map((ch) => ch.name);
+    const duplicatedChannelNames = findDuplicatedNames(channelNames);
+
+    duplicatedChannelNames.forEach((duplicatedName) => {
+      const objectToEmit = {
+        category: validationCategories.CHANNEL,
+        message: `Channel name '${duplicatedName}' is not unique.`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    });
+  }
+
+  _validateChaincodeNames(chaincodes: ChaincodeJson[]) {
+    const chaincodeNames = chaincodes.map((ch) => ch.name);
+    const duplicatedChaincodeNames = findDuplicatedNames(chaincodeNames);
+
+    duplicatedChaincodeNames.forEach((duplicatedName) => {
+      const objectToEmit = {
+        category: validationCategories.CHAINCODE,
+        message: `Chaincode name '${duplicatedName}' is not unique.`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
     });
   }
 }
