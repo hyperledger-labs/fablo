@@ -50,7 +50,7 @@ function notifyOrgsAboutChannels() {
       createNewChannelUpdateTx <% -%>
         "<%= channel.name %>" <% -%>
         "<%= org.mspName %>" <% -%>
-        "<%= channel.profile.name %>" <% -%>
+        "<%= channel.profileName %>" <% -%>
         "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
         "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
@@ -131,7 +131,7 @@ function generateChannelsArtifacts() {
   <% } else { -%>
     <% channels.forEach(function(channel){  -%>
       printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-      createChannelTx "<%= channel.name %>" "$FABLO_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABLO_NETWORK_ROOT/fabric-config/config"
+      createChannelTx "<%= channel.name %>" "$FABLO_NETWORK_ROOT/fabric-config" "<%= channel.profileName %>" "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
   <% } -%>
 }
