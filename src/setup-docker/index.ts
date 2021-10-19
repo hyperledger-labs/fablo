@@ -45,7 +45,7 @@ export default class SetupDockerGenerator extends Generator {
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
-    this._copyRootOrgCryptoConfig(ordererOrgs);
+    this._copyRootOrgCryptoConfig(rootOrg, ordererOrgs);
     this._copyOrgCryptoConfig(orgs);
     this._copyConfigTx(config);
     this._copyGitIgnore();
@@ -78,11 +78,11 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-config/.gitignore"), this.destinationPath("fabric-config/.gitignore"));
   }
 
-  _copyRootOrgCryptoConfig(ordererOrgs: OrdererOrgConfig[]): void {
+  _copyRootOrgCryptoConfig(rootOrg: RootOrgConfig, ordererOrgs: OrdererOrgConfig[]): void {
     this.fs.copyTpl(
       this.templatePath("fabric-config/crypto-config-root.yaml"),
       this.destinationPath("fabric-config/crypto-config-root.yaml"),
-      { ordererOrgs },
+      { rootOrg, ordererOrgs },
     );
   }
 

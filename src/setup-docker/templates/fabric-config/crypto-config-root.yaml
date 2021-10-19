@@ -1,4 +1,6 @@
 OrdererOrgs:
+  - Name: <%= rootOrg.name  %>
+    Domain: <%= rootOrg.domain  %>
 <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
   - Name: <%= ordererOrg.name %>
     Domain: <%= ordererOrg.domain %>
@@ -6,4 +8,5 @@ OrdererOrgs:
     <%_ ordererOrg.orderers.forEach(function(orderer) { _%>
       - Hostname: <%= orderer.name  %>
     <%_ }) _%>
+
 <%_ }) _%>
