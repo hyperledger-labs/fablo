@@ -49,106 +49,141 @@ Validation warnings count: 0
     }
   },
   \\"ordererOrgHead\\": {
-    \\"name\\": \\"Orderer\\",
-    \\"mspName\\": \\"OrdererMSP\\",
-    \\"domain\\": \\"orderer.com\\",
-    \\"profile\\": \\"OrdererGenesis\\",
-    \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
+    \\"name\\": \\"Orderer1\\",
+    \\"mspName\\": \\"Orderer1MSP\\",
+    \\"domain\\": \\"orderer1.com\\",
+    \\"profile\\": \\"Orderer1Genesis\\",
+    \\"genesisBlockName\\": \\"Orderer1Genesis.block\\",
     \\"ca\\": {
       \\"prefix\\": \\"ca\\",
-      \\"address\\": \\"ca.orderer.com\\",
+      \\"address\\": \\"ca.orderer1.com\\",
       \\"port\\": 7054,
       \\"exposePort\\": 7020,
-      \\"fullAddress\\": \\"ca.orderer.com:7054\\",
-      \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
-      \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+      \\"fullAddress\\": \\"ca.orderer1.com:7054\\",
+      \\"caAdminNameVar\\": \\"ORDERER1_CA_ADMIN_NAME\\",
+      \\"caAdminPassVar\\": \\"ORDERER1_CA_ADMIN_PASSWORD\\"
     },
     \\"consensus\\": \\"etcdraft\\",
     \\"orderers\\": [
       {
         \\"name\\": \\"orderer0\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
       },
       {
         \\"name\\": \\"orderer1\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer1.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer1.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7022,
-        \\"fullAddress\\": \\"orderer1.orderer.com:7022\\"
+        \\"fullAddress\\": \\"orderer1.orderer1.com:7022\\"
       },
       {
         \\"name\\": \\"orderer2\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer2.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer2.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7023,
-        \\"fullAddress\\": \\"orderer2.orderer.com:7023\\"
+        \\"fullAddress\\": \\"orderer2.orderer1.com:7023\\"
       }
     ],
     \\"ordererHead\\": {
       \\"name\\": \\"orderer0\\",
-      \\"domain\\": \\"orderer.com\\",
-      \\"address\\": \\"orderer0.orderer.com\\",
+      \\"domain\\": \\"orderer1.com\\",
+      \\"address\\": \\"orderer0.orderer1.com\\",
       \\"consensus\\": \\"etcdraft\\",
       \\"port\\": 7021,
-      \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+      \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
     }
   },
   \\"ordererOrgs\\": [
     {
-      \\"name\\": \\"Orderer\\",
-      \\"mspName\\": \\"OrdererMSP\\",
-      \\"domain\\": \\"orderer.com\\",
-      \\"profile\\": \\"OrdererGenesis\\",
-      \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
+      \\"name\\": \\"Orderer1\\",
+      \\"mspName\\": \\"Orderer1MSP\\",
+      \\"domain\\": \\"orderer1.com\\",
+      \\"profile\\": \\"Orderer1Genesis\\",
+      \\"genesisBlockName\\": \\"Orderer1Genesis.block\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
-        \\"address\\": \\"ca.orderer.com\\",
+        \\"address\\": \\"ca.orderer1.com\\",
         \\"port\\": 7054,
         \\"exposePort\\": 7020,
-        \\"fullAddress\\": \\"ca.orderer.com:7054\\",
-        \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+        \\"fullAddress\\": \\"ca.orderer1.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORDERER1_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORDERER1_CA_ADMIN_PASSWORD\\"
       },
       \\"consensus\\": \\"etcdraft\\",
       \\"orderers\\": [
         {
           \\"name\\": \\"orderer0\\",
-          \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer0.orderer.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
         },
         {
           \\"name\\": \\"orderer1\\",
-          \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer1.orderer.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"address\\": \\"orderer1.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7022,
-          \\"fullAddress\\": \\"orderer1.orderer.com:7022\\"
+          \\"fullAddress\\": \\"orderer1.orderer1.com:7022\\"
         },
         {
           \\"name\\": \\"orderer2\\",
-          \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer2.orderer.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"address\\": \\"orderer2.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7023,
-          \\"fullAddress\\": \\"orderer2.orderer.com:7023\\"
+          \\"fullAddress\\": \\"orderer2.orderer1.com:7023\\"
         }
       ],
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+      }
+    },
+    {
+      \\"name\\": \\"Orderer2\\",
+      \\"mspName\\": \\"Orderer2MSP\\",
+      \\"domain\\": \\"orderer2.com\\",
+      \\"profile\\": \\"Orderer2Genesis\\",
+      \\"genesisBlockName\\": \\"Orderer2Genesis.block\\",
+      \\"ca\\": {
+        \\"prefix\\": \\"ca\\",
+        \\"address\\": \\"ca.orderer2.com\\",
+        \\"port\\": 7054,
+        \\"exposePort\\": 7030,
+        \\"fullAddress\\": \\"ca.orderer2.com:7054\\",
+        \\"caAdminNameVar\\": \\"ORDERER2_CA_ADMIN_NAME\\",
+        \\"caAdminPassVar\\": \\"ORDERER2_CA_ADMIN_PASSWORD\\"
+      },
+      \\"consensus\\": \\"solo\\",
+      \\"orderers\\": [
+        {
+          \\"name\\": \\"orderer0\\",
+          \\"domain\\": \\"orderer2.com\\",
+          \\"address\\": \\"orderer0.orderer2.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7031,
+          \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
+        }
+      ],
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"orderer2.com\\",
+        \\"address\\": \\"orderer0.orderer2.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7031,
+        \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
       }
     }
   ],
@@ -491,11 +526,11 @@ Validation warnings count: 0
       ],
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
       },
       \\"profileName\\": \\"MyChannel1\\",
       \\"instantiatingOrg\\": {
@@ -739,11 +774,11 @@ Validation warnings count: 0
       ],
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0\\",
-        \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
       },
       \\"profileName\\": \\"MyChannel2\\",
       \\"instantiatingOrg\\": {
@@ -804,6 +839,281 @@ Validation warnings count: 0
           \\"port\\": 7072,
           \\"fullAddress\\": \\"peer1.org1.com:7072\\",
           \\"couchDbExposePort\\": 5081
+        },
+        \\"tools\\": {
+          \\"fabloRest\\": {
+            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"mspId\\": \\"Org1MSP\\",
+            \\"port\\": 8800,
+            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"discoverySslTargetNameOverrides\\": \\"\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"logging\\": {
+              \\"error\\": \\"console\\",
+              \\"warn\\": \\"console\\",
+              \\"info\\": \\"console\\",
+              \\"debug\\": \\"console\\"
+            }
+          }
+        }
+      }
+    },
+    {
+      \\"name\\": \\"my-channel3\\",
+      \\"orgs\\": [
+        {
+          \\"name\\": \\"Org1\\",
+          \\"mspName\\": \\"Org1MSP\\",
+          \\"domain\\": \\"org1.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7072,
+              \\"fullAddress\\": \\"peer1.org1.com:7072\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7071,
+              \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+              \\"couchDbExposePort\\": 5080
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org1.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7072,
+              \\"fullAddress\\": \\"peer1.org1.com:7072\\",
+              \\"couchDbExposePort\\": 5081
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7071 peer1.org1.com:7072\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org1.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7070,
+            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org1.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7071,
+            \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"mspId\\": \\"Org1MSP\\",
+              \\"port\\": 8800,
+              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
+            }
+          }
+        },
+        {
+          \\"name\\": \\"Org2\\",
+          \\"mspName\\": \\"Org2MSP\\",
+          \\"domain\\": \\"org2.com\\",
+          \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
+          \\"peersCount\\": 2,
+          \\"peers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7081,
+              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"couchDbExposePort\\": 5090
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7082,
+              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"anchorPeers\\": [
+            {
+              \\"name\\": \\"peer0\\",
+              \\"address\\": \\"peer0.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7081,
+              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"couchDbExposePort\\": 5090
+            },
+            {
+              \\"name\\": \\"peer1\\",
+              \\"address\\": \\"peer1.org2.com\\",
+              \\"db\\": \\"LevelDb\\",
+              \\"isAnchorPeer\\": true,
+              \\"port\\": 7082,
+              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"couchDbExposePort\\": 5091
+            }
+          ],
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+          \\"ca\\": {
+            \\"prefix\\": \\"ca\\",
+            \\"address\\": \\"ca.org2.com\\",
+            \\"port\\": 7054,
+            \\"exposePort\\": 7080,
+            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+          },
+          \\"cli\\": {
+            \\"address\\": \\"cli.org2.com\\"
+          },
+          \\"headPeer\\": {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org2.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7081,
+            \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+            \\"couchDbExposePort\\": 5090
+          },
+          \\"tools\\": {
+            \\"fabloRest\\": {
+              \\"address\\": \\"fablo-rest.org2.com\\",
+              \\"mspId\\": \\"Org2MSP\\",
+              \\"port\\": 8801,
+              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org2.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"discoverySslTargetNameOverrides\\": \\"\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"logging\\": {
+                \\"error\\": \\"console\\",
+                \\"warn\\": \\"console\\",
+                \\"info\\": \\"console\\",
+                \\"debug\\": \\"console\\"
+              }
+            }
+          }
+        }
+      ],
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0\\",
+        \\"domain\\": \\"orderer2.com\\",
+        \\"address\\": \\"orderer0.orderer2.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7031,
+        \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
+      },
+      \\"profileName\\": \\"MyChannel3\\",
+      \\"instantiatingOrg\\": {
+        \\"name\\": \\"Org1\\",
+        \\"mspName\\": \\"Org1MSP\\",
+        \\"domain\\": \\"org1.com\\",
+        \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
+        \\"peersCount\\": 2,
+        \\"peers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7071,
+            \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7072,
+            \\"fullAddress\\": \\"peer1.org1.com:7072\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"anchorPeers\\": [
+          {
+            \\"name\\": \\"peer0\\",
+            \\"address\\": \\"peer0.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7071,
+            \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+            \\"couchDbExposePort\\": 5080
+          },
+          {
+            \\"name\\": \\"peer1\\",
+            \\"address\\": \\"peer1.org1.com\\",
+            \\"db\\": \\"LevelDb\\",
+            \\"isAnchorPeer\\": true,
+            \\"port\\": 7072,
+            \\"fullAddress\\": \\"peer1.org1.com:7072\\",
+            \\"couchDbExposePort\\": 5081
+          }
+        ],
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7071 peer1.org1.com:7072\\\\\\"\\",
+        \\"ca\\": {
+          \\"prefix\\": \\"ca\\",
+          \\"address\\": \\"ca.org1.com\\",
+          \\"port\\": 7054,
+          \\"exposePort\\": 7070,
+          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        },
+        \\"cli\\": {
+          \\"address\\": \\"cli.org1.com\\"
+        },
+        \\"headPeer\\": {
+          \\"name\\": \\"peer0\\",
+          \\"address\\": \\"peer0.org1.com\\",
+          \\"db\\": \\"LevelDb\\",
+          \\"isAnchorPeer\\": true,
+          \\"port\\": 7071,
+          \\"fullAddress\\": \\"peer0.org1.com:7071\\",
+          \\"couchDbExposePort\\": 5080
         },
         \\"tools\\": {
           \\"fabloRest\\": {
@@ -994,11 +1304,11 @@ Validation warnings count: 0
         ],
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0\\",
-          \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer0.orderer.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
         },
         \\"profileName\\": \\"MyChannel1\\",
         \\"instantiatingOrg\\": {
@@ -1329,11 +1639,11 @@ Validation warnings count: 0
         ],
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0\\",
-          \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer0.orderer.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
         },
         \\"profileName\\": \\"MyChannel2\\",
         \\"instantiatingOrg\\": {

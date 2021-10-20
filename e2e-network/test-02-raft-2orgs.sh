@@ -48,12 +48,14 @@ networkUp
 
 # check if root org is ready
 waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054"
-waitForContainer "orderer0.orderer.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer0.orderer.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer1.orderer.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer1.orderer.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer2.orderer.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer2.orderer.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel2"
+
+waitForContainer "orderer0.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
