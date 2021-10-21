@@ -8,6 +8,7 @@ Fablo supports:
 * RAFT and solo consensus protocols
 * Multiple organizations and channels
 * Chaincode installation and upgrade
+* REST API client for CA and chaincodes ([Fablo REST](https://github.com/softwaremill/fablo-rest))
 
 ## See it in action
 
@@ -29,6 +30,18 @@ To get a copy of Fablo for a single project, execute in the project root:
 ```bash
 curl -Lf https://github.com/softwaremill/fablo/releases/download/0.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
+
+## Getting started
+
+To create a local Hyperledger Fabric network with Node.js chaincode and REST API client, install Fablo and execute:
+
+```bash
+./fablo init node rest
+./fablo up
+```
+
+After a few minutes the whole network will be set up and running.
+You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.com` container) or REST API client (via [Fablo REST](https://github.com/softwaremill/fablo-rest)).
 
 ## Basic usage
 

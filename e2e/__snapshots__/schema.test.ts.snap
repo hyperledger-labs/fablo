@@ -416,6 +416,20 @@ Object {
             "title": "Peer",
             "type": "object",
           },
+          "tools": Object {
+            "$id": "#/properties/orgs/items/properties/tools",
+            "additionalProperties": false,
+            "properties": Object {
+              "fabloRest": Object {
+                "$id": "#/properties/orgs/items/properties/tools/properties/fabloRest",
+                "title": "Fablo REST enabled",
+                "type": "boolean",
+              },
+            },
+            "required": Array [],
+            "title": "Tools",
+            "type": "object",
+          },
         },
         "required": Array [
           "organization",
