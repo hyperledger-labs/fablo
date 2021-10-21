@@ -135,10 +135,15 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
+export interface HooksConfig {
+  postGenerate: string;
+}
+
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   rootOrg: RootOrgConfig;
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
+  hooks: HooksConfig;
 }

@@ -1,9 +1,10 @@
 import { FabloConfigJson } from "../types/FabloConfigJson";
 import { FabloConfigExtended } from "../types/FabloConfigExtended";
-import { extendRootOrgConfig, extendOrgsConfig } from "./extendOrgsConfig";
+import { extendOrgsConfig, extendRootOrgConfig } from "./extendOrgsConfig";
 import extendNetworkSettings from "./extendNetworkSettings";
 import extendChannelsConfig from "./extendChannelsConfig";
 import extendChaincodesConfig from "./extendChaincodesConfig";
+import extendHooksConfig from "./extendHooksConfig";
 
 const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
@@ -12,6 +13,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     orgs: orgsJson,
     channels: channelsJson,
     chaincodes: chaincodesJson,
+    hooks: hooksJson,
   } = json;
 
   const networkSettings = extendNetworkSettings(networkSettingsJson);
@@ -19,6 +21,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const orgs = extendOrgsConfig(orgsJson, networkSettings);
   const channels = extendChannelsConfig(channelsJson, orgs);
   const chaincodes = extendChaincodesConfig(chaincodesJson, channels, networkSettings);
+  const hooks = extendHooksConfig(hooksJson);
 
   return {
     networkSettings,
@@ -26,6 +29,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     orgs,
     channels,
     chaincodes,
+    hooks,
   };
 };
 

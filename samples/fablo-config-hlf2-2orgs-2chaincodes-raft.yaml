@@ -58,3 +58,6 @@ chaincodes:
     channel: my-channel2
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-java-simple"
+hooks:
+  # changes MaxMessageCount to 1
+  postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fabric-config/configtx.yaml\""

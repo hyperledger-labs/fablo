@@ -51,11 +51,13 @@
             "2.2.1",
             "2.2.2",
             "2.2.3",
+            "2.2.4",
             "2.3.0",
             "2.3.1",
-            "2.3.2"
+            "2.3.2",
+            "2.3.3"
           ],
-          "default": "1.4.6"
+          "default": "2.3.2"
         },
         "tls": {
           "$id": "#/properties/networkSettings/properties/tls",
@@ -554,6 +556,21 @@
         },
         "additionalProperties": false
       }
+    },
+    "hooks": {
+      "$id": "#/properties/hooks",
+      "title": "Hooks",
+      "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
+      "type": "object",
+      "properties": {
+        "postGenerate": {
+          "$id": "#/properties/hooks/postGenerate",
+          "title": "Post generate hook",
+          "description": "Operation to run run after a network config is generated",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

@@ -234,6 +234,21 @@ Object {
       "title": "Channels",
       "type": "array",
     },
+    "hooks": Object {
+      "$id": "#/properties/hooks",
+      "additionalProperties": false,
+      "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
+      "properties": Object {
+        "postGenerate": Object {
+          "$id": "#/properties/hooks/postGenerate",
+          "description": "Operation to run run after a network config is generated",
+          "title": "Post generate hook",
+          "type": "string",
+        },
+      },
+      "title": "Hooks",
+      "type": "object",
+    },
     "networkSettings": Object {
       "$id": "#/properties/networkSettings",
       "additionalProperties": false,
@@ -241,7 +256,7 @@ Object {
       "properties": Object {
         "fabricVersion": Object {
           "$id": "#/properties/networkSettings/properties/fabricVersion",
-          "default": "1.4.6",
+          "default": "2.3.2",
           "enum": Array [
             "1.3.0",
             "1.4.0",
@@ -264,9 +279,11 @@ Object {
             "2.2.1",
             "2.2.2",
             "2.2.3",
+            "2.2.4",
             "2.3.0",
             "2.3.1",
             "2.3.2",
+            "2.3.3",
           ],
           "title": "Hyperledger Fabric version",
           "type": "string",
