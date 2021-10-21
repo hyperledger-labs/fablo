@@ -55,7 +55,7 @@ waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "or-policy-c
 waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "and-policy-chaincode" "0.0.1"
 waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "and-policy-chaincode" "0.0.1"
 
-sleep 3
+sleep 3 # extra time needed: peers need to discover themselves before private data call.
 
 # Org1: Test chaincode with transient fields and private data
 expectInvoke "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "or-policy-chaincode" \
