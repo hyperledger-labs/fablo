@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# phrase "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -80,7 +82,7 @@ function chaincodeInstall() {
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
 function chaincodeApprove() {
@@ -134,7 +136,7 @@ function chaincodeApprove() {
   QUERYINSTALLED_RESPONSE="$(
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \
       --output json \
-      "${CA_CERT_PARAMS[@]}"
+      "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<<"$QUERYINSTALLED_RESPONSE")"
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
@@ -146,7 +148,7 @@ function chaincodeApprove() {
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
       --channelID "$CHANNEL_NAME" \
       --output json \
-      "${CA_CERT_PARAMS[@]}"
+      "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
   SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
@@ -162,7 +164,7 @@ function chaincodeApprove() {
     "${ENDORSEMENT_PARAMS[@]}" \
     "${INIT_REQUIRED_PARAMS[@]}" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
 function chaincodeCommit() {
@@ -232,7 +234,7 @@ function chaincodeCommit() {
     docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
       --channelID "$CHANNEL_NAME" \
       --output json \
-      "${CA_CERT_PARAMS[@]}"
+      "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
   SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\"$CHAINCODE_NAME\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
   SEQUENCE=$((SEQUENCE + 1))
@@ -249,5 +251,5 @@ function chaincodeCommit() {
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
     "${COMMIT_PEER_PARAMS[@]}" \
     "${TLS_ROOT_CERT_PARAMS[@]}" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
