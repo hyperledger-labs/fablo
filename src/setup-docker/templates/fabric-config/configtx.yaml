@@ -3,11 +3,11 @@
 ################################################################################
 Capabilities:
     Channel: &ChannelCapabilities
-        <%=  capabilities.channel %>: true
+        <%=  networkSettings.capabilities.channel %>: true
     Orderer: &OrdererCapabilities
-        <%=  capabilities.orderer %>: true
+        <%=  networkSettings.capabilities.orderer %>: true
     Application: &ApplicationCapabilities
-        <%=  capabilities.application %>: true
+        <%=  networkSettings.capabilities.application %>: true
 
 ################################################################################
 #   CHANNEL Defaults
