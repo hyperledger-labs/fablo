@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# phrase "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -66,7 +68,7 @@ function chaincodeInstall() {
     -l "$CHAINCODE_LANG" \
     -p "/var/hyperledger/cli/$CHAINCODE_NAME/" \
     -o "$ORDERER_URL" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
 function chaincodeInstantiate() {
@@ -115,7 +117,7 @@ function chaincodeInstantiate() {
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
 function chaincodeUpgrade() {
@@ -165,5 +167,6 @@ function chaincodeUpgrade() {
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
     "${COLLECTIONS_CONFIG_PARAMS[@]}" \
-    "${CA_CERT_PARAMS[@]}"
+    "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
+
