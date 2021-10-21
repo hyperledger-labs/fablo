@@ -1155,9 +1155,9 @@ function chaincodeApprove() {
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --package-id \\"$CC_PACKAGE_ID\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
     \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
@@ -1240,11 +1240,11 @@ function chaincodeCommit() {
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${COMMIT_PEER_PARAMS[@]}\\" \\\\
-    \\"\${TLS_ROOT_CERT_PARAMS[@]}\\" \\\\
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COMMIT_PEER_PARAMS[@]+\\"\${COMMIT_PEER_PARAMS[@]}\\"}\\" \\\\
+    \\"\${TLS_ROOT_CERT_PARAMS[@]+\\"\${TLS_ROOT_CERT_PARAMS[@]}\\"}\\" \\\\
     \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 "
