@@ -2,7 +2,7 @@
 
 source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 
-set -e
+set -eu
 
 function channelQuery() {
   echo "-> Channel query: " + "$@"
