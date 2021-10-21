@@ -116,7 +116,7 @@ function chaincodeInstantiate() {
     -o "$ORDERER_URL" \
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
-    "${COLLECTIONS_CONFIG_PARAMS[@]}" \
+    "${COLLECTIONS_CONFIG_PARAMS[@]+"${COLLECTIONS_CONFIG_PARAMS[@]}"}" \
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
@@ -166,7 +166,7 @@ function chaincodeUpgrade() {
     -o "$ORDERER_URL" \
     -c "$INIT_PARAMS" \
     -P "$ENDORSEMENT" \
-    "${COLLECTIONS_CONFIG_PARAMS[@]}" \
+    "${COLLECTIONS_CONFIG_PARAMS[@]+"${COLLECTIONS_CONFIG_PARAMS[@]}"}" \
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
