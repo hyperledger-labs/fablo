@@ -1250,6 +1250,8 @@ function printHelp() {
 
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
+# phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -1317,7 +1319,7 @@ function chaincodeInstall() {
     -l \\"$CHAINCODE_LANG\\" \\\\
     -p \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
     -o \\"$ORDERER_URL\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeInstantiate() {
@@ -1365,8 +1367,8 @@ function chaincodeInstantiate() {
     -o \\"$ORDERER_URL\\" \\\\
     -c \\"$INIT_PARAMS\\" \\\\
     -P \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeUpgrade() {
@@ -1415,8 +1417,8 @@ function chaincodeUpgrade() {
     -o \\"$ORDERER_URL\\" \\\\
     -c \\"$INIT_PARAMS\\" \\\\
     -P \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 "
 `;
