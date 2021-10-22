@@ -22,8 +22,8 @@ chaincodeBuild <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
       "<%= chaincode.lang %>" <% -%>
-      "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>"
+      "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
+      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
   <% }) -%>
 <% }) -%>
 printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
@@ -33,8 +33,8 @@ chaincodeUpgrade <% -%>
   "<%= chaincode.channel.name %>" "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
+  "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
   '<%- chaincode.init %>' <% -%>
   "<%- chaincode.endorsement %>" <% -%>
-  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
+  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"

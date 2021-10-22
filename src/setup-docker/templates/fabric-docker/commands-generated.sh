@@ -50,7 +50,7 @@ function notifyOrgsAboutChannels() {
       createNewChannelUpdateTx <% -%>
         "<%= channel.name %>" <% -%>
         "<%= org.mspName %>" <% -%>
-        "<%= channel.profile.name %>" <% -%>
+        "<%= channel.profileName %>" <% -%>
         "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
         "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
@@ -65,15 +65,15 @@ function notifyOrgsAboutChannels() {
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
-         "<%= rootOrg.ordererHead.fullAddress %>"
+         "<%= channel.ordererHead.fullAddress %>"
      <% } else { -%>
        notifyOrgAboutNewChannelTls <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
-         "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
-         "crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem"
+         "<%= channel.ordererHead.fullAddress %>" <% -%>
+         "crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem"
      <% } -%>
     <% }) -%>
   <% }) %>
@@ -104,9 +104,11 @@ function generateArtifacts() {
       "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
   <% }) -%>
 
-  printItalics "Generating genesis block" "U1F3E0"
-  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
+  <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+  printItalics "Generating genesis block for group <%= ordererOrg.name %>" "U1F3E0"
+  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "<%= ordererOrg.profileName %>"
 
+  <%_ }) _%>
   # Create directory for chaincode packages to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
 }
@@ -129,7 +131,7 @@ function generateChannelsArtifacts() {
   <% } else { -%>
     <% channels.forEach(function(channel){  -%>
       printHeadline "Generating config for '<%= channel.name %>'" "U1F913"
-      createChannelTx "<%= channel.name %>" "$FABLO_NETWORK_ROOT/fabric-config" "<%= channel.profile.name %>" "$FABLO_NETWORK_ROOT/fabric-config/config"
+      createChannelTx "<%= channel.name %>" "$FABLO_NETWORK_ROOT/fabric-config" "<%= channel.profileName %>" "$FABLO_NETWORK_ROOT/fabric-config/config"
     <% }) -%>
   <% } -%>
 }
@@ -145,19 +147,19 @@ function installChannels() {
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
             <% if(!networkSettings.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
             <% } %>
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
             <% if(!networkSettings.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= rootOrg.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= rootOrg.domain %>-cert.pem' '<%= rootOrg.ordererHead.fullAddress %>';"
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
             <% } -%>
           <% } -%>
         <% }) -%>

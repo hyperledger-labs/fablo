@@ -33,7 +33,6 @@ export interface OrdererConfig {
   name: string;
   domain: string;
   address: string;
-  consensus: "solo" | "etcdraft";
   port: number;
   fullAddress: string;
 }
@@ -64,6 +63,8 @@ export interface CLIConfig {
 
 export interface ChannelConfig {
   name: string;
+  ordererHead: OrdererConfig;
+  profileName: string;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }
@@ -83,8 +84,6 @@ export interface RootOrgConfig {
   mspName: string;
   domain: string;
   ca: CAConfig;
-  orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
 }
 
 export interface FabloRestLoggingConfig {
@@ -135,9 +134,23 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
+export interface OrdererOrgConfig {
+  name: string;
+  mspName: string;
+  domain: string;
+  profileName: string;
+  genesisBlockName: string;
+  ca: CAConfig;
+  consensus: "solo" | "etcdraft";
+  orderers: OrdererConfig[];
+  ordererHead: OrdererConfig;
+}
+
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   rootOrg: RootOrgConfig;
+  ordererOrgHead: OrdererOrgConfig;
+  ordererOrgs: OrdererOrgConfig[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];

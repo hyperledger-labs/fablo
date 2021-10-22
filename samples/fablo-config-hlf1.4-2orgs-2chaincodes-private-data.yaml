@@ -5,12 +5,16 @@ networkSettings:
   tls: false
 rootOrg:
   organization:
-    name: Orderer
+    name: Root
     domain: root.com
-  orderer:
-    prefix: orderer
-    type: solo
-    instances: 1
+ordererOrgs:
+  - organization:
+      name: Orderer
+      domain: orderer.com
+    orderer:
+      prefix: orderer
+      type: solo
+      instances: 1
 orgs:
   - organization:
       name: Org1
