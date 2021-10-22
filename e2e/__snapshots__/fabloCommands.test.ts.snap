@@ -52,7 +52,7 @@ Validation warnings count: 0
     \\"name\\": \\"Orderer1\\",
     \\"mspName\\": \\"Orderer1MSP\\",
     \\"domain\\": \\"orderer1.com\\",
-    \\"profile\\": \\"Orderer1Genesis\\",
+    \\"profileName\\": \\"Orderer1Genesis\\",
     \\"genesisBlockName\\": \\"Orderer1Genesis.block\\",
     \\"ca\\": {
       \\"prefix\\": \\"ca\\",
@@ -104,7 +104,7 @@ Validation warnings count: 0
       \\"name\\": \\"Orderer1\\",
       \\"mspName\\": \\"Orderer1MSP\\",
       \\"domain\\": \\"orderer1.com\\",
-      \\"profile\\": \\"Orderer1Genesis\\",
+      \\"profileName\\": \\"Orderer1Genesis\\",
       \\"genesisBlockName\\": \\"Orderer1Genesis.block\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
@@ -155,7 +155,7 @@ Validation warnings count: 0
       \\"name\\": \\"Orderer2\\",
       \\"mspName\\": \\"Orderer2MSP\\",
       \\"domain\\": \\"orderer2.com\\",
-      \\"profile\\": \\"Orderer2Genesis\\",
+      \\"profileName\\": \\"Orderer2Genesis\\",
       \\"genesisBlockName\\": \\"Orderer2Genesis.block\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
@@ -343,24 +343,7 @@ Validation warnings count: 0
         \\"fullAddress\\": \\"peer0.org2.com:7081\\",
         \\"couchDbExposePort\\": 5090
       },
-      \\"tools\\": {
-        \\"fabloRest\\": {
-          \\"address\\": \\"fablo-rest.org2.com\\",
-          \\"mspId\\": \\"Org2MSP\\",
-          \\"port\\": 8801,
-          \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-          \\"fabricCaName\\": \\"ca.org2.com\\",
-          \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-          \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-          \\"logging\\": {
-            \\"error\\": \\"console\\",
-            \\"warn\\": \\"console\\",
-            \\"info\\": \\"console\\",
-            \\"debug\\": \\"console\\"
-          }
-        }
-      }
+      \\"tools\\": {}
     }
   ],
   \\"channels\\": [
@@ -504,24 +487,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org2.com:7081\\",
             \\"couchDbExposePort\\": 5090
           },
-          \\"tools\\": {
-            \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org2.com\\",
-              \\"mspId\\": \\"Org2MSP\\",
-              \\"port\\": 8801,
-              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org2.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-              \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-              \\"logging\\": {
-                \\"error\\": \\"console\\",
-                \\"warn\\": \\"console\\",
-                \\"info\\": \\"console\\",
-                \\"debug\\": \\"console\\"
-              }
-            }
-          }
+          \\"tools\\": {}
         }
       ],
       \\"ordererHead\\": {
@@ -752,24 +718,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer1.org2.com:7082\\",
             \\"couchDbExposePort\\": 5091
           },
-          \\"tools\\": {
-            \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org2.com\\",
-              \\"mspId\\": \\"Org2MSP\\",
-              \\"port\\": 8801,
-              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org2.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-              \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-              \\"logging\\": {
-                \\"error\\": \\"console\\",
-                \\"warn\\": \\"console\\",
-                \\"info\\": \\"console\\",
-                \\"debug\\": \\"console\\"
-              }
-            }
-          }
+          \\"tools\\": {}
         }
       ],
       \\"ordererHead\\": {
@@ -1018,24 +967,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org2.com:7081\\",
             \\"couchDbExposePort\\": 5090
           },
-          \\"tools\\": {
-            \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org2.com\\",
-              \\"mspId\\": \\"Org2MSP\\",
-              \\"port\\": 8801,
-              \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org2.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-              \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-              \\"logging\\": {
-                \\"error\\": \\"console\\",
-                \\"warn\\": \\"console\\",
-                \\"info\\": \\"console\\",
-                \\"debug\\": \\"console\\"
-              }
-            }
-          }
+          \\"tools\\": {}
         }
       ],
       \\"ordererHead\\": {
@@ -1282,24 +1214,7 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer0.org2.com:7081\\",
               \\"couchDbExposePort\\": 5090
             },
-            \\"tools\\": {
-              \\"fabloRest\\": {
-                \\"address\\": \\"fablo-rest.org2.com\\",
-                \\"mspId\\": \\"Org2MSP\\",
-                \\"port\\": 8801,
-                \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-                \\"fabricCaName\\": \\"ca.org2.com\\",
-                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-                \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-                \\"logging\\": {
-                  \\"error\\": \\"console\\",
-                  \\"warn\\": \\"console\\",
-                  \\"info\\": \\"console\\",
-                  \\"debug\\": \\"console\\"
-                }
-              }
-            }
+            \\"tools\\": {}
           }
         ],
         \\"ordererHead\\": {
@@ -1617,24 +1532,7 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer1.org2.com:7082\\",
               \\"couchDbExposePort\\": 5091
             },
-            \\"tools\\": {
-              \\"fabloRest\\": {
-                \\"address\\": \\"fablo-rest.org2.com\\",
-                \\"mspId\\": \\"Org2MSP\\",
-                \\"port\\": 8801,
-                \\"fabricCaUrl\\": \\"http://ca.org2.com:7054\\",
-                \\"fabricCaName\\": \\"ca.org2.com\\",
-                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
-                \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
-                \\"logging\\": {
-                  \\"error\\": \\"console\\",
-                  \\"warn\\": \\"console\\",
-                  \\"info\\": \\"console\\",
-                  \\"debug\\": \\"console\\"
-                }
-              }
-            }
+            \\"tools\\": {}
           }
         ],
         \\"ordererHead\\": {
@@ -1864,7 +1762,7 @@ Validation warnings count: 0
     \\"name\\": \\"Orderer\\",
     \\"mspName\\": \\"OrdererMSP\\",
     \\"domain\\": \\"orderer.com\\",
-    \\"profile\\": \\"OrdererGenesis\\",
+    \\"profileName\\": \\"OrdererGenesis\\",
     \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
     \\"ca\\": {
       \\"prefix\\": \\"ca\\",
@@ -1900,7 +1798,7 @@ Validation warnings count: 0
       \\"name\\": \\"Orderer\\",
       \\"mspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"orderer.com\\",
-      \\"profile\\": \\"OrdererGenesis\\",
+      \\"profileName\\": \\"OrdererGenesis\\",
       \\"genesisBlockName\\": \\"OrdererGenesis.block\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",

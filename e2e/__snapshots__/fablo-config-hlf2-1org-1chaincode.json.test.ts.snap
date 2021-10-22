@@ -595,8 +595,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -623,10 +621,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
@@ -665,9 +659,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -706,9 +697,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 "
@@ -1012,6 +1000,8 @@ function printHelp() {
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
+# phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -1093,7 +1083,7 @@ function chaincodeInstall() {
 
   docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode install \\\\
     \\"/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeApprove() {
@@ -1147,7 +1137,7 @@ function chaincodeApprove() {
   QUERYINSTALLED_RESPONSE=\\"$(
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode queryinstalled \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
   inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
@@ -1159,7 +1149,7 @@ function chaincodeApprove() {
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
       --channelID \\"$CHANNEL_NAME\\" \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
   SEQUENCE=$((SEQUENCE + 1))
@@ -1172,10 +1162,10 @@ function chaincodeApprove() {
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --package-id \\"$CC_PACKAGE_ID\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeCommit() {
@@ -1245,7 +1235,7 @@ function chaincodeCommit() {
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
       --channelID \\"$CHANNEL_NAME\\" \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
   SEQUENCE=$((SEQUENCE + 1))
@@ -1257,12 +1247,12 @@ function chaincodeCommit() {
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${COMMIT_PEER_PARAMS[@]}\\" \\\\
-    \\"\${TLS_ROOT_CERT_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COMMIT_PEER_PARAMS[@]+\\"\${COMMIT_PEER_PARAMS[@]}\\"}\\" \\\\
+    \\"\${TLS_ROOT_CERT_PARAMS[@]+\\"\${TLS_ROOT_CERT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 "
 `;

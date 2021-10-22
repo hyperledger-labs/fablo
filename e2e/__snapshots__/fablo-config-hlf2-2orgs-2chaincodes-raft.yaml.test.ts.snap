@@ -1210,8 +1210,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -1251,17 +1249,12 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
   fablo-rest.org1.com:
     container_name: fablo-rest.org1.com
     image: softwaremill/fablo-rest:\${FABLO_REST_VERSION}
-    tty: true
     environment:
       - PORT=8000
       - MSP_ID=Org1MSP
@@ -1277,10 +1270,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
     ports:
       - 8800:8000
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
@@ -1324,9 +1313,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -1370,9 +1356,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -1391,8 +1374,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -1432,36 +1413,6 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
-      - peer1.org2.com
-    networks:
-      - basic
-
-  fablo-rest.org2.com:
-    container_name: fablo-rest.org2.com
-    image: softwaremill/fablo-rest:\${FABLO_REST_VERSION}
-    tty: true
-    environment:
-      - PORT=8000
-      - MSP_ID=Org2MSP
-      - FABRIC_CA_URL=http://ca.org2.com:7054
-      - FABRIC_CA_NAME=ca.org2.com
-      - AS_LOCALHOST=false
-      - DISCOVERY_URLS=grpcs://peer0.org1.com:7071,grpcs://peer1.org1.com:7072,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082
-      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=
-      - DISCOVERY_TLS_CA_CERT_FILES=/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt
-      - HFC_LOGGING={\\"error\\":\\"console\\",\\"warn\\":\\"console\\",\\"info\\":\\"console\\",\\"debug\\":\\"console\\"}
-    volumes:
-      # note: fablo needs access to all anchor peer certs
-      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
-    ports:
-      - 8801:8000
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
-      - peer1.org2.com
     networks:
       - basic
 
@@ -1505,9 +1456,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org2.com
-
     networks:
       - basic
 
@@ -1551,9 +1499,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org2.com
-
     networks:
       - basic
 "
@@ -1857,6 +1802,8 @@ function printHelp() {
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "#!/usr/bin/env bash
+# phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -1938,7 +1885,7 @@ function chaincodeInstall() {
 
   docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode install \\\\
     \\"/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeApprove() {
@@ -1992,7 +1939,7 @@ function chaincodeApprove() {
   QUERYINSTALLED_RESPONSE=\\"$(
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode queryinstalled \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
   inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
@@ -2004,7 +1951,7 @@ function chaincodeApprove() {
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
       --channelID \\"$CHANNEL_NAME\\" \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
   SEQUENCE=$((SEQUENCE + 1))
@@ -2017,10 +1964,10 @@ function chaincodeApprove() {
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --package-id \\"$CC_PACKAGE_ID\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeCommit() {
@@ -2090,7 +2037,7 @@ function chaincodeCommit() {
     docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer lifecycle chaincode querycommitted \\\\
       --channelID \\"$CHANNEL_NAME\\" \\\\
       --output json \\\\
-      \\"\${CA_CERT_PARAMS[@]}\\"
+      \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
   SEQUENCE=\\"$(jq \\".chaincode_definitions | [.[]? | select(.name==\\\\\\"$CHAINCODE_NAME\\\\\\").sequence ] | max | select(.!= null)\\" -r <<<\\"$QUERYCOMMITTED_RESPONSE\\")\\"
   SEQUENCE=$((SEQUENCE + 1))
@@ -2102,12 +2049,12 @@ function chaincodeCommit() {
     -n \\"$CHAINCODE_NAME\\" \\\\
     -v \\"$CHAINCODE_VERSION\\" \\\\
     --sequence \\"$SEQUENCE\\" \\\\
-    \\"\${ENDORSEMENT_PARAMS[@]}\\" \\\\
-    \\"\${INIT_REQUIRED_PARAMS[@]}\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${COMMIT_PEER_PARAMS[@]}\\" \\\\
-    \\"\${TLS_ROOT_CERT_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${ENDORSEMENT_PARAMS[@]+\\"\${ENDORSEMENT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${INIT_REQUIRED_PARAMS[@]+\\"\${INIT_REQUIRED_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${COMMIT_PEER_PARAMS[@]+\\"\${COMMIT_PEER_PARAMS[@]}\\"}\\" \\\\
+    \\"\${TLS_ROOT_CERT_PARAMS[@]+\\"\${TLS_ROOT_CERT_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 "
 `;
