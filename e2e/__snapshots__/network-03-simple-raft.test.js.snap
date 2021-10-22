@@ -304,68 +304,68 @@ function channelQuery() {
 
   elif [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer0\\" ]; then
 
-    peerChannelListTls \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelListTls \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer1\\" ]
   then
 
-    peerChannelListTls \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelListTls \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
 
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer0\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7071\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer1\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7072\\" \\"crypto/daTls/msp/tlscacerts/tlsca.root.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   else
 
