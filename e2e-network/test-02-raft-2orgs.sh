@@ -92,17 +92,19 @@ fablo_rest_org1="localhost:8800"
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Jack Sparrow"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeCli "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" \
+expectInvokeCli "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Jack Sparrow\"}'
+  '{\"success\":\"Jack Sparrow\"}' \
+  'tlsca.orderer1.com-cert.pem'
 
 # invoke Java chaincode
 expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" \
+expectInvokeCli "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
-  '{\"value\":\"Pokeball 1\"}'
+  '{\"value\":\"Pokeball 1\"}' \
+  'tlsca.orderer1.com-cert.pem'
 
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
