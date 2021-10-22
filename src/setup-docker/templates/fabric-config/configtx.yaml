@@ -142,7 +142,7 @@ Orderer: &<%= ordererOrg.mspName %>Defaults
 Profiles:
 <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
     # Profile used to create Genesis block for group <%= ordererOrg.name %>#
-    <%= ordererOrg.profile %>:
+    <%= ordererOrg.profileName %>:
         <<: *ChannelDefaults
         Orderer:
             <<: *<%= ordererOrg.mspName %>Defaults

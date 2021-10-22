@@ -33,7 +33,6 @@ export interface OrdererConfig {
   name: string;
   domain: string;
   address: string;
-  consensus: "solo" | "etcdraft";
   port: number;
   fullAddress: string;
 }
@@ -139,7 +138,7 @@ export interface OrdererOrgConfig {
   name: string;
   mspName: string;
   domain: string;
-  profile: string;
+  profileName: string;
   genesisBlockName: string;
   ca: CAConfig;
   consensus: "solo" | "etcdraft";

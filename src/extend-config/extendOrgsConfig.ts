@@ -12,7 +12,7 @@ import {
   RootOrgConfig,
 } from "../types/FabloConfigExtended";
 
-const transformCaConfig = (
+const extendCaConfig = (
   caJsonFormat: CAJson,
   orgName: string,
   orgDomainJsonFormat: string,
@@ -66,7 +66,7 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
   const { caPort, headOrdererPort } = getPortsForOrdererOrg(ordererOrgIndex);
 
   const { domain, name } = ordererOrgJson.organization;
-  const profile = `${name}Genesis`;
+  const profileName = `${name}Genesis`;
   const mspName = ordererOrgJson.organization.mspName || defaults.organization.mspName(name);
   const consensus = ordererOrgJson.orderer.type === "raft" ? "etcdraft" : ordererOrgJson.orderer.type;
 
@@ -77,9 +77,9 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
     name,
     mspName,
     domain,
-    profile,
-    genesisBlockName: `${profile}.block`,
-    ca: transformCaConfig(ordererOrgJson.ca, ordererOrgJson.organization.name, domain, caPort),
+    profileName,
+    genesisBlockName: `${profileName}.block`,
+    ca: extendCaConfig(ordererOrgJson.ca, ordererOrgJson.organization.name, domain, caPort),
     consensus,
     orderers: orderersExtended,
     ordererHead,
@@ -99,7 +99,7 @@ const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
     name,
     mspName,
     domain,
-    ca: transformCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7010),
+    ca: extendCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7010),
   };
 };
 
@@ -186,7 +186,7 @@ const extendOrgConfig = (
 ): OrgConfig => {
   const cryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
   const { domain, name } = orgJsonFormat.organization;
-  const ca = transformCaConfig(orgJsonFormat.ca, name, domain, caExposePort);
+  const ca = extendCaConfig(orgJsonFormat.ca, name, domain, caExposePort);
   const mspName = orgJsonFormat.organization.mspName || defaults.organization.mspName(name);
   const anchorPeers = peers.filter((p) => p.isAnchorPeer);
   const bootstrapPeersList = anchorPeers.map((a) => a.fullAddress);
