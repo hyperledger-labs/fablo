@@ -195,9 +195,9 @@ const extendOrgConfig = (
       ? bootstrapPeersList[0] // note no quotes in parameter
       : `"${bootstrapPeersList.join(" ")}"`;
 
-  const fabloRest: FabloRestConfig | undefined = !orgJsonFormat?.tools?.fabloRest
-    ? undefined
-    : fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings);
+  const fabloRest = !orgJsonFormat?.tools?.fabloRest
+    ? {}
+    : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings) };
 
   return {
     name,
@@ -213,7 +213,7 @@ const extendOrgConfig = (
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
     headPeer: peers[0],
-    tools: { fabloRest },
+    tools: { ...fabloRest },
   };
 };
 

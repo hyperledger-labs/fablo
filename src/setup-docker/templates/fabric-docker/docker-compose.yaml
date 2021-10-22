@@ -76,8 +76,6 @@ services:
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - <%= rootOrg.ca.address %>
     networks:
       - basic
 
@@ -125,11 +123,6 @@ services:
       - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
       <%_ } _%>
       <%_ }) _%>
-    depends_on:
-      - <%= org.ca.address %>
-      <%_ org.peers.forEach(function(peer){ _%>
-      - <%= peer.address %>
-      <%_ }) _%>
     networks:
       - basic
 
@@ -137,7 +130,6 @@ services:
   <%= org.tools.fabloRest.address %>:
     container_name: <%= org.tools.fabloRest.address %>
     image: softwaremill/fablo-rest:${FABLO_REST_VERSION}
-    tty: true
     environment:
       - PORT=8000
       - MSP_ID=<%= org.tools.fabloRest.mspId %>
@@ -157,11 +149,6 @@ services:
     <%_ } _%>
     ports:
       - <%= org.tools.fabloRest.port %>:8000
-    depends_on:
-      - <%= org.ca.address %>
-      <%_ org.peers.forEach(function(peer){ _%>
-      - <%= peer.address %>
-      <%_ }) _%>
     networks:
       - basic
   <%_ } _%>
@@ -216,11 +203,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - <%= org.ca.address %>
-      <%_ if(peer.db==="CouchDb") { _%>
-      - couchdb.<%= peer.name %>.<%= org.domain %>
-      <%_ } %>
     networks:
       - basic
 

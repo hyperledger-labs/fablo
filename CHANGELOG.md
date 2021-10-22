@@ -2,7 +2,7 @@
 
 ### Features
 * Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 
-* By default are peers are anchor peers
+* By default all peers are anchor peers
 
 ### Fixes
 * Fixed issue with bad requiredPeerCount in private data collection
