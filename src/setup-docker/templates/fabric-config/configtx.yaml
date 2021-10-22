@@ -30,21 +30,24 @@ Channel: &ChannelDefaults
 #   Section: Organizations
 ################################################################################
 Organizations:
-    - &OrdererOrg
-      Name: <%= rootOrg.name %>
-      ID: <%= rootOrg.mspName %>
-      MSPDir: crypto-config/ordererOrganizations/<%= rootOrg.domain %>/msp
+<%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+    - &<%= ordererOrg.name %>Org
+      Name: <%= ordererOrg.mspName %>
+      ID: <%= ordererOrg.mspName %>
+      MSPDir: crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/msp
 
       Policies:
           Readers:
               Type: Signature
-              Rule: "OR('<%= rootOrg.mspName %>.member')"
+              Rule: "OR('<%= ordererOrg.mspName %>.member')"
           Writers:
               Type: Signature
-              Rule: "OR('<%= rootOrg.mspName %>.member')"
+              Rule: "OR('<%= ordererOrg.mspName %>.member')"
           Admins:
               Type: Signature
-              Rule: "OR('<%= rootOrg.mspName %>.admin')"
+              Rule: "OR('<%= ordererOrg.mspName %>.admin')"
+
+<%_ }) _%>
 
 <% orgs.forEach(function(org){ %>
     - &<%= org.name %>
@@ -97,11 +100,12 @@ Application: &ApplicationDefaults
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
-Orderer: &OrdererDefaults
-    OrdererType: <%= rootOrg.ordererHead.consensus %>
-    Addresses:<% rootOrg.orderers.forEach(function(orderer) { %>
+<%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+Orderer: &<%= ordererOrg.mspName %>Defaults
+    OrdererType: <%= ordererOrg.consensus %>
+    Addresses:<% ordererOrg.orderers.forEach(function(orderer) { %>
         - <%= orderer.fullAddress %><% })-%>
-<%- include('configtx-raft-template.yaml.ejs', {rootOrg: rootOrg}); %>
+<%- include('configtx-raft-template.yaml.ejs', {ordererOrg: ordererOrg}); %>
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
@@ -129,28 +133,34 @@ Orderer: &OrdererDefaults
     Capabilities:
         <<: *OrdererCapabilities
 
+<% }) %>
 ################################################################################
 #   Profile
 ################################################################################
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-    # Profile used to create Genesis block for Orderer #
-    OrdererGenesis:
+<%_ ordererOrgs.forEach(function(ordererOrg) { _%>
+    # Profile used to create Genesis block for group <%= ordererOrg.name %>#
+    <%= ordererOrg.profileName %>:
         <<: *ChannelDefaults
         Orderer:
-            <<: *OrdererDefaults
+            <<: *<%= ordererOrg.mspName %>Defaults
             Organizations:
-                - *OrdererOrg
+                - *<%= ordererOrg.name %>Org
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
-                Organizations:<% orgs.forEach(function(org){ %>
-                    - *<%= org.name %><% }) %>
+                Organizations:
+                <%_ orgs.forEach(function(org){ _%>
+                    - *<%= org.name %>
+                <%_ }) _%>
+
+<%_ }) _%>
 <% channels.forEach(function(channel) { %>
     # Profile used to create channeltx for <%= channel.name %> #
-    <%= channel.profile.name %>:
+    <%= channel.profileName %>:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Consortiums:
@@ -162,7 +172,7 @@ Profiles:
             Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
         Orderer:
-            <<: *OrdererDefaults
+            <<: *<%= ordererOrgs[0].mspName %>Defaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
             Capabilities:

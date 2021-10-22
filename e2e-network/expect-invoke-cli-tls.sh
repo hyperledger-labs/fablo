@@ -4,17 +4,18 @@ cli="$1"
 peer="$2"
 channel="$3"
 chaincode="$4"
-command="$5"
-expected="$6"
+orderer_cert="$5"
+command="$6"
+expected="$7"
 transient_default="{}"
-transient="${7:-$transient_default}"
+transient="${8:-$transient_default}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
+  echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [orderer_cert] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
-label="Invoke $channel/$cli/$peer $command"
+label="Invoke $channel/$cli/$peer ($orderer_cert) $command"
 echo ""
 echo "➜ testing: $label"
 
@@ -35,15 +36,15 @@ response="$(
     --waitForEvent \
     --waitForEventTimeout 90s \
     --tls \
-    --cafile "/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem" \
+    --cafile "/var/hyperledger/cli/crypto-orderer/$orderer_cert" \
     2>&1
 )"
 
 echo "$response"
 
 if echo "$response" | grep -F "$expected"; then
-  echo "✅ ok: $label"
+  echo "✅ ok (cli-tls): $label"
 else
-  echo "❌ failed: $label | expected: $expected"
+  echo "❌ failed (cli-tls): $label | expected: $expected"
   exit 1
 fi

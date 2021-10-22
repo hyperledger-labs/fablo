@@ -27,7 +27,7 @@ chaincodePackage <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>"
+      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
   <% }) -%>
   chaincodeApprove <% -%>
     "<%= org.cli.address %>" <% -%>
@@ -35,10 +35,10 @@ chaincodePackage <% -%>
     "<%= chaincode.channel.name %>" <% -%>
     "<%= chaincode.name %>" <% -%>
     "$version" <% -%>
-    "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
+    "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement || '' %>" <% -%>
     "<%= `${chaincode.initRequired}` %>" <% -%>
-    "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
+    "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
@@ -48,10 +48,10 @@ chaincodeCommit <% -%>
   "<%= chaincode.channel.name %>" <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
-  "<%= rootOrg.ordererHead.fullAddress %>" <% -%>
+  "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement || '' %>" <% -%>
   "<%= `${chaincode.initRequired}` %>" <% -%>
-  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${rootOrg.domain}-cert.pem` %>" <% -%>
+  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
   "<%= !networkSettings.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"

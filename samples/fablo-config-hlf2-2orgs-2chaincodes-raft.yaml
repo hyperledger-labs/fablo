@@ -7,11 +7,21 @@ networkSettings:
     loglevel: debug
 rootOrg:
   organization:
-    name: Orderer
+    name: Root
     domain: root.com
-  orderer:
-    type: raft
-    instances: 3
+ordererOrgs:
+  - organization:
+      name: Orderer1
+      domain: orderer1.com
+    orderer:
+      type: raft
+      instances: 3
+  - organization:
+      name: Orderer2
+      domain: orderer2.com
+    orderer:
+      type: solo
+      instances: 1
 orgs:
   - organization:
       name: Org1
@@ -42,6 +52,15 @@ channels:
       - name: Org1
         peers:
           - peer1
+      - name: Org2
+        peers:
+          - peer1
+  - name: my-channel3
+    ordererOrg: Orderer2
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
       - name: Org2
         peers:
           - peer1
