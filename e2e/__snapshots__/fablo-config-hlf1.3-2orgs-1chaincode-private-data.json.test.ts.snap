@@ -717,8 +717,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -746,10 +744,6 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
-    depends_on:
-      - ca.org1.com
-      - peer0.org1.com
-      - peer1.org1.com
     networks:
       - basic
 
@@ -788,9 +782,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -829,9 +820,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org1.com
-
     networks:
       - basic
 
@@ -850,8 +838,6 @@ services:
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
-    depends_on:
-      - ca.root.com
     networks:
       - basic
 
@@ -879,9 +865,6 @@ services:
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
       - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
-    depends_on:
-      - ca.org2.com
-      - peer0.org2.com
     networks:
       - basic
 
@@ -920,9 +903,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    depends_on:
-      - ca.org2.com
-
     networks:
       - basic
 "
@@ -1226,6 +1206,8 @@ function printHelp() {
 
 exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "#!/usr/bin/env bash
+# phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 function chaincodeBuild() {
   local CHAINCODE_NAME=$1
@@ -1293,7 +1275,7 @@ function chaincodeInstall() {
     -l \\"$CHAINCODE_LANG\\" \\\\
     -p \\"/var/hyperledger/cli/$CHAINCODE_NAME/\\" \\\\
     -o \\"$ORDERER_URL\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeInstantiate() {
@@ -1341,8 +1323,8 @@ function chaincodeInstantiate() {
     -o \\"$ORDERER_URL\\" \\\\
     -c \\"$INIT_PARAMS\\" \\\\
     -P \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
 function chaincodeUpgrade() {
@@ -1391,8 +1373,8 @@ function chaincodeUpgrade() {
     -o \\"$ORDERER_URL\\" \\\\
     -c \\"$INIT_PARAMS\\" \\\\
     -P \\"$ENDORSEMENT\\" \\\\
-    \\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\" \\\\
-    \\"\${CA_CERT_PARAMS[@]}\\"
+    \\"\${COLLECTIONS_CONFIG_PARAMS[@]+\\"\${COLLECTIONS_CONFIG_PARAMS[@]}\\"}\\" \\\\
+    \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 "
 `;
