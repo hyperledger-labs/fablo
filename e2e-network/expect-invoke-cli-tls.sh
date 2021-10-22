@@ -8,6 +8,7 @@ command="$5"
 expected="$6"
 transient_default="{}"
 transient="${7:-$transient_default}"
+orderer_cert="$8"
 
 if [ -z "$expected" ]; then
   echo "Usage: ./expect-invoke-tls.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
@@ -35,7 +36,7 @@ response="$(
     --waitForEvent \
     --waitForEventTimeout 90s \
     --tls \
-    --cafile "/var/hyperledger/cli/crypto-orderer/tlsca.root.com-cert.pem" \
+    --cafile "/var/hyperledger/cli/crypto-orderer/$orderer_cert" \
     2>&1
 )"
 
