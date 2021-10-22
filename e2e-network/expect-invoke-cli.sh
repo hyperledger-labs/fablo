@@ -36,8 +36,8 @@ response="$(
 echo "$response"
 
 if echo "$response" | grep -F "$expected"; then
-  echo "✅ ok: $label"
+  echo "✅ ok (cli): $label"
 else
-  echo "❌ failed: $label | expected: $expected"
+  echo "❌ failed (cli): $label | expected: $expected"
   exit 1
 fi
