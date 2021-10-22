@@ -48,8 +48,8 @@ response=$(
 echo "$response"
 
 if echo "$response" | grep -F "$expected"; then
-  echo "✅ ok: $label"
+  echo "✅ ok (rest): $label"
 else
-  echo "❌ failed: $label | expected: $expected"
+  echo "❌ failed (rest): $label | expected: $expected"
   exit 1
 fi
