@@ -27,10 +27,10 @@ export interface PeerJson {
   anchorPeerInstances?: number;
 }
 
-export interface RootOrgJson {
-  organization: OrganizationDetailsJson;
-  ca: CAJson;
-}
+// export interface RootOrgJson {
+//   organization: OrganizationDetailsJson;
+//   ca: CAJson;
+// }
 
 export interface OrgJson {
   organization: OrganizationDetailsJson;
@@ -71,7 +71,6 @@ export interface OrdererOrgJson {
 export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
-  rootOrg: RootOrgJson;
   ordererOrgs: OrdererOrgJson[];
   orgs: OrgJson[];
   channels: ChannelJson[];

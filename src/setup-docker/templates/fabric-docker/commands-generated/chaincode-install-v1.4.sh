@@ -3,7 +3,6 @@
 
   Required template parameters:
    - chaincode
-   - rootOrg
    - networkSettings
 */-%>
 chaincodeBuild <% -%>

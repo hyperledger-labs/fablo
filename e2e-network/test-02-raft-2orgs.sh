@@ -50,8 +50,7 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-# check if root org is ready
-waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054"
+# check if orderers are ready
 waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel1"
 waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel2"
 waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel1"

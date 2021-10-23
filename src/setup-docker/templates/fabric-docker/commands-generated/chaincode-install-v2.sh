@@ -5,7 +5,6 @@
    - version
   Required template parameters:
    - chaincode
-   - rootOrg
    - networkSettings
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"

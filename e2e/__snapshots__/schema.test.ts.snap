@@ -565,79 +565,9 @@ Object {
       "title": "Organizations",
       "type": "array",
     },
-    "rootOrg": Object {
-      "$id": "#/properties/rootOrg",
-      "additionalProperties": false,
-      "description": "The configuration of the root organization for the Hyperledger Fabric network.",
-      "properties": Object {
-        "ca": Object {
-          "$id": "#/properties/rootOrg/properties/ca",
-          "additionalProperties": false,
-          "default": Object {
-            "prefix": "ca",
-          },
-          "properties": Object {
-            "prefix": Object {
-              "$id": "#/properties/rootOrg/properties/ca/properties/prefix",
-              "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-              "title": "Domain prefix",
-              "type": "string",
-            },
-          },
-          "required": Array [
-            "prefix",
-          ],
-          "title": "Root Certificate Authority (CA)",
-          "type": "object",
-        },
-        "organization": Object {
-          "$id": "#/properties/rootOrg/properties/organization",
-          "additionalProperties": false,
-          "default": Object {
-            "domain": "root.com",
-            "mspName": "OrdererMSP",
-            "name": "Orderer",
-          },
-          "properties": Object {
-            "domain": Object {
-              "$id": "#/properties/rootOrg/properties/organization/properties/domain",
-              "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-              "title": "Domain",
-              "type": "string",
-            },
-            "mspName": Object {
-              "$id": "#/properties/rootOrg/properties/organization/properties/mspName",
-              "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
-              "pattern": "^[a-zA-Z0-9]+$",
-              "title": "MSP Name",
-              "type": "string",
-            },
-            "name": Object {
-              "$id": "#/properties/rootOrg/properties/organization/properties/name",
-              "pattern": "^[a-zA-Z0-9]+$",
-              "title": "Name",
-              "type": "string",
-            },
-          },
-          "required": Array [
-            "name",
-            "domain",
-          ],
-          "title": "Basic information",
-          "type": "object",
-        },
-      },
-      "required": Array [
-        "organization",
-      ],
-      "title": "Root organization",
-      "type": "object",
-    },
   },
   "required": Array [
     "networkSettings",
-    "rootOrg",
-    "ordererOrgs",
     "orgs",
     "channels",
     "chaincodes",

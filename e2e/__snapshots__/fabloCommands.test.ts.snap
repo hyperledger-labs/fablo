@@ -34,20 +34,6 @@ Validation warnings count: 0
       \\"isV2\\": true
     }
   },
-  \\"rootOrg\\": {
-    \\"name\\": \\"Root\\",
-    \\"mspName\\": \\"RootMSP\\",
-    \\"domain\\": \\"root.com\\",
-    \\"ca\\": {
-      \\"prefix\\": \\"ca\\",
-      \\"address\\": \\"ca.root.com\\",
-      \\"port\\": 7054,
-      \\"exposePort\\": 7010,
-      \\"fullAddress\\": \\"ca.root.com:7054\\",
-      \\"caAdminNameVar\\": \\"ROOT_CA_ADMIN_NAME\\",
-      \\"caAdminPassVar\\": \\"ROOT_CA_ADMIN_PASSWORD\\"
-    }
-  },
   \\"ordererOrgHead\\": {
     \\"name\\": \\"Orderer1\\",
     \\"mspName\\": \\"Orderer1MSP\\",
@@ -1744,20 +1730,6 @@ Validation warnings count: 0
       \\"isV2\\": true
     }
   },
-  \\"rootOrg\\": {
-    \\"name\\": \\"Root\\",
-    \\"mspName\\": \\"RootMSP\\",
-    \\"domain\\": \\"root.com\\",
-    \\"ca\\": {
-      \\"prefix\\": \\"ca\\",
-      \\"address\\": \\"ca.root.com\\",
-      \\"port\\": 7054,
-      \\"exposePort\\": 7010,
-      \\"fullAddress\\": \\"ca.root.com:7054\\",
-      \\"caAdminNameVar\\": \\"ROOT_CA_ADMIN_NAME\\",
-      \\"caAdminPassVar\\": \\"ROOT_CA_ADMIN_PASSWORD\\"
-    }
-  },
   \\"ordererOrgHead\\": {
     \\"name\\": \\"Orderer\\",
     \\"mspName\\": \\"OrdererMSP\\",
@@ -2070,12 +2042,6 @@ exports[`init should init simple fablo config 1`] = `
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
   },
-  \\"rootOrg\\": {
-    \\"organization\\": {
-      \\"name\\": \\"Root\\",
-      \\"domain\\": \\"root.com\\"
-    }
-  },
   \\"ordererOrgs\\": [
     {
       \\"organization\\": {
@@ -2125,12 +2091,6 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
-  },
-  \\"rootOrg\\": {
-    \\"organization\\": {
-      \\"name\\": \\"Root\\",
-      \\"domain\\": \\"root.com\\"
-    }
   },
   \\"ordererOrgs\\": [
     {
@@ -2189,12 +2149,6 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": false
-  },
-  \\"rootOrg\\": {
-    \\"organization\\": {
-      \\"name\\": \\"Root\\",
-      \\"domain\\": \\"root.com\\"
-    }
   },
   \\"ordererOrgs\\": [
     {
