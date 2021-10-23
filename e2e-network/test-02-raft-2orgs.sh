@@ -50,41 +50,42 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-# check if root org is ready
-waitForContainer "ca.root.com" "Listening on http://0.0.0.0:7054"
-waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer0.root.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer1.root.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer1.root.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer2.root.com" "Starting Raft node channel=my-channel2"
+# check if orderers are ready
+waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel2"
+
+waitForContainer "orderer0.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer0.org1.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
-waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer0.org2.com:7070"
+waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer0.org2.com:7081"
 waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
-waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.*peer1.org2.com:7071"
+waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.*peer1.org2.com:7082"
 
 # check if org2 is ready
 waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org2.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel1"
 waitForContainer "peer0.org2.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
-waitForContainer "peer0.org2.com" "Membership view has changed. peers went online:.*peer0.org1.com:7060"
+waitForContainer "peer0.org2.com" "Membership view has changed. peers went online:.*peer0.org1.com:7071"
 waitForContainer "peer1.org2.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
 waitForContainer "peer1.org2.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
-waitForContainer "peer1.org2.com" "Membership view has changed. peers went online:.*peer1.org1.com:7061"
+waitForContainer "peer1.org2.com" "Membership view has changed. peers went online:.*peer1.org1.com:7072"
 
 # check if chaincodes are instantiated on peers
-waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org1.com" "peer1.org1.com:7061" "my-channel2" "chaincode2" "0.0.1"
-waitForChaincode "cli.org2.com" "peer1.org2.com:7071" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7071" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.com" "peer1.org1.com:7072" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" "0.0.1"
 
 fablo_rest_org1="localhost:8800"
 
@@ -106,13 +107,13 @@ expectInvokeCli "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" 
 
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
-waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7071" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.1"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")
-waitForChaincode "cli.org1.com" "peer0.org1.com:7060" "my-channel1" "chaincode1" "0.0.2"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7070" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "cli.org1.com" "peer0.org1.com:7071" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.2"
 
 # check if state is kept after update
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \

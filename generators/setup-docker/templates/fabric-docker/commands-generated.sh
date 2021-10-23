@@ -8,9 +8,9 @@ function installChaincodes() {
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (networkSettings.capabilities.isV2) { -%>
           local version="<%= chaincode.version %>"
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, networkSettings }); -%>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, rootOrg, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, networkSettings }); -%>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
@@ -31,9 +31,9 @@ function upgradeChaincode() {
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (networkSettings.capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, networkSettings }); %>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, rootOrg, networkSettings }); %>
+          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, networkSettings }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
@@ -88,11 +88,11 @@ function notifyOrgsAboutChannels() {
 
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
-  printItalics "Generating crypto material for org <%= rootOrg.name %>" "U1F512"
+  printItalics "Generating crypto material for Orderer Orgs" "U1F512"
   certsGenerate <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
     "crypto-config-root.yaml" <% -%>
-    "ordererOrganizations/<%= rootOrg.domain %>" <% -%>
+    "ordererOrganizations" <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 
   <% orgs.forEach(function(org){ -%>

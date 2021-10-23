@@ -4,24 +4,6 @@ networks:
   basic:
 
 services:
-  <%= rootOrg.ca.address %>:
-    container_name: <%= rootOrg.ca.address %>
-    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=<%= rootOrg.ca.address %>
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.domain %>-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
-      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-    ports:
-      - <%= rootOrg.ca.exposePort %>:<%= rootOrg.ca.port %>
-    working_dir: /etc/hyperledger/fabric-ca-server
-    command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
-    volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto/:ro
-    networks:
-      - basic
-
   <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
   <%_ ordererOrg.orderers.forEach(function(orderer){ _%>
   <%= orderer.address %>:

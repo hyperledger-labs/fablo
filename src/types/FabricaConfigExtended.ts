@@ -79,12 +79,12 @@ export interface PrivateCollectionConfig {
   memberOnlyWrite?: boolean;
 }
 
-export interface RootOrgConfig {
-  name: string;
-  mspName: string;
-  domain: string;
-  ca: CAConfig;
-}
+// export interface RootOrgConfig {
+//   name: string;
+//   mspName: string;
+//   domain: string;
+//   ca: CAConfig;
+// }
 
 export interface FabloRestLoggingConfig {
   info?: "console" | string;
@@ -148,7 +148,6 @@ export interface OrdererOrgConfig {
 
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  rootOrg: RootOrgConfig;
   ordererOrgHead: OrdererOrgConfig;
   ordererOrgs: OrdererOrgConfig[];
   orgs: OrgConfig[];

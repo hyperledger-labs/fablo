@@ -1,5 +1,5 @@
 import defaults from "./defaults";
-import { CAJson, OrdererJson, OrdererOrgJson, OrgJson, PeerJson, RootOrgJson } from "../types/FabloConfigJson";
+import { CAJson, OrdererJson, OrdererOrgJson, OrgJson, PeerJson } from "../types/FabloConfigJson";
 import {
   CAConfig,
   FabloRestConfig,
@@ -9,7 +9,6 @@ import {
   OrdererOrgConfig,
   OrgConfig,
   PeerConfig,
-  RootOrgConfig,
 } from "../types/FabloConfigExtended";
 
 const extendCaConfig = (
@@ -92,16 +91,16 @@ const extendOrdererOrgsConfig = (ordererOrgsJson: OrdererOrgJson[]): OrdererOrgC
     .map((_x, ordererOrgIndex) => extendOrdererOrgConfig(ordererOrgIndex, ordererOrgsJson[ordererOrgIndex]));
 };
 
-const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
-  const { domain, name } = rootOrgJsonFormat.organization;
-  const mspName = rootOrgJsonFormat.organization.mspName || defaults.organization.mspName(name);
-  return {
-    name,
-    mspName,
-    domain,
-    ca: extendCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7010),
-  };
-};
+// const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
+//   const { domain, name } = rootOrgJsonFormat.organization;
+//   const mspName = rootOrgJsonFormat.organization.mspName || defaults.organization.mspName(name);
+//   return {
+//     name,
+//     mspName,
+//     domain,
+//     ca: extendCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7010),
+//   };
+// };
 
 const extendPeers = (
   peerJson: PeerJson,
@@ -245,4 +244,4 @@ const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: Netw
   });
 };
 
-export { extendRootOrgConfig, extendOrdererOrgsConfig, extendOrgsConfig };
+export { extendOrdererOrgsConfig, extendOrgsConfig };
