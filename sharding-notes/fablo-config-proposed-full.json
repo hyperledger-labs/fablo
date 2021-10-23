@@ -1,0 +1,108 @@
+{
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
+  "networkSettings": {
+    "fabricVersion": "2.3.2",
+    "tls": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "OnlyOrdererOrg1",
+        "domain": "only-orderer-org1.com"
+      },
+      "orderer": {
+        "group": "orderer-group1",
+        "type": "raft",
+        "instances": 3
+      }
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    },
+    {
+      "organization": {
+        "name": "Org2",
+        "domain": "org2.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      },
+      "orderer": {
+        "group": "orderer-group2",
+        "type": "raft",
+        "instances": 3
+      }
+    },
+    {
+      "organization": {
+        "name": "Org3",
+        "domain": "org3.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      },
+      "orderer": {
+        "group": "orderer-group2",
+        "type": "raft",
+        "instances": 3
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orderer-group": "orderer-group1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "name": "Org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my-channel2",
+      "orderer-group": "orderer-group2",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer1"
+          ]
+        },
+        {
+          "name": "Org2",
+          "peers": [
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "init": "{\"Args\":[]}",
+      "directory": "./chaincodes/chaincode-kv-node-1.4"
+    }
+  ]
+}
