@@ -40,65 +40,65 @@ describe("schema", () => {
     expect(withFabricVersion("2.0.0")).not.toMatchSchema(schema);
   });
 
-  it("should validate root org name", () => {
-    const withRootOrgName = (n: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.name = n;
-      });
+  // it("should validate root org name", () => {
+  //   const withRootOrgName = (n: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.name = n;
+  //     });
+  //
+  //   expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgName(uppercase)).toMatchSchema(schema);
+  //   expect(withRootOrgName(domain)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
+  // });
+  //
+  // it("should validate root org MSP name", () => {
+  //   const withRootOrgMSPName = (n: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.mspName = n;
+  //     });
+  //
+  //   expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(uppercase)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(domain)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
+  // });
 
-    expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
-  });
+  // it("should validate root org domain", () => {
+  //   const withRootOrgDomain = (d: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.domain = d;
+  //     });
+  //
+  //   expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(uppercase)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(domain)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
+  // });
 
-  it("should validate root org MSP name", () => {
-    const withRootOrgMSPName = (n: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.mspName = n;
-      });
-
-    expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root org domain", () => {
-    const withRootOrgDomain = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.domain = d;
-      });
-
-    expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgDomain(uppercase)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(domain)).toMatchSchema(schema);
-    expect(withRootOrgDomain(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root CA domain prefix", () => {
-    const withRootCADomainPrefix = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.ca.prefix = d;
-      });
-
-    expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(uppercase)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(domain)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(spaces)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
-  });
+  // it("should validate root CA domain prefix", () => {
+  //   const withRootCADomainPrefix = (d: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.ca.prefix = d;
+  //     });
+  //
+  //   expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(uppercase)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(domain)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
+  // });
 
   it("should validate first orderer org domain prefix", () => {
     const withFirstOrdererDomainPrefix = (d: string) =>

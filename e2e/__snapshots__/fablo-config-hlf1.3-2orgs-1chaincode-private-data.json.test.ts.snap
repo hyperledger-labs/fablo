@@ -248,8 +248,6 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
 
 exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-root.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "OrdererOrgs:
-  - Name: Root
-    Domain: root.com
   - Name: Orderer
     Domain: orderer.com
     Specs:
@@ -590,8 +588,8 @@ function notifyOrgsAboutChannels() {
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
-  printItalics \\"Generating crypto material for org Root\\" \\"U1F512\\"
-  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations/root.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
+  printItalics \\"Generating crypto material for Orderer Orgs\\" \\"U1F512\\"
+  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
   certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
@@ -661,24 +659,6 @@ networks:
   basic:
 
 services:
-  ca.root.com:
-    container_name: ca.root.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.root.com
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.root.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
-      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
-    ports:
-      - 7010:7054
-    working_dir: /etc/hyperledger/fabric-ca-server
-    command: sh -c 'fabric-ca-server start -b \${ROOT_CA_ADMIN_NAME}:\${ROOT_CA_ADMIN_PASSWORD} -d'
-    volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/root.com/ca/:/etc/hyperledger/fabric-ca-server/crypto/:ro
-    networks:
-      - basic
-
   orderer0.orderer.com:
     container_name: orderer0.orderer.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}

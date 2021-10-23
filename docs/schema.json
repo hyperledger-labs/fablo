@@ -6,8 +6,6 @@
   "default": {},
   "required": [
     "networkSettings",
-    "rootOrg",
-    "ordererOrgs",
     "orgs",
     "channels",
     "chaincodes"
@@ -81,74 +79,6 @@
                 "warn"
               ],
               "default": "info"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
-    "rootOrg": {
-      "$id": "#/properties/rootOrg",
-      "title": "Root organization",
-      "description": "The configuration of the root organization for the Hyperledger Fabric network.",
-      "type": "object",
-      "required": [
-        "organization"
-      ],
-      "properties": {
-        "organization": {
-          "$id": "#/properties/rootOrg/properties/organization",
-          "title": "Basic information",
-          "type": "object",
-          "default": {
-            "name": "Orderer",
-            "mspName": "OrdererMSP",
-            "domain": "root.com"
-          },
-          "required": [
-            "name",
-            "domain"
-          ],
-          "properties": {
-            "name": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/name",
-              "title": "Name",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9]+$"
-            },
-            "mspName": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/mspName",
-              "title": "MSP Name",
-              "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9]+$"
-            },
-            "domain": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/domain",
-              "title": "Domain",
-              "type": "string",
-              "pattern": "^[a-z0-9\\.\\-]+$"
-            }
-          },
-          "additionalProperties": false
-        },
-        "ca": {
-          "$id": "#/properties/rootOrg/properties/ca",
-          "type": "object",
-          "title": "Root Certificate Authority (CA)",
-          "default": {
-            "prefix": "ca"
-          },
-          "required": [
-            "prefix"
-          ],
-          "properties": {
-            "prefix": {
-              "$id": "#/properties/rootOrg/properties/ca/properties/prefix",
-              "title": "Domain prefix",
-              "type": "string",
-              "pattern": "^[a-z0-9\\.\\-]+$"
             }
           },
           "additionalProperties": false
