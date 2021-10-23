@@ -1,0 +1,56 @@
+{
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
+  "networkSettings": {
+    "fabricVersion": "2.3.2",
+    "tls": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.com"
+      },
+      "orderer": {
+        "group": "orderer-group1",
+        "type": "raft",
+        "instances": 3
+      }
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orderer-group": "orderer-group1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "init": "{\"Args\":[]}",
+      "directory": "./chaincodes/chaincode-kv-node-1.4"
+    }
+  ]
+}
