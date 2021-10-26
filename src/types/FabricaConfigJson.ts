@@ -15,6 +15,7 @@ export interface CAJson {
 }
 
 export interface OrdererJson {
+  groupName: string;
   prefix: string;
   type: "solo" | "raft";
   instances: number;
@@ -27,14 +28,10 @@ export interface PeerJson {
   anchorPeerInstances?: number;
 }
 
-// export interface RootOrgJson {
-//   organization: OrganizationDetailsJson;
-//   ca: CAJson;
-// }
-
 export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
+  orderer: OrdererJson | undefined;
   peer: PeerJson;
   tools?: { fabloRest?: boolean };
 }

@@ -1,5 +1,12 @@
+# Pomyśl o tym inaczej !!!
+## 1. jak chcesz ułożyć orderer groupy w configtx ?
+### - extended config powinien zawierać kompletne orderer groupy
+### - każda orderer grupa ma generować genesis block  
+## 2. każdy extended org powinien zawierać podzbiór orderer groupy
+
+
 1. Zmiany w Fablo config
-    - wywalić całkiem root org
+    - ~~wywalić całkiem root org~~
     - wywalić ordererOrgs i zrobić orga z podziałem
     - dodać groupName w ordrerConfig
 
@@ -9,7 +16,8 @@
 3. Walidacja:
    - orderery w tej samej grupie musze miec ten sam consensus type
    - nie mozna joinowac do kanału organizacji bez peerów
-   - 
+   - musi byc gdzies zdefiniowany orderer
+   - org bez peerow i ordererów jest dziwny
 
 wszystkie orgi posiadajace orderera maja takie cos:
 ```
