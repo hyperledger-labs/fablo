@@ -10,12 +10,14 @@ ordererOrgs:
       name: Orderer1
       domain: orderer1.com
     orderer:
+      groupName: group1
       type: raft
       instances: 3
   - organization:
       name: Orderer2
       domain: orderer2.com
     orderer:
+      groupName: group2
       type: solo
       instances: 1
 orgs:

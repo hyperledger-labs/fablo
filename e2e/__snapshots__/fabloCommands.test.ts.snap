@@ -2049,6 +2049,7 @@ exports[`init should init simple fablo config 1`] = `
         \\"domain\\": \\"orderer.com\\"
       },
       \\"orderer\\": {
+        \\"groupName\\": \\"group1\\",
         \\"type\\": \\"solo\\",
         \\"instances\\": 1
       }
@@ -2099,6 +2100,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
         \\"domain\\": \\"orderer.com\\"
       },
       \\"orderer\\": {
+        \\"groupName\\": \\"group1\\",
         \\"type\\": \\"solo\\",
         \\"instances\\": 1
       }
@@ -2157,6 +2159,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
         \\"domain\\": \\"orderer.com\\"
       },
       \\"orderer\\": {
+        \\"groupName\\": \\"group1\\",
         \\"type\\": \\"solo\\",
         \\"instances\\": 1
       }

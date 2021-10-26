@@ -170,10 +170,17 @@
               "instances": 1
             },
             "required": [
+              "groupName",
               "type",
               "instances"
             ],
             "properties": {
+              "groupName": {
+                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/groupName",
+                "title": "Name od Orderer group",
+                "type": "string",
+                "pattern": "^[a-z0-9\\.\\-]+$"
+              },
               "prefix": {
                 "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/prefix",
                 "title": "Domain prefix",
@@ -277,6 +284,53 @@
                 "title": "Domain prefix",
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
+              }
+            },
+            "additionalProperties": false
+          },
+          "orderer": {
+            "$id": "#/properties/orgs/items/properties/orderer",
+            "title": "Orderer",
+            "type": "object",
+            "default": {
+              "prefix": "orderer",
+              "type": "solo",
+              "instances": 1
+            },
+            "required": [
+              "groupName",
+              "type",
+              "instances"
+            ],
+            "properties": {
+              "groupName": {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/groupName",
+                "title": "Name od Orderer group",
+                "type": "string",
+                "pattern": "^[a-z0-9\\.\\-]+$"
+              },
+              "prefix": {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/prefix",
+                "title": "Domain prefix",
+                "type": "string",
+                "pattern": "^[a-z0-9\\.\\-]+$"
+              },
+              "type": {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/type",
+                "type": "string",
+                "title": "Orderer type",
+                "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+                "enum": [
+                  "solo",
+                  "raft"
+                ]
+              },
+              "instances": {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/instances",
+                "title": "Number of instances",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9
               }
             },
             "additionalProperties": false
