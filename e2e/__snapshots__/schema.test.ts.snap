@@ -348,6 +348,12 @@ Object {
               "type": "solo",
             },
             "properties": Object {
+              "groupName": Object {
+                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/groupName",
+                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "title": "Name od Orderer group",
+                "type": "string",
+              },
               "instances": Object {
                 "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/instances",
                 "maximum": 9,
@@ -373,6 +379,7 @@ Object {
               },
             },
             "required": Array [
+              "groupName",
               "type",
               "instances",
             ],
@@ -468,6 +475,53 @@ Object {
               "prefix",
             ],
             "title": "Organization Certificate Authority (CA)",
+            "type": "object",
+          },
+          "orderer": Object {
+            "$id": "#/properties/orgs/items/properties/orderer",
+            "additionalProperties": false,
+            "default": Object {
+              "instances": 1,
+              "prefix": "orderer",
+              "type": "solo",
+            },
+            "properties": Object {
+              "groupName": Object {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/groupName",
+                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "title": "Name od Orderer group",
+                "type": "string",
+              },
+              "instances": Object {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/instances",
+                "maximum": 9,
+                "minimum": 1,
+                "title": "Number of instances",
+                "type": "integer",
+              },
+              "prefix": Object {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/prefix",
+                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "title": "Domain prefix",
+                "type": "string",
+              },
+              "type": Object {
+                "$id": "#/properties/orgs/items/properties/orderer/properties/type",
+                "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+                "enum": Array [
+                  "solo",
+                  "raft",
+                ],
+                "title": "Orderer type",
+                "type": "string",
+              },
+            },
+            "required": Array [
+              "groupName",
+              "type",
+              "instances",
+            ],
+            "title": "Orderer",
             "type": "object",
           },
           "organization": Object {

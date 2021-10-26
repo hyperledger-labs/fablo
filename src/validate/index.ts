@@ -17,7 +17,7 @@ import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
-const findDuplicatedNames = (arr: string[]) => arr.filter((item, index) => arr.indexOf(item) != index);
+const findDuplicatedItems = (arr: any[]) => arr.filter((item, index) => arr.indexOf(item) != index);
 
 const validationErrorType = {
   CRITICAL: "validation-critical",
@@ -107,6 +107,7 @@ class ValidateGenerator extends Generator {
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
     this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.channels);
+    this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.ordererOrgs, networkConfig.orgs);
 
     const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
@@ -292,7 +293,7 @@ class ValidateGenerator extends Generator {
 
   _validateChannelNames(channels: ChannelJson[]) {
     const channelNames = channels.map((ch) => ch.name);
-    const duplicatedChannelNames = findDuplicatedNames(channelNames);
+    const duplicatedChannelNames = findDuplicatedItems(channelNames);
 
     duplicatedChannelNames.forEach((duplicatedName) => {
       const objectToEmit = {
@@ -305,7 +306,7 @@ class ValidateGenerator extends Generator {
 
   _validateChaincodeNames(chaincodes: ChaincodeJson[]) {
     const chaincodeNames = chaincodes.map((ch) => ch.name);
-    const duplicatedChaincodeNames = findDuplicatedNames(chaincodeNames);
+    const duplicatedChaincodeNames = findDuplicatedItems(chaincodeNames);
 
     duplicatedChaincodeNames.forEach((duplicatedName) => {
       const objectToEmit = {
@@ -313,6 +314,30 @@ class ValidateGenerator extends Generator {
         message: `Chaincode name '${duplicatedName}' is not unique.`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
+    });
+  }
+
+  _validateIfSameOrdererTypeAcrossOrdererGroup(ordererOrgs: OrdererOrgJson[], orgs: OrgJson[]) {
+    const isOrdererDefined = (org: OrgJson): boolean => org.orderer != undefined;
+
+    const orderersOrdererOrgs = ordererOrgs.map((ordererOrg) => ordererOrg.orderer);
+    const orderersOrgs = orgs.filter(isOrdererDefined).map((orgs) => orgs.orderer as OrdererJson);
+
+    const allOrdererBlocks = orderersOrdererOrgs.concat(orderersOrgs);
+
+    const grouped: Record<string, OrdererJson[]> = _.groupBy(allOrdererBlocks, (group) => group.groupName);
+
+    Object.values(grouped).forEach((groupItems) => {
+      const groupName = groupItems[0].groupName;
+      const ordererTypes = groupItems.map((item) => item.type);
+
+      if (new Set(ordererTypes).size != 1) {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Orderer group '${groupName}' should have same orderer type across whole group. Found types: '${ordererTypes}'`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      }
     });
   }
 }
