@@ -3,8 +3,10 @@ OrdererOrgs:
   - Name: <%= ordererOrg.name %>
     Domain: <%= ordererOrg.domain %>
     Specs:
-    <%_ ordererOrg.orderers.forEach(function(orderer) { _%>
+    <%_ ordererOrg.ordererGroups.forEach(function(ordererGroup) { _%>
+    <%_ ordererGroup.orderers.forEach(function(orderer) { _%>
       - Hostname: <%= orderer.name  %>
+    <%_ }) _%>
     <%_ }) _%>
 
 <%_ }) _%>

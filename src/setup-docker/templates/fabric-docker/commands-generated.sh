@@ -91,7 +91,7 @@ function generateArtifacts() {
   printItalics "Generating crypto material for Orderer Orgs" "U1F512"
   certsGenerate <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
-    "crypto-config-root.yaml" <% -%>
+    "crypto-config-orderers.yaml" <% -%>
     "ordererOrganizations" <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 

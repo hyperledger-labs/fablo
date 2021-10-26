@@ -79,8 +79,8 @@ export default class SetupDockerGenerator extends Generator {
 
   _copyOrdererOrgCryptoConfig(ordererOrgs: OrdererOrgConfig[]): void {
     this.fs.copyTpl(
-      this.templatePath("fabric-config/crypto-config-root.yaml"),
-      this.destinationPath("fabric-config/crypto-config-root.yaml"),
+      this.templatePath("fabric-config/crypto-config-orderers.yaml"),
+      this.destinationPath("fabric-config/crypto-config-orderers.yaml"),
       { ordererOrgs },
     );
   }
