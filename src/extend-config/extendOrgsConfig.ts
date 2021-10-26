@@ -6,10 +6,12 @@ import {
   FabloRestLoggingConfig,
   NetworkSettings,
   OrdererConfig,
+  OrdererGroup,
   OrdererOrgConfig,
   OrgConfig,
   PeerConfig,
 } from "../types/FabloConfigExtended";
+import _ = require("lodash");
 
 const extendCaConfig = (
   caJsonFormat: CAJson,
@@ -38,6 +40,7 @@ const getPortsForOrdererOrg = (ordererOrgIndex: number) => ({
 
 const extendOrderersConfig = (
   headOrdererPort: number,
+  groupName: string,
   ordererJson: OrdererJson,
   ordererOrgDomainJson: string,
 ): OrdererConfig[] => {
@@ -47,18 +50,43 @@ const extendOrderersConfig = (
   return Array(ordererJson.instances)
     .fill(undefined)
     .map((_x, i) => {
-      const name = `${prefix}${i}`;
+      const name = `${prefix}${i}.${groupName}`;
       const address = `${name}.${ordererOrgDomainJson}`;
       const port = headOrdererPort + i;
       return {
         name,
-        domain: ordererOrgDomainJson,
         address,
+        domain: ordererOrgDomainJson,
         consensus,
         port,
         fullAddress: `${address}:${port}`,
       };
     });
+};
+
+const extendOrderersGroupConfig = (
+  headOrdererPort: number,
+  ordererJson: OrdererJson,
+  ordererOrgDomainJson: string,
+): OrdererGroup[] => {
+  const groupName = ordererJson.groupName;
+  const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
+  const orderers = extendOrderersConfig(headOrdererPort, groupName, ordererJson, ordererOrgDomainJson);
+
+  const profileName = _.capitalize(groupName) + `Genesis`;
+  const genesisBlockName = `${profileName}.block`;
+
+  return [
+    {
+      name: groupName,
+      consensus,
+      domain: `${groupName}.${ordererOrgDomainJson}`,
+      profileName,
+      genesisBlockName,
+      orderers,
+      ordererHead: orderers[0],
+    },
+  ];
 };
 
 const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: OrdererOrgJson): OrdererOrgConfig => {
@@ -69,8 +97,15 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
   const mspName = ordererOrgJson.organization.mspName || defaults.organization.mspName(name);
   const consensus = ordererOrgJson.orderer.type === "raft" ? "etcdraft" : ordererOrgJson.orderer.type;
 
-  const orderersExtended = extendOrderersConfig(headOrdererPort, ordererOrgJson.orderer, domain);
+  const orderersExtended = extendOrderersConfig(
+    headOrdererPort,
+    ordererOrgJson.orderer.groupName,
+    ordererOrgJson.orderer,
+    domain,
+  );
   const ordererHead = orderersExtended[0];
+
+  const ordererGroups = extendOrderersGroupConfig(headOrdererPort, ordererOrgJson.orderer, domain);
 
   return {
     name,
@@ -82,6 +117,7 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
     consensus,
     orderers: orderersExtended,
     ordererHead,
+    ordererGroups,
   };
 };
 
@@ -198,6 +234,11 @@ const extendOrgConfig = (
     ? {}
     : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings) };
 
+  let ordererGroups: OrdererGroup[] = [];
+  if (orgJsonFormat.orderer != undefined) {
+    ordererGroups = extendOrderersGroupConfig(9090, orgJsonFormat.orderer, domain);
+  }
+
   return {
     name,
     mspName,
@@ -212,6 +253,7 @@ const extendOrgConfig = (
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
     headPeer: peers[0],
+    ordererGroups,
     tools: { ...fabloRest },
   };
 };
