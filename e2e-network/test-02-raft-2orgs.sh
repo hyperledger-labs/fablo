@@ -51,14 +51,14 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 networkUp
 
 # check if orderers are ready
-waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer0.orderer1.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer1.orderer1.com" "Starting Raft node channel=my-channel2"
-waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel1"
-waitForContainer "orderer2.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer0.group1.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer0.group1.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer1.group1.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer1.group1.orderer1.com" "Starting Raft node channel=my-channel2"
+waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel1"
+waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel2"
 
-waitForContainer "orderer0.orderer2.com" "Created and started new channel my-channel3"
+waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
