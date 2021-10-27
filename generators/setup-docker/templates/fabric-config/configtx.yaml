@@ -34,7 +34,7 @@ Organizations:
     - &<%= ordererOrg.name %>
       Name: <%= ordererOrg.mspName %>
       ID: <%= ordererOrg.mspName %>
-      MSPDir: crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/msp
+      MSPDir: crypto-config/peerOrganizations/<%= ordererOrg.domain %>/msp
 
       Policies:
           Readers:
