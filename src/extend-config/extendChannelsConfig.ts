@@ -28,7 +28,7 @@ const extendChannelConfig = (
     .map((org) => filterToAvailablePeers(org, orgPeers));
 
   const ordererGroup = ordererGroups.filter((group) => group.name == ordererGroupName)[0];
-  const ordererHead = ordererGroup.ordererHead;
+  const ordererHead = ordererGroup.ordererHeads[0];
 
   return {
     name: channelName,

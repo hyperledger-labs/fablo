@@ -118,7 +118,8 @@ export interface OrgConfig {
   name: string;
   peers: PeerConfig[];
   peersCount: number;
-  tools: { fabloRest: FabloRestConfig | undefined };
+  ordererGroups: OrdererGroup[];
+  tools: { fabloRest?: FabloRestConfig };
 }
 
 export interface ChaincodeConfig {
@@ -145,6 +146,18 @@ export interface OrdererOrgConfig {
   consensus: "solo" | "etcdraft";
   orderers: OrdererConfig[];
   ordererHead: OrdererConfig;
+  ordererGroups: OrdererGroup[];
+}
+
+export interface OrdererGroup {
+  name: string;
+  consensus: "solo" | "etcdraft";
+  profileName: string;
+  genesisBlockName: string;
+  configtxOrdererDefaults: string;
+  hostingOrgs: string[];
+  orderers: OrdererConfig[];
+  ordererHeads: OrdererConfig[];
 }
 
 export interface FabloConfigExtended {
@@ -154,4 +167,5 @@ export interface FabloConfigExtended {
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
+  ordererGroups: OrdererGroup[];
 }
