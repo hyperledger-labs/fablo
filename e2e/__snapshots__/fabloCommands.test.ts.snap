@@ -52,38 +52,86 @@ Validation warnings count: 0
     \\"consensus\\": \\"etcdraft\\",
     \\"orderers\\": [
       {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
       },
       {
-        \\"name\\": \\"orderer1\\",
+        \\"name\\": \\"orderer1.group1\\",
+        \\"address\\": \\"orderer1.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer1.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7022,
-        \\"fullAddress\\": \\"orderer1.orderer1.com:7022\\"
+        \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
       },
       {
-        \\"name\\": \\"orderer2\\",
+        \\"name\\": \\"orderer2.group1\\",
+        \\"address\\": \\"orderer2.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer2.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7023,
-        \\"fullAddress\\": \\"orderer2.orderer1.com:7023\\"
+        \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
       }
     ],
     \\"ordererHead\\": {
-      \\"name\\": \\"orderer0\\",
+      \\"name\\": \\"orderer0.group1\\",
+      \\"address\\": \\"orderer0.group1.orderer1.com\\",
       \\"domain\\": \\"orderer1.com\\",
-      \\"address\\": \\"orderer0.orderer1.com\\",
       \\"consensus\\": \\"etcdraft\\",
       \\"port\\": 7021,
-      \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
-    }
+      \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+    },
+    \\"ordererGroups\\": [
+      {
+        \\"name\\": \\"group1\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+        \\"profileName\\": \\"Group1Genesis\\",
+        \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer1\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          },
+          {
+            \\"name\\": \\"orderer1.group1\\",
+            \\"address\\": \\"orderer1.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7022,
+            \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+          },
+          {
+            \\"name\\": \\"orderer2.group1\\",
+            \\"address\\": \\"orderer2.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7023,
+            \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          }
+        ]
+      }
+    ]
   },
   \\"ordererOrgs\\": [
     {
@@ -104,38 +152,86 @@ Validation warnings count: 0
       \\"consensus\\": \\"etcdraft\\",
       \\"orderers\\": [
         {
-          \\"name\\": \\"orderer0\\",
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
           \\"domain\\": \\"orderer1.com\\",
-          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
         },
         {
-          \\"name\\": \\"orderer1\\",
+          \\"name\\": \\"orderer1.group1\\",
+          \\"address\\": \\"orderer1.group1.orderer1.com\\",
           \\"domain\\": \\"orderer1.com\\",
-          \\"address\\": \\"orderer1.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7022,
-          \\"fullAddress\\": \\"orderer1.orderer1.com:7022\\"
+          \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
         },
         {
-          \\"name\\": \\"orderer2\\",
+          \\"name\\": \\"orderer2.group1\\",
+          \\"address\\": \\"orderer2.group1.orderer1.com\\",
           \\"domain\\": \\"orderer1.com\\",
-          \\"address\\": \\"orderer2.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7023,
-          \\"fullAddress\\": \\"orderer2.orderer1.com:7023\\"
+          \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
         }
       ],
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
-      }
+        \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+      },
+      \\"ordererGroups\\": [
+        {
+          \\"name\\": \\"group1\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+          \\"profileName\\": \\"Group1Genesis\\",
+          \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+          \\"hostingOrgs\\": [
+            \\"Orderer1\\"
+          ],
+          \\"orderers\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            },
+            {
+              \\"name\\": \\"orderer1.group1\\",
+              \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7022,
+              \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+            },
+            {
+              \\"name\\": \\"orderer2.group1\\",
+              \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7023,
+              \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+            }
+          ],
+          \\"ordererHeads\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            }
+          ]
+        }
+      ]
     },
     {
       \\"name\\": \\"Orderer2\\",
@@ -155,22 +251,54 @@ Validation warnings count: 0
       \\"consensus\\": \\"solo\\",
       \\"orderers\\": [
         {
-          \\"name\\": \\"orderer0\\",
+          \\"name\\": \\"orderer0.group2\\",
+          \\"address\\": \\"orderer0.group2.orderer2.com\\",
           \\"domain\\": \\"orderer2.com\\",
-          \\"address\\": \\"orderer0.orderer2.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7031,
-          \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
+          \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
         }
       ],
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group2\\",
+        \\"address\\": \\"orderer0.group2.orderer2.com\\",
         \\"domain\\": \\"orderer2.com\\",
-        \\"address\\": \\"orderer0.orderer2.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7031,
-        \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
-      }
+        \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+      },
+      \\"ordererGroups\\": [
+        {
+          \\"name\\": \\"group2\\",
+          \\"consensus\\": \\"solo\\",
+          \\"configtxOrdererDefaults\\": \\"Group2Defaults\\",
+          \\"profileName\\": \\"Group2Genesis\\",
+          \\"genesisBlockName\\": \\"Group2Genesis.block\\",
+          \\"hostingOrgs\\": [
+            \\"Orderer2\\"
+          ],
+          \\"orderers\\": [
+            {
+              \\"name\\": \\"orderer0.group2\\",
+              \\"address\\": \\"orderer0.group2.orderer2.com\\",
+              \\"domain\\": \\"orderer2.com\\",
+              \\"consensus\\": \\"solo\\",
+              \\"port\\": 7031,
+              \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+            }
+          ],
+          \\"ordererHeads\\": [
+            {
+              \\"name\\": \\"orderer0.group2\\",
+              \\"address\\": \\"orderer0.group2.orderer2.com\\",
+              \\"domain\\": \\"orderer2.com\\",
+              \\"consensus\\": \\"solo\\",
+              \\"port\\": 7031,
+              \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+            }
+          ]
+        }
+      ]
     }
   ],
   \\"orgs\\": [
@@ -242,6 +370,7 @@ Validation warnings count: 0
         \\"fullAddress\\": \\"peer0.org1.com:7071\\",
         \\"couchDbExposePort\\": 5080
       },
+      \\"ordererGroups\\": [],
       \\"tools\\": {
         \\"fabloRest\\": {
           \\"address\\": \\"fablo-rest.org1.com\\",
@@ -329,12 +458,14 @@ Validation warnings count: 0
         \\"fullAddress\\": \\"peer0.org2.com:7081\\",
         \\"couchDbExposePort\\": 5090
       },
+      \\"ordererGroups\\": [],
       \\"tools\\": {}
     }
   ],
   \\"channels\\": [
     {
       \\"name\\": \\"my-channel1\\",
+      \\"profileName\\": \\"MyChannel1\\",
       \\"orgs\\": [
         {
           \\"name\\": \\"Org1\\",
@@ -395,6 +526,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org1.com:7071\\",
             \\"couchDbExposePort\\": 5080
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
@@ -473,18 +605,72 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org2.com:7081\\",
             \\"couchDbExposePort\\": 5090
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {}
         }
       ],
+      \\"ordererGroup\\": {
+        \\"name\\": \\"group1\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+        \\"profileName\\": \\"Group1Genesis\\",
+        \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer1\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          },
+          {
+            \\"name\\": \\"orderer1.group1\\",
+            \\"address\\": \\"orderer1.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7022,
+            \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+          },
+          {
+            \\"name\\": \\"orderer2.group1\\",
+            \\"address\\": \\"orderer2.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7023,
+            \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          }
+        ],
+        \\"ordererHead\\": {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+        }
+      },
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
       },
-      \\"profileName\\": \\"MyChannel1\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
@@ -544,6 +730,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7071\\",
           \\"couchDbExposePort\\": 5080
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
@@ -566,6 +753,7 @@ Validation warnings count: 0
     },
     {
       \\"name\\": \\"my-channel2\\",
+      \\"profileName\\": \\"MyChannel2\\",
       \\"orgs\\": [
         {
           \\"name\\": \\"Org1\\",
@@ -626,6 +814,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer1.org1.com:7072\\",
             \\"couchDbExposePort\\": 5081
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
@@ -704,18 +893,72 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer1.org2.com:7082\\",
             \\"couchDbExposePort\\": 5091
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {}
         }
       ],
+      \\"ordererGroup\\": {
+        \\"name\\": \\"group1\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+        \\"profileName\\": \\"Group1Genesis\\",
+        \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer1\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          },
+          {
+            \\"name\\": \\"orderer1.group1\\",
+            \\"address\\": \\"orderer1.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7022,
+            \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+          },
+          {
+            \\"name\\": \\"orderer2.group1\\",
+            \\"address\\": \\"orderer2.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7023,
+            \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          }
+        ],
+        \\"ordererHead\\": {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+        }
+      },
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer1.com\\",
         \\"domain\\": \\"orderer1.com\\",
-        \\"address\\": \\"orderer0.orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
       },
-      \\"profileName\\": \\"MyChannel2\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
@@ -775,6 +1018,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer1.org1.com:7072\\",
           \\"couchDbExposePort\\": 5081
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
@@ -797,6 +1041,7 @@ Validation warnings count: 0
     },
     {
       \\"name\\": \\"my-channel3\\",
+      \\"profileName\\": \\"MyChannel3\\",
       \\"orgs\\": [
         {
           \\"name\\": \\"Org1\\",
@@ -866,6 +1111,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org1.com:7071\\",
             \\"couchDbExposePort\\": 5080
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
@@ -953,18 +1199,56 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org2.com:7081\\",
             \\"couchDbExposePort\\": 5090
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {}
         }
       ],
+      \\"ordererGroup\\": {
+        \\"name\\": \\"group2\\",
+        \\"consensus\\": \\"solo\\",
+        \\"configtxOrdererDefaults\\": \\"Group2Defaults\\",
+        \\"profileName\\": \\"Group2Genesis\\",
+        \\"genesisBlockName\\": \\"Group2Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer2\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group2\\",
+            \\"address\\": \\"orderer0.group2.orderer2.com\\",
+            \\"domain\\": \\"orderer2.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7031,
+            \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group2\\",
+            \\"address\\": \\"orderer0.group2.orderer2.com\\",
+            \\"domain\\": \\"orderer2.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7031,
+            \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+          }
+        ],
+        \\"ordererHead\\": {
+          \\"name\\": \\"orderer0.group2\\",
+          \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"domain\\": \\"orderer2.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7031,
+          \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+        }
+      },
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group2\\",
+        \\"address\\": \\"orderer0.group2.orderer2.com\\",
         \\"domain\\": \\"orderer2.com\\",
-        \\"address\\": \\"orderer0.orderer2.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7031,
-        \\"fullAddress\\": \\"orderer0.orderer2.com:7031\\"
+        \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
       },
-      \\"profileName\\": \\"MyChannel3\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
@@ -1033,6 +1317,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7071\\",
           \\"couchDbExposePort\\": 5080
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1062,6 +1347,7 @@ Validation warnings count: 0
       \\"lang\\": \\"node\\",
       \\"channel\\": {
         \\"name\\": \\"my-channel1\\",
+        \\"profileName\\": \\"MyChannel1\\",
         \\"orgs\\": [
           {
             \\"name\\": \\"Org1\\",
@@ -1122,6 +1408,7 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer0.org1.com:7071\\",
               \\"couchDbExposePort\\": 5080
             },
+            \\"ordererGroups\\": [],
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1200,18 +1487,72 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer0.org2.com:7081\\",
               \\"couchDbExposePort\\": 5090
             },
+            \\"ordererGroups\\": [],
             \\"tools\\": {}
           }
         ],
+        \\"ordererGroup\\": {
+          \\"name\\": \\"group1\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+          \\"profileName\\": \\"Group1Genesis\\",
+          \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+          \\"hostingOrgs\\": [
+            \\"Orderer1\\"
+          ],
+          \\"orderers\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            },
+            {
+              \\"name\\": \\"orderer1.group1\\",
+              \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7022,
+              \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+            },
+            {
+              \\"name\\": \\"orderer2.group1\\",
+              \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7023,
+              \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+            }
+          ],
+          \\"ordererHeads\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            }
+          ],
+          \\"ordererHead\\": {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          }
+        },
         \\"ordererHead\\": {
-          \\"name\\": \\"orderer0\\",
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
           \\"domain\\": \\"orderer1.com\\",
-          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
         },
-        \\"profileName\\": \\"MyChannel1\\",
         \\"instantiatingOrg\\": {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
@@ -1271,6 +1612,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org1.com:7071\\",
             \\"couchDbExposePort\\": 5080
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1352,6 +1694,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7071\\",
           \\"couchDbExposePort\\": 5080
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1380,6 +1723,7 @@ Validation warnings count: 0
       \\"lang\\": \\"java\\",
       \\"channel\\": {
         \\"name\\": \\"my-channel2\\",
+        \\"profileName\\": \\"MyChannel2\\",
         \\"orgs\\": [
           {
             \\"name\\": \\"Org1\\",
@@ -1440,6 +1784,7 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer1.org1.com:7072\\",
               \\"couchDbExposePort\\": 5081
             },
+            \\"ordererGroups\\": [],
             \\"tools\\": {
               \\"fabloRest\\": {
                 \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1518,18 +1863,72 @@ Validation warnings count: 0
               \\"fullAddress\\": \\"peer1.org2.com:7082\\",
               \\"couchDbExposePort\\": 5091
             },
+            \\"ordererGroups\\": [],
             \\"tools\\": {}
           }
         ],
+        \\"ordererGroup\\": {
+          \\"name\\": \\"group1\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+          \\"profileName\\": \\"Group1Genesis\\",
+          \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+          \\"hostingOrgs\\": [
+            \\"Orderer1\\"
+          ],
+          \\"orderers\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            },
+            {
+              \\"name\\": \\"orderer1.group1\\",
+              \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7022,
+              \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+            },
+            {
+              \\"name\\": \\"orderer2.group1\\",
+              \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7023,
+              \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+            }
+          ],
+          \\"ordererHeads\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"domain\\": \\"orderer1.com\\",
+              \\"consensus\\": \\"etcdraft\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+            }
+          ],
+          \\"ordererHead\\": {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"domain\\": \\"orderer1.com\\",
+            \\"consensus\\": \\"etcdraft\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+          }
+        },
         \\"ordererHead\\": {
-          \\"name\\": \\"orderer0\\",
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
           \\"domain\\": \\"orderer1.com\\",
-          \\"address\\": \\"orderer0.orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer1.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
         },
-        \\"profileName\\": \\"MyChannel2\\",
         \\"instantiatingOrg\\": {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
@@ -1589,6 +1988,7 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer1.org1.com:7072\\",
             \\"couchDbExposePort\\": 5081
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
               \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1670,6 +2070,7 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer1.org1.com:7072\\",
           \\"couchDbExposePort\\": 5081
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
             \\"address\\": \\"fablo-rest.org1.com\\",
@@ -1690,6 +2091,100 @@ Validation warnings count: 0
         }
       },
       \\"privateData\\": []
+    }
+  ],
+  \\"ordererGroups\\": [
+    {
+      \\"name\\": \\"group1\\",
+      \\"consensus\\": \\"etcdraft\\",
+      \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+      \\"profileName\\": \\"Group1Genesis\\",
+      \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+      \\"hostingOrgs\\": [
+        \\"Orderer1\\"
+      ],
+      \\"orderers\\": [
+        {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+        },
+        {
+          \\"name\\": \\"orderer1.group1\\",
+          \\"address\\": \\"orderer1.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7022,
+          \\"fullAddress\\": \\"orderer1.group1.orderer1.com:7022\\"
+        },
+        {
+          \\"name\\": \\"orderer2.group1\\",
+          \\"address\\": \\"orderer2.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7023,
+          \\"fullAddress\\": \\"orderer2.group1.orderer1.com:7023\\"
+        }
+      ],
+      \\"ordererHeads\\": [
+        {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"domain\\": \\"orderer1.com\\",
+          \\"consensus\\": \\"etcdraft\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+        }
+      ],
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer1.com\\",
+        \\"domain\\": \\"orderer1.com\\",
+        \\"consensus\\": \\"etcdraft\\",
+        \\"port\\": 7021,
+        \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7021\\"
+      }
+    },
+    {
+      \\"name\\": \\"group2\\",
+      \\"consensus\\": \\"solo\\",
+      \\"configtxOrdererDefaults\\": \\"Group2Defaults\\",
+      \\"profileName\\": \\"Group2Genesis\\",
+      \\"genesisBlockName\\": \\"Group2Genesis.block\\",
+      \\"hostingOrgs\\": [
+        \\"Orderer2\\"
+      ],
+      \\"orderers\\": [
+        {
+          \\"name\\": \\"orderer0.group2\\",
+          \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"domain\\": \\"orderer2.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7031,
+          \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+        }
+      ],
+      \\"ordererHeads\\": [
+        {
+          \\"name\\": \\"orderer0.group2\\",
+          \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"domain\\": \\"orderer2.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7031,
+          \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+        }
+      ],
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0.group2\\",
+        \\"address\\": \\"orderer0.group2.orderer2.com\\",
+        \\"domain\\": \\"orderer2.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7031,
+        \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7031\\"
+      }
     }
   ]
 }
@@ -1748,22 +2243,54 @@ Validation warnings count: 0
     \\"consensus\\": \\"solo\\",
     \\"orderers\\": [
       {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer.com\\",
         \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
       }
     ],
     \\"ordererHead\\": {
-      \\"name\\": \\"orderer0\\",
+      \\"name\\": \\"orderer0.group1\\",
+      \\"address\\": \\"orderer0.group1.orderer.com\\",
       \\"domain\\": \\"orderer.com\\",
-      \\"address\\": \\"orderer0.orderer.com\\",
       \\"consensus\\": \\"solo\\",
       \\"port\\": 7021,
-      \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
-    }
+      \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+    },
+    \\"ordererGroups\\": [
+      {
+        \\"name\\": \\"group1\\",
+        \\"consensus\\": \\"solo\\",
+        \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+        \\"profileName\\": \\"Group1Genesis\\",
+        \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer.com\\",
+            \\"domain\\": \\"orderer.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer.com\\",
+            \\"domain\\": \\"orderer.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+          }
+        ]
+      }
+    ]
   },
   \\"ordererOrgs\\": [
     {
@@ -1784,22 +2311,54 @@ Validation warnings count: 0
       \\"consensus\\": \\"solo\\",
       \\"orderers\\": [
         {
-          \\"name\\": \\"orderer0\\",
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer.com\\",
           \\"domain\\": \\"orderer.com\\",
-          \\"address\\": \\"orderer0.orderer.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7021,
-          \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
         }
       ],
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer.com\\",
         \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
-      }
+        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+      },
+      \\"ordererGroups\\": [
+        {
+          \\"name\\": \\"group1\\",
+          \\"consensus\\": \\"solo\\",
+          \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+          \\"profileName\\": \\"Group1Genesis\\",
+          \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+          \\"hostingOrgs\\": [
+            \\"Orderer\\"
+          ],
+          \\"orderers\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer.com\\",
+              \\"domain\\": \\"orderer.com\\",
+              \\"consensus\\": \\"solo\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+            }
+          ],
+          \\"ordererHeads\\": [
+            {
+              \\"name\\": \\"orderer0.group1\\",
+              \\"address\\": \\"orderer0.group1.orderer.com\\",
+              \\"domain\\": \\"orderer.com\\",
+              \\"consensus\\": \\"solo\\",
+              \\"port\\": 7021,
+              \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+            }
+          ]
+        }
+      ]
     }
   ],
   \\"orgs\\": [
@@ -1871,12 +2430,14 @@ Validation warnings count: 0
         \\"fullAddress\\": \\"peer0.org1.com:7071\\",
         \\"couchDbExposePort\\": 5080
       },
+      \\"ordererGroups\\": [],
       \\"tools\\": {}
     }
   ],
   \\"channels\\": [
     {
       \\"name\\": \\"my-channel1\\",
+      \\"profileName\\": \\"MyChannel1\\",
       \\"orgs\\": [
         {
           \\"name\\": \\"Org1\\",
@@ -1946,18 +2507,56 @@ Validation warnings count: 0
             \\"fullAddress\\": \\"peer0.org1.com:7071\\",
             \\"couchDbExposePort\\": 5080
           },
+          \\"ordererGroups\\": [],
           \\"tools\\": {}
         }
       ],
+      \\"ordererGroup\\": {
+        \\"name\\": \\"group1\\",
+        \\"consensus\\": \\"solo\\",
+        \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+        \\"profileName\\": \\"Group1Genesis\\",
+        \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+        \\"hostingOrgs\\": [
+          \\"Orderer\\"
+        ],
+        \\"orderers\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer.com\\",
+            \\"domain\\": \\"orderer.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+          }
+        ],
+        \\"ordererHeads\\": [
+          {
+            \\"name\\": \\"orderer0.group1\\",
+            \\"address\\": \\"orderer0.group1.orderer.com\\",
+            \\"domain\\": \\"orderer.com\\",
+            \\"consensus\\": \\"solo\\",
+            \\"port\\": 7021,
+            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+          }
+        ],
+        \\"ordererHead\\": {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer.com\\",
+          \\"domain\\": \\"orderer.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+        }
+      },
       \\"ordererHead\\": {
-        \\"name\\": \\"orderer0\\",
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer.com\\",
         \\"domain\\": \\"orderer.com\\",
-        \\"address\\": \\"orderer0.orderer.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7021,
-        \\"fullAddress\\": \\"orderer0.orderer.com:7021\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
       },
-      \\"profileName\\": \\"MyChannel1\\",
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
@@ -2026,11 +2625,52 @@ Validation warnings count: 0
           \\"fullAddress\\": \\"peer0.org1.com:7071\\",
           \\"couchDbExposePort\\": 5080
         },
+        \\"ordererGroups\\": [],
         \\"tools\\": {}
       }
     }
   ],
-  \\"chaincodes\\": []
+  \\"chaincodes\\": [],
+  \\"ordererGroups\\": [
+    {
+      \\"name\\": \\"group1\\",
+      \\"consensus\\": \\"solo\\",
+      \\"configtxOrdererDefaults\\": \\"Group1Defaults\\",
+      \\"profileName\\": \\"Group1Genesis\\",
+      \\"genesisBlockName\\": \\"Group1Genesis.block\\",
+      \\"hostingOrgs\\": [
+        \\"Orderer\\"
+      ],
+      \\"orderers\\": [
+        {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer.com\\",
+          \\"domain\\": \\"orderer.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+        }
+      ],
+      \\"ordererHeads\\": [
+        {
+          \\"name\\": \\"orderer0.group1\\",
+          \\"address\\": \\"orderer0.group1.orderer.com\\",
+          \\"domain\\": \\"orderer.com\\",
+          \\"consensus\\": \\"solo\\",
+          \\"port\\": 7021,
+          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+        }
+      ],
+      \\"ordererHead\\": {
+        \\"name\\": \\"orderer0.group1\\",
+        \\"address\\": \\"orderer0.group1.orderer.com\\",
+        \\"domain\\": \\"orderer.com\\",
+        \\"consensus\\": \\"solo\\",
+        \\"port\\": 7021,
+        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7021\\"
+      }
+    }
+  ]
 }
 "
 `;
