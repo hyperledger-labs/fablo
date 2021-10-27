@@ -63,8 +63,9 @@ export interface CLIConfig {
 
 export interface ChannelConfig {
   name: string;
-  ordererHead: OrdererConfig;
   profileName: string;
+  ordererGroup: OrdererGroup;
+  ordererHead: OrdererConfig;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }

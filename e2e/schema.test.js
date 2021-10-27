@@ -265,18 +265,18 @@ describe("schema", () => {
   });
 
   it("should validate channel orderer org name", () => {
-    const withChannelsOrdererOrgName = (n: string) =>
+    const withChannelOrdererGroupName = (n: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.channels[0].ordererOrg = n;
+        json.channels[0].ordererGroup = n;
       });
 
-    expect(withChannelsOrdererOrgName(lettersOnly)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(uppercase)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(domain)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(spaces)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(specialCharacters2)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(lettersOnly)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(lettersAndNumber)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(uppercase)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(domain)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(spaces)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it("should validate chaincode name", () => {

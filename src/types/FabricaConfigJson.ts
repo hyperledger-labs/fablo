@@ -38,7 +38,7 @@ export interface OrgJson {
 
 export interface ChannelJson {
   name: string;
-  ordererOrg: string;
+  ordererGroup: string;
   orgs: { name: string; peers: string[] }[];
 }
 
