@@ -31,7 +31,7 @@ export default class SetupDockerGenerator extends Generator {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const config = extendConfig(json);
-    const { networkSettings, ordererOrgHead, ordererOrgs, orgs, chaincodes } = config;
+    const { networkSettings, ordererOrgs, orgs, chaincodes } = config;
 
     const dateString = new Date()
       .toISOString()
@@ -52,7 +52,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
-    this._copyDockerCompose(networkSettings, ordererOrgHead, ordererOrgs, orgs, chaincodes);
+    this._copyDockerCompose(config);
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
@@ -113,18 +113,11 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
 
-  _copyDockerCompose(
-    networkSettings: NetworkSettings,
-    ordererOrgHead: OrdererOrgConfig,
-    ordererOrgs: OrdererOrgConfig[],
-    orgs: OrgConfig[],
-    chaincodes: ChaincodeConfig[],
-  ): void {
-    const settings = { networkSettings, ordererOrgHead, ordererOrgs, orgs, chaincodes };
+  _copyDockerCompose(config: FabloConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-docker/docker-compose.yaml"),
       this.destinationPath("fabric-docker/docker-compose.yaml"),
-      settings,
+      config,
     );
   }
 

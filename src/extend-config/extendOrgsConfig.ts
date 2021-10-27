@@ -88,7 +88,7 @@ const extendOrderersGroupConfig = (
       genesisBlockName,
       hostingOrgs: [orgName],
       orderers,
-      ordererHead: orderers[0],
+      ordererHeads: [orderers[0]],
     },
   ];
 };

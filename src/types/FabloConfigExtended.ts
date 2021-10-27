@@ -157,7 +157,7 @@ export interface OrdererGroup {
   configtxOrdererDefaults: string;
   hostingOrgs: string[];
   orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
+  ordererHeads: OrdererConfig[];
 }
 
 export interface FabloConfigExtended {
