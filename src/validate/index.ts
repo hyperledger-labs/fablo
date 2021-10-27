@@ -106,7 +106,7 @@ class ValidateGenerator extends Generator {
     this._validateChaincodeNames(networkConfig.chaincodes);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
-    this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.channels);
+    this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.orgs, networkConfig.channels);
     this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.ordererOrgs, networkConfig.orgs);
 
     const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
@@ -275,15 +275,18 @@ class ValidateGenerator extends Generator {
     });
   }
 
-  _validateChannelOrdererGroup(ordererOrgs: OrdererOrgJson[], channels: ChannelJson[]) {
-    const ordrererOrgNames = ordererOrgs.map((org) => org.organization.name);
+  _validateChannelOrdererGroup(ordererOrgs: OrdererOrgJson[], orgs: OrgJson[], channels: ChannelJson[]) {
+    const o1 = ordererOrgs.map((org) => org.orderer.groupName);
+    const o2 = orgs.map((org) => org.orderer?.groupName).filter((n) => n != undefined) as string[];
+
+    const groupNames = new Set(o1.concat(o2));
 
     channels.forEach((channel) => {
-      if (typeof channel.ordererOrg != "undefined") {
-        if (!ordrererOrgNames.includes(channel.ordererOrg)) {
+      if (typeof channel.ordererGroup != "undefined") {
+        if (!groupNames.has(channel.ordererGroup)) {
           const objectToEmit = {
             category: validationCategories.CHANNEL,
-            message: `Channel '${channel.name}' has non valid ordererOrg defined. ordererOrg: '${channel.ordererOrg}', proper options: [${ordrererOrgNames}]`,
+            message: `Channel '${channel.name}' has non valid ordererOrg defined. ordererGroup: '${channel.ordererGroup}', proper options: [${groupNames}]`,
           };
           this.emit(validationErrorType.ERROR, objectToEmit);
         }

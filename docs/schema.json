@@ -436,8 +436,8 @@
             "title": "Name",
             "pattern": "^[a-z0-9_-]+$"
           },
-          "ordererOrg": {
-            "$id": "#/properties/channels/items/properties/ordererOrg",
+          "ordererGroup": {
+            "$id": "#/properties/channels/items/properties/ordererGroup",
             "type": "string",
             "title": "Name of Orderer Org handling the channel",
             "pattern": "^[a-zA-Z0-9]+$"
