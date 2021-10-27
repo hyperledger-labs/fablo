@@ -1,4 +1,4 @@
-OrdererOrgs:
+PeerOrgs:
 <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
   - Name: <%= ordererOrg.name %>
     Domain: <%= ordererOrg.domain %>

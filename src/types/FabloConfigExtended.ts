@@ -151,9 +151,10 @@ export interface OrdererOrgConfig {
 export interface OrdererGroup {
   name: string;
   consensus: "solo" | "etcdraft";
-  domain: string;
   profileName: string;
   genesisBlockName: string;
+  configtxOrdererDefaults: string;
+  hostingOrgs: string[];
   orderers: OrdererConfig[];
   ordererHead: OrdererConfig;
 }
@@ -165,5 +166,5 @@ export interface FabloConfigExtended {
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
-  // ordererGroups: OrdererGroup[];
+  ordererGroups: OrdererGroup[];
 }

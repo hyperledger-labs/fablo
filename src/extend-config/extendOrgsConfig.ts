@@ -66,6 +66,7 @@ const extendOrderersConfig = (
 
 const extendOrderersGroupConfig = (
   headOrdererPort: number,
+  orgName: string,
   ordererJson: OrdererJson,
   ordererOrgDomainJson: string,
 ): OrdererGroup[] => {
@@ -73,16 +74,19 @@ const extendOrderersGroupConfig = (
   const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
   const orderers = extendOrderersConfig(headOrdererPort, groupName, ordererJson, ordererOrgDomainJson);
 
-  const profileName = _.capitalize(groupName) + `Genesis`;
+  const profileName = _.upperFirst(`${groupName}Genesis`);
   const genesisBlockName = `${profileName}.block`;
+  const configtxOrdererDefaults = _.upperFirst(`${groupName}Defaults`);
 
   return [
     {
       name: groupName,
       consensus,
-      domain: `${groupName}.${ordererOrgDomainJson}`,
+      // domain: `${groupName}.${ordererOrgDomainJson}`,
+      configtxOrdererDefaults,
       profileName,
       genesisBlockName,
+      hostingOrgs: [orgName],
       orderers,
       ordererHead: orderers[0],
     },
@@ -105,7 +109,7 @@ const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: Orderer
   );
   const ordererHead = orderersExtended[0];
 
-  const ordererGroups = extendOrderersGroupConfig(headOrdererPort, ordererOrgJson.orderer, domain);
+  const ordererGroups = extendOrderersGroupConfig(headOrdererPort, name, ordererOrgJson.orderer, domain);
 
   return {
     name,
@@ -236,7 +240,7 @@ const extendOrgConfig = (
 
   let ordererGroups: OrdererGroup[] = [];
   if (orgJsonFormat.orderer != undefined) {
-    ordererGroups = extendOrderersGroupConfig(9090, orgJsonFormat.orderer, domain);
+    ordererGroups = extendOrderersGroupConfig(9090, name, orgJsonFormat.orderer, domain);
   }
 
   return {
