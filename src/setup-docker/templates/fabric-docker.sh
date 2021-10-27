@@ -13,7 +13,7 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
 
 function networkUp() {
   generateArtifacts
-#  startNetwork
+  startNetwork
 #  generateChannelsArtifacts
 #  installChannels
 #  installChaincodes
