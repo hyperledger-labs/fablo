@@ -13,10 +13,10 @@ source "$FABRICA_NETWORK_ROOT/fabric-docker/.env"
 function networkUp() {
   generateArtifacts
   startNetwork
-#  generateChannelsArtifacts
-#  installChannels
-#  installChaincodes
-#  notifyOrgsAboutChannels
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+  notifyOrgsAboutChannels
   printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 
