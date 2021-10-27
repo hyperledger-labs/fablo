@@ -16,12 +16,14 @@ const mergeOrdererGroupsByName = (ordererOrgs: OrdererOrgConfig[], orgs: OrgConf
   return Object.values(grouped).flatMap((groupsWithSameGroupName) => {
     const orderers = groupsWithSameGroupName.flatMap((group) => group.orderers);
     const hostingOrgs = groupsWithSameGroupName.flatMap((group) => group.hostingOrgs);
+    const ordererHeads = groupsWithSameGroupName.flatMap((group) => group.ordererHeads);
 
     return {
       ...groupsWithSameGroupName[0],
       hostingOrgs,
       orderers,
-      ordererHead: orderers[0],
+      ordererHeads,
+      ordererHead: ordererHeads[0],
     };
   });
 };
