@@ -52,6 +52,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -76,12 +77,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -132,6 +171,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -193,6 +233,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -260,6 +301,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -354,6 +396,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -378,12 +421,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -434,6 +515,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -495,6 +577,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -534,6 +617,46 @@ Object {
     },
     "tls": false,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "solo",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "solo",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -549,21 +672,53 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "solo",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
     ],
@@ -585,21 +740,53 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
       ],
@@ -654,6 +841,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -715,6 +903,7 @@ Object {
       },
       "mspName": "Org2MSP",
       "name": "Org2",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org2.com",
@@ -785,6 +974,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -809,12 +999,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -865,6 +1093,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -941,6 +1170,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -1020,6 +1250,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -1044,12 +1275,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -1100,6 +1369,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -1148,6 +1418,46 @@ Object {
     },
     "tls": true,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "etcdraft",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "etcdraft",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -1163,21 +1473,53 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "etcdraft",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
     ],
@@ -1199,21 +1541,53 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
       ],
@@ -1268,6 +1642,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -1347,6 +1722,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -1362,12 +1738,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -1418,6 +1832,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -1479,6 +1894,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -1546,6 +1962,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -1616,6 +2033,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -1631,12 +2049,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -1687,6 +2143,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -1748,6 +2205,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -1813,6 +2271,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer1.org1.com",
@@ -1828,12 +2287,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel2",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -1884,6 +2381,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org1.com",
@@ -1945,6 +2443,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org2.com",
@@ -1984,6 +2483,46 @@ Object {
     },
     "tls": false,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "solo",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "solo",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -1999,21 +2538,53 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "solo",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
     ],
@@ -2035,21 +2606,53 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
       ],
@@ -2104,6 +2707,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -2174,6 +2778,7 @@ Object {
       },
       "mspName": "Org2MSP",
       "name": "Org2",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org2.com",
@@ -2253,6 +2858,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -2277,12 +2883,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -2333,6 +2977,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -2394,6 +3039,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -2461,6 +3107,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -2548,6 +3195,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -2572,12 +3220,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -2628,6 +3314,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -2689,6 +3376,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -2756,6 +3444,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -2844,6 +3533,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -2868,12 +3558,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -2924,6 +3652,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -2985,6 +3714,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -3024,6 +3754,46 @@ Object {
     },
     "tls": false,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "solo",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "solo",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -3039,21 +3809,53 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "solo",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
     ],
@@ -3075,21 +3877,53 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
       ],
@@ -3144,6 +3978,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -3205,6 +4040,7 @@ Object {
       },
       "mspName": "Org2MSP",
       "name": "Org2",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org2.com",
@@ -3275,6 +4111,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -3290,12 +4127,66 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer1.group1.orderer.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer2.group1.orderer.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -3346,6 +4237,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -3407,6 +4299,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -3474,6 +4367,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -3543,6 +4437,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org1.com",
@@ -3558,12 +4453,66 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel2",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer1.group1.orderer.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer2.group1.orderer.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -3614,6 +4563,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer1.org1.com",
@@ -3675,6 +4625,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer1.org2.com",
@@ -3742,6 +4693,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer1.org1.com",
@@ -3812,6 +4764,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -3827,12 +4780,66 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer1.group1.orderer.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer2.group1.orderer.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -3883,6 +4890,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -3944,6 +4952,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -4009,6 +5018,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer1.org1.com",
@@ -4024,12 +5034,66 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel2",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer1.group1.orderer.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer2.group1.orderer.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -4080,6 +5144,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org1.com",
@@ -4141,6 +5206,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org2.com",
@@ -4180,6 +5246,62 @@ Object {
     },
     "tls": true,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "etcdraft",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "etcdraft",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        Object {
+          "address": "orderer1.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer1.group1.orderer.com:7022",
+          "name": "orderer1.group1",
+          "port": 7022,
+        },
+        Object {
+          "address": "orderer2.group1.orderer.com",
+          "consensus": "etcdraft",
+          "domain": "orderer.com",
+          "fullAddress": "orderer2.group1.orderer.com:7023",
+          "name": "orderer2.group1",
+          "port": 7023,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -4195,37 +5317,85 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer1.group1.orderer.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer.com",
+            "consensus": "etcdraft",
+            "domain": "orderer.com",
+            "fullAddress": "orderer2.group1.orderer.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "etcdraft",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       Object {
-        "address": "orderer1.orderer.com",
+        "address": "orderer1.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer1.orderer.com:7022",
-        "name": "orderer1",
+        "fullAddress": "orderer1.group1.orderer.com:7022",
+        "name": "orderer1.group1",
         "port": 7022,
       },
       Object {
-        "address": "orderer2.orderer.com",
+        "address": "orderer2.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer2.orderer.com:7023",
-        "name": "orderer2",
+        "fullAddress": "orderer2.group1.orderer.com:7023",
+        "name": "orderer2.group1",
         "port": 7023,
       },
     ],
@@ -4247,37 +5417,85 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer1.group1.orderer.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer.com",
+              "consensus": "etcdraft",
+              "domain": "orderer.com",
+              "fullAddress": "orderer2.group1.orderer.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "etcdraft",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         Object {
-          "address": "orderer1.orderer.com",
+          "address": "orderer1.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer1.orderer.com:7022",
-          "name": "orderer1",
+          "fullAddress": "orderer1.group1.orderer.com:7022",
+          "name": "orderer1.group1",
           "port": 7022,
         },
         Object {
-          "address": "orderer2.orderer.com",
+          "address": "orderer2.group1.orderer.com",
           "consensus": "etcdraft",
           "domain": "orderer.com",
-          "fullAddress": "orderer2.orderer.com:7023",
-          "name": "orderer2",
+          "fullAddress": "orderer2.group1.orderer.com:7023",
+          "name": "orderer2.group1",
           "port": 7023,
         },
       ],
@@ -4332,6 +5550,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -4402,6 +5621,7 @@ Object {
       },
       "mspName": "Org2MSP",
       "name": "Org2",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org2.com",
@@ -4481,6 +5701,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -4505,12 +5726,50 @@ Object {
           "tools": Object {},
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -4561,6 +5820,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -4637,6 +5897,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -4716,6 +5977,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -4740,12 +6002,50 @@ Object {
         "tools": Object {},
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -4796,6 +6096,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -4844,6 +6145,46 @@ Object {
     },
     "tls": false,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "solo",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer.com",
+        "consensus": "solo",
+        "domain": "orderer.com",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer.com",
+          "consensus": "solo",
+          "domain": "orderer.com",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer.com",
@@ -4859,21 +6200,53 @@ Object {
     "genesisBlockName": "OrdererGenesis.block",
     "mspName": "OrdererMSP",
     "name": "Orderer",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer.com",
+            "consensus": "solo",
+            "domain": "orderer.com",
+            "fullAddress": "orderer0.group1.orderer.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer.com",
+      "address": "orderer0.group1.orderer.com",
       "consensus": "solo",
       "domain": "orderer.com",
-      "fullAddress": "orderer0.orderer.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
     ],
@@ -4895,21 +6268,53 @@ Object {
       "genesisBlockName": "OrdererGenesis.block",
       "mspName": "OrdererMSP",
       "name": "Orderer",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer.com",
+              "consensus": "solo",
+              "domain": "orderer.com",
+              "fullAddress": "orderer0.group1.orderer.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer.com",
+        "address": "orderer0.group1.orderer.com",
         "consensus": "solo",
         "domain": "orderer.com",
-        "fullAddress": "orderer0.orderer.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer.com",
+          "address": "orderer0.group1.orderer.com",
           "consensus": "solo",
           "domain": "orderer.com",
-          "fullAddress": "orderer0.orderer.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
       ],
@@ -4964,6 +6369,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -5043,6 +6449,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -5075,12 +6482,66 @@ Object {
           },
         },
         "name": "my-channel1",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer1",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer1.group1.orderer1.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer2.group1.orderer1.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer1.com",
+          "address": "orderer0.group1.orderer1.com",
           "consensus": "etcdraft",
           "domain": "orderer1.com",
-          "fullAddress": "orderer0.orderer1.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -5131,6 +6592,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org1.com",
@@ -5209,6 +6671,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer0.org2.com",
@@ -5276,6 +6739,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -5362,6 +6826,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org1.com",
@@ -5394,12 +6859,66 @@ Object {
           },
         },
         "name": "my-channel2",
+        "ordererGroup": Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer1",
+          ],
+          "name": "group1",
+          "ordererHead": Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer1.group1.orderer1.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer2.group1.orderer1.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
         "ordererHead": Object {
-          "address": "orderer0.orderer1.com",
+          "address": "orderer0.group1.orderer1.com",
           "consensus": "etcdraft",
           "domain": "orderer1.com",
-          "fullAddress": "orderer0.orderer1.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         "orgs": Array [
@@ -5450,6 +6969,7 @@ Object {
             },
             "mspName": "Org1MSP",
             "name": "Org1",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer1.org1.com",
@@ -5528,6 +7048,7 @@ Object {
             },
             "mspName": "Org2MSP",
             "name": "Org2",
+            "ordererGroups": Array [],
             "peers": Array [
               Object {
                 "address": "peer1.org2.com",
@@ -5595,6 +7116,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer1.org1.com",
@@ -5682,6 +7204,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -5714,12 +7237,66 @@ Object {
         },
       },
       "name": "my-channel1",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer1",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer1.group1.orderer1.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer2.group1.orderer1.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer1.com",
+        "address": "orderer0.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer0.orderer1.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer1.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -5770,6 +7347,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -5848,6 +7426,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -5913,6 +7492,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer1.org1.com",
@@ -5945,12 +7525,66 @@ Object {
         },
       },
       "name": "my-channel2",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer1",
+        ],
+        "name": "group1",
+        "ordererHead": Object {
+          "address": "orderer0.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer1.group1.orderer1.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer2.group1.orderer1.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer1.com",
+        "address": "orderer0.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer0.orderer1.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer1.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orgs": Array [
@@ -6001,6 +7635,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org1.com",
@@ -6079,6 +7714,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer1.org2.com",
@@ -6144,6 +7780,7 @@ Object {
         },
         "mspName": "Org1MSP",
         "name": "Org1",
+        "ordererGroups": Array [],
         "peers": Array [
           Object {
             "address": "peer0.org1.com",
@@ -6185,12 +7822,50 @@ Object {
         },
       },
       "name": "my-channel3",
+      "ordererGroup": Object {
+        "configtxOrdererDefaults": "Group2Defaults",
+        "consensus": "solo",
+        "genesisBlockName": "Group2Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer2",
+        ],
+        "name": "group2",
+        "ordererHead": Object {
+          "address": "orderer0.group2.orderer2.com",
+          "consensus": "solo",
+          "domain": "orderer2.com",
+          "fullAddress": "orderer0.group2.orderer2.com:7031",
+          "name": "orderer0.group2",
+          "port": 7031,
+        },
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group2.orderer2.com",
+            "consensus": "solo",
+            "domain": "orderer2.com",
+            "fullAddress": "orderer0.group2.orderer2.com:7031",
+            "name": "orderer0.group2",
+            "port": 7031,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group2.orderer2.com",
+            "consensus": "solo",
+            "domain": "orderer2.com",
+            "fullAddress": "orderer0.group2.orderer2.com:7031",
+            "name": "orderer0.group2",
+            "port": 7031,
+          },
+        ],
+        "profileName": "Group2Genesis",
+      },
       "ordererHead": Object {
-        "address": "orderer0.orderer2.com",
+        "address": "orderer0.group2.orderer2.com",
         "consensus": "solo",
         "domain": "orderer2.com",
-        "fullAddress": "orderer0.orderer2.com:7031",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group2.orderer2.com:7031",
+        "name": "orderer0.group2",
         "port": 7031,
       },
       "orgs": Array [
@@ -6241,6 +7916,7 @@ Object {
           },
           "mspName": "Org1MSP",
           "name": "Org1",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org1.com",
@@ -6328,6 +8004,7 @@ Object {
           },
           "mspName": "Org2MSP",
           "name": "Org2",
+          "ordererGroups": Array [],
           "peers": Array [
             Object {
               "address": "peer0.org2.com",
@@ -6376,6 +8053,100 @@ Object {
     },
     "tls": true,
   },
+  "ordererGroups": Array [
+    Object {
+      "configtxOrdererDefaults": "Group1Defaults",
+      "consensus": "etcdraft",
+      "genesisBlockName": "Group1Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer1",
+      ],
+      "name": "group1",
+      "ordererHead": Object {
+        "address": "orderer0.group1.orderer1.com",
+        "consensus": "etcdraft",
+        "domain": "orderer1.com",
+        "fullAddress": "orderer0.group1.orderer1.com:7021",
+        "name": "orderer0.group1",
+        "port": 7021,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
+          "port": 7021,
+        },
+        Object {
+          "address": "orderer1.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer1.group1.orderer1.com:7022",
+          "name": "orderer1.group1",
+          "port": 7022,
+        },
+        Object {
+          "address": "orderer2.group1.orderer1.com",
+          "consensus": "etcdraft",
+          "domain": "orderer1.com",
+          "fullAddress": "orderer2.group1.orderer1.com:7023",
+          "name": "orderer2.group1",
+          "port": 7023,
+        },
+      ],
+      "profileName": "Group1Genesis",
+    },
+    Object {
+      "configtxOrdererDefaults": "Group2Defaults",
+      "consensus": "solo",
+      "genesisBlockName": "Group2Genesis.block",
+      "hostingOrgs": Array [
+        "Orderer2",
+      ],
+      "name": "group2",
+      "ordererHead": Object {
+        "address": "orderer0.group2.orderer2.com",
+        "consensus": "solo",
+        "domain": "orderer2.com",
+        "fullAddress": "orderer0.group2.orderer2.com:7031",
+        "name": "orderer0.group2",
+        "port": 7031,
+      },
+      "ordererHeads": Array [
+        Object {
+          "address": "orderer0.group2.orderer2.com",
+          "consensus": "solo",
+          "domain": "orderer2.com",
+          "fullAddress": "orderer0.group2.orderer2.com:7031",
+          "name": "orderer0.group2",
+          "port": 7031,
+        },
+      ],
+      "orderers": Array [
+        Object {
+          "address": "orderer0.group2.orderer2.com",
+          "consensus": "solo",
+          "domain": "orderer2.com",
+          "fullAddress": "orderer0.group2.orderer2.com:7031",
+          "name": "orderer0.group2",
+          "port": 7031,
+        },
+      ],
+      "profileName": "Group2Genesis",
+    },
+  ],
   "ordererOrgHead": Object {
     "ca": Object {
       "address": "ca.orderer1.com",
@@ -6391,37 +8162,85 @@ Object {
     "genesisBlockName": "Orderer1Genesis.block",
     "mspName": "Orderer1MSP",
     "name": "Orderer1",
+    "ordererGroups": Array [
+      Object {
+        "configtxOrdererDefaults": "Group1Defaults",
+        "consensus": "etcdraft",
+        "genesisBlockName": "Group1Genesis.block",
+        "hostingOrgs": Array [
+          "Orderer1",
+        ],
+        "name": "group1",
+        "ordererHeads": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+        ],
+        "orderers": Array [
+          Object {
+            "address": "orderer0.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer0.group1.orderer1.com:7021",
+            "name": "orderer0.group1",
+            "port": 7021,
+          },
+          Object {
+            "address": "orderer1.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer1.group1.orderer1.com:7022",
+            "name": "orderer1.group1",
+            "port": 7022,
+          },
+          Object {
+            "address": "orderer2.group1.orderer1.com",
+            "consensus": "etcdraft",
+            "domain": "orderer1.com",
+            "fullAddress": "orderer2.group1.orderer1.com:7023",
+            "name": "orderer2.group1",
+            "port": 7023,
+          },
+        ],
+        "profileName": "Group1Genesis",
+      },
+    ],
     "ordererHead": Object {
-      "address": "orderer0.orderer1.com",
+      "address": "orderer0.group1.orderer1.com",
       "consensus": "etcdraft",
       "domain": "orderer1.com",
-      "fullAddress": "orderer0.orderer1.com:7021",
-      "name": "orderer0",
+      "fullAddress": "orderer0.group1.orderer1.com:7021",
+      "name": "orderer0.group1",
       "port": 7021,
     },
     "orderers": Array [
       Object {
-        "address": "orderer0.orderer1.com",
+        "address": "orderer0.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer0.orderer1.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer1.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       Object {
-        "address": "orderer1.orderer1.com",
+        "address": "orderer1.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer1.orderer1.com:7022",
-        "name": "orderer1",
+        "fullAddress": "orderer1.group1.orderer1.com:7022",
+        "name": "orderer1.group1",
         "port": 7022,
       },
       Object {
-        "address": "orderer2.orderer1.com",
+        "address": "orderer2.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer2.orderer1.com:7023",
-        "name": "orderer2",
+        "fullAddress": "orderer2.group1.orderer1.com:7023",
+        "name": "orderer2.group1",
         "port": 7023,
       },
     ],
@@ -6443,37 +8262,85 @@ Object {
       "genesisBlockName": "Orderer1Genesis.block",
       "mspName": "Orderer1MSP",
       "name": "Orderer1",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group1Defaults",
+          "consensus": "etcdraft",
+          "genesisBlockName": "Group1Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer1",
+          ],
+          "name": "group1",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer0.group1.orderer1.com:7021",
+              "name": "orderer0.group1",
+              "port": 7021,
+            },
+            Object {
+              "address": "orderer1.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer1.group1.orderer1.com:7022",
+              "name": "orderer1.group1",
+              "port": 7022,
+            },
+            Object {
+              "address": "orderer2.group1.orderer1.com",
+              "consensus": "etcdraft",
+              "domain": "orderer1.com",
+              "fullAddress": "orderer2.group1.orderer1.com:7023",
+              "name": "orderer2.group1",
+              "port": 7023,
+            },
+          ],
+          "profileName": "Group1Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer1.com",
+        "address": "orderer0.group1.orderer1.com",
         "consensus": "etcdraft",
         "domain": "orderer1.com",
-        "fullAddress": "orderer0.orderer1.com:7021",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group1.orderer1.com:7021",
+        "name": "orderer0.group1",
         "port": 7021,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer1.com",
+          "address": "orderer0.group1.orderer1.com",
           "consensus": "etcdraft",
           "domain": "orderer1.com",
-          "fullAddress": "orderer0.orderer1.com:7021",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group1.orderer1.com:7021",
+          "name": "orderer0.group1",
           "port": 7021,
         },
         Object {
-          "address": "orderer1.orderer1.com",
+          "address": "orderer1.group1.orderer1.com",
           "consensus": "etcdraft",
           "domain": "orderer1.com",
-          "fullAddress": "orderer1.orderer1.com:7022",
-          "name": "orderer1",
+          "fullAddress": "orderer1.group1.orderer1.com:7022",
+          "name": "orderer1.group1",
           "port": 7022,
         },
         Object {
-          "address": "orderer2.orderer1.com",
+          "address": "orderer2.group1.orderer1.com",
           "consensus": "etcdraft",
           "domain": "orderer1.com",
-          "fullAddress": "orderer2.orderer1.com:7023",
-          "name": "orderer2",
+          "fullAddress": "orderer2.group1.orderer1.com:7023",
+          "name": "orderer2.group1",
           "port": 7023,
         },
       ],
@@ -6494,21 +8361,53 @@ Object {
       "genesisBlockName": "Orderer2Genesis.block",
       "mspName": "Orderer2MSP",
       "name": "Orderer2",
+      "ordererGroups": Array [
+        Object {
+          "configtxOrdererDefaults": "Group2Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group2Genesis.block",
+          "hostingOrgs": Array [
+            "Orderer2",
+          ],
+          "name": "group2",
+          "ordererHeads": Array [
+            Object {
+              "address": "orderer0.group2.orderer2.com",
+              "consensus": "solo",
+              "domain": "orderer2.com",
+              "fullAddress": "orderer0.group2.orderer2.com:7031",
+              "name": "orderer0.group2",
+              "port": 7031,
+            },
+          ],
+          "orderers": Array [
+            Object {
+              "address": "orderer0.group2.orderer2.com",
+              "consensus": "solo",
+              "domain": "orderer2.com",
+              "fullAddress": "orderer0.group2.orderer2.com:7031",
+              "name": "orderer0.group2",
+              "port": 7031,
+            },
+          ],
+          "profileName": "Group2Genesis",
+        },
+      ],
       "ordererHead": Object {
-        "address": "orderer0.orderer2.com",
+        "address": "orderer0.group2.orderer2.com",
         "consensus": "solo",
         "domain": "orderer2.com",
-        "fullAddress": "orderer0.orderer2.com:7031",
-        "name": "orderer0",
+        "fullAddress": "orderer0.group2.orderer2.com:7031",
+        "name": "orderer0.group2",
         "port": 7031,
       },
       "orderers": Array [
         Object {
-          "address": "orderer0.orderer2.com",
+          "address": "orderer0.group2.orderer2.com",
           "consensus": "solo",
           "domain": "orderer2.com",
-          "fullAddress": "orderer0.orderer2.com:7031",
-          "name": "orderer0",
+          "fullAddress": "orderer0.group2.orderer2.com:7031",
+          "name": "orderer0.group2",
           "port": 7031,
         },
       ],
@@ -6563,6 +8462,7 @@ Object {
       },
       "mspName": "Org1MSP",
       "name": "Org1",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org1.com",
@@ -6650,6 +8550,7 @@ Object {
       },
       "mspName": "Org2MSP",
       "name": "Org2",
+      "ordererGroups": Array [],
       "peers": Array [
         Object {
           "address": "peer0.org2.com",

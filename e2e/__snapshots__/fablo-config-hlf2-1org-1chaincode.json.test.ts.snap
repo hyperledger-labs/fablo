@@ -39,10 +39,10 @@ Channel: &ChannelDefaults
 #   Section: Organizations
 ################################################################################
 Organizations:
-    - &OrdererOrg
+    - &Orderer
       Name: OrdererMSP
       ID: OrdererMSP
-      MSPDir: crypto-config/ordererOrganizations/orderer.com/msp
+      MSPDir: crypto-config/peerOrganizations/orderer.com/msp
 
       Policies:
           Readers:
@@ -77,6 +77,7 @@ Organizations:
       AnchorPeers:
           - Host: peer0.org1.com
             Port: 7071
+
           - Host: peer1.org1.com
             Port: 7072
 
@@ -107,10 +108,10 @@ Application: &ApplicationDefaults
 ################################################################################
 #   SECTION: Orderer
 ################################################################################
-Orderer: &OrdererMSPDefaults
+Orderer: &Group1Defaults
     OrdererType: solo
     Addresses:
-        - orderer0.orderer.com:7021
+        - orderer0.group1.orderer.com:7021
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 10
@@ -144,13 +145,13 @@ Orderer: &OrdererMSPDefaults
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-    # Profile used to create Genesis block for group Orderer#
-    OrdererGenesis:
+    # Profile used to create Genesis block for group group1 #
+    Group1Genesis:
         <<: *ChannelDefaults
         Orderer:
-            <<: *OrdererMSPDefaults
+            <<: *Group1Defaults
             Organizations:
-                - *OrdererOrg
+                - *Orderer
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
@@ -161,6 +162,12 @@ Profiles:
     # Profile used to create channeltx for my-channel1 #
     MyChannel1:
         <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *ApplicationCapabilities
         Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
@@ -170,12 +177,15 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-        Orderer:
-            <<: *OrdererMSPDefaults
-            Organizations:
-                - *Org1
-            Capabilities:
-                <<: *ApplicationCapabilities
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderers.yaml from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"PeerOrgs:
+  - Name: Orderer
+    Domain: orderer.com
+    Specs:
+      - Hostname: orderer0.group1
 "
 `;
 
@@ -183,19 +193,11 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 "PeerOrgs:
   - Name: Org1
     Domain: org1.com
+    Specs:
     Template:
       Count: 2
     Users:
       Count: 1
-"
-`;
-
-exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-root.yaml from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
-"OrdererOrgs:
-  - Name: Orderer
-    Domain: orderer.com
-    Specs:
-      - Hostname: orderer0
 "
 `;
 
@@ -410,6 +412,40 @@ function printChannelsHelp() {
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 "#!/usr/bin/env bash
 
+function generateArtifacts() {
+  printHeadline \\"Generating basic configs\\" \\"U1F913\\"
+  printItalics \\"Generating crypto material for Orderer Orgs\\" \\"U1F512\\"
+  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-orderers.yaml\\" \\"ordererOrganizations\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
+
+  printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
+  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
+
+  printItalics \\"Generating genesis block for group group1\\" \\"U1F3E0\\"
+  genesisBlockCreate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\" \\"Group1Genesis\\"
+
+  # Create directory for chaincode packages to avoid permission errors on linux
+  mkdir -p \\"$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages\\"
+}
+
+function startNetwork() {
+  printHeadline \\"Starting network\\" \\"U1F680\\"
+  (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose up -d)
+  sleep 4
+}
+
+function generateChannelsArtifacts() {
+  printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
+  createChannelTx \\"my-channel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+}
+
+function installChannels() {
+  printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
+  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7071' 'crypto/users/Admin@org1.com/msp' 'orderer0.group1.orderer.com:7021';\\"
+
+  printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
+  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7072' 'crypto/users/Admin@org1.com/msp' 'orderer0.group1.orderer.com:7021';\\"
+}
+
 function installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
     local version=\\"0.0.1\\"
@@ -418,14 +454,25 @@ function installChaincodes() {
     chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"chaincode1\\" \\"$version\\" \\"\\"
     chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"\\"
+    chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"\\"
     printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.com:7071\\" \\"\\" \\"\\"
+    chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.com:7071\\" \\"\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
   fi
 
+}
+
+function notifyOrgsAboutChannels() {
+  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+
+  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.group1.orderer.com:7021\\"
+
+  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
 }
 
 function upgradeChaincode() {
@@ -448,9 +495,9 @@ function upgradeChaincode() {
       chaincodePackage \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
       chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"chaincode1\\" \\"$version\\" \\"\\"
       chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"chaincode1\\" \\"$version\\" \\"\\"
-      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"\\"
+      chaincodeApprove \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"\\"
       printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.com:7071\\" \\"\\" \\"\\"
+      chaincodeCommit \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.com:7021\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.com:7071\\" \\"\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -459,55 +506,10 @@ function upgradeChaincode() {
   fi
 }
 
-function notifyOrgsAboutChannels() {
-  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
-
-  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.orderer.com:7021\\"
-
-  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
-  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
-}
-
-function generateArtifacts() {
-  printHeadline \\"Generating basic configs\\" \\"U1F913\\"
-  printItalics \\"Generating crypto material for Orderer Orgs\\" \\"U1F512\\"
-  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-root.yaml\\" \\"ordererOrganizations\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
-
-  printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
-  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
-
-  printItalics \\"Generating genesis block for group Orderer\\" \\"U1F3E0\\"
-  genesisBlockCreate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\" \\"OrdererGenesis\\"
-
-  # Create directory for chaincode packages to avoid permission errors on linux
-  mkdir -p \\"$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages\\"
-}
-
-function startNetwork() {
-  printHeadline \\"Starting network\\" \\"U1F680\\"
-  (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose up -d)
-  sleep 4
-}
-
 function stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose stop)
   sleep 4
-}
-
-function generateChannelsArtifacts() {
-  printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
-  createChannelTx \\"my-channel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
-}
-
-function installChannels() {
-  printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
-  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.com:7071' 'crypto/users/Admin@org1.com/msp' 'orderer0.orderer.com:7021';\\"
-
-  printItalics \\"Joining 'my-channel1' on  Org1/peer1\\" \\"U1F638\\"
-  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.com:7072' 'crypto/users/Admin@org1.com/msp' 'orderer0.orderer.com:7021';\\"
 }
 
 function networkDown() {
@@ -537,15 +539,15 @@ networks:
   basic:
 
 services:
-  orderer0.orderer.com:
-    container_name: orderer0.orderer.com
+  orderer0.group1.orderer.com:
+    container_name: orderer0.group1.orderer.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7021
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/OrdererGenesis.block
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
@@ -555,8 +557,8 @@ services:
       - 7021:7021
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/orderer.com/orderers/orderer0.orderer.com/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/orderer.com/orderers/orderer0.orderer.com/tls/:/var/hyperledger/orderer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
 
@@ -1645,8 +1647,8 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper fil
 Array [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderers.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-root.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
