@@ -5,7 +5,8 @@ networks:
 
 services:
   <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
-  <%_ ordererOrg.orderers.forEach(function(orderer){ _%>
+  <%_ ordererOrg.ordererGroups.forEach(function(ordererGroup){ _%>
+  <%_ ordererGroup.orderers.forEach(function(orderer){ _%>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
     image: hyperledger/fabric-orderer:${FABRIC_VERSION}
@@ -14,7 +15,7 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererOrg.genesisBlockName %>
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
       - ORDERER_GENERAL_LOCALMSPID=<%= ordererOrg.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
@@ -34,11 +35,12 @@ services:
       - <%= orderer.port %>:<%= orderer.port %>
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/peerOrganizations/<%= ordererOrg.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/<%= ordererOrg.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
 
+  <%_ }) _%>
   <%_ }) _%>
   <%_ }) _%>
 
@@ -180,8 +182,8 @@ services:
       - <%= orderer.port %>:<%= orderer.port %>
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
     networks:
       - basic
 
