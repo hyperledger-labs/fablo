@@ -38,10 +38,10 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const networkSettings = extendNetworkSettings(networkSettingsJson);
   const ordererOrgs = extendOrdererOrgsConfig(ordererOrgsJson);
   const orgs = extendOrgsConfig(orgsJson, networkSettings);
-  const channels = extendChannelsConfig(channelsJson, orgs, ordererOrgs);
-  const chaincodes = extendChaincodesConfig(chaincodesJson, channels, networkSettings);
-
   const ordererGroups = mergeOrdererGroupsByName(ordererOrgs, orgs);
+
+  const channels = extendChannelsConfig(channelsJson, orgs, ordererGroups);
+  const chaincodes = extendChaincodesConfig(chaincodesJson, channels, networkSettings);
 
   return {
     networkSettings,

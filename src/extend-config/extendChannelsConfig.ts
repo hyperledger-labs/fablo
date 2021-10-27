@@ -1,4 +1,4 @@
-import { ChannelConfig, OrdererOrgConfig, OrgConfig } from "../types/FabloConfigExtended";
+import { ChannelConfig, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
 import { ChannelJson } from "../types/FabloConfigJson";
 import * as _ from "lodash";
 import defaults from "./defaults";
@@ -15,11 +15,11 @@ const filterToAvailablePeers = (orgTransformedFormat: OrgConfig, peersTransforme
 const extendChannelConfig = (
   channelJsonFormat: ChannelJson,
   orgsTransformed: OrgConfig[],
-  ordererOrgs: OrdererOrgConfig[],
+  ordererGroups: OrdererGroup[],
 ): ChannelConfig => {
   const channelName = channelJsonFormat.name;
   const profileName = _.chain(channelName).camelCase().upperFirst().value();
-  const ordererOrgName = channelJsonFormat.ordererOrg ?? defaults.channel.ordererOrg(ordererOrgs);
+  const ordererGroupName = channelJsonFormat.ordererGroup ?? defaults.channel.ordererGroup(ordererGroups);
 
   const orgNames = channelJsonFormat.orgs.map((o) => o.name);
   const orgPeers = channelJsonFormat.orgs.map((o) => o.peers).reduce((a, b) => a.concat(b), []);
@@ -27,13 +27,15 @@ const extendChannelConfig = (
     .filter((org) => orgNames.includes(org.name))
     .map((org) => filterToAvailablePeers(org, orgPeers));
 
-  const ordererHead = ordererOrgs.filter((org) => org.name == ordererOrgName)[0].ordererHead;
+  const ordererGroup = ordererGroups.filter((group) => group.name == ordererGroupName)[0];
+  const ordererHead = ordererGroup.ordererHead;
 
   return {
     name: channelName,
-    orgs: orgsForChannel,
-    ordererHead,
     profileName,
+    orgs: orgsForChannel,
+    ordererGroup,
+    ordererHead,
     instantiatingOrg: orgsForChannel[0],
   };
 };
@@ -41,7 +43,7 @@ const extendChannelConfig = (
 const extendChannelsConfig = (
   channelsJsonConfigFormat: ChannelJson[],
   orgsTransformed: OrgConfig[],
-  ordererOrgs: OrdererOrgConfig[],
-): ChannelConfig[] => channelsJsonConfigFormat.map((ch) => extendChannelConfig(ch, orgsTransformed, ordererOrgs));
+  ordererGroups: OrdererGroup[],
+): ChannelConfig[] => channelsJsonConfigFormat.map((ch) => extendChannelConfig(ch, orgsTransformed, ordererGroups));
 
 export default extendChannelsConfig;

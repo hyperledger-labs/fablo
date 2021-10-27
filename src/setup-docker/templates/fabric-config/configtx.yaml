@@ -164,6 +164,14 @@ Profiles:
     # Profile used to create channeltx for <%= channel.name %> #
     <%= channel.profileName %>:
         <<: *ChannelDefaults
+        Orderer:
+            <<: *<%= channel.ordererGroup.configtxOrdererDefaults %>
+            Organizations:
+            <%_ channel.ordererGroup.hostingOrgs.forEach(function(hostingOrg) { _%>
+                - *<%= hostingOrg %>
+            <%_ }) _%>
+            Capabilities:
+                <<: *ApplicationCapabilities
         Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
@@ -173,11 +181,5 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
                 - *<%= org.name %><% }) %>
-        Orderer:
-            <<: *<%= ordererOrgs[0].mspName %>Defaults
-            Organizations:<% channel.orgs.forEach(function(org){ %>
-                - *<%= org.name %><% }) %>
-            Capabilities:
-                <<: *ApplicationCapabilities
 
 <%_ }) _%>
