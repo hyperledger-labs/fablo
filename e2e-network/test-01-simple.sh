@@ -42,7 +42,7 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-waitForContainer "orderer0.orderer.com" "Created and started new.*my-channel1"
+waitForContainer "orderer0.group1.orderer.com" "Created and started new.*my-channel1"
 waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations"
