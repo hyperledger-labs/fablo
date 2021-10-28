@@ -14,7 +14,7 @@ elif [ "$1" = "list" ] && [ "$2" = "<%= org.name.toLowerCase(); %>" ] && [ "$3" 
   <% if(!networkSettings.tls) { %>
     peerChannelList "<%= org.cli.address %>" "<%= peer.fullAddress %>"
   <% } else { %>
-    peerChannelListTls "<%= org.cli.address %>" "<%= peer.fullAddress %>" "crypto-orderer/tlsca.<%= ordererOrgHead.ordererHead.domain %>-cert.pem"
+    peerChannelListTls "<%= org.cli.address %>" "<%= peer.fullAddress %>" "crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem"
   <% } %>
 <% })}) %>
 

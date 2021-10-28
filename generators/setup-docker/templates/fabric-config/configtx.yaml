@@ -30,24 +30,6 @@ Channel: &ChannelDefaults
 #   Section: Organizations
 ################################################################################
 Organizations:
-<%_ ordererOrgs.forEach(function(ordererOrg) { _%>
-    - &<%= ordererOrg.name %>
-      Name: <%= ordererOrg.mspName %>
-      ID: <%= ordererOrg.mspName %>
-      MSPDir: crypto-config/peerOrganizations/<%= ordererOrg.domain %>/msp
-
-      Policies:
-          Readers:
-              Type: Signature
-              Rule: "OR('<%= ordererOrg.mspName %>.member')"
-          Writers:
-              Type: Signature
-              Rule: "OR('<%= ordererOrg.mspName %>.member')"
-          Admins:
-              Type: Signature
-              Rule: "OR('<%= ordererOrg.mspName %>.admin')"
-
-<%_ }) _%>
 <%_ orgs.forEach(function(org){ _%>
     - &<%= org.name %>
       Name: <%= org.mspName %>
@@ -68,10 +50,14 @@ Organizations:
               Type: Signature
               Rule: "OR('<%= org.mspName %>.member')"
 
-      AnchorPeers:<% org.anchorPeers.forEach(function(anchorPeer){ %>
+      AnchorPeers:
+        <%_ org.anchorPeers.forEach(function(anchorPeer){ _%>
           - Host: <%= anchorPeer.address %>
             Port: <%= anchorPeer.port %>
-<%_ })}) _%>
+
+        <%_ }) _%>
+
+<%_ }) _%>
 
 ################################################################################
 #   SECTION: Application

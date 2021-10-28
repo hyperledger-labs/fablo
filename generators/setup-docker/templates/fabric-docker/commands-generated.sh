@@ -2,12 +2,6 @@
 
 function generateArtifacts() {
   printHeadline "Generating basic configs" "U1F913"
-  printItalics "Generating crypto material for Orderer Orgs" "U1F512"
-  certsGenerate <% -%>
-    "$FABLO_NETWORK_ROOT/fabric-config" <% -%>
-    "crypto-config-orderers.yaml" <% -%>
-    "ordererOrganizations" <% -%>
-    "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 
   <% orgs.forEach(function(org){ -%>
     printItalics "Generating crypto material for <%= org.name %>" "U1F512"

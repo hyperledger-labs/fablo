@@ -1,19 +1,17 @@
 import { FabloConfigJson } from "../types/FabloConfigJson";
-import { FabloConfigExtended, OrdererGroup, OrdererOrgConfig, OrgConfig } from "../types/FabloConfigExtended";
-import { extendOrdererOrgsConfig, extendOrgsConfig } from "./extendOrgsConfig";
+import { FabloConfigExtended, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
+import { extendOrgsConfig } from "./extendOrgsConfig";
 import extendNetworkSettings from "./extendNetworkSettings";
 import extendChannelsConfig from "./extendChannelsConfig";
 import extendChaincodesConfig from "./extendChaincodesConfig";
 import _ = require("lodash");
 
-const mergeOrdererGroupsByName = (ordererOrgs: OrdererOrgConfig[], orgs: OrgConfig[]): OrdererGroup[] => {
-  const orderersOrdererOrgs = ordererOrgs.flatMap((o) => o.ordererGroups);
-  const orderersOrgs = orgs.flatMap((o) => o.ordererGroups);
+const mergeOrdererGroupsByName = (orgs: OrgConfig[]): OrdererGroup[] => {
+  const ordererGroups = orgs.flatMap((o) => o.ordererGroups);
 
-  const allOrdererGroups = orderersOrdererOrgs.concat(orderersOrgs);
-  const grouped: Record<string, OrdererGroup[]> = _.groupBy(allOrdererGroups, (group) => group.name);
+  const ordererGroupsGrouped: Record<string, OrdererGroup[]> = _.groupBy(ordererGroups, (group) => group.name);
 
-  return Object.values(grouped).flatMap((groupsWithSameGroupName) => {
+  return Object.values(ordererGroupsGrouped).flatMap((groupsWithSameGroupName) => {
     const orderers = groupsWithSameGroupName.flatMap((group) => group.orderers);
     const hostingOrgs = groupsWithSameGroupName.flatMap((group) => group.hostingOrgs);
     const ordererHeads = groupsWithSameGroupName.flatMap((group) => group.ordererHeads);
@@ -31,28 +29,24 @@ const mergeOrdererGroupsByName = (ordererOrgs: OrdererOrgConfig[], orgs: OrgConf
 const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
     networkSettings: networkSettingsJson,
-    ordererOrgs: ordererOrgsJson,
     orgs: orgsJson,
     channels: channelsJson,
     chaincodes: chaincodesJson,
   } = json;
 
   const networkSettings = extendNetworkSettings(networkSettingsJson);
-  const ordererOrgs = extendOrdererOrgsConfig(ordererOrgsJson);
   const orgs = extendOrgsConfig(orgsJson, networkSettings);
-  const ordererGroups = mergeOrdererGroupsByName(ordererOrgs, orgs);
+  const ordererGroups = mergeOrdererGroupsByName(orgs);
 
   const channels = extendChannelsConfig(channelsJson, orgs, ordererGroups);
   const chaincodes = extendChaincodesConfig(chaincodesJson, channels, networkSettings);
 
   return {
     networkSettings,
-    ordererOrgHead: ordererOrgs[0],
-    ordererOrgs,
+    ordererGroups,
     orgs,
     channels,
     chaincodes,
-    ordererGroups,
   };
 };
 
