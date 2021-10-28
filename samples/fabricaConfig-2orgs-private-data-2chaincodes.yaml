@@ -3,7 +3,8 @@
 networkSettings:
   fabricVersion: 1.4.11
   tls: false
-ordererOrgs:
+
+orgs:
   - organization:
       name: Orderer
       domain: orderer.com
@@ -12,7 +13,6 @@ ordererOrgs:
       prefix: orderer
       type: solo
       instances: 1
-orgs:
   - organization:
       name: Org1
       domain: org1.com

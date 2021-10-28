@@ -7,7 +7,7 @@
       "loglevel": "debug"
     }
   },
-  "ordererOrgs": [
+  "orgs": [
     {
       "organization": {
         "name": "Orderer",
@@ -19,9 +19,7 @@
         "type": "raft",
         "instances": 1
       }
-    }
-  ],
-  "orgs": [
+    },
     {
       "organization": {
         "name": "Org1",

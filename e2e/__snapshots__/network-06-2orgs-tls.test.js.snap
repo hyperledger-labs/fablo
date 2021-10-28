@@ -54,6 +54,11 @@ Organizations:
           Admins:
               Type: Signature
               Rule: \\"OR('OrdererMSP.admin')\\"
+          Endorsement:
+              Type: Signature
+              Rule: \\"OR('OrdererMSP.member')\\"
+
+      AnchorPeers:
 
     - &Org1
       Name: Org1MSP
@@ -76,10 +81,11 @@ Organizations:
 
       AnchorPeers:
           - Host: peer0.org1.com
-            Port: 7071
+            Port: 7091
 
           - Host: peer1.org1.com
-            Port: 7072
+            Port: 7092
+
     - &Org2
       Name: Org2MSP
       ID: Org2MSP
@@ -101,10 +107,10 @@ Organizations:
 
       AnchorPeers:
           - Host: peer0.org2.com
-            Port: 7081
+            Port: 7111
 
           - Host: peer1.org2.com
-            Port: 7082
+            Port: 7112
 
 ################################################################################
 #   SECTION: Application
@@ -136,23 +142,23 @@ Application: &ApplicationDefaults
 Orderer: &Group1Defaults
     OrdererType: etcdraft
     Addresses:
-        - orderer0.group1.orderer.com:7021
-        - orderer1.group1.orderer.com:7022
-        - orderer2.group1.orderer.com:7023
+        - orderer0.group1.orderer.com:7080
+        - orderer1.group1.orderer.com:7081
+        - orderer2.group1.orderer.com:7082
     EtcdRaft:
         Consenters:
             - Host: orderer0.group1.orderer.com
-              Port: 7021
+              Port: 7080
               ClientTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/tls/server.crt
               ServerTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/tls/server.crt
 
             - Host: orderer1.group1.orderer.com
-              Port: 7022
+              Port: 7081
               ClientTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer1.group1.orderer.com/tls/server.crt
               ServerTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer1.group1.orderer.com/tls/server.crt
 
             - Host: orderer2.group1.orderer.com
-              Port: 7023
+              Port: 7082
               ClientTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer2.group1.orderer.com/tls/server.crt
               ServerTLSCert: crypto-config/peerOrganizations/orderer.com/peers/orderer2.group1.orderer.com/tls/server.crt
 
@@ -201,6 +207,7 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
+                    - *Orderer
                     - *Org1
                     - *Org2
 
@@ -248,7 +255,7 @@ Profiles:
 "
 `;
 
-exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-orderers.yaml from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
+exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "PeerOrgs:
   - Name: Orderer
     Domain: orderer.com
@@ -256,6 +263,10 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
       - Hostname: orderer0.group1
       - Hostname: orderer1.group1
       - Hostname: orderer2.group1
+    Template:
+      Count: 0
+    Users:
+      Count: 1
 "
 `;
 
@@ -358,6 +369,9 @@ FABRIC_JAVAENV_VERSION=1.4.6
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
 
+ORDERER_CA_ADMIN_NAME=admin
+ORDERER_CA_ADMIN_PASSWORD=adminpw
+
 ORG1_CA_ADMIN_NAME=admin
 ORG1_CA_ADMIN_PASSWORD=adminpw
 
@@ -382,134 +396,134 @@ function channelQuery() {
 
   elif [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer0\\" ]; then
 
-    peerChannelListTls \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelListTls \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org1\\" ] && [ \\"$3\\" = \\"peer1\\" ]
   then
 
-    peerChannelListTls \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelListTls \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org2\\" ] && [ \\"$3\\" = \\"peer0\\" ]
   then
 
-    peerChannelListTls \\"cli.org2.com\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelListTls \\"cli.org2.com\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"list\\" ] && [ \\"$2\\" = \\"org2\\" ] && [ \\"$3\\" = \\"peer1\\" ]
   then
 
-    peerChannelListTls \\"cli.org2.com\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelListTls \\"cli.org2.com\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
 
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer0\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7071\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org1.com:7091\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel1\\" ] && [ \\"$3\\" = \\"org2\\" ] && [ \\"$4\\" = \\"peer0\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org2.com\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel1\\" \\"cli.org2.com\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel1\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer0\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org2.com:7081\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel1\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer0.org2.com:7111\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel2\\" ] && [ \\"$3\\" = \\"org1\\" ] && [ \\"$4\\" = \\"peer1\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org1\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7072\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel2\\" \\"cli.org1.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org1.com:7092\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif
     [ \\"$1\\" = \\"getinfo\\" ] && [ \\"$2\\" = \\"my-channel2\\" ] && [ \\"$3\\" = \\"org2\\" ] && [ \\"$4\\" = \\"peer1\\" ]
   then
 
-    peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org2.com\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelGetInfoTls \\"my-channel2\\" \\"cli.org2.com\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"config\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchConfigTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"lastBlock\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchLastBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"firstBlock\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 7 ]; then
     FILE_NAME=$6
 
-    peerChannelFetchFirstBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchFirstBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   elif [ \\"$1\\" = \\"fetch\\" ] && [ \\"$2\\" = \\"block\\" ] && [ \\"$3\\" = \\"my-channel2\\" ] && [ \\"$4\\" = \\"org2\\" ] && [ \\"$5\\" = \\"peer1\\" ] && [ \\"$#\\" = 8 ]; then
     FILE_NAME=$6
     BLOCK_NUMBER=$7
 
-    peerChannelFetchBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org2.com:7082\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    peerChannelFetchBlockTls \\"my-channel2\\" \\"cli.org2.com\\" \\"\${FILE_NAME}\\" \\"\${BLOCK_NUMBER}\\" \\"peer1.org2.com:7112\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   else
 
@@ -599,8 +613,9 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
 
 function generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
-  printItalics \\"Generating crypto material for Orderer Orgs\\" \\"U1F512\\"
-  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-orderers.yaml\\" \\"ordererOrganizations\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
+
+  printItalics \\"Generating crypto material for Orderer\\" \\"U1F512\\"
+  certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-orderer.yaml\\" \\"peerOrganizations/orderer.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
 
   printItalics \\"Generating crypto material for Org1\\" \\"U1F512\\"
   certsGenerate \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"crypto-config-org1.yaml\\" \\"peerOrganizations/org1.com\\" \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config/\\"
@@ -630,26 +645,26 @@ function generateChannelsArtifacts() {
 
 function installChannels() {
   printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
-  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7071' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7021';\\"
+  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7091' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7080';\\"
 
   printItalics \\"Joining 'my-channel1' on  Org2/peer0\\" \\"U1F638\\"
-  docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org2MSP' 'peer0.org2.com:7081' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7021';\\"
+  docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org2MSP' 'peer0.org2.com:7111' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7080';\\"
   printHeadline \\"Creating 'my-channel2' on Org1/peer1\\" \\"U1F63B\\"
-  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.com:7072' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7021';\\"
+  docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.com:7092' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7080';\\"
 
   printItalics \\"Joining 'my-channel2' on  Org2/peer1\\" \\"U1F638\\"
-  docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.com:7082' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7021';\\"
+  docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.com:7112' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7080';\\"
 }
 
 function installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
     chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7081\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7111\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
     printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
@@ -657,11 +672,11 @@ function installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
     chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
-    chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7082\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+    chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7112\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
     printItalics \\"Instantiating chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'\\" \\"U1F618\\"
-    chaincodeInstantiate \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
+    chaincodeInstantiate \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'\\"
@@ -677,10 +692,10 @@ function notifyOrgsAboutChannels() {
   createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
 
   printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
-  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
-  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
-  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.com\\" \\"peer0.org1.com\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+  notifyOrgAboutNewChannelTls \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.com\\" \\"peer0.org2.com\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.com\\"
@@ -707,12 +722,12 @@ function upgradeChaincode() {
       chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
 
       printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
-      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
       printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
-      chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7081\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer0.org2.com:7111\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
       printItalics \\"Upgrading as 'Org1'. 'chaincode1' on channel 'my-channel1'\\" \\"U1F618\\"
-      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7071\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7021\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer0.org1.com:7091\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"node\\" \\"orderer0.group1.orderer.com:7080\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -724,12 +739,12 @@ function upgradeChaincode() {
       chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
 
       printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
-      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+      chaincodeInstall \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
 
       printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
-      chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7082\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
+      chaincodeInstall \\"cli.org2.com\\" \\"peer1.org2.com:7112\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\"
       printItalics \\"Upgrading as 'Org1'. 'chaincode2' on channel 'my-channel2'\\" \\"U1F618\\"
-      chaincodeUpgrade \\"cli.org1.com\\" \\"peer1.org1.com:7072\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7021\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
+      chaincodeUpgrade \\"cli.org1.com\\" \\"peer1.org1.com:7092\\" \\"my-channel2\\" \\"chaincode2\\" \\"$version\\" \\"java\\" \\"orderer0.group1.orderer.com:7080\\" '{\\"Args\\":[]}' \\"OR ('Org1MSP.member', 'Org2MSP.member')\\" \\"crypto-orderer/tlsca.orderer.com-cert.pem\\" \\"\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty.\\"
@@ -775,13 +790,69 @@ networks:
   basic:
 
 services:
+
+  ca.orderer.com:
+    container_name: ca.orderer.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.orderer.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+    ports:
+      - 7070:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORDERER_CA_ADMIN_NAME}:\${ORDERER_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    networks:
+      - basic
+
+  cli.orderer.com:
+    container_name: cli.orderer.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.orderer.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@orderer.com/msp
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.orderer.com-cert.pem
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/msp/tlscacerts/tlsca.orderer.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.com-cert.pem:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org1.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.com/tls/ca.crt:ro
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/\\"
+    networks:
+      - basic
+
   orderer0.group1.orderer.com:
     container_name: orderer0.group1.orderer.com
     image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7021
+      - ORDERER_GENERAL_LISTENPORT=7080
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
@@ -798,7 +869,7 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - 7021:7021
+      - 7080:7080
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer0.group1.orderer.com/msp/:/var/hyperledger/orderer/msp
@@ -812,7 +883,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7022
+      - ORDERER_GENERAL_LISTENPORT=7081
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
@@ -829,7 +900,7 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - 7022:7022
+      - 7081:7081
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer1.group1.orderer.com/msp/:/var/hyperledger/orderer/msp
@@ -843,7 +914,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7023
+      - ORDERER_GENERAL_LISTENPORT=7082
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
@@ -860,7 +931,7 @@ services:
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
-      - 7023:7023
+      - 7082:7082
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer.com/peers/orderer2.group1.orderer.com/msp/:/var/hyperledger/orderer/msp
@@ -878,7 +949,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
     ports:
-      - 7070:7054
+      - 7090:7054
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
@@ -899,7 +970,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.com/msp
-      - CORE_PEER_ADDRESS=peer0.org1.com:7071
+      - CORE_PEER_ADDRESS=peer0.org1.com:7091
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.com/tls/client.crt
@@ -930,11 +1001,11 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ID=peer0.org1.com
-      - CORE_PEER_ADDRESS=peer0.org1.com:7071
-      - CORE_PEER_LISTENADDRESS=peer0.org1.com:7071
-      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7071
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7071
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7071 peer1.org1.com:7072\\"
+      - CORE_PEER_ADDRESS=peer0.org1.com:7091
+      - CORE_PEER_LISTENADDRESS=peer0.org1.com:7091
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.com:7091
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.com:7091
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7091 peer1.org1.com:7092\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -957,7 +1028,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - 7071:7071
+      - 7091:7091
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/msp:/etc/hyperledger/fabric/peer/msp
@@ -973,11 +1044,11 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ID=peer1.org1.com
-      - CORE_PEER_ADDRESS=peer1.org1.com:7072
-      - CORE_PEER_LISTENADDRESS=peer1.org1.com:7072
-      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7072
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7072
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7071 peer1.org1.com:7072\\"
+      - CORE_PEER_ADDRESS=peer1.org1.com:7092
+      - CORE_PEER_LISTENADDRESS=peer1.org1.com:7092
+      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.com:7092
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.com:7092
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org1.com:7091 peer1.org1.com:7092\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -1000,7 +1071,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - 7072:7072
+      - 7092:7092
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer1.org1.com/msp:/etc/hyperledger/fabric/peer/msp
@@ -1020,7 +1091,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
     ports:
-      - 7080:7054
+      - 7110:7054
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG2_CA_ADMIN_NAME}:\${ORG2_CA_ADMIN_PASSWORD} -d'
     volumes:
@@ -1041,7 +1112,7 @@ services:
       #
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org2.com/msp
-      - CORE_PEER_ADDRESS=peer0.org2.com:7081
+      - CORE_PEER_ADDRESS=peer0.org2.com:7111
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org2.com/tls/client.crt
@@ -1072,11 +1143,11 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ID=peer0.org2.com
-      - CORE_PEER_ADDRESS=peer0.org2.com:7081
-      - CORE_PEER_LISTENADDRESS=peer0.org2.com:7081
-      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7081
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7081
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7081 peer1.org2.com:7082\\"
+      - CORE_PEER_ADDRESS=peer0.org2.com:7111
+      - CORE_PEER_LISTENADDRESS=peer0.org2.com:7111
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org2.com:7111
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.com:7111
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7111 peer1.org2.com:7112\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -1099,7 +1170,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - 7081:7081
+      - 7111:7111
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer0.org2.com/msp:/etc/hyperledger/fabric/peer/msp
@@ -1115,11 +1186,11 @@ services:
     environment:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ID=peer1.org2.com
-      - CORE_PEER_ADDRESS=peer1.org2.com:7082
-      - CORE_PEER_LISTENADDRESS=peer1.org2.com:7082
-      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org2.com:7082
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.com:7082
-      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7081 peer1.org2.com:7082\\"
+      - CORE_PEER_ADDRESS=peer1.org2.com:7112
+      - CORE_PEER_LISTENADDRESS=peer1.org2.com:7112
+      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org2.com:7112
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.com:7112
+      - CORE_PEER_GOSSIP_BOOTSTRAP=\\"peer0.org2.com:7111 peer1.org2.com:7112\\"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
@@ -1142,7 +1213,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
-      - 7082:7082
+      - 7112:7112
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org2.com/peers/peer1.org2.com/msp:/etc/hyperledger/fabric/peer/msp
@@ -2033,7 +2104,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
 Array [
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-orderers.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-config/crypto-config-org2.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker.sh",

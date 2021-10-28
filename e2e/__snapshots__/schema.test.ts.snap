@@ -312,134 +312,24 @@ Object {
       "title": "Network settings",
       "type": "object",
     },
-    "ordererOrgs": Object {
-      "$id": "#/properties/ordererOrgs",
-      "additionalProperties": false,
-      "description": "The configuration of the orderer organizations for the Hyperledger Fabric network.",
-      "items": Object {
-        "$id": "#/properties/ordererOrgs/items",
-        "properties": Object {
-          "ca": Object {
-            "$id": "#/properties/ordererOrgs/items/ca",
-            "additionalProperties": false,
-            "default": Object {
-              "prefix": "ca",
-            },
-            "properties": Object {
-              "prefix": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/ca/properties/prefix",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Domain prefix",
-                "type": "string",
-              },
-            },
-            "required": Array [
-              "prefix",
-            ],
-            "title": "Root Certificate Authority (CA)",
-            "type": "object",
-          },
-          "orderer": Object {
-            "$id": "#/properties/ordererOrgs/items/properties/orderer",
-            "additionalProperties": false,
-            "default": Object {
-              "instances": 1,
-              "prefix": "orderer",
-              "type": "solo",
-            },
-            "properties": Object {
-              "groupName": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/groupName",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Name od Orderer group",
-                "type": "string",
-              },
-              "instances": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/instances",
-                "maximum": 9,
-                "minimum": 1,
-                "title": "Number of instances",
-                "type": "integer",
-              },
-              "prefix": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/prefix",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Domain prefix",
-                "type": "string",
-              },
-              "type": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/orderer/properties/type",
-                "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
-                "enum": Array [
-                  "solo",
-                  "raft",
-                ],
-                "title": "Orderer type",
-                "type": "string",
-              },
-            },
-            "required": Array [
-              "groupName",
-              "type",
-              "instances",
-            ],
-            "title": "Orderer",
-            "type": "object",
-          },
-          "organization": Object {
-            "$id": "#/properties/ordererOrgs/items/properties/organization",
-            "additionalProperties": false,
-            "default": Object {
-              "domain": "orderer.com",
-              "mspName": "OrdererMSP",
-              "name": "Orderer",
-            },
-            "properties": Object {
-              "domain": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/organization/properties/domain",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Domain",
-                "type": "string",
-              },
-              "mspName": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/organization/properties/mspName",
-                "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
-                "pattern": "^[a-zA-Z0-9]+$",
-                "title": "MSP Name",
-                "type": "string",
-              },
-              "name": Object {
-                "$id": "#/properties/ordererOrgs/items/properties/organization/properties/name",
-                "pattern": "^[a-zA-Z0-9]+$",
-                "title": "Name",
-                "type": "string",
-              },
-            },
-            "required": Array [
-              "name",
-              "domain",
-            ],
-            "title": "Basic information about Ordrer org",
-            "type": "object",
-          },
-        },
-        "required": Array [
-          "organization",
-          "orderer",
-        ],
-        "title": "Orderer Organization",
-        "type": "object",
-      },
-      "required": Array [
-        "organization",
-        "orderer",
-      ],
-      "title": "Orderer organizations",
-      "type": "array",
-    },
     "orgs": Object {
       "$id": "#/properties/orgs",
       "default": Array [
+        Object {
+          "ca": Object {
+            "prefix": "ca",
+          },
+          "orderer": Object {
+            "instances": 1,
+            "prefix": "orderer",
+            "type": "solo",
+          },
+          "organization": Object {
+            "domain": "orderer.com",
+            "mspName": "OrdererMSP",
+            "name": "Orderer",
+          },
+        },
         Object {
           "ca": Object {
             "prefix": "ca",
@@ -611,7 +501,6 @@ Object {
         },
         "required": Array [
           "organization",
-          "peer",
         ],
         "title": "Organization",
         "type": "object",
