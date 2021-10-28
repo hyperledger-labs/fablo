@@ -87,7 +87,7 @@ waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1"
 waitForChaincode "cli.org1.com" "peer1.org1.com:7062" "my-channel2" "chaincode2" "0.0.1"
 waitForChaincode "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" "0.0.1"
 
-fablo_rest_org1="localhost:8800"
+fablo_rest_org1="localhost:8802"
 
 # invoke Node chaincode
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
