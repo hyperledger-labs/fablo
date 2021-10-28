@@ -187,7 +187,7 @@ describe("schema", () => {
   it("should validate ca domain prefix", () => {
     const withCADomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].ca.prefix = d;
+        json.orgs[1].ca.prefix = d;
       });
 
     expect(withCADomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -202,7 +202,7 @@ describe("schema", () => {
   it("should validate peer domain prefix", () => {
     const withPeerDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.prefix = d;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.prefix = d) : undefined;
       });
 
     expect(withPeerDomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -217,7 +217,7 @@ describe("schema", () => {
   it("should validate peer number of instances", () => {
     const withPeerNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.instances = i;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.instances = i) : undefined;
       });
 
     expect(withPeerNoOfInstances(1)).toMatchSchema(schema);
@@ -229,7 +229,7 @@ describe("schema", () => {
   it("should validate peer database type", () => {
     const withPeerDatabaseType = (db: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.db = db as "LevelDb" | "CouchDb";
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.db = db as "LevelDb" | "CouchDb") : undefined;
       });
 
     expect(withPeerDatabaseType("LevelDb")).toMatchSchema(schema);

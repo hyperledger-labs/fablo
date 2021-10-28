@@ -4,7 +4,7 @@
     "fabricVersion": "1.3.0",
     "tls": false
   },
-  "ordererOrgs": [
+  "orgs": [
     {
       "organization": {
         "name": "Orderer",
@@ -16,9 +16,7 @@
         "type": "solo",
         "instances": 1
       }
-    }
-  ],
-  "orgs": [
+    },
     {
       "organization": {
         "name": "Org1",
