@@ -208,9 +208,9 @@ const extendOrgConfig = (
 };
 
 const getPortsForOrg = (orgIndex: number) => ({
-  caPort: 7070 + 20 * orgIndex,
-  headPeerPort: 7071 + 20 * orgIndex,
-  headOrdererPort: 7080 + 20 * orgIndex,
+  caPort: 7020 + 20 * orgIndex,
+  headPeerPort: 7021 + 20 * orgIndex,
+  headOrdererPort: 7030 + 20 * orgIndex,
   headPeerCouchDbPort: 5080 + 20 * orgIndex,
   fabloRestPort: 8800 + orgIndex,
 });
