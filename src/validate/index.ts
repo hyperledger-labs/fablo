@@ -9,7 +9,6 @@ import {
   FabloConfigJson,
   NetworkSettingsJson,
   OrdererJson,
-  OrdererOrgJson,
   OrgJson,
 } from "../types/FabloConfigJson";
 import * as _ from "lodash";
@@ -97,17 +96,18 @@ class ValidateGenerator extends Generator {
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
 
-    networkConfig.ordererOrgs.forEach((ordererOrg) => this._validateOrdererCountForSoloType(ordererOrg.orderer));
-    networkConfig.ordererOrgs.forEach((ordererOrg) =>
-      this._validateOrdererForRaftType(ordererOrg.orderer, networkConfig.networkSettings),
-    );
+    // === Validate Orderers =============
+    this._validateIfOrdererDefinitionExists(networkConfig.orgs);
+    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderer));
+    networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderer, networkConfig.networkSettings));
+    // ===================================
 
     this._validateChannelNames(networkConfig.channels);
     this._validateChaincodeNames(networkConfig.chaincodes);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
-    this._validateChannelOrdererGroup(networkConfig.ordererOrgs, networkConfig.orgs, networkConfig.channels);
-    this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.ordererOrgs, networkConfig.orgs);
+    this._validateChannelOrdererGroup(networkConfig.orgs, networkConfig.channels);
+    this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.orgs);
 
     const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
@@ -203,8 +203,8 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererCountForSoloType(orderer: OrdererJson) {
-    if (orderer.type === "solo" && orderer.instances > 1) {
+  _validateOrdererCountForSoloType(orderer: OrdererJson | undefined) {
+    if (orderer !== undefined && orderer.type === "solo" && orderer.instances > 1) {
       const objectToEmit = {
         category: validationCategories.ORDERER,
         message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
@@ -213,8 +213,8 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererForRaftType(orderer: OrdererJson, networkSettings: NetworkSettingsJson) {
-    if (orderer.type === "raft") {
+  _validateOrdererForRaftType(orderer: OrdererJson | undefined, networkSettings: NetworkSettingsJson) {
+    if (orderer !== undefined && orderer.type === "raft") {
       if (orderer.instances === 1) {
         const objectToEmit = {
           category: validationCategories.ORDERER,
@@ -243,15 +243,17 @@ class ValidateGenerator extends Generator {
 
   _validateOrgsAnchorPeerInstancesCount(orgs: OrgJson[]) {
     orgs.forEach((org) => {
-      const numberOfPeers = org.peer.instances;
-      const numberOfAnchorPeers = org.peer.anchorPeerInstances;
+      const numberOfPeers = org.peer?.instances;
+      const numberOfAnchorPeers = org.peer?.anchorPeerInstances;
 
-      if (!!numberOfAnchorPeers && numberOfPeers < numberOfAnchorPeers) {
-        const objectToEmit = {
-          category: validationCategories.PEER,
-          message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
-        };
-        this.emit(validationErrorType.ERROR, objectToEmit);
+      if (numberOfPeers !== undefined && numberOfAnchorPeers !== undefined) {
+        if (!!numberOfAnchorPeers && numberOfPeers < numberOfAnchorPeers) {
+          const objectToEmit = {
+            category: validationCategories.PEER,
+            message: `Too many anchor peers for organization "${org.organization.name}". Peer count: ${numberOfPeers}, anchor peer count: ${numberOfAnchorPeers}`,
+          };
+          this.emit(validationErrorType.ERROR, objectToEmit);
+        }
       }
     });
   }
@@ -275,21 +277,19 @@ class ValidateGenerator extends Generator {
     });
   }
 
-  _validateChannelOrdererGroup(ordererOrgs: OrdererOrgJson[], orgs: OrgJson[], channels: ChannelJson[]) {
-    const o1 = ordererOrgs.map((org) => org.orderer.groupName);
-    const o2 = orgs.map((org) => org.orderer?.groupName).filter((n) => n != undefined) as string[];
-
-    const groupNames = new Set(o1.concat(o2));
+  _validateChannelOrdererGroup(orgs: OrgJson[], channels: ChannelJson[]) {
+    const groupNamesArr = orgs
+      .map((org) => org.orderer?.groupName)
+      .filter((name): name is string => name !== undefined);
+    const groupNames = new Set(groupNamesArr);
 
     channels.forEach((channel) => {
-      if (typeof channel.ordererGroup != "undefined") {
-        if (!groupNames.has(channel.ordererGroup)) {
-          const objectToEmit = {
-            category: validationCategories.CHANNEL,
-            message: `Channel '${channel.name}' has non valid ordererOrg defined. ordererGroup: '${channel.ordererGroup}', proper options: [${groupNames}]`,
-          };
-          this.emit(validationErrorType.ERROR, objectToEmit);
-        }
+      if (channel.ordererGroup !== undefined && !groupNames.has(channel.ordererGroup)) {
+        const objectToEmit = {
+          category: validationCategories.CHANNEL,
+          message: `Channel '${channel.name}' has non valid ordererGroup defined. ordererGroup is '${channel.ordererGroup}', proper options: [${groupNames}]`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
       }
     });
   }
@@ -320,17 +320,14 @@ class ValidateGenerator extends Generator {
     });
   }
 
-  _validateIfSameOrdererTypeAcrossOrdererGroup(ordererOrgs: OrdererOrgJson[], orgs: OrgJson[]) {
+  _validateIfSameOrdererTypeAcrossOrdererGroup(orgs: OrgJson[]) {
     const isOrdererDefined = (org: OrgJson): boolean => org.orderer != undefined;
 
-    const orderersOrdererOrgs = ordererOrgs.map((ordererOrg) => ordererOrg.orderer);
-    const orderersOrgs = orgs.filter(isOrdererDefined).map((orgs) => orgs.orderer as OrdererJson);
+    const ordererBlocks = orgs.filter(isOrdererDefined).map((orgs) => orgs.orderer as OrdererJson);
 
-    const allOrdererBlocks = orderersOrdererOrgs.concat(orderersOrgs);
+    const ordererBlocksGrouped: Record<string, OrdererJson[]> = _.groupBy(ordererBlocks, (group) => group.groupName);
 
-    const grouped: Record<string, OrdererJson[]> = _.groupBy(allOrdererBlocks, (group) => group.groupName);
-
-    Object.values(grouped).forEach((groupItems) => {
+    Object.values(ordererBlocksGrouped).forEach((groupItems) => {
       const groupName = groupItems[0].groupName;
       const ordererTypes = groupItems.map((item) => item.type);
 
@@ -342,6 +339,17 @@ class ValidateGenerator extends Generator {
         this.emit(validationErrorType.ERROR, objectToEmit);
       }
     });
+  }
+
+  _validateIfOrdererDefinitionExists(orgs: OrgJson[]) {
+    const numerOfOrdererBlocks = orgs.filter((org) => org.orderer != undefined).length;
+    if (numerOfOrdererBlocks < 1) {
+      const objectToEmit = {
+        category: validationCategories.ORDERER,
+        message: `Orderer block is not defined in any org. At least 1 orderer block is mandatory!`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    }
   }
 }
 

@@ -32,13 +32,13 @@ export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
   orderer: OrdererJson | undefined;
-  peer: PeerJson;
+  peer: PeerJson | undefined;
   tools?: { fabloRest?: boolean };
 }
 
 export interface ChannelJson {
   name: string;
-  ordererGroup: string;
+  ordererGroup: string | undefined;
   orgs: { name: string; peers: string[] }[];
 }
 
@@ -59,16 +59,9 @@ export interface ChaincodeJson {
   privateData: PrivateDataJson[];
 }
 
-export interface OrdererOrgJson {
-  organization: OrganizationDetailsJson;
-  ca: CAJson;
-  orderer: OrdererJson;
-}
-
 export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
-  ordererOrgs: OrdererOrgJson[];
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];

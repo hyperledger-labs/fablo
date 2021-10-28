@@ -80,13 +80,6 @@ export interface PrivateCollectionConfig {
   memberOnlyWrite?: boolean;
 }
 
-// export interface RootOrgConfig {
-//   name: string;
-//   mspName: string;
-//   domain: string;
-//   ca: CAConfig;
-// }
-
 export interface FabloRestLoggingConfig {
   info?: "console" | string;
   warn?: "console" | string;
@@ -136,19 +129,6 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
-export interface OrdererOrgConfig {
-  name: string;
-  mspName: string;
-  domain: string;
-  profileName: string;
-  genesisBlockName: string;
-  ca: CAConfig;
-  consensus: "solo" | "etcdraft";
-  orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
-  ordererGroups: OrdererGroup[];
-}
-
 export interface OrdererGroup {
   name: string;
   consensus: "solo" | "etcdraft";
@@ -162,10 +142,8 @@ export interface OrdererGroup {
 
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  ordererOrgHead: OrdererOrgConfig;
-  ordererOrgs: OrdererOrgConfig[];
+  ordererGroups: OrdererGroup[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
-  ordererGroups: OrdererGroup[];
 }
