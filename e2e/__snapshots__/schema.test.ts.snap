@@ -367,52 +367,60 @@ Object {
             "title": "Organization Certificate Authority (CA)",
             "type": "object",
           },
-          "orderer": Object {
-            "$id": "#/properties/orgs/items/properties/orderer",
-            "additionalProperties": false,
-            "default": Object {
-              "instances": 1,
-              "prefix": "orderer",
-              "type": "solo",
-            },
-            "properties": Object {
-              "groupName": Object {
-                "$id": "#/properties/orgs/items/properties/orderer/properties/groupName",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Name od Orderer group",
-                "type": "string",
+          "orderers": Object {
+            "$id": "#/properties/orgs/items/properties/orderers",
+            "default": Array [
+              Object {
+                "groupName": "group1",
+                "instances": 1,
+                "prefix": "orderer",
+                "type": "solo",
               },
-              "instances": Object {
-                "$id": "#/properties/orgs/items/properties/orderer/properties/instances",
-                "maximum": 9,
-                "minimum": 1,
-                "title": "Number of instances",
-                "type": "integer",
-              },
-              "prefix": Object {
-                "$id": "#/properties/orgs/items/properties/orderer/properties/prefix",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
-                "title": "Domain prefix",
-                "type": "string",
-              },
-              "type": Object {
-                "$id": "#/properties/orgs/items/properties/orderer/properties/type",
-                "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
-                "enum": Array [
-                  "solo",
-                  "raft",
-                ],
-                "title": "Orderer type",
-                "type": "string",
-              },
-            },
-            "required": Array [
-              "groupName",
-              "type",
-              "instances",
             ],
-            "title": "Orderer",
-            "type": "object",
+            "items": Object {
+              "$id": "#/properties/orgs/items/properties/orderers/items",
+              "additionalProperties": false,
+              "properties": Object {
+                "groupName": Object {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/groupName",
+                  "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                  "title": "Name od Orderer group",
+                  "type": "string",
+                },
+                "instances": Object {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/instances",
+                  "maximum": 9,
+                  "minimum": 1,
+                  "title": "Number of instances",
+                  "type": "integer",
+                },
+                "prefix": Object {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/prefix",
+                  "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                  "title": "Domain prefix",
+                  "type": "string",
+                },
+                "type": Object {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/type",
+                  "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+                  "enum": Array [
+                    "solo",
+                    "raft",
+                  ],
+                  "title": "Orderer type",
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "groupName",
+                "type",
+                "instances",
+              ],
+              "title": "Orderer",
+              "type": "object",
+            },
+            "title": "Orderers",
+            "type": "array",
           },
           "organization": Object {
             "$id": "#/properties/orgs/items/properties/organization",

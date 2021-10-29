@@ -98,8 +98,8 @@ class ValidateGenerator extends Generator {
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
-    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderer));
-    networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderer, networkConfig.networkSettings));
+    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers));
+    networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.networkSettings));
     // ===================================
 
     this._validateChannelNames(networkConfig.channels);
@@ -203,41 +203,48 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererCountForSoloType(orderer: OrdererJson | undefined) {
-    if (orderer !== undefined && orderer.type === "solo" && orderer.instances > 1) {
-      const objectToEmit = {
-        category: validationCategories.ORDERER,
-        message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
-      };
-      this.emit(validationErrorType.WARN, objectToEmit);
+  _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined) {
+    if (orderers !== undefined) {
+      orderers.forEach((orderer) => {
+        if (orderer.type === "solo" && orderer.instances > 1) {
+          const objectToEmit = {
+            category: validationCategories.ORDERER,
+            message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
+          };
+          this.emit(validationErrorType.WARN, objectToEmit);
+        }
+      });
     }
   }
 
-  _validateOrdererForRaftType(orderer: OrdererJson | undefined, networkSettings: NetworkSettingsJson) {
-    if (orderer !== undefined && orderer.type === "raft") {
-      if (orderer.instances === 1) {
-        const objectToEmit = {
-          category: validationCategories.ORDERER,
-          message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
-        };
-        this.emit(validationErrorType.WARN, objectToEmit);
-      }
+  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, networkSettings: NetworkSettingsJson) {
+    if (orderers !== undefined) {
+      orderers
+        .filter((o) => o.type === "raft")
+        .forEach((orderer) => {
+          if (orderer.instances === 1) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
+            };
+            this.emit(validationErrorType.WARN, objectToEmit);
+          }
 
-      if (!config.versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
-        const objectToEmit = {
-          category: validationCategories.ORDERER,
-          message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
-        };
-        this.emit(validationErrorType.ERROR, objectToEmit);
-      }
-
-      if (!networkSettings.tls) {
-        const objectToEmit = {
-          category: validationCategories.ORDERER,
-          message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
-        };
-        this.emit(validationErrorType.ERROR, objectToEmit);
-      }
+          if (!config.versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+          }
+          if (!networkSettings.tls) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+          }
+        });
     }
   }
 
@@ -279,7 +286,7 @@ class ValidateGenerator extends Generator {
 
   _validateChannelOrdererGroup(orgs: OrgJson[], channels: ChannelJson[]) {
     const groupNamesArr = orgs
-      .map((org) => org.orderer?.groupName)
+      .flatMap((org) => org.orderers?.map((o) => o.groupName))
       .filter((name): name is string => name !== undefined);
     const groupNames = new Set(groupNamesArr);
 
@@ -321,9 +328,9 @@ class ValidateGenerator extends Generator {
   }
 
   _validateIfSameOrdererTypeAcrossOrdererGroup(orgs: OrgJson[]) {
-    const isOrdererDefined = (org: OrgJson): boolean => org.orderer != undefined;
+    const isOrdererDefined = (org: OrgJson): boolean => org.orderers != undefined;
 
-    const ordererBlocks = orgs.filter(isOrdererDefined).map((orgs) => orgs.orderer as OrdererJson);
+    const ordererBlocks = orgs.filter(isOrdererDefined).flatMap((orgs) => orgs.orderers as OrdererJson[]);
 
     const ordererBlocksGrouped: Record<string, OrdererJson[]> = _.groupBy(ordererBlocks, (group) => group.groupName);
 
@@ -342,7 +349,7 @@ class ValidateGenerator extends Generator {
   }
 
   _validateIfOrdererDefinitionExists(orgs: OrgJson[]) {
-    const numerOfOrdererBlocks = orgs.filter((org) => org.orderer != undefined).length;
+    const numerOfOrdererBlocks = orgs.filter((org) => org.orderers !== undefined).length;
     if (numerOfOrdererBlocks < 1) {
       const objectToEmit = {
         category: validationCategories.ORDERER,

@@ -13,6 +13,7 @@
    - nie mozna joinowac do kanału organizacji bez peerów
    - org bez peerow i ordererów jest dziwny
    - maksymalna liczba orederow dla orga
+   - org having two orderer groups with same name
 
 wszystkie orgi posiadajace orderera maja takie cos:
 ```
