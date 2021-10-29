@@ -277,6 +277,61 @@
               }
             },
             "additionalProperties": false
+          },
+          "orderers": {
+            "$id": "#/properties/orgs/items/properties/orderers",
+            "type": "array",
+            "title": "Orderers",
+            "default": [
+              {
+                "groupName": "group1",
+                "prefix": "orderer",
+                "type": "solo",
+                "instances": 1
+              }
+            ],
+            "items": {
+              "$id": "#/properties/orgs/items/properties/orderers/items",
+              "title": "Orderer",
+              "type": "object",
+              "required": [
+                "groupName",
+                "type",
+                "instances"
+              ],
+              "properties": {
+                "groupName": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/groupName",
+                  "title": "Name od Orderer group",
+                  "type": "string",
+                  "pattern": "^[a-z0-9\\.\\-]+$"
+                },
+                "prefix": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/prefix",
+                  "title": "Domain prefix",
+                  "type": "string",
+                  "pattern": "^[a-z0-9\\.\\-]+$"
+                },
+                "type": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/type",
+                  "type": "string",
+                  "title": "Orderer type",
+                  "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+                  "enum": [
+                    "solo",
+                    "raft"
+                  ]
+                },
+                "instances": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/instances",
+                  "title": "Number of instances",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9
+                }
+              },
+              "additionalProperties": false
+            }
           }
         },
         "additionalProperties": false
