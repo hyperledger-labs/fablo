@@ -31,7 +31,7 @@ export interface PeerJson {
 export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
-  orderer: OrdererJson | undefined;
+  orderers: OrdererJson[] | undefined;
   peer: PeerJson | undefined;
   tools?: { fabloRest?: boolean };
 }

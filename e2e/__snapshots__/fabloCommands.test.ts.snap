@@ -2466,11 +2466,13 @@ exports[`init should init simple fablo config 1`] = `
         \\"name\\": \\"Orderer\\",
         \\"domain\\": \\"orderer.com\\"
       },
-      \\"orderer\\": {
-        \\"groupName\\": \\"group1\\",
-        \\"type\\": \\"solo\\",
-        \\"instances\\": 1
-      },
+      \\"orderers\\": [
+        {
+          \\"groupName\\": \\"group1\\",
+          \\"type\\": \\"solo\\",
+          \\"instances\\": 1
+        }
+      ],
       \\"tools\\": {}
     },
     {
@@ -2516,11 +2518,13 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
         \\"name\\": \\"Orderer\\",
         \\"domain\\": \\"orderer.com\\"
       },
-      \\"orderer\\": {
-        \\"groupName\\": \\"group1\\",
-        \\"type\\": \\"solo\\",
-        \\"instances\\": 1
-      },
+      \\"orderers\\": [
+        {
+          \\"groupName\\": \\"group1\\",
+          \\"type\\": \\"solo\\",
+          \\"instances\\": 1
+        }
+      ],
       \\"tools\\": {}
     },
     {
@@ -2574,11 +2578,13 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
         \\"name\\": \\"Orderer\\",
         \\"domain\\": \\"orderer.com\\"
       },
-      \\"orderer\\": {
-        \\"groupName\\": \\"group1\\",
-        \\"type\\": \\"solo\\",
-        \\"instances\\": 1
-      },
+      \\"orderers\\": [
+        {
+          \\"groupName\\": \\"group1\\",
+          \\"type\\": \\"solo\\",
+          \\"instances\\": 1
+        }
+      ],
       \\"tools\\": {
         \\"fabloRest\\": true
       }
