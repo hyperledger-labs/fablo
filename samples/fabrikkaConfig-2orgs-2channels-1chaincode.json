@@ -10,12 +10,14 @@
         "name": "Orderer",
         "domain": "orderer.com"
       },
-      "orderer": {
-        "groupName": "group1",
-        "prefix": "orderer",
-        "type": "solo",
-        "instances": 1
-      }
+      "orderers": [
+        {
+          "groupName": "group1",
+          "prefix": "orderer",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
     },
     {
       "organization": {

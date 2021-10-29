@@ -58,22 +58,22 @@ const extendOrderersConfig = (
     });
 };
 
-const extendOrderersGroupConfig = (
+const extendOrderersGroupForOrg = (
   headOrdererPort: number,
   orgName: string,
-  ordererJson: OrdererJson,
+  orderersJson: OrdererJson[],
   ordererOrgDomainJson: string,
-): OrdererGroup[] => {
-  const groupName = ordererJson.groupName;
-  const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
-  const orderers = extendOrderersConfig(headOrdererPort, groupName, ordererJson, ordererOrgDomainJson);
+): OrdererGroup[] =>
+  orderersJson.map((ordererJson) => {
+    const groupName = ordererJson.groupName;
+    const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
+    const orderers = extendOrderersConfig(headOrdererPort, groupName, ordererJson, ordererOrgDomainJson);
 
-  const profileName = _.upperFirst(`${groupName}Genesis`);
-  const genesisBlockName = `${profileName}.block`;
-  const configtxOrdererDefaults = _.upperFirst(`${groupName}Defaults`);
+    const profileName = _.upperFirst(`${groupName}Genesis`);
+    const genesisBlockName = `${profileName}.block`;
+    const configtxOrdererDefaults = _.upperFirst(`${groupName}Defaults`);
 
-  return [
-    {
+    return {
       name: groupName,
       consensus,
       configtxOrdererDefaults,
@@ -82,9 +82,8 @@ const extendOrderersGroupConfig = (
       hostingOrgs: [orgName],
       orderers,
       ordererHeads: [orderers[0]],
-    },
-  ];
-};
+    };
+  });
 
 const extendPeers = (
   peerJson: PeerJson,
@@ -183,10 +182,10 @@ const extendOrgConfig = (
     ? {}
     : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings) };
 
-  let ordererGroups: OrdererGroup[] = [];
-  if (orgJsonFormat.orderer != undefined) {
-    ordererGroups = extendOrderersGroupConfig(ordererHeadExposePort, name, orgJsonFormat.orderer, domain);
-  }
+  const ordererGroups =
+    orgJsonFormat.orderers !== undefined
+      ? extendOrderersGroupForOrg(ordererHeadExposePort, name, orgJsonFormat.orderers, domain)
+      : [];
 
   return {
     name,
