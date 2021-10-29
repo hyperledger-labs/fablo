@@ -1,6 +1,6 @@
 ## == TODO ============================
-## 1. Wywalić ordererOrg
-## 2. poprawić porty
+## 1. ~~Wywalić ordererOrg~~
+## 2. ~~poprawić porty~~
 ## 3. wiele grup ordererów w orgu
 ## 4. walidacja
 
@@ -8,10 +8,11 @@
 
 ### other
 3. Walidacja:
-   - orderery w tej samej grupie musze miec ten sam consensus type
+   - ~~orderery w tej samej grupie musze miec ten sam consensus type~~
+   - ~~musi byc gdzies zdefiniowany orderer~~
    - nie mozna joinowac do kanału organizacji bez peerów
-   - musi byc gdzies zdefiniowany orderer
    - org bez peerow i ordererów jest dziwny
+   - maksymalna liczba orederow dla orga
 
 wszystkie orgi posiadajace orderera maja takie cos:
 ```
