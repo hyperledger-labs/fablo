@@ -27,6 +27,7 @@ const validationErrorType = {
 const validationCategories = {
   CRITICAL: "Critical",
   GENERAL: "General",
+  ORGS: "Orgs",
   ORDERER: "Orderer",
   PEER: "Peer",
   CHAINCODE: "Chaincode",
@@ -95,14 +96,21 @@ class ValidateGenerator extends Generator {
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
+    this._validateOrgs(networkConfig.orgs);
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers));
     networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.networkSettings));
+    networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
+    networkConfig.orgs.forEach((org) => this._validateOrdererGroupNameUniqueForOrg(org));
     // ===================================
 
+    // === Validate Channel =============
     this._validateChannelNames(networkConfig.channels);
+    this._validateChannelOrgPeers(networkConfig.channels, networkConfig.orgs);
+    // ===================================
+
     this._validateChaincodeNames(networkConfig.chaincodes);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
@@ -198,6 +206,29 @@ class ValidateGenerator extends Generator {
       const objectToEmit = {
         category: validationCategories.GENERAL,
         message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${config.supportedFabricVersions}`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    }
+  }
+
+  _validateOrdererCountForOrg(org: OrgJson) {
+    const numerOfOrderersInOrg = org.orderers?.flatMap((o) => o.instances).reduce((a, b) => a + b, 0);
+    if (numerOfOrderersInOrg !== undefined && numerOfOrderersInOrg > 9) {
+      const objectToEmit = {
+        category: validationCategories.ORDERER,
+        message: `You've reached Fablo limits! :/ Single org may have only 9 Orderers in total, but '${org.organization.name}' has ${numerOfOrderersInOrg} Orderers in total.`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    }
+  }
+
+  _validateOrdererGroupNameUniqueForOrg(org: OrgJson) {
+    const groupNames = org.orderers?.flatMap((o) => o.groupName);
+    const duplicatedGroupNames = groupNames != undefined ? findDuplicatedItems(groupNames) : [];
+    if (duplicatedGroupNames.length > 0) {
+      const objectToEmit = {
+        category: validationCategories.ORDERER,
+        message: `groupName must be unique within every organization, but '${duplicatedGroupNames}' is not`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
@@ -301,6 +332,28 @@ class ValidateGenerator extends Generator {
     });
   }
 
+  _validateChannelOrgPeers(channels: ChannelJson[], orgs: OrgJson[]) {
+    const isOrgWithoutPeers = (org: OrgJson): boolean => org.peer === undefined;
+    const getOrgNames = (channel: ChannelJson): string[] => channel.orgs.map((o) => o.name);
+    const isOrgInChannel = (org: OrgJson, orgsInChannel: string[]): boolean =>
+      orgsInChannel.includes(org.organization.name);
+
+    channels.forEach((channel) => {
+      const orgsInChannel = getOrgNames(channel);
+
+      orgs
+        .filter((org) => isOrgInChannel(org, orgsInChannel))
+        .filter(isOrgWithoutPeers)
+        .forEach((orgWithoutPeers) => {
+          const objectToEmit = {
+            category: validationCategories.CHANNEL,
+            message: `You can't join org without peers to a channel. Check channel '${channel.name}' and org '${orgWithoutPeers.organization.name}'`,
+          };
+          this.emit(validationErrorType.ERROR, objectToEmit);
+        });
+    });
+  }
+
   _validateChannelNames(channels: ChannelJson[]) {
     const channelNames = channels.map((ch) => ch.name);
     const duplicatedChannelNames = findDuplicatedItems(channelNames);
@@ -357,6 +410,21 @@ class ValidateGenerator extends Generator {
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
+  }
+
+  _validateOrgs(orgs: OrgJson[]) {
+    const isOrgWithoutPeers = (org: OrgJson): boolean => org.peer === undefined;
+    const isOrgWithoutOrderers = (org: OrgJson): boolean => org.orderers === undefined;
+
+    orgs
+      .filter((o) => isOrgWithoutPeers(o) && isOrgWithoutOrderers(o))
+      .forEach((org) => {
+        const objectToEmit = {
+          category: validationCategories.ORGS,
+          message: `Org '${org.organization.name}' doesn't have Peers or Orderers.`,
+        };
+        this.emit(validationErrorType.WARN, objectToEmit);
+      });
   }
 }
 
