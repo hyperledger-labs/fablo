@@ -216,7 +216,7 @@ Orderer: &Group2Defaults
         - orderer0.group2.orderer2.com:7050
     BatchTimeout: 2s
     BatchSize:
-        MaxMessageCount: 10
+        MaxMessageCount: 1
         AbsoluteMaxBytes: 99 MB
         PreferredMaxBytes: 512 KB
     Organizations:
