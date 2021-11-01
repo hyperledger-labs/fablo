@@ -1,4 +1,4 @@
-import { Capabilities, OrgConfig } from "../types/FabloConfigExtended";
+import { Capabilities, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
 
 export default {
   networkSettings: {
@@ -19,6 +19,9 @@ export default {
     prefix: "peer",
     db: "LevelDb",
     anchorPeerInstances: (peerCount: number) => peerCount,
+  },
+  channel: {
+    ordererGroup: (ordererGroups: OrdererGroup[]): string => ordererGroups[0].name,
   },
   chaincode: {
     init: '{"Args":[]}',

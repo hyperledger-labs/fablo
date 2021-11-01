@@ -6,7 +6,6 @@
   "default": {},
   "required": [
     "networkSettings",
-    "rootOrg",
     "orgs",
     "channels",
     "chaincodes"
@@ -89,121 +88,32 @@
       },
       "additionalProperties": false
     },
-    "rootOrg": {
-      "$id": "#/properties/rootOrg",
-      "title": "Root organization",
-      "description": "The configuration of the root organization for the Hyperledger Fabric network.",
-      "type": "object",
-      "required": [
-        "organization",
-        "orderer"
-      ],
-      "properties": {
-        "organization": {
-          "$id": "#/properties/rootOrg/properties/organization",
-          "title": "Basic information",
-          "type": "object",
-          "default": {
-            "name": "Orderer",
-            "mspName": "OrdererMSP",
-            "domain": "root.com"
-          },
-          "required": [
-            "name",
-            "domain"
-          ],
-          "properties": {
-            "name": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/name",
-              "title": "Name",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9]+$"
-            },
-            "mspName": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/mspName",
-              "title": "MSP Name",
-              "description": "Membership Service Provider (MSP) is a component that offers an abstraction of membership operations.",
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9]+$"
-            },
-            "domain": {
-              "$id": "#/properties/rootOrg/properties/organization/properties/domain",
-              "title": "Domain",
-              "type": "string",
-              "pattern": "^[a-z0-9\\.\\-]+$"
-            }
-          },
-          "additionalProperties": false
-        },
-        "ca": {
-          "$id": "#/properties/rootOrg/properties/ca",
-          "type": "object",
-          "title": "Root Certificate Authority (CA)",
-          "default": {
-            "prefix": "ca"
-          },
-          "required": [
-            "prefix"
-          ],
-          "properties": {
-            "prefix": {
-              "$id": "#/properties/rootOrg/properties/ca/properties/prefix",
-              "title": "Domain prefix",
-              "type": "string",
-              "pattern": "^[a-z0-9\\.\\-]+$"
-            }
-          },
-          "additionalProperties": false
-        },
-        "orderer": {
-          "$id": "#/properties/rootOrg/properties/orderer",
-          "title": "Orderer",
-          "type": "object",
-          "default": {
-            "prefix": "orderer",
-            "type": "solo",
-            "instances": 1
-          },
-          "required": [
-            "type",
-            "instances"
-          ],
-          "properties": {
-            "prefix": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/prefix",
-              "title": "Domain prefix",
-              "type": "string",
-              "pattern": "^[a-z0-9\\.\\-]+$"
-            },
-            "type": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/type",
-              "type": "string",
-              "title": "Orderer type",
-              "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
-              "enum": [
-                "solo",
-                "raft"
-              ]
-            },
-            "instances": {
-              "$id": "#/properties/rootOrg/properties/orderer/properties/instances",
-              "title": "Number of instances",
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 10
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
     "orgs": {
       "$id": "#/properties/orgs",
       "title": "Organizations",
       "type": "array",
       "default": [
         {
+          "organization": {
+            "name": "Orderer",
+            "mspName": "OrdererMSP",
+            "domain": "orderer.com"
+          },
+          "ca": {
+            "prefix": "ca"
+          },
+          "orderer": {
+            "prefix": "orderer",
+            "type": "solo",
+            "instances": 1
+          }
+        },
+        {
+          "organization": {
+            "name": "Org1",
+            "mspName": "Org1MSP",
+            "domain": "org1.com"
+          },
           "ca": {
             "prefix": "ca"
           },
@@ -211,11 +121,6 @@
             "instances": 2,
             "prefix": "peer",
             "db": "LevelDb"
-          },
-          "organization": {
-            "domain": "org1.com",
-            "mspName": "Org1MSP",
-            "name": "Org1"
           }
         }
       ],
@@ -224,8 +129,7 @@
         "title": "Organization",
         "type": "object",
         "required": [
-          "organization",
-          "peer"
+          "organization"
         ],
         "properties": {
           "organization": {
@@ -275,6 +179,61 @@
             },
             "additionalProperties": false
           },
+          "orderers": {
+            "$id": "#/properties/orgs/items/properties/orderers",
+            "type": "array",
+            "title": "Orderers",
+            "default": [
+              {
+                "groupName": "group1",
+                "prefix": "orderer",
+                "type": "solo",
+                "instances": 1
+              }
+            ],
+            "items": {
+              "$id": "#/properties/orgs/items/properties/orderers/items",
+              "title": "Orderer",
+              "type": "object",
+              "required": [
+                "groupName",
+                "type",
+                "instances"
+              ],
+              "properties": {
+                "groupName": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/groupName",
+                  "title": "Name od Orderer group",
+                  "type": "string",
+                  "pattern": "^[a-z0-9\\.\\-]+$"
+                },
+                "prefix": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/prefix",
+                  "title": "Domain prefix",
+                  "type": "string",
+                  "pattern": "^[a-z0-9\\.\\-]+$"
+                },
+                "type": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/type",
+                  "type": "string",
+                  "title": "Orderer type",
+                  "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
+                  "enum": [
+                    "solo",
+                    "raft"
+                  ]
+                },
+                "instances": {
+                  "$id": "#/properties/orgs/items/properties/orderers/items/properties/instances",
+                  "title": "Number of instances",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9
+                }
+              },
+              "additionalProperties": false
+            }
+          },
           "peer": {
             "$id": "#/properties/orgs/items/properties/peer",
             "type": "object",
@@ -294,14 +253,14 @@
                 "title": "Number of instances",
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 9
               },
               "anchorPeerInstances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
                 "title": "Number of anchor peer instances",
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 9
               },
               "db": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/db",
@@ -375,6 +334,12 @@
             "type": "string",
             "title": "Name",
             "pattern": "^[a-z0-9_-]+$"
+          },
+          "ordererGroup": {
+            "$id": "#/properties/channels/items/properties/ordererGroup",
+            "type": "string",
+            "title": "Name of Orderer Org handling the channel",
+            "pattern": "^[a-zA-Z0-9]+$"
           },
           "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",

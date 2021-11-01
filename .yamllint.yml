@@ -9,3 +9,8 @@ rules:
     require-starting-space: true
     ignore-shebangs: true
     min-spaces-from-content: 1
+
+  # why added?
+  # config fablo-config-hlf2-2orgs-2chaincodes-raft.yaml produces duplicated keys in configtx.yaml due to Orderer sharding.
+  key-duplicates:
+    level: warning
