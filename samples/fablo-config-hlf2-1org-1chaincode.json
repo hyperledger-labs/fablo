@@ -4,17 +4,20 @@
     "fabricVersion": "2.3.2",
     "tls": false
   },
-  "rootOrg": {
-    "organization": {
-      "name": "Orderer",
-      "domain": "root.com"
-    },
-    "orderer": {
-      "type": "solo",
-      "instances": 1
-    }
-  },
   "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
     {
       "organization": {
         "name": "Org1",

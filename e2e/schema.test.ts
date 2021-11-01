@@ -40,103 +40,103 @@ describe("schema", () => {
     expect(withFabricVersion("2.0.0")).not.toMatchSchema(schema);
   });
 
-  it("should validate root org name", () => {
-    const withRootOrgName = (n: string) =>
+  // it("should validate root org name", () => {
+  //   const withRootOrgName = (n: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.name = n;
+  //     });
+  //
+  //   expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgName(uppercase)).toMatchSchema(schema);
+  //   expect(withRootOrgName(domain)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
+  // });
+  //
+  // it("should validate root org MSP name", () => {
+  //   const withRootOrgMSPName = (n: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.mspName = n;
+  //     });
+  //
+  //   expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(uppercase)).toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(domain)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
+  // });
+
+  // it("should validate root org domain", () => {
+  //   const withRootOrgDomain = (d: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.organization.domain = d;
+  //     });
+  //
+  //   expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(uppercase)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(domain)).toMatchSchema(schema);
+  //   expect(withRootOrgDomain(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
+  // });
+
+  // it("should validate root CA domain prefix", () => {
+  //   const withRootCADomainPrefix = (d: string) =>
+  //     updatedBase((json: FabloConfigJson) => {
+  //       json.rootOrg.ca.prefix = d;
+  //     });
+  //
+  //   expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(uppercase)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(domain)).toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(spaces)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
+  //   expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
+  // });
+
+  it("should validate first orderer org domain prefix", () => {
+    const withFirstOrdererDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.name = n;
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].prefix = d) : undefined;
       });
 
-    expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root org MSP name", () => {
-    const withRootOrgMSPName = (n: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.mspName = n;
-      });
-
-    expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root org domain", () => {
-    const withRootOrgDomain = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.domain = d;
-      });
-
-    expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgDomain(uppercase)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(domain)).toMatchSchema(schema);
-    expect(withRootOrgDomain(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root CA domain prefix", () => {
-    const withRootCADomainPrefix = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.ca.prefix = d;
-      });
-
-    expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(uppercase)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(domain)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(spaces)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root orderer domain prefix", () => {
-    const withRootOrdererDomainPrefix = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.prefix = d;
-      });
-
-    expect(withRootOrdererDomainPrefix(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(uppercase)).not.toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(domain)).toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrdererDomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(lettersOnly)).toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(lettersAndNumber)).toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(domain)).toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(uppercase)).not.toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(spaces)).not.toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withFirstOrdererDomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it("should validate root orderer consensus type ", () => {
-    const withRootOrdererConsensus = (c: string) =>
+    const withFirstOrdererConsensus = (c: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.type = c as "solo" | "raft";
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].type = c as "solo" | "raft") : undefined;
       });
 
-    expect(withRootOrdererConsensus("solo")).toMatchSchema(schema);
-    expect(withRootOrdererConsensus("raft")).toMatchSchema(schema);
-    expect(withRootOrdererConsensus("kafka")).not.toMatchSchema(schema);
-    expect(withRootOrdererConsensus(lettersOnly)).not.toMatchSchema(schema);
+    expect(withFirstOrdererConsensus("solo")).toMatchSchema(schema);
+    expect(withFirstOrdererConsensus("raft")).toMatchSchema(schema);
+    expect(withFirstOrdererConsensus("kafka")).not.toMatchSchema(schema);
+    expect(withFirstOrdererConsensus(lettersOnly)).not.toMatchSchema(schema);
   });
 
   it("should validate root orderer number of instances", () => {
-    const withRootOrdererNoOfInstances = (i: number) =>
+    const withFirstOrdererNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.orderer.instances = i;
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].instances = i) : undefined;
       });
 
-    expect(withRootOrdererNoOfInstances(1)).toMatchSchema(schema);
-    expect(withRootOrdererNoOfInstances(10)).toMatchSchema(schema);
-    expect(withRootOrdererNoOfInstances(0)).not.toMatchSchema(schema);
-    expect(withRootOrdererNoOfInstances(11)).not.toMatchSchema(schema);
+    expect(withFirstOrdererNoOfInstances(1)).toMatchSchema(schema);
+    expect(withFirstOrdererNoOfInstances(9)).toMatchSchema(schema);
+    expect(withFirstOrdererNoOfInstances(0)).not.toMatchSchema(schema);
+    expect(withFirstOrdererNoOfInstances(11)).not.toMatchSchema(schema);
   });
 
   it("should validate org name", () => {
@@ -187,7 +187,7 @@ describe("schema", () => {
   it("should validate ca domain prefix", () => {
     const withCADomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].ca.prefix = d;
+        json.orgs[1].ca.prefix = d;
       });
 
     expect(withCADomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -202,7 +202,7 @@ describe("schema", () => {
   it("should validate peer domain prefix", () => {
     const withPeerDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.prefix = d;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.prefix = d) : undefined;
       });
 
     expect(withPeerDomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -217,11 +217,11 @@ describe("schema", () => {
   it("should validate peer number of instances", () => {
     const withPeerNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.instances = i;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.instances = i) : undefined;
       });
 
     expect(withPeerNoOfInstances(1)).toMatchSchema(schema);
-    expect(withPeerNoOfInstances(100)).toMatchSchema(schema);
+    expect(withPeerNoOfInstances(9)).toMatchSchema(schema);
     expect(withPeerNoOfInstances(0)).not.toMatchSchema(schema);
     expect(withPeerNoOfInstances(101)).not.toMatchSchema(schema);
   });
@@ -229,7 +229,7 @@ describe("schema", () => {
   it("should validate peer database type", () => {
     const withPeerDatabaseType = (db: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.db = db as "LevelDb" | "CouchDb";
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.db = db as "LevelDb" | "CouchDb") : undefined;
       });
 
     expect(withPeerDatabaseType("LevelDb")).toMatchSchema(schema);
@@ -262,6 +262,21 @@ describe("schema", () => {
     expect(withChannelName(spaces)).not.toMatchSchema(schema);
     expect(withChannelName(specialCharacters1)).not.toMatchSchema(schema);
     expect(withChannelName(specialCharacters2)).not.toMatchSchema(schema);
+  });
+
+  it("should validate channel orderer org name", () => {
+    const withChannelOrdererGroupName = (n: string) =>
+      updatedBase((json: FabloConfigJson) => {
+        json.channels[0].ordererGroup = n;
+      });
+
+    expect(withChannelOrdererGroupName(lettersOnly)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(lettersAndNumber)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(uppercase)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(domain)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(spaces)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it("should validate chaincode name", () => {

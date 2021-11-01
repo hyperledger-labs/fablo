@@ -7,22 +7,21 @@
       "loglevel": "debug"
     }
   },
-  "rootOrg": {
-    "organization": {
-      "name": "Orderer",
-      "mspName": "OrdererMSP",
-      "domain": "root.com"
-    },
-    "ca": {
-      "prefix": "ca"
-    },
-    "orderer": {
-      "prefix": "orderer",
-      "type": "raft",
-      "instances": 1
-    }
-  },
   "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "prefix": "orderer",
+          "type": "raft",
+          "instances": 1
+        }
+      ]
+    },
     {
       "organization": {
         "name": "Org1",

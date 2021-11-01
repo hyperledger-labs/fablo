@@ -9,7 +9,6 @@ import {
   HooksConfig,
   NetworkSettings,
   OrgConfig,
-  RootOrgConfig,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
 
@@ -32,7 +31,7 @@ export default class SetupDockerGenerator extends Generator {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const config = extendConfig(json);
-    const { networkSettings, rootOrg, orgs, chaincodes } = config;
+    const { networkSettings, orgs, chaincodes } = config;
 
     const dateString = new Date()
       .toISOString()
@@ -45,7 +44,6 @@ export default class SetupDockerGenerator extends Generator {
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
-    this._copyRootOrgCryptoConfig(rootOrg);
     this._copyOrgCryptoConfig(orgs);
     this._copyConfigTx(config);
     this._copyGitIgnore();
@@ -53,7 +51,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
-    this._copyDockerCompose(networkSettings, rootOrg, orgs, chaincodes);
+    this._copyDockerCompose(config);
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
@@ -79,14 +77,6 @@ export default class SetupDockerGenerator extends Generator {
 
   _copyGitIgnore(): void {
     this.fs.copyTpl(this.templatePath("fabric-config/.gitignore"), this.destinationPath("fabric-config/.gitignore"));
-  }
-
-  _copyRootOrgCryptoConfig(rootOrg: RootOrgConfig): void {
-    this.fs.copyTpl(
-      this.templatePath("fabric-config/crypto-config-root.yaml"),
-      this.destinationPath("fabric-config/crypto-config-root.yaml"),
-      { rootOrg },
-    );
   }
 
   _copyOrgCryptoConfig(orgsTransformed: OrgConfig[]): void {
@@ -117,17 +107,11 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
 
-  _copyDockerCompose(
-    networkSettings: NetworkSettings,
-    rootOrg: RootOrgConfig,
-    orgs: OrgConfig[],
-    chaincodes: ChaincodeConfig[],
-  ): void {
-    const settings = { networkSettings, rootOrg, orgs, chaincodes };
+  _copyDockerCompose(config: FabloConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-docker/docker-compose.yaml"),
       this.destinationPath("fabric-docker/docker-compose.yaml"),
-      settings,
+      config,
     );
   }
 

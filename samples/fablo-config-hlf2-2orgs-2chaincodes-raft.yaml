@@ -5,14 +5,21 @@ networkSettings:
   tls: true
   monitoring:
     loglevel: debug
-rootOrg:
-  organization:
-    name: Orderer
-    domain: root.com
-  orderer:
-    type: raft
-    instances: 3
 orgs:
+  - organization:
+      name: Orderer1
+      domain: orderer1.com
+    orderers:
+      - groupName: group1
+        type: raft
+        instances: 3
+  - organization:
+      name: Orderer2
+      domain: orderer2.com
+    orderers:
+      - groupName: group2
+        type: solo
+        instances: 1
   - organization:
       name: Org1
       domain: org1.com
@@ -42,6 +49,15 @@ channels:
       - name: Org1
         peers:
           - peer1
+      - name: Org2
+        peers:
+          - peer1
+  - name: my-channel3
+    ordererGroup: group2
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
       - name: Org2
         peers:
           - peer1
