@@ -3,6 +3,7 @@
 ### Features
 * Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 
 * By default all peers are anchor peers
+* Support `postGenerate` hook
 
 ### Fixes
 * Fixed issue with bad requiredPeerCount in private data collection
