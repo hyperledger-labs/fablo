@@ -32,13 +32,13 @@ export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
   orderers: OrdererJson[] | undefined;
-  peer: PeerJson | undefined;
+  peer?: PeerJson;
   tools?: { fabloRest?: boolean };
 }
 
 export interface ChannelJson {
   name: string;
-  ordererGroup: string | undefined;
+  ordererGroup?: string;
   orgs: { name: string; peers: string[] }[];
 }
 
