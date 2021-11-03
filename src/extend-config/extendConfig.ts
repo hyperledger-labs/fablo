@@ -11,13 +11,13 @@ const mergeOrdererGroupsByName = (orgs: OrgConfig[]): OrdererGroup[] => {
 
   const ordererGroupsGrouped: Record<string, OrdererGroup[]> = _.groupBy(ordererGroups, (group) => group.name);
 
-  return Object.values(ordererGroupsGrouped).flatMap((groupsWithSameGroupName) => {
-    const orderers = groupsWithSameGroupName.flatMap((group) => group.orderers);
-    const hostingOrgs = groupsWithSameGroupName.flatMap((group) => group.hostingOrgs);
-    const ordererHeads = groupsWithSameGroupName.flatMap((group) => group.ordererHeads);
+  return Object.values(ordererGroupsGrouped).flatMap((groupParts) => {
+    const orderers = groupParts.flatMap((group) => group.orderers);
+    const hostingOrgs = groupParts.flatMap((group) => group.hostingOrgs);
+    const ordererHeads = groupParts.flatMap((group) => group.ordererHeads);
 
     return {
-      ...groupsWithSameGroupName[0],
+      ...groupParts[0],
       hostingOrgs,
       orderers,
       ordererHeads,
