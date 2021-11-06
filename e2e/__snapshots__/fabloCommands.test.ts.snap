@@ -2045,7 +2045,10 @@ Validation warnings count: 0
       },
       \\"privateData\\": []
     }
-  ]
+  ],
+  \\"hooks\\": {
+    \\"postGenerate\\": \\"perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\\\\\"./fabric-config/configtx.yaml\\\\\\"\\"
+  }
 }
 "
 `;
@@ -2448,7 +2451,10 @@ Validation warnings count: 0
       }
     }
   ],
-  \\"chaincodes\\": []
+  \\"chaincodes\\": [],
+  \\"hooks\\": {
+    \\"postGenerate\\": \\"\\"
+  }
 }
 "
 `;

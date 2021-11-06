@@ -368,6 +368,23 @@ The property `lang` may be `golang`, `java` or `node`.
 
 The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none (just the implicit private data collection in Fabric 2.x).
 
+### hooks
+
+Hooks in Fablo are Bash commands to be executed after a specific event.
+Right now Fablo supports only one kind of hook: `postGenerate`.
+It will be executed each time after the network config is generated -- after `./fablo generate` command (executed separately or automatically by `./fablo up`).
+
+The following hook example will change `MaxMessageCount` to 1 in generated Hyperledger Fabric config:
+
+```json
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fabric-config/configtx.yaml\""
+  }
+```
+
+Genrated Hooks are saved in `fablo-target/hooks`.
+
+
 ### Sample YAML config file
 
 ```yaml

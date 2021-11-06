@@ -59,10 +59,15 @@ export interface ChaincodeJson {
   privateData: PrivateDataJson[];
 }
 
+export interface HooksJson {
+  postGenerate?: string;
+}
+
 export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];
+  hooks: HooksJson;
 }
