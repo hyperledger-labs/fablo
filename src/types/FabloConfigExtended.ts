@@ -147,6 +147,7 @@ export interface HooksConfig {
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   ordererGroups: OrdererGroup[];
+  orderedHeadsDistinct: OrdererConfig[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];

@@ -128,6 +128,24 @@ Validation warnings count: 0
       }
     }
   ],
+  \\"orderedHeadsDistinct\\": [
+    {
+      \\"name\\": \\"orderer0.group1\\",
+      \\"address\\": \\"orderer0.group1.orderer1.com\\",
+      \\"domain\\": \\"orderer1.com\\",
+      \\"consensus\\": \\"etcdraft\\",
+      \\"port\\": 7030,
+      \\"fullAddress\\": \\"orderer0.group1.orderer1.com:7030\\"
+    },
+    {
+      \\"name\\": \\"orderer0.group2\\",
+      \\"address\\": \\"orderer0.group2.orderer2.com\\",
+      \\"domain\\": \\"orderer2.com\\",
+      \\"consensus\\": \\"solo\\",
+      \\"port\\": 7050,
+      \\"fullAddress\\": \\"orderer0.group2.orderer2.com:7050\\"
+    }
+  ],
   \\"orgs\\": [
     {
       \\"name\\": \\"Orderer1\\",
@@ -2125,6 +2143,16 @@ Validation warnings count: 0
         \\"port\\": 7030,
         \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
       }
+    }
+  ],
+  \\"orderedHeadsDistinct\\": [
+    {
+      \\"name\\": \\"orderer0.group1\\",
+      \\"address\\": \\"orderer0.group1.orderer.com\\",
+      \\"domain\\": \\"orderer.com\\",
+      \\"consensus\\": \\"solo\\",
+      \\"port\\": 7030,
+      \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
     }
   ],
   \\"orgs\\": [
