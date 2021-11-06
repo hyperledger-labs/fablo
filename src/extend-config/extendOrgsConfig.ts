@@ -1,16 +1,16 @@
 import defaults from "./defaults";
-import { CAJson, OrdererJson, OrdererOrgJson, OrgJson, PeerJson, RootOrgJson } from "../types/FabloConfigJson";
+import { CAJson, OrdererJson, OrgJson, PeerJson } from "../types/FabloConfigJson";
 import {
   CAConfig,
   FabloRestConfig,
   FabloRestLoggingConfig,
   NetworkSettings,
   OrdererConfig,
-  OrdererOrgConfig,
+  OrdererGroup,
   OrgConfig,
   PeerConfig,
-  RootOrgConfig,
 } from "../types/FabloConfigExtended";
+import _ = require("lodash");
 
 const extendCaConfig = (
   caJsonFormat: CAJson,
@@ -32,13 +32,9 @@ const extendCaConfig = (
   };
 };
 
-const getPortsForOrdererOrg = (ordererOrgIndex: number) => ({
-  caPort: 7020 + 10 * ordererOrgIndex,
-  headOrdererPort: 7021 + 10 * ordererOrgIndex,
-});
-
 const extendOrderersConfig = (
   headOrdererPort: number,
+  groupName: string,
   ordererJson: OrdererJson,
   ordererOrgDomainJson: string,
 ): OrdererConfig[] => {
@@ -48,13 +44,13 @@ const extendOrderersConfig = (
   return Array(ordererJson.instances)
     .fill(undefined)
     .map((_x, i) => {
-      const name = `${prefix}${i}`;
+      const name = `${prefix}${i}.${groupName}`;
       const address = `${name}.${ordererOrgDomainJson}`;
       const port = headOrdererPort + i;
       return {
         name,
-        domain: ordererOrgDomainJson,
         address,
+        domain: ordererOrgDomainJson,
         consensus,
         port,
         fullAddress: `${address}:${port}`,
@@ -62,45 +58,44 @@ const extendOrderersConfig = (
     });
 };
 
-const extendOrdererOrgConfig = (ordererOrgIndex: number, ordererOrgJson: OrdererOrgJson): OrdererOrgConfig => {
-  const { caPort, headOrdererPort } = getPortsForOrdererOrg(ordererOrgIndex);
-
-  const { domain, name } = ordererOrgJson.organization;
-  const profileName = `${name}Genesis`;
-  const mspName = ordererOrgJson.organization.mspName || defaults.organization.mspName(name);
-  const consensus = ordererOrgJson.orderer.type === "raft" ? "etcdraft" : ordererOrgJson.orderer.type;
-
-  const orderersExtended = extendOrderersConfig(headOrdererPort, ordererOrgJson.orderer, domain);
-  const ordererHead = orderersExtended[0];
-
-  return {
-    name,
-    mspName,
-    domain,
-    profileName,
-    genesisBlockName: `${profileName}.block`,
-    ca: extendCaConfig(ordererOrgJson.ca, ordererOrgJson.organization.name, domain, caPort),
-    consensus,
-    orderers: orderersExtended,
-    ordererHead,
-  };
+const portsForOrdererGroups = (headOrdererPort: number, orderersJson: OrdererJson[]) => {
+  const instancesArray = orderersJson
+    .map((o) => o.instances)
+    .reduce((arr, n) => [...arr, arr.length === 0 ? n : arr[arr.length - 1] + n], [] as number[]);
+  return instancesArray.map((_instance, index) => {
+    const port = index == 0 ? headOrdererPort : instancesArray[index - 1] + headOrdererPort;
+    return port;
+  });
 };
 
-const extendOrdererOrgsConfig = (ordererOrgsJson: OrdererOrgJson[]): OrdererOrgConfig[] => {
-  return Array(ordererOrgsJson.length)
-    .fill(undefined)
-    .map((_x, ordererOrgIndex) => extendOrdererOrgConfig(ordererOrgIndex, ordererOrgsJson[ordererOrgIndex]));
-};
+const extendOrderersGroupForOrg = (
+  headOrdererPort: number,
+  orgName: string,
+  orderersJson: OrdererJson[],
+  ordererOrgDomainJson: string,
+): OrdererGroup[] => {
+  const portsArray = portsForOrdererGroups(headOrdererPort, orderersJson);
 
-const extendRootOrgConfig = (rootOrgJsonFormat: RootOrgJson): RootOrgConfig => {
-  const { domain, name } = rootOrgJsonFormat.organization;
-  const mspName = rootOrgJsonFormat.organization.mspName || defaults.organization.mspName(name);
-  return {
-    name,
-    mspName,
-    domain,
-    ca: extendCaConfig(rootOrgJsonFormat.ca, rootOrgJsonFormat.organization.name, domain, 7010),
-  };
+  return orderersJson.map((ordererJson, i) => {
+    const groupName = ordererJson.groupName;
+    const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
+    const orderers = extendOrderersConfig(portsArray[i], groupName, ordererJson, ordererOrgDomainJson);
+
+    const profileName = _.upperFirst(`${groupName}Genesis`);
+    const genesisBlockName = `${profileName}.block`;
+    const configtxOrdererDefaults = _.upperFirst(`${groupName}Defaults`);
+
+    return {
+      name: groupName,
+      consensus,
+      configtxOrdererDefaults,
+      profileName,
+      genesisBlockName,
+      hostingOrgs: [orgName],
+      orderers,
+      ordererHeads: [orderers[0]],
+    };
+  });
 };
 
 const extendPeers = (
@@ -179,6 +174,7 @@ const fabloRestConfig = (
 const extendOrgConfig = (
   orgJsonFormat: OrgJson,
   caExposePort: number,
+  ordererHeadExposePort: number,
   fabloRestPort: number,
   peers: PeerConfig[],
   anchorPeersAllOrgs: AnchorPeerConfig[],
@@ -199,6 +195,11 @@ const extendOrgConfig = (
     ? {}
     : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings) };
 
+  const ordererGroups =
+    orgJsonFormat.orderers !== undefined
+      ? extendOrderersGroupForOrg(ordererHeadExposePort, name, orgJsonFormat.orderers, domain)
+      : [];
+
   return {
     name,
     mspName,
@@ -213,22 +214,25 @@ const extendOrgConfig = (
       address: `cli.${orgJsonFormat.organization.domain}`,
     },
     headPeer: peers[0],
+    ordererGroups,
     tools: { ...fabloRest },
   };
 };
 
 const getPortsForOrg = (orgIndex: number) => ({
-  caPort: 7070 + 10 * orgIndex,
-  headPeerPort: 7071 + 10 * orgIndex,
-  headPeerCouchDbPort: 5080 + 10 * orgIndex,
+  caPort: 7020 + 20 * orgIndex,
+  headPeerPort: 7021 + 20 * orgIndex,
+  headOrdererPort: 7030 + 20 * orgIndex,
+  headPeerCouchDbPort: 5080 + 20 * orgIndex,
   fabloRestPort: 8800 + orgIndex,
 });
 
 const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: NetworkSettings): OrgConfig[] => {
   const peersByOrgDomain = orgsJsonConfigFormat.reduce((all, orgJson, orgIndex) => {
     const domain = orgJson.organization.domain;
-    const { headPeerPort, headPeerCouchDbPort, caPort, fabloRestPort } = getPortsForOrg(orgIndex);
-    const peers = extendPeers(orgJson.peer, domain, headPeerPort, headPeerCouchDbPort);
+    const { caPort, headPeerPort, headPeerCouchDbPort, fabloRestPort } = getPortsForOrg(orgIndex);
+    const peers =
+      orgJson.peer !== undefined ? extendPeers(orgJson.peer, domain, headPeerPort, headPeerCouchDbPort) : [];
     return { ...all, [domain]: { peers, caPort, fabloRestPort } };
   }, {} as Record<string, { peers: PeerConfig[]; caPort: number; fabloRestPort: number }>);
 
@@ -239,10 +243,11 @@ const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: Netw
     return peers.concat(newAnchorPeers);
   }, [] as AnchorPeerConfig[]);
 
-  return orgsJsonConfigFormat.map((org) => {
+  return orgsJsonConfigFormat.map((org, orgIndex) => {
+    const { headOrdererPort } = getPortsForOrg(orgIndex);
     const { peers, caPort, fabloRestPort } = peersByOrgDomain[org.organization.domain];
-    return extendOrgConfig(org, caPort, fabloRestPort, peers, anchorPeers, networkSettings);
+    return extendOrgConfig(org, caPort, headOrdererPort, fabloRestPort, peers, anchorPeers, networkSettings);
   });
 };
 
-export { extendRootOrgConfig, extendOrdererOrgsConfig, extendOrgsConfig };
+export { extendOrgsConfig };

@@ -15,6 +15,7 @@ export interface CAJson {
 }
 
 export interface OrdererJson {
+  groupName: string;
   prefix: string;
   type: "solo" | "raft";
   instances: number;
@@ -27,21 +28,17 @@ export interface PeerJson {
   anchorPeerInstances?: number;
 }
 
-export interface RootOrgJson {
-  organization: OrganizationDetailsJson;
-  ca: CAJson;
-}
-
 export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
-  peer: PeerJson;
+  orderers: OrdererJson[] | undefined;
+  peer?: PeerJson;
   tools?: { fabloRest?: boolean };
 }
 
 export interface ChannelJson {
   name: string;
-  ordererOrg: string;
+  ordererGroup?: string;
   orgs: { name: string; peers: string[] }[];
 }
 
@@ -62,17 +59,9 @@ export interface ChaincodeJson {
   privateData: PrivateDataJson[];
 }
 
-export interface OrdererOrgJson {
-  organization: OrganizationDetailsJson;
-  ca: CAJson;
-  orderer: OrdererJson;
-}
-
 export interface FabloConfigJson {
   $schema: string;
   networkSettings: NetworkSettingsJson;
-  rootOrg: RootOrgJson;
-  ordererOrgs: OrdererOrgJson[];
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];

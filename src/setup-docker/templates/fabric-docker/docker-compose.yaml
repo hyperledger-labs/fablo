@@ -4,62 +4,6 @@ networks:
   basic:
 
 services:
-  <%= rootOrg.ca.address %>:
-    container_name: <%= rootOrg.ca.address %>
-    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=<%= rootOrg.ca.address %>
-      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= rootOrg.domain %>-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
-      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-    ports:
-      - <%= rootOrg.ca.exposePort %>:<%= rootOrg.ca.port %>
-    working_dir: /etc/hyperledger/fabric-ca-server
-    command: sh -c 'fabric-ca-server start -b ${ROOT_CA_ADMIN_NAME}:${ROOT_CA_ADMIN_PASSWORD} -d'
-    volumes:
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= rootOrg.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto/:ro
-    networks:
-      - basic
-
-  <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
-  <%_ ordererOrg.orderers.forEach(function(orderer){ _%>
-  <%= orderer.address %>:
-    container_name: <%= orderer.address %>
-    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
-    environment:
-      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
-      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererOrg.genesisBlockName %>
-      - ORDERER_GENERAL_LOCALMSPID=<%= ordererOrg.mspName %>
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      <%_ if(networkSettings.tls) { _%>
-      # enabled TLS
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      <%_ } _%>
-    working_dir: /var/hyperledger/orderer
-    command: orderer
-    ports:
-      - <%= orderer.port %>:<%= orderer.port %>
-    volumes:
-      - ../fabric-config/config/:/var/hyperledger/config
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/orderers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/orderers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
-    networks:
-      - basic
-
-  <%_ }) _%>
-  <%_ }) _%>
-
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
@@ -92,13 +36,17 @@ services:
       #
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/msp
-      - CORE_PEER_ADDRESS=<%= org.headPeer.fullAddress %><% if(networkSettings.tls) { %>
+      <%_ if(org.headPeer !== undefined) { _%>
+      - CORE_PEER_ADDRESS=<%= org.headPeer.fullAddress %>
+      <%_ } _%>
+      <%_ if(networkSettings.tls) { _%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
       - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/ca.crt
-      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererOrgHead.domain %>-cert.pem<% } %>
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem
+      <%_ } _%>
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -107,8 +55,10 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       <%_ if(networkSettings.tls) { _%>
-      <%_ ordererOrgs.forEach(function(ordererOrg) { _%>
-      - ../fabric-config/crypto-config/ordererOrganizations/<%= ordererOrg.domain %>/orderers/<%= ordererOrg.ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererOrg.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererOrg.domain %>-cert.pem:ro
+      <%_ ordererGroups.forEach(function(ordererGroup) { _%>
+      <%_ ordererGroup.ordererHeads.forEach(function(ordererHead) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= ordererHead.domain %>/peers/<%= ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererHead.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererHead.domain %>-cert.pem:ro
+      <%_ }) _%>
       <%_ }) _%>
       <%_ orgs.forEach(function(org) { _%>
       <%_ org.peers.forEach(function(peer) { _%>
@@ -152,6 +102,44 @@ services:
     networks:
       - basic
   <%_ } _%>
+
+  <%_ org.ordererGroups.forEach(function(ordererGroup){ _%>
+  <%_ ordererGroup.orderers.forEach(function(orderer){ _%>
+  <%= orderer.address %>:
+    container_name: <%= orderer.address %>
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      - ORDERER_GENERAL_LOCALMSPID=<%= org.mspName %>
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+      <%_ if(networkSettings.tls) { _%>
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      <%_ } _%>
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - <%= orderer.port %>:<%= orderer.port %>
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  <%_ }) _%>
+  <%_ }) _%>
 
   <%_ org.peers.forEach(function(peer){ _%>
   <%= peer.address %>:

@@ -63,8 +63,9 @@ export interface CLIConfig {
 
 export interface ChannelConfig {
   name: string;
-  ordererHead: OrdererConfig;
   profileName: string;
+  ordererGroup: OrdererGroup;
+  ordererHead: OrdererConfig;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }
@@ -77,13 +78,6 @@ export interface PrivateCollectionConfig {
   blockToLive: number;
   memberOnlyRead?: boolean;
   memberOnlyWrite?: boolean;
-}
-
-export interface RootOrgConfig {
-  name: string;
-  mspName: string;
-  domain: string;
-  ca: CAConfig;
 }
 
 export interface FabloRestLoggingConfig {
@@ -112,11 +106,12 @@ export interface OrgConfig {
   cli: CLIConfig;
   cryptoConfigFileName: string;
   domain: string;
-  headPeer: PeerConfig;
+  headPeer?: PeerConfig;
   mspName: string;
   name: string;
   peers: PeerConfig[];
   peersCount: number;
+  ordererGroups: OrdererGroup[];
   tools: { fabloRest?: FabloRestConfig };
 }
 
@@ -134,23 +129,20 @@ export interface ChaincodeConfig {
   privateData: PrivateCollectionConfig[];
 }
 
-export interface OrdererOrgConfig {
+export interface OrdererGroup {
   name: string;
-  mspName: string;
-  domain: string;
+  consensus: "solo" | "etcdraft";
   profileName: string;
   genesisBlockName: string;
-  ca: CAConfig;
-  consensus: "solo" | "etcdraft";
+  configtxOrdererDefaults: string;
+  hostingOrgs: string[];
   orderers: OrdererConfig[];
-  ordererHead: OrdererConfig;
+  ordererHeads: OrdererConfig[];
 }
 
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
-  rootOrg: RootOrgConfig;
-  ordererOrgHead: OrdererOrgConfig;
-  ordererOrgs: OrdererOrgConfig[];
+  ordererGroups: OrdererGroup[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
