@@ -58,16 +58,28 @@ const extendOrderersConfig = (
     });
 };
 
+const portsForOrdererGroups = (headOrdererPort: number, orderersJson: OrdererJson[]) => {
+  const instancesArray = orderersJson
+    .map((o) => o.instances)
+    .reduce((arr, n) => [...arr, arr.length === 0 ? n : arr[arr.length - 1] + n], [] as number[]);
+  return instancesArray.map((_instance, index) => {
+    const port = index == 0 ? headOrdererPort : instancesArray[index - 1] + headOrdererPort;
+    return port;
+  });
+};
+
 const extendOrderersGroupForOrg = (
   headOrdererPort: number,
   orgName: string,
   orderersJson: OrdererJson[],
   ordererOrgDomainJson: string,
-): OrdererGroup[] =>
-  orderersJson.map((ordererJson) => {
+): OrdererGroup[] => {
+  const portsArray = portsForOrdererGroups(headOrdererPort, orderersJson);
+
+  return orderersJson.map((ordererJson, i) => {
     const groupName = ordererJson.groupName;
     const consensus = ordererJson.type === "raft" ? "etcdraft" : ordererJson.type;
-    const orderers = extendOrderersConfig(headOrdererPort, groupName, ordererJson, ordererOrgDomainJson);
+    const orderers = extendOrderersConfig(portsArray[i], groupName, ordererJson, ordererOrgDomainJson);
 
     const profileName = _.upperFirst(`${groupName}Genesis`);
     const genesisBlockName = `${profileName}.block`;
@@ -84,6 +96,7 @@ const extendOrderersGroupForOrg = (
       ordererHeads: [orderers[0]],
     };
   });
+};
 
 const extendPeers = (
   peerJson: PeerJson,
