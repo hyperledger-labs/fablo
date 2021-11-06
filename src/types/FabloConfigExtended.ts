@@ -106,7 +106,7 @@ export interface OrgConfig {
   cli: CLIConfig;
   cryptoConfigFileName: string;
   domain: string;
-  headPeer: PeerConfig;
+  headPeer?: PeerConfig;
   mspName: string;
   name: string;
   peers: PeerConfig[];
