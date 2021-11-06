@@ -4,30 +4,21 @@
     "fabricVersion": "1.3.0",
     "tls": false
   },
-  "rootOrg": {
-    "organization": {
-      "name": "Root",
-      "mspName": "RootMSP",
-      "domain": "root.com"
-    },
-    "ca": {
-      "prefix": "ca"
-    }
-  },
-  "ordererOrgs": [
+  "orgs": [
     {
       "organization": {
         "name": "Orderer",
         "domain": "orderer.com"
       },
-      "orderer": {
-        "prefix": "orderer",
-        "type": "solo",
-        "instances": 1
-      }
-    }
-  ],
-  "orgs": [
+      "orderers": [
+        {
+          "groupName": "group1",
+          "prefix": "orderer",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
     {
       "organization": {
         "name": "Org1",

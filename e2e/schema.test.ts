@@ -40,70 +40,10 @@ describe("schema", () => {
     expect(withFabricVersion("2.0.0")).not.toMatchSchema(schema);
   });
 
-  it("should validate root org name", () => {
-    const withRootOrgName = (n: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.name = n;
-      });
-
-    expect(withRootOrgName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root org MSP name", () => {
-    const withRootOrgMSPName = (n: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.mspName = n;
-      });
-
-    expect(withRootOrgMSPName(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(uppercase)).toMatchSchema(schema);
-    expect(withRootOrgMSPName(domain)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgMSPName(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root org domain", () => {
-    const withRootOrgDomain = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.organization.domain = d;
-      });
-
-    expect(withRootOrgDomain(lettersOnly)).toMatchSchema(schema);
-    expect(withRootOrgDomain(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootOrgDomain(uppercase)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(domain)).toMatchSchema(schema);
-    expect(withRootOrgDomain(spaces)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootOrgDomain(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
-  it("should validate root CA domain prefix", () => {
-    const withRootCADomainPrefix = (d: string) =>
-      updatedBase((json: FabloConfigJson) => {
-        json.rootOrg.ca.prefix = d;
-      });
-
-    expect(withRootCADomainPrefix(lettersOnly)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(lettersAndNumber)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(uppercase)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(domain)).toMatchSchema(schema);
-    expect(withRootCADomainPrefix(spaces)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withRootCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
-  });
-
   it("should validate first orderer org domain prefix", () => {
     const withFirstOrdererDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.ordererOrgs[0].orderer.prefix = d;
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].prefix = d) : undefined;
       });
 
     expect(withFirstOrdererDomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -118,7 +58,7 @@ describe("schema", () => {
   it("should validate root orderer consensus type ", () => {
     const withFirstOrdererConsensus = (c: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.ordererOrgs[0].orderer.type = c as "solo" | "raft";
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].type = c as "solo" | "raft") : undefined;
       });
 
     expect(withFirstOrdererConsensus("solo")).toMatchSchema(schema);
@@ -130,7 +70,7 @@ describe("schema", () => {
   it("should validate root orderer number of instances", () => {
     const withFirstOrdererNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.ordererOrgs[0].orderer.instances = i;
+        json.orgs[0].orderers !== undefined ? (json.orgs[0].orderers[0].instances = i) : undefined;
       });
 
     expect(withFirstOrdererNoOfInstances(1)).toMatchSchema(schema);
@@ -187,7 +127,7 @@ describe("schema", () => {
   it("should validate ca domain prefix", () => {
     const withCADomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].ca.prefix = d;
+        json.orgs[1].ca.prefix = d;
       });
 
     expect(withCADomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -202,7 +142,7 @@ describe("schema", () => {
   it("should validate peer domain prefix", () => {
     const withPeerDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.prefix = d;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.prefix = d) : undefined;
       });
 
     expect(withPeerDomainPrefix(lettersOnly)).toMatchSchema(schema);
@@ -217,7 +157,7 @@ describe("schema", () => {
   it("should validate peer number of instances", () => {
     const withPeerNoOfInstances = (i: number) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.instances = i;
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.instances = i) : undefined;
       });
 
     expect(withPeerNoOfInstances(1)).toMatchSchema(schema);
@@ -229,7 +169,7 @@ describe("schema", () => {
   it("should validate peer database type", () => {
     const withPeerDatabaseType = (db: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.orgs[0].peer.db = db as "LevelDb" | "CouchDb";
+        json.orgs[1].peer !== undefined ? (json.orgs[1].peer.db = db as "LevelDb" | "CouchDb") : undefined;
       });
 
     expect(withPeerDatabaseType("LevelDb")).toMatchSchema(schema);
@@ -265,18 +205,18 @@ describe("schema", () => {
   });
 
   it("should validate channel orderer org name", () => {
-    const withChannelsOrdererOrgName = (n: string) =>
+    const withChannelOrdererGroupName = (n: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.channels[0].ordererOrg = n;
+        json.channels[0].ordererGroup = n;
       });
 
-    expect(withChannelsOrdererOrgName(lettersOnly)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(lettersAndNumber)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(uppercase)).toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(domain)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(spaces)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(specialCharacters1)).not.toMatchSchema(schema);
-    expect(withChannelsOrdererOrgName(specialCharacters2)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(lettersOnly)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(lettersAndNumber)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(uppercase)).toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(domain)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(spaces)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters1)).not.toMatchSchema(schema);
+    expect(withChannelOrdererGroupName(specialCharacters2)).not.toMatchSchema(schema);
   });
 
   it("should validate chaincode name", () => {
