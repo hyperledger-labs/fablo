@@ -1,4 +1,4 @@
-import { OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
+import { OrdererConfig, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
 import * as _ from "lodash";
 
 export const mergeOrdererGroups = (orgs: OrgConfig[]): OrdererGroup[] => {
@@ -19,4 +19,9 @@ export const mergeOrdererGroups = (orgs: OrgConfig[]): OrdererGroup[] => {
       ordererHead: ordererHeads[0],
     };
   });
+};
+
+export const distinctOrdererHeads = (ordererGroups: OrdererGroup[]): OrdererConfig[] => {
+  const allOrdererHeads = ordererGroups.flatMap((g) => g.ordererHeads);
+  return _.unionBy(allOrdererHeads, (o) => o.domain);
 };
