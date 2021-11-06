@@ -140,10 +140,15 @@ export interface OrdererGroup {
   ordererHeads: OrdererConfig[];
 }
 
+export interface HooksConfig {
+  postGenerate: string;
+}
+
 export interface FabloConfigExtended {
   networkSettings: NetworkSettings;
   ordererGroups: OrdererGroup[];
   orgs: OrgConfig[];
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
+  hooks: HooksConfig;
 }

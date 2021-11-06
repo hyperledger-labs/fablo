@@ -596,6 +596,9 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V1_3",
@@ -1317,6 +1320,9 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V1_4_2",
@@ -2302,6 +2308,9 @@ Object {
       "profileName": "MyChannel2",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V1_4_2",
@@ -3493,6 +3502,9 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V1_4_2",
@@ -4905,6 +4917,9 @@ Object {
       "profileName": "MyChannel2",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V1_4_2",
@@ -5676,6 +5691,9 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V2_0",
@@ -7504,6 +7522,9 @@ Object {
       "profileName": "MyChannel3",
     },
   ],
+  "hooks": Object {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fabric-config/configtx.yaml\\"",
+  },
   "networkSettings": Object {
     "capabilities": Object {
       "application": "V2_0",

@@ -6,6 +6,7 @@ import {
   Capabilities,
   ChaincodeConfig,
   FabloConfigExtended,
+  HooksConfig,
   NetworkSettings,
   OrgConfig,
 } from "../types/FabloConfigExtended";
@@ -55,6 +56,9 @@ export default class SetupDockerGenerator extends Generator {
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
     this._copyUtilityScripts(config.networkSettings.capabilities);
+
+    // ======= hooks ====================================================================
+    this._copyHooks(config.hooks);
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
@@ -167,5 +171,11 @@ export default class SetupDockerGenerator extends Generator {
       this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
     );
+  }
+
+  _copyHooks(hooks: HooksConfig): void {
+    this.fs.copyTpl(this.templatePath("hooks/post-generate.sh"), this.destinationPath("hooks/post-generate.sh"), {
+      hooks,
+    });
   }
 }
