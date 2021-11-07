@@ -55,10 +55,8 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
       <%_ if(networkSettings.tls) { _%>
-      <%_ ordererGroups.forEach(function(ordererGroup) { _%>
-      <%_ ordererGroup.ordererHeads.forEach(function(ordererHead) { _%>
+      <%_ orderedHeadsDistinct.forEach(function(ordererHead) { _%>
       - ../fabric-config/crypto-config/peerOrganizations/<%= ordererHead.domain %>/peers/<%= ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererHead.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererHead.domain %>-cert.pem:ro
-      <%_ }) _%>
       <%_ }) _%>
       <%_ orgs.forEach(function(org) { _%>
       <%_ org.peers.forEach(function(peer) { _%>
