@@ -9,7 +9,6 @@
 
 ### Fixes
 * Fixed issue with bad requiredPeerCount in private data collection
-* Fixed issue with bad requiredPeerCount in private data collection
 * Fixed issues with `fablo up` on older bash versions ([details](https://github.com/softwaremill/fablo/issues/210))
 
 ### Chore & Maintenance
