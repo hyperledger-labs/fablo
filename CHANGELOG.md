@@ -1,10 +1,15 @@
 ## 0.3.0-unstable
 
 ### Features
-
-* By default are peers are anchor peers
+* Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 
+* By default all peers are anchor peers
+* Support `postGenerate` hook
+* Added support for [Orderer sharding](https://github.com/softwaremill/fablo/issues/220) (multiple orderer groups).
+* Support for [Orderer groups](https://github.com/softwaremill/fablo/issues/238) (orderer group can be spread between many orgs).
 
 ### Fixes
+* Fixed issue with bad requiredPeerCount in private data collection
+* Fixed issues with `fablo up` on older bash versions ([details](https://github.com/softwaremill/fablo/issues/210))
 
 ### Chore & Maintenance
 
