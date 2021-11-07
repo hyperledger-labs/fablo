@@ -230,7 +230,6 @@ The basic structure of Fablo config file is as follows:
 {
   "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
   "networkSettings": { ... },
-  "rootOrg": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
   "chaincodes": [ ... ]
@@ -251,31 +250,6 @@ Example:
   },
 ```
 
-### rootOrg
-
-Example:
-
-```json
-  "rootOrg": {
-    "organization": {
-      "name": "Orderer",
-      "domain": "root.com"
-    },
-    "orderer": {
-      "type": "raft",
-      "instances": 3
-    }
-  },
-```
-
-The other available parameters for `rootOrg` are:
-
- * `organization.mspName` (default: `organization.name + 'MSP'`)
- * `orderer.prefix` (default: `orderer`)
- * `ca.prefix` (default: `ca`)
-
-The property `orderer.consensus` may be `solo` or `raft`. We do not support the Kafka orderer.
-
 ### orgs
 
 Example:
@@ -290,7 +264,12 @@ Example:
       "peer": {
         "instances": 2,
         "db": "LevelDb"
-      }
+      },
+      "orderers": [{
+        "groupName": "group1",
+        "type": "raft",
+        "instances": 3
+      }]
     },
     ...
   ],
@@ -302,8 +281,16 @@ The other available parameters for entries in `orgs` array are:
  * `ca.prefix` (default: `ca`)
  * `peer.prefix` (default: `peer`)
  * `peer.anchorPeerInstances` (default: `1`)
+ * `orderers` (defaults to empty: [])  
+ 
+###property `peer.db`:  
+- may be `LevelDb` (default) or `CouchDb`.  
 
-The property `peer.db` may be `LevelDb` (default) or `CouchDb`.
+###property `orderers`:  
+- is optional as some organizations may have orderer defined, but some don't.
+- At least one orderer group is required to run Fabric network (requirement is validated before run).   
+- If you want to spread orderers in group between many organizations use same `groupName` in every group definition.  
+- The property `orderers.type` may be `solo` or `raft`. We do not support the Kafka orderer.
 
 ### channels
 
@@ -313,6 +300,7 @@ Example:
   "channels": [
     {
       "name": "my-channel1",
+      "groupName": "group1",      
       "orgs": [
         {
           "name": "Org1",
@@ -332,6 +320,8 @@ Example:
     ...
   ],
 ```
+
+- Property `groupName` is optional (defaults to first orderer group found). If you want to handle channel with different orderer group define it in `orgs` and pass it's name here. 
 
 ### chaincodes
 
@@ -393,15 +383,15 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 networkSettings:
   fabricVersion: 2.3.0
   tls: false
-rootOrg:
-  organization:
-    name: Orderer
-    domain: root.com
-  orderer:
-    prefix: orderer
-    type: solo
-    instances: 1
 orgs:
+  - organization:
+      name: Orderer
+      domain: root.com
+    orderers:
+      - groupName: group1
+        prefix: orderer
+        type: solo
+        instances: 1 
   - organization:
       name: Org1
       domain: org1.com
