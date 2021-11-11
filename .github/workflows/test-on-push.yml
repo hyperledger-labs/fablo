@@ -176,4 +176,4 @@ jobs:
       - name: Check DCO
         run: |
           pip3 install -U dco-check && \
-            dco-check
+            dco-check -b $(git branch --show-current) --default-branch main
