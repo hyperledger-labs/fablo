@@ -22,13 +22,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/softwaremill/fablo/releases/download/0.2.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/softwaremill/fablo/releases/download/0.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fablo/releases/download/0.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/softwaremill/fablo/releases/download/0.3.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
