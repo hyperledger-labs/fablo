@@ -164,7 +164,7 @@ jobs:
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-dco-sign-off:
-    needs: test-03-private-data
+    needs: test-main
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
