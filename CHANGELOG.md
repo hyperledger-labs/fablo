@@ -1,4 +1,4 @@
-## 0.3.0-unstable
+## 0.3.0
 
 ### Features
 * Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 
