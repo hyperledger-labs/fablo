@@ -161,7 +161,7 @@ jobs:
           MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
-  test-dc-sign-off:
+  test-dco-sign-off:
     needs: test-03-private-data
     runs-on: ubuntu-latest
     steps:
@@ -178,4 +178,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip3 install -U dco-check && \
-            dco-check -b $(git branch --show-current) --default-branch main
+            dco-check -m -b $(git branch --show-current) --default-branch main
