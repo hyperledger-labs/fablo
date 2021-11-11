@@ -228,7 +228,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json",
   "networkSettings": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -379,7 +379,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fablo/releases/download/0.3.0-unstable/schema.json
+"$schema": https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json
 networkSettings:
   fabricVersion: 2.3.0
   tls: false
