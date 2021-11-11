@@ -158,4 +158,25 @@ jobs:
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
+<<<<<<< HEAD
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fabrica/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+=======
+          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+
+  test-dc-sign-off:
+    needs: test-03-private-data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+
+      - name: Check DCO
+        run: |
+          pip3 install -U dco-check && \
+            dco-check -b $(git branch --show-current) --default-branch main
+>>>>>>> Version 0.3 - DCO signoff, fix 1
