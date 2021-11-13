@@ -1,26 +1,20 @@
 module.exports = {
-  env: {
-    browser: true,
-    commonjs: true,
-    es6: true,
-    "jest/globals": true
-  },
   extends: [
-    'airbnb-base',
+    "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    "prettier",
   ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
-  parserOptions: {
-    ecmaVersion: 2018,
+  parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint/eslint-plugin", "prettier"],
+  settings: {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"],
+    },
+    "import/resolver": {
+      typescript: {},
+    },
   },
   rules: {
-<<<<<<< HEAD
-=======
-    'class-methods-use-this': 'off',
-    'no-underscore-dangle': 'off',
->>>>>>> minor cleanup in generators
+    "prettier/prettier": "error",
+    "@typescript-eslint/no-use-before-define": "error",
   },
-  plugins: ['jest']
 };
