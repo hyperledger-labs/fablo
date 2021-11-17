@@ -368,7 +368,7 @@ The following hook example will change `MaxMessageCount` to 1 in generated Hyper
 
 ```json
   "hooks": {
-    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fabric-config/configtx.yaml\""
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
   }
 ```
 

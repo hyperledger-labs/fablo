@@ -2601,7 +2601,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 # The code from this file was called after Fablo generated Hyperledger Fabric configuration
 echo \\"Executing post-generate hook\\"
 
-perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fabric-config/configtx.yaml\\"
+perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"
 "
 `;
 
