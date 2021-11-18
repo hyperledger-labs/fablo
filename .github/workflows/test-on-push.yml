@@ -178,4 +178,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip3 install -U dco-check && \
-            dco-check -m -b $(git branch --show-current) --default-branch main
+            dco-check -b $(git branch --show-current) --default-branch main
