@@ -1,6 +1,6 @@
 ![Github Actions](https://github.com/softwaremill/fablo/actions/workflows/test.yml/badge.svg?branch=main)
 
-<h1><img src="./logo.svg" alt="Fablo"/></h1>
+<h1><img src="./logo.svg" alt="Fablo"/></h1>as
 
 Fablo supports:
 
