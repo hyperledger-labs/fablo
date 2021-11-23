@@ -111,7 +111,11 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
+      <%_ if(networkSettings.capabilities.isV2) { _%>
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      <%_ } else { _%>
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      <%_ } _%>
       - ORDERER_GENERAL_LOCALMSPID=<%= org.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
