@@ -194,6 +194,10 @@ elif [ "$COMMAND" = "recreate" ]; then
   networkPrune
   networkUp "$2"
 
+elif [ "$COMMAND" = "restore" ]; then
+  networkPrune
+  "$2/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT"
+
 else
   echo "Executing Fablo docker command: $COMMAND"
   "$FABLO_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"

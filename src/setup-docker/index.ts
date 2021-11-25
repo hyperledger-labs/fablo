@@ -121,6 +121,10 @@ export default class SetupDockerGenerator extends Generator {
       this.destinationPath("fabric-docker/channel-query-scripts.sh"),
       config,
     );
+    this.fs.copy(
+      this.templatePath("fabric-docker/snapshot-scripts.sh"),
+      this.destinationPath("fabric-docker/snapshot-scripts.sh"),
+    );
     this.fs.copyTpl(
       this.templatePath("fabric-docker/commands-generated.sh"),
       this.destinationPath("fabric-docker/commands-generated.sh"),
