@@ -7,7 +7,7 @@ end='\e[0m'
 darkGray='\e[90m'
 
 if [ -z "$expected_message" ]; then
-  echo "Usage: ./wait-for-container.sh [container_name] [expcted_message]"
+  echo "Usage: ./wait-for-container.sh [container_name] [expected_message]"
   exit 1
 fi
 

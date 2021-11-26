@@ -53,5 +53,8 @@
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node"
     }
-  ]
+  ],
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  }
 }

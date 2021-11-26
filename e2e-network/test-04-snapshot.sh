@@ -37,15 +37,15 @@ expectInvokeRest() {
   sh "$TEST_TMP/../expect-invoke-rest.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
-expectInvokeCli() {
-  sh "$TEST_TMP/../expect-invoke-cli-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+expectCARest() {
+  sh "$TEST_TMP/../expect-ca-rest.sh" "$1" "$2" "$3" "$4"
 }
 
-trap networkDown EXIT
-trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
-
-# start the network
-networkUp
+#trap networkDown EXIT
+#trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
+#
+## start the network
+#networkUp
 
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.com" "Starting Raft node channel=my-channel1"
@@ -56,11 +56,23 @@ waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1"
 fablo_rest_org1="localhost:8801"
 snapshot_name="fablo-snapshot-$(date -u +"%Y%m%d%H%M%S")"
 
+# register and enroll test user
+admin_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "admin", "secret": "adminpw"}' 'token')"
+echo "$admin_token_response"
+admin_token="$(echo "$admin_token_response" | jq -r '.token')"
+
+register_response="$(expectCARest "$fablo_rest_org1/user/register" "$admin_token" '{"id": "gordon", "secret": "gordonpw"}' 'ok')"
+echo "$register_response"
+
+user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "gordon", "secret": "gordonpw"}' 'token')"
+echo "$user_token_response"
+user_token="$(echo "$user_token_response" | jq -r '.token')"
+
 # save some data
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Mr Freeze"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:putPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"OK"}' \
   '{"message":"RHIgVmljdG9yIEZyaWVz"}'
@@ -69,19 +81,19 @@ expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" snapshot "$snapshot_name")
 
 # overwrite the data
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Poison Ivy"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:putPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"OK"}' \
   '{"message":"RHIgUGFtZWxhIElzbGV5"}'
 
 # verify it is updated
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Poison Ivy"}}'
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgUGFtZWxhIElzbGV5"}'
 
@@ -94,10 +106,14 @@ waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1"
 
 sleep 10
 
+user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "gordon", "secret": "gordonpw"}' 'token')"
+echo "$user_token_response"
+user_token="$(echo "$user_token_response" | jq -r '.token')"
+
 # check if state is kept after restoration
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Mr Freeze"}}'
-expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
