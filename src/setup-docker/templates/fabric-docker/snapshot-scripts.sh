@@ -10,6 +10,11 @@ __getSnapshotNodes() {
     grep -v "fablo-rest"
 }
 
+__getCANodes() {
+  network_name="${COMPOSE_PROJECT_NAME}_basic"
+  docker ps --format "{{.Names}}" --filter "network=$network_name" --all | grep "ca\."
+}
+
 __createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   backup_dir="${1:-$(echo "backup-$(date -u +"%Y%m%d%H%M%S")")}"
@@ -24,6 +29,12 @@ __createSnapshot() {
   cp -R ./fablo-target "$backup_dir/"
 
   source ./fablo-target/fabric-docker/.env
+
+  for node in $(__getCANodes); do
+    echo "Saving state of $node..."
+    mkdir -p "$backup_dir/$node"
+    docker cp "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db" "$backup_dir/$node/fabric-ca-server.db"
+  done
 
   for node in $(__getSnapshotNodes); do
     echo "Saving state of $node..."
@@ -41,6 +52,11 @@ __cloneSnapshot() {
 
   source "$target_dir/fablo-target/fabric-docker/.env"
   network_name="${COMPOSE_PROJECT_NAME}_basic"
+
+  for node in $(__getCANodes); do
+    echo "Restoring $node..."
+    docker cp "./$node/fabric-ca-server.db" "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db"
+  done
 
   for node in $(__getSnapshotNodes); do
     echo "Restoring $node..."

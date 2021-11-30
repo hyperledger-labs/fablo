@@ -41,11 +41,11 @@ expectCARest() {
   sh "$TEST_TMP/../expect-ca-rest.sh" "$1" "$2" "$3" "$4"
 }
 
-#trap networkDown EXIT
-#trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
-#
-## start the network
-#networkUp
+trap networkDown EXIT
+trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
+
+# start the network
+networkUp
 
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.com" "Starting Raft node channel=my-channel1"
@@ -104,7 +104,7 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 )
 waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1" "0.0.1"
 
-sleep 10
+sleep 5
 
 user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "gordon", "secret": "gordonpw"}' 'token')"
 echo "$user_token_response"
