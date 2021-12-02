@@ -99,6 +99,7 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 
 # prune the network and restore from snapshot
 (cd "$TEST_TMP" &&
+  "$FABLO_HOME/fablo.sh" prune &&
   "$FABLO_HOME/fablo.sh" restore "$snapshot_name" &&
   "$FABLO_HOME/fablo.sh" start
 )
