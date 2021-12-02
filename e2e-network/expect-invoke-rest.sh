@@ -22,7 +22,8 @@ echo ""
 echo "➜ testing: $label"
 
 if [ -z "$access_token" ]; then
-  enroll_admin_response="$(./expect-ca-rest.sh "$rest_api_url/user/enroll" '' '{"id": "admin", "secret": "adminpw"}' "token")"
+  the_same_dir="$(cd "$(dirname "$0")" && pwd)"
+  enroll_admin_response="$("$the_same_dir/expect-ca-rest.sh" "$rest_api_url/user/enroll" '' '{"id": "admin", "secret": "adminpw"}' "token")"
   echo "enroll admin response: $enroll_admin_response"
   access_token="$(echo "$enroll_admin_response" | jq -r '.token')"
 else
