@@ -1,3 +1,12 @@
+## 0.4.0
+
+### Features
+* Allow creating and restoring network state snapshot
+
+### Fixes
+
+### Chore & Maintenance
+
 ## 0.3.0
 
 ### Features
@@ -8,7 +17,7 @@
 * Support for [Orderer groups](https://github.com/softwaremill/fablo/issues/238) (orderer group can be spread between many orgs).
 
 ### Fixes
-* Fixed issue with bad requiredPeerCount in private data collection
+* Fixed issue with bad `requiredPeerCount` in private data collection
 * Fixed issues with `fablo up` on older bash versions ([details](https://github.com/softwaremill/fablo/issues/210))
 
 ### Chore & Maintenance

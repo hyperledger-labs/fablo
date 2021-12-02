@@ -139,11 +139,30 @@ fablo validate [/path/to/fablo-config.json|yaml]
 Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks.
 Please note that this step is also executed automatically before each `generate` to ensure that at least critical errors where fixed. 
 
+### snapshot and restore
+
+Fablo supports saving state snapshot (backup) of the network (orderers, CAs and peers) and restoring it.
+It might be useful if you want to keep the current state of a network for future use.
+
+If you want to back up the network to a given directory, execute:
+
+```bash
+fablo snapshot <target-snapshot-dir>
+```
+
+If you want to restore snapshot into current directory, execute:
+
+```bash
+fablo restore <source-snapshot-dir>
+```
+
 ### fabric-docker.sh
 
 The script `fabric-docker.sh` is generated among docker network configuration.
 It does not support `generate` command, however other commands work in same way as in `fablo`.
 Basically `fablo` forwards some commands to this script.
+
+If you want to use Fablo for network configuration setup only, then the `fabric-docker.sh` file allows you to manage the network.
 
 ## Managing chaincodes
 

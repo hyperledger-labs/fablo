@@ -32,40 +32,46 @@ printHelp() {
   echo "Fablo -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fablo.sh init [node] [rest]
+  fablo init [node] [rest]
     Creates simple Fablo config in current directory with optional Node.js sample chaincode and REST API.
 
-  fablo.sh generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
+  fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
 
-  fablo.sh up [/path/to/fablo-config.json|yaml]
+  fablo up [/path/to/fablo-config.json|yaml]
     Starts the Hyperledger Fabric network for given Fablo configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call 'generate' command for given config file.
 
-  fablo.sh <down | start | stop>
+  fablo <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
-  fablo.sh reboot
+  fablo reboot
     Downs and ups the network. Network state is lost, but the configuration is kept intact.
 
-  fablo.sh prune
+  fablo prune
     Downs the network and removes all generated files.
 
-  fablo.sh recreate [/path/to/fablo-config.json|yaml]
+  fablo recreate [/path/to/fablo-config.json|yaml]
     Prunes and ups the network. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml'.
 
-  fablo.sh chaincode upgrade <chaincode-name> <version>
+  fablo chaincode upgrade <chaincode-name> <version>
     Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
 
-  fablo.sh channel --help
+  fablo channel --help
     To list available channel query options which can be executed on running network.
 
-  fablo.sh use [version]
+  fablo snapshot <target-snapshot-dir>
+    Creates a snapshot of the network in target dir. The snapshot contains all network state, including transactions and identities.
+
+  fablo restore <source-snapshot-dir>
+    Restores the network from a snapshot.
+
+  fablo use [version]
     Updates this Fablo script to specified version. Prints all versions if no version parameter is provided.
 
-  fablo.sh <help | --help>
+  fablo <help | --help>
     Prints the manual.
 
-  fablo.sh version [--verbose | -v]
+  fablo version [--verbose | -v]
     Prints current Fablo version, with optional details."
 }
 
@@ -195,7 +201,6 @@ elif [ "$COMMAND" = "recreate" ]; then
   networkUp "$2"
 
 elif [ "$COMMAND" = "restore" ]; then
-  networkPrune
   "$2/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT"
 
 else
