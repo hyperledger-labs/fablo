@@ -62,8 +62,8 @@ export default class SetupDockerGenerator extends Generator {
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
-      this.log("-> fablo.sh up - to start network");
-      this.log("-> fablo.sh help - to view all commands");
+      this.log("-> fablo up - to start network");
+      this.log("-> fablo help - to view all commands");
     });
   }
 
