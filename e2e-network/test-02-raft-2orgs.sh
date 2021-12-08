@@ -61,31 +61,31 @@ waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-c
 waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
-waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
-waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 2 organizations"
-waitForContainer "peer0.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
-waitForContainer "peer0.org1.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
-waitForContainer "peer0.org1.com" "Membership view has changed. peers went online:.*peer0.org2.com:7081"
-waitForContainer "peer1.org1.com" "Joining gossip network of channel my-channel2 with 2 organizations"
-waitForContainer "peer1.org1.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
-waitForContainer "peer1.org1.com" "Membership view has changed. peers went online:.*peer1.org2.com:7082"
+waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 2 organizations"
+waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
+waitForContainer "peer0.org1.example.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
+waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer0.org2.example.com:7081"
+waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel2 with 2 organizations"
+waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
+waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer1.org2.example.com:7082"
 
 # check if org2 is ready
-waitForContainer "ca.org2.com" "Listening on http://0.0.0.0:7054"
-waitForContainer "peer0.org2.com" "Joining gossip network of channel my-channel1 with 2 organizations"
-waitForContainer "peer0.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel1"
-waitForContainer "peer0.org2.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
-waitForContainer "peer0.org2.com" "Membership view has changed. peers went online:.*peer0.org1.com:7061"
-waitForContainer "peer1.org2.com" "Joining gossip network of channel my-channel2 with 2 organizations"
-waitForContainer "peer1.org2.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
-waitForContainer "peer1.org2.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
-waitForContainer "peer1.org2.com" "Membership view has changed. peers went online:.*peer1.org1.com:7062"
+waitForContainer "ca.org2.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "peer0.org2.example.com" "Joining gossip network of channel my-channel1 with 2 organizations"
+waitForContainer "peer0.org2.example.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel1"
+waitForContainer "peer0.org2.example.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
+waitForContainer "peer0.org2.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7061"
+waitForContainer "peer1.org2.example.com" "Joining gossip network of channel my-channel2 with 2 organizations"
+waitForContainer "peer1.org2.example.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
+waitForContainer "peer1.org2.example.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
+waitForContainer "peer1.org2.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7062"
 
 # check if chaincodes are instantiated on peers
-waitForChaincode "cli.org1.com" "peer0.org1.com:7061" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org1.com" "peer1.org1.com:7062" "my-channel2" "chaincode2" "0.0.1"
-waitForChaincode "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "0.0.1"
 
 fablo_rest_org1="localhost:8802"
 
@@ -93,7 +93,7 @@ fablo_rest_org1="localhost:8802"
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Jack Sparrow"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeCli "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "tlsca.orderer1.com-cert.pem" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Jack Sparrow\"}'
 
@@ -101,19 +101,19 @@ expectInvokeCli "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" 
 expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "cli.org2.com" "peer1.org2.com:7082" "my-channel2" "chaincode2" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "tlsca.orderer1.com-cert.pem" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
-waitForChaincode "cli.org1.com" "peer0.org1.com:7061" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.1"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")
-waitForChaincode "cli.org1.com" "peer0.org1.com:7061" "my-channel1" "chaincode1" "0.0.2"
-waitForChaincode "cli.org2.com" "peer0.org2.com:7081" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.2"
 
 # check if state is kept after update
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \

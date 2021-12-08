@@ -22,7 +22,7 @@ orgs:
         instances: 1
   - organization:
       name: Org1
-      domain: org1.com
+      domain: org1.example.com
     # this is the default configuration for peers that may be used in other orgs
     peer: &defaultPeerConfig
       prefix: peer
@@ -33,7 +33,7 @@ orgs:
       fabloRest: true
   - organization:
       name: Org2
-      domain: org2.com
+      domain: org2.example.com
     peer: *defaultPeerConfig
 channels:
   - name: my-channel1
