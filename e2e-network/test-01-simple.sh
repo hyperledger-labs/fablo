@@ -60,8 +60,8 @@ expectInvoke "cli.org1.com" "peer1.org1.com:7042" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
 
-# Reboot and ensure the state is lost after reboot
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reboot)
+# Reset and ensure the state is lost after reset
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
 waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "cli.org1.com" "peer1.org1.com:7042" "my-channel1" "chaincode1" "0.0.1"
 expectInvoke "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1" \

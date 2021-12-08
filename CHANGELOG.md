@@ -6,6 +6,7 @@
 ### Fixes
 
 ### Chore & Maintenance
+* Command 'reboot' renamed to 'reset'
 
 ## 0.3.0
 
