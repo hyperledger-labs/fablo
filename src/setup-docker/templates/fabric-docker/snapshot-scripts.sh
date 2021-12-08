@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-__getSnapshotNodes() {
+function __getSnapshotNodes() {
   network_name="${COMPOSE_PROJECT_NAME}_basic"
   docker ps --format "{{.Names}}" --filter "network=$network_name" --all |
     grep -v "cli\." |
@@ -10,18 +10,17 @@ __getSnapshotNodes() {
     grep -v "fablo-rest"
 }
 
-__getCANodes() {
+function __getCANodes() {
   network_name="${COMPOSE_PROJECT_NAME}_basic"
   docker ps --format "{{.Names}}" --filter "network=$network_name" --all | grep "ca\."
 }
 
-__createSnapshot() {
+function __createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
-  backup_dir="${1:-"backup-$(date -u +"%Y%m%d%H%M%S")"}"
-  echo "Creating network snapshot in $backup_dir"
+  backup_dir="${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
 
-  if [ -d "$backup_dir" ]; then
-    echo "Error: Directory '$backup_dir' already exists!"
+  if [ -d "$backup_dir" ] && [ "$(ls -A "$backup_dir")" ]; then
+    echo "Error: Directory '$backup_dir' already exists and is not empty!"
     exit 1
   fi
 
@@ -40,13 +39,12 @@ __createSnapshot() {
   done
 }
 
-__cloneSnapshot() {
+function __cloneSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   target_dir="$1"
-  echo "Restoring network from $(pwd) to $target_dir"
 
   if [ -d "$target_dir/fablo-target" ]; then
-    echo "Error: Directory '$target_dir/fablo-target' already exists! Execute 'fablo prune' to remove current network."
+    echo "Error: Directory '$target_dir/fablo-target' already exists! Execute 'fablo prune' to remove the current network."
     exit 1
   fi
 
@@ -57,12 +55,20 @@ __cloneSnapshot() {
 
   for node in $(__getCANodes); do
     echo "Restoring $node..."
-    docker cp "./$node/fabric-ca-server.db" "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db"
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabric-ca-server.db" "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db"
+    fi
   done
 
   for node in $(__getSnapshotNodes); do
     echo "Restoring $node..."
-    docker cp "./$node/" "$node:/var/hyperledger/production/"
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/" "$node:/var/hyperledger/production/"
+    fi
   done
 }
 

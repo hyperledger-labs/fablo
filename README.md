@@ -141,20 +141,31 @@ Please note that this step is also executed automatically before each `generate`
 
 ### snapshot and restore
 
-Fablo supports saving state snapshot (backup) of the network (orderers, CAs and peers) and restoring it.
-It might be useful if you want to keep the current state of a network for future use.
+Fablo supports saving state snapshot (backup) of the network and restoring it.
+It saves all network artifacts, certificates, and the data of CA, orderer and peer nodes.
+Note the snapshot does not contain Fablo config file and chaincode source code, since both can be located outside Fablo working directory.
 
-If you want to back up the network to a given directory, execute:
+Snapshotting might be useful if you want to keep the current state of a network for future use (for testing, sharing the network state, courses and so on).
 
 ```bash
-fablo snapshot <target-snapshot-dir>
+fablo snapshot <target-snapshot-path>
 ```
 
 If you want to restore snapshot into current directory, execute:
 
 ```bash
-fablo restore <source-snapshot-dir>
+fablo restore <source-snapshot-path>
 ```
+
+Example:
+
+1. Assume you have a working network with some state.
+2. Execute `./fablo shnapshot /tmp/my-snapshot`. It will create a file `/tmp/my-snapshot.fablo.tar.gz` with the state of the network. It is not required to stop the network before making a snapshot.
+3. Execute `./fablo prune` to destroy the current network. If the network was present, Fablo would not be able to restore the new one from backup.
+4. Execute `./fablo restore /tmp/my-snapshot` to restore the network.
+5. Execute `./fablo start` to start the restored network.
+
+Typically, a snapshot of the network with little data will take less than 1 MB, so it is easy to share.
 
 ### fabric-docker.sh
 

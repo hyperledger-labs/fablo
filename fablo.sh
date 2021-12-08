@@ -28,6 +28,15 @@ getDefaultFabloConfig() {
   fi
 }
 
+getSnapshotPath() {
+  path="${1:-'snapshot'}"
+  if echo "$path" | grep -q "tar.gz$"; then
+    echo "$path"
+  else
+    echo "$path.fablo.tar.gz"
+  fi
+}
+
 printHelp() {
   echo "Fablo -- kick-off and manage your Hyperledger Fabric network
 
@@ -59,10 +68,10 @@ Usage:
   fablo channel --help
     To list available channel query options which can be executed on running network.
 
-  fablo snapshot <target-snapshot-dir>
-    Creates a snapshot of the network in target dir. The snapshot contains all network state, including transactions and identities.
+  fablo snapshot <target-snapshot-path>
+    Creates a snapshot of the network in target path. The snapshot contains all network state, including transactions and identities.
 
-  fablo restore <source-snapshot-dir>
+  fablo restore <source-snapshot-path>
     Restores the network from a snapshot.
 
   fablo use [version]
@@ -165,6 +174,45 @@ networkUp() {
   "$FABLO_TARGET/fabric-docker.sh" up
 }
 
+executeFabloDockerCommand() {
+  if [ ! -d "$FABLO_TARGET" ]; then
+    echo "Error: This command needs the network to be generated at '$FABLO_TARGET'! Execute 'generate' or 'up' command."
+    exit 1
+  fi
+
+  echo "Executing Fablo docker command: $1"
+  "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+}
+
+createSnapshot() {
+  archive="$(getSnapshotPath "$1")"
+  echo "Creating network snapshot in '$archive'"
+
+  if [ -f "$archive" ]; then
+    echo "Error: Snapshot file '$archive' already exists!"
+    exit 1
+  fi
+
+  executeFabloDockerCommand snapshot "$FABLO_TEMP_DIR"
+  (cd "$FABLO_TEMP_DIR" && tar czf tmp.tar.gz *)
+  mv "$FABLO_TEMP_DIR/tmp.tar.gz" "$archive"
+  echo "📦 Created snapshot at '$archive'!"
+}
+
+restoreSnapshot() {
+  archive="$(getSnapshotPath "$1")"
+  echo "📦 Restoring network from '$archive'"
+
+  if [ ! -f "$archive" ]; then
+    echo "Fablo snapshot file '$archive' does not exist!"
+    exit 1
+  fi
+
+  tar -xf "$archive" -C "$FABLO_TEMP_DIR"
+  "$FABLO_TEMP_DIR/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT"
+  echo "📦 Network restored from '$archive'! Execute 'start' command to run it."
+}
+
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -200,10 +248,12 @@ elif [ "$COMMAND" = "recreate" ]; then
   networkPrune
   networkUp "$2"
 
+elif [ "$COMMAND" = "snapshot" ]; then
+  createSnapshot "$2"
+
 elif [ "$COMMAND" = "restore" ]; then
-  "$2/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT"
+  restoreSnapshot "$2"
 
 else
-  echo "Executing Fablo docker command: $COMMAND"
-  "$FABLO_TARGET/fabric-docker.sh" "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  executeFabloDockerCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 fi
