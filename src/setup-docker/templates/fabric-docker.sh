@@ -12,7 +12,7 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
 
-function networkUp() {
+networkUp() {
   generateArtifacts
   startNetwork
   generateChannelsArtifacts

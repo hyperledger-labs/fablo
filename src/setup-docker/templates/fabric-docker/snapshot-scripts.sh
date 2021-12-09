@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function __getSnapshotNodes() {
+__getSnapshotNodes() {
   network_name="${COMPOSE_PROJECT_NAME}_basic"
   docker ps --format "{{.Names}}" --filter "network=$network_name" --all |
     grep -v "cli\." |
@@ -10,12 +10,12 @@ function __getSnapshotNodes() {
     grep -v "fablo-rest"
 }
 
-function __getCANodes() {
+__getCANodes() {
   network_name="${COMPOSE_PROJECT_NAME}_basic"
   docker ps --format "{{.Names}}" --filter "network=$network_name" --all | grep "ca\."
 }
 
-function __createSnapshot() {
+__createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   backup_dir="${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
 
@@ -39,7 +39,7 @@ function __createSnapshot() {
   done
 }
 
-function __cloneSnapshot() {
+__cloneSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   target_dir="$1"
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function certsGenerate() {
+certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
   local CONFIG_PATH=$1
@@ -38,7 +38,7 @@ function certsGenerate() {
   done
 }
 
-function genesisBlockCreate() {
+genesisBlockCreate() {
   local CONTAINER_NAME=genesisBlockCreate
 
   local CONFIG_PATH=$1
@@ -70,7 +70,7 @@ function genesisBlockCreate() {
   removeContainer $CONTAINER_NAME
 }
 
-function createChannelTx() {
+createChannelTx() {
   local CONTAINER_NAME=createChannelTx
 
   local CHANNEL_NAME=$1
@@ -102,7 +102,7 @@ function createChannelTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function createNewChannelUpdateTx() {
+createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
 
   local CHANNEL_NAME=$1
@@ -142,7 +142,7 @@ function createNewChannelUpdateTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function notifyOrgAboutNewChannel() {
+notifyOrgAboutNewChannel() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -169,7 +169,7 @@ function notifyOrgAboutNewChannel() {
   fi
 }
 
-function notifyOrgAboutNewChannelTls() {
+notifyOrgAboutNewChannelTls() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -198,7 +198,7 @@ function notifyOrgAboutNewChannelTls() {
   fi
 }
 
-function deleteNewChannelUpdateTx() {
+deleteNewChannelUpdateTx() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -214,7 +214,7 @@ function deleteNewChannelUpdateTx() {
   fi
 }
 
-function printHeadline() {
+printHeadline() {
   bold=$'\e[1m'
   end=$'\e[0m'
 
@@ -223,7 +223,7 @@ function printHeadline() {
   printf "${bold}============ %b %s %b ==============${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
 }
 
-function printItalics() {
+printItalics() {
   italics=$'\e[3m'
   end=$'\e[0m'
 
@@ -232,26 +232,26 @@ function printItalics() {
   printf "${italics}==== %b %s %b ====${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
 }
 
-function inputLog() {
+inputLog() {
   end=$'\e[0m'
   darkGray=$'\e[90m'
 
   echo "${darkGray}   $1 ${end}"
 }
 
-function inputLogShort() {
+inputLogShort() {
   end=$'\e[0m'
   darkGray=$'\e[90m'
 
   echo "${darkGray}   $1 ${end}"
 }
 
-function certsRemove() {
+certsRemove() {
   local CERTS_DIR_PATH=$1
   rm -rf "$CERTS_DIR_PATH"
 }
 
-function removeContainer() {
+removeContainer() {
   CONTAINER_NAME=$1
   docker rm -f "$CONTAINER_NAME"
 }

@@ -2,7 +2,7 @@
 
 set -eu
 
-function createChannelAndJoin() {
+createChannelAndJoin() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -29,7 +29,7 @@ function createChannelAndJoin() {
   rm -rf "$DIR_NAME"
 }
 
-function createChannelAndJoinTls() {
+createChannelAndJoinTls() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -66,7 +66,7 @@ function createChannelAndJoinTls() {
   rm -rf "$DIR_NAME"
 }
 
-function fetchChannelAndJoin() {
+fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -91,7 +91,7 @@ function fetchChannelAndJoin() {
   rm -rf "$DIR_NAME"
 }
 
-function fetchChannelAndJoinTls() {
+fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2

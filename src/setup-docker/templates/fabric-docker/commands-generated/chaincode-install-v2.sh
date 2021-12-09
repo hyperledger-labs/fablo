@@ -18,9 +18,9 @@ chaincodePackage <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
-<% chaincode.channel.orgs.forEach(function (org) { -%>
+<% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
-  <% org.peers.forEach(function (peer) { -%>
+  <% org.peers.forEach((peer) => { -%>
     chaincodeInstall <% -%>
       "<%= org.cli.address %>" <% -%>
       "<%= peer.fullAddress %>" <% -%>

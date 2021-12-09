@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function peerChannelList() {
+peerChannelList() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
 
@@ -11,7 +11,7 @@ function peerChannelList() {
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list
 }
 
-function peerChannelGetInfo() {
+peerChannelGetInfo() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local PEER_ADDRESS=$3
@@ -25,7 +25,7 @@ function peerChannelGetInfo() {
     -c "$CHANNEL_NAME"
 }
 
-function peerChannelFetchConfig() {
+peerChannelFetchConfig() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local CONFIG_FILE_NAME=$3
@@ -54,7 +54,7 @@ function peerChannelFetchConfig() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchLastBlock() {
+peerChannelFetchLastBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -79,7 +79,7 @@ function peerChannelFetchLastBlock() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchFirstBlock() {
+peerChannelFetchFirstBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -104,7 +104,7 @@ function peerChannelFetchFirstBlock() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchBlock() {
+peerChannelFetchBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -132,7 +132,7 @@ function peerChannelFetchBlock() {
 
 #=== TLS equivalents =========================================================
 
-function peerChannelListTls() {
+peerChannelListTls() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CA_CERT=$3
@@ -144,7 +144,7 @@ function peerChannelListTls() {
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list --tls --cafile "$CA_CERT"
 }
 
-function peerChannelGetInfoTls() {
+peerChannelGetInfoTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local PEER_ADDRESS=$3
@@ -160,7 +160,7 @@ function peerChannelGetInfoTls() {
     -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
 }
 
-function peerChannelFetchConfigTls() {
+peerChannelFetchConfigTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local CONFIG_FILE_NAME=$3
@@ -190,7 +190,7 @@ function peerChannelFetchConfigTls() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchLastBlockTls() {
+peerChannelFetchLastBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -216,7 +216,7 @@ function peerChannelFetchLastBlockTls() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchFirstBlockTls() {
+peerChannelFetchFirstBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -242,7 +242,7 @@ function peerChannelFetchFirstBlockTls() {
   docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/1
 }
 
-function peerChannelFetchBlockTls() {
+peerChannelFetchBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3

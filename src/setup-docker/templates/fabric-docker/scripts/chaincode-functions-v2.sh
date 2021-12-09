@@ -2,7 +2,7 @@
 # phrase "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
-function chaincodeBuild() {
+chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
@@ -38,7 +38,7 @@ function chaincodeBuild() {
   fi
 }
 
-function chaincodePackage() {
+chaincodePackage() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
@@ -62,7 +62,7 @@ function chaincodePackage() {
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
-function chaincodeInstall() {
+chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
@@ -85,7 +85,7 @@ function chaincodeInstall() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-function chaincodeApprove() {
+chaincodeApprove() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME="$3"
@@ -167,7 +167,7 @@ function chaincodeApprove() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-function chaincodeCommit() {
+chaincodeCommit() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME="$3"

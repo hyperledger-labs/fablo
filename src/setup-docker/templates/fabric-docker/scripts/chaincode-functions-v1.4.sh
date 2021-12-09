@@ -2,7 +2,7 @@
 # phrase "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
-function chaincodeBuild() {
+chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
@@ -38,7 +38,7 @@ function chaincodeBuild() {
   fi
 }
 
-function chaincodeInstall() {
+chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -71,7 +71,7 @@ function chaincodeInstall() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-function chaincodeInstantiate() {
+chaincodeInstantiate() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -120,7 +120,7 @@ function chaincodeInstantiate() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-function chaincodeUpgrade() {
+chaincodeUpgrade() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3

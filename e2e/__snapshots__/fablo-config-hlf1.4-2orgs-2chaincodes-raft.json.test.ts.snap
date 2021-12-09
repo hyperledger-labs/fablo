@@ -309,7 +309,7 @@ source \\"$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh\\"
 source \\"$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh\\"
 source \\"$FABLO_NETWORK_ROOT/fabric-docker/.env\\"
 
-function networkUp() {
+networkUp() {
   generateArtifacts
   startNetwork
   generateChannelsArtifacts
@@ -393,7 +393,7 @@ source \\"$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\
 
 set -eu
 
-function channelQuery() {
+channelQuery() {
   echo \\"-> Channel query: \\" + \\"$@\\"
 
   if [ \\"$#\\" -eq 1 ]; then
@@ -537,7 +537,7 @@ function channelQuery() {
 
 }
 
-function printChannelsHelp() {
+printChannelsHelp() {
   echo \\"Channel management commands:\\"
   echo \\"\\"
 
@@ -616,7 +616,7 @@ function printChannelsHelp() {
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-function generateArtifacts() {
+generateArtifacts() {
   printHeadline \\"Generating basic configs\\" \\"U1F913\\"
 
   printItalics \\"Generating crypto material for Orderer\\" \\"U1F512\\"
@@ -635,20 +635,20 @@ function generateArtifacts() {
   mkdir -p \\"$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages\\"
 }
 
-function startNetwork() {
+startNetwork() {
   printHeadline \\"Starting network\\" \\"U1F680\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose up -d)
   sleep 4
 }
 
-function generateChannelsArtifacts() {
+generateChannelsArtifacts() {
   printHeadline \\"Generating config for 'my-channel1'\\" \\"U1F913\\"
   createChannelTx \\"my-channel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
   printHeadline \\"Generating config for 'my-channel2'\\" \\"U1F913\\"
   createChannelTx \\"my-channel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
 }
 
-function installChannels() {
+installChannels() {
   printHeadline \\"Creating 'my-channel1' on Org1/peer0\\" \\"U1F63B\\"
   docker exec -i cli.org1.com bash -c \\"source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.com:7041' 'crypto/users/Admin@org1.com/msp' 'crypto/users/Admin@org1.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7030';\\"
 
@@ -661,7 +661,7 @@ function installChannels() {
   docker exec -i cli.org2.com bash -c \\"source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.com:7062' 'crypto/users/Admin@org2.com/msp' 'crypto/users/Admin@org2.com/tls' 'crypto-orderer/tlsca.orderer.com-cert.pem' 'orderer0.group1.orderer.com:7030';\\"
 }
 
-function installChaincodes() {
+installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
     chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
@@ -689,7 +689,7 @@ function installChaincodes() {
 
 }
 
-function notifyOrgsAboutChannels() {
+notifyOrgsAboutChannels() {
   printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
   createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
   createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
@@ -709,7 +709,7 @@ function notifyOrgsAboutChannels() {
   deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.com\\"
 }
 
-function upgradeChaincode() {
+upgradeChaincode() {
   local chaincodeName=\\"$1\\"
   if [ -z \\"$chaincodeName\\" ]; then
     echo \\"Error: chaincode name is not provided\\"
@@ -758,13 +758,13 @@ function upgradeChaincode() {
   fi
 }
 
-function stopNetwork() {
+stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose stop)
   sleep 4
 }
 
-function networkDown() {
+networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose down)
 
@@ -1233,7 +1233,7 @@ services:
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-function certsGenerate() {
+certsGenerate() {
   local CONTAINER_NAME=certsGenerate
 
   local CONFIG_PATH=$1
@@ -1271,7 +1271,7 @@ function certsGenerate() {
   done
 }
 
-function genesisBlockCreate() {
+genesisBlockCreate() {
   local CONTAINER_NAME=genesisBlockCreate
 
   local CONFIG_PATH=$1
@@ -1303,7 +1303,7 @@ function genesisBlockCreate() {
   removeContainer $CONTAINER_NAME
 }
 
-function createChannelTx() {
+createChannelTx() {
   local CONTAINER_NAME=createChannelTx
 
   local CHANNEL_NAME=$1
@@ -1335,7 +1335,7 @@ function createChannelTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function createNewChannelUpdateTx() {
+createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
 
   local CHANNEL_NAME=$1
@@ -1375,7 +1375,7 @@ function createNewChannelUpdateTx() {
   removeContainer $CONTAINER_NAME
 }
 
-function notifyOrgAboutNewChannel() {
+notifyOrgAboutNewChannel() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -1402,7 +1402,7 @@ function notifyOrgAboutNewChannel() {
   fi
 }
 
-function notifyOrgAboutNewChannelTls() {
+notifyOrgAboutNewChannelTls() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -1431,7 +1431,7 @@ function notifyOrgAboutNewChannelTls() {
   fi
 }
 
-function deleteNewChannelUpdateTx() {
+deleteNewChannelUpdateTx() {
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CLI_NAME=$3
@@ -1447,7 +1447,7 @@ function deleteNewChannelUpdateTx() {
   fi
 }
 
-function printHeadline() {
+printHeadline() {
   bold=$'\\\\e[1m'
   end=$'\\\\e[0m'
 
@@ -1456,7 +1456,7 @@ function printHeadline() {
   printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
 }
 
-function printItalics() {
+printItalics() {
   italics=$'\\\\e[3m'
   end=$'\\\\e[0m'
 
@@ -1465,26 +1465,26 @@ function printItalics() {
   printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
 }
 
-function inputLog() {
+inputLog() {
   end=$'\\\\e[0m'
   darkGray=$'\\\\e[90m'
 
   echo \\"\${darkGray}   $1 \${end}\\"
 }
 
-function inputLogShort() {
+inputLogShort() {
   end=$'\\\\e[0m'
   darkGray=$'\\\\e[90m'
 
   echo \\"\${darkGray}   $1 \${end}\\"
 }
 
-function certsRemove() {
+certsRemove() {
   local CERTS_DIR_PATH=$1
   rm -rf \\"$CERTS_DIR_PATH\\"
 }
 
-function removeContainer() {
+removeContainer() {
   CONTAINER_NAME=$1
   docker rm -f \\"$CONTAINER_NAME\\"
 }
@@ -1494,7 +1494,7 @@ function removeContainer() {
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-function printHelp() {
+printHelp() {
   echo \\"Fablo is powered by SoftwareMill\\"
 
   echo \\"\\"
@@ -1531,7 +1531,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
 # phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
-function chaincodeBuild() {
+chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
@@ -1567,7 +1567,7 @@ function chaincodeBuild() {
   fi
 }
 
-function chaincodeInstall() {
+chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1600,7 +1600,7 @@ function chaincodeInstall() {
     \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
-function chaincodeInstantiate() {
+chaincodeInstantiate() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1649,7 +1649,7 @@ function chaincodeInstantiate() {
     \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
 }
 
-function chaincodeUpgrade() {
+chaincodeUpgrade() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
@@ -1704,7 +1704,7 @@ function chaincodeUpgrade() {
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-function peerChannelList() {
+peerChannelList() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
 
@@ -1715,7 +1715,7 @@ function peerChannelList() {
   docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel list
 }
 
-function peerChannelGetInfo() {
+peerChannelGetInfo() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local PEER_ADDRESS=$3
@@ -1729,7 +1729,7 @@ function peerChannelGetInfo() {
     -c \\"$CHANNEL_NAME\\"
 }
 
-function peerChannelFetchConfig() {
+peerChannelFetchConfig() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local CONFIG_FILE_NAME=$3
@@ -1758,7 +1758,7 @@ function peerChannelFetchConfig() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchLastBlock() {
+peerChannelFetchLastBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1783,7 +1783,7 @@ function peerChannelFetchLastBlock() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchFirstBlock() {
+peerChannelFetchFirstBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1808,7 +1808,7 @@ function peerChannelFetchFirstBlock() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchBlock() {
+peerChannelFetchBlock() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1836,7 +1836,7 @@ function peerChannelFetchBlock() {
 
 #=== TLS equivalents =========================================================
 
-function peerChannelListTls() {
+peerChannelListTls() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CA_CERT=$3
@@ -1848,7 +1848,7 @@ function peerChannelListTls() {
   docker exec -e CORE_PEER_ADDRESS=\\"$PEER_ADDRESS\\" \\"$CLI_NAME\\" peer channel list --tls --cafile \\"$CA_CERT\\"
 }
 
-function peerChannelGetInfoTls() {
+peerChannelGetInfoTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local PEER_ADDRESS=$3
@@ -1863,7 +1863,7 @@ function peerChannelGetInfoTls() {
     -c \\"$CHANNEL_NAME\\" --tls --cafile \\"$CA_CERT\\"
 }
 
-function peerChannelFetchConfigTls() {
+peerChannelFetchConfigTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local CONFIG_FILE_NAME=$3
@@ -1893,7 +1893,7 @@ function peerChannelFetchConfigTls() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchLastBlockTls() {
+peerChannelFetchLastBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1919,7 +1919,7 @@ function peerChannelFetchLastBlockTls() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/
 }
 
-function peerChannelFetchFirstBlockTls() {
+peerChannelFetchFirstBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1945,7 +1945,7 @@ function peerChannelFetchFirstBlockTls() {
   docker exec \\"$CLI_NAME\\" rm -rf /tmp/hyperledger/assets/1
 }
 
-function peerChannelFetchBlockTls() {
+peerChannelFetchBlockTls() {
   local CHANNEL_NAME=$1
   local CLI_NAME=$2
   local BLOCK_FILE_NAME=$3
@@ -1979,7 +1979,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
 
 set -eu
 
-function createChannelAndJoin() {
+createChannelAndJoin() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -2006,7 +2006,7 @@ function createChannelAndJoin() {
   rm -rf \\"$DIR_NAME\\"
 }
 
-function createChannelAndJoinTls() {
+createChannelAndJoinTls() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -2043,7 +2043,7 @@ function createChannelAndJoinTls() {
   rm -rf \\"$DIR_NAME\\"
 }
 
-function fetchChannelAndJoin() {
+fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -2068,7 +2068,7 @@ function fetchChannelAndJoin() {
   rm -rf \\"$DIR_NAME\\"
 }
 
-function fetchChannelAndJoinTls() {
+fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
 
   local CORE_PEER_LOCALMSPID=$2
@@ -2108,7 +2108,7 @@ function fetchChannelAndJoinTls() {
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json 1`] = `
 "#!/usr/bin/env bash
 
-function __getSnapshotNodes() {
+__getSnapshotNodes() {
   network_name=\\"\${COMPOSE_PROJECT_NAME}_basic\\"
   docker ps --format \\"{{.Names}}\\" --filter \\"network=$network_name\\" --all |
     grep -v \\"cli\\\\.\\" |
@@ -2118,12 +2118,12 @@ function __getSnapshotNodes() {
     grep -v \\"fablo-rest\\"
 }
 
-function __getCANodes() {
+__getCANodes() {
   network_name=\\"\${COMPOSE_PROJECT_NAME}_basic\\"
   docker ps --format \\"{{.Names}}\\" --filter \\"network=$network_name\\" --all | grep \\"ca\\\\.\\"
 }
 
-function __createSnapshot() {
+__createSnapshot() {
   cd \\"$FABLO_NETWORK_ROOT/..\\"
   backup_dir=\\"\${1:-\\"snapshot-$(date -u +\\"%Y%m%d%H%M%S\\")\\"}\\"
 
@@ -2147,7 +2147,7 @@ function __createSnapshot() {
   done
 }
 
-function __cloneSnapshot() {
+__cloneSnapshot() {
   cd \\"$FABLO_NETWORK_ROOT/..\\"
   target_dir=\\"$1\\"
 

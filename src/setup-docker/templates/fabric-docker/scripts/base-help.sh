@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function printHelp() {
+printHelp() {
   echo "Fablo is powered by SoftwareMill"
 
   echo ""
