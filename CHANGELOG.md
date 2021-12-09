@@ -1,3 +1,12 @@
+## 0.4.0
+
+### Features
+* Generate connection profiles for Node and Java gateways.
+
+### Fixes
+
+### Chore & Maintenance
+
 ## 0.3.0
 
 ### Features

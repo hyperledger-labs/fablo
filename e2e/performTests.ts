@@ -7,10 +7,11 @@ const testFilesExistence = (config: string, files: string[]) => {
   });
 };
 
-const testFilesContent = (commands: TestCommands, config: string, files: string[], rootPath: string) =>
+const testFilesContent = (commands: TestCommands, config: string, files: string[]) =>
   files.forEach((f) => {
     it(`should create proper ${f} from ${config}`, () => {
       const content = commands.getFileContent(`${commands.relativeRoot}/${f}`);
+      const rootPath = resolve(__dirname + "/../");
       const cleaned = content
         .replace(/FABLO_BUILD=(.*?)(\n|$)/g, "FABLO_BUILD=<date with git hash>\n")
         .replace(/FABLO_CONFIG=(.*?)(\n|$)/g, "FABLO_CONFIG=<absolute path>\n")
@@ -26,8 +27,7 @@ export default (config: string): void => {
   commands.cleanupWorkdir();
   commands.fabloExec(`generate "${commands.relativeRoot}/${config}"`);
 
-  const rootPath = resolve(__dirname + "/../");
   const files = commands.getFiles();
   testFilesExistence(config, files);
-  testFilesContent(commands, config, files, rootPath);
+  testFilesContent(commands, config, files);
 };

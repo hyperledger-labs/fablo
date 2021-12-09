@@ -425,3 +425,7 @@ chaincodes:
         orgNames:
           - Org1
 ```
+
+### Connection profiles
+
+Fablo will generate the connection profiles for each organization defined in the configuration. You can find them in `fablo-target/fablo-config` directory in `json` and `yaml` format.
