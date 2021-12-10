@@ -2,6 +2,7 @@
 
 ### Features
 * Generate connection profiles for Node and Java gateways.
+* Add [Hyperledger Explorer](https://github.com/hyperledger/blockchain-explorer) support
 
 ### Fixes
 
