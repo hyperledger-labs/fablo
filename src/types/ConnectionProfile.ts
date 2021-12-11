@@ -91,7 +91,7 @@ function createPeers(isTls: boolean, rootPath: string, orgs: OrgConfig[]): { [ke
         peers[p.address] = {
           url: `grpcs://${p.fullAddress}`,
           tlsCACerts: {
-            path: `${rootPath}/peerOrganizations/${o.domain}/tlsca/tlsca.${o.domain}.com-cert.pem`, // todo is it good?
+            path: `${rootPath}/peerOrganizations/${o.domain}/tlsca/tlsca.${o.domain}-cert.pem`, // todo is it good?
           },
           grpcOptions: {
             "ssl-target-name-override": p.address,
