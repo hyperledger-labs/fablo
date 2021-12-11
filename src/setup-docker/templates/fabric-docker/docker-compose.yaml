@@ -120,8 +120,9 @@ services:
       - basic
 
   <%= org.tools.hyperledgerExplorer.address %>:
-    image: hyperledger/explorer:latest
+    image: hyperledger/explorer:latest # TODO! latest it's good idea :)
     container_name: <%= org.tools.hyperledgerExplorer.address %>
+    restart: always #TODO not so nice, but it's hackaton :)
     environment:
       - DATABASE_HOST=db.<%= org.tools.hyperledgerExplorer.address %>
       - DATABASE_DATABASE=fabricexplorer
@@ -133,14 +134,14 @@ services:
       - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
-      - ../fabric-config/explorer/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer/config-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/config.json
       - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile.json
       - ../fabric-config/crypto-config:/tmp/crypto
     ports:
       - "<%= org.tools.hyperledgerExplorer.port %>:8080"
     depends_on:
-      db.<%= org.tools.hyperledgerExplorer.address %>:
-        condition: service_healthy
+      - db.<%= org.tools.hyperledgerExplorer.address %>
+      - peer0.<%= org.domain %> #TODO not so nice, but it's hackaton :)
     networks:
       - basic
   <%_ } _%>

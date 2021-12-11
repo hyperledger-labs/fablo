@@ -61,9 +61,9 @@ interface HyperledgerExplorerClient extends Client {
   connection: {
     timeout: {
       peer: {
-        endorser: number;
+        endorser: string;
       };
-      orderer: number;
+      orderer: string;
     };
   };
 }
@@ -89,10 +89,9 @@ function createPeers(isTls: boolean, rootPath: string, orgs: OrgConfig[]): { [ke
     o.anchorPeers.forEach((p: PeerConfig) => {
       if (isTls) {
         peers[p.address] = {
-          url: p.fullAddress,
-          // url: `grpcs://localhost:${p.port}`,
+          url: `grpcs://${p.fullAddress}`,
           tlsCACerts: {
-            path: `${rootPath}/peerOrganizations/${o.domain}/peers/${p.address}/tls/ca.crt`, // todo is it good?
+            path: `${rootPath}/peerOrganizations/${o.domain}/tlsca/tlsca.${o.domain}.com-cert.pem`, // todo is it good?
           },
           grpcOptions: {
             "ssl-target-name-override": p.address,
@@ -100,8 +99,7 @@ function createPeers(isTls: boolean, rootPath: string, orgs: OrgConfig[]): { [ke
         };
       } else {
         peers[p.address] = {
-          url: p.fullAddress,
-          // url: `grpc://localhost:${p.port}`,
+          url: `grpc://${p.fullAddress}`,
         };
       }
     });
@@ -146,7 +144,7 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   const cs: { [name: string]: Channel } = {};
   channels.forEach((channel) => {
     if (channel.orgs.map((o) => o.name).indexOf(org.name) != -1) {
-      cs["my-channel1"] = { peers: peers };
+      cs[channel.name] = { peers: peers };
     }
   });
   return cs;
@@ -201,9 +199,9 @@ export function createHyperledgerExplorerConnectionProfile(
       connection: {
         timeout: {
           peer: {
-            endorser: 300,
+            endorser: "300",
           },
-          orderer: 300,
+          orderer: "300",
         },
       },
     },

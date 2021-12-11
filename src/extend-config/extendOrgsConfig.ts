@@ -238,7 +238,7 @@ const getPortsForOrg = (orgIndex: number) => ({
   headOrdererPort: 7030 + 20 * orgIndex,
   headPeerCouchDbPort: 5080 + 20 * orgIndex,
   fabloRestPort: 8800 + orgIndex,
-  hyperledgerExplorerPort: 7040 + 20 * orgIndex,
+  hyperledgerExplorerPort: 7010 + orgIndex,
 });
 
 const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: NetworkSettings): OrgConfig[] => {
