@@ -8,7 +8,7 @@
 
 ### Chore & Maintenance
 
-## 0.3.0
+## 0.3.1
 
 ### Features
 * Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 

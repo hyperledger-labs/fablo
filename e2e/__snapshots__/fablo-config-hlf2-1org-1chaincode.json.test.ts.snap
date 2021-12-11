@@ -208,15 +208,15 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
   },
   \\"peers\\": {
     \\"peer0.org1.example.com\\": {
-      \\"url\\": \\"grpc://localhost:7041\\"
+      \\"url\\": \\"grpc://peer0.org1.example.com:7041\\"
     },
     \\"peer1.org1.example.com\\": {
-      \\"url\\": \\"grpc://localhost:7042\\"
+      \\"url\\": \\"grpc://peer1.org1.example.com:7042\\"
     }
   },
   \\"certificateAuthorities\\": {
     \\"ca.orderer.example.com\\": {
-      \\"url\\": \\"http://localhost:7020\\",
+      \\"url\\": \\"ca.orderer.example.com:7054\\",
       \\"caName\\": \\"ca.orderer.example.com\\",
       \\"httpOptions\\": {
         \\"verify\\": false
@@ -243,12 +243,12 @@ organizations:
       - ca.orderer.example.com
 peers:
   peer0.org1.example.com:
-    url: grpc://localhost:7041
+    url: grpc://peer0.org1.example.com:7041
   peer1.org1.example.com:
-    url: grpc://localhost:7042
+    url: grpc://peer1.org1.example.com:7042
 certificateAuthorities:
   ca.orderer.example.com:
-    url: http://localhost:7020
+    url: ca.orderer.example.com:7054
     caName: ca.orderer.example.com
     httpOptions:
       verify: false
@@ -277,15 +277,15 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
   },
   \\"peers\\": {
     \\"peer0.org1.example.com\\": {
-      \\"url\\": \\"grpc://localhost:7041\\"
+      \\"url\\": \\"grpc://peer0.org1.example.com:7041\\"
     },
     \\"peer1.org1.example.com\\": {
-      \\"url\\": \\"grpc://localhost:7042\\"
+      \\"url\\": \\"grpc://peer1.org1.example.com:7042\\"
     }
   },
   \\"certificateAuthorities\\": {
     \\"ca.org1.example.com\\": {
-      \\"url\\": \\"http://localhost:7040\\",
+      \\"url\\": \\"ca.org1.example.com:7054\\",
       \\"caName\\": \\"ca.org1.example.com\\",
       \\"httpOptions\\": {
         \\"verify\\": false
@@ -312,12 +312,12 @@ organizations:
       - ca.org1.example.com
 peers:
   peer0.org1.example.com:
-    url: grpc://localhost:7041
+    url: grpc://peer0.org1.example.com:7041
   peer1.org1.example.com:
-    url: grpc://localhost:7042
+    url: grpc://peer1.org1.example.com:7042
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7040
+    url: ca.org1.example.com:7054
     caName: ca.org1.example.com
     httpOptions:
       verify: false
@@ -346,6 +346,136 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
       Count: 2
     Users:
       Count: 1
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-orderer.json from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"{
+  \\"network-configs\\": {
+    \\"network-orderer\\": {
+      \\"name\\": \\"Network of orderer\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile.json\\"
+    }
+  },
+  \\"license\\": \\"Apache-2.0\\"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-org1.json from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"{
+  \\"network-configs\\": {
+    \\"network-org1\\": {
+      \\"name\\": \\"Network of org1\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile.json\\"
+    }
+  },
+  \\"license\\": \\"Apache-2.0\\"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-orderer.json from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"{
+  \\"name\\": \\"fablo-test-network-orderer\\",
+  \\"description\\": \\"Connection profile for Hyperledger Explorer in Fablo network\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"client\\": {
+    \\"organization\\": \\"Orderer\\",
+    \\"tlsEnable\\": false,
+    \\"enableAuthentication\\": true,
+    \\"adminCredential\\": {
+      \\"id\\": \\"admin\\",
+      \\"password\\": \\"adminpw\\"
+    },
+    \\"connection\\": {
+      \\"timeout\\": {
+        \\"peer\\": {
+          \\"endorser\\": \\"300\\"
+        },
+        \\"orderer\\": \\"300\\"
+      }
+    }
+  },
+  \\"organizations\\": {
+    \\"Orderer\\": {
+      \\"mspid\\": \\"OrdererMSP\\",
+      \\"peers\\": [
+        \\"peer0.org1.example.com\\",
+        \\"peer1.org1.example.com\\"
+      ],
+      \\"adminPrivateKey\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/orderer.example.com/users/Admin@orderer.example.com/msp/keystore/priv-key.pem\\"
+      },
+      \\"signedCert\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/orderer.example.com/users/Admin@orderer.example.com/msp/signcerts/Admin@orderer.example.com-cert.pem\\"
+      }
+    }
+  },
+  \\"peers\\": {
+    \\"peer0.org1.example.com\\": {
+      \\"url\\": \\"grpc://peer0.org1.example.com:7041\\"
+    },
+    \\"peer1.org1.example.com\\": {
+      \\"url\\": \\"grpc://peer1.org1.example.com:7042\\"
+    }
+  },
+  \\"channels\\": {}
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"{
+  \\"name\\": \\"fablo-test-network-org1\\",
+  \\"description\\": \\"Connection profile for Hyperledger Explorer in Fablo network\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"client\\": {
+    \\"organization\\": \\"Org1\\",
+    \\"tlsEnable\\": false,
+    \\"enableAuthentication\\": true,
+    \\"adminCredential\\": {
+      \\"id\\": \\"admin\\",
+      \\"password\\": \\"adminpw\\"
+    },
+    \\"connection\\": {
+      \\"timeout\\": {
+        \\"peer\\": {
+          \\"endorser\\": \\"300\\"
+        },
+        \\"orderer\\": \\"300\\"
+      }
+    }
+  },
+  \\"organizations\\": {
+    \\"Org1\\": {
+      \\"mspid\\": \\"Org1MSP\\",
+      \\"peers\\": [
+        \\"peer0.org1.example.com\\",
+        \\"peer1.org1.example.com\\"
+      ],
+      \\"adminPrivateKey\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv-key.pem\\"
+      },
+      \\"signedCert\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem\\"
+      }
+    }
+  },
+  \\"peers\\": {
+    \\"peer0.org1.example.com\\": {
+      \\"url\\": \\"grpc://peer0.org1.example.com:7041\\"
+    },
+    \\"peer1.org1.example.com\\": {
+      \\"url\\": \\"grpc://peer1.org1.example.com:7042\\"
+    }
+  },
+  \\"channels\\": {
+    \\"my-channel1\\": {
+      \\"peers\\": {}
+    }
+  }
+}
 "
 `;
 
@@ -405,7 +535,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
-"FABLO_VERSION=\\"0.3.0\\"
+"FABLO_VERSION=\\"0.3.1\\"
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=\\"0.1.0\\"
 
@@ -1857,6 +1987,10 @@ Array [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
