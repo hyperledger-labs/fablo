@@ -1,7 +1,8 @@
 ## 0.4.0
 
 ### Features
-* Allow creating and restoring network state snapshot
+* Generate connection profiles for Node and Java gateways
+* Create a full network state snapshot in tag.gz file and restore it
 
 ### Fixes
 
