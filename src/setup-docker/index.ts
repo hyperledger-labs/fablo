@@ -1,5 +1,6 @@
 import * as Generator from "yeoman-generator";
 import * as config from "../config";
+import * as yaml from "js-yaml";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import {
@@ -11,6 +12,7 @@ import {
   OrgConfig,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
+import { createConnectionProfile } from "../types/ConnectionProfile";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -45,6 +47,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
+    this._createConnectionProfiles(networkSettings, orgs);
     this._copyConfigTx(config);
     this._copyGitIgnore();
     this._createPrivateDataCollectionConfigs(chaincodes);
@@ -85,6 +88,20 @@ export default class SetupDockerGenerator extends Generator {
         this.templatePath("fabric-config/crypto-config-org.yaml"),
         this.destinationPath(`fabric-config/${orgTransformed.cryptoConfigFileName}.yaml`),
         { org: orgTransformed },
+      );
+    });
+  }
+
+  _createConnectionProfiles(networkSettings: NetworkSettings, orgsTransformed: OrgConfig[]): void {
+    orgsTransformed.forEach((org: OrgConfig) => {
+      const connectionProfile = createConnectionProfile(networkSettings, org, orgsTransformed);
+      this.fs.writeJSON(
+        this.destinationPath(`fabric-config/connection-profile-${org.name.toLowerCase()}.json`),
+        connectionProfile,
+      );
+      this.fs.write(
+        this.destinationPath(`fabric-config/connection-profile-${org.name.toLowerCase()}.yaml`),
+        yaml.dump(connectionProfile),
       );
     });
   }
