@@ -1,7 +1,8 @@
 ## 0.4.0
 
 ### Features
-* Generate connection profiles for Node and Java gateways.
+* Generate connection profiles for Node and Java gateways
+* Create a full network state snapshot in tag.gz file and restore it
 
 ### Fixes
 
@@ -17,7 +18,7 @@
 * Support for [Orderer groups](https://github.com/softwaremill/fablo/issues/238) (orderer group can be spread between many orgs).
 
 ### Fixes
-* Fixed issue with bad requiredPeerCount in private data collection
+* Fixed issue with bad `requiredPeerCount` in private data collection
 * Fixed issues with `fablo up` on older bash versions ([details](https://github.com/softwaremill/fablo/issues/210))
 
 ### Chore & Maintenance

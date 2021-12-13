@@ -1,8 +1,8 @@
 {
   "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json",
   "networkSettings": {
-    "fabricVersion": "2.4.0",
-    "tls": false
+    "fabricVersion": "2.3.3",
+    "tls": true
   },
   "orgs": [
     {
@@ -13,7 +13,7 @@
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
+          "type": "raft",
           "instances": 1
         }
       ]
@@ -24,8 +24,11 @@
         "domain": "org1.com"
       },
       "peer": {
-        "instances": 2,
-        "db": "LevelDb"
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
       }
     }
   ],
@@ -36,8 +39,7 @@
         {
           "name": "Org1",
           "peers": [
-            "peer0",
-            "peer1"
+            "peer0"
           ]
         }
       ]
@@ -51,5 +53,8 @@
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node"
     }
-  ]
+  ],
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  }
 }

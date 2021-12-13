@@ -12,6 +12,13 @@ exports[`extend config should extend custom config 1`] = `
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+====== !Compatible Fablo versions found! :) =============
+Compatible versions:
+- 0.3.1
+
+To update just run command:
+	fablo use [version]
+===========================================================
 {
   \\"networkSettings\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
@@ -2083,14 +2090,21 @@ exports[`extend config should extend default config 1`] = `
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+====== !Compatible Fablo versions found! :) =============
+Compatible versions:
+- 0.3.1
+
+To update just run command:
+	fablo use [version]
+===========================================================
 {
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
     \\"fabricCaVersion\\": \\"1.5.0\\",
-    \\"fabricCcenvVersion\\": \\"2.3.2\\",
-    \\"fabricBaseosVersion\\": \\"2.3.2\\",
-    \\"fabricJavaenvVersion\\": \\"2.3.0\\",
+    \\"fabricCcenvVersion\\": \\"2.4.0\\",
+    \\"fabricBaseosVersion\\": \\"2.4.0\\",
+    \\"fabricJavaenvVersion\\": \\"2.4.0\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -2491,7 +2505,7 @@ exports[`init should init simple fablo config 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },
   \\"orgs\\": [
@@ -2543,7 +2557,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },
   \\"orgs\\": [
@@ -2603,7 +2617,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
   \\"networkSettings\\": {
-    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },
   \\"orgs\\": [

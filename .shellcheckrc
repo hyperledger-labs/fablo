@@ -15,3 +15,6 @@ disable=SC2062
 
 # SC2001: See if you can use ${variable//search/replace} instead.
 disable=SC2001
+
+# SC2035: Use ./*glob* or -- *glob* so names with dashes won't become options.
+disable=SC2035

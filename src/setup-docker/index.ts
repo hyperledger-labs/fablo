@@ -65,8 +65,8 @@ export default class SetupDockerGenerator extends Generator {
 
     this.on("end", () => {
       this.log("Done & done !!! Try the network out: ");
-      this.log("-> fablo.sh up - to start network");
-      this.log("-> fablo.sh help - to view all commands");
+      this.log("-> fablo up - to start network");
+      this.log("-> fablo help - to view all commands");
     });
   }
 
@@ -137,6 +137,10 @@ export default class SetupDockerGenerator extends Generator {
       this.templatePath("fabric-docker/channel-query-scripts.sh"),
       this.destinationPath("fabric-docker/channel-query-scripts.sh"),
       config,
+    );
+    this.fs.copy(
+      this.templatePath("fabric-docker/snapshot-scripts.sh"),
+      this.destinationPath("fabric-docker/snapshot-scripts.sh"),
     );
     this.fs.copyTpl(
       this.templatePath("fabric-docker/commands-generated.sh"),

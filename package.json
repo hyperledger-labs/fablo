@@ -26,8 +26,8 @@
     "copydeps": "copyfiles --all --up 1 'src/*/templates/**' generators",
     "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
     "test:unit": "jest src",
-    "test:e2e": "jest e2e -i",
-    "test:e2e-update": "./fablo-build.sh && jest e2e -i --updateSnapshot && ./lint.sh"
+    "test:e2e": "jest e2e --runInBand",
+    "test:e2e-update": "./fablo-build.sh && jest e2e --runInBand --updateSnapshot && ./lint.sh"
   },
   "dependencies": {
     "chalk": "^4.1.0",

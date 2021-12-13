@@ -8,6 +8,7 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
 
@@ -38,6 +39,10 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincode "$3" "$4"
 elif [ "$1" = "channel" ]; then
   channelQuery "${@:2}"
+elif [ "$1" = "snapshot" ]; then
+  createSnapshot "$2"
+elif [ "$1" = "clone-to" ]; then
+  cloneSnapshot "$2"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
