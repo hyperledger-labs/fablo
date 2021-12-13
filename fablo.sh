@@ -53,7 +53,7 @@ Usage:
   fablo <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
 
-  fablo reboot
+  fablo reset
     Downs and ups the network. Network state is lost, but the configuration is kept intact.
 
   fablo prune

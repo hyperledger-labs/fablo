@@ -120,14 +120,14 @@ fablo prune
 
 Downs the network and removes `fablo-target` directory.
 
-### reboot and recreate
+### reset and recreate
 
 ```bash
-fablo reboot
+fablo reset
 fablo recreate [/path/to/fablo-config.json|yaml]
 ```
 
-* `reboot` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
+* `reset` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
 * `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fablo-config` file and want to start newer network version in one command.    
 
 ### validate

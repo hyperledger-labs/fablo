@@ -4,12 +4,12 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 
 set -eu
 
-function channelQuery() {
+channelQuery() {
   echo "-> Channel query: " + "$@"
 
 if [ "$#" -eq 1 ]; then
   printChannelsHelp
-<% orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
+<% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
 elif [ "$1" = "list" ] && [ "$2" = "<%= org.name.toLowerCase(); %>" ] && [ "$3" = "<%= peer.name %>" ]; then
   <% if(!networkSettings.tls) { %>
     peerChannelList "<%= org.cli.address %>" "<%= peer.fullAddress %>"
@@ -18,7 +18,7 @@ elif [ "$1" = "list" ] && [ "$2" = "<%= org.name.toLowerCase(); %>" ] && [ "$3" 
   <% } %>
 <% })}) %>
 
-<% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
+<% channels.forEach((channel) => { channel.orgs.forEach((org) => { org.peers.forEach((peer) => { %>
 elif [ "$1" = "getinfo" ] && [ "$2" = "<%= channel.name %>" ] && [ "$3" = "<%= org.name.toLowerCase(); %>" ] && [ "$4" = "<%= peer.name %>" ]; then
   <% if(!networkSettings.tls) { %>
     peerChannelGetInfo "<%= channel.name %>" "<%= org.cli.address %>" "<%= peer.fullAddress %>"
@@ -61,15 +61,15 @@ fi
 
 }
 
-function printChannelsHelp() {
+printChannelsHelp() {
   echo "Channel management commands:"
   echo ""
-  <% orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
+  <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
     echo "fablo channel list <%= org.name.toLowerCase(); %> <%= peer.name %>"
     echo -e "\t List channels on '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
   <% })}) %>
-  <% channels.forEach(function(channel) { channel.orgs.forEach(function(org) { org.peers.forEach(function(peer) { %>
+  <% channels.forEach((channel) => { channel.orgs.forEach((org) => { org.peers.forEach((peer) => { %>
     echo "fablo channel getinfo <%= channel.name %> <%= org.name.toLowerCase(); %> <%= peer.name %>"
     echo -e "\t Get channel info on '<%= peer.name %>' of '<%= org.name %>'".
     echo ""
