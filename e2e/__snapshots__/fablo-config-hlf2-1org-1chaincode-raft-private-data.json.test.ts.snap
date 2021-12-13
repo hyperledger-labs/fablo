@@ -190,6 +190,164 @@ Profiles:
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+"{
+  \\"name\\": \\"fablo-test-network-orderer\\",
+  \\"description\\": \\"Connection profile for Orderer in Fablo network\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"client\\": {
+    \\"organization\\": \\"Orderer\\"
+  },
+  \\"organizations\\": {
+    \\"Orderer\\": {
+      \\"mspid\\": \\"OrdererMSP\\",
+      \\"peers\\": [
+        \\"peer0.org1.com\\"
+      ],
+      \\"certificateAuthorities\\": [
+        \\"ca.orderer.com\\"
+      ]
+    }
+  },
+  \\"peers\\": {
+    \\"peer0.org1.com\\": {
+      \\"url\\": \\"grpcs://localhost:7041\\",
+      \\"tlsCACerts\\": {
+        \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt\\"
+      },
+      \\"grpcOptions\\": {
+        \\"ssl-target-name-override\\": \\"peer0.org1.com\\"
+      }
+    }
+  },
+  \\"certificateAuthorities\\": {
+    \\"ca.orderer.com\\": {
+      \\"url\\": \\"http://localhost:7020\\",
+      \\"caName\\": \\"ca.orderer.com\\",
+      \\"tlsCACerts\\": {
+        \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.com/ca/ca.orderer.com-cert.pem\\"
+      },
+      \\"httpOptions\\": {
+        \\"verify\\": false
+      }
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+"name: fablo-test-network-orderer
+description: Connection profile for Orderer in Fablo network
+version: 1.0.0
+client:
+  organization: Orderer
+organizations:
+  Orderer:
+    mspid: OrdererMSP
+    peers:
+      - peer0.org1.com
+    certificateAuthorities:
+      - ca.orderer.com
+peers:
+  peer0.org1.com:
+    url: grpcs://localhost:7041
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.com
+certificateAuthorities:
+  ca.orderer.com:
+    url: http://localhost:7020
+    caName: ca.orderer.com
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.com/ca/ca.orderer.com-cert.pem
+    httpOptions:
+      verify: false
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+"{
+  \\"name\\": \\"fablo-test-network-org1\\",
+  \\"description\\": \\"Connection profile for Org1 in Fablo network\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"client\\": {
+    \\"organization\\": \\"Org1\\"
+  },
+  \\"organizations\\": {
+    \\"Org1\\": {
+      \\"mspid\\": \\"Org1MSP\\",
+      \\"peers\\": [
+        \\"peer0.org1.com\\"
+      ],
+      \\"certificateAuthorities\\": [
+        \\"ca.org1.com\\"
+      ]
+    }
+  },
+  \\"peers\\": {
+    \\"peer0.org1.com\\": {
+      \\"url\\": \\"grpcs://localhost:7041\\",
+      \\"tlsCACerts\\": {
+        \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt\\"
+      },
+      \\"grpcOptions\\": {
+        \\"ssl-target-name-override\\": \\"peer0.org1.com\\"
+      }
+    }
+  },
+  \\"certificateAuthorities\\": {
+    \\"ca.org1.com\\": {
+      \\"url\\": \\"http://localhost:7040\\",
+      \\"caName\\": \\"ca.org1.com\\",
+      \\"tlsCACerts\\": {
+        \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/ca/ca.org1.com-cert.pem\\"
+      },
+      \\"httpOptions\\": {
+        \\"verify\\": false
+      }
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+"name: fablo-test-network-org1
+description: Connection profile for Org1 in Fablo network
+version: 1.0.0
+client:
+  organization: Org1
+organizations:
+  Org1:
+    mspid: Org1MSP
+    peers:
+      - peer0.org1.com
+    certificateAuthorities:
+      - ca.org1.com
+peers:
+  peer0.org1.com:
+    url: grpcs://localhost:7041
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/peers/peer0.org1.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.com
+certificateAuthorities:
+  ca.org1.com:
+    url: http://localhost:7040
+    caName: ca.org1.com
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.com/ca/ca.org1.com-cert.pem
+    httpOptions:
+      verify: false
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
 "PeerOrgs:
   - Name: Orderer
@@ -1781,6 +1939,10 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 Array [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker.sh",
