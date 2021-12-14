@@ -20,7 +20,7 @@ To update just run command:
 	fablo use [version]
 ===========================================================
 {
-  \\"networkSettings\\": {
+  \\"global\\": {
     \\"fabricVersion\\": \\"2.3.2\\",
     \\"tls\\": true,
     \\"monitoring\\": {
@@ -2098,7 +2098,7 @@ To update just run command:
 	fablo use [version]
 ===========================================================
 {
-  \\"networkSettings\\": {
+  \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
     \\"fabricCaVersion\\": \\"1.5.0\\",
@@ -2504,7 +2504,7 @@ To update just run command:
 exports[`init should init simple fablo config 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
-  \\"networkSettings\\": {
+  \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },
@@ -2556,7 +2556,7 @@ exports[`init should init simple fablo config 1`] = `
 exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
-  \\"networkSettings\\": {
+  \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },
@@ -2616,7 +2616,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 exports[`init should init simple fablo config with node chaincode and rest api 1`] = `
 "{
   \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json\\",
-  \\"networkSettings\\": {
+  \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
   },

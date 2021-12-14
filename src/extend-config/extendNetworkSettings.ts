@@ -52,7 +52,7 @@ const getPathsFromEnv = () => ({
 
 const extendNetworkSettings = (networkSettingsJson: NetworkSettingsJson): NetworkSettings => {
   const monitoring = {
-    loglevel: networkSettingsJson?.monitoring?.loglevel || defaults.networkSettings.monitoring.loglevel,
+    loglevel: networkSettingsJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
 
   return {

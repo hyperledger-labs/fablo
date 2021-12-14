@@ -31,7 +31,7 @@ describe("schema", () => {
   it("should validate fabric version", () => {
     const withFabricVersion = (v: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.networkSettings.fabricVersion = v;
+        json.global.fabricVersion = v;
       });
 
     expect(withFabricVersion("1.4.3")).toMatchSchema(schema);

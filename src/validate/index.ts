@@ -95,13 +95,13 @@ class ValidateGenerator extends Generator {
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
-    this._validateFabricVersion(networkConfig.networkSettings.fabricVersion);
+    this._validateFabricVersion(networkConfig.global.fabricVersion);
     this._validateOrgs(networkConfig.orgs);
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers));
-    networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.networkSettings));
+    networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
     networkConfig.orgs.forEach((org) => this._validateOrdererGroupNameUniqueForOrg(org));
     // ===================================
@@ -117,7 +117,7 @@ class ValidateGenerator extends Generator {
     this._validateChannelOrdererGroup(networkConfig.orgs, networkConfig.channels);
     this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.orgs);
 
-    const capabilities = getNetworkCapabilities(networkConfig.networkSettings.fabricVersion);
+    const capabilities = getNetworkCapabilities(networkConfig.global.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
   }
 
@@ -248,7 +248,7 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, networkSettings: NetworkSettingsJson) {
+  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, global: NetworkSettingsJson) {
     if (orderers !== undefined) {
       orderers
         .filter((o) => o.type === "raft")
@@ -261,17 +261,17 @@ class ValidateGenerator extends Generator {
             this.emit(validationErrorType.WARN, objectToEmit);
           }
 
-          if (!config.versionsSupportingRaft.includes(networkSettings.fabricVersion)) {
+          if (!config.versionsSupportingRaft.includes(global.fabricVersion)) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Fabric's ${networkSettings.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
+              message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }
-          if (!networkSettings.tls) {
+          if (!global.tls) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: "Raft consensus type must use network in TLS mode. Try setting 'networkSettings.tls' to true",
+              message: "Raft consensus type must use network in TLS mode. Try setting 'global.tls' to true",
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }

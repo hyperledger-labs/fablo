@@ -145,9 +145,9 @@ const fabloRestConfig = (
   port: number,
   ca: CAConfig,
   anchorPeersAllOrgs: AnchorPeerConfig[],
-  networkSettings: NetworkSettings,
+  global: NetworkSettings,
 ): FabloRestConfig => {
-  const discoveryEndpointsConfig = networkSettings.tls
+  const discoveryEndpointsConfig = global.tls
     ? {
         discoveryUrls: anchorPeersAllOrgs.map((p) => `grpcs://${p.address}:${p.port}`).join(","),
         discoverySslTargetNameOverrides: "",
@@ -168,7 +168,7 @@ const fabloRestConfig = (
     fabricCaUrl: `http://${ca.address}:${ca.port}`,
     fabricCaName: ca.address,
     ...discoveryEndpointsConfig,
-    logging: fabloRestLoggingConfig(networkSettings),
+    logging: fabloRestLoggingConfig(global),
   };
 };
 
@@ -187,7 +187,7 @@ const extendOrgConfig = (
   hyperledgerExplorerPort: number,
   peers: PeerConfig[],
   anchorPeersAllOrgs: AnchorPeerConfig[],
-  networkSettings: NetworkSettings,
+  global: NetworkSettings,
 ): OrgConfig => {
   const cryptoConfigFileName = `crypto-config-${orgJsonFormat.organization.name.toLowerCase()}`;
   const { domain, name } = orgJsonFormat.organization;
@@ -202,11 +202,11 @@ const extendOrgConfig = (
 
   const fabloRest = !orgJsonFormat?.tools?.fabloRest
     ? {}
-    : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, networkSettings) };
+    : { fabloRest: fabloRestConfig(domain, mspName, fabloRestPort, ca, anchorPeersAllOrgs, global) };
 
-  const hyperledgerExplorer = !orgJsonFormat?.tools?.hyperledgerExplorer
+  const explorer = !orgJsonFormat?.tools?.explorer
     ? {}
-    : { hyperledgerExplorer: hyperledgerExplorerConfig(domain, hyperledgerExplorerPort) };
+    : { explorer: hyperledgerExplorerConfig(domain, hyperledgerExplorerPort) };
 
   const ordererGroups =
     orgJsonFormat.orderers !== undefined
@@ -228,7 +228,7 @@ const extendOrgConfig = (
     },
     headPeer: peers[0],
     ordererGroups,
-    tools: { ...fabloRest, ...hyperledgerExplorer },
+    tools: { ...fabloRest, ...explorer },
   };
 };
 
@@ -241,7 +241,7 @@ const getPortsForOrg = (orgIndex: number) => ({
   hyperledgerExplorerPort: 7010 + orgIndex,
 });
 
-const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: NetworkSettings): OrgConfig[] => {
+const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], global: NetworkSettings): OrgConfig[] => {
   const peersByOrgDomain = orgsJsonConfigFormat.reduce((all, orgJson, orgIndex) => {
     const domain = orgJson.organization.domain;
     const { caPort, headPeerPort, headPeerCouchDbPort, fabloRestPort, hyperledgerExplorerPort } = getPortsForOrg(
@@ -270,7 +270,7 @@ const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], networkSettings: Netw
       hyperledgerExplorerPort,
       peers,
       anchorPeers,
-      networkSettings,
+      global,
     );
   });
 };

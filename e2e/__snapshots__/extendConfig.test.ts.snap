@@ -596,10 +596,7 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V1_3",
       "channel": "V1_3",
@@ -619,6 +616,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": false,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -1330,10 +1330,7 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V1_4_2",
       "channel": "V1_4_3",
@@ -1353,6 +1350,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -2328,10 +2328,7 @@ Object {
       "profileName": "MyChannel2",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V1_4_2",
       "channel": "V1_4_3",
@@ -2351,6 +2348,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": false,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -3532,10 +3532,7 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V1_4_2",
       "channel": "V1_4_3",
@@ -3555,6 +3552,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": false,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -4957,10 +4957,7 @@ Object {
       "profileName": "MyChannel2",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V1_4_2",
       "channel": "V1_4_3",
@@ -4980,6 +4977,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -5741,10 +5741,7 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V2_0",
       "channel": "V2_0",
@@ -5764,6 +5761,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": false,
+  },
+  "hooks": Object {
+    "postGenerate": "",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -6412,10 +6412,7 @@ Object {
       "profileName": "MyChannel1",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V2_0",
       "channel": "V2_0",
@@ -6435,6 +6432,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
+  },
+  "hooks": Object {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
   },
   "orderedHeadsDistinct": Array [
     Object {
@@ -8251,10 +8251,7 @@ Object {
       "profileName": "MyChannel3",
     },
   ],
-  "hooks": Object {
-    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
-  },
-  "networkSettings": Object {
+  "global": Object {
     "capabilities": Object {
       "application": "V2_0",
       "channel": "V2_0",
@@ -8274,6 +8271,9 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
+  },
+  "hooks": Object {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
   },
   "orderedHeadsDistinct": Array [
     Object {

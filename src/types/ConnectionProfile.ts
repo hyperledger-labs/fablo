@@ -164,13 +164,9 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   return cs;
 }
 
-export function createConnectionProfile(
-  networkSettings: NetworkSettings,
-  org: OrgConfig,
-  orgs: OrgConfig[],
-): ConnectionProfile {
-  const rootPath = `${networkSettings.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
-  const peers = createPeers(org.name, false, networkSettings.tls, rootPath, orgs);
+export function createConnectionProfile(global: NetworkSettings, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
+  const rootPath = `${global.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
+  const peers = createPeers(org.name, false, global.tls, rootPath, orgs);
   return {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for ${org.name} in Fablo network`,
@@ -186,25 +182,25 @@ export function createConnectionProfile(
       },
     },
     peers: peers,
-    certificateAuthorities: certificateAuthorities(networkSettings.tls, rootPath, org),
+    certificateAuthorities: certificateAuthorities(global.tls, rootPath, org),
   };
 }
 
 export function createHyperledgerExplorerConnectionProfile(
-  networkSettings: NetworkSettings,
+  global: NetworkSettings,
   org: OrgConfig,
   orgs: OrgConfig[],
   channels: ChannelConfig[],
 ): HyperledgerExplorerConnectionProfile {
   const rootPath = "/tmp/crypto";
-  const peers = createPeers(org.name, true, networkSettings.tls, rootPath, orgs);
+  const peers = createPeers(org.name, true, global.tls, rootPath, orgs);
   return {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for Hyperledger Explorer in Fablo network`,
     version: "1.0.0",
     client: {
       organization: org.name,
-      tlsEnable: networkSettings.tls,
+      tlsEnable: global.tls,
       enableAuthentication: true,
       adminCredential: {
         id: "admin",

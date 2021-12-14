@@ -5,7 +5,7 @@
    - version
   Required template parameters:
    - chaincode
-   - networkSettings
+   - global
 */-%>
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
@@ -22,7 +22,7 @@ chaincodeBuild <% -%>
       "$version" <% -%>
       "<%= chaincode.lang %>" <% -%>
       "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-      "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
   <% }) -%>
 <% }) -%>
 printItalics "Upgrading as '<%= chaincode.instantiatingOrg.name %>'. '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>'" "U1F618"
@@ -35,5 +35,5 @@ chaincodeUpgrade <% -%>
   "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
   '<%- chaincode.init %>' <% -%>
   "<%- chaincode.endorsement %>" <% -%>
-  "<%= !networkSettings.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+  "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"

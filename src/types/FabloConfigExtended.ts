@@ -117,7 +117,7 @@ export interface OrgConfig {
   peers: PeerConfig[];
   peersCount: number;
   ordererGroups: OrdererGroup[];
-  tools: { fabloRest?: FabloRestConfig; hyperledgerExplorer?: HyperledgerExplorerConfig };
+  tools: { fabloRest?: FabloRestConfig; explorer?: HyperledgerExplorerConfig };
 }
 
 export interface ChaincodeConfig {
@@ -150,7 +150,7 @@ export interface HooksConfig {
 }
 
 export interface FabloConfigExtended {
-  networkSettings: NetworkSettings;
+  global: NetworkSettings;
   ordererGroups: OrdererGroup[];
   orderedHeadsDistinct: OrdererConfig[];
   orgs: OrgConfig[];

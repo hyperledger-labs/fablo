@@ -47,7 +47,7 @@ installChannels() {
         <% org.peers.forEach((peer, peerNo) => { -%>
           <% if(orgNo == 0 && peerNo == 0) { -%>
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
-            <% if(!networkSettings.tls) { -%>
+            <% if(!global.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
@@ -56,7 +56,7 @@ installChannels() {
             <% } %>
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
-            <% if(!networkSettings.tls) { -%>
+            <% if(!global.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
@@ -76,11 +76,11 @@ installChaincodes() {
   <% } else { -%>
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (networkSettings.capabilities.isV2) { -%>
+        <% if (global.capabilities.isV2) { -%>
           local version="<%= chaincode.version %>"
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, networkSettings }); -%>
+          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); -%>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
@@ -106,7 +106,7 @@ notifyOrgsAboutChannels() {
   printHeadline "Notyfing orgs about channels" "U1F4E2"
   <% channels.forEach((channel) => { -%>
     <% channel.orgs.forEach((org) => { -%>
-     <% if(!networkSettings.tls) { -%>
+     <% if(!global.tls) { -%>
        notifyOrgAboutNewChannel <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
@@ -143,10 +143,10 @@ upgradeChaincode() {
   <% chaincodes.forEach((chaincode) => { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (networkSettings.capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, networkSettings }); %>
+        <% if (global.capabilities.isV2) { -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, networkSettings }); %>
+          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, global }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
