@@ -283,82 +283,82 @@ To update just run command:
     {
       \\"name\\": \\"Org1\\",
       \\"mspName\\": \\"Org1MSP\\",
-      \\"domain\\": \\"org1.com\\",
+      \\"domain\\": \\"org1.example.com\\",
       \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
       \\"peersCount\\": 2,
       \\"peers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
-          \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
           \\"couchDbExposePort\\": 5120
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
-          \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
           \\"couchDbExposePort\\": 5121
         }
       ],
       \\"anchorPeers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
-          \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
           \\"couchDbExposePort\\": 5120
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
-          \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
           \\"couchDbExposePort\\": 5121
         }
       ],
-      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
-        \\"address\\": \\"ca.org1.com\\",
+        \\"address\\": \\"ca.org1.example.com\\",
         \\"port\\": 7054,
         \\"exposePort\\": 7060,
-        \\"fullAddress\\": \\"ca.org1.com:7054\\",
+        \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
         \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
       },
       \\"cli\\": {
-        \\"address\\": \\"cli.org1.com\\"
+        \\"address\\": \\"cli.org1.example.com\\"
       },
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
-        \\"address\\": \\"peer0.org1.com\\",
+        \\"address\\": \\"peer0.org1.example.com\\",
         \\"db\\": \\"LevelDb\\",
         \\"isAnchorPeer\\": true,
         \\"port\\": 7061,
-        \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+        \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
         \\"couchDbExposePort\\": 5120
       },
       \\"ordererGroups\\": [],
       \\"tools\\": {
         \\"fabloRest\\": {
-          \\"address\\": \\"fablo-rest.org1.com\\",
+          \\"address\\": \\"fablo-rest.org1.example.com\\",
           \\"mspId\\": \\"Org1MSP\\",
           \\"port\\": 8802,
-          \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-          \\"fabricCaName\\": \\"ca.org1.com\\",
-          \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+          \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+          \\"fabricCaName\\": \\"ca.org1.example.com\\",
+          \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
           \\"discoverySslTargetNameOverrides\\": \\"\\",
-          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+          \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
           \\"logging\\": {
             \\"error\\": \\"console\\",
             \\"warn\\": \\"console\\",
@@ -371,69 +371,69 @@ To update just run command:
     {
       \\"name\\": \\"Org2\\",
       \\"mspName\\": \\"Org2MSP\\",
-      \\"domain\\": \\"org2.com\\",
+      \\"domain\\": \\"org2.example.com\\",
       \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
       \\"peersCount\\": 2,
       \\"peers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org2.com\\",
+          \\"address\\": \\"peer0.org2.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
-          \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+          \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
           \\"couchDbExposePort\\": 5140
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org2.com\\",
+          \\"address\\": \\"peer1.org2.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
-          \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+          \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
           \\"couchDbExposePort\\": 5141
         }
       ],
       \\"anchorPeers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org2.com\\",
+          \\"address\\": \\"peer0.org2.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
-          \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+          \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
           \\"couchDbExposePort\\": 5140
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org2.com\\",
+          \\"address\\": \\"peer1.org2.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
-          \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+          \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
           \\"couchDbExposePort\\": 5141
         }
       ],
-      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
-        \\"address\\": \\"ca.org2.com\\",
+        \\"address\\": \\"ca.org2.example.com\\",
         \\"port\\": 7054,
         \\"exposePort\\": 7080,
-        \\"fullAddress\\": \\"ca.org2.com:7054\\",
+        \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
         \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
       },
       \\"cli\\": {
-        \\"address\\": \\"cli.org2.com\\"
+        \\"address\\": \\"cli.org2.example.com\\"
       },
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
-        \\"address\\": \\"peer0.org2.com\\",
+        \\"address\\": \\"peer0.org2.example.com\\",
         \\"db\\": \\"LevelDb\\",
         \\"isAnchorPeer\\": true,
         \\"port\\": 7081,
-        \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+        \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
         \\"couchDbExposePort\\": 5140
       },
       \\"ordererGroups\\": [],
@@ -448,73 +448,73 @@ To update just run command:
         {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7060,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"address\\": \\"fablo-rest.org1.example.com\\",
               \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8802,
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.example.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
               \\"logging\\": {
                 \\"error\\": \\"console\\",
                 \\"warn\\": \\"console\\",
@@ -527,60 +527,60 @@ To update just run command:
         {
           \\"name\\": \\"Org2\\",
           \\"mspName\\": \\"Org2MSP\\",
-          \\"domain\\": \\"org2.com\\",
+          \\"domain\\": \\"org2.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org2.com\\",
+            \\"address\\": \\"ca.org2.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7080,
-            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org2.com\\"
+            \\"address\\": \\"cli.org2.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org2.com\\",
+            \\"address\\": \\"peer0.org2.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
-            \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+            \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
             \\"couchDbExposePort\\": 5140
           },
           \\"ordererGroups\\": [],
@@ -652,73 +652,73 @@ To update just run command:
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7060,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
-          \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
           \\"couchDbExposePort\\": 5120
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"address\\": \\"fablo-rest.org1.example.com\\",
             \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8802,
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.example.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
             \\"logging\\": {
               \\"error\\": \\"console\\",
               \\"warn\\": \\"console\\",
@@ -736,73 +736,73 @@ To update just run command:
         {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7060,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"address\\": \\"fablo-rest.org1.example.com\\",
               \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8802,
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.example.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
               \\"logging\\": {
                 \\"error\\": \\"console\\",
                 \\"warn\\": \\"console\\",
@@ -815,60 +815,60 @@ To update just run command:
         {
           \\"name\\": \\"Org2\\",
           \\"mspName\\": \\"Org2MSP\\",
-          \\"domain\\": \\"org2.com\\",
+          \\"domain\\": \\"org2.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org2.com\\",
+            \\"address\\": \\"ca.org2.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7080,
-            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org2.com\\"
+            \\"address\\": \\"cli.org2.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org2.com\\",
+            \\"address\\": \\"peer1.org2.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7082,
-            \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+            \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
             \\"couchDbExposePort\\": 5141
           },
           \\"ordererGroups\\": [],
@@ -940,73 +940,73 @@ To update just run command:
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7060,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
-          \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
           \\"couchDbExposePort\\": 5121
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"address\\": \\"fablo-rest.org1.example.com\\",
             \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8802,
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.example.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
             \\"logging\\": {
               \\"error\\": \\"console\\",
               \\"warn\\": \\"console\\",
@@ -1024,82 +1024,82 @@ To update just run command:
         {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7060,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"address\\": \\"fablo-rest.org1.example.com\\",
               \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8802,
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.example.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
               \\"logging\\": {
                 \\"error\\": \\"console\\",
                 \\"warn\\": \\"console\\",
@@ -1112,69 +1112,69 @@ To update just run command:
         {
           \\"name\\": \\"Org2\\",
           \\"mspName\\": \\"Org2MSP\\",
-          \\"domain\\": \\"org2.com\\",
+          \\"domain\\": \\"org2.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org2.com\\",
+            \\"address\\": \\"ca.org2.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7080,
-            \\"fullAddress\\": \\"ca.org2.com:7054\\",
+            \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org2.com\\"
+            \\"address\\": \\"cli.org2.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org2.com\\",
+            \\"address\\": \\"peer0.org2.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
-            \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+            \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
             \\"couchDbExposePort\\": 5140
           },
           \\"ordererGroups\\": [],
@@ -1230,82 +1230,82 @@ To update just run command:
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7060,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
-          \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
           \\"couchDbExposePort\\": 5120
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"address\\": \\"fablo-rest.org1.example.com\\",
             \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8802,
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.example.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
             \\"logging\\": {
               \\"error\\": \\"console\\",
               \\"warn\\": \\"console\\",
@@ -1330,73 +1330,73 @@ To update just run command:
           {
             \\"name\\": \\"Org1\\",
             \\"mspName\\": \\"Org1MSP\\",
-            \\"domain\\": \\"org1.com\\",
+            \\"domain\\": \\"org1.example.com\\",
             \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
             \\"peersCount\\": 2,
             \\"peers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org1.com\\",
+                \\"address\\": \\"peer0.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
-                \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+                \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
                 \\"couchDbExposePort\\": 5120
               }
             ],
             \\"anchorPeers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org1.com\\",
+                \\"address\\": \\"peer0.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
-                \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+                \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
                 \\"couchDbExposePort\\": 5120
               },
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org1.com\\",
+                \\"address\\": \\"peer1.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
-                \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+                \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
                 \\"couchDbExposePort\\": 5121
               }
             ],
-            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
             \\"ca\\": {
               \\"prefix\\": \\"ca\\",
-              \\"address\\": \\"ca.org1.com\\",
+              \\"address\\": \\"ca.org1.example.com\\",
               \\"port\\": 7054,
               \\"exposePort\\": 7060,
-              \\"fullAddress\\": \\"ca.org1.com:7054\\",
+              \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
               \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
             },
             \\"cli\\": {
-              \\"address\\": \\"cli.org1.com\\"
+              \\"address\\": \\"cli.org1.example.com\\"
             },
             \\"headPeer\\": {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {
               \\"fabloRest\\": {
-                \\"address\\": \\"fablo-rest.org1.com\\",
+                \\"address\\": \\"fablo-rest.org1.example.com\\",
                 \\"mspId\\": \\"Org1MSP\\",
                 \\"port\\": 8802,
-                \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-                \\"fabricCaName\\": \\"ca.org1.com\\",
-                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+                \\"fabricCaName\\": \\"ca.org1.example.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
                 \\"logging\\": {
                   \\"error\\": \\"console\\",
                   \\"warn\\": \\"console\\",
@@ -1409,60 +1409,60 @@ To update just run command:
           {
             \\"name\\": \\"Org2\\",
             \\"mspName\\": \\"Org2MSP\\",
-            \\"domain\\": \\"org2.com\\",
+            \\"domain\\": \\"org2.example.com\\",
             \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
             \\"peersCount\\": 2,
             \\"peers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org2.com\\",
+                \\"address\\": \\"peer0.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
-                \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+                \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
                 \\"couchDbExposePort\\": 5140
               }
             ],
             \\"anchorPeers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org2.com\\",
+                \\"address\\": \\"peer0.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
-                \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+                \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
                 \\"couchDbExposePort\\": 5140
               },
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org2.com\\",
+                \\"address\\": \\"peer1.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
-                \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+                \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
                 \\"couchDbExposePort\\": 5141
               }
             ],
-            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
             \\"ca\\": {
               \\"prefix\\": \\"ca\\",
-              \\"address\\": \\"ca.org2.com\\",
+              \\"address\\": \\"ca.org2.example.com\\",
               \\"port\\": 7054,
               \\"exposePort\\": 7080,
-              \\"fullAddress\\": \\"ca.org2.com:7054\\",
+              \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
               \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
             },
             \\"cli\\": {
-              \\"address\\": \\"cli.org2.com\\"
+              \\"address\\": \\"cli.org2.example.com\\"
             },
             \\"headPeer\\": {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org2.com\\",
+              \\"address\\": \\"peer0.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
-              \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+              \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
               \\"couchDbExposePort\\": 5140
             },
             \\"ordererGroups\\": [],
@@ -1534,73 +1534,73 @@ To update just run command:
         \\"instantiatingOrg\\": {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7060,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"address\\": \\"fablo-rest.org1.example.com\\",
               \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8802,
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.example.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
               \\"logging\\": {
                 \\"error\\": \\"console\\",
                 \\"warn\\": \\"console\\",
@@ -1616,73 +1616,73 @@ To update just run command:
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7060,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
-          \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
           \\"couchDbExposePort\\": 5120
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"address\\": \\"fablo-rest.org1.example.com\\",
             \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8802,
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.example.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
             \\"logging\\": {
               \\"error\\": \\"console\\",
               \\"warn\\": \\"console\\",
@@ -1706,73 +1706,73 @@ To update just run command:
           {
             \\"name\\": \\"Org1\\",
             \\"mspName\\": \\"Org1MSP\\",
-            \\"domain\\": \\"org1.com\\",
+            \\"domain\\": \\"org1.example.com\\",
             \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
             \\"peersCount\\": 2,
             \\"peers\\": [
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org1.com\\",
+                \\"address\\": \\"peer1.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
-                \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+                \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
                 \\"couchDbExposePort\\": 5121
               }
             ],
             \\"anchorPeers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org1.com\\",
+                \\"address\\": \\"peer0.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
-                \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+                \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
                 \\"couchDbExposePort\\": 5120
               },
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org1.com\\",
+                \\"address\\": \\"peer1.org1.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
-                \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+                \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
                 \\"couchDbExposePort\\": 5121
               }
             ],
-            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
             \\"ca\\": {
               \\"prefix\\": \\"ca\\",
-              \\"address\\": \\"ca.org1.com\\",
+              \\"address\\": \\"ca.org1.example.com\\",
               \\"port\\": 7054,
               \\"exposePort\\": 7060,
-              \\"fullAddress\\": \\"ca.org1.com:7054\\",
+              \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
               \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
             },
             \\"cli\\": {
-              \\"address\\": \\"cli.org1.com\\"
+              \\"address\\": \\"cli.org1.example.com\\"
             },
             \\"headPeer\\": {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {
               \\"fabloRest\\": {
-                \\"address\\": \\"fablo-rest.org1.com\\",
+                \\"address\\": \\"fablo-rest.org1.example.com\\",
                 \\"mspId\\": \\"Org1MSP\\",
                 \\"port\\": 8802,
-                \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-                \\"fabricCaName\\": \\"ca.org1.com\\",
-                \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+                \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+                \\"fabricCaName\\": \\"ca.org1.example.com\\",
+                \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
                 \\"discoverySslTargetNameOverrides\\": \\"\\",
-                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+                \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
                 \\"logging\\": {
                   \\"error\\": \\"console\\",
                   \\"warn\\": \\"console\\",
@@ -1785,60 +1785,60 @@ To update just run command:
           {
             \\"name\\": \\"Org2\\",
             \\"mspName\\": \\"Org2MSP\\",
-            \\"domain\\": \\"org2.com\\",
+            \\"domain\\": \\"org2.example.com\\",
             \\"cryptoConfigFileName\\": \\"crypto-config-org2\\",
             \\"peersCount\\": 2,
             \\"peers\\": [
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org2.com\\",
+                \\"address\\": \\"peer1.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
-                \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+                \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
                 \\"couchDbExposePort\\": 5141
               }
             ],
             \\"anchorPeers\\": [
               {
                 \\"name\\": \\"peer0\\",
-                \\"address\\": \\"peer0.org2.com\\",
+                \\"address\\": \\"peer0.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
-                \\"fullAddress\\": \\"peer0.org2.com:7081\\",
+                \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
                 \\"couchDbExposePort\\": 5140
               },
               {
                 \\"name\\": \\"peer1\\",
-                \\"address\\": \\"peer1.org2.com\\",
+                \\"address\\": \\"peer1.org2.example.com\\",
                 \\"db\\": \\"LevelDb\\",
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
-                \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+                \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
                 \\"couchDbExposePort\\": 5141
               }
             ],
-            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.com:7081 peer1.org2.com:7082\\\\\\"\\",
+            \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
             \\"ca\\": {
               \\"prefix\\": \\"ca\\",
-              \\"address\\": \\"ca.org2.com\\",
+              \\"address\\": \\"ca.org2.example.com\\",
               \\"port\\": 7054,
               \\"exposePort\\": 7080,
-              \\"fullAddress\\": \\"ca.org2.com:7054\\",
+              \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
               \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
             },
             \\"cli\\": {
-              \\"address\\": \\"cli.org2.com\\"
+              \\"address\\": \\"cli.org2.example.com\\"
             },
             \\"headPeer\\": {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org2.com\\",
+              \\"address\\": \\"peer1.org2.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
-              \\"fullAddress\\": \\"peer1.org2.com:7082\\",
+              \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
               \\"couchDbExposePort\\": 5141
             },
             \\"ordererGroups\\": [],
@@ -1910,73 +1910,73 @@ To update just run command:
         \\"instantiatingOrg\\": {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
-              \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
               \\"couchDbExposePort\\": 5120
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
-              \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
               \\"couchDbExposePort\\": 5121
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7060,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
             \\"fabloRest\\": {
-              \\"address\\": \\"fablo-rest.org1.com\\",
+              \\"address\\": \\"fablo-rest.org1.example.com\\",
               \\"mspId\\": \\"Org1MSP\\",
               \\"port\\": 8802,
-              \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-              \\"fabricCaName\\": \\"ca.org1.com\\",
-              \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+              \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+              \\"fabricCaName\\": \\"ca.org1.example.com\\",
+              \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
               \\"discoverySslTargetNameOverrides\\": \\"\\",
-              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+              \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
               \\"logging\\": {
                 \\"error\\": \\"console\\",
                 \\"warn\\": \\"console\\",
@@ -1992,73 +1992,73 @@ To update just run command:
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
-            \\"fullAddress\\": \\"peer0.org1.com:7061\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
             \\"couchDbExposePort\\": 5120
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
-            \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
             \\"couchDbExposePort\\": 5121
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7061 peer1.org1.com:7062\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7060,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
-          \\"fullAddress\\": \\"peer1.org1.com:7062\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
           \\"couchDbExposePort\\": 5121
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
           \\"fabloRest\\": {
-            \\"address\\": \\"fablo-rest.org1.com\\",
+            \\"address\\": \\"fablo-rest.org1.example.com\\",
             \\"mspId\\": \\"Org1MSP\\",
             \\"port\\": 8802,
-            \\"fabricCaUrl\\": \\"http://ca.org1.com:7054\\",
-            \\"fabricCaName\\": \\"ca.org1.com\\",
-            \\"discoveryUrls\\": \\"grpcs://peer0.org1.com:7061,grpcs://peer1.org1.com:7062,grpcs://peer0.org2.com:7081,grpcs://peer1.org2.com:7082\\",
+            \\"fabricCaUrl\\": \\"http://ca.org1.example.com:7054\\",
+            \\"fabricCaName\\": \\"ca.org1.example.com\\",
+            \\"discoveryUrls\\": \\"grpcs://peer0.org1.example.com:7061,grpcs://peer1.org1.example.com:7062,grpcs://peer0.org2.example.com:7081,grpcs://peer1.org2.example.com:7082\\",
             \\"discoverySslTargetNameOverrides\\": \\"\\",
-            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.com/peers/peer0.org1.com/tls/ca.crt,/crypto/org1.com/peers/peer1.org1.com/tls/ca.crt,/crypto/org2.com/peers/peer0.org2.com/tls/ca.crt,/crypto/org2.com/peers/peer1.org2.com/tls/ca.crt\\",
+            \\"discoveryTlsCaCertFiles\\": \\"/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt,/crypto/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt,/crypto/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt\\",
             \\"logging\\": {
               \\"error\\": \\"console\\",
               \\"warn\\": \\"console\\",
@@ -2132,48 +2132,48 @@ To update just run command:
       \\"orderers\\": [
         {
           \\"name\\": \\"orderer0.group1\\",
-          \\"address\\": \\"orderer0.group1.orderer.com\\",
-          \\"domain\\": \\"orderer.com\\",
+          \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
-          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
         }
       ],
       \\"ordererHeads\\": [
         {
           \\"name\\": \\"orderer0.group1\\",
-          \\"address\\": \\"orderer0.group1.orderer.com\\",
-          \\"domain\\": \\"orderer.com\\",
+          \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
-          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
         }
       ],
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
-        \\"address\\": \\"orderer0.group1.orderer.com\\",
-        \\"domain\\": \\"orderer.com\\",
+        \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+        \\"domain\\": \\"orderer.example.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7030,
-        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
       }
     }
   ],
   \\"orderedHeadsDistinct\\": [
     {
       \\"name\\": \\"orderer0.group1\\",
-      \\"address\\": \\"orderer0.group1.orderer.com\\",
-      \\"domain\\": \\"orderer.com\\",
+      \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+      \\"domain\\": \\"orderer.example.com\\",
       \\"consensus\\": \\"solo\\",
       \\"port\\": 7030,
-      \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+      \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
     }
   ],
   \\"orgs\\": [
     {
       \\"name\\": \\"Orderer\\",
       \\"mspName\\": \\"OrdererMSP\\",
-      \\"domain\\": \\"orderer.com\\",
+      \\"domain\\": \\"orderer.example.com\\",
       \\"cryptoConfigFileName\\": \\"crypto-config-orderer\\",
       \\"peersCount\\": 0,
       \\"peers\\": [],
@@ -2181,15 +2181,15 @@ To update just run command:
       \\"bootstrapPeers\\": \\"\\\\\\"\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
-        \\"address\\": \\"ca.orderer.com\\",
+        \\"address\\": \\"ca.orderer.example.com\\",
         \\"port\\": 7054,
         \\"exposePort\\": 7020,
-        \\"fullAddress\\": \\"ca.orderer.com:7054\\",
+        \\"fullAddress\\": \\"ca.orderer.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
         \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
       },
       \\"cli\\": {
-        \\"address\\": \\"cli.orderer.com\\"
+        \\"address\\": \\"cli.orderer.example.com\\"
       },
       \\"ordererGroups\\": [
         {
@@ -2204,21 +2204,21 @@ To update just run command:
           \\"orderers\\": [
             {
               \\"name\\": \\"orderer0.group1\\",
-              \\"address\\": \\"orderer0.group1.orderer.com\\",
-              \\"domain\\": \\"orderer.com\\",
+              \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+              \\"domain\\": \\"orderer.example.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7030,
-              \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+              \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
             }
           ],
           \\"ordererHeads\\": [
             {
               \\"name\\": \\"orderer0.group1\\",
-              \\"address\\": \\"orderer0.group1.orderer.com\\",
-              \\"domain\\": \\"orderer.com\\",
+              \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+              \\"domain\\": \\"orderer.example.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7030,
-              \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+              \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
             }
           ]
         }
@@ -2228,69 +2228,69 @@ To update just run command:
     {
       \\"name\\": \\"Org1\\",
       \\"mspName\\": \\"Org1MSP\\",
-      \\"domain\\": \\"org1.com\\",
+      \\"domain\\": \\"org1.example.com\\",
       \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
       \\"peersCount\\": 2,
       \\"peers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
-          \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
           \\"couchDbExposePort\\": 5100
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
-          \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
           \\"couchDbExposePort\\": 5101
         }
       ],
       \\"anchorPeers\\": [
         {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
-          \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
           \\"couchDbExposePort\\": 5100
         },
         {
           \\"name\\": \\"peer1\\",
-          \\"address\\": \\"peer1.org1.com\\",
+          \\"address\\": \\"peer1.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
-          \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+          \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
           \\"couchDbExposePort\\": 5101
         }
       ],
-      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7041 peer1.org1.com:7042\\\\\\"\\",
+      \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
       \\"ca\\": {
         \\"prefix\\": \\"ca\\",
-        \\"address\\": \\"ca.org1.com\\",
+        \\"address\\": \\"ca.org1.example.com\\",
         \\"port\\": 7054,
         \\"exposePort\\": 7040,
-        \\"fullAddress\\": \\"ca.org1.com:7054\\",
+        \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
         \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
       },
       \\"cli\\": {
-        \\"address\\": \\"cli.org1.com\\"
+        \\"address\\": \\"cli.org1.example.com\\"
       },
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
-        \\"address\\": \\"peer0.org1.com\\",
+        \\"address\\": \\"peer0.org1.example.com\\",
         \\"db\\": \\"LevelDb\\",
         \\"isAnchorPeer\\": true,
         \\"port\\": 7041,
-        \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+        \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
         \\"couchDbExposePort\\": 5100
       },
       \\"ordererGroups\\": [],
@@ -2305,69 +2305,69 @@ To update just run command:
         {
           \\"name\\": \\"Org1\\",
           \\"mspName\\": \\"Org1MSP\\",
-          \\"domain\\": \\"org1.com\\",
+          \\"domain\\": \\"org1.example.com\\",
           \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
           \\"peersCount\\": 2,
           \\"peers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
-              \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
               \\"couchDbExposePort\\": 5100
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
-              \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
               \\"couchDbExposePort\\": 5101
             }
           ],
           \\"anchorPeers\\": [
             {
               \\"name\\": \\"peer0\\",
-              \\"address\\": \\"peer0.org1.com\\",
+              \\"address\\": \\"peer0.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
-              \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+              \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
               \\"couchDbExposePort\\": 5100
             },
             {
               \\"name\\": \\"peer1\\",
-              \\"address\\": \\"peer1.org1.com\\",
+              \\"address\\": \\"peer1.org1.example.com\\",
               \\"db\\": \\"LevelDb\\",
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
-              \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+              \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
               \\"couchDbExposePort\\": 5101
             }
           ],
-          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7041 peer1.org1.com:7042\\\\\\"\\",
+          \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
           \\"ca\\": {
             \\"prefix\\": \\"ca\\",
-            \\"address\\": \\"ca.org1.com\\",
+            \\"address\\": \\"ca.org1.example.com\\",
             \\"port\\": 7054,
             \\"exposePort\\": 7040,
-            \\"fullAddress\\": \\"ca.org1.com:7054\\",
+            \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
             \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
           },
           \\"cli\\": {
-            \\"address\\": \\"cli.org1.com\\"
+            \\"address\\": \\"cli.org1.example.com\\"
           },
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
-            \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
             \\"couchDbExposePort\\": 5100
           },
           \\"ordererGroups\\": [],
@@ -2386,106 +2386,106 @@ To update just run command:
         \\"orderers\\": [
           {
             \\"name\\": \\"orderer0.group1\\",
-            \\"address\\": \\"orderer0.group1.orderer.com\\",
-            \\"domain\\": \\"orderer.com\\",
+            \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+            \\"domain\\": \\"orderer.example.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7030,
-            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+            \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
           }
         ],
         \\"ordererHeads\\": [
           {
             \\"name\\": \\"orderer0.group1\\",
-            \\"address\\": \\"orderer0.group1.orderer.com\\",
-            \\"domain\\": \\"orderer.com\\",
+            \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+            \\"domain\\": \\"orderer.example.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7030,
-            \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+            \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
           }
         ],
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
-          \\"address\\": \\"orderer0.group1.orderer.com\\",
-          \\"domain\\": \\"orderer.com\\",
+          \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
-          \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+          \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
         }
       },
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
-        \\"address\\": \\"orderer0.group1.orderer.com\\",
-        \\"domain\\": \\"orderer.com\\",
+        \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+        \\"domain\\": \\"orderer.example.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7030,
-        \\"fullAddress\\": \\"orderer0.group1.orderer.com:7030\\"
+        \\"fullAddress\\": \\"orderer0.group1.orderer.example.com:7030\\"
       },
       \\"instantiatingOrg\\": {
         \\"name\\": \\"Org1\\",
         \\"mspName\\": \\"Org1MSP\\",
-        \\"domain\\": \\"org1.com\\",
+        \\"domain\\": \\"org1.example.com\\",
         \\"cryptoConfigFileName\\": \\"crypto-config-org1\\",
         \\"peersCount\\": 2,
         \\"peers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
-            \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
             \\"couchDbExposePort\\": 5100
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
-            \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
             \\"couchDbExposePort\\": 5101
           }
         ],
         \\"anchorPeers\\": [
           {
             \\"name\\": \\"peer0\\",
-            \\"address\\": \\"peer0.org1.com\\",
+            \\"address\\": \\"peer0.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
-            \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+            \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
             \\"couchDbExposePort\\": 5100
           },
           {
             \\"name\\": \\"peer1\\",
-            \\"address\\": \\"peer1.org1.com\\",
+            \\"address\\": \\"peer1.org1.example.com\\",
             \\"db\\": \\"LevelDb\\",
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
-            \\"fullAddress\\": \\"peer1.org1.com:7042\\",
+            \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
             \\"couchDbExposePort\\": 5101
           }
         ],
-        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.com:7041 peer1.org1.com:7042\\\\\\"\\",
+        \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
         \\"ca\\": {
           \\"prefix\\": \\"ca\\",
-          \\"address\\": \\"ca.org1.com\\",
+          \\"address\\": \\"ca.org1.example.com\\",
           \\"port\\": 7054,
           \\"exposePort\\": 7040,
-          \\"fullAddress\\": \\"ca.org1.com:7054\\",
+          \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
           \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
         },
         \\"cli\\": {
-          \\"address\\": \\"cli.org1.com\\"
+          \\"address\\": \\"cli.org1.example.com\\"
         },
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
-          \\"address\\": \\"peer0.org1.com\\",
+          \\"address\\": \\"peer0.org1.example.com\\",
           \\"db\\": \\"LevelDb\\",
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
-          \\"fullAddress\\": \\"peer0.org1.com:7041\\",
+          \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
           \\"couchDbExposePort\\": 5100
         },
         \\"ordererGroups\\": [],
@@ -2512,7 +2512,7 @@ exports[`init should init simple fablo config 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Orderer\\",
-        \\"domain\\": \\"orderer.com\\"
+        \\"domain\\": \\"orderer.example.com\\"
       },
       \\"orderers\\": [
         {
@@ -2526,7 +2526,7 @@ exports[`init should init simple fablo config 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Org1\\",
-        \\"domain\\": \\"org1.com\\"
+        \\"domain\\": \\"org1.example.com\\"
       },
       \\"peer\\": {
         \\"instances\\": 2,
@@ -2564,7 +2564,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Orderer\\",
-        \\"domain\\": \\"orderer.com\\"
+        \\"domain\\": \\"orderer.example.com\\"
       },
       \\"orderers\\": [
         {
@@ -2578,7 +2578,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
     {
       \\"organization\\": {
         \\"name\\": \\"Org1\\",
-        \\"domain\\": \\"org1.com\\"
+        \\"domain\\": \\"org1.example.com\\"
       },
       \\"peer\\": {
         \\"instances\\": 2,
@@ -2624,7 +2624,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
     {
       \\"organization\\": {
         \\"name\\": \\"Orderer\\",
-        \\"domain\\": \\"orderer.com\\"
+        \\"domain\\": \\"orderer.example.com\\"
       },
       \\"orderers\\": [
         {
@@ -2640,7 +2640,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
     {
       \\"organization\\": {
         \\"name\\": \\"Org1\\",
-        \\"domain\\": \\"org1.com\\"
+        \\"domain\\": \\"org1.example.com\\"
       },
       \\"peer\\": {
         \\"instances\\": 2,
