@@ -41,7 +41,7 @@ To create a local Hyperledger Fabric network with Node.js chaincode and REST API
 ```
 
 After a few minutes the whole network will be set up and running.
-You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.com` container) or REST API client (via [Fablo REST](https://github.com/softwaremill/fablo-rest)).
+You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.example.com` container) or REST API client (via [Fablo REST](https://github.com/softwaremill/fablo-rest)).
 
 ## Basic usage
 
@@ -289,7 +289,7 @@ Example:
     {
       "organization": {
         "name": "Org1",
-        "domain": "org1.com"
+        "domain": "org1.example.com"
       },
       "peer": {
         "instances": 2,
@@ -424,12 +424,12 @@ orgs:
         instances: 1 
   - organization:
       name: Org1
-      domain: org1.com
+      domain: org1.example.com
     peer:
       instances: 2
   - organization:
       name: Org2
-      domain: org2.com
+      domain: org2.example.com
     peer:
       instances: 1
 channels:

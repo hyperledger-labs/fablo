@@ -48,10 +48,10 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 networkUp
 
 # check if all nodes are ready
-waitForContainer "orderer0.group1.orderer.com" "Starting Raft node channel=my-channel1"
-waitForContainer "ca.org1.com" "Listening on http://0.0.0.0:7054"
-waitForContainer "peer0.org1.com" "Joining gossip network of channel my-channel1 with 1 organizations"
-waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1" "0.0.1"
+waitForContainer "orderer0.group1.orderer.example.com" "Starting Raft node channel=my-channel1"
+waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
+waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"
 snapshot_name="fablo-snapshot-$(date -u +"%Y%m%d%H%M%S")"
@@ -103,7 +103,7 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "$FABLO_HOME/fablo.sh" restore "$snapshot_name" &&
   "$FABLO_HOME/fablo.sh" start
 )
-waitForChaincode "cli.org1.com" "peer0.org1.com:7041" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
 
 sleep 5
 

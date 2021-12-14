@@ -7,7 +7,7 @@ networkSettings:
 orgs:
   - organization:
       name: Orderer
-      domain: orderer.com
+      domain: orderer.example.com
     orderers:
       - groupName: group1
         prefix: orderer
@@ -15,12 +15,12 @@ orgs:
         instances: 1
   - organization:
       name: Org1
-      domain: org1.com
+      domain: org1.example.com
     peer:
       instances: 2
   - organization:
       name: Org2
-      domain: org2.com
+      domain: org2.example.com
     peer:
       instances: 1
 channels:
