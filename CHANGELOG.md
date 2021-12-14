@@ -3,6 +3,7 @@
 ### Features
 * Generate connection profiles for Node and Java gateways
 * Create a full network state snapshot in tag.gz file and restore it
+* Add [Hyperledger Explorer](https://github.com/hyperledger/blockchain-explorer) support
 
 ### Fixes
 

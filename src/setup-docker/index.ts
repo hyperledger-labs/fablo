@@ -6,13 +6,14 @@ import parseFabloConfig from "../utils/parseFabloConfig";
 import {
   Capabilities,
   ChaincodeConfig,
+  ChannelConfig,
   FabloConfigExtended,
   HooksConfig,
   NetworkSettings,
   OrgConfig,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
-import { createConnectionProfile } from "../types/ConnectionProfile";
+import { createConnectionProfile, createHyperledgerExplorerConnectionProfile } from "../types/ConnectionProfile";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -33,7 +34,7 @@ export default class SetupDockerGenerator extends Generator {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const config = extendConfig(json);
-    const { networkSettings, orgs, chaincodes } = config;
+    const { networkSettings, orgs, chaincodes, channels } = config;
 
     const dateString = new Date()
       .toISOString()
@@ -48,6 +49,7 @@ export default class SetupDockerGenerator extends Generator {
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
     this._createConnectionProfiles(networkSettings, orgs);
+    this._createHyperledgerExplorerMaterial(networkSettings, orgs, channels);
     this._copyConfigTx(config);
     this._copyGitIgnore();
     this._createPrivateDataCollectionConfigs(chaincodes);
@@ -96,14 +98,41 @@ export default class SetupDockerGenerator extends Generator {
     orgsTransformed.forEach((org: OrgConfig) => {
       const connectionProfile = createConnectionProfile(networkSettings, org, orgsTransformed);
       this.fs.writeJSON(
-        this.destinationPath(`fabric-config/connection-profile-${org.name.toLowerCase()}.json`),
+        this.destinationPath(`fabric-config/connection-profiles/connection-profile-${org.name.toLowerCase()}.json`),
         connectionProfile,
       );
       this.fs.write(
-        this.destinationPath(`fabric-config/connection-profile-${org.name.toLowerCase()}.yaml`),
+        this.destinationPath(`fabric-config/connection-profiles/connection-profile-${org.name.toLowerCase()}.yaml`),
         yaml.dump(connectionProfile),
       );
     });
+  }
+
+  _createHyperledgerExplorerMaterial(
+    networkSettings: NetworkSettings,
+    orgsTransformed: OrgConfig[],
+    channels: ChannelConfig[],
+  ): void {
+    orgsTransformed
+      .filter((o) => o.tools.hyperledgerExplorer !== undefined)
+      .forEach((org: OrgConfig) => {
+        const connectionProfile = createHyperledgerExplorerConnectionProfile(
+          networkSettings,
+          org,
+          orgsTransformed,
+          channels,
+        );
+        const orgName = org.name.toLowerCase();
+        this.fs.writeJSON(
+          this.destinationPath(`fabric-config/explorer/connection-profile-${orgName}.json`),
+          connectionProfile,
+        );
+        this.fs.copyTpl(
+          this.templatePath("fabric-config/explorer/config.json"),
+          this.destinationPath(`fabric-config/explorer/config-${orgName}.json`),
+          { orgName },
+        );
+      });
   }
 
   _copyDockerComposeEnv(
@@ -120,6 +149,7 @@ export default class SetupDockerGenerator extends Generator {
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.1.0",
+      hyperledgerExplorerVersion: "1.1.8",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
