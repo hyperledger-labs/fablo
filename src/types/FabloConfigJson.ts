@@ -1,7 +1,8 @@
-export interface NetworkSettingsJson {
+export interface GlobalJson {
   fabricVersion: string;
   tls: boolean;
   monitoring?: { loglevel: string };
+  tools?: { explorer?: boolean };
 }
 
 export interface OrganizationDetailsJson {
@@ -65,7 +66,7 @@ export interface HooksJson {
 
 export interface FabloConfigJson {
   $schema: string;
-  global: NetworkSettingsJson;
+  global: GlobalJson;
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];

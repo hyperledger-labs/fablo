@@ -1,4 +1,4 @@
-import { ChannelConfig, NetworkSettings, OrgConfig, PeerConfig } from "./FabloConfigExtended";
+import { ChannelConfig, Global, OrgConfig, PeerConfig } from "./FabloConfigExtended";
 
 interface BaseConnectionProfile {
   name: string;
@@ -44,13 +44,13 @@ interface HttpOptions {
   verify: boolean;
 }
 
-interface HyperledgerExplorerConnectionProfile extends BaseConnectionProfile {
-  client: HyperledgerExplorerClient;
-  organizations: { [key: string]: HyperledgerExplorerOrganization };
+interface ExplorerConnectionProfile extends BaseConnectionProfile {
+  client: ExplorerClient;
+  organizations: { [key: string]: ExplorerOrganization };
   channels: { [name: string]: Channel };
 }
 
-interface HyperledgerExplorerClient extends Client {
+interface ExplorerClient extends Client {
   tlsEnable: boolean;
   adminCredential: {
     id: string;
@@ -67,7 +67,7 @@ interface HyperledgerExplorerClient extends Client {
   };
 }
 
-interface HyperledgerExplorerOrganization {
+interface ExplorerOrganization {
   mspid: string;
   peers: Array<string>;
   adminPrivateKey: {
@@ -164,7 +164,7 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   return cs;
 }
 
-export function createConnectionProfile(global: NetworkSettings, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
+export function createConnectionProfile(global: Global, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
   const rootPath = `${global.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
   const peers = createPeers(org.name, false, global.tls, rootPath, orgs);
   return {
@@ -186,12 +186,12 @@ export function createConnectionProfile(global: NetworkSettings, org: OrgConfig,
   };
 }
 
-export function createHyperledgerExplorerConnectionProfile(
-  global: NetworkSettings,
+export function createExplorerConnectionProfile(
+  global: Global,
   org: OrgConfig,
   orgs: OrgConfig[],
   channels: ChannelConfig[],
-): HyperledgerExplorerConnectionProfile {
+): ExplorerConnectionProfile {
   const rootPath = "/tmp/crypto";
   const peers = createPeers(org.name, true, global.tls, rootPath, orgs);
   return {

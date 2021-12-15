@@ -5,6 +5,9 @@ export default {
     monitoring: {
       loglevel: "info",
     },
+    tools: {
+      explorer: false,
+    },
   },
   organization: {
     mspName: (name: string): string => `${name}MSP`,

@@ -101,7 +101,7 @@ services:
       - basic
   <%_ } _%>
 
-  <%_ if (org.tools.explorer) { _%>
+  <%_ if (org.tools.explorer && !global.tools.explorer) { _%>
   db.<%= org.tools.explorer.address %>:
     image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.<%= org.tools.explorer.address %>
@@ -135,7 +135,7 @@ services:
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
       - ../fabric-config/explorer/config-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/config.json
-      - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile.json
+      - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile-<%= org.name.toLowerCase() %>.json
       - ../fabric-config/crypto-config:/tmp/crypto
     ports:
       - "<%= org.tools.explorer.port %>:8080"
@@ -255,3 +255,48 @@ services:
   <%_ } _%>
   <%_ }) _%>
 <%_ }) _%>
+
+  <%_ if (global.tools.explorer) { _%>
+  db.<%= global.tools.explorer.address %>:
+    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.<%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  <%= global.tools.explorer.address %>:
+    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: <%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_HOST=db.<%= global.tools.explorer.address %>
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - "<%= global.tools.explorer.port %>:8080"
+    depends_on:
+      db.<%= global.tools.explorer.address %>:
+        condition: service_healthy
+    networks:
+      - basic
+  <%_ } _%>

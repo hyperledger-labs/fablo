@@ -7,7 +7,7 @@ import {
   ChaincodeJson,
   ChannelJson,
   FabloConfigJson,
-  NetworkSettingsJson,
+  GlobalJson,
   OrdererJson,
   OrgJson,
 } from "../types/FabloConfigJson";
@@ -119,6 +119,7 @@ class ValidateGenerator extends Generator {
 
     const capabilities = getNetworkCapabilities(networkConfig.global.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
+    this._validateExplorer(networkConfig.global, networkConfig.orgs);
   }
 
   async shortSummary() {
@@ -248,7 +249,7 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, global: NetworkSettingsJson) {
+  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
     if (orderers !== undefined) {
       orderers
         .filter((o) => o.type === "raft")
@@ -425,6 +426,20 @@ class ValidateGenerator extends Generator {
         };
         this.emit(validationErrorType.WARN, objectToEmit);
       });
+  }
+
+  _validateExplorer(global: GlobalJson, orgs: OrgJson[]) {
+    if (global.tools?.explorer === true) {
+      orgs
+        .filter((o) => o.tools?.explorer === true)
+        .forEach((o) => {
+          const objectToEmit = {
+            category: validationCategories.ORGS,
+            message: `Explorer for organization '${o.organization.name}' is enabled, however it will be ignored due to global explorer enabled.`,
+          };
+          this.emit(validationErrorType.WARN, objectToEmit);
+        });
+    }
   }
 }
 

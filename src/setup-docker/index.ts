@@ -9,11 +9,12 @@ import {
   ChannelConfig,
   FabloConfigExtended,
   HooksConfig,
-  NetworkSettings,
+  Global,
   OrgConfig,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
-import { createConnectionProfile, createHyperledgerExplorerConnectionProfile } from "../types/ConnectionProfile";
+import { createConnectionProfile, createExplorerConnectionProfile } from "../types/ConnectionProfile";
+import { createExplorerConfig } from "../types/ExplorerConfig";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -94,7 +95,7 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createConnectionProfiles(global: NetworkSettings, orgsTransformed: OrgConfig[]): void {
+  _createConnectionProfiles(global: Global, orgsTransformed: OrgConfig[]): void {
     orgsTransformed.forEach((org: OrgConfig) => {
       const connectionProfile = createConnectionProfile(global, org, orgsTransformed);
       this.fs.writeJSON(
@@ -108,38 +109,28 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createHyperledgerExplorerMaterial(
-    global: NetworkSettings,
-    orgsTransformed: OrgConfig[],
-    channels: ChannelConfig[],
-  ): void {
-    orgsTransformed
-      .filter((o) => o.tools.explorer !== undefined)
+  _createHyperledgerExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): void {
+    const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
+
+    orgs
+      .filter((o) => global.tools.explorer !== undefined || o.tools.explorer !== undefined)
       .forEach((org: OrgConfig) => {
-        const connectionProfile = createHyperledgerExplorerConnectionProfile(
-          global,
-          org,
-          orgsTransformed,
-          channels,
-        );
+        const connectionProfile = createExplorerConnectionProfile(global, org, orgsTransformed, channels);
         const orgName = org.name.toLowerCase();
         this.fs.writeJSON(
           this.destinationPath(`fabric-config/explorer/connection-profile-${orgName}.json`),
           connectionProfile,
         );
-        this.fs.copyTpl(
-          this.templatePath("fabric-config/explorer/config.json"),
+        this.fs.writeJSON(
           this.destinationPath(`fabric-config/explorer/config-${orgName}.json`),
-          { orgName },
+          createExplorerConfig([org]),
         );
       });
+
+    this.fs.writeJSON(this.destinationPath("fabric-config/explorer/config-global.json"), createExplorerConfig(orgs));
   }
 
-  _copyDockerComposeEnv(
-    global: NetworkSettings,
-    orgsTransformed: OrgConfig[],
-    composeNetworkName: string,
-  ): void {
+  _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): void {
     const settings = {
       composeNetworkName,
       fabricCaVersion: global.fabricCaVersion,

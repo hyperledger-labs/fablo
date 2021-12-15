@@ -22,11 +22,12 @@ interface CapabilitiesV2 {
 
 export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
 
-export interface NetworkSettings extends FabricVersions {
+export interface Global extends FabricVersions {
   tls: boolean;
   monitoring: { loglevel: string };
   paths: { fabloConfig: string; chaincodesBaseDir: string };
   capabilities: Capabilities;
+  tools: { explorer?: ExplorerConfig };
 }
 
 export interface OrdererConfig {
@@ -99,7 +100,7 @@ export interface FabloRestConfig {
   logging: FabloRestLoggingConfig;
 }
 
-export interface HyperledgerExplorerConfig {
+export interface ExplorerConfig {
   address: string;
   port: number;
 }
@@ -117,7 +118,7 @@ export interface OrgConfig {
   peers: PeerConfig[];
   peersCount: number;
   ordererGroups: OrdererGroup[];
-  tools: { fabloRest?: FabloRestConfig; explorer?: HyperledgerExplorerConfig };
+  tools: { fabloRest?: FabloRestConfig; explorer?: ExplorerConfig };
 }
 
 export interface ChaincodeConfig {
@@ -150,7 +151,7 @@ export interface HooksConfig {
 }
 
 export interface FabloConfigExtended {
-  global: NetworkSettings;
+  global: Global;
   ordererGroups: OrdererGroup[];
   orderedHeadsDistinct: OrdererConfig[];
   orgs: OrgConfig[];

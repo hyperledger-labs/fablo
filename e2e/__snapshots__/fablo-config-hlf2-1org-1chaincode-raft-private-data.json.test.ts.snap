@@ -373,6 +373,19 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+"{
+  \\"network-configs\\": {
+    \\"network-org1\\": {
+      \\"name\\": \\"Network of Org1\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json\\"
+    }
+  },
+  \\"license\\": \\"Apache-2.0\\"
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
 "#!/usr/bin/env bash
 
@@ -1946,6 +1959,7 @@ Array [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/.env",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
