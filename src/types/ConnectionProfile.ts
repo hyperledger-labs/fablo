@@ -1,12 +1,15 @@
-import { NetworkSettings, OrgConfig, PeerConfig } from "./FabloConfigExtended";
+import { ChannelConfig, NetworkSettings, OrgConfig, PeerConfig } from "./FabloConfigExtended";
 
-interface ConnectionProfile {
+interface BaseConnectionProfile {
   name: string;
   description: string;
   version: string;
+  peers: { [key: string]: Peer };
+}
+
+interface ConnectionProfile extends BaseConnectionProfile {
   client: Client;
   organizations: { [key: string]: Organization };
-  peers: { [key: string]: Peer };
   certificateAuthorities: { [key: string]: CertificateAuthority };
 }
 
@@ -41,26 +44,82 @@ interface HttpOptions {
   verify: boolean;
 }
 
-function createPeers(isTls: boolean, rootPath: string, orgs: OrgConfig[]): { [key: string]: Peer } {
+interface HyperledgerExplorerConnectionProfile extends BaseConnectionProfile {
+  client: HyperledgerExplorerClient;
+  organizations: { [key: string]: HyperledgerExplorerOrganization };
+  channels: { [name: string]: Channel };
+}
+
+interface HyperledgerExplorerClient extends Client {
+  tlsEnable: boolean;
+  adminCredential: {
+    id: string;
+    password: string;
+  };
+  enableAuthentication: boolean;
+  connection: {
+    timeout: {
+      peer: {
+        endorser: string;
+      };
+      orderer: string;
+    };
+  };
+}
+
+interface HyperledgerExplorerOrganization {
+  mspid: string;
+  peers: Array<string>;
+  adminPrivateKey: {
+    path: string;
+  };
+  signedCert: {
+    path: string;
+  };
+}
+
+interface Channel {
+  peers: { [address: string]: unknown };
+}
+
+function createPeers(
+  orgName: string,
+  isExplorer: boolean,
+  isTls: boolean,
+  rootPath: string,
+  orgs: OrgConfig[],
+): { [key: string]: Peer } {
   const peers: { [key: string]: Peer } = {};
   orgs.forEach((o: OrgConfig) => {
-    o.anchorPeers.forEach((p: PeerConfig) => {
-      if (isTls) {
-        peers[p.address] = {
-          url: `grpcs://localhost:${p.port}`,
-          tlsCACerts: {
-            path: `${rootPath}/fablo-target/fabric-config/crypto-config/peerOrganizations/${o.domain}/peers/${p.address}/tls/ca.crt`,
-          },
-          grpcOptions: {
-            "ssl-target-name-override": p.address,
-          },
-        };
-      } else {
-        peers[p.address] = {
-          url: `grpc://localhost:${p.port}`,
-        };
-      }
-    });
+    if ((orgName === o.name && isExplorer) || !isExplorer) {
+      o.anchorPeers.forEach((p: PeerConfig) => {
+        const tlsCACertsExplorerPath = `${rootPath}/peerOrganizations/${o.domain}/msp/tlscacerts/tlsca.${o.domain}-cert.pem`;
+        if (isTls) {
+          peers[p.address] = {
+            url: isExplorer ? `grpcs://${p.fullAddress}` : `grpcs://localhost:${p.port}`,
+            tlsCACerts: {
+              path: isExplorer
+                ? tlsCACertsExplorerPath
+                : `${rootPath}/peerOrganizations/${o.domain}/peers/${p.address}/tls/ca.crt`,
+            },
+          };
+          if (!isExplorer) {
+            peers[p.address]["grpcOptions"] = {
+              "ssl-target-name-override": p.address,
+            };
+          }
+        } else {
+          peers[p.address] = {
+            url: isExplorer ? `grpc://${p.fullAddress}` : `grpc://localhost:${p.port}`,
+          };
+          if (isExplorer) {
+            peers[p.address]["tlsCACerts"] = {
+              path: tlsCACertsExplorerPath,
+            };
+          }
+        }
+      });
+    }
   });
   return peers;
 }
@@ -76,7 +135,7 @@ function certificateAuthorities(
         url: `http://localhost:${org.ca.exposePort}`,
         caName: org.ca.address,
         tlsCACerts: {
-          path: `${rootPath}/fablo-target/fabric-config/crypto-config/peerOrganizations/${org.domain}/ca/${org.ca.address}-cert.pem`,
+          path: `${rootPath}/peerOrganizations/${org.domain}/ca/${org.ca.address}-cert.pem`,
         },
         httpOptions: {
           verify: false,
@@ -95,13 +154,23 @@ function certificateAuthorities(
   };
 }
 
+function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: string]: Channel } {
+  const cs: { [name: string]: Channel } = {};
+  channels
+    .filter((c) => c.orgs.map((o) => o.name).indexOf(org.name) > -1)
+    .forEach((channel) => {
+      cs[channel.name] = { peers: {} };
+    });
+  return cs;
+}
+
 export function createConnectionProfile(
   networkSettings: NetworkSettings,
   org: OrgConfig,
   orgs: OrgConfig[],
 ): ConnectionProfile {
-  const rootPath = networkSettings.paths.chaincodesBaseDir;
-  const peers = createPeers(networkSettings.tls, rootPath, orgs);
+  const rootPath = `${networkSettings.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
+  const peers = createPeers(org.name, false, networkSettings.tls, rootPath, orgs);
   return {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for ${org.name} in Fablo network`,
@@ -118,5 +187,51 @@ export function createConnectionProfile(
     },
     peers: peers,
     certificateAuthorities: certificateAuthorities(networkSettings.tls, rootPath, org),
+  };
+}
+
+export function createHyperledgerExplorerConnectionProfile(
+  networkSettings: NetworkSettings,
+  org: OrgConfig,
+  orgs: OrgConfig[],
+  channels: ChannelConfig[],
+): HyperledgerExplorerConnectionProfile {
+  const rootPath = "/tmp/crypto";
+  const peers = createPeers(org.name, true, networkSettings.tls, rootPath, orgs);
+  return {
+    name: `fablo-test-network-${org.name.toLowerCase()}`,
+    description: `Connection profile for Hyperledger Explorer in Fablo network`,
+    version: "1.0.0",
+    client: {
+      organization: org.name,
+      tlsEnable: networkSettings.tls,
+      enableAuthentication: true,
+      adminCredential: {
+        id: "admin",
+        password: "adminpw",
+      },
+      connection: {
+        timeout: {
+          peer: {
+            endorser: "300",
+          },
+          orderer: "300",
+        },
+      },
+    },
+    organizations: {
+      [org.name]: {
+        mspid: org.mspName,
+        adminPrivateKey: {
+          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/keystore/priv-key.pem`,
+        },
+        peers: Object.keys(peers),
+        signedCert: {
+          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/signcerts/Admin@${org.domain}-cert.pem`,
+        },
+      },
+    },
+    peers: peers,
+    channels: createChannels(org, channels),
   };
 }

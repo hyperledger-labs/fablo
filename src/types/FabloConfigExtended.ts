@@ -99,6 +99,11 @@ export interface FabloRestConfig {
   logging: FabloRestLoggingConfig;
 }
 
+export interface HyperledgerExplorerConfig {
+  address: string;
+  port: number;
+}
+
 export interface OrgConfig {
   anchorPeers: PeerConfig[];
   bootstrapPeers: string;
@@ -112,7 +117,7 @@ export interface OrgConfig {
   peers: PeerConfig[];
   peersCount: number;
   ordererGroups: OrdererGroup[];
-  tools: { fabloRest?: FabloRestConfig };
+  tools: { fabloRest?: FabloRestConfig; hyperledgerExplorer?: HyperledgerExplorerConfig };
 }
 
 export interface ChaincodeConfig {

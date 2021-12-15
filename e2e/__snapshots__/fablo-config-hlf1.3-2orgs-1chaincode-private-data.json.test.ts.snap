@@ -231,7 +231,7 @@ Profiles:
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "{
   \\"name\\": \\"fablo-test-network-orderer\\",
   \\"description\\": \\"Connection profile for Orderer in Fablo network\\",
@@ -276,7 +276,7 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "name: fablo-test-network-orderer
 description: Connection profile for Orderer in Fablo network
 version: 1.0.0
@@ -307,7 +307,7 @@ certificateAuthorities:
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "{
   \\"name\\": \\"fablo-test-network-org1\\",
   \\"description\\": \\"Connection profile for Org1 in Fablo network\\",
@@ -352,7 +352,7 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "name: fablo-test-network-org1
 description: Connection profile for Org1 in Fablo network
 version: 1.0.0
@@ -383,7 +383,7 @@ certificateAuthorities:
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org2.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org2.json from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "{
   \\"name\\": \\"fablo-test-network-org2\\",
   \\"description\\": \\"Connection profile for Org2 in Fablo network\\",
@@ -428,7 +428,7 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
 "
 `;
 
-exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org2.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org2.yaml from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "name: fablo-test-network-org2
 description: Connection profile for Org2 in Fablo network
 version: 1.0.0
@@ -560,6 +560,7 @@ exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should c
 "FABLO_VERSION=\\"0.3.0\\"
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=\\"0.1.0\\"
+HYPERLEDGER_EXPLORER_VERSION=\\"1.1.8\\"
 
 FABLO_CONFIG=<absolute path>
 CHAINCODES_BASE_DIR=<absolute path>
@@ -2157,12 +2158,12 @@ Array [
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/collections/chaincode1.json",
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.json",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-orderer.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.json",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org2.json",
-  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profile-org2.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org2.json",
+  "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org2.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org2.yaml",

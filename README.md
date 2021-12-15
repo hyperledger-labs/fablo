@@ -9,6 +9,7 @@ Fablo supports:
 * Multiple organizations and channels
 * Chaincode installation and upgrade
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/softwaremill/fablo-rest))
+* [Hyperledger Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
 ## See it in action
 
@@ -425,6 +426,9 @@ orgs:
   - organization:
       name: Org1
       domain: org1.example.com
+      tools:
+        fabloRest: true
+        hyperledgerExplorer: true
     peer:
       instances: 2
   - organization:
@@ -458,4 +462,4 @@ chaincodes:
 
 ### Connection profiles
 
-Fablo will generate the connection profiles for each organization defined in the configuration. You can find them in `fablo-target/fablo-config` directory in `json` and `yaml` format.
+Fablo will generate the connection profiles for each organization defined in the configuration. You can find them in `fablo-target/fablo-config/connection-profiles` directory in `json` and `yaml` format.

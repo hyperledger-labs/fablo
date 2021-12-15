@@ -33,7 +33,7 @@ export interface OrgJson {
   ca: CAJson;
   orderers: OrdererJson[] | undefined;
   peer?: PeerJson;
-  tools?: { fabloRest?: boolean };
+  tools?: { fabloRest?: boolean; hyperledgerExplorer?: boolean };
 }
 
 export interface ChannelJson {
