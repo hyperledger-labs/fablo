@@ -120,6 +120,7 @@ class ValidateGenerator extends Generator {
     const capabilities = getNetworkCapabilities(networkConfig.global.fabricVersion);
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
+    this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
   }
 
   async shortSummary() {
@@ -428,7 +429,7 @@ class ValidateGenerator extends Generator {
       });
   }
 
-  _validateExplorer(global: GlobalJson, orgs: OrgJson[]) {
+  _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
     if (global.tools?.explorer === true) {
       orgs
         .filter((o) => o.tools?.explorer === true)
@@ -439,6 +440,23 @@ class ValidateGenerator extends Generator {
           };
           this.emit(validationErrorType.WARN, objectToEmit);
         });
+    }
+  }
+
+  _validateExplorerWithFabricVersion(global: GlobalJson, orgs: OrgJson[]): void {
+    const version: number[] = global.fabricVersion.split(".").map((n) => parseInt(n));
+
+    if ((version[0] === 1 && version[1] <= 3) || (version[0] === 2 && version[1] >= 4)) {
+      const warnMessage = `You are using fabric version '${global.fabricVersion}' which may not be supported by the Hyperledger Explorer`;
+      if (global.tools?.explorer === true) {
+        this.emit(validationErrorType.WARN, { category: validationCategories.GENERAL, message: warnMessage });
+      } else {
+        orgs
+          .filter((o) => o.tools?.explorer === true)
+          .forEach(() => {
+            this.emit(validationErrorType.WARN, { category: validationCategories.ORGS, message: warnMessage });
+          });
+      }
     }
   }
 }
