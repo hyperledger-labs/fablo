@@ -1,4 +1,4 @@
-![Github Actions](https://github.com/softwaremill/fablo/actions/workflows/test.yml/badge.svg?branch=main)
+![Github Actions](https://github.com/hyperledger-labs/fablo/actions/workflows/test.yml/badge.svg?branch=main)
 
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
@@ -23,13 +23,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/softwaremill/fablo/releases/download/0.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/softwaremill/fablo/releases/download/0.3.0/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
@@ -55,7 +55,7 @@ In this case network configuration is saved in `$(pwd)/fablo-target`.
 Then you can manage the network with other commands, for example `stop`, `start`, `down`, `prune`.
 
 Provided Fablo configuration file describes network topology: root organization, other organizations, channels and chaincodes.
-See the [samples](https://github.com/softwaremill/fablo/blob/main/samples/) or [Fablo config](https://github.com/softwaremill/fablo#fablo-config) section.
+See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) or [Fablo config](https://github.com/hyperledger-labs/fablo#fablo-config) section.
 
 There are two basic use cases.
 You may use Fablo to start and manage the network for development purposes, test different network topologies, run it in CI environment etc.
@@ -253,13 +253,13 @@ Switches current script to selected version.
 Fablo config is a single JSON or YAML file that describes desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
 It has to be compatible with the [schema].
 You may generate a basic config with `./fablo init` command.
-See the [samples](https://github.com/softwaremill/fablo/blob/main/samples/) directory for more complex examples.
+See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) directory for more complex examples.
 
 The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json",
   "networkSettings": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -410,7 +410,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json
 networkSettings:
   fabricVersion: 2.3.0
   tls: false
