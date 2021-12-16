@@ -150,6 +150,7 @@ export default class SetupDockerGenerator extends Generator {
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.1.0",
       hyperledgerExplorerVersion: "1.1.8",
+      fabricCaPostgresVersion: "14",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }
