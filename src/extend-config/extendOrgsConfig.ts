@@ -19,17 +19,19 @@ const extendCaConfig = (
   orgDomainJsonFormat: string,
   caExposePort: number,
 ): CAConfig => {
-  const ca = caJsonFormat || defaults.ca;
-  const address = `${ca.prefix}.${orgDomainJsonFormat}`;
+  const caPrefix = caJsonFormat?.prefix || defaults.ca.prefix;
+  const caDb = caJsonFormat?.db || defaults.ca.db;
+  const address = `${caPrefix}.${orgDomainJsonFormat}`;
   const port = 7054;
   return {
-    prefix: ca.prefix,
+    prefix: caPrefix,
     address,
     port,
     exposePort: caExposePort,
     fullAddress: `${address}:${port}`,
     caAdminNameVar: `${orgName.toUpperCase()}_CA_ADMIN_NAME`,
     caAdminPassVar: `${orgName.toUpperCase()}_CA_ADMIN_PASSWORD`,
+    db: caDb,
   };
 };
 
