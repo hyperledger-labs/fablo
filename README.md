@@ -9,7 +9,7 @@ Fablo supports:
 * Multiple organizations and channels
 * Chaincode installation and upgrade
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/softwaremill/fablo-rest))
-* [Hyperledger Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
+* [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
 ## See it in action
 
@@ -314,7 +314,7 @@ The other available parameters for entries in `orgs` array are:
  * `peer.anchorPeerInstances` (default: `1`)
  * `orderers` (defaults to empty: [])  
  
-###property `peer.db`:  
+### property `peer.db`:  
 - may be `LevelDb` (default) or `CouchDb`.  
 
 ###property `orderers`:  
@@ -460,6 +460,13 @@ chaincodes:
           - Org1
 ```
 
+## Other features
+
 ### Connection profiles
 
-Fablo will generate the connection profiles for each organization defined in the configuration. You can find them in `fablo-target/fablo-config/connection-profiles` directory in `json` and `yaml` format.
+Fablo will generate the connection profiles for each organization defined in the configuration.
+You can find them in `fablo-target/fablo-config/connection-profiles` directory in `json` and `yaml` format.
+
+## Testimonials
+
+Fablo was originally created at [SoftwareMill](https://softwaremill.com).
