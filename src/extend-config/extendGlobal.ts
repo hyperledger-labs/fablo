@@ -50,21 +50,19 @@ const getPathsFromEnv = () => ({
   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
 });
 
-const extendGlobal = (networkSettingsJson: GlobalJson): Global => {
+const extendGlobal = (globalJson: GlobalJson): Global => {
   const monitoring = {
-    loglevel: networkSettingsJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
+    loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
-  const tools = {
-    explorer: networkSettingsJson?.tools?.explorer ? { address: "explorer.example.com", port: 7010 } : undefined,
-  };
+  const explorer = !globalJson?.tools?.explorer ? {} : { explorer: { address: "explorer.example.com", port: 7010 } };
 
   return {
-    ...networkSettingsJson,
-    ...getVersions(networkSettingsJson.fabricVersion),
+    ...globalJson,
+    ...getVersions(globalJson.fabricVersion),
     paths: getPathsFromEnv(),
     monitoring,
-    capabilities: getNetworkCapabilities(networkSettingsJson.fabricVersion),
-    tools,
+    capabilities: getNetworkCapabilities(globalJson.fabricVersion),
+    tools: { ...explorer },
   };
 };
 

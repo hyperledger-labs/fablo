@@ -14,6 +14,7 @@ import {
 import * as _ from "lodash";
 import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
+import {version} from "../repositoryUtils";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 const findDuplicatedItems = (arr: any[]) => arr.filter((item, index) => arr.indexOf(item) != index);
@@ -444,9 +445,8 @@ class ValidateGenerator extends Generator {
   }
 
   _validateExplorerWithFabricVersion(global: GlobalJson, orgs: OrgJson[]): void {
-    const version: number[] = global.fabricVersion.split(".").map((n) => parseInt(n));
-
-    if ((version[0] === 1 && version[1] <= 3) || (version[0] === 2 && version[1] >= 4)) {
+    const fabricVersion = global.fabricVersion;
+    if (!version(fabricVersion).isGreaterOrEqual("1.4.0") || version(fabricVersion).isGreaterOrEqual("2.4.0")) {
       const warnMessage = `You are using fabric version '${global.fabricVersion}' which may not be supported by the Hyperledger Explorer`;
       if (global.tools?.explorer === true) {
         this.emit(validationErrorType.WARN, { category: validationCategories.GENERAL, message: warnMessage });
