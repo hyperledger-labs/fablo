@@ -9,14 +9,14 @@ import { distinctOrdererHeads, mergeOrdererGroups } from "./mergeOrdererGroups";
 
 const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
-    global: networkSettingsJson,
+    global: globalJson,
     orgs: orgsJson,
     channels: channelsJson,
     chaincodes: chaincodesJson,
     hooks: hooksJson,
   } = json;
 
-  const global = extendGlobal(networkSettingsJson);
+  const global = extendGlobal(globalJson);
   const orgs = extendOrgsConfig(orgsJson, global);
   const ordererGroups = mergeOrdererGroups(orgs);
   const orderedHeadsDistinct = distinctOrdererHeads(ordererGroups);
