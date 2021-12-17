@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -53,7 +53,7 @@ jobs:
         run: npm run lint && ./lint.sh
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -89,7 +89,7 @@ jobs:
             e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -125,7 +125,7 @@ jobs:
             e2e-network/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -161,7 +161,7 @@ jobs:
             e2e-network/test-04-snapshot.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -193,7 +193,7 @@ jobs:
             npm run test
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
