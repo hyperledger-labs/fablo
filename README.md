@@ -3,6 +3,7 @@
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
 Fablo supports:
+Just gateway tests!!! Don't merge me please...
 
 * Environment: Docker
 * RAFT and solo consensus protocols
