@@ -4,7 +4,7 @@ interface BaseConnectionProfile {
   name: string;
   description: string;
   version: string;
-  peers: { [key: string]: Peer };
+  peers: { [address: string]: Peer };
 }
 
 interface ConnectionProfile extends BaseConnectionProfile {
@@ -80,6 +80,29 @@ interface ExplorerOrganization {
 
 interface Channel {
   peers: { [address: string]: unknown };
+}
+
+export interface OrgWithChannels {
+  org: OrgConfig;
+  channels: ChannelConfig[];
+}
+
+export function pairOrgWithChannels(orgs: OrgConfig[], channels: ChannelConfig[]): OrgWithChannels[] {
+  const channelsByOrg: Map<string, ChannelConfig[]> = new Map();
+
+  channels.forEach((c) => {
+    c.orgs.forEach((o) => {
+      const current = channelsByOrg.get(o.name);
+      channelsByOrg.set(o.name, current !== undefined ? current.concat(c) : [c]);
+    });
+  });
+
+  return orgs
+    .map((o) => {
+      const c = channelsByOrg.get(o.name);
+      return { org: o, channels: c !== undefined ? c : [] };
+    })
+    .filter((p) => p.channels.length > 0);
 }
 
 function createPeers(
@@ -188,18 +211,17 @@ export function createConnectionProfile(global: Global, org: OrgConfig, orgs: Or
 
 export function createExplorerConnectionProfile(
   global: Global,
-  org: OrgConfig,
+  p: OrgWithChannels,
   orgs: OrgConfig[],
-  channels: ChannelConfig[],
 ): ExplorerConnectionProfile {
   const rootPath = "/tmp/crypto";
-  const peers = createPeers(org.name, true, global.tls, rootPath, orgs);
+  const peers = createPeers(p.org.name, true, global.tls, rootPath, orgs);
   return {
-    name: `fablo-test-network-${org.name.toLowerCase()}`,
+    name: `fablo-test-network-${p.org.name.toLowerCase()}`,
     description: `Connection profile for Hyperledger Explorer in Fablo network`,
     version: "1.0.0",
     client: {
-      organization: org.name,
+      organization: p.org.name,
       tlsEnable: global.tls,
       enableAuthentication: true,
       adminCredential: {
@@ -216,18 +238,18 @@ export function createExplorerConnectionProfile(
       },
     },
     organizations: {
-      [org.name]: {
-        mspid: org.mspName,
+      [p.org.name]: {
+        mspid: p.org.mspName,
         adminPrivateKey: {
-          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/keystore/priv-key.pem`,
+          path: `${rootPath}/peerOrganizations/${p.org.domain}/users/Admin@${p.org.domain}/msp/keystore/priv-key.pem`,
         },
         peers: Object.keys(peers),
         signedCert: {
-          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/signcerts/Admin@${org.domain}-cert.pem`,
+          path: `${rootPath}/peerOrganizations/${p.org.domain}/users/Admin@${p.org.domain}/msp/signcerts/Admin@${p.org.domain}-cert.pem`,
         },
       },
     },
     peers: peers,
-    channels: createChannels(org, channels),
+    channels: createChannels(p.org, p.channels),
   };
 }
