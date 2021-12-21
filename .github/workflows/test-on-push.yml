@@ -1,11 +1,17 @@
 name: Tests
-on: [ push ]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   test-main:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -47,7 +53,7 @@ jobs:
         run: npm run lint && ./lint.sh
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -83,7 +89,7 @@ jobs:
             e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -119,7 +125,7 @@ jobs:
             e2e-network/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -155,7 +161,7 @@ jobs:
             e2e-network/test-04-snapshot.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -187,7 +193,7 @@ jobs:
             npm run test
 
       - name: Send Slack notification
-        if: always()
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
@@ -196,22 +202,3 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
-
-  test-dco-sign-off:
-    needs: test-main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v1
-        with:
-          python-version: '3.x'
-
-      - name: Check DCO
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pip3 install -U dco-check && \
-            dco-check -b $(git branch --show-current) --default-branch main
