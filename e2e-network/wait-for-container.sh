@@ -2,6 +2,7 @@
 
 container="$1"
 expected_message="$2"
+max_attempts="${3:-90}"
 
 end='\e[0m'
 darkGray='\e[90m'
@@ -11,7 +12,7 @@ if [ -z "$expected_message" ]; then
   exit 1
 fi
 
-for i in $(seq 1 90); do
+for i in $(seq 1 $max_attempts); do
   echo "➜ verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
