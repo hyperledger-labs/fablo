@@ -503,6 +503,23 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 "
 `;
 
+exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
+"{
+  \\"network-configs\\": {
+    \\"network-org1\\": {
+      \\"name\\": \\"Network of Org1\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json\\"
+    },
+    \\"network-org2\\": {
+      \\"name\\": \\"Network of Org2\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org2.json\\"
+    }
+  },
+  \\"license\\": \\"Apache-2.0\\"
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml 1`] = `
 "#!/usr/bin/env bash
 
@@ -2221,6 +2238,7 @@ Array [
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org2.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker.sh",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/.env",
   "e2e/__tmp__/samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",

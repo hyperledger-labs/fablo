@@ -1,7 +1,7 @@
 import * as Generator from "yeoman-generator";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import extendConfig from "./extendConfig";
-import { getNetworkCapabilities } from "./extendNetworkSettings";
+import { getNetworkCapabilities } from "./extendGlobal";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 

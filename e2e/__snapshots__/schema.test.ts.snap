@@ -240,28 +240,13 @@ Object {
       "title": "Channels",
       "type": "array",
     },
-    "hooks": Object {
-      "$id": "#/properties/hooks",
-      "additionalProperties": false,
-      "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
-      "properties": Object {
-        "postGenerate": Object {
-          "$id": "#/properties/hooks/postGenerate",
-          "description": "Operation to run run after a network config is generated",
-          "title": "Post generate hook",
-          "type": "string",
-        },
-      },
-      "title": "Hooks",
-      "type": "object",
-    },
-    "networkSettings": Object {
-      "$id": "#/properties/networkSettings",
+    "global": Object {
+      "$id": "#/properties/global",
       "additionalProperties": false,
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
         "fabricVersion": Object {
-          "$id": "#/properties/networkSettings/properties/fabricVersion",
+          "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.0",
           "enum": Array [
             "1.3.0",
@@ -317,17 +302,45 @@ Object {
           "type": "object",
         },
         "tls": Object {
-          "$id": "#/properties/networkSettings/properties/tls",
+          "$id": "#/properties/global/properties/tls",
           "default": true,
           "title": "Use TLS",
           "type": "boolean",
+        },
+        "tools": Object {
+          "$id": "#/properties/global/properties/tools",
+          "properties": Object {
+            "explorer": Object {
+              "$id": "#/properties/global/properties/tools/properties/explorer",
+              "title": "Blockchain Explorer enabled",
+              "type": "boolean",
+            },
+          },
+          "required": Array [],
+          "title": "Tools",
+          "type": "object",
         },
       },
       "required": Array [
         "fabricVersion",
         "tls",
       ],
-      "title": "Network settings",
+      "title": "Global network settings",
+      "type": "object",
+    },
+    "hooks": Object {
+      "$id": "#/properties/hooks",
+      "additionalProperties": false,
+      "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
+      "properties": Object {
+        "postGenerate": Object {
+          "$id": "#/properties/hooks/postGenerate",
+          "description": "Operation to run run after a network config is generated",
+          "title": "Post generate hook",
+          "type": "string",
+        },
+      },
+      "title": "Hooks",
       "type": "object",
     },
     "orgs": Object {
@@ -514,14 +527,14 @@ Object {
             "$id": "#/properties/orgs/items/properties/tools",
             "additionalProperties": false,
             "properties": Object {
+              "explorer": Object {
+                "$id": "#/properties/orgs/items/properties/tools/properties/explorer",
+                "title": "Blockchain Explorer enabled",
+                "type": "boolean",
+              },
               "fabloRest": Object {
                 "$id": "#/properties/orgs/items/properties/tools/properties/fabloRest",
                 "title": "Fablo REST enabled",
-                "type": "boolean",
-              },
-              "hyperledgerExplorer": Object {
-                "$id": "#/properties/orgs/items/properties/tools/properties/hyperledgerExplorer",
-                "title": "Hyperledger Explorer enabled",
                 "type": "boolean",
               },
             },
@@ -541,7 +554,7 @@ Object {
     },
   },
   "required": Array [
-    "networkSettings",
+    "global",
     "orgs",
     "channels",
     "chaincodes",

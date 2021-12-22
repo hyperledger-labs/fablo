@@ -260,19 +260,19 @@ The basic structure of Fablo config file is as follows:
 ```json
 {
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json",
-  "networkSettings": { ... },
+  "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
   "chaincodes": [ ... ]
 }
 ```
 
-### networkSettings
+### global
 
 Example:
 
 ```json
-  "networkSettings": {
+  "global": {
     "fabricVersion": "2.3.0",
     "tls": false,
     "monitoring": {
@@ -411,7 +411,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 ```yaml
 ---
 "$schema": https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json
-networkSettings:
+global:
   fabricVersion: 2.3.0
   tls: false
 orgs:
@@ -428,7 +428,7 @@ orgs:
       domain: org1.example.com
       tools:
         fabloRest: true
-        hyperledgerExplorer: true
+        explorer: true
     peer:
       instances: 2
   - organization:

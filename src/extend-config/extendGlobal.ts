@@ -1,7 +1,7 @@
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-import { Capabilities, FabricVersions, NetworkSettings } from "../types/FabloConfigExtended";
+import { Capabilities, FabricVersions, Global } from "../types/FabloConfigExtended";
 import { version } from "../repositoryUtils";
-import { NetworkSettingsJson } from "../types/FabloConfigJson";
+import { GlobalJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
@@ -50,19 +50,21 @@ const getPathsFromEnv = () => ({
   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
 });
 
-const extendNetworkSettings = (networkSettingsJson: NetworkSettingsJson): NetworkSettings => {
+const extendGlobal = (globalJson: GlobalJson): Global => {
   const monitoring = {
-    loglevel: networkSettingsJson?.monitoring?.loglevel || defaults.networkSettings.monitoring.loglevel,
+    loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
+  const explorer = !globalJson?.tools?.explorer ? {} : { explorer: { address: "explorer.example.com", port: 7010 } };
 
   return {
-    ...networkSettingsJson,
-    ...getVersions(networkSettingsJson.fabricVersion),
+    ...globalJson,
+    ...getVersions(globalJson.fabricVersion),
     paths: getPathsFromEnv(),
     monitoring,
-    capabilities: getNetworkCapabilities(networkSettingsJson.fabricVersion),
+    capabilities: getNetworkCapabilities(globalJson.fabricVersion),
+    tools: { ...explorer },
   };
 };
 
 export { getNetworkCapabilities };
-export default extendNetworkSettings;
+export default extendGlobal;

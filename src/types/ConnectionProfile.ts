@@ -1,10 +1,10 @@
-import { ChannelConfig, NetworkSettings, OrgConfig, PeerConfig } from "./FabloConfigExtended";
+import { ChannelConfig, Global, OrgConfig, PeerConfig } from "./FabloConfigExtended";
 
 interface BaseConnectionProfile {
   name: string;
   description: string;
   version: string;
-  peers: { [key: string]: Peer };
+  peers: { [address: string]: Peer };
 }
 
 interface ConnectionProfile extends BaseConnectionProfile {
@@ -44,13 +44,13 @@ interface HttpOptions {
   verify: boolean;
 }
 
-interface HyperledgerExplorerConnectionProfile extends BaseConnectionProfile {
-  client: HyperledgerExplorerClient;
-  organizations: { [key: string]: HyperledgerExplorerOrganization };
+interface ExplorerConnectionProfile extends BaseConnectionProfile {
+  client: ExplorerClient;
+  organizations: { [key: string]: ExplorerOrganization };
   channels: { [name: string]: Channel };
 }
 
-interface HyperledgerExplorerClient extends Client {
+interface ExplorerClient extends Client {
   tlsEnable: boolean;
   adminCredential: {
     id: string;
@@ -67,7 +67,7 @@ interface HyperledgerExplorerClient extends Client {
   };
 }
 
-interface HyperledgerExplorerOrganization {
+interface ExplorerOrganization {
   mspid: string;
   peers: Array<string>;
   adminPrivateKey: {
@@ -80,6 +80,29 @@ interface HyperledgerExplorerOrganization {
 
 interface Channel {
   peers: { [address: string]: unknown };
+}
+
+export interface OrgWithChannels {
+  org: OrgConfig;
+  channels: ChannelConfig[];
+}
+
+export function pairOrgWithChannels(orgs: OrgConfig[], channels: ChannelConfig[]): OrgWithChannels[] {
+  const channelsByOrg: Map<string, ChannelConfig[]> = new Map();
+
+  channels.forEach((c) => {
+    c.orgs.forEach((o) => {
+      const current = channelsByOrg.get(o.name);
+      channelsByOrg.set(o.name, current !== undefined ? current.concat(c) : [c]);
+    });
+  });
+
+  return orgs
+    .map((o) => {
+      const c = channelsByOrg.get(o.name);
+      return { org: o, channels: c !== undefined ? c : [] };
+    })
+    .filter((p) => p.channels.length > 0);
 }
 
 function createPeers(
@@ -164,13 +187,9 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   return cs;
 }
 
-export function createConnectionProfile(
-  networkSettings: NetworkSettings,
-  org: OrgConfig,
-  orgs: OrgConfig[],
-): ConnectionProfile {
-  const rootPath = `${networkSettings.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
-  const peers = createPeers(org.name, false, networkSettings.tls, rootPath, orgs);
+export function createConnectionProfile(global: Global, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
+  const rootPath = `${global.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
+  const peers = createPeers(org.name, false, global.tls, rootPath, orgs);
   return {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for ${org.name} in Fablo network`,
@@ -186,25 +205,24 @@ export function createConnectionProfile(
       },
     },
     peers: peers,
-    certificateAuthorities: certificateAuthorities(networkSettings.tls, rootPath, org),
+    certificateAuthorities: certificateAuthorities(global.tls, rootPath, org),
   };
 }
 
-export function createHyperledgerExplorerConnectionProfile(
-  networkSettings: NetworkSettings,
-  org: OrgConfig,
+export function createExplorerConnectionProfile(
+  global: Global,
+  p: OrgWithChannels,
   orgs: OrgConfig[],
-  channels: ChannelConfig[],
-): HyperledgerExplorerConnectionProfile {
+): ExplorerConnectionProfile {
   const rootPath = "/tmp/crypto";
-  const peers = createPeers(org.name, true, networkSettings.tls, rootPath, orgs);
+  const peers = createPeers(p.org.name, true, global.tls, rootPath, orgs);
   return {
-    name: `fablo-test-network-${org.name.toLowerCase()}`,
+    name: `fablo-test-network-${p.org.name.toLowerCase()}`,
     description: `Connection profile for Hyperledger Explorer in Fablo network`,
     version: "1.0.0",
     client: {
-      organization: org.name,
-      tlsEnable: networkSettings.tls,
+      organization: p.org.name,
+      tlsEnable: global.tls,
       enableAuthentication: true,
       adminCredential: {
         id: "admin",
@@ -220,18 +238,18 @@ export function createHyperledgerExplorerConnectionProfile(
       },
     },
     organizations: {
-      [org.name]: {
-        mspid: org.mspName,
+      [p.org.name]: {
+        mspid: p.org.mspName,
         adminPrivateKey: {
-          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/keystore/priv-key.pem`,
+          path: `${rootPath}/peerOrganizations/${p.org.domain}/users/Admin@${p.org.domain}/msp/keystore/priv-key.pem`,
         },
         peers: Object.keys(peers),
         signedCert: {
-          path: `${rootPath}/peerOrganizations/${org.domain}/users/Admin@${org.domain}/msp/signcerts/Admin@${org.domain}-cert.pem`,
+          path: `${rootPath}/peerOrganizations/${p.org.domain}/users/Admin@${p.org.domain}/msp/signcerts/Admin@${p.org.domain}-cert.pem`,
         },
       },
     },
     peers: peers,
-    channels: createChannels(org, channels),
+    channels: createChannels(p.org, p.channels),
   };
 }

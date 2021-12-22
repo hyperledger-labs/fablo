@@ -1,5 +1,5 @@
 import { ChaincodeJson } from "../types/FabloConfigJson";
-import { ChaincodeConfig, ChannelConfig, NetworkSettings, PrivateCollectionConfig } from "../types/FabloConfigExtended";
+import { ChaincodeConfig, ChannelConfig, Global, PrivateCollectionConfig } from "../types/FabloConfigExtended";
 import defaults from "./defaults";
 import { version } from "../repositoryUtils";
 
@@ -40,7 +40,7 @@ const createPrivateCollectionConfig = (
 const extendChaincodesConfig = (
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
-  network: NetworkSettings,
+  network: Global,
 ): ChaincodeConfig[] => {
   return chaincodes.map((chaincode) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);

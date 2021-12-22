@@ -1,7 +1,8 @@
-export interface NetworkSettingsJson {
+export interface GlobalJson {
   fabricVersion: string;
   tls: boolean;
   monitoring?: { loglevel: string };
+  tools?: { explorer?: boolean };
 }
 
 export interface OrganizationDetailsJson {
@@ -33,7 +34,7 @@ export interface OrgJson {
   ca: CAJson;
   orderers: OrdererJson[] | undefined;
   peer?: PeerJson;
-  tools?: { fabloRest?: boolean; hyperledgerExplorer?: boolean };
+  tools?: { fabloRest?: boolean; explorer?: boolean };
 }
 
 export interface ChannelJson {
@@ -65,7 +66,7 @@ export interface HooksJson {
 
 export interface FabloConfigJson {
   $schema: string;
-  networkSettings: NetworkSettingsJson;
+  global: GlobalJson;
   orgs: OrgJson[];
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];

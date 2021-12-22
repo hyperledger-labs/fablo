@@ -5,7 +5,7 @@
   "title": "Root",
   "default": {},
   "required": [
-    "networkSettings",
+    "global",
     "orgs",
     "channels",
     "chaincodes"
@@ -14,9 +14,9 @@
     "$schema": {
       "const": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json"
     },
-    "networkSettings": {
-      "$id": "#/properties/networkSettings",
-      "title": "Network settings",
+    "global": {
+      "$id": "#/properties/global",
+      "title": "Global network settings",
       "description": "Basic settings of the Hyperledger Fabric network",
       "type": "object",
       "required": [
@@ -25,7 +25,7 @@
       ],
       "properties": {
         "fabricVersion": {
-          "$id": "#/properties/networkSettings/properties/fabricVersion",
+          "$id": "#/properties/global/properties/fabricVersion",
           "title": "Hyperledger Fabric version",
           "type": "string",
           "enum": [
@@ -60,7 +60,7 @@
           "default": "2.4.0"
         },
         "tls": {
-          "$id": "#/properties/networkSettings/properties/tls",
+          "$id": "#/properties/global/properties/tls",
           "title": "Use TLS",
           "type": "boolean",
           "default": true
@@ -85,6 +85,19 @@
             }
           },
           "additionalProperties": false
+        },
+        "tools": {
+          "$id": "#/properties/global/properties/tools",
+          "type": "object",
+          "title": "Tools",
+          "required": [],
+          "properties": {
+            "explorer": {
+              "$id": "#/properties/global/properties/tools/properties/explorer",
+              "title": "Blockchain Explorer enabled",
+              "type": "boolean"
+            }
+          }
         }
       },
       "additionalProperties": false
@@ -286,9 +299,9 @@
                 "title": "Fablo REST enabled",
                 "type": "boolean"
               },
-              "hyperledgerExplorer": {
-                "$id": "#/properties/orgs/items/properties/tools/properties/hyperledgerExplorer",
-                "title": "Hyperledger Explorer enabled",
+              "explorer": {
+                "$id": "#/properties/orgs/items/properties/tools/properties/explorer",
+                "title": "Blockchain Explorer enabled",
                 "type": "boolean"
               }
             },

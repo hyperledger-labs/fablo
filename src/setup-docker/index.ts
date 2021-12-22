@@ -9,11 +9,17 @@ import {
   ChannelConfig,
   FabloConfigExtended,
   HooksConfig,
-  NetworkSettings,
+  Global,
   OrgConfig,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
-import { createConnectionProfile, createHyperledgerExplorerConnectionProfile } from "../types/ConnectionProfile";
+import {
+  createConnectionProfile,
+  createExplorerConnectionProfile,
+  OrgWithChannels,
+  pairOrgWithChannels,
+} from "../types/ConnectionProfile";
+import { createExplorerConfig } from "../types/ExplorerConfig";
 
 const ValidateGeneratorPath = require.resolve("../validate");
 
@@ -34,7 +40,7 @@ export default class SetupDockerGenerator extends Generator {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const config = extendConfig(json);
-    const { networkSettings, orgs, chaincodes, channels } = config;
+    const { global, orgs, chaincodes, channels } = config;
 
     const dateString = new Date()
       .toISOString()
@@ -43,24 +49,24 @@ export default class SetupDockerGenerator extends Generator {
     const composeNetworkName = `fablo_network_${dateString}`;
 
     this.log(`Used network config: ${fabloConfigPath}`);
-    this.log(`Fabric version is: ${networkSettings.fabricVersion}`);
+    this.log(`Fabric version is: ${global.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
-    this._createConnectionProfiles(networkSettings, orgs);
-    this._createHyperledgerExplorerMaterial(networkSettings, orgs, channels);
+    this._createConnectionProfiles(global, orgs);
+    this._createExplorerMaterial(global, orgs, channels);
     this._copyConfigTx(config);
     this._copyGitIgnore();
     this._createPrivateDataCollectionConfigs(chaincodes);
 
     // ======= fabric-docker ===========================================================
-    this._copyDockerComposeEnv(networkSettings, orgs, composeNetworkName);
+    this._copyDockerComposeEnv(global, orgs, composeNetworkName);
     this._copyDockerCompose(config);
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.networkSettings.capabilities);
+    this._copyUtilityScripts(config.global.capabilities);
 
     // ======= hooks ====================================================================
     this._copyHooks(config.hooks);
@@ -94,9 +100,9 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createConnectionProfiles(networkSettings: NetworkSettings, orgsTransformed: OrgConfig[]): void {
+  _createConnectionProfiles(global: Global, orgsTransformed: OrgConfig[]): void {
     orgsTransformed.forEach((org: OrgConfig) => {
-      const connectionProfile = createConnectionProfile(networkSettings, org, orgsTransformed);
+      const connectionProfile = createConnectionProfile(global, org, orgsTransformed);
       this.fs.writeJSON(
         this.destinationPath(`fabric-config/connection-profiles/connection-profile-${org.name.toLowerCase()}.json`),
         connectionProfile,
@@ -108,44 +114,38 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createHyperledgerExplorerMaterial(
-    networkSettings: NetworkSettings,
-    orgsTransformed: OrgConfig[],
-    channels: ChannelConfig[],
-  ): void {
-    orgsTransformed
-      .filter((o) => o.tools.hyperledgerExplorer !== undefined)
-      .forEach((org: OrgConfig) => {
-        const connectionProfile = createHyperledgerExplorerConnectionProfile(
-          networkSettings,
-          org,
-          orgsTransformed,
-          channels,
-        );
-        const orgName = org.name.toLowerCase();
+  _createExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): void {
+    const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
+    const orgWithChannels = pairOrgWithChannels(orgs, channels);
+
+    orgWithChannels
+      .filter((p: OrgWithChannels) => global.tools.explorer !== undefined || p.org.tools.explorer !== undefined)
+      .forEach((p: OrgWithChannels) => {
+        const connectionProfile = createExplorerConnectionProfile(global, p, orgsTransformed);
+        const orgName = p.org.name.toLowerCase();
         this.fs.writeJSON(
           this.destinationPath(`fabric-config/explorer/connection-profile-${orgName}.json`),
           connectionProfile,
         );
-        this.fs.copyTpl(
-          this.templatePath("fabric-config/explorer/config.json"),
+        this.fs.writeJSON(
           this.destinationPath(`fabric-config/explorer/config-${orgName}.json`),
-          { orgName },
+          createExplorerConfig([p.org]),
         );
       });
+
+    this.fs.writeJSON(
+      this.destinationPath("fabric-config/explorer/config-global.json"),
+      createExplorerConfig(orgWithChannels.map((p) => p.org)),
+    );
   }
 
-  _copyDockerComposeEnv(
-    networkSettings: NetworkSettings,
-    orgsTransformed: OrgConfig[],
-    composeNetworkName: string,
-  ): void {
+  _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): void {
     const settings = {
       composeNetworkName,
-      fabricCaVersion: networkSettings.fabricCaVersion,
-      networkSettings,
+      fabricCaVersion: global.fabricCaVersion,
+      global,
       orgs: orgsTransformed,
-      paths: networkSettings.paths,
+      paths: global.paths,
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.1.0",

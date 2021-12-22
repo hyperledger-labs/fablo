@@ -39,7 +39,7 @@ services:
       <%_ if(org.headPeer !== undefined) { _%>
       - CORE_PEER_ADDRESS=<%= org.headPeer.fullAddress %>
       <%_ } _%>
-      <%_ if(networkSettings.tls) { _%>
+      <%_ if(global.tls) { _%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
@@ -54,7 +54,7 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
-      <%_ if(networkSettings.tls) { _%>
+      <%_ if(global.tls) { _%>
       <%_ orderedHeadsDistinct.forEach(function(ordererHead) { _%>
       - ../fabric-config/crypto-config/peerOrganizations/<%= ordererHead.domain %>/peers/<%= ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererHead.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererHead.domain %>-cert.pem:ro
       <%_ }) _%>
@@ -85,12 +85,12 @@ services:
       - FABRIC_CA_NAME=<%= org.tools.fabloRest.fabricCaName %>
       - AS_LOCALHOST=false
       - DISCOVERY_URLS=<%= org.tools.fabloRest.discoveryUrls %>
-    <%_ if(networkSettings.tls) { _%>
+    <%_ if(global.tls) { _%>
       - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=<%= org.tools.fabloRest.discoverySslTargetNameOverrides %>
       - DISCOVERY_TLS_CA_CERT_FILES=<%= org.tools.fabloRest.discoveryTlsCaCertFiles %>
     <%_ } _%>
       - HFC_LOGGING=<%- JSON.stringify(org.tools.fabloRest.logging) %>
-    <%_ if(networkSettings.tls) { _%>
+    <%_ if(global.tls) { _%>
     volumes:
       # note: fablo needs access to all anchor peer certs
       - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
@@ -101,10 +101,10 @@ services:
       - basic
   <%_ } _%>
 
-  <%_ if (org.tools.hyperledgerExplorer) { _%>
-  db.<%= org.tools.hyperledgerExplorer.address %>:
+  <%_ if (org.tools.explorer && !global.tools.explorer) { _%>
+  db.<%= org.tools.explorer.address %>:
     image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
-    container_name: db.<%= org.tools.hyperledgerExplorer.address %>
+    container_name: db.<%= org.tools.explorer.address %>
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
@@ -119,12 +119,12 @@ services:
     networks:
       - basic
 
-  <%= org.tools.hyperledgerExplorer.address %>:
+  <%= org.tools.explorer.address %>:
     image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
-    container_name: <%= org.tools.hyperledgerExplorer.address %>
+    container_name: <%= org.tools.explorer.address %>
     environment:
-      - DATABASE_HOST=db.<%= org.tools.hyperledgerExplorer.address %>
+      - DATABASE_HOST=db.<%= org.tools.explorer.address %>
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
@@ -135,12 +135,12 @@ services:
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
       - ../fabric-config/explorer/config-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/config.json
-      - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile.json
+      - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile-<%= org.name.toLowerCase() %>.json
       - ../fabric-config/crypto-config:/tmp/crypto
     ports:
-      - "<%= org.tools.hyperledgerExplorer.port %>:8080"
+      - "<%= org.tools.explorer.port %>:8080"
     depends_on:
-      db.<%= org.tools.hyperledgerExplorer.address %>:
+      db.<%= org.tools.explorer.address %>:
         condition: service_healthy
     networks:
       - basic
@@ -156,7 +156,7 @@ services:
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
       - ORDERER_GENERAL_GENESISMETHOD=file
-      <%_ if(networkSettings.capabilities.isV2) { _%>
+      <%_ if(global.capabilities.isV2) { _%>
       - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
       <%_ } else { _%>
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
@@ -164,7 +164,7 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=<%= org.mspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
-      <%_ if(networkSettings.tls) { _%>
+      <%_ if(global.tls) { _%>
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -214,7 +214,7 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
-      <%_ if(networkSettings.tls) { _%>
+      <%_ if(global.tls) { _%>
       # enabled TLS
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
@@ -255,3 +255,48 @@ services:
   <%_ } _%>
   <%_ }) _%>
 <%_ }) _%>
+
+  <%_ if (global.tools.explorer) { _%>
+  db.<%= global.tools.explorer.address %>:
+    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.<%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  <%= global.tools.explorer.address %>:
+    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: <%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_HOST=db.<%= global.tools.explorer.address %>
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - "<%= global.tools.explorer.port %>:8080"
+    depends_on:
+      db.<%= global.tools.explorer.address %>:
+        condition: service_healthy
+    networks:
+      - basic
+  <%_ } _%>

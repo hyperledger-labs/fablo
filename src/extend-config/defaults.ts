@@ -1,9 +1,12 @@
 import { Capabilities, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
 
 export default {
-  networkSettings: {
+  global: {
     monitoring: {
       loglevel: "info",
+    },
+    tools: {
+      explorer: false,
     },
   },
   organization: {
