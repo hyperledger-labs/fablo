@@ -12,7 +12,7 @@ if [ -z "$expected_message" ]; then
   exit 1
 fi
 
-for i in $(seq 1 $max_attempts); do
+for i in $(seq 1 "$max_attempts"); do
   echo "➜ verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
 
   if docker logs "$container" 2>&1 | grep -q "$expected_message"; then
