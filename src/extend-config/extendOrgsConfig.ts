@@ -10,8 +10,10 @@ import {
   OrdererGroup,
   OrgConfig,
   PeerConfig,
+  PeerDbConfig,
 } from "../types/FabloConfigExtended";
 import _ = require("lodash");
+import { version } from "../repositoryUtils";
 
 const extendCaConfig = (
   caJsonFormat: CAJson,
@@ -100,14 +102,24 @@ const extendOrderersGroupForOrg = (
 };
 
 const extendPeers = (
+  fabricVersion: string,
   peerJson: PeerJson,
   domainJsonFormat: string,
   headPeerPort: number,
   headPeerCouchDbExposePort: number,
 ): PeerConfig[] => {
   const peerPrefix = peerJson.prefix || defaults.peer.prefix;
-  const db = peerJson.db || defaults.peer.db;
   const anchorPeerInstances = peerJson.anchorPeerInstances || defaults.peer.anchorPeerInstances(peerJson.instances);
+
+  const dbType = peerJson.db || defaults.peer.db;
+  const db: PeerDbConfig = { type: dbType };
+  if (dbType === "CouchDb") {
+    if (version(fabricVersion).isGreaterOrEqual("2.2")) {
+      db["image"] = "couchdb:${COUCHDB_VERSION}";
+    } else {
+      db["image"] = "hyperledger/fabric-couchdb:${FABRIC_COUCHDB_VERSION}";
+    }
+  }
 
   return Array(peerJson.instances)
     .fill(undefined)
@@ -244,7 +256,9 @@ const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], global: Global): OrgC
     const domain = orgJson.organization.domain;
     const { caPort, headPeerPort, headPeerCouchDbPort, fabloRestPort, explorerPort } = getPortsForOrg(orgIndex);
     const peers =
-      orgJson.peer !== undefined ? extendPeers(orgJson.peer, domain, headPeerPort, headPeerCouchDbPort) : [];
+      orgJson.peer !== undefined
+        ? extendPeers(global.fabricVersion, orgJson.peer, domain, headPeerPort, headPeerCouchDbPort)
+        : [];
     return { ...all, [domain]: { peers, caPort, fabloRestPort, explorerPort } };
   }, {} as Record<string, { peers: PeerConfig[]; caPort: number; fabloRestPort: number; explorerPort: number }>);
 
