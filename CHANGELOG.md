@@ -11,6 +11,7 @@
 ### Chore & Maintenance
 * Command 'reboot' renamed to 'reset'
 * Keyword `function` removed from scripts for better portability
+* Use the official CouchDB image for peer database
 
 ## 0.3.0
 

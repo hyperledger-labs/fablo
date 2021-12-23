@@ -250,7 +250,7 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       <%_ } _%>
-      <%_ if(peer.db==="CouchDb") { _%>
+      <%_ if(peer.db.type==="CouchDb") { _%>
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.<%= peer.name %>.<%= org.domain %>:5984
@@ -270,10 +270,10 @@ services:
     networks:
       - basic
 
-  <%_ if(peer.db==="CouchDb") { _%>
+  <%_ if(peer.db.type==="CouchDb") { _%>
   couchdb.<%= peer.name %>.<%= org.domain %>:
     container_name: couchdb.<%= peer.name %>.<%= org.domain %>
-    image: hyperledger/fabric-couchdb:0.4.18
+    image: <%= peer.db.image %>
     environment:
       - COUCHDB_USER=<%= peer.name %>
       - COUCHDB_PASSWORD=<%= peer.name %>Password

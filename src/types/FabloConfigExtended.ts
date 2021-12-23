@@ -52,11 +52,16 @@ export interface CAConfig {
 export interface PeerConfig {
   address: string;
   couchDbExposePort: number;
-  db: "LevelDb" | "CouchDb";
+  db: PeerDbConfig;
   fullAddress: string;
   isAnchorPeer: boolean;
   name: string;
   port: number;
+}
+
+export interface PeerDbConfig {
+  type: "LevelDb" | "CouchDb";
+  image?: string;
 }
 
 export interface CLIConfig {

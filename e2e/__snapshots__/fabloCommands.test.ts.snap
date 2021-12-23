@@ -293,7 +293,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -302,7 +304,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -313,7 +317,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -322,7 +328,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -346,7 +354,9 @@ To update just run command:
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
         \\"address\\": \\"peer0.org1.example.com\\",
-        \\"db\\": \\"LevelDb\\",
+        \\"db\\": {
+          \\"type\\": \\"LevelDb\\"
+        },
         \\"isAnchorPeer\\": true,
         \\"port\\": 7061,
         \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -382,7 +392,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org2.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
           \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -391,7 +403,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org2.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
           \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -402,7 +416,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org2.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
           \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -411,7 +427,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org2.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
           \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -435,7 +453,9 @@ To update just run command:
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
         \\"address\\": \\"peer0.org2.example.com\\",
-        \\"db\\": \\"LevelDb\\",
+        \\"db\\": {
+          \\"type\\": \\"LevelDb\\"
+        },
         \\"isAnchorPeer\\": true,
         \\"port\\": 7081,
         \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -460,7 +480,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -471,7 +493,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -480,7 +504,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -504,7 +530,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -540,7 +568,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -551,7 +581,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -560,7 +592,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -584,7 +618,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org2.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
             \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -666,7 +702,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -677,7 +715,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -686,7 +726,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -710,7 +752,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -751,7 +795,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -762,7 +808,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -771,7 +819,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -795,7 +845,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -831,7 +883,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -842,7 +896,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -851,7 +907,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -875,7 +933,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org2.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7082,
             \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -957,7 +1017,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -968,7 +1030,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -977,7 +1041,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1001,7 +1067,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1042,7 +1110,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1051,7 +1121,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1062,7 +1134,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1071,7 +1145,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1095,7 +1171,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1131,7 +1209,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1140,7 +1220,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1151,7 +1233,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1160,7 +1244,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1184,7 +1270,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org2.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
             \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1250,7 +1338,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1259,7 +1349,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1270,7 +1362,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1279,7 +1373,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1303,7 +1399,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1351,7 +1449,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1362,7 +1462,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1371,7 +1473,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1395,7 +1499,9 @@ To update just run command:
             \\"headPeer\\": {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1431,7 +1537,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1442,7 +1550,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1451,7 +1561,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1475,7 +1587,9 @@ To update just run command:
             \\"headPeer\\": {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1557,7 +1671,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1568,7 +1684,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1577,7 +1695,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1601,7 +1721,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1640,7 +1762,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1651,7 +1775,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1660,7 +1786,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1684,7 +1812,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1731,7 +1861,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1742,7 +1874,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1751,7 +1885,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org1.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1775,7 +1911,9 @@ To update just run command:
             \\"headPeer\\": {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1811,7 +1949,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1822,7 +1962,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer0\\",
                 \\"address\\": \\"peer0.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
@@ -1831,7 +1973,9 @@ To update just run command:
               {
                 \\"name\\": \\"peer1\\",
                 \\"address\\": \\"peer1.org2.example.com\\",
-                \\"db\\": \\"LevelDb\\",
+                \\"db\\": {
+                  \\"type\\": \\"LevelDb\\"
+                },
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1855,7 +1999,9 @@ To update just run command:
             \\"headPeer\\": {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org2.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
@@ -1937,7 +2083,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1948,7 +2096,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -1957,7 +2107,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -1981,7 +2133,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -2020,7 +2174,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -2031,7 +2187,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
@@ -2040,7 +2198,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -2064,7 +2224,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
@@ -2259,7 +2421,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2268,7 +2432,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
           \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2279,7 +2445,9 @@ To update just run command:
         {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2288,7 +2456,9 @@ To update just run command:
         {
           \\"name\\": \\"peer1\\",
           \\"address\\": \\"peer1.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
           \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2312,7 +2482,9 @@ To update just run command:
       \\"headPeer\\": {
         \\"name\\": \\"peer0\\",
         \\"address\\": \\"peer0.org1.example.com\\",
-        \\"db\\": \\"LevelDb\\",
+        \\"db\\": {
+          \\"type\\": \\"LevelDb\\"
+        },
         \\"isAnchorPeer\\": true,
         \\"port\\": 7041,
         \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2337,7 +2509,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
               \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2346,7 +2520,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
               \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2357,7 +2533,9 @@ To update just run command:
             {
               \\"name\\": \\"peer0\\",
               \\"address\\": \\"peer0.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
               \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2366,7 +2544,9 @@ To update just run command:
             {
               \\"name\\": \\"peer1\\",
               \\"address\\": \\"peer1.org1.example.com\\",
-              \\"db\\": \\"LevelDb\\",
+              \\"db\\": {
+                \\"type\\": \\"LevelDb\\"
+              },
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
               \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2390,7 +2570,9 @@ To update just run command:
           \\"headPeer\\": {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2456,7 +2638,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2465,7 +2649,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
             \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2476,7 +2662,9 @@ To update just run command:
           {
             \\"name\\": \\"peer0\\",
             \\"address\\": \\"peer0.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
@@ -2485,7 +2673,9 @@ To update just run command:
           {
             \\"name\\": \\"peer1\\",
             \\"address\\": \\"peer1.org1.example.com\\",
-            \\"db\\": \\"LevelDb\\",
+            \\"db\\": {
+              \\"type\\": \\"LevelDb\\"
+            },
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
             \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
@@ -2509,7 +2699,9 @@ To update just run command:
         \\"headPeer\\": {
           \\"name\\": \\"peer0\\",
           \\"address\\": \\"peer0.org1.example.com\\",
-          \\"db\\": \\"LevelDb\\",
+          \\"db\\": {
+            \\"type\\": \\"LevelDb\\"
+          },
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",

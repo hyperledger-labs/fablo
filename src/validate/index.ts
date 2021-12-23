@@ -14,7 +14,7 @@ import {
 import * as _ from "lodash";
 import { getNetworkCapabilities } from "../extend-config/";
 import { Capabilities } from "../types/FabloConfigExtended";
-import {version} from "../repositoryUtils";
+import { version } from "../repositoryUtils";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 const findDuplicatedItems = (arr: any[]) => arr.filter((item, index) => arr.indexOf(item) != index);
