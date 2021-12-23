@@ -385,6 +385,15 @@ Object {
             "$id": "#/properties/orgs/items/properties/ca",
             "additionalProperties": false,
             "properties": Object {
+              "db": Object {
+                "$id": "#/properties/orgs/items/properties/ca/properties/db",
+                "enum": Array [
+                  "sqlite",
+                  "postgres",
+                ],
+                "title": "Database",
+                "type": "string",
+              },
               "prefix": Object {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
                 "pattern": "^[a-z0-9\\\\.\\\\-]+$",
@@ -392,9 +401,7 @@ Object {
                 "type": "string",
               },
             },
-            "required": Array [
-              "prefix",
-            ],
+            "required": Array [],
             "title": "Organization Certificate Authority (CA)",
             "type": "object",
           },

@@ -17,6 +17,7 @@ export default {
   },
   ca: {
     prefix: "ca",
+    db: "sqlite",
   },
   peer: {
     prefix: "peer",

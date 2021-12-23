@@ -152,6 +152,7 @@ export default class SetupDockerGenerator extends Generator {
       hyperledgerExplorerVersion: "1.1.8",
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
+      fabricCaPostgresVersion: "14",
     };
     this.fs.copyTpl(this.templatePath("fabric-docker/.env"), this.destinationPath("fabric-docker/.env"), settings);
   }

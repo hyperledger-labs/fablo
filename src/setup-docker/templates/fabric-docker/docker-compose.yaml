@@ -14,14 +14,43 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      <%_ if (org.ca.db === "postgres") { _%>
+      - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_DB_TYPE=postgres
+      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.<%= org.ca.address %> port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
+      <%_ } _%>
     ports:
       - <%= org.ca.exposePort %>:<%= org.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    <%_ if (org.ca.db === "postgres") { _%>
+    depends_on:
+      db.<%= org.ca.address %>:
+        condition: service_healthy
+    <%_ } _%>
     networks:
       - basic
+
+  <%_ if (org.ca.db === "postgres") { _%>
+  db.<%= org.ca.address %>:
+    container_name: db.<%= org.ca.address %>
+    image: postgres:${FABRIC_CA_POSTGRES_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=caDbPass12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fabriccaserver
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+  <%_ } _%>
 
   <%= org.cli.address %>:
     container_name: <%= org.cli.address %>

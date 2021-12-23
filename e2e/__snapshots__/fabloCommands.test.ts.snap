@@ -171,7 +171,8 @@ To update just run command:
         \\"exposePort\\": 7020,
         \\"fullAddress\\": \\"ca.orderer1.com:7054\\",
         \\"caAdminNameVar\\": \\"ORDERER1_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORDERER1_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORDERER1_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.orderer1.com\\"
@@ -242,7 +243,8 @@ To update just run command:
         \\"exposePort\\": 7040,
         \\"fullAddress\\": \\"ca.orderer2.com:7054\\",
         \\"caAdminNameVar\\": \\"ORDERER2_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORDERER2_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORDERER2_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.orderer2.com\\"
@@ -343,7 +345,8 @@ To update just run command:
         \\"exposePort\\": 7060,
         \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.org1.example.com\\"
@@ -441,7 +444,8 @@ To update just run command:
         \\"exposePort\\": 7080,
         \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.org2.example.com\\"
@@ -517,7 +521,8 @@ To update just run command:
             \\"exposePort\\": 7060,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -604,7 +609,8 @@ To update just run command:
             \\"exposePort\\": 7080,
             \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org2.example.com\\"
@@ -737,7 +743,8 @@ To update just run command:
           \\"exposePort\\": 7060,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"
@@ -829,7 +836,8 @@ To update just run command:
             \\"exposePort\\": 7060,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -916,7 +924,8 @@ To update just run command:
             \\"exposePort\\": 7080,
             \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org2.example.com\\"
@@ -1049,7 +1058,8 @@ To update just run command:
           \\"exposePort\\": 7060,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"
@@ -1152,7 +1162,8 @@ To update just run command:
             \\"exposePort\\": 7060,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -1250,7 +1261,8 @@ To update just run command:
             \\"exposePort\\": 7080,
             \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org2.example.com\\"
@@ -1378,7 +1390,8 @@ To update just run command:
           \\"exposePort\\": 7060,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"
@@ -1477,7 +1490,8 @@ To update just run command:
               \\"exposePort\\": 7060,
               \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+              \\"db\\": \\"sqlite\\"
             },
             \\"cli\\": {
               \\"address\\": \\"cli.org1.example.com\\"
@@ -1564,7 +1578,8 @@ To update just run command:
               \\"exposePort\\": 7080,
               \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+              \\"db\\": \\"sqlite\\"
             },
             \\"cli\\": {
               \\"address\\": \\"cli.org2.example.com\\"
@@ -1697,7 +1712,8 @@ To update just run command:
             \\"exposePort\\": 7060,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -1787,7 +1803,8 @@ To update just run command:
           \\"exposePort\\": 7060,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"
@@ -1885,7 +1902,8 @@ To update just run command:
               \\"exposePort\\": 7060,
               \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+              \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+              \\"db\\": \\"sqlite\\"
             },
             \\"cli\\": {
               \\"address\\": \\"cli.org1.example.com\\"
@@ -1972,7 +1990,8 @@ To update just run command:
               \\"exposePort\\": 7080,
               \\"fullAddress\\": \\"ca.org2.example.com:7054\\",
               \\"caAdminNameVar\\": \\"ORG2_CA_ADMIN_NAME\\",
-              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\"
+              \\"caAdminPassVar\\": \\"ORG2_CA_ADMIN_PASSWORD\\",
+              \\"db\\": \\"sqlite\\"
             },
             \\"cli\\": {
               \\"address\\": \\"cli.org2.example.com\\"
@@ -2105,7 +2124,8 @@ To update just run command:
             \\"exposePort\\": 7060,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -2195,7 +2215,8 @@ To update just run command:
           \\"exposePort\\": 7060,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"
@@ -2350,7 +2371,8 @@ To update just run command:
         \\"exposePort\\": 7020,
         \\"fullAddress\\": \\"ca.orderer.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORDERER_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORDERER_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.orderer.example.com\\"
@@ -2451,7 +2473,8 @@ To update just run command:
         \\"exposePort\\": 7040,
         \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
         \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+        \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+        \\"db\\": \\"sqlite\\"
       },
       \\"cli\\": {
         \\"address\\": \\"cli.org1.example.com\\"
@@ -2538,7 +2561,8 @@ To update just run command:
             \\"exposePort\\": 7040,
             \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
             \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+            \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+            \\"db\\": \\"sqlite\\"
           },
           \\"cli\\": {
             \\"address\\": \\"cli.org1.example.com\\"
@@ -2666,7 +2690,8 @@ To update just run command:
           \\"exposePort\\": 7040,
           \\"fullAddress\\": \\"ca.org1.example.com:7054\\",
           \\"caAdminNameVar\\": \\"ORG1_CA_ADMIN_NAME\\",
-          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\"
+          \\"caAdminPassVar\\": \\"ORG1_CA_ADMIN_PASSWORD\\",
+          \\"db\\": \\"sqlite\\"
         },
         \\"cli\\": {
           \\"address\\": \\"cli.org1.example.com\\"

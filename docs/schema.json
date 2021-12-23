@@ -180,15 +180,22 @@
             "$id": "#/properties/orgs/items/properties/ca",
             "type": "object",
             "title": "Organization Certificate Authority (CA)",
-            "required": [
-              "prefix"
-            ],
+            "required": [],
             "properties": {
               "prefix": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
                 "title": "Domain prefix",
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
+              },
+              "db": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/db",
+                "title": "Database",
+                "type": "string",
+                "enum": [
+                  "sqlite",
+                  "postgres"
+                ]
               }
             },
             "additionalProperties": false
