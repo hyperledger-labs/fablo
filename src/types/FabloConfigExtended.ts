@@ -46,6 +46,7 @@ export interface CAConfig {
   fullAddress: string;
   port: number;
   prefix: string;
+  db: "sqlite" | "postgres";
 }
 
 export interface PeerConfig {

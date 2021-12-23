@@ -310,6 +310,7 @@ The other available parameters for entries in `orgs` array are:
 
  * `organization.mspName` (default: `organization.name + 'MSP'`)
  * `ca.prefix` (default: `ca`)
+ * `ca.db` (default: `sqlite`, other: `postgres`)
  * `peer.prefix` (default: `peer`)
  * `peer.anchorPeerInstances` (default: `1`)
  * `orderers` (defaults to empty: [])  
