@@ -1,8 +1,11 @@
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/1.0.0/schema.json",
   "global": {
     "fabricVersion": "2.3.3",
-    "tls": true
+    "tls": true,
+    "tools": {
+      "explorer": true
+    }
   },
   "orgs": [
     {
@@ -51,7 +54,15 @@
       "version": "0.0.1",
       "lang": "node",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": [
+        {
+          "orgNames": [
+            "Org1"
+          ],
+          "name": "my-collection"
+        }
+      ]
     }
   ],
   "hooks": {

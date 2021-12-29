@@ -259,7 +259,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.0.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -411,7 +411,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.0.0/schema.json
 global:
   fabricVersion: 2.3.0
   tls: false

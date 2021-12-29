@@ -6565,7 +6565,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 Object {
   "chaincodes": Array [
     Object {
@@ -6863,8 +6863,18 @@ Object {
       },
       "lang": "node",
       "name": "chaincode1",
-      "privateData": Array [],
-      "privateDataConfigFile": undefined,
+      "privateData": Array [
+        Object {
+          "blockToLive": 0,
+          "maxPeerCount": 1,
+          "memberOnlyRead": true,
+          "memberOnlyWrite": true,
+          "name": "my-collection",
+          "policy": "OR('Org1MSP.member')",
+          "requiredPeerCount": 1,
+        },
+      ],
+      "privateDataConfigFile": "collections/chaincode1.json",
       "version": "0.0.1",
     },
   ],
@@ -7100,7 +7110,12 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
-    "tools": Object {},
+    "tools": Object {
+      "explorer": Object {
+        "address": "explorer.example.com",
+        "port": 7010,
+      },
+    },
   },
   "hooks": Object {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",

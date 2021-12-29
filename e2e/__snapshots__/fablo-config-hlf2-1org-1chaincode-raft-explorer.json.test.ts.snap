@@ -1,12 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/configtx.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/collections/chaincode1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
+"[
+  {
+    \\"name\\": \\"my-collection\\",
+    \\"policy\\": \\"OR('Org1MSP.member')\\",
+    \\"requiredPeerCount\\": 1,
+    \\"maxPeerCount\\": 1,
+    \\"blockToLive\\": 0,
+    \\"memberOnlyRead\\": true,
+    \\"memberOnlyWrite\\": true
+  }
+]"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/configtx.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -190,7 +204,7 @@ Profiles:
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "{
   \\"name\\": \\"fablo-test-network-orderer\\",
   \\"description\\": \\"Connection profile for Orderer in Fablo network\\",
@@ -236,7 +250,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "name: fablo-test-network-orderer
 description: Connection profile for Orderer in Fablo network
 version: 1.0.0
@@ -269,7 +283,7 @@ certificateAuthorities:
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "{
   \\"name\\": \\"fablo-test-network-org1\\",
   \\"description\\": \\"Connection profile for Org1 in Fablo network\\",
@@ -315,7 +329,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "name: fablo-test-network-org1
 description: Connection profile for Org1 in Fablo network
 version: 1.0.0
@@ -348,7 +362,7 @@ certificateAuthorities:
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "PeerOrgs:
   - Name: Orderer
     Domain: orderer.example.com
@@ -361,7 +375,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.example.com
@@ -373,7 +387,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "{
   \\"network-configs\\": {
     \\"network-org1\\": {
@@ -386,7 +400,73 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/config-org1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
+"{
+  \\"network-configs\\": {
+    \\"network-org1\\": {
+      \\"name\\": \\"Network of Org1\\",
+      \\"profile\\": \\"/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json\\"
+    }
+  },
+  \\"license\\": \\"Apache-2.0\\"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
+"{
+  \\"name\\": \\"fablo-test-network-org1\\",
+  \\"description\\": \\"Connection profile for Hyperledger Explorer in Fablo network\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"client\\": {
+    \\"organization\\": \\"Org1\\",
+    \\"tlsEnable\\": true,
+    \\"enableAuthentication\\": true,
+    \\"adminCredential\\": {
+      \\"id\\": \\"admin\\",
+      \\"password\\": \\"adminpw\\"
+    },
+    \\"connection\\": {
+      \\"timeout\\": {
+        \\"peer\\": {
+          \\"endorser\\": \\"300\\"
+        },
+        \\"orderer\\": \\"300\\"
+      }
+    }
+  },
+  \\"organizations\\": {
+    \\"Org1\\": {
+      \\"mspid\\": \\"Org1MSP\\",
+      \\"adminPrivateKey\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv-key.pem\\"
+      },
+      \\"peers\\": [
+        \\"peer0.org1.example.com\\"
+      ],
+      \\"signedCert\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem\\"
+      }
+    }
+  },
+  \\"peers\\": {
+    \\"peer0.org1.example.com\\": {
+      \\"url\\": \\"grpcs://peer0.org1.example.com:7041\\",
+      \\"tlsCACerts\\": {
+        \\"path\\": \\"/tmp/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem\\"
+      }
+    }
+  },
+  \\"channels\\": {
+    \\"my-channel1\\": {
+      \\"peers\\": {}
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -446,8 +526,8 @@ fi
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
-"FABLO_VERSION=\\"0.3.0\\"
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
+"FABLO_VERSION=\\"1.0.0\\"
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=\\"0.1.0\\"
 HYPERLEDGER_EXPLORER_VERSION=\\"1.1.8\\"
@@ -480,7 +560,7 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 source \\"$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh\\"
@@ -557,7 +637,7 @@ printChannelsHelp() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 generateArtifacts() {
@@ -600,9 +680,9 @@ installChaincodes() {
     chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
     chaincodePackage \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
-    chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"\\"
+    chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"collections/chaincode1.json\\"
     printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-    chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"peer0.org1.example.com:7041\\" \\"crypto-peer/peer0.org1.example.com/tls/ca.crt\\" \\"\\"
+    chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"peer0.org1.example.com:7041\\" \\"crypto-peer/peer0.org1.example.com/tls/ca.crt\\" \\"collections/chaincode1.json\\"
   else
     echo \\"Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty.\\"
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
@@ -640,9 +720,9 @@ upgradeChaincode() {
       chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\"
       chaincodePackage \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
       chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
-      chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"\\"
+      chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"collections/chaincode1.json\\"
       printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
-      chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"peer0.org1.example.com:7041\\" \\"crypto-peer/peer0.org1.example.com/tls/ca.crt\\" \\"\\"
+      chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\" \\"peer0.org1.example.com:7041\\" \\"crypto-peer/peer0.org1.example.com/tls/ca.crt\\" \\"collections/chaincode1.json\\"
 
     else
       echo \\"Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty.\\"
@@ -675,7 +755,7 @@ networkDown() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "version: '2.2'
 
 networks:
@@ -731,6 +811,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
       - basic
 
@@ -814,6 +895,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/\\"
+      - \\"../fabric-config/collections/chaincode1.json:/var/hyperledger/cli/collections/chaincode1.json\\"
     networks:
       - basic
 
@@ -896,10 +978,53 @@ services:
       - 5100:5984
     networks:
       - basic
+
+  db.explorer.example.com:
+    image: hyperledger/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.explorer.example.com
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: \\"pg_isready -h localhost -p 5432 -q -U postgres\\"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  explorer.example.com:
+    image: hyperledger/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: explorer.example.com
+    environment:
+      - DATABASE_HOST=db.explorer.example.com
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - \\"7010:8080\\"
+    depends_on:
+      db.explorer.example.com:
+        condition: service_healthy
+    networks:
+      - basic
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 certsGenerate() {
@@ -1160,7 +1285,7 @@ removeContainer() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 printHelp() {
@@ -1195,7 +1320,7 @@ printHelp() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 # phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
@@ -1454,7 +1579,7 @@ chaincodeCommit() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 peerChannelList() {
@@ -1727,7 +1852,7 @@ peerChannelFetchBlockTls() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -1858,7 +1983,7 @@ fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 __getSnapshotNodes() {
@@ -1943,7 +2068,7 @@ cloneSnapshot() {
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/hooks/post-generate.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
 # The code from this file was called after Fablo generated Hyperledger Fabric configuration
@@ -1953,28 +2078,31 @@ perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabri
 "
 `;
 
-exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 Array [
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/.gitignore",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/.env",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/collections/chaincode1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/config-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh",
 ]
 `;
