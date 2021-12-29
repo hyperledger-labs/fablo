@@ -1,16 +1,32 @@
 #!/usr/bin/env bash
 
 __getOrdererAndPeerNodes() {
-  echo "orderer0.group1.orderer.example.com"
-  echo "peer0.org1.example.com"
+  echo "
+  <%_ orgs.forEach((org) => { _%>
+    <%_ org.ordererGroups.forEach((g) => g.orderers.forEach((o) => { _%>
+      <%= o.address %>
+    <%_ })) _%>
+    <%_ org.peers.forEach((p) => { _%>
+      <%= p.address %>
+    <%_ }) _%>
+  <%_ }) _%>
+  "
 }
 
-__getCANodes() {
-  echo "ca.orderer.example.com"
+__getCASQLiteNodes() {
+  echo "
+  <%_ orgs.filter((org) => org.ca.db === 'sqlite').forEach((org) => { _%>
+      <%= org.ca.address %>
+  <%_ }) _%>
+  "
 }
 
-__getCADbNodes() {
-  echo "db.ca.org1.example.com"
+__getCAPostgresNodes() {
+  echo "
+  <%_ orgs.filter((org) => org.ca.db === 'postgres').forEach((org) => { _%>
+      db.<%= org.ca.address %>
+  <%_ }) _%>
+  "
 }
 
 __createSnapshot() {
@@ -25,13 +41,13 @@ __createSnapshot() {
   mkdir -p "$backup_dir"
   cp -R ./fablo-target "$backup_dir/"
 
-  for node in $(__getCANodes); do
+  for node in $(__getCASQLiteNodes); do
     echo "Saving state of $node..."
     mkdir -p "$backup_dir/$node"
     docker cp "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db" "$backup_dir/$node/fabric-ca-server.db"
   done
 
-  for node in $(__getCADbNodes); do
+  for node in $(__getCAPostgresNodes); do
     echo "Saving state of $node..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
@@ -55,9 +71,7 @@ __cloneSnapshot() {
   cp -R ./fablo-target "$target_dir/fablo-target"
   (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
 
-  network_name="${COMPOSE_PROJECT_NAME}_basic"
-
-  for node in $(__getCANodes); do
+  for node in $(__getCASQLiteNodes); do
     echo "Restoring $node..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
@@ -66,7 +80,7 @@ __cloneSnapshot() {
     fi
   done
 
-  for node in $(__getCADbNodes); do
+  for node in $(__getCAPostgresNodes); do
     echo "Restoring $node..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"

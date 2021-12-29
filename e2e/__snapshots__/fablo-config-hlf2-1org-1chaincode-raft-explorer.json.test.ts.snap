@@ -855,12 +855,35 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_DB_TYPE=postgres
+      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
     ports:
       - 7040:7054
     working_dir: /etc/hyperledger/fabric-ca-server
     command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+    depends_on:
+      db.ca.org1.example.com:
+        condition: service_healthy
+    networks:
+      - basic
+
+  db.ca.org1.example.com:
+    container_name: db.ca.org1.example.com
+    image: postgres:\${FABRIC_CA_POSTGRES_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=caDbPass12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fabriccaserver
+    healthcheck:
+      test: \\"pg_isready -h localhost -p 5432 -q -U postgres\\"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
     networks:
       - basic
 
@@ -1986,19 +2009,23 @@ fetchChannelAndJoinTls() {
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "#!/usr/bin/env bash
 
-__getSnapshotNodes() {
-  network_name=\\"\${COMPOSE_PROJECT_NAME}_basic\\"
-  docker ps --format \\"{{.Names}}\\" --filter \\"network=$network_name\\" --all |
-    grep -v \\"cli\\\\.\\" |
-    grep -v \\"dev-peer\\" |
-    grep -v \\"ca\\\\.\\" |
-    grep -v \\"couchdb\\\\.\\" |
-    grep -v \\"fablo-rest\\"
+__getOrdererAndPeerNodes() {
+  echo \\"
+      orderer0.group1.orderer.example.com
+      peer0.org1.example.com
+  \\"
 }
 
-__getCANodes() {
-  network_name=\\"\${COMPOSE_PROJECT_NAME}_basic\\"
-  docker ps --format \\"{{.Names}}\\" --filter \\"network=$network_name\\" --all | grep \\"ca\\\\.\\"
+__getCASQLiteNodes() {
+  echo \\"
+      ca.orderer.example.com
+  \\"
+}
+
+__getCAPostgresNodes() {
+  echo \\"
+      db.ca.org1.example.com
+  \\"
 }
 
 __createSnapshot() {
@@ -2013,13 +2040,19 @@ __createSnapshot() {
   mkdir -p \\"$backup_dir\\"
   cp -R ./fablo-target \\"$backup_dir/\\"
 
-  for node in $(__getCANodes); do
+  for node in $(__getCASQLiteNodes); do
     echo \\"Saving state of $node...\\"
     mkdir -p \\"$backup_dir/$node\\"
     docker cp \\"$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db\\" \\"$backup_dir/$node/fabric-ca-server.db\\"
   done
 
-  for node in $(__getSnapshotNodes); do
+  for node in $(__getCAPostgresNodes); do
+    echo \\"Saving state of $node...\\"
+    mkdir -p \\"$backup_dir/$node/pg-data\\"
+    docker exec \\"$node\\" pg_dump -c --if-exists -U postgres fabriccaserver >\\"$backup_dir/$node/fabriccaserver.sql\\"
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
     echo \\"Saving state of $node...\\"
     docker cp \\"$node:/var/hyperledger/production/\\" \\"$backup_dir/$node/\\"
   done
@@ -2037,9 +2070,7 @@ __cloneSnapshot() {
   cp -R ./fablo-target \\"$target_dir/fablo-target\\"
   (cd \\"$target_dir/fablo-target/fabric-docker\\" && docker-compose up --no-start)
 
-  network_name=\\"\${COMPOSE_PROJECT_NAME}_basic\\"
-
-  for node in $(__getCANodes); do
+  for node in $(__getCASQLiteNodes); do
     echo \\"Restoring $node...\\"
     if [ ! -d \\"$node\\" ]; then
       echo \\"Warning: Cannot restore '$node', directory does not exist!\\"
@@ -2048,7 +2079,16 @@ __cloneSnapshot() {
     fi
   done
 
-  for node in $(__getSnapshotNodes); do
+  for node in $(__getCAPostgresNodes); do
+    echo \\"Restoring $node...\\"
+    if [ ! -d \\"$node\\" ]; then
+      echo \\"Warning: Cannot restore '$node', directory does not exist!\\"
+    else
+      docker cp \\"./$node/fabriccaserver.sql\\" \\"$node:/docker-entrypoint-initdb.d/fabriccaserver.sql\\"
+    fi
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
     echo \\"Restoring $node...\\"
     if [ ! -d \\"$node\\" ]; then
       echo \\"Warning: Cannot restore '$node', directory does not exist!\\"
