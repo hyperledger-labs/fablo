@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-__getSnapshotNodes() {
-  network_name="${COMPOSE_PROJECT_NAME}_basic"
-  docker ps --format "{{.Names}}" --filter "network=$network_name" --all |
-    grep -v "cli\." |
-    grep -v "dev-peer" |
-    grep -v "ca\." |
-    grep -v "couchdb\." |
-    grep -v "fablo-rest"
+__getOrdererAndPeerNodes() {
+  echo "orderer0.group1.orderer.example.com"
+  echo "peer0.org1.example.com"
 }
 
 __getCANodes() {
-  network_name="${COMPOSE_PROJECT_NAME}_basic"
-  docker ps --format "{{.Names}}" --filter "network=$network_name" --all | grep "ca\."
+  echo "ca.orderer.example.com"
+}
+
+__getCADbNodes() {
+  echo "db.ca.org1.example.com"
 }
 
 __createSnapshot() {
@@ -33,7 +31,13 @@ __createSnapshot() {
     docker cp "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db" "$backup_dir/$node/fabric-ca-server.db"
   done
 
-  for node in $(__getSnapshotNodes); do
+  for node in $(__getCADbNodes); do
+    echo "Saving state of $node..."
+    mkdir -p "$backup_dir/$node/pg-data"
+    docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
     echo "Saving state of $node..."
     docker cp "$node:/var/hyperledger/production/" "$backup_dir/$node/"
   done
@@ -62,7 +66,16 @@ __cloneSnapshot() {
     fi
   done
 
-  for node in $(__getSnapshotNodes); do
+  for node in $(__getCADbNodes); do
+    echo "Restoring $node..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
     echo "Restoring $node..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
