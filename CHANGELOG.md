@@ -1,8 +1,8 @@
-## 0.4.0
+## 1.0.0
 
 ### Features
-* Generate connection profiles for Node and Java gateways
-* Create a full network state snapshot in tag.gz file and restore it
+* Generate connection profiles for organizations
+* Create a full network state snapshot in tar.gz file and restore it
 * Add [Hyperledger Explorer](https://github.com/hyperledger/blockchain-explorer) support
 * Support postgres database for CA
 
@@ -29,17 +29,14 @@
 ### Chore & Maintenance
 
 ## 0.2.0
-
 * Rename Fabrica to Fablo
 
 ## 0.1.1
-
 * Broken Node.js chaincode build ([#211](https://github.com/softwaremill/fablo/pull/211))
 
 ## 0.1.0
 
 ### Features
-
 * Support for private data ([#104](https://github.com/softwaremill/fablo/issues/104))
 * Added channel query scripts  ([#169](https://github.com/softwaremill/fablo/issues/169))
 * Support for Hyperledger Fabric 2.x ([#132](https://github.com/softwaremill/fablo/issues/132)
@@ -48,14 +45,12 @@
 * Support for fablo config in YAML format
 
 ### Chore & Maintenance
-
 * Use different config format and provide defaults
 * Rewrite Yeoman generators to use TypeScript
 
 ## 0.0.1
 
 ### Features
-
 * Generate simple Hyperledger Fabric network
 * Support for multiple organizations
 * Support for solo consensus protocol
@@ -70,11 +65,9 @@
   discovery ([#116](https://github.com/softwaremill/fablo/issues/116))
 
 ### Fixes
-
 * Missing notify anchor peers step ([#26](https://github.com/softwaremill/fablo/issues/26))
 
 ### Chore & Maintenance
-
 * Lint bash and YAML files ([#48](https://github.com/softwaremill/fablo/issues/48))
 * Format generated scripts and YAML files ([#75](https://github.com/softwaremill/fablo/issues/75))
 * Test Java chaincode on generated network ([#25](https://github.com/softwaremill/fablo/issues/25))

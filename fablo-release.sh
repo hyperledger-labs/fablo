@@ -14,13 +14,23 @@ cleanup() {
 trap cleanup EXIT
 
 git clone --depth 1 --branch "$tag" "https://github.com/softwaremill/fablo" "$FABLO_HOME"
-"$FABLO_HOME/fablo-build.sh"
+("$FABLO_HOME/check-if-fablo-version-matches.sh")
+
 FABLO_VERSION="$(jq -r '.version' "$FABLO_HOME/package.json")"
 
-echo "Pushing to docker hub.."
+echo "Pushing to Docker Hub..."
 echo "   FABLO_HOME:    $FABLO_HOME"
 echo "   FABLO_VERSION: $FABLO_VERSION"
-echo "   GIT_TAG:         $tag"
+echo "   GIT_TAG:       $tag"
 
-docker login -u "$login"
-docker push softwaremill/fablo:"$FABLO_VERSION"
+# shellcheck disable=SC2039
+read -r -p "Are you sure? [y/N] " response
+
+# shellcheck disable=SC2039
+if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+  "$FABLO_HOME/fablo-build.sh"
+  docker login -u "$login"
+  docker push softwaremill/fablo:"$FABLO_VERSION"
+else
+  echo "Aborted."
+fi

@@ -6,7 +6,7 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../.."
 
-CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json"
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
@@ -49,8 +49,12 @@ networkUp
 
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.example.com" "Starting Raft node channel=my-channel1"
+waitForContainer "db.ca.org1.example.com" "database system is ready to accept connections"
 waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
+waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"

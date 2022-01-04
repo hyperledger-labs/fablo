@@ -171,42 +171,6 @@ jobs:
           MSG_MINIMAL: ref
           SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
-  test-05-raft-explorer:
-    needs: test-main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Build Fablo
-        run: |
-          shellcheck --version && \
-          yamllint -v && \
-          npm install && \
-          ./fablo-build.sh
-
-      - name: Test RAFT network
-        run: e2e-network/test-05-raft-explorer.sh
-
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: test-02-raft
-          path: |
-            e2e-network/test-02-raft.sh.logs/*
-            e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
-
-      - name: Send Slack notification
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
-          SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
-
   node-chaincodes-unit-tests:
     needs: test-main
     runs-on: ubuntu-latest

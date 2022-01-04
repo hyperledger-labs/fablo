@@ -6565,7 +6565,7 @@ Object {
 }
 `;
 
-exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-private-data.json 1`] = `
+exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 Object {
   "chaincodes": Array [
     Object {
@@ -6590,7 +6590,7 @@ Object {
             "address": "ca.org1.example.com",
             "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
             "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-            "db": "sqlite",
+            "db": "postgres",
             "exposePort": 7040,
             "fullAddress": "ca.org1.example.com:7054",
             "port": 7054,
@@ -6717,7 +6717,7 @@ Object {
               "address": "ca.org1.example.com",
               "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
               "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-              "db": "sqlite",
+              "db": "postgres",
               "exposePort": 7040,
               "fullAddress": "ca.org1.example.com:7054",
               "port": 7054,
@@ -6802,7 +6802,7 @@ Object {
           "address": "ca.org1.example.com",
           "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
           "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-          "db": "sqlite",
+          "db": "postgres",
           "exposePort": 7040,
           "fullAddress": "ca.org1.example.com:7054",
           "port": 7054,
@@ -6890,7 +6890,7 @@ Object {
           "address": "ca.org1.example.com",
           "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
           "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-          "db": "sqlite",
+          "db": "postgres",
           "exposePort": 7040,
           "fullAddress": "ca.org1.example.com:7054",
           "port": 7054,
@@ -7017,7 +7017,7 @@ Object {
             "address": "ca.org1.example.com",
             "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
             "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-            "db": "sqlite",
+            "db": "postgres",
             "exposePort": 7040,
             "fullAddress": "ca.org1.example.com:7054",
             "port": 7054,
@@ -7100,7 +7100,12 @@ Object {
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
-    "tools": Object {},
+    "tools": Object {
+      "explorer": Object {
+        "address": "explorer.example.com",
+        "port": 7010,
+      },
+    },
   },
   "hooks": Object {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
@@ -7233,7 +7238,7 @@ Object {
         "address": "ca.org1.example.com",
         "caAdminNameVar": "ORG1_CA_ADMIN_NAME",
         "caAdminPassVar": "ORG1_CA_ADMIN_PASSWORD",
-        "db": "sqlite",
+        "db": "postgres",
         "exposePort": 7040,
         "fullAddress": "ca.org1.example.com:7054",
         "port": 7054,

@@ -1,8 +1,11 @@
 {
-  "$schema": "https://github.com/softwaremill/fablo/releases/download/0.3.0/schema.json",
+  "$schema": "https://github.com/softwaremill/fablo/releases/download/1.0.0/schema.json",
   "global": {
     "fabricVersion": "2.3.3",
-    "tls": true
+    "tls": true,
+    "tools": {
+      "explorer": true
+    }
   },
   "orgs": [
     {
@@ -22,6 +25,9 @@
       "organization": {
         "name": "Org1",
         "domain": "org1.example.com"
+      },
+      "ca": {
+        "db": "postgres"
       },
       "peer": {
         "instances": 1,

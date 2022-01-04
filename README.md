@@ -259,7 +259,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.0.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -277,6 +277,9 @@ Example:
     "tls": false,
     "monitoring": {
       "loglevel": "debug"
+    },
+    "tools": {
+      "explorer": false
     }
   },
 ```
@@ -300,7 +303,11 @@ Example:
         "groupName": "group1",
         "type": "raft",
         "instances": 3
-      }]
+      }],
+      "tools": {
+        "fabloRest": true,
+        "explorer": true
+      }
     },
     ...
   ],
@@ -313,7 +320,9 @@ The other available parameters for entries in `orgs` array are:
  * `ca.db` (default: `sqlite`, other: `postgres`)
  * `peer.prefix` (default: `peer`)
  * `peer.anchorPeerInstances` (default: `1`)
- * `orderers` (defaults to empty: [])  
+ * `orderers` (defaults to empty: `[]`)
+ * `tools.explorer` - whether run Blockchain Explorer for the organization (default: `false`)
+ * `tools.fabloRest` - whether run Fablo REST for the organization (default: `false`)
  
 ### property `peer.db`:  
 - may be `LevelDb` (default) or `CouchDb`.  
@@ -411,7 +420,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/0.3.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.0.0/schema.json
 global:
   fabricVersion: 2.3.0
   tls: false
@@ -467,6 +476,17 @@ chaincodes:
 
 Fablo will generate the connection profiles for each organization defined in the configuration.
 You can find them in `fablo-target/fablo-config/connection-profiles` directory in `json` and `yaml` format.
+
+### REST API
+
+Fablo is integrated with simple REST API for CA and chaincodes, supported by [Fablo REST](https://github.com/softwaremill/fablo-rest).
+If you want to use it, provide for your organization `"tools": { "fabloRest": true }`.
+Visit the [Fablo REST](https://github.com/softwaremill/fablo-rest) project for more documentation.
+
+### Blockchain Explorer
+
+Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you.
+Provide for your organization `"tools": { "explorer": true }`, if you want to use it per organization, or provide the same value in `global` section of the config, if you want to use one global Explorer for all organizations.
 
 ## Testimonials
 
