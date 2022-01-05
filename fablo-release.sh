@@ -28,7 +28,7 @@ read -r -p "Are you sure? [y/N] " response
 
 # shellcheck disable=SC2039
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-  "$FABLO_HOME/fablo-build.sh"
+  (cd "$FABLO_HOME" && ./fablo-build.sh)
   docker login -u "$login"
   docker push softwaremill/fablo:"$FABLO_VERSION"
 else
