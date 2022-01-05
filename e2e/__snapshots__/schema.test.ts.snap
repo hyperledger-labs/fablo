@@ -4,7 +4,6 @@ exports[`schema should match snapshot 1`] = `
 Object {
   "$id": "http://example.com/example.json",
   "$schema": "http://json-schema.org/draft-07/schema",
-  "additionalProperties": false,
   "default": Object {},
   "properties": Object {
     "$schema": Object {
@@ -25,7 +24,6 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/chaincodes/items",
-        "additionalProperties": false,
         "properties": Object {
           "channel": Object {
             "$id": "#/properties/chaincodes/items/properties/channel",
@@ -83,7 +81,6 @@ Object {
             "$id": "#/properties/chaincodes/items/properties/privateData",
             "items": Object {
               "$id": "#/properties/chaincodes/items/properties/privateData/items",
-              "additionalProperties": false,
               "properties": Object {
                 "name": Object {
                   "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/name",
@@ -171,7 +168,6 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/channels/items",
-        "additionalProperties": false,
         "properties": Object {
           "name": Object {
             "$id": "#/properties/channels/items/properties/name",
@@ -189,7 +185,6 @@ Object {
             "$id": "#/properties/channels/items/properties/orgs",
             "items": Object {
               "$id": "#/properties/channels/items/properties/orgs/items",
-              "additionalProperties": false,
               "properties": Object {
                 "name": Object {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/name",
@@ -242,7 +237,6 @@ Object {
     },
     "global": Object {
       "$id": "#/properties/global",
-      "additionalProperties": false,
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
         "fabricVersion": Object {
@@ -283,7 +277,6 @@ Object {
         },
         "monitoring": Object {
           "$id": "#/properties/monitoring",
-          "additionalProperties": false,
           "description": "Optional settings for monitoring purposes",
           "properties": Object {
             "loglevel": Object {
@@ -331,7 +324,6 @@ Object {
     },
     "hooks": Object {
       "$id": "#/properties/hooks",
-      "additionalProperties": false,
       "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
       "properties": Object {
         "postGenerate": Object {
@@ -380,11 +372,9 @@ Object {
       ],
       "items": Object {
         "$id": "#/properties/orgs/items",
-        "additionalProperties": false,
         "properties": Object {
           "ca": Object {
             "$id": "#/properties/orgs/items/properties/ca",
-            "additionalProperties": false,
             "properties": Object {
               "db": Object {
                 "$id": "#/properties/orgs/items/properties/ca/properties/db",
@@ -418,7 +408,6 @@ Object {
             ],
             "items": Object {
               "$id": "#/properties/orgs/items/properties/orderers/items",
-              "additionalProperties": false,
               "properties": Object {
                 "groupName": Object {
                   "$id": "#/properties/orgs/items/properties/orderers/items/properties/groupName",
@@ -463,7 +452,6 @@ Object {
           },
           "organization": Object {
             "$id": "#/properties/orgs/items/properties/organization",
-            "additionalProperties": false,
             "properties": Object {
               "domain": Object {
                 "$id": "#/properties/orgs/items/properties/organization/properties/domain",
@@ -493,7 +481,6 @@ Object {
           },
           "peer": Object {
             "$id": "#/properties/orgs/items/properties/peer",
-            "additionalProperties": false,
             "properties": Object {
               "anchorPeerInstances": Object {
                 "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
@@ -533,7 +520,6 @@ Object {
           },
           "tools": Object {
             "$id": "#/properties/orgs/items/properties/tools",
-            "additionalProperties": false,
             "properties": Object {
               "explorer": Object {
                 "$id": "#/properties/orgs/items/properties/tools/properties/explorer",
