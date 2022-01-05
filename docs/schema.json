@@ -84,8 +84,7 @@
               ],
               "default": "info"
             }
-          },
-          "additionalProperties": false
+          }
         },
         "tools": {
           "$id": "#/properties/global/properties/tools",
@@ -100,8 +99,7 @@
             }
           }
         }
-      },
-      "additionalProperties": false
+      }
     },
     "orgs": {
       "$id": "#/properties/orgs",
@@ -174,8 +172,7 @@
                 "type": "string",
                 "pattern": "^[a-z0-9\\.\\-]+$"
               }
-            },
-            "additionalProperties": false
+            }
           },
           "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
@@ -198,8 +195,7 @@
                   "postgres"
                 ]
               }
-            },
-            "additionalProperties": false
+            }
           },
           "orderers": {
             "$id": "#/properties/orgs/items/properties/orderers",
@@ -252,8 +248,7 @@
                   "minimum": 1,
                   "maximum": 9
                 }
-              },
-              "additionalProperties": false
+              }
             }
           },
           "peer": {
@@ -293,8 +288,7 @@
                   "CouchDb"
                 ]
               }
-            },
-            "additionalProperties": false
+            }
           },
           "tools": {
             "$id": "#/properties/orgs/items/properties/tools",
@@ -312,11 +306,9 @@
                 "title": "Blockchain Explorer enabled",
                 "type": "boolean"
               }
-            },
-            "additionalProperties": false
+            }
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     "channels": {
@@ -408,12 +400,10 @@
                     "pattern": "^[a-z0-9]+$"
                   }
                 }
-              },
-              "additionalProperties": false
+              }
             }
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     "chaincodes": {
@@ -541,12 +531,10 @@
                     ]
                   }
                 }
-              },
-              "additionalProperties": false
+              }
             }
           }
-        },
-        "additionalProperties": false
+        }
       }
     },
     "hooks": {
@@ -561,9 +549,7 @@
           "description": "Operation to run run after a network config is generated",
           "type": "string"
         }
-      },
-      "additionalProperties": false
+      }
     }
-  },
-  "additionalProperties": false
+  }
 }
