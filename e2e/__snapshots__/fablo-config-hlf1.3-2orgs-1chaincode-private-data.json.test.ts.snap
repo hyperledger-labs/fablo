@@ -1065,6 +1065,9 @@ services:
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
       #
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
@@ -1073,6 +1076,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
+      - 8041:9440
       - 7041:7041
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
@@ -1103,6 +1107,9 @@ services:
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
       #
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
@@ -1111,6 +1118,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
+      - 8042:9440
       - 7042:7042
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
@@ -1186,6 +1194,9 @@ services:
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org2.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
       #
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
@@ -1194,6 +1205,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
+      - 8061:9440
       - 7061:7061
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock

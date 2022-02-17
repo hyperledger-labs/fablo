@@ -238,6 +238,9 @@ services:
       - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=<%= peer.address %>:9440
+      - CORE_METRICS_PROVIDER=prometheus
       #
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
@@ -260,6 +263,7 @@ services:
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
+      - <%= peer.port + 1000 %>:9440
       - <%= peer.port %>:<%= peer.port %>
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
