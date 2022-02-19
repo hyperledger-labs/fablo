@@ -1,3 +1,12 @@
+## 1.0.1-pre
+
+### Features
+
+### Fixes
+
+### Chore & Maintenance
+* Exposed peer Prometheus metrics
+
 ## 1.0.0
 
 ### Features
