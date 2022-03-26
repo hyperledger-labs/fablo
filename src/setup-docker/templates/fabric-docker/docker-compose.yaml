@@ -194,6 +194,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
       <%_ if(global.tls) { _%>
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=<%= orderer.address %>:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -207,6 +210,7 @@ services:
     command: orderer
     ports:
       - <%= orderer.port %>:<%= orderer.port %>
+      - <%= orderer.port + 1000 %>:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp

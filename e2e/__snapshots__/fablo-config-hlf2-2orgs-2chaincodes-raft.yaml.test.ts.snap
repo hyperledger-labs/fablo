@@ -1718,6 +1718,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer1.com:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -1730,6 +1733,7 @@ services:
     command: orderer
     ports:
       - 7030:7030
+      - 8030:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/msp/:/var/hyperledger/orderer/msp
@@ -1749,6 +1753,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.orderer1.com:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -1761,6 +1768,7 @@ services:
     command: orderer
     ports:
       - 7031:7031
+      - 8031:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/msp/:/var/hyperledger/orderer/msp
@@ -1780,6 +1788,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.group1.orderer1.com:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -1792,6 +1803,7 @@ services:
     command: orderer
     ports:
       - 7032:7032
+      - 8032:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/msp/:/var/hyperledger/orderer/msp
@@ -1867,6 +1879,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group2.orderer2.com:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -1879,6 +1894,7 @@ services:
     command: orderer
     ports:
       - 7050:7050
+      - 8050:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/msp/:/var/hyperledger/orderer/msp
