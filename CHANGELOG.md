@@ -1,3 +1,8 @@
+## 1.0.2
+
+### Features
+* Expose metrics
+
 ## 1.0.0
 
 ### Features
