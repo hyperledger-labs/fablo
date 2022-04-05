@@ -1,7 +1,11 @@
 ## 1.0.2
 
 ### Features
-* Expose metrics
+
+### Fixes
+
+### Chore & Maintenance
+* Expose peer and orderer Prometheus metrics
 
 ## 1.0.0
 

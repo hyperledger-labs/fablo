@@ -993,6 +993,7 @@ services:
     command: orderer
     ports:
       - 7030:7030
+      - 8030:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
