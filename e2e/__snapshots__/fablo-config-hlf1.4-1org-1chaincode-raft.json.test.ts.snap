@@ -486,7 +486,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-1org-1chaincode-raft.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
-"FABLO_VERSION=1.0.0
+"FABLO_VERSION=1.0.2
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.0
 HYPERLEDGER_EXPLORER_VERSION=1.1.8
@@ -841,6 +841,9 @@ services:
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - GODEBUG=netdns=go
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer.example.com:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
@@ -853,6 +856,7 @@ services:
     command: orderer
     ports:
       - 7030:7030
+      - 8030:9440
     volumes:
       - ../fabric-config/config/:/var/hyperledger/config
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
