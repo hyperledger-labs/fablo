@@ -57,6 +57,7 @@ export interface PeerConfig {
   isAnchorPeer: boolean;
   name: string;
   port: number;
+  gatewayEnabled: boolean;
 }
 
 export interface PeerDbConfig {

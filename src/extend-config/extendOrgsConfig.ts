@@ -2,9 +2,9 @@ import defaults from "./defaults";
 import { CAJson, OrdererJson, OrgJson, PeerJson } from "../types/FabloConfigJson";
 import {
   CAConfig,
+  ExplorerConfig,
   FabloRestConfig,
   FabloRestLoggingConfig,
-  ExplorerConfig,
   Global,
   OrdererConfig,
   OrdererGroup,
@@ -12,8 +12,8 @@ import {
   PeerConfig,
   PeerDbConfig,
 } from "../types/FabloConfigExtended";
-import _ = require("lodash");
 import { version } from "../repositoryUtils";
+import _ = require("lodash");
 
 const extendCaConfig = (
   caJsonFormat: CAJson,
@@ -123,6 +123,8 @@ const extendPeers = (
     }
   }
 
+  const gatewayEnabled = version(fabricVersion).isGreaterOrEqual("2.4");
+
   return Array(peerJson.instances)
     .fill(undefined)
     .map((_x, i) => {
@@ -136,6 +138,7 @@ const extendPeers = (
         port,
         fullAddress: `${address}:${port}`,
         couchDbExposePort: headPeerCouchDbExposePort + i,
+        gatewayEnabled,
       };
     });
 };
