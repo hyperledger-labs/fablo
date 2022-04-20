@@ -2,6 +2,7 @@
 
 ### Features
 * Support Fabric Gateway since Fabric 2.4 [#305](https://github.com/hyperledger-labs/fablo/issues/305)
+* Introduce pre-restore hook
 
 ### Fixes
 
