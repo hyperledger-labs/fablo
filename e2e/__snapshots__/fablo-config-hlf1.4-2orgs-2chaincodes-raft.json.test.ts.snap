@@ -2626,7 +2626,7 @@ __cloneSnapshot() {
 
   if [ -n \\"$hook_cmd\\" ]; then
     echo \\"Executing pre-restore hook: '$hook_cmd'\\"
-    (cd \\"$target_dir\\" && eval $hook_cmd)
+    (cd \\"$target_dir\\" && eval \\"$hook_cmd\\")
   fi
 
   (cd \\"$target_dir/fablo-target/fabric-docker\\" && docker-compose up --no-start)
