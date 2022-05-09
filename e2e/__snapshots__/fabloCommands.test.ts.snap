@@ -8,7 +8,7 @@ exports[`extend config should extend custom config 1`] = `
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 1.0.2
+=========================================================== v: 1.0.3-unstable
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
@@ -23,6 +23,8 @@ Validation warnings count: 0
     \\"fabricCcenvVersion\\": \\"2.3.2\\",
     \\"fabricBaseosVersion\\": \\"2.3.2\\",
     \\"fabricJavaenvVersion\\": \\"2.3.0\\",
+    \\"fabricNodeenvVersion\\": \\"2.3.2\\",
+    \\"fabricRecommendedNodeVersion\\": \\"12\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -2263,7 +2265,7 @@ exports[`extend config should extend default config 1`] = `
  \`--. \\\\/ _ \\\\|  _| __\\\\ \\\\ /\\\\ / / _\` | '__/ _ \\\\ |\\\\/| | | | |
 /\\\\__/ / (_) | | | |_ \\\\ V  V / (_| | | |  __/ |  | | | | |
 \\\\____/ \\\\___/|_|  \\\\__| \\\\_/\\\\_/ \\\\__,_|_|  \\\\___\\\\_|  |_/_|_|_|
-=========================================================== v: 1.0.2
+=========================================================== v: 1.0.3-unstable
 Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
@@ -2275,6 +2277,8 @@ Validation warnings count: 0
     \\"fabricCcenvVersion\\": \\"2.4.0\\",
     \\"fabricBaseosVersion\\": \\"2.4.0\\",
     \\"fabricJavaenvVersion\\": \\"2.4.0\\",
+    \\"fabricNodeenvVersion\\": \\"2.4.0\\",
+    \\"fabricRecommendedNodeVersion\\": \\"16\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -2708,7 +2712,7 @@ Validation warnings count: 0
 
 exports[`init should init simple fablo config 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.2/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.3-unstable/schema.json\\",
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
@@ -2760,7 +2764,7 @@ exports[`init should init simple fablo config 1`] = `
 
 exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.2/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.3-unstable/schema.json\\",
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
@@ -2820,7 +2824,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 
 exports[`init should init simple fablo config with node chaincode and rest api 1`] = `
 "{
-  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.2/schema.json\\",
+  \\"$schema\\": \\"https://github.com/softwaremill/fablo/releases/download/1.0.3-unstable/schema.json\\",
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false
