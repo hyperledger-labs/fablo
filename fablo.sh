@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION="1.0.2"
+FABLO_VERSION="1.0.3-unstable"
 FABLO_IMAGE_NAME="softwaremill/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 

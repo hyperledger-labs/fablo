@@ -4,6 +4,8 @@ export interface FabricVersions {
   fabricCcenvVersion: string;
   fabricBaseosVersion: string;
   fabricJavaenvVersion: string;
+  fabricNodeenvVersion: string;
+  fabricRecommendedNodeVersion: string;
 }
 
 interface CapabilitiesV1 {
