@@ -6,12 +6,12 @@ chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
-
+  local RECOMMENDED_NODE_VERSION=$4
+  
   mkdir -p "$CHAINCODE_DIR_PATH"
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
     NODE_VERSION="$(node --version)"
-    RECOMMENDED_NODE_VERSION="12"
 
     USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
     if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then

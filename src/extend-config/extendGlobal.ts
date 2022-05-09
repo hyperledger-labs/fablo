@@ -30,12 +30,19 @@ const getVersions = (fabricVersion: string): FabricVersions => {
     "2.3.2": "2.3.0",
   };
 
+  const fabricNodeenvExceptions: Record<string, string> = {
+    "2.4": "2.4.2",
+    "2.4.1": "2.4.2"
+  };
+
   return {
     fabricVersion,
     fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.0" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
     fabricJavaenvVersion: fabricJavaenvExceptions[fabricVersion] ?? fabricVersion,
+    fabricNodeenvVersion: fabricNodeenvExceptions[fabricVersion] ?? fabricVersion,
+    fabricRecommendedNodeVersion: version(fabricVersion).isGreaterOrEqual("2.4") ? "16": "12"
   };
 };
 
