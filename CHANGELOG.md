@@ -1,3 +1,14 @@
+## 1.0.3
+
+### Features
+* Add 2.4.2 to supported Hyperledger Fabric versions
+* Update Node.js runtime compatibility ([details](https://github.com/hyperledger-labs/fablo/issues/274))
+* Add `fabricNodeenvVersion` global configuration 
+
+### Fixes
+
+### Chore & Maintenance
+
 ## 1.0.2
 
 ### Features
