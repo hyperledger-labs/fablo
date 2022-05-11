@@ -1,3 +1,12 @@
+## 1.0.3-unstable
+
+### Features
+* Support Fabric Gateway since Fabric 2.4 [#305](https://github.com/hyperledger-labs/fablo/issues/305)
+
+### Fixes
+
+### Chore & Maintenance
+
 ## 1.0.2
 
 ### Features

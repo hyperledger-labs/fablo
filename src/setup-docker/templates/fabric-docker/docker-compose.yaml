@@ -264,6 +264,10 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=<%= peer.name %>
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=<%= peer.name %>Password
       <%_ } _%>
+      <%_ if(peer.gatewayEnabled) { _%>
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+      <%_ } _%>
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
