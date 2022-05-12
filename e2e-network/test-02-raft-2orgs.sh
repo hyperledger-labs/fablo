@@ -61,7 +61,7 @@ waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-c
 waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer0.org1.example.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
@@ -71,7 +71,7 @@ waitForContainer "peer1.org1.example.com" "Learning about the configured anchor 
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer1.org2.example.com:7082"
 
 # check if org2 is ready
-waitForContainer "ca.org2.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org2.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org2.example.com" "Joining gossip network of channel my-channel1 with 2 organizations"
 waitForContainer "peer0.org2.example.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel1"
 waitForContainer "peer0.org2.example.com" "Anchor peer for channel my-channel1 with same endpoint, skipping connecting to myself"
