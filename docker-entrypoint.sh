@@ -7,7 +7,7 @@ executeYeomanCommand() {
 
   # cleanup yeoman files after execution
   # shellcheck disable=SC2064
-  trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\"" EXIT
+  trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\" \"$yeoman_target_dir/.npm\"" EXIT
 
   if [ "$(id -u)" = 0 ]; then
     # root user detected, running as yeoman user
