@@ -1,9 +1,11 @@
-## 1.0.3
+## 1.1.0-unstable
 
 ### Features
+* Support Fabric Gateway since Fabric 2.4 [#305](https://github.com/hyperledger-labs/fablo/issues/305)
+* Introduce pre-restore hook
 * Add 2.4.2 to supported Hyperledger Fabric versions
 * Update Node.js runtime compatibility ([details](https://github.com/hyperledger-labs/fablo/issues/274))
-* Add `fabricNodeenvVersion` global configuration 
+* Add `fabricNodeenvVersion` global configuration
 
 ### Fixes
 

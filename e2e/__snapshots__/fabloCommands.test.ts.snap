@@ -14,17 +14,15 @@ Validation warnings count: 0
 ===========================================================
 {
   \\"global\\": {
-    \\"fabricVersion\\": \\"2.3.2\\",
+    \\"fabricVersion\\": \\"2.4.3\\",
     \\"tls\\": true,
     \\"monitoring\\": {
       \\"loglevel\\": \\"debug\\"
     },
     \\"fabricCaVersion\\": \\"1.5.0\\",
-    \\"fabricCcenvVersion\\": \\"2.3.2\\",
-    \\"fabricBaseosVersion\\": \\"2.3.2\\",
-    \\"fabricJavaenvVersion\\": \\"2.3.0\\",
-    \\"fabricNodeenvVersion\\": \\"2.3.2\\",
-    \\"fabricRecommendedNodeVersion\\": \\"12\\",
+    \\"fabricCcenvVersion\\": \\"2.4.3\\",
+    \\"fabricBaseosVersion\\": \\"2.4.3\\",
+    \\"fabricJavaenvVersion\\": \\"2.4\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -294,7 +292,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-          \\"couchDbExposePort\\": 5120
+          \\"couchDbExposePort\\": 5120,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -305,7 +304,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-          \\"couchDbExposePort\\": 5121
+          \\"couchDbExposePort\\": 5121,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"anchorPeers\\": [
@@ -318,7 +318,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-          \\"couchDbExposePort\\": 5120
+          \\"couchDbExposePort\\": 5120,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -329,7 +330,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-          \\"couchDbExposePort\\": 5121
+          \\"couchDbExposePort\\": 5121,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -355,7 +357,8 @@ Validation warnings count: 0
         \\"isAnchorPeer\\": true,
         \\"port\\": 7061,
         \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-        \\"couchDbExposePort\\": 5120
+        \\"couchDbExposePort\\": 5120,
+        \\"gatewayEnabled\\": true
       },
       \\"ordererGroups\\": [],
       \\"tools\\": {
@@ -393,7 +396,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
           \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-          \\"couchDbExposePort\\": 5140
+          \\"couchDbExposePort\\": 5140,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -404,7 +408,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
           \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-          \\"couchDbExposePort\\": 5141
+          \\"couchDbExposePort\\": 5141,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"anchorPeers\\": [
@@ -417,7 +422,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7081,
           \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-          \\"couchDbExposePort\\": 5140
+          \\"couchDbExposePort\\": 5140,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -428,7 +434,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7082,
           \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-          \\"couchDbExposePort\\": 5141
+          \\"couchDbExposePort\\": 5141,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -454,7 +461,8 @@ Validation warnings count: 0
         \\"isAnchorPeer\\": true,
         \\"port\\": 7081,
         \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-        \\"couchDbExposePort\\": 5140
+        \\"couchDbExposePort\\": 5140,
+        \\"gatewayEnabled\\": true
       },
       \\"ordererGroups\\": [],
       \\"tools\\": {}
@@ -481,7 +489,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -494,7 +503,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -505,7 +515,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -531,7 +542,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
@@ -569,7 +581,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -582,7 +595,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -593,7 +607,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -619,7 +634,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
             \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-            \\"couchDbExposePort\\": 5140
+            \\"couchDbExposePort\\": 5140,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {}
@@ -703,7 +719,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -716,7 +733,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -727,7 +745,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -753,7 +772,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-          \\"couchDbExposePort\\": 5120
+          \\"couchDbExposePort\\": 5120,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
@@ -796,7 +816,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -809,7 +830,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -820,7 +842,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -846,7 +869,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
@@ -884,7 +908,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -897,7 +922,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -908,7 +934,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -934,7 +961,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7082,
             \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-            \\"couchDbExposePort\\": 5141
+            \\"couchDbExposePort\\": 5141,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {}
@@ -1018,7 +1046,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -1031,7 +1060,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -1042,7 +1072,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1068,7 +1099,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-          \\"couchDbExposePort\\": 5121
+          \\"couchDbExposePort\\": 5121,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
@@ -1111,7 +1143,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -1122,7 +1155,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -1135,7 +1169,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -1146,7 +1181,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1172,7 +1208,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
@@ -1210,7 +1247,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -1221,7 +1259,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -1234,7 +1273,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -1245,7 +1285,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -1271,7 +1312,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7081,
             \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-            \\"couchDbExposePort\\": 5140
+            \\"couchDbExposePort\\": 5140,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {}
@@ -1339,7 +1381,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -1350,7 +1393,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -1363,7 +1407,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -1374,7 +1419,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1400,7 +1446,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-          \\"couchDbExposePort\\": 5120
+          \\"couchDbExposePort\\": 5120,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
@@ -1450,7 +1497,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-                \\"couchDbExposePort\\": 5120
+                \\"couchDbExposePort\\": 5120,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"anchorPeers\\": [
@@ -1463,7 +1511,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-                \\"couchDbExposePort\\": 5120
+                \\"couchDbExposePort\\": 5120,
+                \\"gatewayEnabled\\": true
               },
               {
                 \\"name\\": \\"peer1\\",
@@ -1474,7 +1523,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-                \\"couchDbExposePort\\": 5121
+                \\"couchDbExposePort\\": 5121,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1500,7 +1550,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {
@@ -1538,7 +1589,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-                \\"couchDbExposePort\\": 5140
+                \\"couchDbExposePort\\": 5140,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"anchorPeers\\": [
@@ -1551,7 +1603,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-                \\"couchDbExposePort\\": 5140
+                \\"couchDbExposePort\\": 5140,
+                \\"gatewayEnabled\\": true
               },
               {
                 \\"name\\": \\"peer1\\",
@@ -1562,7 +1615,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-                \\"couchDbExposePort\\": 5141
+                \\"couchDbExposePort\\": 5141,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -1588,7 +1642,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7081,
               \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-              \\"couchDbExposePort\\": 5140
+              \\"couchDbExposePort\\": 5140,
+              \\"gatewayEnabled\\": true
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {}
@@ -1672,7 +1727,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -1685,7 +1741,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -1696,7 +1753,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1722,7 +1780,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
@@ -1763,7 +1822,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -1776,7 +1836,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -1787,7 +1848,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1813,7 +1875,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7061,
           \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-          \\"couchDbExposePort\\": 5120
+          \\"couchDbExposePort\\": 5120,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
@@ -1862,7 +1925,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-                \\"couchDbExposePort\\": 5121
+                \\"couchDbExposePort\\": 5121,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"anchorPeers\\": [
@@ -1875,7 +1939,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7061,
                 \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-                \\"couchDbExposePort\\": 5120
+                \\"couchDbExposePort\\": 5120,
+                \\"gatewayEnabled\\": true
               },
               {
                 \\"name\\": \\"peer1\\",
@@ -1886,7 +1951,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7062,
                 \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-                \\"couchDbExposePort\\": 5121
+                \\"couchDbExposePort\\": 5121,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -1912,7 +1978,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {
@@ -1950,7 +2017,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-                \\"couchDbExposePort\\": 5141
+                \\"couchDbExposePort\\": 5141,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"anchorPeers\\": [
@@ -1963,7 +2031,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7081,
                 \\"fullAddress\\": \\"peer0.org2.example.com:7081\\",
-                \\"couchDbExposePort\\": 5140
+                \\"couchDbExposePort\\": 5140,
+                \\"gatewayEnabled\\": true
               },
               {
                 \\"name\\": \\"peer1\\",
@@ -1974,7 +2043,8 @@ Validation warnings count: 0
                 \\"isAnchorPeer\\": true,
                 \\"port\\": 7082,
                 \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-                \\"couchDbExposePort\\": 5141
+                \\"couchDbExposePort\\": 5141,
+                \\"gatewayEnabled\\": true
               }
             ],
             \\"bootstrapPeers\\": \\"\\\\\\"peer0.org2.example.com:7081 peer1.org2.example.com:7082\\\\\\"\\",
@@ -2000,7 +2070,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7082,
               \\"fullAddress\\": \\"peer1.org2.example.com:7082\\",
-              \\"couchDbExposePort\\": 5141
+              \\"couchDbExposePort\\": 5141,
+              \\"gatewayEnabled\\": true
             },
             \\"ordererGroups\\": [],
             \\"tools\\": {}
@@ -2084,7 +2155,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -2097,7 +2169,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7061,
               \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-              \\"couchDbExposePort\\": 5120
+              \\"couchDbExposePort\\": 5120,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -2108,7 +2181,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7062,
               \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-              \\"couchDbExposePort\\": 5121
+              \\"couchDbExposePort\\": 5121,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -2134,7 +2208,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {
@@ -2175,7 +2250,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -2188,7 +2264,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7061,
             \\"fullAddress\\": \\"peer0.org1.example.com:7061\\",
-            \\"couchDbExposePort\\": 5120
+            \\"couchDbExposePort\\": 5120,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -2199,7 +2276,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7062,
             \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-            \\"couchDbExposePort\\": 5121
+            \\"couchDbExposePort\\": 5121,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7061 peer1.org1.example.com:7062\\\\\\"\\",
@@ -2225,7 +2303,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7062,
           \\"fullAddress\\": \\"peer1.org1.example.com:7062\\",
-          \\"couchDbExposePort\\": 5121
+          \\"couchDbExposePort\\": 5121,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {
@@ -2276,9 +2355,7 @@ Validation warnings count: 0
     \\"fabricCaVersion\\": \\"1.5.0\\",
     \\"fabricCcenvVersion\\": \\"2.4.0\\",
     \\"fabricBaseosVersion\\": \\"2.4.0\\",
-    \\"fabricJavaenvVersion\\": \\"2.4.0\\",
-    \\"fabricNodeenvVersion\\": \\"2.4.0\\",
-    \\"fabricRecommendedNodeVersion\\": \\"16\\",
+    \\"fabricJavaenvVersion\\": \\"2.4\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -2417,7 +2494,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-          \\"couchDbExposePort\\": 5100
+          \\"couchDbExposePort\\": 5100,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -2428,7 +2506,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
           \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-          \\"couchDbExposePort\\": 5101
+          \\"couchDbExposePort\\": 5101,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"anchorPeers\\": [
@@ -2441,7 +2520,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-          \\"couchDbExposePort\\": 5100
+          \\"couchDbExposePort\\": 5100,
+          \\"gatewayEnabled\\": true
         },
         {
           \\"name\\": \\"peer1\\",
@@ -2452,7 +2532,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7042,
           \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-          \\"couchDbExposePort\\": 5101
+          \\"couchDbExposePort\\": 5101,
+          \\"gatewayEnabled\\": true
         }
       ],
       \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
@@ -2478,7 +2559,8 @@ Validation warnings count: 0
         \\"isAnchorPeer\\": true,
         \\"port\\": 7041,
         \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-        \\"couchDbExposePort\\": 5100
+        \\"couchDbExposePort\\": 5100,
+        \\"gatewayEnabled\\": true
       },
       \\"ordererGroups\\": [],
       \\"tools\\": {}
@@ -2505,7 +2587,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
               \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-              \\"couchDbExposePort\\": 5100
+              \\"couchDbExposePort\\": 5100,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -2516,7 +2599,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
               \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-              \\"couchDbExposePort\\": 5101
+              \\"couchDbExposePort\\": 5101,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"anchorPeers\\": [
@@ -2529,7 +2613,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7041,
               \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-              \\"couchDbExposePort\\": 5100
+              \\"couchDbExposePort\\": 5100,
+              \\"gatewayEnabled\\": true
             },
             {
               \\"name\\": \\"peer1\\",
@@ -2540,7 +2625,8 @@ Validation warnings count: 0
               \\"isAnchorPeer\\": true,
               \\"port\\": 7042,
               \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-              \\"couchDbExposePort\\": 5101
+              \\"couchDbExposePort\\": 5101,
+              \\"gatewayEnabled\\": true
             }
           ],
           \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
@@ -2566,7 +2652,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-            \\"couchDbExposePort\\": 5100
+            \\"couchDbExposePort\\": 5100,
+            \\"gatewayEnabled\\": true
           },
           \\"ordererGroups\\": [],
           \\"tools\\": {}
@@ -2634,7 +2721,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-            \\"couchDbExposePort\\": 5100
+            \\"couchDbExposePort\\": 5100,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -2645,7 +2733,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
             \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-            \\"couchDbExposePort\\": 5101
+            \\"couchDbExposePort\\": 5101,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"anchorPeers\\": [
@@ -2658,7 +2747,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7041,
             \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-            \\"couchDbExposePort\\": 5100
+            \\"couchDbExposePort\\": 5100,
+            \\"gatewayEnabled\\": true
           },
           {
             \\"name\\": \\"peer1\\",
@@ -2669,7 +2759,8 @@ Validation warnings count: 0
             \\"isAnchorPeer\\": true,
             \\"port\\": 7042,
             \\"fullAddress\\": \\"peer1.org1.example.com:7042\\",
-            \\"couchDbExposePort\\": 5101
+            \\"couchDbExposePort\\": 5101,
+            \\"gatewayEnabled\\": true
           }
         ],
         \\"bootstrapPeers\\": \\"\\\\\\"peer0.org1.example.com:7041 peer1.org1.example.com:7042\\\\\\"\\",
@@ -2695,7 +2786,8 @@ Validation warnings count: 0
           \\"isAnchorPeer\\": true,
           \\"port\\": 7041,
           \\"fullAddress\\": \\"peer0.org1.example.com:7041\\",
-          \\"couchDbExposePort\\": 5100
+          \\"couchDbExposePort\\": 5100,
+          \\"gatewayEnabled\\": true
         },
         \\"ordererGroups\\": [],
         \\"tools\\": {}

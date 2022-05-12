@@ -201,6 +201,7 @@ createSnapshot() {
 
 restoreSnapshot() {
   archive="$(getSnapshotPath "$1")"
+  hook_command="$2"
   echo "📦 Restoring network from '$archive'"
 
   if [ ! -f "$archive" ]; then
@@ -209,7 +210,7 @@ restoreSnapshot() {
   fi
 
   tar -xf "$archive" -C "$FABLO_TEMP_DIR"
-  "$FABLO_TEMP_DIR/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT"
+  "$FABLO_TEMP_DIR/fablo-target/fabric-docker.sh" clone-to "$COMMAND_CALL_ROOT" "$hook_command"
   echo "📦 Network restored from '$archive'! Execute 'start' command to run it."
 }
 
@@ -252,7 +253,7 @@ elif [ "$COMMAND" = "snapshot" ]; then
   createSnapshot "$2"
 
 elif [ "$COMMAND" = "restore" ]; then
-  restoreSnapshot "$2"
+  restoreSnapshot "$2" "${3:-""}"
 
 else
   executeFabloDockerCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
