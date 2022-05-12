@@ -4,6 +4,8 @@ export interface FabricVersions {
   fabricCcenvVersion: string;
   fabricBaseosVersion: string;
   fabricJavaenvVersion: string;
+  fabricNodeenvVersion: string;
+  fabricRecommendedNodeVersion: string;
 }
 
 interface CapabilitiesV1 {
@@ -57,6 +59,7 @@ export interface PeerConfig {
   isAnchorPeer: boolean;
   name: string;
   port: number;
+  gatewayEnabled: boolean;
 }
 
 export interface PeerDbConfig {

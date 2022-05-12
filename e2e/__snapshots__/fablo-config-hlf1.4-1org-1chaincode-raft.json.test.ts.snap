@@ -470,7 +470,7 @@ elif [ \\"$1\\" = \\"channel\\" ]; then
 elif [ \\"$1\\" = \\"snapshot\\" ]; then
   createSnapshot \\"$2\\"
 elif [ \\"$1\\" = \\"clone-to\\" ]; then
-  cloneSnapshot \\"$2\\"
+  cloneSnapshot \\"$2\\" \\"\${3:-\\"\\"}\\"
 elif [ \\"$1\\" = \\"help\\" ]; then
   printHelp
 elif [ \\"$1\\" = \\"--help\\" ]; then
@@ -486,7 +486,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.4-1org-1chaincode-raft.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.4-1org-1chaincode-raft.json 1`] = `
-"FABLO_VERSION=1.0.2
+"FABLO_VERSION=1.0.3-unstable
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.0
 HYPERLEDGER_EXPLORER_VERSION=1.1.8
@@ -505,7 +505,9 @@ FABRIC_CA_VERSION=1.4.6
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=1.4.6
 FABRIC_BASEOS_VERSION=0.4.9
-FABRIC_JAVAENV_VERSION=1.4.6
+FABRIC_JAVAENV_VERSION=1.4
+FABRIC_NODEENV_VERSION=1.4
+RECOMMENDED_NODE_VERSION=12
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -1944,6 +1946,7 @@ __createSnapshot() {
 __cloneSnapshot() {
   cd \\"$FABLO_NETWORK_ROOT/..\\"
   target_dir=\\"$1\\"
+  hook_cmd=\\"$2\\"
 
   if [ -d \\"$target_dir/fablo-target\\" ]; then
     echo \\"Error: Directory '$target_dir/fablo-target' already exists! Execute 'fablo prune' to remove the current network.\\"
@@ -1951,6 +1954,12 @@ __cloneSnapshot() {
   fi
 
   cp -R ./fablo-target \\"$target_dir/fablo-target\\"
+
+  if [ -n \\"$hook_cmd\\" ]; then
+    echo \\"Executing pre-restore hook: '$hook_cmd'\\"
+    (cd \\"$target_dir\\" && eval \\"$hook_cmd\\")
+  fi
+
   (cd \\"$target_dir/fablo-target/fabric-docker\\" && docker-compose up --no-start)
 
   for node in $(__getCASQLiteNodes); do
@@ -1986,7 +1995,7 @@ createSnapshot() {
 }
 
 cloneSnapshot() {
-  (set -eu && __cloneSnapshot \\"$1\\")
+  (set -eu && __cloneSnapshot \\"$1\\" \\"$2\\")
 }
 "
 `;

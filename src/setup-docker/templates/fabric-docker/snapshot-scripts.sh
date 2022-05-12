@@ -62,6 +62,7 @@ __createSnapshot() {
 __cloneSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   target_dir="$1"
+  hook_cmd="$2"
 
   if [ -d "$target_dir/fablo-target" ]; then
     echo "Error: Directory '$target_dir/fablo-target' already exists! Execute 'fablo prune' to remove the current network."
@@ -69,6 +70,12 @@ __cloneSnapshot() {
   fi
 
   cp -R ./fablo-target "$target_dir/fablo-target"
+
+  if [ -n "$hook_cmd" ]; then
+    echo "Executing pre-restore hook: '$hook_cmd'"
+    (cd "$target_dir" && eval "$hook_cmd")
+  fi
+
   (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
 
   for node in $(__getCASQLiteNodes); do
@@ -104,5 +111,5 @@ createSnapshot() {
 }
 
 cloneSnapshot() {
-  (set -eu && __cloneSnapshot "$1")
+  (set -eu && __cloneSnapshot "$1" "$2")
 }

@@ -11,7 +11,8 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
+  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
+  "<%= global.fabricRecommendedNodeVersion %>"
 chaincodePackage <% -%>
   "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>

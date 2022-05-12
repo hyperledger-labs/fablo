@@ -42,7 +42,7 @@ elif [ "$1" = "channel" ]; then
 elif [ "$1" = "snapshot" ]; then
   createSnapshot "$2"
 elif [ "$1" = "clone-to" ]; then
-  cloneSnapshot "$2"
+  cloneSnapshot "$2" "${3:-""}"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
