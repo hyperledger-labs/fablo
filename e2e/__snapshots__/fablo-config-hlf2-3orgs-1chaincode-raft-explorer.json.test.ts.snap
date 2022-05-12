@@ -3929,6 +3929,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7020:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -4059,6 +4060,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7040:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -4284,6 +4286,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org2.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7060:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -4509,6 +4512,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org3.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7080:7054
     working_dir: /etc/hyperledger/fabric-ca-server

@@ -14,6 +14,9 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      <%_ if(global.tls) { _%>
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      <%_ } _%>
       <%_ if (org.ca.db === "postgres") { _%>
       - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
       - FABRIC_CA_SERVER_DB_TYPE=postgres
