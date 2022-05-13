@@ -25,4 +25,3 @@ docker build \
   --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
 
 docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
-

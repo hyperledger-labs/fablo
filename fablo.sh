@@ -155,6 +155,7 @@ generateNetworkConfig() {
 
   mkdir -p "$fablo_target"
   executeOnFabloDocker "fablo:setup-docker" "$fablo_target" "$fablo_config"
+  (cd $fablo_target && "$fablo_target/download-bin.sh" && rm -r config)
   ("$fablo_target/hooks/post-generate.sh")
 }
 
