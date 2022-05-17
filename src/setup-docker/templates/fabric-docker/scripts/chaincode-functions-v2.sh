@@ -7,10 +7,15 @@ chaincodeBuild() {
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
   local RECOMMENDED_NODE_VERSION=$4
-  
+
   mkdir -p "$CHAINCODE_DIR_PATH"
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
+    if [ -n "$(nvm --version)" ]; then
+      echo "Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm"
+      nvm use "$RECOMMENDED_NODE_VERSION"
+    fi
+
     NODE_VERSION="$(node --version)"
 
     USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"

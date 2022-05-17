@@ -6,6 +6,7 @@
 * Add 2.4.2 to supported Hyperledger Fabric versions
 * Update Node.js runtime compatibility ([details](https://github.com/hyperledger-labs/fablo/issues/274))
 * Add `fabricNodeenvVersion` global configuration
+* Use nvm to switch node version for chaincode build
 
 ### Fixes
 
