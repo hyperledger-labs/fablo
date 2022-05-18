@@ -50,7 +50,7 @@ networkUp
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.example.com" "Starting Raft node channel=my-channel1"
 waitForContainer "db.ca.org1.example.com" "database system is ready to accept connections"
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"

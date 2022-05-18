@@ -1762,6 +1762,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7020:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -1849,6 +1850,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
       - FABRIC_CA_SERVER_DB_TYPE=postgres
       - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
@@ -1922,7 +1924,7 @@ services:
     environment:
       - PORT=8000
       - MSP_ID=Org1MSP
-      - FABRIC_CA_URL=http://ca.org1.example.com:7054
+      - FABRIC_CA_URL=https://ca.org1.example.com:7054
       - FABRIC_CA_NAME=ca.org1.example.com
       - AS_LOCALHOST=false
       - DISCOVERY_URLS=grpcs://peer0.org1.example.com:7041

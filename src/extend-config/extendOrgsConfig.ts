@@ -177,12 +177,13 @@ const fabloRestConfig = (
         discoverySslTargetNameOverrides: "",
         discoveryTlsCaCertFiles: "",
       };
+  const schema = global.tls ? "https://" : "http://";
 
   return {
     address: `fablo-rest.${domain}`,
     mspId: mspName,
     port,
-    fabricCaUrl: `http://${ca.address}:${ca.port}`,
+    fabricCaUrl: `${schema}${ca.address}:${ca.port}`,
     fabricCaName: ca.address,
     ...discoveryEndpointsConfig,
     logging: fabloRestLoggingConfig(global),

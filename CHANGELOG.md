@@ -3,9 +3,10 @@
 ### Features
 * Support Fabric Gateway since Fabric 2.4 [#305](https://github.com/hyperledger-labs/fablo/issues/305)
 * Introduce pre-restore hook
-* Add 2.4.2 to supported Hyperledger Fabric versions
 * Update Node.js runtime compatibility ([details](https://github.com/hyperledger-labs/fablo/issues/274))
 * Add `fabricNodeenvVersion` global configuration
+* Attach `fabric-ca-server-config.yaml` as a volume [#168](https://github.com/hyperledger-labs/fablo/issues/168)
+* Support tls for CA [#229](https://github.com/hyperledger-labs/fablo/issues/229)
 * Use nvm to switch node version for chaincode build
 
 ### Fixes
