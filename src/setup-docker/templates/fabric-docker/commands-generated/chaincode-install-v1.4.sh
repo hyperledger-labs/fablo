@@ -8,7 +8,8 @@
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
+  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
+  "<%= global.fabricRecommendedNodeVersion %>"
 <% chaincode.channel.orgs.forEach((org) => { -%>
   <% org.peers.forEach((peer) => { -%>
     printHeadline "Installing '<%= chaincode.name %>' on <%= chaincode.channel.name %>/<%= org.name %>/<%= peer.name %>" "U1F60E"

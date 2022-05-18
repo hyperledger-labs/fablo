@@ -841,7 +841,7 @@ installChannels() {
 
 installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
-    chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    chaincodeBuild \\"or-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"12\\"
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"or-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\"
     printHeadline \\"Installing 'or-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
@@ -855,7 +855,7 @@ installChaincodes() {
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
   fi
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
-    chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    chaincodeBuild \\"and-policy-chaincode\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"12\\"
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"and-policy-chaincode\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\"
     printHeadline \\"Installing 'and-policy-chaincode' on my-channel1/Org1/peer1\\" \\"U1F60E\\"
