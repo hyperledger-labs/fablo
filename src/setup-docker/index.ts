@@ -55,6 +55,7 @@ export default class SetupDockerGenerator extends Generator {
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
     this._createConnectionProfiles(global, orgs);
+    this._createFabricCaServerConfigs(orgs);
     this._createExplorerMaterial(global, orgs, channels);
     this._copyConfigTx(config);
     this._copyGitIgnore();
@@ -110,6 +111,18 @@ export default class SetupDockerGenerator extends Generator {
       this.fs.write(
         this.destinationPath(`fabric-config/connection-profiles/connection-profile-${org.name.toLowerCase()}.yaml`),
         yaml.dump(connectionProfile),
+      );
+    });
+  }
+
+  _createFabricCaServerConfigs(orgsTransformed: OrgConfig[]): void {
+    orgsTransformed.forEach((orgTransformed: OrgConfig) => {
+      this.fs.copyTpl(
+        this.templatePath("fabric-config/fabric-ca-server-config.yaml"),
+        this.destinationPath(
+          `fabric-config/fabric-ca-server-config/${orgTransformed.domain}/fabric-ca-server-config.yaml`,
+        ),
+        { org: orgTransformed },
       );
     });
   }

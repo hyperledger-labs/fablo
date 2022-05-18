@@ -25,6 +25,7 @@ services:
     command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
     volumes:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/<%= org.domain %>/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
     <%_ if (org.ca.db === "postgres") { _%>
     depends_on:
       db.<%= org.ca.address %>:
