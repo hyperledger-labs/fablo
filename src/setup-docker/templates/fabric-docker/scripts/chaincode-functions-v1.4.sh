@@ -13,7 +13,7 @@ chaincodeBuild() {
   if [ "$CHAINCODE_LANG" = "node" ]; then
     if [ -n "$(nvm --version)" ]; then
       echo "Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm"
-      nvm use "$RECOMMENDED_NODE_VERSION"
+      nvm use "$RECOMMENDED_NODE_VERSION" || true
     fi
 
     NODE_VERSION="$(node --version)"
