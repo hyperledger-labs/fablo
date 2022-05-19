@@ -2589,7 +2589,7 @@ installChannels() {
 
 installChaincodes() {
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
-    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\"
+    chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"12\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
@@ -2601,7 +2601,7 @@ installChaincodes() {
     echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
   fi
   if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\")\\" ]; then
-    chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\"
+    chaincodeBuild \\"chaincode2\\" \\"java\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple\\" \\"12\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org1/peer1\\" \\"U1F60E\\"
     chaincodeInstall \\"cli.org1.example.com\\" \\"peer1.org1.example.com:7042\\" \\"my-channel2\\" \\"chaincode2\\" \\"0.0.1\\" \\"java\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
     printHeadline \\"Installing 'chaincode2' on my-channel2/Org2/peer1\\" \\"U1F60E\\"
@@ -3495,12 +3495,17 @@ chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CHAINCODE_DIR_PATH=$3
+  local RECOMMENDED_NODE_VERSION=$4
 
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
+    if [ -n \\"$(nvm --version)\\" ]; then
+      echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
+      nvm use \\"$RECOMMENDED_NODE_VERSION\\" || true
+    fi
+
     NODE_VERSION=\\"$(node --version)\\"
-    RECOMMENDED_NODE_VERSION=\\"12\\"
 
     USES_OLD_FABRIC_SHIM=\\"$(jq '.dependencies.\\"fabric-shim\\" | contains(\\"1.4.\\")' \\"$CHAINCODE_DIR_PATH/package.json\\")\\"
     if [ \\"$USES_OLD_FABRIC_SHIM\\" == \\"true\\" ]; then
