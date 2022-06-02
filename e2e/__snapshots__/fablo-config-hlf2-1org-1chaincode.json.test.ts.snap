@@ -2233,7 +2233,7 @@ chaincodeBuild() {
 
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
     source ~/.nvm/nvm.sh || true
-    if [ -x \\"$(command -v nvm)\\" ]; then
+    if [ \\"$(command -v nvm)\\" == \\"nvm\\" ]; then
       echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
       nvm use \\"$RECOMMENDED_NODE_VERSION\\" || true
     fi
