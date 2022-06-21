@@ -17,10 +17,15 @@ echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
 IMAGE_BASE_NAME="softwaremill/fablo:$FABLO_VERSION"
 
-set +e
-source ~/.nvm/nvm.sh
-set -e
-nvm use
+if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
+  set +e
+  # shellcheck disable=SC2039
+  source ~/.nvm/nvm.sh
+  set -e
+fi
+if [ "$(command -v nvm)" = "nvm" ]; then
+  nvm use
+fi
 
 npm install --silent
 npm run build:dist
@@ -30,4 +35,3 @@ docker build \
   --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
 
 docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
-
