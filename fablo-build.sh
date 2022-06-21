@@ -17,6 +17,11 @@ echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
 IMAGE_BASE_NAME="softwaremill/fablo:$FABLO_VERSION"
 
+set +e
+source ~/.nvm/nvm.sh
+set -e
+nvm use
+
 npm install --silent
 npm run build:dist
 
