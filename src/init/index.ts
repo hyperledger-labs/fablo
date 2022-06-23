@@ -14,6 +14,8 @@ export default class InitGenerator extends Generator {
     if (shouldInitWithNodeChaincode) {
       this.log("Creating sample Node.js chaincode");
       this.fs.copy(this.templatePath("chaincodes"), this.destinationPath("chaincodes"));
+      // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
+      this.fs.write(this.destinationPath("chaincodes/.nvmrc"), "12");
     } else {
       fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
     }

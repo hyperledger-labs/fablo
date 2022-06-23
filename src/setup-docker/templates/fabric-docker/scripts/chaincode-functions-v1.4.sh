@@ -37,10 +37,13 @@ chaincodeBuild() {
       set +e
       source ~/.nvm/nvm.sh
       set -e
-    fi
-    if [ "$(command -v nvm)" == "nvm" ]; then
-      echo "Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm"
-      nvm use "$RECOMMENDED_NODE_VERSION" || true
+      if [ "$(command -v nvm)" == "nvm" ]; then
+        current_dir="$(pwd)"
+        echo -e "\n\n\n========\n$CHAINCODE_DIR_PATH"
+        cd "$CHAINCODE_DIR_PATH"
+        nvm install
+        cd "$current_dir"
+      fi
     fi
 
     NODE_VERSION="$(node --version)"

@@ -36,6 +36,10 @@ expectInvoke() {
   sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
+expectCommand() {
+  sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
+}
+
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
@@ -59,6 +63,18 @@ expectInvoke "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" 
 expectInvoke "cli.org1.example.com" "peer1.org1.example.com:7042" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
+
+# Verify channel query scripts
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
+expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:get"
+
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 4 my-channel1 org1 peer1 "another.block")
+expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
+
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
+expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
+
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":6"
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
