@@ -11,7 +11,7 @@ fi
 echo ""
 echo "➜ testing: $command"
 
-response="$(eval $command 2>&1)"
+response="$(eval "$command" 2>&1)"
 
 echo "$response"
 
