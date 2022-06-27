@@ -4550,6 +4550,13 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 # phrase \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
+dockerPullIfMissing() {
+  local IMAGE=\\"$1\\"
+  if [[ \\"$(docker images -q \\"$IMAGE\\" 2>/dev/null)\\" == \\"\\" ]]; then
+    docker pull --platform linux/x86_64 \\"$IMAGE\\"
+  fi
+}
+
 chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
@@ -4558,11 +4565,30 @@ chaincodeBuild() {
 
   mkdir -p \\"$CHAINCODE_DIR_PATH\\"
 
+  # pull required images upfront in case of arm64 (Apple Silicon) architecture
+  # see https://stackoverflow.com/questions/69699421/hyperledger-fabric-chaincode-installation-failed-no-matching-manifest-for-linu
+  if [ \\"$(uname -m)\\" = \\"arm64\\" ]; then
+    if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
+      dockerPullIfMissing \\"hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION\\"
+    fi
+    if [ \\"$CHAINCODE_LANG\\" = \\"java\\" ]; then
+      dockerPullIfMissing \\"hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION\\"
+    fi
+    if [ \\"$CHAINCODE_LANG\\" = \\"golang\\" ]; then
+      dockerPullIfMissing \\"hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION\\"
+    fi
+  fi
+
   if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
-    source ~/.nvm/nvm.sh || true
+    if [ \\"$(command -v nvm)\\" != \\"nvm\\" ] && [ -f ~/.nvm/nvm.sh ]; then
+      # note: \`source ~/.nvm/nvm.sh || true\` seems to not work on some shells (like /bin/zsh on Apple Silicon)
+      set +e
+      source ~/.nvm/nvm.sh
+      set -e
+    fi
     if [ \\"$(command -v nvm)\\" == \\"nvm\\" ]; then
       echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
-      nvm use \\"$RECOMMENDED_NODE_VERSION\\" || true
+      nvm install \\"$RECOMMENDED_NODE_VERSION\\" || true
     fi
 
     NODE_VERSION=\\"$(node --version)\\"
