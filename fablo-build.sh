@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -euo
 
@@ -24,7 +24,7 @@ if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
   set -e
 fi
 if [ "$(command -v nvm)" = "nvm" ]; then
-  nvm use
+  nvm install
 fi
 
 npm install --silent

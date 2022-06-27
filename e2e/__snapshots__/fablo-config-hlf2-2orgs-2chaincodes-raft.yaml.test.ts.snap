@@ -4588,7 +4588,7 @@ chaincodeBuild() {
     fi
     if [ \\"$(command -v nvm)\\" == \\"nvm\\" ]; then
       echo \\"Setting Node.js version to $RECOMMENDED_NODE_VERSION with nvm\\"
-      nvm use \\"$RECOMMENDED_NODE_VERSION\\" || true
+      nvm install \\"$RECOMMENDED_NODE_VERSION\\" || true
     fi
 
     NODE_VERSION=\\"$(node --version)\\"

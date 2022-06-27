@@ -39,7 +39,6 @@ chaincodeBuild() {
       set -e
       if [ "$(command -v nvm)" == "nvm" ]; then
         current_dir="$(pwd)"
-        echo -e "\n\n\n========\n$CHAINCODE_DIR_PATH"
         cd "$CHAINCODE_DIR_PATH"
         nvm install
         cd "$current_dir"
