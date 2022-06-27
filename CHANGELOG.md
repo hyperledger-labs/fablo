@@ -9,6 +9,7 @@
 
 ### Fixes
 * Support Apple M1 / arm64 architecture
+* Various fixes in channel scripts
 
 ### Chore & Maintenance
 * Add `fabricNodeenvVersion` global configuration
