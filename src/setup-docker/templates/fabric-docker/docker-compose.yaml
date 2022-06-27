@@ -273,10 +273,13 @@ services:
       - CORE_PEER_GATEWAY_ENABLED=true
       <%_ } _%>
     working_dir: /etc/hyperledger/fabric/peer/
-    command: peer node start
+    command: peer node start <%= global.chaincodeDev ? '--peer-chaincodedev=true' : '' %>
     ports:
       - <%= peer.port + 1000 %>:9440
       - <%= peer.port %>:<%= peer.port %>
+      <%_ if(global.chaincodeDev) { _%>
+      - <%= peer.port + 1500 %>:7050
+      <%_ } _%>
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/msp:/etc/hyperledger/fabric/peer/msp

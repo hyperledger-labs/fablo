@@ -37,6 +37,8 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
   installChaincodes
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
+  runDevModeChaincode "$3" "$4"
 elif [ "$1" = "channel" ]; then
   channelQuery "${@:2}"
 elif [ "$1" = "snapshot" ]; then

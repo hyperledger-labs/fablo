@@ -68,6 +68,12 @@
           "type": "boolean",
           "default": true
         },
+        "chaincodeDev": {
+          "$id": "#/properties/global/properties/chaincodeDev",
+          "title": "Start all peers in DevMode",
+          "type": "boolean",
+          "default": false
+        },
         "monitoring": {
           "$id": "#/properties/monitoring",
           "title": "Monitoring settings",

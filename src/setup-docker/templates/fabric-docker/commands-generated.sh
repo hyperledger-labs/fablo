@@ -90,6 +90,46 @@ installChaincodes() {
   <% } -%>
 }
 
+runDevModeChaincode() {
+  local chaincodeName=$1
+  if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
+
+  local channel=$2
+  if [ -z "$channel" ]; then echo "Error: channel name is not provided"; exit 1; fi
+
+  <% channels.forEach((channel) => { -%>
+    if [ "$channel" = "<%= channel.name %>" ]; then
+      <% channel.orgs.forEach((org) => { -%>
+        chaincodeApprove <% -%>
+          "<%= org.cli.address %>" <% -%>
+          "<%= org.headPeer.fullAddress %>" <% -%>
+          "$channel" <% -%>
+          "$chaincodeName" <% -%>
+          "1.0" <% -%>
+          "<%= channel.ordererHead.fullAddress %>" <% -%>
+          "OR(<%- channel.orgs.map((o) => o.name + '.member').map((s) => `'${s}'`).join(',') %>)" <% -%>
+          "false" <% -%>
+          "" <% -%>
+          ""
+      <% }) -%>
+
+      chaincodeCommit <% -%>
+        "<%= channel.instantiatingOrg.cli.address %>" <% -%>
+        "<%= channel.instantiatingOrg.headPeer.fullAddress %>" <% -%>
+        "$channel" <% -%>
+        "$chaincodeName" <% -%>
+        "1.0" <% -%>
+        "<%= channel.ordererHead.fullAddress %>" <% -%>
+        "OR(<%- channel.orgs.map((o) => o.name + '.member').map((s) => `'${s}'`).join(',') %>)" <% -%>
+        "false" <% -%>
+        "" <% -%>
+        "<%= channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
+        "" <% -%>
+        ""
+    fi
+  <% }) -%>
+}
+
 notifyOrgsAboutChannels() {
   printHeadline "Creating new channel config blocks" "U1F537"
   <% channels.forEach((channel) => { -%>
