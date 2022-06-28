@@ -90,6 +90,29 @@ installChaincodes() {
   <% } -%>
 }
 
+installChaincode() {
+  local chaincodeName="$1"
+  if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
+
+  local version="$2"
+  if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
+
+  <% chaincodes.forEach((chaincode) => { -%>
+    if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (global.capabilities.isV2) { -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); %>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' install. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
+    fi
+  <% }) -%>
+}
+
 runDevModeChaincode() {
   local chaincodeName=$1
   if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
