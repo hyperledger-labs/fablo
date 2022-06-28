@@ -187,40 +187,44 @@ fablo chaincode upgrade chaincode-name version
 Upgrades and instantiates chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fablo config file.
 
-## Managing channels
+## Chaincode scripts
 
-### chaincode channel
+### channel help
 
 ```bash
 fablo channel --help
 ```
 Use it to list all available channel commands.  
 Commands are generated using fablo-config.json to cover all cases (queries for each channel. organization and peer)
+
+### channel list
  
 ```bash
 fablo channel list org1 peer0
 ```
-lists all channels for given peer
+Lists all channels for given peer.
+
+### channel getinfo
 
 ```bash
 fablo channel getinfo channel_name org1 peer0
 ```
-Prints channel info ei. current block height for given peer
+Prints channel info, like current block height for given peer
+
+### channel fetch config
 
 ```bash
-fablo channel fetch config channel_name org1 peer0 file_name.json
+fablo channel fetch config channel_name org1 peer0 [file_name.json]
 ```
-Fetches latest config block, decodes it and write to a json file.
+
+Fetches latest config block, decodes it and write to a JSON file.
+
+### channel fetch raw block
 
 ```bash
-fablo channel fetch lastBlock channel_name org1 peer0 file_name.json
+fablo channel fetch <oldest|newest|block-number> channel_name org1 peer0 [file_name.json]
 ```
-Fetches latest block, decodes it and write to a json file. It might be transaction block or config block.
-
-```bash
-fablo channel fetch firstBlock channel_name org1 peer0 file_name.json
-```
-Fetches first block for given channel. Usually it will be initial channel configuration. 
+Fetches oldest, newest or a block with given number, and writes it to a file.
 
 ## Utility commands
 
