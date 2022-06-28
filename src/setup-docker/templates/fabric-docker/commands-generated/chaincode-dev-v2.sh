@@ -24,7 +24,7 @@ chaincodeCommit <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.channel.name %>" <% -%>
   "<%= chaincode.name %>" <% -%>
-  "$version" <% -%>
+  "<%= chaincode.version %>" <% -%>
   "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement || '' %>" <% -%>
   "false" <% -%>

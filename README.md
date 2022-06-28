@@ -237,7 +237,7 @@ Our sample chaincode definition contains some scripts for running chaincode in d
 ```json
   "scripts": {
     ...
-    "start:dev": "fabric-chaincode-node start --peer.address \"127.0.0.1:8542\" --chaincode-id-name \"chaincode1:0.0.1\" --tls.enabled false",
+    "start:dev": "fabric-chaincode-node start --peer.address \"127.0.0.1:8541\" --chaincode-id-name \"chaincode1:0.0.1\" --tls.enabled false",
     "start:watch": "nodemon --exec \"npm run start:dev\"",
     ...
   },
