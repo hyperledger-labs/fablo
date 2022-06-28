@@ -122,7 +122,7 @@ class ValidateGenerator extends Generator {
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
-    this._validateTlsDisabledWhenChaincodeDevIsEnabled(networkConfig.global);
+    this._validateDevMode(networkConfig.global);
   }
 
   async shortSummary() {
@@ -461,8 +461,8 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateTlsDisabledWhenChaincodeDevIsEnabled(global: GlobalJson): void {
-    if (global.chaincodeDev && global.tls) {
+  _validateDevMode(global: GlobalJson): void {
+    if (global.devMode && global.tls) {
       const message = `TLS needs to be disabled when running peers in dev mode`;
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
