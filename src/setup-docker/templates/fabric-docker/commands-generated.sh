@@ -76,9 +76,13 @@ installChaincodes() {
   <% } else { -%>
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        local version="<%= chaincode.version %>"
         <% if (global.capabilities.isV2) { -%>
-          local version="<%= chaincode.version %>"
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
+          <% if (global.devMode) { -%>
+            <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
+          <% } else { -%>
+            <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
+          <% } -%>
         <% } else { -%>
           <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); -%>
         <% } -%>
@@ -114,41 +118,41 @@ installChaincode() {
 }
 
 runDevModeChaincode() {
-  local chaincodeName=$1
+  <% if (!global.capabilities.isV2) { -%>
+    echo "Running chaincode in dev mode is supported by Fablo only for V2 channel capabilities"
+    exit 1
+  <% } else { -%>
+    local chaincodeName=$1
+    if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
+
+    <% chaincodes.forEach((chaincode) => { -%>
+      if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
+        local version="<%= chaincode.version %>"
+        <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode, global }); %>
+      fi
+    <% }) -%>
+  <% } -%>
+}
+
+upgradeChaincode() {
+  local chaincodeName="$1"
   if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
 
-  local channel=$2
-  if [ -z "$channel" ]; then echo "Error: channel name is not provided"; exit 1; fi
+  local version="$2"
+  if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
 
-  <% channels.forEach((channel) => { -%>
-    if [ "$channel" = "<%= channel.name %>" ]; then
-      <% channel.orgs.forEach((org) => { -%>
-        chaincodeApprove <% -%>
-          "<%= org.cli.address %>" <% -%>
-          "<%= org.headPeer.fullAddress %>" <% -%>
-          "$channel" <% -%>
-          "$chaincodeName" <% -%>
-          "1.0" <% -%>
-          "<%= channel.ordererHead.fullAddress %>" <% -%>
-          "OR(<%- channel.orgs.map((o) => o.name + '.member').map((s) => `'${s}'`).join(',') %>)" <% -%>
-          "false" <% -%>
-          "" <% -%>
-          ""
-      <% }) -%>
-
-      chaincodeCommit <% -%>
-        "<%= channel.instantiatingOrg.cli.address %>" <% -%>
-        "<%= channel.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-        "$channel" <% -%>
-        "$chaincodeName" <% -%>
-        "1.0" <% -%>
-        "<%= channel.ordererHead.fullAddress %>" <% -%>
-        "OR(<%- channel.orgs.map((o) => o.name + '.member').map((s) => `'${s}'`).join(',') %>)" <% -%>
-        "false" <% -%>
-        "" <% -%>
-        "<%= channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
-        "" <% -%>
-        ""
+  <% chaincodes.forEach((chaincode) => { -%>
+    if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
+      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
+        <% if (global.capabilities.isV2) { -%>
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
+        <% } else { -%>
+          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, global }); %>
+        <% } -%>
+      else
+        echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
+        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
+      fi
     fi
   <% }) -%>
 }
@@ -193,29 +197,6 @@ notifyOrgsAboutChannels() {
     <% channel.orgs.forEach((org) => { -%>
       deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "<%= org.cli.address %>"
     <% }) -%>
-  <% }) -%>
-}
-
-upgradeChaincode() {
-  local chaincodeName="$1"
-  if [ -z "$chaincodeName" ]; then echo "Error: chaincode name is not provided"; exit 1; fi
-
-  local version="$2"
-  if [ -z "$version" ]; then echo "Error: chaincode version is not provided"; exit 1; fi
-
-  <% chaincodes.forEach((chaincode) => { -%>
-    if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
-      if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (global.capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
-        <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, global }); %>
-        <% } -%>
-      else
-        echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
-        echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
-      fi
-    fi
   <% }) -%>
 }
 
