@@ -1,8 +1,6 @@
 <%/*
   Run chaincode in dev mode for V2 capabilities.
 
-  Required bash variables:
-   - version
   Required template parameters:
    - chaincode
 */-%>
@@ -13,7 +11,7 @@
     "<%= org.headPeer.fullAddress %>" <% -%>
     "<%= chaincode.channel.name %>" <% -%>
     "<%= chaincode.name %>" <% -%>
-    "$version" <% -%>
+    "<%= chaincode.version %>" <% -%>
     "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement || '' %>" <% -%>
     "false" <% -%>

@@ -76,11 +76,11 @@ installChaincodes() {
   <% } else { -%>
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        local version="<%= chaincode.version %>"
         <% if (global.capabilities.isV2) { -%>
           <% if (global.devMode) { -%>
             <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
           <% } else { -%>
+            local version="<%= chaincode.version %>"
             <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
           <% } -%>
         <% } else { -%>

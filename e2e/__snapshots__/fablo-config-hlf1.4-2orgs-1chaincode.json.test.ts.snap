@@ -2078,10 +2078,14 @@ elif [ \\"$1\\" = \\"start\\" ]; then
   startNetwork
 elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
-elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
+elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+  installChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
+elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"dev\\" ]; then
+  runDevModeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"channel\\" ]; then
   channelQuery \\"\${@:2}\\"
 elif [ \\"$1\\" = \\"snapshot\\" ]; then
@@ -2382,24 +2386,39 @@ installChaincodes() {
 
 }
 
-notifyOrgsAboutChannels() {
-  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
-  createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+installChaincode() {
+  local chaincodeName=\\"$1\\"
+  if [ -z \\"$chaincodeName\\" ]; then
+    echo \\"Error: chaincode name is not provided\\"
+    exit 1
+  fi
 
-  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
-  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.example.com\\" \\"peer0.org2.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
-  notifyOrgAboutNewChannel \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
-  notifyOrgAboutNewChannel \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.example.com\\" \\"peer0.org2.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+  local version=\\"$2\\"
+  if [ -z \\"$version\\" ]; then
+    echo \\"Error: chaincode version is not provided\\"
+    exit 1
+  fi
 
-  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
-  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
-  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
-  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
-  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
+  if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\")\\" ]; then
+      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4\\" \\"12\\"
+      printHeadline \\"Installing 'chaincode1' on my-channel1/Org1/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\"
+      printHeadline \\"Installing 'chaincode1' on my-channel1/Org2/peer0\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org2.example.com\\" \\"peer0.org2.example.com:7061\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\"
+      printItalics \\"Instantiating chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+      chaincodeInstantiate \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"node\\" \\"orderer0.group1.orderer.example.com:7030\\" '{\\"Args\\":[]}' \\"AND ('Org1MSP.member', 'Org2MSP.member')\\" \\"\\" \\"\\"
+
+    else
+      echo \\"Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
+    fi
+  fi
+}
+
+runDevModeChaincode() {
+  echo \\"Running chaincode in dev mode is supported by Fablo only for V2 channel capabilities\\"
+  exit 1
 }
 
 upgradeChaincode() {
@@ -2432,6 +2451,26 @@ upgradeChaincode() {
       echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node-1.4'\\"
     fi
   fi
+}
+
+notifyOrgsAboutChannels() {
+  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+  createNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"MyChannel2\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+
+  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.example.com\\" \\"peer0.org2.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+  notifyOrgAboutNewChannel \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+  notifyOrgAboutNewChannel \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.example.com\\" \\"peer0.org2.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+
+  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
+  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
+  deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
 }
 
 stopNetwork() {
