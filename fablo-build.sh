@@ -15,7 +15,7 @@ echo "   FABLO_HOME:    $FABLO_HOME"
 echo "   FABLO_VERSION: $FABLO_VERSION"
 echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
-IMAGE_BASE_NAME="softwaremill/fablo:$FABLO_VERSION"
+IMAGE_BASE_NAME="fabloio/fablo:$FABLO_VERSION"
 
 if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
   set +e
@@ -34,4 +34,4 @@ docker build \
   --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
   --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
 
-docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
+docker tag "$IMAGE_BASE_NAME" "fabloio/fablo:$FABLO_VERSION"

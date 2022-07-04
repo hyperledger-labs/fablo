@@ -13,11 +13,11 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: '#ffd963'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Workflow <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}*> started'
+          SLACK_FOOTER: 'Workflow <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}*> started'
 
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -55,11 +55,11 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+          SLACK_FOOTER: 'Job <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-02-raft:
     needs: test-main
@@ -91,11 +91,11 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+          SLACK_FOOTER: 'Job <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-03-private-data:
     needs: test-main
@@ -127,11 +127,11 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+          SLACK_FOOTER: 'Job <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   test-04-snapshot:
     needs: test-main
@@ -163,11 +163,11 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+          SLACK_FOOTER: 'Job <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
 
   node-chaincodes-unit-tests:
     needs: test-main
@@ -195,8 +195,8 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_USERNAME: Fablo CI
-          SLACK_ICON: 'https://raw.githubusercontent.com/softwaremill/fablo/main/logo-sygnet-192.png'
+          SLACK_ICON: 'https://raw.githubusercontent.com/hyperledger-labs/fablo/main/logo-sygnet-192.png'
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'green' or '#ff00ff'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           MSG_MINIMAL: ref
-          SLACK_FOOTER: 'Job <https://github.com/softwaremill/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
+          SLACK_FOOTER: 'Job <https://github.com/hyperledger-labs/fablo/commit/${{ github.sha }}/checks|*${{ github.workflow }}/${{ github.job }}*> ended with status: *${{ job.status }}*'
