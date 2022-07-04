@@ -17,7 +17,7 @@ import { Capabilities } from "../types/FabloConfigExtended";
 import { version } from "../repositoryUtils";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
-const findDuplicatedItems = (arr: any[]) => arr.filter((item, index) => arr.indexOf(item) != index);
+const findDuplicatedItems = (arr: unknown[]) => arr.filter((item, index) => arr.indexOf(item) != index);
 
 const validationErrorType = {
   CRITICAL: "validation-critical",
@@ -84,10 +84,6 @@ class ValidateGenerator extends Generator {
     this.addListener(validationErrorType.WARN, (e) => this.warnings.onEvent(e));
 
     this.composeWith(ListCompatibleUpdatesGeneratorType);
-  }
-
-  async initializing() {
-    this.log(config.splashScreen());
   }
 
   async validate() {

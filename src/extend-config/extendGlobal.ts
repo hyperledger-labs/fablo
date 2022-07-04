@@ -22,7 +22,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
   const fabricNodeenvExceptions: Record<string, string> = {
     "2.4": "2.4.2",
-    "2.4.1": "2.4.2"
+    "2.4.1": "2.4.2",
   };
 
   return {
@@ -32,7 +32,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
     fabricJavaenvVersion: majorMinor,
     fabricNodeenvVersion: fabricNodeenvExceptions[fabricVersion] ?? majorMinor,
-    fabricRecommendedNodeVersion: version(fabricVersion).isGreaterOrEqual("2.4") ? "16": "12"
+    fabricRecommendedNodeVersion: version(fabricVersion).isGreaterOrEqual("2.4") ? "16" : "12",
   };
 };
 

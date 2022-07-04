@@ -37,10 +37,23 @@ getSnapshotPath() {
   fi
 }
 
-printHelp() {
-  echo "Fablo -- kick-off and manage your Hyperledger Fabric network
+printSplash() {
+  darkGray=$'\e[90m'
+  end=$'\e[0m'
+  echo ""
+  echo "┌──────      .─.       ┌─────.    ╷           .────."
+  echo "│           /   \      │      │   │         ╱        ╲ "
+  echo "├─────     /     \     ├─────:    │        │          │"
+  echo "│         /───────\    │      │   │         ╲        ╱ "
+  printf "╵        /         \   └─────'    └──────     '────'    %24s\n" "v$FABLO_VERSION"
+  echo "${darkGray}┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐"
+  echo "│ https://fablo.io | created at SoftwareMill | backed by Hyperledger Foundation│"
+  echo "└┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘${end}"
+}
 
-Usage:
+printHelp() {
+  printSplash
+  echo "Usage:
   fablo init [node] [rest] [dev]
     Creates simple Fablo config in current directory with optional Node.js, chaincode and REST API and dev mode.
 
@@ -124,18 +137,20 @@ executeOnFabloDocker() {
 }
 
 useVersion() {
+  printSplash
   local version="$1"
 
   if [ -n "$version" ]; then
     echo "Updating '$0' to version $version..."
     set +e
-    curl -Lf https://github.com/softwaremill/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
+    curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
   else
     executeOnFabloDocker "fablo:list-versions"
   fi
 }
 
 initConfig() {
+  printSplash
   executeOnFabloDocker "fablo:init $1 $2"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
@@ -151,6 +166,7 @@ extendConfig() {
 }
 
 generateNetworkConfig() {
+  printSplash
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   local fablo_target=${2:-$FABLO_TARGET}
 

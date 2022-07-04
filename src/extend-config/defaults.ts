@@ -22,7 +22,7 @@ export default {
   peer: {
     prefix: "peer",
     db: "LevelDb",
-    anchorPeerInstances: (peerCount: number) => peerCount,
+    anchorPeerInstances: (peerCount: number): number => peerCount,
   },
   channel: {
     ordererGroup: (ordererGroups: OrdererGroup[]): string => ordererGroups[0].name,
