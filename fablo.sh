@@ -3,7 +3,7 @@
 set -e
 
 FABLO_VERSION="1.1.0"
-FABLO_IMAGE_NAME="fabloio/fablo"
+FABLO_IMAGE_NAME="softwaremill/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
 COMMAND="$1"
