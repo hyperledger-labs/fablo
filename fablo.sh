@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION="1.0.3-unstable"
+FABLO_VERSION="1.1.0-unstable"
 FABLO_IMAGE_NAME="softwaremill/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -41,8 +41,8 @@ printHelp() {
   echo "Fablo -- kick-off and manage your Hyperledger Fabric network
 
 Usage:
-  fablo init [node] [rest]
-    Creates simple Fablo config in current directory with optional Node.js sample chaincode and REST API.
+  fablo init [node] [rest] [dev]
+    Creates simple Fablo config in current directory with optional Node.js, chaincode and REST API and dev mode.
 
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
@@ -62,8 +62,14 @@ Usage:
   fablo recreate [/path/to/fablo-config.json|yaml]
     Prunes and ups the network. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml'.
 
+  fablo chaincodes install
+    Installs all chaincodes on relevant peers. Chaincode directory is specified in Fablo config file.
+
+  fablo chaincode install <chaincode-name> <version>
+    Installs chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
+
   fablo chaincode upgrade <chaincode-name> <version>
-    Upgrades and instantiates chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
+    Upgrades chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
 
   fablo channel --help
     To list available channel query options which can be executed on running network.

@@ -7,7 +7,7 @@ Object {
   "default": Object {},
   "properties": Object {
     "$schema": Object {
-      "const": "https://github.com/softwaremill/fablo/releases/download/1.0.3-unstable/schema.json",
+      "const": "https://github.com/softwaremill/fablo/releases/download/1.1.0-unstable/schema.json",
     },
     "chaincodes": Object {
       "$id": "#/properties/chaincodes",
@@ -296,6 +296,12 @@ Object {
           "required": Array [],
           "title": "Monitoring settings",
           "type": "object",
+        },
+        "peerDevMode": Object {
+          "$id": "#/properties/global/properties/peerDevMode",
+          "default": false,
+          "title": "Start all peers in dev mode",
+          "type": "boolean",
         },
         "tls": Object {
           "$id": "#/properties/global/properties/tls",

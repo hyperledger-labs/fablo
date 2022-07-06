@@ -1400,10 +1400,14 @@ elif [ \\"$1\\" = \\"start\\" ]; then
   startNetwork
 elif [ \\"$1\\" = \\"stop\\" ]; then
   stopNetwork
-elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
   installChaincodes
+elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+  installChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
   upgradeChaincode \\"$3\\" \\"$4\\"
+elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"dev\\" ]; then
+  runDevModeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"channel\\" ]; then
   channelQuery \\"\${@:2}\\"
 elif [ \\"$1\\" = \\"snapshot\\" ]; then
@@ -1425,7 +1429,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
-"FABLO_VERSION=1.0.3-unstable
+"FABLO_VERSION=1.1.0-unstable
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.0
 HYPERLEDGER_EXPLORER_VERSION=1.1.8
@@ -1619,15 +1623,52 @@ installChaincodes() {
 
 }
 
-notifyOrgsAboutChannels() {
-  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
-  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+installChaincode() {
+  local chaincodeName=\\"$1\\"
+  if [ -z \\"$chaincodeName\\" ]; then
+    echo \\"Error: chaincode name is not provided\\"
+    exit 1
+  fi
 
-  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
-  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+  local version=\\"$2\\"
+  if [ -z \\"$version\\" ]; then
+    echo \\"Error: chaincode version is not provided\\"
+    exit 1
+  fi
 
-  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
-  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
+  if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
+    if [ -n \\"$(ls \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\")\\" ]; then
+      printHeadline \\"Packaging chaincode 'chaincode1'\\" \\"U1F60E\\"
+      chaincodeBuild \\"chaincode1\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"16\\"
+      chaincodePackage \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"node\\" printHeadline \\"Installing 'chaincode1' for Org1\\" \\"U1F60E\\"
+      chaincodeInstall \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+      chaincodeInstall \\"cli.org1.example.com\\" \\"peer1.org1.example.com:7042\\" \\"chaincode1\\" \\"$version\\" \\"\\"
+      chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"\\" \\"\\"
+      printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'\\" \\"U1F618\\"
+      chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"$version\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.example.com:7041\\" \\"\\" \\"\\"
+
+    else
+      echo \\"Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty.\\"
+      echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
+    fi
+  fi
+}
+
+runDevModeChaincode() {
+  local chaincodeName=$1
+  if [ -z \\"$chaincodeName\\" ]; then
+    echo \\"Error: chaincode name is not provided\\"
+    exit 1
+  fi
+
+  if [ \\"$chaincodeName\\" = \\"chaincode1\\" ]; then
+    local version=\\"0.0.1\\"
+    printHeadline \\"Approving 'chaincode1' for Org1 (dev mode)\\" \\"U1F60E\\"
+    chaincodeApprove \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"\\" \\"\\"
+    printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)\\" \\"U1F618\\"
+    chaincodeCommit \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"my-channel1\\" \\"chaincode1\\" \\"0.0.1\\" \\"orderer0.group1.orderer.example.com:7030\\" \\"\\" \\"false\\" \\"\\" \\"peer0.org1.example.com:7041\\" \\"\\" \\"\\"
+
+  fi
 }
 
 upgradeChaincode() {
@@ -1659,6 +1700,17 @@ upgradeChaincode() {
       echo \\"Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'\\"
     fi
   fi
+}
+
+notifyOrgsAboutChannels() {
+  printHeadline \\"Creating new channel config blocks\\" \\"U1F537\\"
+  createNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"MyChannel1\\" \\"$FABLO_NETWORK_ROOT/fabric-config\\" \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
+
+  printHeadline \\"Notyfing orgs about channels\\" \\"U1F4E2\\"
+  notifyOrgAboutNewChannel \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\" \\"peer0.org1.example.com\\" \\"orderer0.group1.orderer.example.com:7030\\"
+
+  printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
+  deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
 }
 
 stopNetwork() {
@@ -2369,7 +2421,10 @@ chaincodeApprove() {
       --output json \\\\
       \\"\${CA_CERT_PARAMS[@]+\\"\${CA_CERT_PARAMS[@]}\\"}\\"
   )\\"
-  CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
+  CC_PACKAGE_ID=\\"$(jq \\".installed_chaincodes | [.[]? | select(.label==\\\\\\"$CHAINCODE_LABEL\\\\\\") ][0].package_id // \\\\\\"\\\\\\"\\" -r <<<\\"$QUERYINSTALLED_RESPONSE\\")\\"
+  if [ -z \\"$CC_PACKAGE_ID\\" ]; then
+    CC_PACKAGE_ID=\\"$CHAINCODE_NAME:$CHAINCODE_VERSION\\"
+  fi
   inputLog \\"CC_PACKAGE_ID: $CC_PACKAGE_ID\\"
 
   local QUERYCOMMITTED_RESPONSE

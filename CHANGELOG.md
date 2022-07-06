@@ -6,6 +6,8 @@
 * Attach `fabric-ca-server-config.yaml` as a volume [#168](https://github.com/hyperledger-labs/fablo/issues/168)
 * Support tls for CA [#229](https://github.com/hyperledger-labs/fablo/issues/229)
 * Use nvm to switch node version for chaincode build
+* Allow to run peers in dev mode [#126](https://github.com/hyperledger-labs/fablo/issues/126)
+* Allow to install each chaincode manually
 
 ### Fixes
 * Support Apple M1 / arm64 architecture

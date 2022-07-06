@@ -70,13 +70,22 @@ In this case, however, you should use generated `fablo-docker.sh` instead of `fa
 ### init
 
 ```bash
-fablo init [node]
+fablo init [node] [rest] [dev]
 ```
 
 Creates simple network config file in current dir.
 Good step to start your adventure with Fablo or set up a fast prototype. 
 
-Option `node` makes Fablo to generate a sample Node.js chaincode as well.
+Fablo `init` command takes three parameters (the order does not matter):
+* Option `node` makes Fablo to generate a sample Node.js chaincode as well.
+* Option `rest` enables simple REST API with [Fablo REST](https://github.com/softwaremill/fablo-rest) as standalone Docker container.
+* Option `dev` enables running peers in dev mode (so the hot reload for chaincode is possible).
+
+Sample command:
+
+```bash
+fablo init node dev
+```
 
 Generated `fablo-config.json` file uses single node Solo consensus and no TLS support.
 This is the simplest way to start with Hyperledger Fabric, since Raft consensus requires TLS and TLS itself adds a lot of complexity to the blockchain network and integration with it.
@@ -178,16 +187,69 @@ If you want to use Fablo for network configuration setup only, then the `fabric-
 
 ## Managing chaincodes
 
+### chaincode(s) install
+
+```bash
+fablo chaincodes install
+```
+Install all chaincodes. Might be useful if for some reason, Fablo won't manage to do it by itself.
+
+If you want to install a single chaincode defined in Fablo config file, execute:
+
+```bash
+fablo chaincode install <chaincode-name> <version>
+```
+
 ### chaincode upgrade
 
 ```bash
-fablo chaincode upgrade chaincode-name version
+fablo chaincode upgrade <chaincode-name> <version>
 ```
 
-Upgrades and instantiates chaincode with given name on all relevant peers.
+Upgrades chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fablo config file.
 
-## Chaincode scripts
+### Running chaincodes in dev mode
+
+Hyperledger Fabric allows to run peers in [dev mode](https://hyperledger-fabric.readthedocs.io/en/release-2.4/peer-chaincode-devmode.html) in order to allow simple develop of chaincodes.
+In this case chaincodes do not need to be upgraded each time, but they are run locally.
+This feature allows hot reload of chaincode code and speeds up the development a lot.
+
+Fablo will run peers in dev mode when `global.peerDevMode` is set to `true`.
+Note: in this case TLS has to be disabled, otherwise config validation fails.
+
+The simplest way of trying Fablo with dev mode is as follows:
+
+1. Execute `fablo init node dev`.
+   It will initialize Fablo config file with sample node chaincode and dev mode enabled.
+   In this case Fablo config file has `global.peerDevMode` set to `true`, and the `package.json` file for sample Node.js chaincode has a script for running chaincode in dev mode (`start:dev`).
+2. Start the network with `fablo up`.
+   Because dev mode is enabled, chaincode containers don't start.
+   Instead, Fablo approves and commits chaincode definitions from Fablo config file.
+3. Npm install and start the sample chaincode with:
+   ```bash
+   (cd chaincodes/chaincode-kv-node && nvm use && npm i && npm run start:watch)
+   ```
+   Now, when you update the chaincode source code, it will be automatically refreshed on Hyperledger Fabric Network.
+
+Our sample chaincode definition contains some scripts for running chaincode in dev mode:
+
+```json
+  "scripts": {
+    ...
+    "start:dev": "fabric-chaincode-node start --peer.address \"127.0.0.1:8541\" --chaincode-id-name \"chaincode1:0.0.1\" --tls.enabled false",
+    "start:watch": "nodemon --exec \"npm run start:dev\"",
+    ...
+  },
+```
+
+Worth considering:
+* If you want chaincode to be running on multiple peers, you need to start it multiple times, specifying different `--peer.address`
+* In case of errors ensure you have the same `--chaincode-id-name` as `CC_PACKAGE_ID` in Fablo output.
+
+Feel free to update this scripts to adjust it to your chaincode definition.
+
+## Channel scripts
 
 ### channel help
 
@@ -279,6 +341,7 @@ Example:
   "global": {
     "fabricVersion": "2.3.0",
     "tls": false,
+    "peerDevMode": false,
     "monitoring": {
       "loglevel": "debug"
     },

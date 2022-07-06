@@ -172,7 +172,10 @@ chaincodeApprove() {
       --output json \
       "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
-  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id" -r <<<"$QUERYINSTALLED_RESPONSE")"
+  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
+  if [ -z "$CC_PACKAGE_ID" ]; then
+    CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
+  fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
 
   local QUERYCOMMITTED_RESPONSE
