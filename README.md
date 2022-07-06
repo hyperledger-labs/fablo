@@ -215,14 +215,14 @@ Hyperledger Fabric allows to run peers in [dev mode](https://hyperledger-fabric.
 In this case chaincodes do not need to be upgraded each time, but they are run locally.
 This feature allows hot reload of chaincode code and speeds up the development a lot.
 
-Fablo will run peers in dev mode when `global.devMode` is set to `true`.
+Fablo will run peers in dev mode when `global.peerDevMode` is set to `true`.
 Note: in this case TLS has to be disabled, otherwise config validation fails.
 
 The simplest way of trying Fablo with dev mode is as follows:
 
 1. Execute `fablo init node dev`.
    It will initialize Fablo config file with sample node chaincode and dev mode enabled.
-   In this case Fablo config file has `global.devMode` set to `true`, and the `package.json` file for sample Node.js chaincode has a script for running chaincode in dev mode (`start:dev`).
+   In this case Fablo config file has `global.peerDevMode` set to `true`, and the `package.json` file for sample Node.js chaincode has a script for running chaincode in dev mode (`start:dev`).
 2. Start the network with `fablo up`.
    Because dev mode is enabled, chaincode containers don't start.
    Instead, Fablo approves and commits chaincode definitions from Fablo config file.
@@ -341,7 +341,7 @@ Example:
   "global": {
     "fabricVersion": "2.3.0",
     "tls": false,
-    "devMode": false,
+    "peerDevMode": false,
     "monitoring": {
       "loglevel": "debug"
     },

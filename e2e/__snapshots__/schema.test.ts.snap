@@ -239,12 +239,6 @@ Object {
       "$id": "#/properties/global",
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
-        "devMode": Object {
-          "$id": "#/properties/global/properties/devMode",
-          "default": false,
-          "title": "Start all peers in dev mode",
-          "type": "boolean",
-        },
         "fabricVersion": Object {
           "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.2",
@@ -302,6 +296,12 @@ Object {
           "required": Array [],
           "title": "Monitoring settings",
           "type": "object",
+        },
+        "peerDevMode": Object {
+          "$id": "#/properties/global/properties/peerDevMode",
+          "default": false,
+          "title": "Start all peers in dev mode",
+          "type": "boolean",
         },
         "tls": Object {
           "$id": "#/properties/global/properties/tls",
