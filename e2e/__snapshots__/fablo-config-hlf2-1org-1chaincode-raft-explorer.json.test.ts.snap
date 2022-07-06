@@ -1960,7 +1960,7 @@ services:
 
   fablo-rest.org1.example.com:
     container_name: fablo-rest.org1.example.com
-    image: fabloio/fablo-rest:\${FABLO_REST_VERSION}
+    image: softwaremill/fablo-rest:\${FABLO_REST_VERSION}
     environment:
       - PORT=8000
       - MSP_ID=Org1MSP

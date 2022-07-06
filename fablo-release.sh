@@ -30,7 +30,7 @@ read -r -p "Are you sure? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   (cd "$FABLO_HOME" && ./fablo-build.sh)
   docker login -u "$login"
-  docker push fabloio/fablo:"$FABLO_VERSION"
+  docker push softwaremill/fablo:"$FABLO_VERSION"
 else
   echo "Aborted."
 fi
