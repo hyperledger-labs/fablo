@@ -16,7 +16,6 @@
 ### Chore & Maintenance
 * Add `fabricNodeenvVersion` global configuration
 * Update Node.js runtime compatibility ([details](https://github.com/hyperledger-labs/fablo/issues/274))
-* Update Docker repo location
 * Update legacy URLs
 
 ## 1.0.2
