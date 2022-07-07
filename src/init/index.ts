@@ -30,7 +30,7 @@ export default class InitGenerator extends Generator {
     }
 
     const shouldRunInDevMode = this.args.length && this.args.find((v) => v === "dev");
-    const global = { ...fabloConfigJson.global, devMode: !!shouldRunInDevMode };
+    const global = { ...fabloConfigJson.global, peerDevMode: !!shouldRunInDevMode };
     fabloConfigJson = { ...fabloConfigJson, global };
 
     this.fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));

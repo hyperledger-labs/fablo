@@ -1,7 +1,7 @@
 export interface GlobalJson {
   fabricVersion: string;
   tls: boolean;
-  devMode: boolean;
+  peerDevMode: boolean;
   monitoring?: { loglevel: string };
   tools?: { explorer?: boolean };
 }

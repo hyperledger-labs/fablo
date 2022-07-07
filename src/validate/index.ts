@@ -458,7 +458,7 @@ class ValidateGenerator extends Generator {
   }
 
   _validateDevMode(global: GlobalJson): void {
-    if (global.devMode) {
+    if (global.peerDevMode) {
       if (global.tls) {
         const message = `TLS needs to be disabled when running peers in dev mode`;
         this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
