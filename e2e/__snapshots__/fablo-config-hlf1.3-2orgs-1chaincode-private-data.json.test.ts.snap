@@ -2417,12 +2417,30 @@ networkDown() {
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose down)
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer0.org1.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer1.org1.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rm -f $(docker ps -a | grep dev-peer0.org2.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer0.org2.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  for container in $(docker ps -a | grep \\"dev-peer0.org1.example.com-chaincode1*\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer0.org1.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for container in $(docker ps -a | grep \\"dev-peer1.org1.example.com-chaincode1*\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer1.org1.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for container in $(docker ps -a | grep \\"dev-peer0.org2.example.com-chaincode1*\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer0.org2.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
