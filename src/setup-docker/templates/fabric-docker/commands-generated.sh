@@ -200,6 +200,13 @@ notifyOrgsAboutChannels() {
   <% }) -%>
 }
 
+printStartSuccessInfo() {
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
+  <% if (global.peerDevMode) { -%>
+    echo "It has peerDevMode enabled, so remember to start your chaincodes manually."
+  <% } -%>
+}
+
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
