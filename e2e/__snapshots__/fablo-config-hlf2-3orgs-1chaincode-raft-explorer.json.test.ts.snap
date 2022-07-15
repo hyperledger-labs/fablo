@@ -3268,7 +3268,7 @@ networkUp() {
   installChannels
   installChaincodes
   notifyOrgsAboutChannels
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+  printStartSuccessInfo
 }
 
 if [ \\"$1\\" = \\"up\\" ]; then
@@ -3834,6 +3834,10 @@ notifyOrgsAboutChannels() {
   deleteNewChannelUpdateTx \\"my-channel2\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
   deleteNewChannelUpdateTx \\"my-channel3\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
   deleteNewChannelUpdateTx \\"my-channel3\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
+}
+
+printStartSuccessInfo() {
+  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
 }
 
 stopNetwork() {

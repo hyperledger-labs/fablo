@@ -19,7 +19,7 @@ networkUp() {
   installChannels
   installChaincodes
   notifyOrgsAboutChannels
-  printHeadline "Done! Enjoy your fresh network" "U1F984"
+  printStartSuccessInfo
 }
 
 if [ "$1" = "up" ]; then

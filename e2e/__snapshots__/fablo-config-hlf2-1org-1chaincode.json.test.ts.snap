@@ -1386,7 +1386,7 @@ networkUp() {
   installChannels
   installChaincodes
   notifyOrgsAboutChannels
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+  printStartSuccessInfo
 }
 
 if [ \\"$1\\" = \\"up\\" ]; then
@@ -1711,6 +1711,10 @@ notifyOrgsAboutChannels() {
 
   printHeadline \\"Deleting new channel config blocks\\" \\"U1F52A\\"
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org1MSP\\" \\"cli.org1.example.com\\"
+}
+
+printStartSuccessInfo() {
+  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
 }
 
 stopNetwork() {
