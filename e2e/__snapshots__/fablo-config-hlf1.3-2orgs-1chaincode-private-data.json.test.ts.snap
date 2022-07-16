@@ -2038,7 +2038,7 @@ networkUp() {
   installChannels
   installChaincodes
   notifyOrgsAboutChannels
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+  printStartSuccessInfo
 }
 
 if [ \\"$1\\" = \\"up\\" ]; then
@@ -2081,7 +2081,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
-"FABLO_VERSION=1.1.0-unstable
+"FABLO_VERSION=1.1.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.0
 HYPERLEDGER_EXPLORER_VERSION=1.1.8
@@ -2406,6 +2406,10 @@ notifyOrgsAboutChannels() {
   deleteNewChannelUpdateTx \\"my-channel1\\" \\"Org2MSP\\" \\"cli.org2.example.com\\"
 }
 
+printStartSuccessInfo() {
+  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+}
+
 stopNetwork() {
   printHeadline \\"Stopping network\\" \\"U1F68F\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose stop)
@@ -2417,12 +2421,30 @@ networkDown() {
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose down)
 
   printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
-  docker rm -f $(docker ps -a | grep dev-peer0.org1.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer0.org1.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rm -f $(docker ps -a | grep dev-peer1.org1.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer1.org1.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rm -f $(docker ps -a | grep dev-peer0.org2.example.com-chaincode1-0.0.1-* | awk '{print $1}') || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
-  docker rmi $(docker images dev-peer0.org2.example.com-chaincode1-0.0.1-* -q) || echo \\"docker rm failed, Check if all fabric dockers properly was deleted\\"
+  for container in $(docker ps -a | grep \\"dev-peer0.org1.example.com-chaincode1\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer0.org1.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for container in $(docker ps -a | grep \\"dev-peer1.org1.example.com-chaincode1\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer1.org1.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for container in $(docker ps -a | grep \\"dev-peer0.org2.example.com-chaincode1\\" | awk '{print $1}'); do
+    echo \\"Removing container $container...\\"
+    docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
+  done
+  for image in $(docker images \\"dev-peer0.org2.example.com-chaincode1*\\" -q); do
+    echo \\"Removing image $image...\\"
+    docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
+  done
 
   printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"

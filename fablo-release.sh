@@ -13,7 +13,7 @@ cleanup() {
 
 trap cleanup EXIT
 
-git clone --depth 1 --branch "$tag" "https://github.com/softwaremill/fablo" "$FABLO_HOME"
+git clone --depth 1 --branch "$tag" "https://github.com/hyperledger-labs/fablo" "$FABLO_HOME"
 ("$FABLO_HOME/check-if-fablo-version-matches.sh")
 
 FABLO_VERSION="$(jq -r '.version' "$FABLO_HOME/package.json")"

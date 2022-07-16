@@ -557,4 +557,6 @@ Provide for your organization `"tools": { "explorer": true }`, if you want to us
 
 ## Testimonials
 
-Fablo was originally created at [SoftwareMill](https://softwaremill.com).
+Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
+In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
+
