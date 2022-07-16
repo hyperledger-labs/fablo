@@ -170,7 +170,7 @@ fablo restore <source-snapshot-path>
 Example:
 
 1. Assume you have a working network with some state.
-2. Execute `./fablo shnapshot /tmp/my-snapshot`. It will create a file `/tmp/my-snapshot.fablo.tar.gz` with the state of the network. It is not required to stop the network before making a snapshot.
+2. Execute `./fablo snapshot /tmp/my-snapshot`. It will create a file `/tmp/my-snapshot.fablo.tar.gz` with the state of the network. It is not required to stop the network before making a snapshot.
 3. Execute `./fablo prune` to destroy the current network. If the network was present, Fablo would not be able to restore the new one from backup.
 4. Execute `./fablo restore /tmp/my-snapshot` to restore the network.
 5. Execute `./fablo start` to start the restored network.
