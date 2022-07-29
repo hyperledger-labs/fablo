@@ -48,14 +48,22 @@ const getPathsFromEnv = () => ({
 });
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
+  const engine = globalJson.engine ?? "docker";
+
   const monitoring = {
     loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
-  const explorer = !globalJson?.tools?.explorer ? {} : { explorer: { address: "explorer.example.com", port: 7010 } };
+
+  const explorer = !globalJson?.tools?.explorer
+    ? {}
+    : {
+        explorer: { address: "explorer.example.com", port: 7010 },
+      };
 
   return {
     ...globalJson,
     ...getVersions(globalJson.fabricVersion),
+    engine,
     paths: getPathsFromEnv(),
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),

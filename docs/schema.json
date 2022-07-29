@@ -74,6 +74,16 @@
           "type": "boolean",
           "default": false
         },
+        "engine": {
+          "$id": "#/properties/global/properties/engine",
+          "title": "Engine on which the network will be deployed",
+          "type": "string",
+          "enum": [
+            "docker",
+            "kubernetes"
+          ],
+          "default": "docker"
+        },
         "monitoring": {
           "$id": "#/properties/monitoring",
           "title": "Monitoring settings",

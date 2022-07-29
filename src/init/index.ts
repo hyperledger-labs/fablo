@@ -1,6 +1,7 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import parseFabloConfig from "../utils/parseFabloConfig";
+import {GlobalJson} from "../types/FabloConfigJson";
 
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
@@ -29,8 +30,13 @@ export default class InitGenerator extends Generator {
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
+    const shouldUseKubernetes = this.args.length && this.args.find((v) => v === "kubernetes" || v === "k8s");
     const shouldRunInDevMode = this.args.length && this.args.find((v) => v === "dev");
-    const global = { ...fabloConfigJson.global, peerDevMode: !!shouldRunInDevMode };
+    const global: GlobalJson = {
+      ...fabloConfigJson.global,
+      engine: shouldUseKubernetes ? "kubernetes" : "docker",
+      peerDevMode: !!shouldRunInDevMode,
+    };
     fabloConfigJson = { ...fabloConfigJson, global };
 
     this.fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));

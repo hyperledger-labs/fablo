@@ -94,6 +94,7 @@ class ValidateGenerator extends Generator {
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateFabricVersion(networkConfig.global.fabricVersion);
     this._validateOrgs(networkConfig.orgs);
+    this._validateEngineSpecificSettings(networkConfig);
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
@@ -427,6 +428,19 @@ class ValidateGenerator extends Generator {
       });
   }
 
+  _validateEngineSpecificSettings(networkConfig: FabloConfigJson): void {
+    if (networkConfig.global.engine === "kubernetes") {
+      if (!version(networkConfig.global.fabricVersion).isGreaterOrEqual("2.0.0")) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Kubernetes is not supported by Fablo for Fabric below version 2.0.0`,
+        });
+      }
+    }
+
+    // TODO engine-specific validation rules
+  }
+
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
     if (global.tools?.explorer === true) {
       orgs
@@ -451,7 +465,10 @@ class ValidateGenerator extends Generator {
         orgs
           .filter((o) => o.tools?.explorer === true)
           .forEach(() => {
-            this.emit(validationErrorType.WARN, { category: validationCategories.ORGS, message: warnMessage });
+            this.emit(validationErrorType.WARN, {
+              category: validationCategories.ORGS,
+              message: warnMessage,
+            });
           });
       }
     }

@@ -2,6 +2,7 @@ export interface GlobalJson {
   fabricVersion: string;
   tls: boolean;
   peerDevMode: boolean;
+  engine?: "kubernetes" | "docker";
   monitoring?: { loglevel: string };
   tools?: { explorer?: boolean };
 }
