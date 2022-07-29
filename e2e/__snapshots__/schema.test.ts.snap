@@ -239,6 +239,16 @@ Object {
       "$id": "#/properties/global",
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
+        "engine": Object {
+          "$id": "#/properties/global/properties/engine",
+          "default": "docker",
+          "enum": Array [
+            "docker",
+            "kubernetes",
+          ],
+          "title": "Engine on which the network will be deployed",
+          "type": "string",
+        },
         "fabricVersion": Object {
           "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.2",

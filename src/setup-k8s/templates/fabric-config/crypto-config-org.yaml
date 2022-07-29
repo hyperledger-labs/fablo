@@ -1,0 +1,13 @@
+PeerOrgs:
+  - Name: <%= org.name %>
+    Domain: <%= org.domain %>
+    Specs:
+    <%_ org.ordererGroups.forEach(function(ordererGroup) { _%>
+    <%_ ordererGroup.orderers.forEach(function(orderer) { _%>
+      - Hostname: <%= orderer.name  %>
+    <%_ }) _%>
+    <%_ }) _%>
+    Template:
+      Count: <%= org.peersCount %>
+    Users:
+      Count: 1

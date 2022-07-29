@@ -17,6 +17,7 @@ Validation warnings count: 0
     \\"fabricJavaenvVersion\\": \\"2.4\\",
     \\"fabricNodeenvVersion\\": \\"2.4\\",
     \\"fabricRecommendedNodeVersion\\": \\"16\\",
+    \\"engine\\": \\"docker\\",
     \\"paths\\": {
       \\"fabloConfig\\": \\"<absolute path>\\",
       \\"chaincodesBaseDir\\": \\"<absolute path>\\"
@@ -2338,6 +2339,7 @@ Validation warnings count: 0
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
+    \\"engine\\": \\"docker\\",
     \\"peerDevMode\\": false,
     \\"fabricCaVersion\\": \\"1.5.0\\",
     \\"fabricCcenvVersion\\": \\"2.4.0\\",
@@ -2797,6 +2799,7 @@ exports[`init should init simple fablo config 1`] = `
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
+    \\"engine\\": \\"docker\\",
     \\"peerDevMode\\": false
   },
   \\"orgs\\": [
@@ -2850,6 +2853,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
+    \\"engine\\": \\"docker\\",
     \\"peerDevMode\\": false
   },
   \\"orgs\\": [
@@ -2911,6 +2915,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
   \\"global\\": {
     \\"fabricVersion\\": \\"2.4.0\\",
     \\"tls\\": false,
+    \\"engine\\": \\"docker\\",
     \\"peerDevMode\\": false
   },
   \\"orgs\\": [

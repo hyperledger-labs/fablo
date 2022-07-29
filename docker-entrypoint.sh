@@ -43,10 +43,10 @@ formatGeneratedFiles() {
 }
 
 yeoman_target_dir="/network/workspace"
-yeoman_command=${1:-Fablo:setup-docker}
+yeoman_command=${1:-Fablo:setup-network}
 
 executeYeomanCommand "$yeoman_command"
 
-if echo "$yeoman_command" | grep "setup-docker"; then
+if echo "$yeoman_command" | grep "setup-network"; then
   formatGeneratedFiles
 fi
