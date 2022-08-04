@@ -176,7 +176,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeOnFabloDocker "fablo:setup-docker" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
   ("$fablo_target/hooks/post-generate.sh")
 }
 
@@ -193,17 +193,26 @@ networkUp() {
     echo "Network target directory is empty"
     generateNetworkConfig "$1"
   fi
-  "$FABLO_TARGET/fabric-docker.sh" up
+  executeFabloCommand up
 }
 
-executeFabloDockerCommand() {
+executeFabloCommand() {
   if [ ! -d "$FABLO_TARGET" ]; then
     echo "Error: This command needs the network to be generated at '$FABLO_TARGET'! Execute 'generate' or 'up' command."
     exit 1
   fi
 
-  echo "Executing Fablo docker command: $1"
-  "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
+    echo "Executing Fablo Docker command: $1"
+    "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
+    echo "Executing Fablo Kubernetes command: $1"
+    "$FABLO_TARGET/fabric-k8s.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  else
+    echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
+    echo "Cannot execute command $1"
+    exit 1
+  fi
 }
 
 createSnapshot() {
@@ -215,7 +224,7 @@ createSnapshot() {
     exit 1
   fi
 
-  executeFabloDockerCommand snapshot "$FABLO_TEMP_DIR"
+  executeFabloCommand snapshot "$FABLO_TEMP_DIR"
   (cd "$FABLO_TEMP_DIR" && tar czf tmp.tar.gz *)
   mv "$FABLO_TEMP_DIR/tmp.tar.gz" "$archive"
   echo "📦 Created snapshot at '$archive'!"
@@ -278,5 +287,5 @@ elif [ "$COMMAND" = "restore" ]; then
   restoreSnapshot "$2" "${3:-""}"
 
 else
-  executeFabloDockerCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  executeFabloCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 fi
