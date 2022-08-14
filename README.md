@@ -339,7 +339,7 @@ Example:
 
 ```json
   "global": {
-    "fabricVersion": "2.3.0",
+    "fabricVersion": "2.4.2",
     "tls": false,
     "peerDevMode": false,
     "monitoring": {
@@ -489,7 +489,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 ---
 "$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json
 global:
-  fabricVersion: 2.3.0
+  fabricVersion: 2.4.2
   tls: false
 orgs:
   - organization:
