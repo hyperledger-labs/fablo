@@ -444,8 +444,9 @@ Example:
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node",
       "privateData": {
-      "name": "org1-collection",
-      "orgNames": ["Org1"]
+        "name": "org1-collection",
+        "orgNames": ["Org1"]
+      }
     },
     {
       "name": "chaincode2",
