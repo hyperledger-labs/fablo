@@ -1,218 +1,147 @@
 #!/usr/bin/env bash
 
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh"
+
+
 certsGenerate() {
-  local CONTAINER_NAME=certsGenerate
 
-  local CONFIG_PATH=$1
-  local CRYPTO_CONFIG_FILE_NAME=$2
-  local ORG_PATH=$3
-  local OUTPUT_PATH=$4
-  local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
+    printItalics "Deploying Certificate Authority" "U1F984"
 
-  echo "Generating certs..."
-  inputLog "CONFIG_PATH: $CONFIG_PATH"
-  inputLog "CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
-  inputLog "ORG_PATH: $ORG_PATH"
-  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
-  inputLog "FULL_CERT_PATH: $FULL_CERT_PATH"
+    kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=$ORG-ca --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-pw=$ORG1_CA_ADMIN_PASSWORD && sleep 3
 
-  if [ -d "$FULL_CERT_PATH" ]; then
-    echo "Can't generate certs, directory already exists : $FULL_CERT_PATH"
-    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
-    exit 1
-  fi
+    while [[ $(kubectl get pods -l release=$ORG-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do 
+        sleep 5 
+        inputLog "waiting for CA"
+    done
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
-
-  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
-
-  docker cp $CONTAINER_NAME:/crypto-config/. "$OUTPUT_PATH" || removeContainer $CONTAINER_NAME
-
-  removeContainer $CONTAINER_NAME
-
-  # shellcheck disable=2044
-  for file in $(find "$OUTPUT_PATH"/ -iname '*_sk'); do
-    dir=$(dirname "$file")
-    mv "${dir}"/*_sk "${dir}"/priv-key.pem
-  done
+    kubectl hlf ca register --name=$ORG-ca --user=peer --secret=$PEER_SECRET --type=peer --enroll-id $ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORG && \
+    inputLog "registered $ORG-ca"
 }
 
-genesisBlockCreate() {
-  local CONTAINER_NAME=genesisBlockCreate
+deployPeer() {
 
-  local CONFIG_PATH=$1
-  local OUTPUT_PATH=$2
-  local GENESIS_PROFILE_NAME=$3
-  local GENESIS_FILE_NAME=$GENESIS_PROFILE_NAME.block
-
-  echo "Creating genesis block..."
-  inputLog "CONFIG_PATH: $CONFIG_PATH"
-  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
-  inputLog "GENESIS_PROFILE_NAME: $GENESIS_PROFILE_NAME"
-  inputLog "GENESIS_FILE_NAME: $GENESIS_FILE_NAME"
-
-  if [ -f "$OUTPUT_PATH/$GENESIS_FILE_NAME" ]; then
-    echo "Cant't generate genesis block, file already exists: $OUTPUT_PATH/$GENESIS_FILE_NAME"
-    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
-    exit 1
-  fi
-
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
-
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "$GENESIS_PROFILE_NAME" -outputBlock "./config/$GENESIS_FILE_NAME" -channelID system-channel || removeContainer $CONTAINER_NAME
-
-  mkdir -p "$OUTPUT_PATH"
-  docker cp "$CONTAINER_NAME:/config/$GENESIS_FILE_NAME" "$OUTPUT_PATH/$GENESIS_FILE_NAME" || removeContainer $CONTAINER_NAME
-
-  removeContainer $CONTAINER_NAME
+    printItalics "Deploying Peers" "U1F984"
+    sleep 10
+    
+    kubectl hlf peer create --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=$MSP_ORG \
+        --enroll-pw=$PEER_SECRET --capacity=5Gi --name=$ORG-peer0 --ca-name=$ORG-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
+    kubectl hlf peer create --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=$MSP_ORG \
+        --enroll-pw=$PEER_SECRET --capacity=5Gi --name=$ORG-peer1 --ca-name=$ORG-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
+        
+    while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != "true true" ]]; do 
+        sleep 5
+        inputLog "waiting for peer nodes to be ready"
+    done
 }
 
-createChannelTx() {
-  local CONTAINER_NAME=createChannelTx
+deployOrderer() {
 
-  local CHANNEL_NAME=$1
-  local CONFIG_PATH=$2
-  local CONFIG_PROFILE=$3
-  local OUTPUT_PATH=$4
-  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME".tx
+    printItalics "Deploying Orderers" "U1F984"
+    kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=$ORD-ca --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-pw=$ORG1_CA_ADMIN_PASSWORD
 
-  echo "Creating channelTx for $CHANNEL_NAME..."
-  inputLog "CONFIG_PATH: $CONFIG_PATH"
-  inputLog "CONFIG_PROFILE: $CONFIG_PROFILE"
-  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
-  inputLog "CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
+    while [[ $(kubectl get pods -l release=$ORD-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+        sleep 5
+        inputLog "waiting for $ORD CA to be ready" $RESETBG
+    done
 
-  if [ -f "$CHANNEL_TX_PATH" ]; then
-    echo "Can't create channel configuration, it already exists : $CHANNEL_TX_PATH"
-    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
-    exit 1
-  fi
-
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
-
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
-
-  docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
-
-  removeContainer $CONTAINER_NAME
+    kubectl hlf ca register --name=$ORD-ca --user=orderer --secret=$ORDERER_SECRET --type=orderer --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORD && \
+    inputLog "registered $ORD-ca"
+    
+    
+    kubectl hlf ordnode create --image=$ORDERER_IMAGE --version=$ORDERER_VERSION \
+    --storage-class=$STORAGE_CLASS --enroll-id=$ORD --mspid=$MSP_ORD \
+    --enroll-pw=$ORDERER_SECRET --capacity=2Gi --name=$ORD-node1 --ca-name=$ORD-ca.$NAMESPACE
+    
+    while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+        sleep 5
+        inputLog "waiting for $ORD Node to be ready"
+    done   
 }
 
-createNewChannelUpdateTx() {
-  local CONTAINER_NAME=createAnchorPeerUpdateTx
 
-  local CHANNEL_NAME=$1
-  local MSP_NAME=$2
-  local CONFIG_PROFILE=$3
-  local CONFIG_PATH=$4
-  local OUTPUT_PATH=$5
-  local ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+# Might no be needed, after last meeting
 
-  echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "MSP_NAME: $MSP_NAME"
-  inputLog "CONFIG_PROFILE: $CONFIG_PROFILE"
-  inputLog "CONFIG_PATH: $CONFIG_PATH"
-  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
-  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
-
-  if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
-    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
-    exit 1
-  fi
-
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
-
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen \
-    --configPath ./fabric-config \
-    -profile "${CONFIG_PROFILE}" \
-    -outputAnchorPeersUpdate ./config/"${MSP_NAME}"anchors.tx \
-    -channelID "${CHANNEL_NAME}" \
-    -asOrg "${MSP_NAME}" || removeContainer $CONTAINER_NAME
-
-  docker cp $CONTAINER_NAME:/config/"${MSP_NAME}"anchors.tx "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
-
-  removeContainer $CONTAINER_NAME
+adminConfig() {
+    kubectl hlf inspect --output $CONFIG_DIR/ordservice.yaml -o $MSP_ORD && \
+    
+    kubectl hlf ca register --name=$ORD-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --type=admin --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid=$MSP_ORD
+    
+    kubectl hlf ca enroll --name=$ORD-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORD --ca-name ca  --output $CONFIG_DIR/admin-ordservice.yaml && \
+    
+    kubectl hlf utils adduser --userPath=$CONFIG_DIR/admin-ordservice.yaml --config=$CONFIG_DIR/ordservice.yaml --username=$ADMIN_USER --mspid=$MSP_ORD
 }
 
-notifyOrgAboutNewChannel() {
-  local CHANNEL_NAME=$1
-  local MSP_NAME=$2
-  local CLI_NAME=$3
-  local PEER_ADDRESS=$4
-  local ORDERER_URL=$5
-  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
 
-  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "MSP_NAME: $MSP_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
-  inputLog "ORDERER_URL: $ORDERER_URL"
-  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+installChannels() {
+    printItalics "Creating 'my-channel1' on Org1/peer0" "U1F63B"
+    sleep 10
+    kubectl hlf channel generate --output=$CONFIG_DIR/$CHANNEL_NAME.block --name=$CHANNEL_NAME --organizations $MSP_ORG --ordererOrganizations $MSP_ORD && \
 
-  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
-      "$CLI_NAME" peer channel update \
-      -c "$CHANNEL_NAME" \
-      -o "$ORDERER_URL" \
-      -f "$ANCHOR_PEER_UPDATE_PATH"
-  else
-    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
-  fi
+    kubectl hlf ca enroll --name=$ORD-ca --namespace=$NAMESPACE --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORD --ca-name $USER_CA_TYPE --output $CONFIG_DIR/admin-tls-ordservice.yaml && \
+
+    sleep 10
+
+    kubectl hlf ordnode join --block=$CONFIG_DIR/$CHANNEL_NAME.block --name=$ORD-node1 --namespace=$NAMESPACE --identity=$CONFIG_DIR/admin-tls-ordservice.yaml
 }
 
-notifyOrgAboutNewChannelTls() {
-  local CHANNEL_NAME=$1
-  local MSP_NAME=$2
-  local CLI_NAME=$3
-  local PEER_ADDRESS=$4
-  local ORDERER_URL=$5
-  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
-  local CA_CERT="/var/hyperledger/cli/"${6}
+joinChannels() {
 
-  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME (TLS)..."
-  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
-  inputLog "MSP_NAME: $MSP_NAME"
-  inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
-  inputLog "ORDERER_URL: $ORDERER_URL"
-  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+    printItalics "Joining 'my-channel1' on  Org1/peer0" "U1F638"
 
-  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \
-      "$CLI_NAME" peer channel update \
-      -c "$CHANNEL_NAME" \
-      -o "$ORDERER_URL" \
-      -f "$ANCHOR_PEER_UPDATE_PATH" \
-      --tls --cafile "$CA_CERT"
-  else
-    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
-  fi
+    kubectl hlf ca register --name=$ORG-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --type=admin --enroll-id $ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORG && \
+    
+    kubectl hlf ca enroll --name=$ORG-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORG --ca-name ca  --output $CONFIG_DIR/peer-org1.yaml && \
+
+    kubectl hlf inspect --output $CONFIG_DIR/org1.yaml -o $MSP_ORG -o $MSP_ORD && \
+
+    kubectl hlf utils adduser --userPath=$CONFIG_DIR/peer-org1.yaml --config=$CONFIG_DIR/org1.yaml --username=$ADMIN_USER --mspid=$MSP_ORG && \
+
+    printItalics "Joining 'my-channel1' on  Org1/peer0" "U1F638"
+
+    retry 3 kubectl hlf channel join --name=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER -p=$ORG-peer0.$NAMESPACE
+
+    printItalics "Joining 'my-channel1' on  Org1/peer1" "U1F638"
+
+    retry 3 kubectl hlf channel join --name=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER -p=$ORG-peer1.$NAMESPACE
+
+    # add anchor peer
+
+    printItalics "Electing on Org1/peer0 as Anchor peer" "U1F638"
+
+    kubectl hlf channel addanchorpeer --channel=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer0.$NAMESPACE   
 }
 
-deleteNewChannelUpdateTx() {
-  local CHANNEL_NAME=$1
-  local MSP_NAME=$2
-  local CLI_NAME=$3
-  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+installChaincodes() {
+    printItalics "Building chaincode $CHAINCODE_NAME" "U1F618"
 
-  echo "Deleting new channel config block. Channel: $CHANNEL_NAME, Organization: $MSP_NAME"
-  inputLogShort "CHANNEL_NAME: $CHANNEL_NAME, MSP_NAME: $MSP_NAME, CLI_NAME: $CLI_NAME, ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+    buildAndInstallChaincode "$CHAINCODE_NAME" "0" "$CHAINCODE_LANG" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "$CHAINCODE_VERSION"
+    buildAndInstallChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_LANG" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "$CHAINCODE_VERSION"
+    
+    approveChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_VERSION" "$CHANNEL_NAME"
 
-  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
-    docker exec "$CLI_NAME" rm "$ANCHOR_PEER_UPDATE_PATH"
-  else
-    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
-  fi
+    printItalics "Committing chaincode '$CHAINCODE_NAME' on channel '$CHANNEL_NAME' as '$ORG'" "U1F618"
+    commitChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_VERSION" "$CHANNEL_NAME"
 }
+
+
+destroyNetwork() {
+    kubectl delete fabricpeers.hlf.kungfusoftware.es --all-namespaces --all
+    kubectl delete fabriccas.hlf.kungfusoftware.es --all-namespaces --all
+    kubectl delete fabricorderernodes.hlf.kungfusoftware.es --all-namespaces --all
+    kubectl delete fabricchaincode.hlf.kungfusoftware.es --all-namespaces --all
+}
+
+hlfOperator() {
+helm repo add kfs $REPOSITORY --force-update
+
+helm install hlf-operator --version=1.6.0 kfs/hlf-operator
+
+while [ "$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items[*].status.containerStatuses[0].ready}')" != "true" ]; do
+   sleep 5
+   echo $BLUE "Waiting for Operator to be ready." $RESETBG
+done
+}
+
 
 printHeadline() {
   bold=$'\e[1m'
@@ -246,12 +175,22 @@ inputLogShort() {
   echo "${darkGray}   $1 ${end}"
 }
 
-certsRemove() {
-  local CERTS_DIR_PATH=$1
-  rm -rf "$CERTS_DIR_PATH"
-}
+checkDependencies() {
+    if [[  `command -v kubectl` ]]; then 
+        printf "\nKubectl installed...\n"
+    else
+        printf "\nCouldn't detect a Kubectl \n" && exit
+    fi
 
-removeContainer() {
-  CONTAINER_NAME=$1
-  docker rm -f "$CONTAINER_NAME"
+    if [[  `command -v kubectl-hlf` ]]; then 
+        printf "\nHLF installed...\n"
+    else
+        printf "\nCouldn't detect the HLF Plugin \n" && exit
+    fi
+
+    if [[  `command -v helm` ]]; then 
+        printf "\nHelm installed...\n"
+    else
+        printf "\nCouldn't detect Helm \n" && exit
+    fi
 }

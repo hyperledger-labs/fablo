@@ -1,26 +1,43 @@
 #!/usr/bin/env bash
 
-set -eu
+set -e
 
 FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
-source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
+# location of generated configurations
+CONFIG_DIR="$FABLO_NETWORK_ROOT/fabric-config"
+
+
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-help.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/chaincode-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/.env"
 
 networkUp() {
-  generateArtifacts
-  startNetwork
-  generateChannelsArtifacts
-  installChannels
-  installChaincodes
-  notifyOrgsAboutChannels
-  printStartSuccessInfo
+  printHeadline "Checking dependencies..." "U1F984"
+  checkDependencies
+  printHeadline "Starting Network..." "U1F984"
+  hlfOperator && \
+  certsGenerate && \
+  deployPeer && \
+  deployOrderer && \
+  adminConfig && \
+  installChannels &&\
+  joinChannels && \
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
+
+networkDown() {
+  printHeadline "Destroying network" "U1F913"
+  destroyNetwork
+}
+
+chaincode(){
+  installChaincodes
+}
+
+
+
 
 if [ "$1" = "up" ]; then
   networkUp
@@ -28,13 +45,14 @@ elif [ "$1" = "down" ]; then
   networkDown
 elif [ "$1" = "reset" ]; then
   networkDown
+  sleep 60
   networkUp
 elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
-  installChaincodes
+elif [ "$1" = "chaincodes" ]; then
+  chaincode
 elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
   installChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
