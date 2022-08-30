@@ -31,15 +31,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test simple network
-        run: e2e-network/test-01-simple.sh
+        run: e2e-network/docker/test-01-simple.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-main
           path: |
-            e2e-network/test-01-simple.sh.logs/*
-            e2e-network/test-01-simple.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-01-simple.sh.logs/*
+            e2e-network/docker/test-01-simple.sh.tmpdir/fablo-target/**/*
 
       - name: Test generators
         run: |
@@ -76,15 +76,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test RAFT network
-        run: e2e-network/test-02-raft-2orgs.sh
+        run: e2e-network/docker/test-02-raft-2orgs.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-02-raft
           path: |
-            e2e-network/test-02-raft.sh.logs/*
-            e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-02-raft.sh.logs/*
+            e2e-network/docker/test-02-raft.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
@@ -112,15 +112,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test private data
-        run: e2e-network/test-03-private-data.sh
+        run: e2e-network/docker/test-03-private-data.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-03-private-data
           path: |
-            e2e-network/test-03-private-data.sh.logs/*
-            e2e-network/test-03-private-data.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-03-private-data.sh.logs/*
+            e2e-network/docker/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
@@ -148,15 +148,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test snapshots
-        run: e2e-network/test-04-snapshot.sh
+        run: e2e-network/docker/test-04-snapshot.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-04-snapshot
           path: |
-            e2e-network/test-04-snapshot.sh.logs/*
-            e2e-network/test-04-snapshot.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-04-snapshot.sh.logs/*
+            e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
 
       - name: Send Slack notification
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
