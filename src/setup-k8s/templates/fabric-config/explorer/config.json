@@ -1,0 +1,11 @@
+{
+  "network-configs": {
+    <%_ orgs.forEach(function(org) { _%>
+    "network-<%= org.name.toLowerCase() %>": {
+      "name": "Network of <%= org.name %>",
+      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-<%= org.name.toLowerCase() %>.json"
+    },
+  <%_ }) _%>
+  },
+  "license": "Apache-2.0"
+}

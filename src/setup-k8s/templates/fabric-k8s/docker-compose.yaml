@@ -1,0 +1,350 @@
+version: '2.2'
+
+networks:
+  basic:
+
+services:
+<% orgs.forEach(function(org){ %>
+  <%= org.ca.address %>:
+    container_name: <%= org.ca.address %>
+    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.address %>
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.<%= org.domain %>-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      <%_ if(global.tls) { _%>
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      <%_ } _%>
+      <%_ if (org.ca.db === "postgres") { _%>
+      - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_DB_TYPE=postgres
+      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.<%= org.ca.address %> port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
+      <%_ } _%>
+    ports:
+      - <%= org.ca.exposePort %>:<%= org.ca.port %>
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b ${<%= org.ca.caAdminNameVar %>}:${<%= org.ca.caAdminPassVar %>} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/<%= org.domain %>/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    <%_ if (org.ca.db === "postgres") { _%>
+    depends_on:
+      db.<%= org.ca.address %>:
+        condition: service_healthy
+    <%_ } _%>
+    networks:
+      - basic
+
+  <%_ if (org.ca.db === "postgres") { _%>
+  db.<%= org.ca.address %>:
+    container_name: db.<%= org.ca.address %>
+    image: postgres:${FABRIC_CA_POSTGRES_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=caDbPass12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fabriccaserver
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+  <%_ } _%>
+
+  <%= org.cli.address %>:
+    container_name: <%= org.cli.address %>
+    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - CORE_PEER_ID=<%= org.cli.address %>
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=<%= org.mspName %>
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/msp
+      <%_ if(org.headPeer !== undefined) { _%>
+      - CORE_PEER_ADDRESS=<%= org.headPeer.fullAddress %>
+      <%_ } _%>
+      <%_ if(global.tls) { _%>
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@<%= org.domain %>/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem
+      <%_ } _%>
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-k8s/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>:/var/hyperledger/cli/crypto/
+      <%_ if(global.tls) { _%>
+      <%_ orderedHeadsDistinct.forEach(function(ordererHead) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= ordererHead.domain %>/peers/<%= ordererHead.address %>/msp/tlscacerts/tlsca.<%= ordererHead.domain %>-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.<%= ordererHead.domain %>-cert.pem:ro
+      <%_ }) _%>
+      <%_ orgs.forEach(function(org) { _%>
+      <%_ org.peers.forEach(function(peer) { _%>
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls/ca.crt:/var/hyperledger/cli/crypto-peer/<%= peer.address %>/tls/ca.crt:ro
+      <%_ }) _%>
+      <%_ }) _%>
+      <%_ } _%>
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      <%_ chaincodes.forEach(function(chaincode) { _%>
+      - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
+      <%_ if(chaincode.privateDataConfigFile) { _%>
+      - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
+      <%_ } _%>
+      <%_ }) _%>
+    networks:
+      - basic
+
+  <%_ if (org.tools.fabloRest) { _%>
+  <%= org.tools.fabloRest.address %>:
+    container_name: <%= org.tools.fabloRest.address %>
+    image: softwaremill/fablo-rest:${FABLO_REST_VERSION}
+    environment:
+      - PORT=8000
+      - MSP_ID=<%= org.tools.fabloRest.mspId %>
+      - FABRIC_CA_URL=<%= org.tools.fabloRest.fabricCaUrl %>
+      - FABRIC_CA_NAME=<%= org.tools.fabloRest.fabricCaName %>
+      - AS_LOCALHOST=false
+      - DISCOVERY_URLS=<%= org.tools.fabloRest.discoveryUrls %>
+    <%_ if(global.tls) { _%>
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=<%= org.tools.fabloRest.discoverySslTargetNameOverrides %>
+      - DISCOVERY_TLS_CA_CERT_FILES=<%= org.tools.fabloRest.discoveryTlsCaCertFiles %>
+    <%_ } _%>
+      - HFC_LOGGING=<%- JSON.stringify(org.tools.fabloRest.logging) %>
+    <%_ if(global.tls) { _%>
+    volumes:
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
+    <%_ } _%>
+    ports:
+      - <%= org.tools.fabloRest.port %>:8000
+    networks:
+      - basic
+  <%_ } _%>
+
+  <%_ if (org.tools.explorer && !global.tools.explorer) { _%>
+  db.<%= org.tools.explorer.address %>:
+    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.<%= org.tools.explorer.address %>
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  <%= org.tools.explorer.address %>:
+    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: <%= org.tools.explorer.address %>
+    environment:
+      - DATABASE_HOST=db.<%= org.tools.explorer.address %>
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer/connection-profile-<%= org.name.toLowerCase() %>.json:/opt/explorer/app/platform/fabric/connection-profile/connection-profile-<%= org.name.toLowerCase() %>.json
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - "<%= org.tools.explorer.port %>:8080"
+    depends_on:
+      db.<%= org.tools.explorer.address %>:
+        condition: service_healthy
+    networks:
+      - basic
+  <%_ } _%>
+
+  <%_ org.ordererGroups.forEach(function(ordererGroup){ _%>
+  <%_ ordererGroup.orderers.forEach(function(orderer){ _%>
+  <%= orderer.address %>:
+    container_name: <%= orderer.address %>
+    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      <%_ if(global.capabilities.isV2) { _%>
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      <%_ } else { _%>
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      <%_ } _%>
+      - ORDERER_GENERAL_LOCALMSPID=<%= org.mspName %>
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - GODEBUG=netdns=go
+      <%_ if(global.tls) { _%>
+      # metrics
+      - ORDERER_OPERATIONS_LISTENADDRESS=<%= orderer.address %>:9440
+      - ORDERER_METRICS_PROVIDER=prometheus
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      <%_ } _%>
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - <%= orderer.port %>:<%= orderer.port %>
+      - <%= orderer.port + 1000 %>:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  <%_ }) _%>
+  <%_ }) _%>
+
+  <%_ org.peers.forEach(function(peer){ _%>
+  <%= peer.address %>:
+    container_name: <%= peer.address %>
+    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=<%= org.mspName %>
+      - CORE_PEER_ID=<%= peer.address %>
+      - CORE_PEER_ADDRESS=<%= peer.fullAddress %>
+      - CORE_PEER_LISTENADDRESS=<%= peer.fullAddress %>
+      - CORE_PEER_GOSSIP_ENDPOINT=<%= peer.fullAddress %><% if(peer.isAnchorPeer) { %>
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=<%= peer.fullAddress %><% } %>
+      - CORE_PEER_GOSSIP_BOOTSTRAP=<%- org.bootstrapPeers %>
+      - CORE_PEER_CHAINCODELISTENADDRESS=<%= peer.address %>:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=<%= peer.address %>:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      <%_ if(global.tls) { _%>
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      <%_ } _%>
+      <%_ if(peer.db.type==="CouchDb") { _%>
+      # CouchDB
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.<%= peer.name %>.<%= org.domain %>:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=<%= peer.name %>
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=<%= peer.name %>Password
+      <%_ } _%>
+      <%_ if(peer.gatewayEnabled) { _%>
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+      <%_ } _%>
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start <%= global.peerDevMode ? '--peer-chaincodedev=true' : '' %>
+    ports:
+      - <%= peer.port + 1000 %>:9440
+      - <%= peer.port %>:<%= peer.port %>
+      <%_ if(global.peerDevMode) { _%>
+      - <%= peer.port + 1500 %>:7050
+      <%_ } _%>
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
+
+  <%_ if(peer.db.type==="CouchDb") { _%>
+  couchdb.<%= peer.name %>.<%= org.domain %>:
+    container_name: couchdb.<%= peer.name %>.<%= org.domain %>
+    image: <%= peer.db.image %>
+    environment:
+      - COUCHDB_USER=<%= peer.name %>
+      - COUCHDB_PASSWORD=<%= peer.name %>Password
+    ports:
+      - <%= peer.couchDbExposePort %>:5984
+    networks:
+      - basic
+  <%_ } _%>
+  <%_ }) _%>
+<%_ }) _%>
+
+  <%_ if (global.tools.explorer) { _%>
+  db.<%= global.tools.explorer.address %>:
+    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.<%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  <%= global.tools.explorer.address %>:
+    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: <%= global.tools.explorer.address %>
+    environment:
+      - DATABASE_HOST=db.<%= global.tools.explorer.address %>
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - "<%= global.tools.explorer.port %>:8080"
+    depends_on:
+      db.<%= global.tools.explorer.address %>:
+        condition: service_healthy
+    networks:
+      - basic
+  <%_ } _%>

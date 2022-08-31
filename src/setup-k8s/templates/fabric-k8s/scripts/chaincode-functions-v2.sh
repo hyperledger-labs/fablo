@@ -101,5 +101,3 @@ commitChaincode() {
     --version "$VERSION" --sequence "$SEQUENCE" --name=$CHAINCODE_NAME \
     --policy="OR('$MSP_ORG.member')" --channel=$CHANNEL_NAME
 }
-
-
