@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 buildAndInstallChaincode() {
   local CHAINCODE_NAME="$1"
   local PEER=$2
@@ -59,11 +58,11 @@ approveChaincode() {
     exit 1
   fi
 
-    PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
 
-    printItalics "Approving chaincode $CHAINCODE_NAME on peer$PEER" "U1F618"
+  printItalics "Approving chaincode $CHAINCODE_NAME on peer$PEER" "U1F618"
 
-    kubectl hlf chaincode approveformyorg --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE \
+  kubectl hlf chaincode approveformyorg --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE \
     --package-id=$PACKAGE_ID --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name=$CHAINCODE_NAME \
     --policy="OR('$MSP_ORG.member')" --channel=$CHANNEL_NAME
 }
@@ -95,9 +94,9 @@ commitChaincode() {
     exit 1
   fi
 
-    PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
 
-    kubectl hlf chaincode commit --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --mspid=$MSP_ORG \
+  kubectl hlf chaincode commit --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --mspid=$MSP_ORG \
     --version "$VERSION" --sequence "$SEQUENCE" --name=$CHAINCODE_NAME \
     --policy="OR('$MSP_ORG.member')" --channel=$CHANNEL_NAME
 }
