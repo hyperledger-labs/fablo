@@ -59,7 +59,7 @@ See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) 
 
 There are two basic use cases.
 You may use Fablo to start and manage the network for development purposes, test different network topologies, run it in CI environment etc.
-In this case you should keep `fabrika-target` directory intact and out of the version control.
+In this case you should keep `fablo-target` directory intact and out of the version control.
 Fablo will manage it locally.
 
 On the other hand you can use Fablo to generate initial network configuration, keep it in version control and tweak for specific requirements.
@@ -444,8 +444,9 @@ Example:
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node",
       "privateData": {
-      "name": "org1-collection",
-      "orgNames": ["Org1"]
+        "name": "org1-collection",
+        "orgNames": ["Org1"]
+      }
     },
     {
       "name": "chaincode2",
