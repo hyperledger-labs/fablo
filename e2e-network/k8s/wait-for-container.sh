@@ -7,7 +7,6 @@ max_attempts="${3:-10}"
 end="$(printf '\e[0m')"
 darkGray="$(printf '\e[90m')"
 
-
 if [ -z "$expected_message" ]; then
   echo "Usage: ./wait-for-container.sh [container_name] [expected_message]"
   exit 1
@@ -24,6 +23,5 @@ done
 
 #timeout
 echo "❌ failed: Container $container logs does not contain ${darkGray}'$expected_message'${end}"
-# echo "Last log messages:"
-# kubectl logs "$container" | tail -n 30
-# exit 1
+
+exit 1

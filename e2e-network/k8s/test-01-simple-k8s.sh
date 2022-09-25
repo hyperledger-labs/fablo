@@ -2,7 +2,6 @@
 
 set -e
 
-
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
@@ -13,7 +12,6 @@ networkUp() {
   (cd $TEST_TMP && "$FABLO_HOME/fablo.sh" up)
 }
 
-
 dumpLogs() {
   echo "Saving logs of $1 to $TEST_LOGS/$1.log"
   mkdir -p "$TEST_LOGS"
@@ -22,13 +20,11 @@ dumpLogs() {
 
 networkDown() {
   rm -rf "$TEST_LOGS"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8.sh" down)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" down)
 }
 
-# TODO The rest of this script to be rewritten
-
 chainCode() {
-    (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8.sh" chaincodes)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" chaincodes)
 }
 
 waitForContainer() {
@@ -43,9 +39,8 @@ expectInvoke() {
   sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
 }
 
-
-# trap networkDown EXIT
-# trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
+trap networkDown EXIT
+trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
 # start the network
 networkUp
@@ -65,18 +60,14 @@ waitForContainer "$peer0" "Membership view has changed. peers went online:"
 waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "$peer1" "Membership view has changed. peers went online:"
 
-chainCode
-
 #Test simple chaincode
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
   "put -a '["name"]' -a Willy Wonka" "{\"success\":\"OK\"}"
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
   "get -a '["name"]'" '{"success":"Willy"}'
 
-# Removed channel query tests, not needed for k8
-
 # Reset and ensure the state is lost after reset
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8.sh" reset)
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" reset)
 chainCode
 waitForChaincode "admin" "org1-peer0.default" "my-channel1" "chaincode1" "1.0"
 waitForChaincode "admin" "org1-peer1.default" "my-channel1" "chaincode1" "1.0"
@@ -88,6 +79,3 @@ expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
 
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
   "put -a '["name"]' -a James Bond" "{\"success\":\"OK\"}"
-
-networkDown
-

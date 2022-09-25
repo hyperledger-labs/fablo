@@ -8,7 +8,8 @@ chaincode="$3"
 channel="$4"
 func="$5"
 expected="$6"
-config=/home/great/work/new/fablo/fablo-target/fabric-config/fabric-k8/org1.yaml
+config=test-01-simple-k8s.sh.tmpdir/fablo-target/fabric-config/org1.yaml
+
 
 if [ -z "$expected" ]; then
   echo "Usage: ./expect-invoke.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
@@ -28,7 +29,7 @@ response="$(
     --chaincode $chaincode \
     --channel $channel \
     --fcn $func
-    2>&1
+  2>&1
 )"
 
 echo "$response"

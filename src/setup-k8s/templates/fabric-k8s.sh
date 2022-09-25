@@ -7,7 +7,6 @@ FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 # location of generated configurations
 CONFIG_DIR="$FABLO_NETWORK_ROOT/fabric-config"
 
-
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-help.sh"
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-functions.sh"
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/chaincode-functions.sh"
@@ -17,27 +16,20 @@ networkUp() {
   printHeadline "Checking dependencies..." "U1F984"
   checkDependencies
   printHeadline "Starting Network..." "U1F984"
-  hlfOperator && \
-  certsGenerate && \
-  deployPeer && \
-  deployOrderer && \
-  adminConfig && \
-  installChannels &&\
-  joinChannels && \
-  printHeadline "Done! Enjoy your fresh network" "U1F984"
+  hlfOperator &&
+    certsGenerate &&
+    deployPeer &&
+    deployOrderer &&
+    adminConfig &&
+    installChannels &&
+    joinChannels &&
+    printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 
 networkDown() {
   printHeadline "Destroying network" "U1F913"
   destroyNetwork
 }
-
-chaincode(){
-  installChaincodes
-}
-
-
-
 
 if [ "$1" = "up" ]; then
   networkUp
@@ -51,8 +43,8 @@ elif [ "$1" = "start" ]; then
   startNetwork
 elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ "$1" = "chaincodes" ]; then
-  chaincode
+elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
+  installChaincodes
 elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
   installChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
