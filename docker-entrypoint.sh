@@ -33,6 +33,12 @@ formatGeneratedFiles() {
   shfmt -i=2 -l -w "$yeoman_target_dir" >/dev/null
 
   for yaml in "$yeoman_target_dir"/**/*.yaml; do
+
+    # the expansion failed, no yaml files found
+    if [ "$yaml" = "$yeoman_target_dir/**/*.yaml" ]; then
+      break
+    fi
+
     # remove trailing spaces
     sed --in-place 's/[ \t]*$//' "$yaml"
 
