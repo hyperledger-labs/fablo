@@ -10,7 +10,8 @@ set -e
 
 FABLO_HOME="$(dirname "$0")"
 shellcheck "$FABLO_HOME"/*.sh
-shellcheck "$FABLO_HOME"/e2e-network/*.sh
+shellcheck "$FABLO_HOME"/e2e-network/docker/*.sh
+shellcheck "$FABLO_HOME"/e2e-network/k8s/*.sh
 
 for config in samples/fablo-config-*; do
   network="$FABLO_HOME/e2e/__tmp__/${config}.tmpdir"
