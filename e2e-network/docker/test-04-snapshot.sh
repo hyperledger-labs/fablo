@@ -4,7 +4,7 @@ set -e
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABLO_HOME="$TEST_TMP/../.."
+FABLO_HOME="$TEST_TMP/../../.."
 
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json"
 
@@ -105,10 +105,11 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./fablo-target/fabric-docker/.env"
 
 # prune the network and restore from snapshot
-(cd "$TEST_TMP" &&
-  "$FABLO_HOME/fablo.sh" prune &&
-  "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
-  "$FABLO_HOME/fablo.sh" start
+(
+  cd "$TEST_TMP" &&
+    "$FABLO_HOME/fablo.sh" prune &&
+    "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
+    "$FABLO_HOME/fablo.sh" start
 )
 waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
 

@@ -4,11 +4,11 @@ set -e
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
-FABLO_HOME="$TEST_TMP/../.."
+FABLO_HOME="$TEST_TMP/../../.."
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init kubernetes node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
@@ -23,8 +23,6 @@ networkDown() {
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
-
-# TODO The rest of this script to be rewritten
 
 waitForContainer() {
   sh "$TEST_TMP/../wait-for-container.sh" "$1" "$2"

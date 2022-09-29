@@ -1,3 +1,8 @@
+## 1.2.0-unstable
+
+### Features
+* Initial support for Kubernetes
+
 ## 1.1.0
 
 ### Features
