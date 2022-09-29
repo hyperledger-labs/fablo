@@ -8,8 +8,8 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd $TEST_TMP && "$FABLO_HOME/fablo.sh" init kubernetes node)
-  (cd $TEST_TMP && "$FABLO_HOME/fablo.sh" up)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init kubernetes node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
 dumpLogs() {
@@ -62,9 +62,9 @@ waitForContainer "$peer1" "Membership view has changed. peers went online:"
 
 #Test simple chaincode
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "put -a '["name"]' -a Willy Wonka" "{\"success\":\"OK\"}"
+  "put -a '[\"name\"]' -a Willy Wonka" "{\"success\":\"OK\"}"
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "get -a '["name"]'" '{"success":"Willy"}'
+  "get -a '[\"name\"]'" '{"success":"Willy"}'
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" reset)
@@ -73,9 +73,9 @@ waitForChaincode "admin" "org1-peer0.default" "my-channel1" "chaincode1" "1.0"
 waitForChaincode "admin" "org1-peer1.default" "my-channel1" "chaincode1" "1.0"
 
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "get -a '["name"]" '{"error":"NOT_FOUND"}'
+  "get -a '[\"name\"]" '{"error":"NOT_FOUND"}'
 
 # Put some data again
 
 expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "put -a '["name"]' -a James Bond" "{\"success\":\"OK\"}"
+  "put -a '[\"name\"]' -a James Bond" "{\"success\":\"OK\"}"

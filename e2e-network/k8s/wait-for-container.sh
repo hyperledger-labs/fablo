@@ -13,6 +13,8 @@ if [ -z "$expected_message" ]; then
 fi
 
 for i in $(seq 1 "$max_attempts"); do
+  echo "➜ verifying if container $container logs contain ($i)... ${darkGray}'$expected_message'${end}"
+
   if kubectl logs "$container" 2>&1 | grep -q "$expected_message"; then
     echo "✅ ok: Container $container is ready!"
     exit 0

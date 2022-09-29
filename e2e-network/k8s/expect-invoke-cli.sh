@@ -16,20 +16,21 @@ if [ -z "$expected" ]; then
   exit 1
 fi
 
-label="Invoke $channel/$cli/$peer $command"
+label="Invoke $channel/$peer"
 echo ""
 echo "➜ testing: $label"
 
 response="$(
-  # shellcheck disable=SC2086
   kubectl hlf chaincode invoke \
     --config $config \
-    --user $user \
-    --peer $peer \
-    --chaincode $chaincode \
-    --channel $channel \
-    --fcn $func
-  2>&1
+    --user "$user" \
+    --peer "$peer" \
+    --chaincode "$chaincode" \
+    --channel "$channel" \
+    --fcn "$func"
+
+    # shellcheck disable=SC2188
+    2>&1
 )"
 
 echo "$response"
