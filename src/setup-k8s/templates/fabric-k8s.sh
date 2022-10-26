@@ -15,6 +15,7 @@ source "$FABLO_NETWORK_ROOT/fabric-k8s/.env"
 networkUp() {
   printHeadline "Checking dependencies..." "U1F984"
   checkDependencies
+  validateK8Connectivity
   printHeadline "Starting Network..." "U1F984"
   hlfOperator &&
     certsGenerate &&
