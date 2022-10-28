@@ -24,7 +24,9 @@ if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
   set -e
 fi
 if [ "$(command -v nvm)" = "nvm" ]; then
+  set +u
   nvm install
+  set -u
 fi
 
 npm install --silent
