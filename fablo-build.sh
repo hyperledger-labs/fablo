@@ -29,7 +29,7 @@ if [ "$(command -v nvm)" = "nvm" ]; then
   set -u
 fi
 
-npm install --silent
+npm install
 npm run build:dist
 
 docker build \
