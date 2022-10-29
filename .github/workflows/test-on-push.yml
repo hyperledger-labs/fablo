@@ -8,6 +8,7 @@ jobs:
   test-main:
     runs-on: ubuntu-latest
     steps:
+
       - name: Check out repository code
         uses: actions/checkout@v2
 
@@ -61,8 +62,8 @@ jobs:
         with:
           name: test-02-raft
           path: |
-            e2e-network/docker/test-02-raft.sh.logs/*
-            e2e-network/docker/test-02-raft.sh.tmpdir/fablo-target/**/*
+            e2e-network/test-02-raft.sh.logs/*
+            e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
 
   test-03-private-data:
     needs: test-main
@@ -86,8 +87,8 @@ jobs:
         with:
           name: test-03-private-data
           path: |
-            e2e-network/docker/test-03-private-data.sh.logs/*
-            e2e-network/docker/test-03-private-data.sh.tmpdir/fablo-target/**/*
+            e2e-network/test-03-private-data.sh.logs/*
+            e2e-network/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
   test-04-snapshot:
     needs: test-main
@@ -111,8 +112,8 @@ jobs:
         with:
           name: test-04-snapshot
           path: |
-            e2e-network/docker/test-04-snapshot.sh.logs/*
-            e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
+            e2e-network/test-04-snapshot.sh.logs/*
+            e2e-network/test-04-snapshot.sh.tmpdir/fablo-target/**/*
 
   node-chaincodes-unit-tests:
     needs: test-main

@@ -2391,7 +2391,9 @@ chaincodeBuild() {
       if [ \\"$(command -v nvm)\\" == \\"nvm\\" ]; then
         current_dir=\\"$(pwd)\\"
         cd \\"$CHAINCODE_DIR_PATH\\"
+        set +u
         nvm install
+        set -u
         cd \\"$current_dir\\"
       fi
     fi
