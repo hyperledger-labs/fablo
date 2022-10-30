@@ -24,6 +24,7 @@ networkUp() {
     adminConfig &&
     installChannels &&
     joinChannels &&
+    installChaincodes &&
     printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 

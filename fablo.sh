@@ -184,6 +184,11 @@ networkPrune() {
   if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
     "$FABLO_TARGET/fabric-docker.sh" down
   fi
+
+  if [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
+    "$FABLO_TARGET/fabric-k8s.sh" down
+  fi
+  
   echo "Removing $FABLO_TARGET"
   rm -rf "$FABLO_TARGET"
 }
