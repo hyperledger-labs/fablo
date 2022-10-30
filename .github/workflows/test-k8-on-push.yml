@@ -43,4 +43,4 @@ jobs:
     - name: fablo k8 tests
       run: |
         export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-        e2e-network/k8/test-01-simple-k8s.sh
+        e2e-network/k8s/test-01-simple-k8s.sh
