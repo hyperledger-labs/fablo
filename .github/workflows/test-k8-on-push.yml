@@ -31,6 +31,15 @@ jobs:
         ./"${KREW}" install krew
         export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
         kubectl krew install hlf
+
+    - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          npm run build && \
+          ./fablo-build.sh
+          
     - name: fablo k8 tests
       run: |
         export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
