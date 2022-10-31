@@ -60,6 +60,11 @@ waitForContainer "$peer0" "Membership view has changed. peers went online:"
 waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "$peer1" "Membership view has changed. peers went online:"
 
+#debugging CI commit
+tree
+
+ls
+
 #Test simple chaincode
 expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
  "put" "[\"name\"]" "Willy Wonka" "{\"success\":\"OK\"}"
