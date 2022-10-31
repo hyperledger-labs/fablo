@@ -1,6 +1,10 @@
 name: k8 tests
 
-on: [push]
+on: 
+  push:
+    branches:
+      - kubernetes
+
 
 jobs:
   build:

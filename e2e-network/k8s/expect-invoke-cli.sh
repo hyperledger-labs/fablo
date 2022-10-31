@@ -12,7 +12,7 @@ value="$7"
 expected="$8"
 config="$(find . -type f -iname 'org1.yaml')"
 
-ls
+
 
 
 if [ -z "$expected" ]; then

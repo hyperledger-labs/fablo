@@ -60,16 +60,12 @@ waitForContainer "$peer0" "Membership view has changed. peers went online:"
 waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "$peer1" "Membership view has changed. peers went online:"
 
-#debugging CI commit
-tree
-
-ls
 
 #Test simple chaincode
 expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
  "put" "[\"name\"]" "Willy Wonka" "{\"success\":\"OK\"}"
 expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
- "get" '[\"name\"]' "" '{"success":"Willy Wonka"}'
+ "get" "[\"name\"]" "" '{"success":"Willy Wonka"}'
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" reset)
 chainCode
