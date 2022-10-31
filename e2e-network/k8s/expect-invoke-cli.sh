@@ -10,7 +10,9 @@ fcn="$5"
 key="$6"
 value="$7"
 expected="$8"
-config=./test-01-simple-k8s.sh.tmpdir/fablo-target/fabric-config/org1.yaml
+config=${find . -type f -iname 'org1.yaml'}
+
+ls
 
 
 if [ -z "$expected" ]; then
