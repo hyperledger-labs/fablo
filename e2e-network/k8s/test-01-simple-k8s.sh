@@ -74,5 +74,5 @@ expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
 
 # Put some data again
 
-expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
+expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
   "put" "[\"name\"]" "James Bond" "{\"success\":\"OK\"}"
