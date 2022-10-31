@@ -26,14 +26,14 @@ echo "➜ testing: $label"
 
 response="$(
   kubectl hlf chaincode invoke \
-    --config $config \
+    --config "$config" \
     --user "$user" \
     --peer "$peer" \
     --chaincode "$chaincode" \
     --channel "$channel" \
     --fcn "$fcn" \
-    -a "$6" \
-    ${7:+ -a "$7"} \
+    -a "$key" \
+    ${value:+ -a "$value"} \
 
     # shellcheck disable=SC2188
     2>&1
