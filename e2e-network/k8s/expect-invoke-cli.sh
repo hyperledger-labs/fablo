@@ -10,7 +10,7 @@ fcn="$5"
 key="$6"
 value="$7"
 expected="$8"
-config=test-01-simple-k8s.sh.tmpdir/fablo-target/fabric-config/org1.yaml
+config=./test-01-simple-k8s.sh.tmpdir/fablo-target/fabric-config/org1.yaml
 
 
 if [ -z "$expected" ]; then
