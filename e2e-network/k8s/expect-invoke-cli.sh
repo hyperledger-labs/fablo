@@ -10,7 +10,7 @@ fcn="$5"
 key="$6"
 value="$7"
 expected="$8"
-config=${find . -type f -iname 'org1.yaml'}
+config="$(find . -type f -iname 'org1.yaml')"
 
 ls
 
