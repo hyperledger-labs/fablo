@@ -1,8 +1,0 @@
-<% if (ordererGroup.consensus == 'etcdraft') { %>
-    EtcdRaft:
-        Consenters:<% ordererGroup.orderers.forEach(function(orderer) { %>
-            - Host: <%= orderer.address %>
-              Port: <%= orderer.port %>
-              ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
-              ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
-<% })} -%>

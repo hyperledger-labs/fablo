@@ -2,7 +2,9 @@
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/schema.json",
   "global": {
     "fabricVersion": "2.4.7",
-    "tls": false
+    "tls": false,
+    "engine": "kubernetes",
+    "peerDevMode": false
   },
   "orgs": [
     {
@@ -16,7 +18,8 @@
           "type": "solo",
           "instances": 1
         }
-      ]
+      ],
+      "tools": {}
     },
     {
       "organization": {
@@ -26,7 +29,8 @@
       "peer": {
         "instances": 2,
         "db": "LevelDb"
-      }
+      },
+      "tools": {}
     }
   ],
   "channels": [

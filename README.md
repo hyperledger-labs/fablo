@@ -23,13 +23,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
@@ -59,7 +59,7 @@ See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) 
 
 There are two basic use cases.
 You may use Fablo to start and manage the network for development purposes, test different network topologies, run it in CI environment etc.
-In this case you should keep `fabrika-target` directory intact and out of the version control.
+In this case you should keep `fablo-target` directory intact and out of the version control.
 Fablo will manage it locally.
 
 On the other hand you can use Fablo to generate initial network configuration, keep it in version control and tweak for specific requirements.
@@ -325,7 +325,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -339,7 +339,7 @@ Example:
 
 ```json
   "global": {
-    "fabricVersion": "2.3.0",
+    "fabricVersion": "2.4.2",
     "tls": false,
     "peerDevMode": false,
     "monitoring": {
@@ -444,8 +444,9 @@ Example:
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node",
       "privateData": {
-      "name": "org1-collection",
-      "orgNames": ["Org1"]
+        "name": "org1-collection",
+        "orgNames": ["Org1"]
+      }
     },
     {
       "name": "chaincode2",
@@ -487,9 +488,9 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json
 global:
-  fabricVersion: 2.3.0
+  fabricVersion: 2.4.2
   tls: false
 orgs:
   - organization:
