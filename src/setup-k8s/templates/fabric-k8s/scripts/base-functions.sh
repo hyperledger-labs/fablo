@@ -165,49 +165,19 @@ checkDependencies() {
   if [[ $(command -v kubectl) ]]; then
     printf "\nKubectl installed...\n"
   else
-    printf "\nCouldn't detect Kubectl \n" && read -p "Install Kubectl (y/n)?" choice
-    case "$choice" in 
-      y|Y )
-      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-      ;;
-      n|N ) exit;;
-      * ) echo "invalid option";;  
-    esac    
+    printf "\nCouldn't detect Kubectl \n" && exit 1
   fi
 
   if [[ $(export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH" && command -v kubectl-hlf) ]]; then
     printf "\nHLF installed...\n"
   else
-    printf "\nCouldn't detect the HLF Plugin \n" && read -p "Install Krew and HLF Plugin (y/n)?" choice
-    case "$choice" in
-      y|Y )
-      cd "$(mktemp -d)" &&
-      OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-      ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-      KREW="krew-${OS}_${ARCH}" &&
-      curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-      tar zxvf "${KREW}.tar.gz" &&
-      ./"${KREW}" install krew
-
-      export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-      kubectl krew install hlf
-      ;;
-      n|N ) exit;;
-      * ) echo "invalid option";;
-    esac
+    printf "\nCouldn't detect the HLF Plugin \n" && exit 1
   fi
 
   if [[ $(command -v helm) ]]; then
     printf "\nHelm installed\n"
   else
-    printf "\nCouldn't detect Helm \n" && read -p "Install Helm (y/n)?" choice
-    case "$choice" in
-      y|Y )
-      curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash ;;
-      n|N ) exit;;
-      * ) echo "invalid option";;
-    esac
+    printf "\nCouldn't detect Helm \n" && exit 1
   fi
 }
 
