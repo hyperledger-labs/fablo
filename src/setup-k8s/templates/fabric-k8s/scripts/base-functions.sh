@@ -168,7 +168,7 @@ checkDependencies() {
     printf "\nCouldn't detect Kubectl \n" && exit 1
   fi
 
-  if [[ $(export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH" && command -v kubectl-hlf) ]]; then
+  if [[ $(command -v kubectl-hlf) ]]; then
     printf "\nHLF installed...\n"
   else
     printf "\nCouldn't detect the HLF Plugin \n" && exit 1
