@@ -41,10 +41,10 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-peer0=$(kubectl get pods | grep org1-peer0 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
-peer1=$(kubectl get pods | grep org1-peer1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
+peer0=$(kubectl get pods | grep peer0 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
+peer1=$(kubectl get pods | grep peer1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
 ca=$(kubectl get pods | grep org1-ca | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
-orderer=$(kubectl get pods | grep orderer-node1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
+orderer=$(kubectl get pods | grep orderer-node | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
 
 waitForContainer "$orderer" "Starting raft node as part of a new channel channel=my-channel1 node=1"
 waitForContainer "$ca" "Listening on https://0.0.0.0:7054"
