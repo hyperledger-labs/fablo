@@ -39,6 +39,8 @@ export interface OrdererConfig {
   address: string;
   port: number;
   fullAddress: string;
+  orgName: string;
+  orgMspName: string;
 }
 
 export interface CAConfig {

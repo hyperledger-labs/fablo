@@ -2,30 +2,33 @@
 
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh"
 
-certsGenerate() {
-
-  printItalics "Deploying Certificate Authority" "U1F984"
-
-  kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=$ORG-ca --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-pw=$ORG1_CA_ADMIN_PASSWORD && sleep 3
-
-  while [[ $(kubectl get pods -l release=$ORG-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
-    sleep 5
-    inputLog "waiting for CA"
-  done
-
-  kubectl hlf ca register --name=$ORG-ca --user=peer --secret=$PEER_SECRET --type=peer --enroll-id $ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORG &&
-    inputLog "registered $ORG-ca"
-}
 
 deployPeer() {
 
-  printItalics "Deploying Peers" "U1F984"
-  sleep 10
+  <% orgs.forEach((org) => { -%>
+    <% if(org.peers.length > 0 ) { -%>
 
-  kubectl hlf peer create --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=$MSP_ORG \
-    --enroll-pw=$PEER_SECRET --capacity=5Gi --name=$ORG-peer0 --ca-name=$ORG-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
-  kubectl hlf peer create --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=$MSP_ORG \
-    --enroll-pw=$PEER_SECRET --capacity=5Gi --name=$ORG-peer1 --ca-name=$ORG-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
+      printItalics "Deploying <%= org.name %> CA" "U1F984"
+      kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --enroll-id=<%= org.name.toLowerCase() %> --enroll-pw=$<%= org.ca.caAdminPassVar %> && sleep 3
+
+      while [[ $(kubectl get pods -l release=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+        sleep 5
+        inputLog "waiting for CA"
+      done
+
+      kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=peer --secret=$<%= org.ca.caAdminPassVar %> --type=peer --enroll-id <%= org.name.toLowerCase() %>  --enroll-secret=$<%= org.ca.caAdminPassVar %> --mspid <%= org.mspName %> &&
+        inputLog "registered <%= org.name %> -ca"
+
+      printItalics "Deploying Peers" "U1F984"
+      sleep 10
+
+      <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
+        kubectl hlf peer create --statedb=<%= peer.db.type.toLowerCase() %> --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=<%= org.mspName %> \
+          --enroll-pw=$<%= org.ca.caAdminPassVar %> --capacity=5Gi --name=<%= peer.name %> --ca-name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %>.$NAMESPACE --k8s-builder=true --external-service-builder=false
+      <% })}) %>
+
+    <% } -%>
+  <% }) %>
 
   while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != "true true" ]]; do
     sleep 5
@@ -36,79 +39,83 @@ deployPeer() {
 deployOrderer() {
 
   printItalics "Deploying Orderers" "U1F984"
-  kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=$ORD-ca --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-pw=$ORG1_CA_ADMIN_PASSWORD
 
-  while [[ $(kubectl get pods -l release=$ORD-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
+  <% orgs.forEach((org) => { -%>
+    <% if(org.name == "Orderer") { -%>
+      kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %>  --enroll-id=<%= org.name.toLowerCase() %> --enroll-pw=$<%= org.ca.caAdminPassVar %> 
+  while [[ $(kubectl get pods -l release=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
     sleep 5
-    inputLog "waiting for $ORD CA to be ready" $RESETBG
+    inputLog "waiting for <%= org.name.toLowerCase() %>-<%= org.ca.prefix %> CA to be ready" $RESETBG
   done
+  kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=$<%= org.ca.caAdminNameVar %> --secret=$<%= org.ca.caAdminPassVar %> --type=orderer --enroll-id=<%= org.name.toLowerCase() %> --enroll-secret=$<%= org.ca.caAdminPassVar %> --mspid <%= org.mspName %> &&
+    inputLog "registered <%= org.name.toLowerCase() %>-<%= org.ca.prefix %>"
 
-  kubectl hlf ca register --name=$ORD-ca --user=orderer --secret=$ORDERER_SECRET --type=orderer --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORD &&
-    inputLog "registered $ORD-ca"
-
-  kubectl hlf ordnode create --image=$ORDERER_IMAGE --version=$ORDERER_VERSION \
-    --storage-class=$STORAGE_CLASS --enroll-id=$ORD --mspid=$MSP_ORD \
-    --enroll-pw=$ORDERER_SECRET --capacity=2Gi --name=$ORD-node1 --ca-name=$ORD-ca.$NAMESPACE
-
+    kubectl hlf ordnode create --image=$ORDERER_IMAGE --version=$ORDERER_VERSION \
+      --storage-class=$STORAGE_CLASS --enroll-id=$<%= org.ca.caAdminNameVar %>  --mspid=<%= org.mspName %> \
+      --enroll-pw=$<%= org.ca.caAdminPassVar %> --capacity=2Gi --name=<%= org.name.toLowerCase() %>-node --ca-name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %>.$NAMESPACE
   while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
     sleep 5
-    inputLog "waiting for $ORD Node to be ready"
+    inputLog "waiting for <%= org.name.toLowerCase() %> Node to be ready"
   done
+
+    kubectl hlf inspect --output $CONFIG_DIR/ordservice.yaml -o <%= org.mspName %> &&
+    kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=$$<%= org.ca.caAdminNameVar %>  --secret=$<%= org.ca.caAdminPassVar %> --type=admin --enroll-id=<%= org.name.toLowerCase() %> --enroll-secret=$<%= org.ca.caAdminPassVar %> --mspid=<%= org.mspName %>
+
+    kubectl hlf ca enroll --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=$<%= org.ca.caAdminNameVar %> --secret=$<%= org.ca.caAdminPassVar %> --mspid <%= org.mspName %> --ca-name ca --output $CONFIG_DIR/admin-ordservice.yaml &&
+    kubectl hlf utils adduser --userPath=$CONFIG_DIR/admin-ordservice.yaml --config=$CONFIG_DIR/ordservice.yaml --username=$<%= org.ca.caAdminNameVar %> --mspid=<%= org.mspName %>
+    <% } -%>
+  <% }) %>
 }
 
-# Might no be needed, after last meeting
-
-adminConfig() {
-  kubectl hlf inspect --output $CONFIG_DIR/ordservice.yaml -o $MSP_ORD &&
-    kubectl hlf ca register --name=$ORD-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --type=admin --enroll-id=$ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid=$MSP_ORD
-
-  kubectl hlf ca enroll --name=$ORD-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORD --ca-name ca --output $CONFIG_DIR/admin-ordservice.yaml &&
-    kubectl hlf utils adduser --userPath=$CONFIG_DIR/admin-ordservice.yaml --config=$CONFIG_DIR/ordservice.yaml --username=$ADMIN_USER --mspid=$MSP_ORD
-}
 
 installChannels() {
-  printItalics "Creating 'my-channel1' on Org1/peer0" "U1F63B"
-  sleep 10
-  kubectl hlf channel generate --output=$CONFIG_DIR/$CHANNEL_NAME.block --name=$CHANNEL_NAME --organizations $MSP_ORG --ordererOrganizations $MSP_ORD &&
-    kubectl hlf ca enroll --name=$ORD-ca --namespace=$NAMESPACE --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORD --ca-name $USER_CA_TYPE --output $CONFIG_DIR/admin-tls-ordservice.yaml &&
-    sleep 10
 
-  kubectl hlf ordnode join --block=$CONFIG_DIR/$CHANNEL_NAME.block --name=$ORD-node1 --namespace=$NAMESPACE --identity=$CONFIG_DIR/admin-tls-ordservice.yaml
+  <% channels.forEach((channel) => { -%>
+    <% channel.orgs.forEach((org) => { -%>
+       printItalics "Creating '<%= channel.name %>' on /peer0" "U1F63B"
+        sleep 10
+        kubectl hlf channel generate --output=$CONFIG_DIR/<%= channel.name %>.block --name=<%= channel.name %> --organizations <%= org.mspName %> --ordererOrganizations <%= channel.ordererHead.orgMspName %> &&
+
+        kubectl hlf ca enroll --name=<%= channel.ordererHead.orgName.toLowerCase() %>-<%= org.ca.prefix %> --namespace=$NAMESPACE --user=$<%= org.ca.caAdminNameVar %> --secret=$<%= org.ca.caAdminPassVar %> --mspid <%= channel.ordererHead.orgMspName %> --ca-name=tlsca --output $CONFIG_DIR/admin-tls-ordservice.yaml &&
+
+        sleep 10
+
+        kubectl hlf ordnode join --block=$CONFIG_DIR/<%= channel.name %>.block --name=<%= channel.ordererHead.orgName.toLowerCase() %>-node --namespace=$NAMESPACE --identity=$CONFIG_DIR/admin-tls-ordservice.yaml
+
+        kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=$<%= org.ca.caAdminNameVar %> --secret=$<%= org.ca.caAdminPassVar %> --type=admin --enroll-id <%= org.name.toLowerCase() %> --enroll-secret=$<%= org.ca.caAdminPassVar %> --mspid <%= org.mspName %> &&
+        kubectl hlf ca enroll --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=$<%= org.ca.caAdminNameVar %> --secret=$<%= org.ca.caAdminPassVar %> --mspid <%= org.mspName %> --ca-name ca --output $CONFIG_DIR/peer-<%= org.name %>.yaml &&
+        kubectl hlf inspect --output $CONFIG_DIR/<%= org.name %>.yaml -o <%= org.mspName %> -o <%= channel.ordererHead.orgMspName %> &&
+        kubectl hlf utils adduser --userPath=$CONFIG_DIR/peer-<%= org.name %>.yaml --config=$CONFIG_DIR/<%= org.name %>.yaml --username=$<%= org.ca.caAdminNameVar %> --mspid=<%= org.mspName %> &&
+
+      <% org.peers.forEach((peer) => { %>
+        printItalics "Joining '<%= channel.name %>' on  <%= org.name.toLowerCase() %>/<%= peer.name %>" "U1F638"
+        retry 3 kubectl hlf channel join --name=<%= channel.name %> --config=$CONFIG_DIR/<%= org.name %>.yaml --user=$<%= org.ca.caAdminNameVar %> -p=<%= peer.name %>.$NAMESPACE
+      <% }) %>
+
+      # add anchor peers
+      <% org.anchorPeers.forEach((anchorpeer) => { %>
+        printItalics "Electing on <%= org.name.toLowerCase() %>/<%= anchorpeer.name %> as Anchor peer" "U1F638"
+        kubectl hlf channel addanchorpeer --channel=<%= channel.name %> --config=$CONFIG_DIR/<%= org.name %>.yaml --user=$<%= org.ca.caAdminNameVar %> --peer=<%= anchorpeer.name %>.$NAMESPACE
+      <% }) %>
+
+      <% }) -%>
+    <% }) -%>
 }
 
-joinChannels() {
-
-  printItalics "Joining 'my-channel1' on  Org1/peer0" "U1F638"
-
-  kubectl hlf ca register --name=$ORG-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --type=admin --enroll-id $ORG1_CA_ADMIN_NAME --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid $MSP_ORG &&
-    kubectl hlf ca enroll --name=$ORG-ca --user=$ADMIN_USER --secret=$ADMIN_PASS --mspid $MSP_ORG --ca-name ca --output $CONFIG_DIR/peer-org1.yaml &&
-    kubectl hlf inspect --output $CONFIG_DIR/org1.yaml -o $MSP_ORG -o $MSP_ORD &&
-    kubectl hlf utils adduser --userPath=$CONFIG_DIR/peer-org1.yaml --config=$CONFIG_DIR/org1.yaml --username=$ADMIN_USER --mspid=$MSP_ORG &&
-    printItalics "Joining 'my-channel1' on  Org1/peer0" "U1F638"
-
-  retry 3 kubectl hlf channel join --name=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER -p=$ORG-peer0.$NAMESPACE
-
-  printItalics "Joining 'my-channel1' on  Org1/peer1" "U1F638"
-
-  retry 3 kubectl hlf channel join --name=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER -p=$ORG-peer1.$NAMESPACE
-
-  # add anchor peer
-
-  printItalics "Electing on Org1/peer0 as Anchor peer" "U1F638"
-
-  kubectl hlf channel addanchorpeer --channel=$CHANNEL_NAME --config=$CONFIG_DIR/org1.yaml --user=$ADMIN_USER --peer=$ORG-peer0.$NAMESPACE
-}
 
 installChaincodes() {
-  printItalics "Building chaincode $CHAINCODE_NAME" "U1F618"
+  <% chaincodes.forEach((chaincode) => { -%>
+    printItalics "Building chaincode <%= chaincode.name %>" "U1F618"
+    
+    <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
+      buildAndInstallChaincode "<%= chaincode.name %>" "<%= peer.name %>.$NAMESPACE" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= chaincode.version %>" "$<%= org.ca.caAdminNameVar %>" "$CONFIG_DIR/<%= org.name %>.yaml"
+      approveChaincode "<%= chaincode.name %>" "<%= peer.name %>.$NAMESPACE" "<%= chaincode.version %>" "<%= chaincode.channel.name %>" "$<%= org.ca.caAdminNameVar %>" "$CONFIG_DIR/<%= org.name %>.yaml" "<%= org.mspName %>"
 
-  buildAndInstallChaincode "$CHAINCODE_NAME" "0" "$CHAINCODE_LANG" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "$CHAINCODE_VERSION"
-  buildAndInstallChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_LANG" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "$CHAINCODE_VERSION"
+      printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' " "U1F618"
 
-  approveChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_VERSION" "$CHANNEL_NAME"
-
-  printItalics "Committing chaincode '$CHAINCODE_NAME' on channel '$CHANNEL_NAME' as '$ORG'" "U1F618"
-  commitChaincode "$CHAINCODE_NAME" "1" "$CHAINCODE_VERSION" "$CHANNEL_NAME"
+      commitChaincode "<%= chaincode.name %>" "<%= peer.name %>.$NAMESPACE" "<%= chaincode.version %>" "<%= chaincode.channel.name %>" "$<%= org.ca.caAdminNameVar %>" "$CONFIG_DIR/<%= org.name %>.yaml" "<%= org.mspName %>"
+    <% })}) %>
+  <% }) %>
 }
 
 destroyNetwork() {

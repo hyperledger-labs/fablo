@@ -44,6 +44,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -52,6 +54,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer1.group1\\",
           \\"address\\": \\"orderer1.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7031,
@@ -60,6 +64,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer2.group1\\",
           \\"address\\": \\"orderer2.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7032,
@@ -70,6 +76,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -79,6 +87,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
         \\"address\\": \\"orderer0.group1.orderer1.com\\",
+        \\"orgName\\": \\"Orderer1\\",
+        \\"orgMspName\\": \\"Orderer1MSP\\",
         \\"domain\\": \\"orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7030,
@@ -98,6 +108,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group2\\",
           \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"orgName\\": \\"Orderer2\\",
+          \\"orgMspName\\": \\"Orderer2MSP\\",
           \\"domain\\": \\"orderer2.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7050,
@@ -108,6 +120,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group2\\",
           \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"orgName\\": \\"Orderer2\\",
+          \\"orgMspName\\": \\"Orderer2MSP\\",
           \\"domain\\": \\"orderer2.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7050,
@@ -117,6 +131,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group2\\",
         \\"address\\": \\"orderer0.group2.orderer2.com\\",
+        \\"orgName\\": \\"Orderer2\\",
+        \\"orgMspName\\": \\"Orderer2MSP\\",
         \\"domain\\": \\"orderer2.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7050,
@@ -128,6 +144,8 @@ Validation warnings count: 0
     {
       \\"name\\": \\"orderer0.group1\\",
       \\"address\\": \\"orderer0.group1.orderer1.com\\",
+      \\"orgName\\": \\"Orderer1\\",
+      \\"orgMspName\\": \\"Orderer1MSP\\",
       \\"domain\\": \\"orderer1.com\\",
       \\"consensus\\": \\"etcdraft\\",
       \\"port\\": 7030,
@@ -136,6 +154,8 @@ Validation warnings count: 0
     {
       \\"name\\": \\"orderer0.group2\\",
       \\"address\\": \\"orderer0.group2.orderer2.com\\",
+      \\"orgName\\": \\"Orderer2\\",
+      \\"orgMspName\\": \\"Orderer2MSP\\",
       \\"domain\\": \\"orderer2.com\\",
       \\"consensus\\": \\"solo\\",
       \\"port\\": 7050,
@@ -179,6 +199,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -187,6 +209,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer1.group1\\",
               \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7031,
@@ -195,6 +219,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer2.group1\\",
               \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7032,
@@ -205,6 +231,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -251,6 +279,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group2\\",
               \\"address\\": \\"orderer0.group2.orderer2.com\\",
+              \\"orgName\\": \\"Orderer2\\",
+              \\"orgMspName\\": \\"Orderer2MSP\\",
               \\"domain\\": \\"orderer2.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7050,
@@ -261,6 +291,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group2\\",
               \\"address\\": \\"orderer0.group2.orderer2.com\\",
+              \\"orgName\\": \\"Orderer2\\",
+              \\"orgMspName\\": \\"Orderer2MSP\\",
               \\"domain\\": \\"orderer2.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7050,
@@ -649,6 +681,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -657,6 +691,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer1.group1\\",
             \\"address\\": \\"orderer1.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7031,
@@ -665,6 +701,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer2.group1\\",
             \\"address\\": \\"orderer2.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7032,
@@ -675,6 +713,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -684,6 +724,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -693,6 +735,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
         \\"address\\": \\"orderer0.group1.orderer1.com\\",
+        \\"orgName\\": \\"Orderer1\\",
+        \\"orgMspName\\": \\"Orderer1MSP\\",
         \\"domain\\": \\"orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7030,
@@ -976,6 +1020,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -984,6 +1030,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer1.group1\\",
             \\"address\\": \\"orderer1.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7031,
@@ -992,6 +1040,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer2.group1\\",
             \\"address\\": \\"orderer2.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7032,
@@ -1002,6 +1052,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -1011,6 +1063,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -1020,6 +1074,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
         \\"address\\": \\"orderer0.group1.orderer1.com\\",
+        \\"orgName\\": \\"Orderer1\\",
+        \\"orgMspName\\": \\"Orderer1MSP\\",
         \\"domain\\": \\"orderer1.com\\",
         \\"consensus\\": \\"etcdraft\\",
         \\"port\\": 7030,
@@ -1327,6 +1383,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group2\\",
             \\"address\\": \\"orderer0.group2.orderer2.com\\",
+            \\"orgName\\": \\"Orderer2\\",
+            \\"orgMspName\\": \\"Orderer2MSP\\",
             \\"domain\\": \\"orderer2.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7050,
@@ -1337,6 +1395,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group2\\",
             \\"address\\": \\"orderer0.group2.orderer2.com\\",
+            \\"orgName\\": \\"Orderer2\\",
+            \\"orgMspName\\": \\"Orderer2MSP\\",
             \\"domain\\": \\"orderer2.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7050,
@@ -1346,6 +1406,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group2\\",
           \\"address\\": \\"orderer0.group2.orderer2.com\\",
+          \\"orgName\\": \\"Orderer2\\",
+          \\"orgMspName\\": \\"Orderer2MSP\\",
           \\"domain\\": \\"orderer2.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7050,
@@ -1355,6 +1417,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group2\\",
         \\"address\\": \\"orderer0.group2.orderer2.com\\",
+        \\"orgName\\": \\"Orderer2\\",
+        \\"orgMspName\\": \\"Orderer2MSP\\",
         \\"domain\\": \\"orderer2.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7050,
@@ -1657,6 +1721,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -1665,6 +1731,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer1.group1\\",
               \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7031,
@@ -1673,6 +1741,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer2.group1\\",
               \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7032,
@@ -1683,6 +1753,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -1692,6 +1764,8 @@ Validation warnings count: 0
           \\"ordererHead\\": {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -1701,6 +1775,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -2085,6 +2161,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -2093,6 +2171,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer1.group1\\",
               \\"address\\": \\"orderer1.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7031,
@@ -2101,6 +2181,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer2.group1\\",
               \\"address\\": \\"orderer2.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7032,
@@ -2111,6 +2193,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer1.com\\",
+              \\"orgName\\": \\"Orderer1\\",
+              \\"orgMspName\\": \\"Orderer1MSP\\",
               \\"domain\\": \\"orderer1.com\\",
               \\"consensus\\": \\"etcdraft\\",
               \\"port\\": 7030,
@@ -2120,6 +2204,8 @@ Validation warnings count: 0
           \\"ordererHead\\": {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer1.com\\",
+            \\"orgName\\": \\"Orderer1\\",
+            \\"orgMspName\\": \\"Orderer1MSP\\",
             \\"domain\\": \\"orderer1.com\\",
             \\"consensus\\": \\"etcdraft\\",
             \\"port\\": 7030,
@@ -2129,6 +2215,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer1.com\\",
+          \\"orgName\\": \\"Orderer1\\",
+          \\"orgMspName\\": \\"Orderer1MSP\\",
           \\"domain\\": \\"orderer1.com\\",
           \\"consensus\\": \\"etcdraft\\",
           \\"port\\": 7030,
@@ -2376,6 +2464,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"orgName\\": \\"Orderer\\",
+          \\"orgMspName\\": \\"OrdererMSP\\",
           \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
@@ -2386,6 +2476,8 @@ Validation warnings count: 0
         {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"orgName\\": \\"Orderer\\",
+          \\"orgMspName\\": \\"OrdererMSP\\",
           \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
@@ -2395,6 +2487,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
         \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+        \\"orgName\\": \\"Orderer\\",
+        \\"orgMspName\\": \\"OrdererMSP\\",
         \\"domain\\": \\"orderer.example.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7030,
@@ -2406,6 +2500,8 @@ Validation warnings count: 0
     {
       \\"name\\": \\"orderer0.group1\\",
       \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+      \\"orgName\\": \\"Orderer\\",
+      \\"orgMspName\\": \\"OrdererMSP\\",
       \\"domain\\": \\"orderer.example.com\\",
       \\"consensus\\": \\"solo\\",
       \\"port\\": 7030,
@@ -2449,6 +2545,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+              \\"orgName\\": \\"Orderer\\",
+              \\"orgMspName\\": \\"OrdererMSP\\",
               \\"domain\\": \\"orderer.example.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7030,
@@ -2459,6 +2557,8 @@ Validation warnings count: 0
             {
               \\"name\\": \\"orderer0.group1\\",
               \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+              \\"orgName\\": \\"Orderer\\",
+              \\"orgMspName\\": \\"OrdererMSP\\",
               \\"domain\\": \\"orderer.example.com\\",
               \\"consensus\\": \\"solo\\",
               \\"port\\": 7030,
@@ -2663,6 +2763,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+            \\"orgName\\": \\"Orderer\\",
+            \\"orgMspName\\": \\"OrdererMSP\\",
             \\"domain\\": \\"orderer.example.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7030,
@@ -2673,6 +2775,8 @@ Validation warnings count: 0
           {
             \\"name\\": \\"orderer0.group1\\",
             \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+            \\"orgName\\": \\"Orderer\\",
+            \\"orgMspName\\": \\"OrdererMSP\\",
             \\"domain\\": \\"orderer.example.com\\",
             \\"consensus\\": \\"solo\\",
             \\"port\\": 7030,
@@ -2682,6 +2786,8 @@ Validation warnings count: 0
         \\"ordererHead\\": {
           \\"name\\": \\"orderer0.group1\\",
           \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+          \\"orgName\\": \\"Orderer\\",
+          \\"orgMspName\\": \\"OrdererMSP\\",
           \\"domain\\": \\"orderer.example.com\\",
           \\"consensus\\": \\"solo\\",
           \\"port\\": 7030,
@@ -2691,6 +2797,8 @@ Validation warnings count: 0
       \\"ordererHead\\": {
         \\"name\\": \\"orderer0.group1\\",
         \\"address\\": \\"orderer0.group1.orderer.example.com\\",
+        \\"orgName\\": \\"Orderer\\",
+        \\"orgMspName\\": \\"OrdererMSP\\",
         \\"domain\\": \\"orderer.example.com\\",
         \\"consensus\\": \\"solo\\",
         \\"port\\": 7030,

@@ -2,7 +2,7 @@ import * as Generator from "yeoman-generator";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
-import { Capabilities, HooksConfig, Global, OrgConfig } from "../types/FabloConfigExtended";
+import { Capabilities, FabloConfigExtended, HooksConfig, Global, OrgConfig } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
 
 const ValidateGeneratorPath = require.resolve("../validate");
@@ -42,6 +42,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= scripts ==================================================================
     // this._copyCommandsGeneratedScript(config);
+    this._copyCommandsGeneratedScript(config);
     this._copyUtilityScripts(config.global.capabilities);
 
     // ======= hooks ====================================================================
@@ -76,14 +77,15 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-k8s/.env"), this.destinationPath("fabric-k8s/.env"), settings);
   }
 
-  _copyUtilityScripts(capabilities: Capabilities): void {
-    this.fs.copyTpl(this.templatePath("fabric-k8s.sh"), this.destinationPath("fabric-k8s.sh"));
-
+  _copyCommandsGeneratedScript(config: FabloConfigExtended): void {
     this.fs.copyTpl(
       this.templatePath("fabric-k8s/scripts/base-functions.sh"),
       this.destinationPath("fabric-k8s/scripts/base-functions.sh"),
+      config
     );
-
+  }
+  _copyUtilityScripts(capabilities: Capabilities): void {
+    this.fs.copyTpl(this.templatePath("fabric-k8s.sh"), this.destinationPath("fabric-k8s.sh"));
     this.fs.copyTpl(
       this.templatePath("fabric-k8s/scripts/base-help.sh"),
       this.destinationPath("fabric-k8s/scripts/base-help.sh"),
