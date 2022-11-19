@@ -66,13 +66,13 @@ expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" reset)
-waitForChaincode "admin" "org1-peer0.default" "my-channel1" "chaincode1" "1.0"
-waitForChaincode "admin" "org1-peer1.default" "my-channel1" "chaincode1" "1.0"
+waitForChaincode "admin" "peer0.default" "my-channel1" "chaincode1" "1.0"
+waitForChaincode "admin" "peer1.default" "my-channel1" "chaincode1" "1.0"
 
-expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
   "get" "[\"name\"]" "" '{"error":"NOT_FOUND"}'
 
 # Put some data again
 
-expectInvoke "admin" "org1-peer1.default" "my-channel1" "chaincode1" \
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
   "put" "[\"name\"]" "James Bond" "{\"success\":\"OK\"}"
