@@ -105,10 +105,14 @@ installChannels() {
 
 installChaincodes() {
   <% chaincodes.forEach((chaincode) => { -%>
-    printItalics "Building chaincode <%= chaincode.name %>" "U1F618"
-    
+
+    printItalics "Installing chaincodes...." "U1F618"
+
     <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
+      printItalics "Building chaincode <%= chaincode.name %>" "U1F618"
       buildAndInstallChaincode "<%= chaincode.name %>" "<%= peer.name %>.$NAMESPACE" "<%= chaincode.lang %>" "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" "<%= chaincode.version %>" "$<%= org.ca.caAdminNameVar %>" "$CONFIG_DIR/<%= org.name %>.yaml"
+
+      printItalics "Approving chaincode...." "U1F618"
       approveChaincode "<%= chaincode.name %>" "<%= peer.name %>.$NAMESPACE" "<%= chaincode.version %>" "<%= chaincode.channel.name %>" "$<%= org.ca.caAdminNameVar %>" "$CONFIG_DIR/<%= org.name %>.yaml" "<%= org.mspName %>"
 
       printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' " "U1F618"
