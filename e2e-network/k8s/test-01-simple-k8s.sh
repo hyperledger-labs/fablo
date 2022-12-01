@@ -20,11 +20,7 @@ dumpLogs() {
 
 networkDown() {
   rm -rf "$TEST_LOGS"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" down)
-}
-
-chainCode() {
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" chaincodes)
+  (cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" down)
 }
 
 waitForContainer() {
@@ -36,7 +32,7 @@ waitForChaincode() {
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7"
+  sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 }
 
 trap networkDown EXIT
@@ -45,10 +41,10 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-peer0=$(kubectl get pods | grep org1-peer0 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
-peer1=$(kubectl get pods | grep org1-peer1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
+peer0=$(kubectl get pods | grep peer0 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
+peer1=$(kubectl get pods | grep peer1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1)
 ca=$(kubectl get pods | grep org1-ca | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
-orderer=$(kubectl get pods | grep orderer-node1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
+orderer=$(kubectl get pods | grep orderer-node | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
 
 waitForContainer "$orderer" "Starting raft node as part of a new channel channel=my-channel1 node=1"
 waitForContainer "$ca" "Listening on https://0.0.0.0:7054"
@@ -60,22 +56,23 @@ waitForContainer "$peer0" "Membership view has changed. peers went online:"
 waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "$peer1" "Membership view has changed. peers went online:"
 
+
 #Test simple chaincode
-expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "put -a '[\"name\"]' -a Willy Wonka" "{\"success\":\"OK\"}"
-expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "get -a '[\"name\"]'" '{"success":"Willy"}'
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
+ "put" "[\"name\"]" "Willy Wonka" "{\"success\":\"OK\"}"
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
+ "get" "[\"name\"]" "" '{"success":"Willy Wonka"}'
+
 
 # Reset and ensure the state is lost after reset
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo-target/fabric-k8s.sh" reset)
-chainCode
-waitForChaincode "admin" "org1-peer0.default" "my-channel1" "chaincode1" "1.0"
-waitForChaincode "admin" "org1-peer1.default" "my-channel1" "chaincode1" "1.0"
+(cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" reset)
+waitForChaincode "admin" "peer0.default" "my-channel1" "chaincode1" "1.0"
+waitForChaincode "admin" "peer1.default" "my-channel1" "chaincode1" "1.0"
 
-expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "get -a '[\"name\"]" '{"error":"NOT_FOUND"}'
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
+  "get" "[\"name\"]" "" '{"error":"NOT_FOUND"}'
 
 # Put some data again
 
-expectInvoke "admin" "org1-peer1.default" "chaincode1" "my-channel1" \
-  "put -a '[\"name\"]' -a James Bond" "{\"success\":\"OK\"}"
+expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
+  "put" "[\"name\"]" "James Bond" "{\"success\":\"OK\"}"

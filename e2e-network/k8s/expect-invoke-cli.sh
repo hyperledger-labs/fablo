@@ -4,15 +4,19 @@ set -e
 
 user="$1"
 peer="$2"
-chaincode="$3"
-channel="$4"
-func="$5"
-expected="$6"
-config=test-01-simple-k8s.sh.tmpdir/fablo-target/fabric-config/org1.yaml
+channel="$3"
+chaincode="$4"
+fcn="$5"
+key="$6"
+value="$7"
+expected="$8"
+config="$(find . -type f -iname 'org1.yaml')"
+
+
 
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
+  echo "Usage: ./expect-invoke.sh [user] [peer] [chaincdoe] [channel] [fcn] [arg1] [arg2] [expected_substring]"
   exit 1
 fi
 
@@ -22,12 +26,14 @@ echo "➜ testing: $label"
 
 response="$(
   kubectl hlf chaincode invoke \
-    --config $config \
+    --config "$config" \
     --user "$user" \
     --peer "$peer" \
     --chaincode "$chaincode" \
     --channel "$channel" \
-    --fcn "$func"
+    --fcn "$fcn" \
+    -a "$key" \
+    ${value:+ -a "$value"} \
 
     # shellcheck disable=SC2188
     2>&1

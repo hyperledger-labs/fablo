@@ -1443,11 +1443,11 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=2.4.0
+FABRIC_VERSION=2.4.7
 FABRIC_CA_VERSION=1.5.0
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.4.0
-FABRIC_BASEOS_VERSION=2.4.0
+FABRIC_CCENV_VERSION=2.4.7
+FABRIC_BASEOS_VERSION=2.4.7
 FABRIC_JAVAENV_VERSION=2.4
 FABRIC_NODEENV_VERSION=2.4
 RECOMMENDED_NODE_VERSION=16
@@ -2305,7 +2305,9 @@ chaincodeBuild() {
       if [ \\"$(command -v nvm)\\" == \\"nvm\\" ]; then
         current_dir=\\"$(pwd)\\"
         cd \\"$CHAINCODE_DIR_PATH\\"
+        set +u
         nvm install
+        set -u
         cd \\"$current_dir\\"
       fi
     fi
