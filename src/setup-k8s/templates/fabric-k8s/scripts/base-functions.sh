@@ -130,10 +130,6 @@ destroyNetwork() {
 }
 
 hlfOperator() {
-  helm repo add kfs $REPOSITORY --force-update
-
-  helm install hlf-operator --version=1.6.0 kfs/hlf-operator
-
   while [ "$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items[*].status.containerStatuses[0].ready}')" != "true" ]; do
     sleep 5
     echo $BLUE "Waiting for Operator to be ready." $RESETBG
@@ -173,28 +169,19 @@ inputLogShort() {
 }
 
 checkDependencies() {
-  if [[ $(command -v kubectl) ]]; then
-    printf "\nKubectl installed...\n"
-  else
-    printf "\nCouldn't detect Kubectl \n" && exit 1
-  fi
-
-  if [[ $(command -v kubectl-hlf) ]]; then
-    printf "\nHLF installed...\n"
-  else
-    printf "\nCouldn't detect the HLF Plugin \n" && exit 1
-  fi
-
-  if [[ $(command -v helm) ]]; then
-    printf "\nHelm installed\n"
-  else
-    printf "\nCouldn't detect Helm \n" && exit 1
+  if ! [[ $(command -v kubectl-hlf) ]]; then
+    echo "Error: Fablo could not detect kubectl hlf plugin. Ensure you have installed:
+  - kubectl - https://kubernetes.io/docs/tasks/tools/
+  - helm - https://helm.sh/docs/intro/install/
+  - krew - https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+  - hlf-operator along with krew hlf plugin - https://github.com/hyperledger-labs/hlf-operator#install-kubernetes-operator"
+    exit 1
   fi
 }
 
 validateK8Connectivity() {
   if ! kubectl get ns default >/dev/null 2>&1; then
-    printf "\nNo K8 cluster detected\n" >&2
+    printf "No K8 cluster detected\n" >&2
     exit 1
   fi
 }

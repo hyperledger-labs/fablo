@@ -217,7 +217,7 @@ networkDown() {
   printHeadline "Destroying network" "U1F916"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
 
-  printf "\nRemoving chaincode containers & images... \U1F5D1 \n"
+  printf "Removing chaincode containers & images... \U1F5D1 \n"
   <% chaincodes.forEach((chaincode) => { -%>
     <% chaincode.channel.orgs.forEach((org) => { -%>
       <% org.peers.forEach((peer) => { -%>
@@ -228,7 +228,7 @@ networkDown() {
     <% }) -%>
   <% }) -%>
 
-  printf "\nRemoving generated configs... \U1F5D1 \n"
+  printf "Removing generated configs... \U1F5D1 \n"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
