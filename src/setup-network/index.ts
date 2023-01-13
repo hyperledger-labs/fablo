@@ -15,7 +15,7 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  redirectToProperGenerator() {
+  redirectToProperGenerator(): void {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
 

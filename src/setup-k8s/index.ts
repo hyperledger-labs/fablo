@@ -81,7 +81,7 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(
       this.templatePath("fabric-k8s/scripts/base-functions.sh"),
       this.destinationPath("fabric-k8s/scripts/base-functions.sh"),
-      config
+      config,
     );
   }
   _copyUtilityScripts(capabilities: Capabilities): void {
