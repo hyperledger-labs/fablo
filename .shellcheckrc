@@ -1,7 +1,8 @@
-external-sources=true
-
 # SC1090: Can't follow non-constant source. Use a directive to specify location.
 disable=SC1090
+
+# SC1091: Not following
+disable=SC1091
 
 # SC2164: Use 'cd ... || exit' or 'cd ... || return' in case cd fails.
 disable=SC2164
