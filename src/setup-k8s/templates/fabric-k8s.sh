@@ -4,13 +4,16 @@ set -e
 
 FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-# location of generated configurations
-CONFIG_DIR="$FABLO_NETWORK_ROOT/fabric-config"
-
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-help.sh"
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-functions.sh"
 source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/chaincode-functions.sh"
 source "$FABLO_NETWORK_ROOT/fabric-k8s/.env"
+
+# location of generated configurations
+CONFIG_DIR="$FABLO_NETWORK_ROOT/fabric-config"
+
+RESETBG="$(printf '\e[0m\n')"
+BLUE="$(printf '\033[34m')"
 
 networkUp() {
   printHeadline "Checking dependencies..." "U1F984"
