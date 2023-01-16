@@ -118,24 +118,24 @@ source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh\\"
 deployPeer() {
 
   printItalics \\"Deploying Org1 CA\\" \\"U1F984\\"
-  kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=$ORG1_CA_ADMIN_PASSWORD && sleep 3
+  kubectl hlf ca create --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" && sleep 3
 
   while [[ $(kubectl get pods -l release=org1-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
     sleep 5
     inputLog \\"waiting for CA\\"
   done
 
-  kubectl hlf ca register --name=org1-ca --user=peer --secret=$ORG1_CA_ADMIN_PASSWORD --type=peer --enroll-id org1 --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid Org1MSP &&
+  kubectl hlf ca register --name=org1-ca --user=peer --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --type=peer --enroll-id org1 --enroll-secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP &&
     inputLog \\"registered Org1 -ca\\"
 
   printItalics \\"Deploying Peers\\" \\"U1F984\\"
   sleep 10
 
-  kubectl hlf peer create --statedb=leveldb --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=$ORG1_CA_ADMIN_PASSWORD --capacity=5Gi --name=peer0 --ca-name=org1-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
+  kubectl hlf peer create --statedb=leveldb --image=\\"$PEER_IMAGE\\" --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
+    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer0 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
 
-  kubectl hlf peer create --statedb=leveldb --image=$PEER_IMAGE --version=$PEER_VERSION --storage-class=$STORAGE_CLASS --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=$ORG1_CA_ADMIN_PASSWORD --capacity=5Gi --name=peer1 --ca-name=org1-ca.$NAMESPACE --k8s-builder=true --external-service-builder=false
+  kubectl hlf peer create --statedb=leveldb --image=\\"$PEER_IMAGE\\" --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
+    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer1 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
 
   while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != \\"true true\\" ]]; do
     sleep 5
@@ -147,27 +147,27 @@ deployOrderer() {
 
   printItalics \\"Deploying Orderers\\" \\"U1F984\\"
 
-  kubectl hlf ca create --storage-class=$STORAGE_CLASS --capacity=2Gi --name=orderer-ca --enroll-id=orderer --enroll-pw=$ORDERER_CA_ADMIN_PASSWORD
+  kubectl hlf ca create --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=orderer-ca --enroll-id=orderer --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\"
   while [[ $(kubectl get pods -l release=orderer-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
     sleep 5
-    inputLog \\"waiting for orderer-ca CA to be ready\\" $RESETBG
+    inputLog \\"waiting for orderer-ca CA to be ready\\" \\"$RESETBG\\"
   done
-  kubectl hlf ca register --name=orderer-ca --user=$ORDERER_CA_ADMIN_NAME --secret=$ORDERER_CA_ADMIN_PASSWORD --type=orderer --enroll-id=orderer --enroll-secret=$ORDERER_CA_ADMIN_PASSWORD --mspid OrdererMSP &&
+  kubectl hlf ca register --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --type=orderer --enroll-id=orderer --enroll-secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP &&
     inputLog \\"registered orderer-ca\\"
 
-  kubectl hlf ordnode create --image=$ORDERER_IMAGE --version=$ORDERER_VERSION \\\\
-    --storage-class=$STORAGE_CLASS --enroll-id=$ORDERER_CA_ADMIN_NAME --mspid=OrdererMSP \\\\
-    --enroll-pw=$ORDERER_CA_ADMIN_PASSWORD --capacity=2Gi --name=orderer-node --ca-name=orderer-ca.$NAMESPACE
+  kubectl hlf ordnode create --image=\\"$ORDERER_IMAGE\\" --version=\\"$ORDERER_VERSION\\" \\\\
+    --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP \\\\
+    --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --capacity=2Gi --name=orderer-node --ca-name=\\"orderer-ca.$NAMESPACE\\"
   while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
     sleep 5
     inputLog \\"waiting for orderer Node to be ready\\"
   done
 
-  kubectl hlf inspect --output $CONFIG_DIR/ordservice.yaml -o OrdererMSP &&
-    kubectl hlf ca register --name=orderer-ca --user=$$ORDERER_CA_ADMIN_NAME --secret=$ORDERER_CA_ADMIN_PASSWORD --type=admin --enroll-id=orderer --enroll-secret=$ORDERER_CA_ADMIN_PASSWORD --mspid=OrdererMSP
+  kubectl hlf inspect --output \\"$CONFIG_DIR/ordservice.yaml\\" -o OrdererMSP &&
+    kubectl hlf ca register --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --type=admin --enroll-id=orderer --enroll-secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid=OrdererMSP
 
-  kubectl hlf ca enroll --name=orderer-ca --user=$ORDERER_CA_ADMIN_NAME --secret=$ORDERER_CA_ADMIN_PASSWORD --mspid OrdererMSP --ca-name ca --output $CONFIG_DIR/admin-ordservice.yaml &&
-    kubectl hlf utils adduser --userPath=$CONFIG_DIR/admin-ordservice.yaml --config=$CONFIG_DIR/ordservice.yaml --username=$ORDERER_CA_ADMIN_NAME --mspid=OrdererMSP
+  kubectl hlf ca enroll --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP --ca-name ca --output \\"$CONFIG_DIR/admin-ordservice.yaml\\" &&
+    kubectl hlf utils adduser --userPath=\\"$CONFIG_DIR/admin-ordservice.yaml\\" --config=\\"$CONFIG_DIR/ordservice.yaml\\" --username=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP
 
 }
 
@@ -175,29 +175,29 @@ installChannels() {
 
   printItalics \\"Creating 'my-channel1' on /peer0\\" \\"U1F63B\\"
   sleep 10
-  kubectl hlf channel generate --output=$CONFIG_DIR/my-channel1.block --name=my-channel1 --organizations Org1MSP --ordererOrganizations OrdererMSP &&
-    kubectl hlf ca enroll --name=orderer-ca --namespace=$NAMESPACE --user=$ORG1_CA_ADMIN_NAME --secret=$ORG1_CA_ADMIN_PASSWORD --mspid OrdererMSP --ca-name=tlsca --output $CONFIG_DIR/admin-tls-ordservice.yaml &&
+  kubectl hlf channel generate --output=\\"$CONFIG_DIR/my-channel1.block\\" --name=my-channel1 --organizations Org1MSP --ordererOrganizations OrdererMSP &&
+    kubectl hlf ca enroll --name=orderer-ca --namespace=\\"$NAMESPACE\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP --ca-name=tlsca --output \\"$CONFIG_DIR/admin-tls-ordservice.yaml\\" &&
     sleep 10
 
-  kubectl hlf ordnode join --block=$CONFIG_DIR/my-channel1.block --name=orderer-node --namespace=$NAMESPACE --identity=$CONFIG_DIR/admin-tls-ordservice.yaml
+  kubectl hlf ordnode join --block=\\"$CONFIG_DIR/my-channel1.block\\" --name=orderer-node --namespace=\\"$NAMESPACE\\" --identity=\\"$CONFIG_DIR/admin-tls-ordservice.yaml\\"
 
-  kubectl hlf ca register --name=org1-ca --user=$ORG1_CA_ADMIN_NAME --secret=$ORG1_CA_ADMIN_PASSWORD --type=admin --enroll-id org1 --enroll-secret=$ORG1_CA_ADMIN_PASSWORD --mspid Org1MSP &&
-    kubectl hlf ca enroll --name=org1-ca --user=$ORG1_CA_ADMIN_NAME --secret=$ORG1_CA_ADMIN_PASSWORD --mspid Org1MSP --ca-name ca --output $CONFIG_DIR/peer-Org1.yaml &&
-    kubectl hlf inspect --output $CONFIG_DIR/Org1.yaml -o Org1MSP -o OrdererMSP &&
-    kubectl hlf utils adduser --userPath=$CONFIG_DIR/peer-Org1.yaml --config=$CONFIG_DIR/Org1.yaml --username=$ORG1_CA_ADMIN_NAME --mspid=Org1MSP &&
+  kubectl hlf ca register --name=org1-ca --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --type=admin --enroll-id org1 --enroll-secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP &&
+    kubectl hlf ca enroll --name=org1-ca --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP --ca-name ca --output \\"$CONFIG_DIR/peer-Org1.yaml\\" &&
+    kubectl hlf inspect --output \\"$CONFIG_DIR/Org1.yaml\\" -o \\"Org1MSP\\" -o \\"OrdererMSP\\" &&
+    kubectl hlf utils adduser --userPath=\\"$CONFIG_DIR/peer-Org1.yaml\\" --config=\\"$CONFIG_DIR/Org1.yaml\\" --username=\\"$ORG1_CA_ADMIN_NAME\\" --mspid=Org1MSP &&
     printItalics \\"Joining 'my-channel1' on  org1/peer0\\" \\"U1F638\\"
-  retry 3 kubectl hlf channel join --name=my-channel1 --config=$CONFIG_DIR/Org1.yaml --user=$ORG1_CA_ADMIN_NAME -p=peer0.$NAMESPACE
+  retry 3 kubectl hlf channel join --name=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" -p=\\"peer0.$NAMESPACE\\"
 
   printItalics \\"Joining 'my-channel1' on  org1/peer1\\" \\"U1F638\\"
-  retry 3 kubectl hlf channel join --name=my-channel1 --config=$CONFIG_DIR/Org1.yaml --user=$ORG1_CA_ADMIN_NAME -p=peer1.$NAMESPACE
+  retry 3 kubectl hlf channel join --name=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" -p=\\"peer1.$NAMESPACE\\"
 
   # add anchor peers
 
   printItalics \\"Electing on org1/peer0 as Anchor peer\\" \\"U1F638\\"
-  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=$CONFIG_DIR/Org1.yaml --user=$ORG1_CA_ADMIN_NAME --peer=peer0.$NAMESPACE
+  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --peer=\\"peer0.$NAMESPACE\\"
 
   printItalics \\"Electing on org1/peer1 as Anchor peer\\" \\"U1F638\\"
-  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=$CONFIG_DIR/Org1.yaml --user=$ORG1_CA_ADMIN_NAME --peer=peer1.$NAMESPACE
+  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --peer=\\"peer1.$NAMESPACE\\"
 
 }
 
@@ -237,7 +237,7 @@ destroyNetwork() {
 hlfOperator() {
   while [ \\"$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items[*].status.containerStatuses[0].ready}')\\" != \\"true\\" ]; do
     sleep 5
-    echo $BLUE \\"Waiting for Operator to be ready.\\" $RESETBG
+    echo \\"$BLUE\\" \\"Waiting for Operator to be ready.\\" \\"$RESETBG\\"
   done
 }
 
@@ -352,8 +352,8 @@ buildAndInstallChaincode() {
     exit 1
   fi
 
-  kubectl hlf chaincode install --path=$CHAINCODE_DIR_PATH \\\\
-    --config=$CONFIG --language=$CHAINCODE_LANG --label=$CHAINCODE_LABEL --user=$USER --peer=$PEER
+  kubectl hlf chaincode install --path=\\"$CHAINCODE_DIR_PATH\\" \\\\
+    --config=\\"$CONFIG\\" --language=\\"$CHAINCODE_LANG\\" --label=\\"$CHAINCODE_LABEL\\" --user=\\"$USER\\" --peer=\\"$PEER\\"
 }
 
 approveChaincode() {
@@ -366,7 +366,7 @@ approveChaincode() {
   local MSP=\\"$7\\"
   local SEQUENCE
 
-  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=$CHANNEL_NAME --config=$CONFIG --user=$USER --peer=$PEER 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
+  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=\\"$CHANNEL_NAME\\" --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
   SEQUENCE=$((SEQUENCE + 1))
 
   if [ -z \\"$CHAINCODE_NAME\\" ]; then
@@ -389,13 +389,13 @@ approveChaincode() {
     exit 1
   fi
 
-  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG --user=$USER --peer=$PEER | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID=\\"$(kubectl hlf chaincode queryinstalled --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" | awk '{print $1}' | grep chaincode)\\"
 
   printItalics \\"Approving chaincode $CHAINCODE_NAME on $PEER\\" \\"U1F618\\"
 
-  kubectl hlf chaincode approveformyorg --config=$CONFIG --user=$USER --peer=$PEER \\\\
-    --package-id=$PACKAGE_ID --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=$CHAINCODE_NAME \\\\
-    --policy=\\"OR('$MSP.member')\\" --channel=$CHANNEL_NAME
+  kubectl hlf chaincode approveformyorg --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" \\\\
+    --package-id=\\"$PACKAGE_ID\\" --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=\\"$CHAINCODE_NAME\\" \\\\
+    --policy=\\"OR('$MSP.member')\\" --channel=\\"$CHANNEL_NAME\\"
 }
 
 commitChaincode() {
@@ -409,7 +409,7 @@ commitChaincode() {
   local MSP=\\"$7\\"
   local SEQUENCE
 
-  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=$CHANNEL_NAME --config=$CONFIG --user=$USER --peer=$PEER 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
+  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=\\"$CHANNEL_NAME\\" --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
   SEQUENCE=$((SEQUENCE + 1))
 
   if [ -z \\"$CHAINCODE_NAME\\" ]; then
@@ -432,11 +432,11 @@ commitChaincode() {
     exit 1
   fi
 
-  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG --user=$USER --peer=$PEER | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID=\\"$(kubectl hlf chaincode queryinstalled --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" | awk '{print $1}' | grep chaincode)\\"
 
-  kubectl hlf chaincode commit --config=$CONFIG --user=$USER --mspid=$MSP \\\\
-    --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=$CHAINCODE_NAME \\\\
-    --policy=\\"OR('$MSP.member')\\" --channel=$CHANNEL_NAME
+  kubectl hlf chaincode commit --config=\\"$CONFIG\\" --user=\\"$USER\\" --mspid=\\"$MSP\\" \\\\
+    --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=\\"$CHAINCODE_NAME\\" \\\\
+    --policy=\\"OR('$MSP.member')\\" --channel=\\"$CHANNEL_NAME\\"
 }
 "
 `;
@@ -447,20 +447,21 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 retry() {
   local n=0
   local try=$1
-  local cmd=\\"\${@:2}\\"
+  local cmd=\\"\${*:2}\\"
   [[ $# -le 1 ]]
 
   until [[ $n -ge $try ]]; do
-    $cmd && break || {
+    if [[ $cmd ]]; then
+      break
+    else
       echo $(printf '\\\\033[31m') \\"Previous command FAILED\\"
       ((n++))
       echo $(printf '\\\\033[34m') \\"RETRYING...\\"
       sleep 1
-    }
-
+    fi
   done
 }
-retry $*
+retry \\"$*\\"
 "
 `;
 
