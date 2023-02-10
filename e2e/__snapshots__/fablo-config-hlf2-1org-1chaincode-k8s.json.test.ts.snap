@@ -129,10 +129,10 @@ deployPeer() {
   printItalics \\"Deploying Peers\\" \\"U1F984\\"
   sleep 10
 
-  kubectl hlf peer create --statedb=leveldb --image=\\"$PEER_IMAGE\\" --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
+  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
     --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer0 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
 
-  kubectl hlf peer create --statedb=leveldb --image=\\"$PEER_IMAGE\\" --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
+  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
     --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer1 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
 
   while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != \\"true true\\" ]]; do
@@ -153,7 +153,7 @@ deployOrderer() {
   kubectl hlf ca register --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --type=orderer --enroll-id=orderer --enroll-secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP &&
     inputLog \\"registered orderer-ca\\"
 
-  kubectl hlf ordnode create --image=\\"$ORDERER_IMAGE\\" --version=\\"$ORDERER_VERSION\\" \\\\
+  kubectl hlf ordnode create --version=\\"$ORDERER_VERSION\\" \\\\
     --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP \\\\
     --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --capacity=2Gi --name=orderer-node --ca-name=\\"orderer-ca.$NAMESPACE\\"
   while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do

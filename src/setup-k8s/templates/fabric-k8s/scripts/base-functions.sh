@@ -23,7 +23,7 @@ deployPeer() {
       sleep 10
 
       <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
-        kubectl hlf peer create --statedb=<%= peer.db.type.toLowerCase() %> --image="$PEER_IMAGE" --version="$PEER_VERSION" --storage-class="$STORAGE_CLASS" --enroll-id=peer --mspid=<%= org.mspName %> \
+        kubectl hlf peer create --statedb=<%= peer.db.type.toLowerCase() %> --version="$PEER_VERSION" --storage-class="$STORAGE_CLASS" --enroll-id=peer --mspid=<%= org.mspName %> \
           --enroll-pw="$<%= org.ca.caAdminPassVar %>" --capacity=5Gi --name=<%= peer.name %> --ca-name="<%= org.name.toLowerCase() %>-<%= org.ca.prefix %>.$NAMESPACE" --k8s-builder=true --external-service-builder=false
       <% })}) %>
 
@@ -50,7 +50,7 @@ deployOrderer() {
   kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user="$<%= org.ca.caAdminNameVar %>" --secret="$<%= org.ca.caAdminPassVar %>" --type=orderer --enroll-id=<%= org.name.toLowerCase() %> --enroll-secret="$<%= org.ca.caAdminPassVar %>" --mspid <%= org.mspName %> &&
     inputLog "registered <%= org.name.toLowerCase() %>-<%= org.ca.prefix %>"
 
-    kubectl hlf ordnode create --image="$ORDERER_IMAGE" --version="$ORDERER_VERSION" \
+    kubectl hlf ordnode create --version="$ORDERER_VERSION" \
       --storage-class="$STORAGE_CLASS" --enroll-id="$<%= org.ca.caAdminNameVar %>"  --mspid=<%= org.mspName %> \
       --enroll-pw="$<%= org.ca.caAdminPassVar %>" --capacity=2Gi --name=<%= org.name.toLowerCase() %>-node --ca-name="<%= org.name.toLowerCase() %>-<%= org.ca.prefix %>.$NAMESPACE"
   while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
