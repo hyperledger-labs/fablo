@@ -9,15 +9,16 @@ deployPeer() {
     <% if(org.peers.length > 0 ) { -%>
 
       printItalics "Deploying <%= org.name %> CA" "U1F984"
-      kubectl hlf ca create --storage-class="$STORAGE_CLASS" --capacity=2Gi --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --enroll-id=<%= org.name.toLowerCase() %> --enroll-pw="$<%= org.ca.caAdminPassVar %>" && sleep 3
+      kubectl hlf ca create --image=$CA_IMAGE --version=$CA_VERSION --storage-class="$STORAGE_CLASS" --capacity=2Gi --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --enroll-id=<%= org.name.toLowerCase() %> --enroll-pw="$<%= org.ca.caAdminPassVar %>"
+      sleep 3
 
       while [[ $(kubectl get pods -l release=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
         sleep 5
         inputLog "waiting for CA"
       done
 
-      kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=peer --secret="$<%= org.ca.caAdminPassVar %>" --type=peer --enroll-id <%= org.name.toLowerCase() %>  --enroll-secret="$<%= org.ca.caAdminPassVar %>" --mspid <%= org.mspName %> &&
-        inputLog "registered <%= org.name %> -ca"
+      kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user=peer --secret="$<%= org.ca.caAdminPassVar %>" --type=peer --enroll-id <%= org.name.toLowerCase() %>  --enroll-secret="$<%= org.ca.caAdminPassVar %>" --mspid <%= org.mspName %>
+      inputLog "registered <%= org.name %> -ca"
 
       printItalics "Deploying Peers" "U1F984"
       sleep 10
