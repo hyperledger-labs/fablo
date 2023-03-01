@@ -394,7 +394,7 @@ The other available parameters for entries in `orgs` array are:
 ### property `peer.db`:  
 - may be `LevelDb` (default) or `CouchDb`.  
 
-###property `orderers`:  
+### property `orderers`:  
 - is optional as some organizations may have orderer defined, but some don't.
 - At least one orderer group is required to run Fabric network (requirement is validated before run).   
 - If you want to spread orderers in group between many organizations use same `groupName` in every group definition.  
