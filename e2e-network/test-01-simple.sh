@@ -20,7 +20,7 @@ dumpLogs() {
 
 networkDown() {
   rm -rf "$TEST_LOGS"
-  (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
+  (docker ps --format '{{.Names}}' | while read -r name; do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
