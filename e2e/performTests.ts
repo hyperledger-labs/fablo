@@ -1,13 +1,13 @@
 import TestCommands from "./TestCommands";
 import { resolve } from "path";
 
-const testFilesExistence = (config: string, files: string[]) => {
+const testFilesExistence = (config: string, files: string[]): void => {
   it(`should create proper files from ${config}`, () => {
     expect(files).toMatchSnapshot();
   });
 };
 
-const testFilesContent = (commands: TestCommands, config: string, files: string[]) =>
+const testFilesContent = (commands: TestCommands, config: string, files: string[]): void => {
   files.forEach((f) => {
     it(`should create proper ${f} from ${config}`, () => {
       const content = commands.getFileContent(`${commands.relativeRoot}/${f}`);
@@ -21,6 +21,7 @@ const testFilesContent = (commands: TestCommands, config: string, files: string[
       expect(cleaned).toMatchSnapshot();
     });
   });
+};
 
 export default (config: string): void => {
   const commands = new TestCommands(`e2e/__tmp__/${config}.tmpdir`);
