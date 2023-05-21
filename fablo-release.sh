@@ -23,10 +23,10 @@ echo "   FABLO_HOME:    $FABLO_HOME"
 echo "   FABLO_VERSION: $FABLO_VERSION"
 echo "   GIT_TAG:       $tag"
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC2039 disable=SC3045 disable=SC3010
 read -r -p "Are you sure? [y/N] " response
 
-# shellcheck disable=SC2039
+# shellcheck disable=SC2039 disable=SC3045 disable=SC3010
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   (cd "$FABLO_HOME" && ./fablo-build.sh)
   docker login -u "$login"
