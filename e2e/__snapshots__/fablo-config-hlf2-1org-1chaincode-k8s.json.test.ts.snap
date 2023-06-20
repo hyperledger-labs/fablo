@@ -120,7 +120,7 @@ source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh\\"
 deployPeer() {
 
   printItalics \\"Deploying Org1 CA\\" \\"U1F984\\"
-  kubectl hlf ca create --image=$CA_IMAGE --version=$CA_VERSION --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\"
+  kubectl hlf ca create --image=\\"$CA_IMAGE\\" --version=\\"$CA_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\"
   sleep 3
 
   while [[ $(kubectl get pods -l release=org1-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
