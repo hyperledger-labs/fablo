@@ -59,9 +59,7 @@ deployOrderer() {
     inputLog "waiting for <%= org.name.toLowerCase() %> Node to be ready"
   done
 
-    kubectl hlf inspect --output "$CONFIG_DIR/ordservice.yaml" -o <%= org.mspName %> &&
-    kubectl hlf ca register --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user="$<%= org.ca.caAdminNameVar %>"  --secret="$<%= org.ca.caAdminPassVar %>" --type=admin --enroll-id=<%= org.name.toLowerCase() %> --enroll-secret="$<%= org.ca.caAdminPassVar %>" --mspid=<%= org.mspName %>
-
+    kubectl hlf inspect --output "$CONFIG_DIR/ordservice.yaml" -o <%= org.mspName %>
     kubectl hlf ca enroll --name=<%= org.name.toLowerCase() %>-<%= org.ca.prefix %> --user="$<%= org.ca.caAdminNameVar %>" --secret="$<%= org.ca.caAdminPassVar %>" --mspid <%= org.mspName %> --ca-name ca --output "$CONFIG_DIR/admin-ordservice.yaml" &&
     kubectl hlf utils adduser --userPath="$CONFIG_DIR/admin-ordservice.yaml" --config="$CONFIG_DIR/ordservice.yaml" --username="$<%= org.ca.caAdminNameVar %>" --mspid=<%= org.mspName %>
     <% } -%>
@@ -88,9 +86,11 @@ installChannels() {
         kubectl hlf inspect --output "$CONFIG_DIR/<%= org.name %>.yaml" -o "<%= org.mspName %>" -o "<%= channel.ordererHead.orgMspName %>" &&
         kubectl hlf utils adduser --userPath="$CONFIG_DIR/peer-<%= org.name %>.yaml" --config="$CONFIG_DIR/<%= org.name %>.yaml" --username="$<%= org.ca.caAdminNameVar %>" --mspid=<%= org.mspName %> &&
 
+        sleep 10
+
       <% org.peers.forEach((peer) => { %>
         printItalics "Joining '<%= channel.name %>' on  <%= org.name.toLowerCase() %>/<%= peer.name %>" "U1F638"
-        retry 3 kubectl hlf channel join --name=<%= channel.name %> --config="$CONFIG_DIR/<%= org.name %>.yaml" --user="$<%= org.ca.caAdminNameVar %>" -p="<%= peer.name %>.$NAMESPACE"
+        kubectl hlf channel join --name=<%= channel.name %> --config="$CONFIG_DIR/<%= org.name %>.yaml" --user="$<%= org.ca.caAdminNameVar %>" -p="<%= peer.name %>.$NAMESPACE"
       <% }) %>
 
       # add anchor peers
