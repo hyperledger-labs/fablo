@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    
+
       - name: Check out repository code
         uses: actions/checkout@v2
 
@@ -176,9 +176,17 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Install NVM
+        run: |
+          curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
       - name: Test chaincode for Fabric 1.4.x
         run: |
           cd samples/chaincodes/chaincode-kv-node-1.4 && \
+            nvm use && \
             npm install && \
             npm run build && \
             npm run test
@@ -186,6 +194,7 @@ jobs:
       - name: Test chaincode for Fabric 2.x
         run: |
           cd samples/chaincodes/chaincode-kv-node && \
+            nvm use && \
             npm install && \
             npm run build && \
             npm run test
