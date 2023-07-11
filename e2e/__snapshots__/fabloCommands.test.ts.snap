@@ -11,7 +11,7 @@ Validation warnings count: 0
     \\"monitoring\\": {
       \\"loglevel\\": \\"debug\\"
     },
-    \\"fabricCaVersion\\": \\"1.5.0\\",
+    \\"fabricCaVersion\\": \\"1.5.5\\",
     \\"fabricCcenvVersion\\": \\"2.4.3\\",
     \\"fabricBaseosVersion\\": \\"2.4.3\\",
     \\"fabricJavaenvVersion\\": \\"2.4\\",
@@ -2416,6 +2416,8 @@ Validation warnings count: 0
     \\"postGenerate\\": \\"perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\\\\\"./fablo-target/fabric-config/configtx.yaml\\\\\\"\\"
   }
 }
+
+
 "
 `;
 
@@ -2429,7 +2431,7 @@ Validation warnings count: 0
     \\"tls\\": false,
     \\"engine\\": \\"docker\\",
     \\"peerDevMode\\": false,
-    \\"fabricCaVersion\\": \\"1.5.0\\",
+    \\"fabricCaVersion\\": \\"1.5.5\\",
     \\"fabricCcenvVersion\\": \\"2.4.7\\",
     \\"fabricBaseosVersion\\": \\"2.4.7\\",
     \\"fabricJavaenvVersion\\": \\"2.4\\",
@@ -2898,6 +2900,8 @@ Validation warnings count: 0
     \\"postGenerate\\": \\"\\"
   }
 }
+
+
 "
 `;
 

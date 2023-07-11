@@ -30,8 +30,8 @@ buildAndInstallChaincode() {
     exit 1
   fi
 
-  kubectl hlf chaincode install --path=$CHAINCODE_DIR_PATH \
-    --config=$CONFIG --language=$CHAINCODE_LANG --label=$CHAINCODE_LABEL --user=$USER --peer=$PEER
+  kubectl hlf chaincode install --path="$CHAINCODE_DIR_PATH" \
+    --config="$CONFIG" --language="$CHAINCODE_LANG" --label="$CHAINCODE_LABEL" --user="$USER" --peer="$PEER"
 }
 
 approveChaincode() {
@@ -44,7 +44,7 @@ approveChaincode() {
   local MSP="$7"
   local SEQUENCE
 
-  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel=$CHANNEL_NAME --config=$CONFIG --user=$USER --peer=$PEER | awk '{print $3}' | sed -n '2p' )"
+  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" | awk '{print $3}' | sed -n '2p' )"
   SEQUENCE=$((SEQUENCE +1))
 
   if [ -z "$CHAINCODE_NAME" ]; then
@@ -67,13 +67,13 @@ approveChaincode() {
     exit 1
   fi
 
-  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG --user=$USER --peer=$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID="$(kubectl hlf chaincode queryinstalled --config="$CONFIG" --user="$USER" --peer="$PEER.$NAMESPACE" | awk '{print $1}' | grep chaincode)"
 
   printItalics "Approving chaincode $CHAINCODE_NAME on $PEER" "U1F618"
 
-  kubectl hlf chaincode approveformyorg --config=$CONFIG --user=$USER --peer=$PEER \
-    --package-id=$PACKAGE_ID --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name=$CHAINCODE_NAME \
-    --policy="OR('$MSP.member')" --channel=$CHANNEL_NAME
+  kubectl hlf chaincode approveformyorg --config="$CONFIG" --user="$USER" --peer="$PEER" \
+    --package-id="$PACKAGE_ID" --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name="$CHAINCODE_NAME" \
+    --policy="OR('$MSP.member')" --channel="$CHANNEL_NAME"
 }
 
 commitChaincode() {
@@ -87,7 +87,7 @@ commitChaincode() {
   local MSP="$7"
   local SEQUENCE
 
-  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel=$CHANNEL_NAME --config=$CONFIG --user=$USER --peer=$PEER | awk '{print $3}' | sed -n '2p' )"
+  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" | awk '{print $3}' | sed -n '2p' )"
   SEQUENCE=$((SEQUENCE +1))
 
   if [ -z "$CHAINCODE_NAME" ]; then
@@ -110,9 +110,9 @@ commitChaincode() {
     exit 1
   fi
 
-  PACKAGE_ID=$(kubectl hlf chaincode queryinstalled --config=$CONFIG --user=$USER --peer=$PEER.$NAMESPACE | awk '{print $1}' | grep chaincode)
+  PACKAGE_ID="$(kubectl hlf chaincode queryinstalled --config="$CONFIG" --user="$USER" --peer="$PEER.$NAMESPACE" | awk '{print $1}' | grep chaincode)"
 
-  kubectl hlf chaincode commit --config=$CONFIG --user=$USER --mspid=$MSP \
-    --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name=$CHAINCODE_NAME \
-    --policy="OR('$MSP.member')" --channel=$CHANNEL_NAME
+  kubectl hlf chaincode commit --config="$CONFIG" --user="$USER" --mspid="$MSP" \
+    --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name="$CHAINCODE_NAME" \
+    --policy="OR('$MSP.member')" --channel="$CHANNEL_NAME"
 }

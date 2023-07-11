@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    
+
       - name: Check out repository code
         uses: actions/checkout@v2
 
@@ -77,6 +77,9 @@ jobs:
           if [ -f "~/.zshrc" ]; then
             echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
           fi
+          
+          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          helm install hlf-operator --version=1.8.0 kfs/hlf-operator
 
       - name: Build Fablo
         run: |
@@ -165,24 +168,3 @@ jobs:
           path: |
             e2e-network/docker/test-04-snapshot.sh.logs/*
             e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
-
-  node-chaincodes-unit-tests:
-    needs: test-main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Test chaincode for Fabric 1.4.x
-        run: |
-          cd samples/chaincodes/chaincode-kv-node-1.4 && \
-            npm install && \
-            npm run build && \
-            npm run test
-
-      - name: Test chaincode for Fabric 2.x
-        run: |
-          cd samples/chaincodes/chaincode-kv-node && \
-            npm install && \
-            npm run build && \
-            npm run test

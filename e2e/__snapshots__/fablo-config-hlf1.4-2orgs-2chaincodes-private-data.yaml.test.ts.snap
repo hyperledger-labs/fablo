@@ -560,7 +560,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 #############################################################################
 
 # Version of config file
-version: 1.5.0
+version: 1.5.5
 
 # Server's listening port (default: 7054)
 port: 7054
@@ -1061,7 +1061,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 #############################################################################
 
 # Version of config file
-version: 1.5.0
+version: 1.5.5
 
 # Server's listening port (default: 7054)
 port: 7054
@@ -1562,7 +1562,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-private-data.yaml should 
 #############################################################################
 
 # Version of config file
-version: 1.5.0
+version: 1.5.5
 
 # Server's listening port (default: 7054)
 port: 7054
@@ -2103,7 +2103,7 @@ COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
 FABRIC_VERSION=1.4.11
-FABRIC_CA_VERSION=1.5.0
+FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=1.4.11
 FABRIC_BASEOS_VERSION=0.4.9
@@ -2478,7 +2478,7 @@ networkDown() {
   printHeadline \\"Destroying network\\" \\"U1F916\\"
   (cd \\"$FABLO_NETWORK_ROOT\\"/fabric-docker && docker-compose down)
 
-  printf \\"\\\\nRemoving chaincode containers & images... \\\\U1F5D1 \\\\n\\"
+  printf \\"Removing chaincode containers & images... \\\\U1F5D1 \\\\n\\"
   for container in $(docker ps -a | grep \\"dev-peer0.org1.example.com-or-policy-chaincode\\" | awk '{print $1}'); do
     echo \\"Removing container $container...\\"
     docker rm -f \\"$container\\" || echo \\"docker rm of $container failed. Check if all fabric dockers properly was deleted\\"
@@ -2528,7 +2528,7 @@ networkDown() {
     docker rmi \\"$image\\" || echo \\"docker rmi of $image failed. Check if all fabric dockers properly was deleted\\"
   done
 
-  printf \\"\\\\nRemoving generated configs... \\\\U1F5D1 \\\\n\\"
+  printf \\"Removing generated configs... \\\\U1F5D1 \\\\n\\"
   rm -rf \\"$FABLO_NETWORK_ROOT/fabric-config/config\\"
   rm -rf \\"$FABLO_NETWORK_ROOT/fabric-config/crypto-config\\"
   rm -rf \\"$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages\\"

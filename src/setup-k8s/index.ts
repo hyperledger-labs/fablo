@@ -38,7 +38,7 @@ export default class SetupDockerGenerator extends Generator {
     this._copyGitIgnore();
 
     // ======= fabric-k8s ===========================================================
-    this._copyDockerComposeEnv(global, orgs, composeNetworkName);
+    this._copyEnvFile(global, orgs, composeNetworkName);
 
     // ======= scripts ==================================================================
     // this._copyCommandsGeneratedScript(config);
@@ -59,7 +59,7 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("fabric-config/.gitignore"), this.destinationPath("fabric-config/.gitignore"));
   }
 
-  _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): void {
+  _copyEnvFile(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): void {
     const settings = {
       composeNetworkName,
       fabricCaVersion: global.fabricCaVersion,
@@ -81,7 +81,7 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(
       this.templatePath("fabric-k8s/scripts/base-functions.sh"),
       this.destinationPath("fabric-k8s/scripts/base-functions.sh"),
-      config
+      config,
     );
   }
   _copyUtilityScripts(capabilities: Capabilities): void {

@@ -51,7 +51,12 @@ formatGeneratedFiles() {
 yeoman_target_dir="/network/workspace"
 yeoman_command=${1:-Fablo:setup-network}
 
-executeYeomanCommand "$yeoman_command"
+# This part of output will be replaces with empty line. It breaks parsing of yeoman generator output.
+# See also: https://github.com/yeoman/generator/issues/1294
+annoying_yeoman_info="No change to package.json was detected. No package manager install will be executed."
+
+# Execute the command
+executeYeomanCommand "$yeoman_command" 2>&1 | sed "s/$annoying_yeoman_info//g"
 
 if echo "$yeoman_command" | grep "setup-network"; then
   formatGeneratedFiles

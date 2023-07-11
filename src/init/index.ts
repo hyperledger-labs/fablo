@@ -1,7 +1,7 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import parseFabloConfig from "../utils/parseFabloConfig";
-import {GlobalJson} from "../types/FabloConfigJson";
+import { GlobalJson } from "../types/FabloConfigJson";
 
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
