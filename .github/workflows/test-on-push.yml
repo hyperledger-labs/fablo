@@ -21,15 +21,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test simple network
-        run: e2e-network/test-01-simple.sh
+        run: e2e-network/docker/test-01-simple.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-main
           path: |
-            e2e-network/test-01-simple.sh.logs/*
-            e2e-network/test-01-simple.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-01-simple.sh.logs/*
+            e2e-network/docker/test-01-simple.sh.tmpdir/fablo-target/**/*
 
       - name: Test generators
         run: |
@@ -39,6 +39,60 @@ jobs:
 
       - name: Lint
         run: npm run lint && ./lint.sh
+  test-k8:
+    needs: test-main
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: install k8, hlf plugin and helm
+        run: |
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+          kind create cluster --wait 5m
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+          set -x; cd "$(mktemp -d)" &&
+          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+          KREW="krew-${OS}_${ARCH}" &&
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+          tar zxvf "${KREW}.tar.gz" &&
+          ./"${KREW}" install krew
+          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          kubectl krew install hlf
+
+          if [ -f "~/.bashrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+          fi
+
+          if [ -f "~/.zshrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+          fi
+          
+          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          helm install hlf-operator --version=1.8.0 kfs/hlf-operator
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          npm run build && \
+          ./fablo-build.sh
+
+      - name: fablo k8 tests
+        run: |
+          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          e2e-network/k8s/test-01-simple-k8s.sh
 
   test-02-raft:
     needs: test-main
@@ -55,15 +109,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test RAFT network
-        run: e2e-network/test-02-raft-2orgs.sh
+        run: e2e-network/docker/test-02-raft-2orgs.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-02-raft
           path: |
-            e2e-network/test-02-raft.sh.logs/*
-            e2e-network/test-02-raft.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-02-raft.sh.logs/*
+            e2e-network/docker/test-02-raft.sh.tmpdir/fablo-target/**/*
 
   test-03-private-data:
     needs: test-main
@@ -80,15 +134,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test private data
-        run: e2e-network/test-03-private-data.sh
+        run: e2e-network/docker/test-03-private-data.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-03-private-data
           path: |
-            e2e-network/test-03-private-data.sh.logs/*
-            e2e-network/test-03-private-data.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-03-private-data.sh.logs/*
+            e2e-network/docker/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
   test-04-snapshot:
     needs: test-main
@@ -105,33 +159,12 @@ jobs:
           ./fablo-build.sh
 
       - name: Test snapshots
-        run: e2e-network/test-04-snapshot.sh
+        run: e2e-network/docker/test-04-snapshot.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: test-04-snapshot
           path: |
-            e2e-network/test-04-snapshot.sh.logs/*
-            e2e-network/test-04-snapshot.sh.tmpdir/fablo-target/**/*
-
-  node-chaincodes-unit-tests:
-    needs: test-main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Test chaincode for Fabric 1.4.x
-        run: |
-          cd samples/chaincodes/chaincode-kv-node-1.4 && \
-            npm install && \
-            npm run build && \
-            npm run test
-
-      - name: Test chaincode for Fabric 2.x
-        run: |
-          cd samples/chaincodes/chaincode-kv-node && \
-            npm install && \
-            npm run build && \
-            npm run test
+            e2e-network/docker/test-04-snapshot.sh.logs/*
+            e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
