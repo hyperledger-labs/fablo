@@ -27,7 +27,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
   return {
     fabricVersion,
-    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.0" : fabricVersion,
+    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.5" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
     fabricJavaenvVersion: majorMinor,
@@ -48,14 +48,22 @@ const getPathsFromEnv = () => ({
 });
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
+  const engine = globalJson.engine ?? "docker";
+
   const monitoring = {
     loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
-  const explorer = !globalJson?.tools?.explorer ? {} : { explorer: { address: "explorer.example.com", port: 7010 } };
+
+  const explorer = !globalJson?.tools?.explorer
+    ? {}
+    : {
+        explorer: { address: "explorer.example.com", port: 7010 },
+      };
 
   return {
     ...globalJson,
     ...getVersions(globalJson.fabricVersion),
+    engine,
     paths: getPathsFromEnv(),
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),
