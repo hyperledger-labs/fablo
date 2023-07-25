@@ -9,8 +9,6 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-echo "FABLO_HOME: $FABLO_HOME"
-
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
