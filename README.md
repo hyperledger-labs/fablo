@@ -538,6 +538,10 @@ chaincodes:
           - Org1
 ```
 
+## Kubernetes support
+
+TODO
+
 ## Other features
 
 ### Connection profiles

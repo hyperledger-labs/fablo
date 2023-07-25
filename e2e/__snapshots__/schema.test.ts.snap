@@ -7,7 +7,7 @@ Object {
   "default": Object {},
   "properties": Object {
     "$schema": Object {
-      "const": "https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json",
+      "const": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0-unstable/schema.json",
     },
     "chaincodes": Object {
       "$id": "#/properties/chaincodes",
@@ -239,6 +239,16 @@ Object {
       "$id": "#/properties/global",
       "description": "Basic settings of the Hyperledger Fabric network",
       "properties": Object {
+        "engine": Object {
+          "$id": "#/properties/global/properties/engine",
+          "default": "docker",
+          "enum": Array [
+            "docker",
+            "kubernetes",
+          ],
+          "title": "Engine on which the network will be deployed",
+          "type": "string",
+        },
         "fabricVersion": Object {
           "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.2",

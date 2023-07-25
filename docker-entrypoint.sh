@@ -33,6 +33,12 @@ formatGeneratedFiles() {
   shfmt -i=2 -l -w "$yeoman_target_dir" >/dev/null
 
   for yaml in "$yeoman_target_dir"/**/*.yaml; do
+
+    # the expansion failed, no yaml files found
+    if [ "$yaml" = "$yeoman_target_dir/**/*.yaml" ]; then
+      break
+    fi
+
     # remove trailing spaces
     sed --in-place 's/[ \t]*$//' "$yaml"
 
@@ -43,10 +49,15 @@ formatGeneratedFiles() {
 }
 
 yeoman_target_dir="/network/workspace"
-yeoman_command=${1:-Fablo:setup-docker}
+yeoman_command=${1:-Fablo:setup-network}
 
-executeYeomanCommand "$yeoman_command"
+# This part of output will be replaces with empty line. It breaks parsing of yeoman generator output.
+# See also: https://github.com/yeoman/generator/issues/1294
+annoying_yeoman_info="No change to package.json was detected. No package manager install will be executed."
 
-if echo "$yeoman_command" | grep "setup-docker"; then
+# Execute the command
+executeYeomanCommand "$yeoman_command" 2>&1 | sed "s/$annoying_yeoman_info//g"
+
+if echo "$yeoman_command" | grep "setup-network"; then
   formatGeneratedFiles
 fi
