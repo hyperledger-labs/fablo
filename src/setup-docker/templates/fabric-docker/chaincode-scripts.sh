@@ -25,7 +25,21 @@ chaincodeInvoke() {
 
   peerAddresses="--peerAddresses $(echo "$peers" | sed 's/,/ --peerAddresses /g')"
 
-  docker exec "cli.org1.example.com" peer chaincode invoke \
+cli=""
+
+<% orgs.forEach((org) => { -%>
+  <% org.peers.forEach((peer) => { -%>
+    if [ "$peers" = "<%= peer.fullAddress %>" ]; then
+      cli="<%= org.cli.address %>"
+    fi
+  <% }) -%>
+<% }) -%>
+if [ -z "$cli" ]; then
+  echo "Unknown peer: $peers"
+  exit 1
+fi
+
+  docker exec "$cli"  peer chaincode invoke \
     $peerAddresses \
     -C "$channel" \
     -n "$chaincode" \
