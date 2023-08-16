@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo "FABLO_HOME: $FABLO_HOME"
-
 cli="$1"
 peers="$2"
 channel="$3"
