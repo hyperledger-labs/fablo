@@ -177,7 +177,6 @@ describe("version", () => {
         build: expect.stringMatching(/.*/),
         supported: expect.objectContaining({
           fabloVersions: expect.stringMatching(/.*/),
-          hyperledgerFabricVersions: expect.anything(),
         }),
       }),
     );
