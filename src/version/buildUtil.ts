@@ -16,7 +16,6 @@ const fullInfo = (): Record<string, unknown> => {
     build: getBuildInfo(),
     supported: {
       fabloVersions: `${config.supportedVersionPrefix}x`,
-      hyperledgerFabricVersions: config.supportedFabricVersions,
     },
   };
 };

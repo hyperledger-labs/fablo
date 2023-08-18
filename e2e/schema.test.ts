@@ -36,8 +36,8 @@ describe("schema", () => {
 
     expect(withFabricVersion("1.4.3")).toMatchSchema(schema);
     expect(withFabricVersion("1.4.4")).toMatchSchema(schema);
-    expect(withFabricVersion("1.3.1")).not.toMatchSchema(schema);
-    expect(withFabricVersion("2.0.0")).not.toMatchSchema(schema);
+    expect(withFabricVersion("1.3.1")).toMatchSchema(schema);
+    expect(withFabricVersion("2.0.0")).toMatchSchema(schema);
   });
 
   it("should validate first orderer org domain prefix", () => {

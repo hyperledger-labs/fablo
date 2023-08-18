@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION="1.2.0-unstable"
+FABLO_VERSION="1.2.0"
 FABLO_IMAGE_NAME="softwaremill/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -188,7 +188,7 @@ networkPrune() {
   if [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     "$FABLO_TARGET/fabric-k8s.sh" down
   fi
-  
+
   echo "Removing $FABLO_TARGET"
   rm -rf "$FABLO_TARGET"
 }
