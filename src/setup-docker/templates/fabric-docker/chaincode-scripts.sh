@@ -9,11 +9,11 @@ chaincodeInvoke() {
   local TRANSIENT="$5"
 
   echo "-> Chaincode invoke:"
-  echo "CHANNEL: $CHANNEL"
-  echo "CHAINCODE: $CHAINCODE"
-  echo "PEERS: $PEERS"
-  echo "COMMAND: $COMMAND"
-  echo "TRANSIENT: $TRANSIENT"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "PEERS: $PEERS"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
 
 # Validate the input parameters
   if [[ -z $CHANNEL || -z $CHAINCODE || -z $PEERS || -z $COMMAND || -z $TRANSIENT ]]; then
