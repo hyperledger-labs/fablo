@@ -92,7 +92,6 @@ class ValidateGenerator extends Generator {
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
-    this._validateFabricVersion(networkConfig.global.fabricVersion);
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
 
@@ -202,16 +201,6 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateFabricVersion(fabricVersion: string) {
-    if (!config.supportedFabricVersions.includes(fabricVersion)) {
-      const objectToEmit = {
-        category: validationCategories.GENERAL,
-        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${config.supportedFabricVersions}`,
-      };
-      this.emit(validationErrorType.ERROR, objectToEmit);
-    }
-  }
-
   _validateOrdererCountForOrg(org: OrgJson) {
     const numerOfOrderersInOrg = org.orderers?.flatMap((o) => o.instances).reduce((a, b) => a + b, 0);
     if (numerOfOrderersInOrg !== undefined && numerOfOrderersInOrg > 9) {
@@ -262,7 +251,7 @@ class ValidateGenerator extends Generator {
             this.emit(validationErrorType.WARN, objectToEmit);
           }
 
-          if (!config.versionsSupportingRaft.includes(global.fabricVersion)) {
+          if (!config.versionsSupportingRaft(global.fabricVersion)) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
               message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,

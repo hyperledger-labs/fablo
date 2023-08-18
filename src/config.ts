@@ -18,14 +18,11 @@ const getVersionFromSchemaUrl = (url?: string): string => {
 
 const isFabloVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
 
-const supportedFabricVersions = schemaJson.properties.global.properties.fabricVersion.enum as string[];
-
-const versionsSupportingRaft = supportedFabricVersions.filter((v) => version(v).isGreaterOrEqual("1.4.3"));
+const versionsSupportingRaft = (v: string): boolean => version(v).isGreaterOrEqual("1.4.3");
 
 export {
   schema,
   fabloVersion,
-  supportedFabricVersions,
   versionsSupportingRaft,
   getVersionFromSchemaUrl,
   isFabloVersionSupported,
