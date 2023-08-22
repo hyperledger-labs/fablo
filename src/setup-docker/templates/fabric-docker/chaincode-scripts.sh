@@ -39,6 +39,7 @@ if [ -z "$CLI" ]; then
   exit 1
 fi
 
+# shellcheck disable=SC2086
   docker exec "$CLI"  peer chaincode invoke \
     $PEER_ADDRESSES \
     -C "$CHANNEL" \
