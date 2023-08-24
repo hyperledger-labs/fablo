@@ -2,6 +2,11 @@
 
 ### Features
 * Initial support for Kubernetes
+* Basic support for chaincode invoke command
+  
+### Fixes
+* Remove unsupported test library and dependencies
+* Updated Node.js version from 12 to 16 in chaincode
 
 ## 1.1.0
 

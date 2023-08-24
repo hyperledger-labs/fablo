@@ -185,6 +185,11 @@ export default class SetupDockerGenerator extends Generator {
       config,
     );
     this.fs.copyTpl(
+      this.templatePath("fabric-docker/chaincode-scripts.sh"),
+      this.destinationPath("fabric-docker/chaincode-scripts.sh"),
+      config,
+    );
+    this.fs.copyTpl(
       this.templatePath("fabric-docker/snapshot-scripts.sh"),
       this.destinationPath("fabric-docker/snapshot-scripts.sh"),
       config,

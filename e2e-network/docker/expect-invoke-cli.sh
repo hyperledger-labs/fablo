@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cli="$1"
-peer="$2"
+peers="$2"
 channel="$3"
 chaincode="$4"
 command="$5"
@@ -14,23 +14,13 @@ if [ -z "$expected" ]; then
   exit 1
 fi
 
-label="Invoke $channel/$cli/$peer $command"
+label="Invoke $channel/$cli/$peers $command"
 echo ""
 echo "➜ testing: $label"
 
-peerAddresses="--peerAddresses $(echo "$peer" | sed 's/,/ --peerAddresses /g')"
 
 response="$(
-  # shellcheck disable=SC2086
-  docker exec "$cli" peer chaincode invoke \
-    $peerAddresses \
-    -C "$channel" \
-    -n "$chaincode" \
-    -c "$command" \
-    --transient "$transient" \
-    --waitForEvent \
-    --waitForEventTimeout 90s \
-    2>&1
+   "$FABLO_HOME/fablo.sh" chaincode invoke "$channel" "$chaincode" "$peers" "$command" "$transient"
 )"
 
 echo "$response"
