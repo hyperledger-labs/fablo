@@ -10,7 +10,7 @@
 ## 1.2.0
 ### Features
 * Initial Kubernetes support [#351](https://github.com/hyperledger-labs/fablo/issues/351)
-(not yet so elastic like Fablo in terms of network topology, but ready for first views and comments7)
+(not yet so elastic like Fablo in terms of network topology, but ready for first views and comments)
 
 ### Chore & Maintenance
 * Library updates
