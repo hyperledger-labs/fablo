@@ -1,12 +1,20 @@
 ## 1.2.0-unstable
 
 ### Features
-* Initial support for Kubernetes
 * Basic support for chaincode invoke command
   
 ### Fixes
 * Remove unsupported test library and dependencies
 * Updated Node.js version from 12 to 16 in chaincode
+
+## 1.2.0
+### Features
+* Initial Kubernetes support [#351](https://github.com/hyperledger-labs/fablo/issues/351)
+(not yet so elastic like Fablo in terms of network topology, but ready for first views and comments7)
+
+### Chore & Maintenance
+* Library updates
+
 
 ## 1.1.0
 
