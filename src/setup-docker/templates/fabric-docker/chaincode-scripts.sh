@@ -55,7 +55,7 @@ fi
 chaincodeList() {
   echo " chaincodeList $1 $2 "
   if [ "$#" -ne 2 ]; then
-    echo "Expected 2 parameters for chaincode list, but got: $@"
+    echo "Expected 2 parameters for chaincode list, but got: $*"
     exit 1
   <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
   elif [ "$1" = "<%= peer.address %>" ]; then
