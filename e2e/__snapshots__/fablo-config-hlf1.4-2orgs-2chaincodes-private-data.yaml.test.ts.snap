@@ -2189,7 +2189,7 @@ chaincodeInvoke() {
 chaincodeList() {
   echo \\" chaincodeList $1 $2 \\"
   if [ \\"$#\\" -ne 2 ]; then
-    echo \\"Expected 2 parameters for chaincode list, but got: $@\\"
+    echo \\"Expected 2 parameters for chaincode list, but got: $*\\"
     exit 1
 
   elif [ \\"$1\\" = \\"peer0.org1.example.com\\" ]; then

@@ -298,7 +298,9 @@ peerChaincodeList() {
   local PEER_ADDRESS=$2
   local CHANNEL_NAME=$3
 
-  echo "Listing chaincodes for peer $PEER_ADDRESS on channel $CHANNEL_NAME..."
+  echo "Chaincodes list:"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS" 
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
 
   # Execute the command to list chaincodes
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
