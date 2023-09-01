@@ -3,6 +3,7 @@
 ### Features
 * Initial support for Kubernetes
 * Basic support for chaincode invoke command
+* Support for `chaincodes list command` 
   
 ### Fixes
 * Remove unsupported test library and dependencies
