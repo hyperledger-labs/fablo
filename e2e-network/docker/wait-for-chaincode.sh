@@ -17,8 +17,8 @@ listChaincodes() {
 
 for i in $(seq 1 90); do
   echo "➜ verifying if chaincode ($chaincode/$version) is committed on $channel/$peer ($i)..."
-
   if listChaincodes 2>&1 | grep "$search_string"; then
+    listChaincodes
     echo "✅ ok: Chaincode $chaincode/$version is ready on $channel/$peer!"
     exit 0
   else 
