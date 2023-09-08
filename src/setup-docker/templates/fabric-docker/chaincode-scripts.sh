@@ -50,3 +50,25 @@ fi
     --waitForEventTimeout 90s \
     2>&1 
 }
+
+
+chaincodeList() {
+  echo " chaincodeList $1 $2 "
+  if [ "$#" -ne 2 ]; then
+    echo "Expected 2 parameters for chaincode list, but got: $*"
+    exit 1
+  <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>
+  elif [ "$1" = "<%= peer.address %>" ]; then
+    <% if(!global.tls) { %>
+      peerChaincodeList "<%= org.cli.address %>" "<%= peer.fullAddress %>" "$2" # $2 is channel name
+    <% } else { %>
+      peerChaincodeListTls "<%= org.cli.address %>" "<%= peer.fullAddress %>" "$2" "crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem" # Third argument is channel name
+    <% } %>
+  <% })}) %>
+  else
+  echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
+  exit 1
+
+  fi
+}
+

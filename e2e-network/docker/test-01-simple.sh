@@ -32,7 +32,7 @@ waitForContainer() {
 }
 
 waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+  (cd "$TEST_TMP" && sh ../wait-for-chaincode.sh "$1" "$2" "$3" "$4") 
 }
 
 expectInvoke() {
@@ -81,8 +81,8 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
-waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org1.example.com" "peer1.org1.example.com:7042" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 expectInvoke "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"error\":\"NOT_FOUND\"}'
