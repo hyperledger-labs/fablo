@@ -307,10 +307,6 @@ peerChaincodeList() {
    --channelID "$CHANNEL_NAME"
 }
 
-# peerChaincodeListTls() {
-#   echo "Chaincode list with TLS is not supported yet"
-#   exit 1
-# }
 
 peerChaincodeListTls() {
   local CLI_NAME=$1
