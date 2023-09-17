@@ -1,57 +1,5 @@
 #!/usr/bin/env bash
 
-# Function to perform chaincode invoke
-chaincodeInvoke() {
-  local CHANNEL="$1"
-  local CHAINCODE="$2"
-  local PEERS="$3"
-  local COMMAND="$4"
-  local TRANSIENT="$5"
-
-  echo "-> Chaincode invoke:"
-  inputLog "CHANNEL: $CHANNEL"
-  inputLog "CHAINCODE: $CHAINCODE"
-  inputLog "PEERS: $PEERS"
-  inputLog "COMMAND: $COMMAND"
-  inputLog "TRANSIENT: $TRANSIENT"
-
-# Validate the input parameters
-  if [[ -z $CHANNEL || -z $CHAINCODE || -z $PEERS || -z $COMMAND || -z $TRANSIENT ]]; then
-    echo "Error: Insufficient arguments provided."
-    echo "Usage: fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated> <command> <transient>"
-    return 1
-  fi
-
-
- PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
-
-CLI=""
-
-<% orgs.forEach((org) => { -%>
-  <% org.peers.forEach((peer) => { -%>
-    if [ "$PEERS" = "<%= peer.fullAddress %>" ]; then
-      CLI="<%= org.cli.address %>"
-    fi
-  <% }) -%>
-<% }) -%>
-if [ -z "$CLI" ]; then
-  echo "Unknown peer: $PEERS"
-  exit 1
-fi
-
-# shellcheck disable=SC2086
-  docker exec "$CLI"  peer chaincode invoke \
-    $PEER_ADDRESSES \
-    -C "$CHANNEL" \
-    -n "$CHAINCODE" \
-    -c "$COMMAND" \
-    --transient "$TRANSIENT" \
-    --waitForEvent \
-    --waitForEventTimeout 90s \
-    2>&1 
-}
-
-
 chaincodeList() {
   echo " chaincodeList $1 $2 "
   if [ "$#" -ne 2 ]; then
@@ -70,5 +18,44 @@ chaincodeList() {
   exit 1
 
   fi
+}
+
+# Function to perform chaincode invoke. Accepts 5 parameters:
+#   1. comma-separated peers
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
+chaincodeInvoke() {
+  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+    echo "Expected 4 or 5 parameters for chaincode list, but got: $*"
+    echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
+    exit 1
+  fi
+  cli=""
+  peer_addresses=""
+  <% if (!global.tls) { %>
+    peer_certs=""
+  <% } %>
+  <% orgs.forEach((org) => { -%>
+    <% org.peers.forEach((peer) => { -%>
+      if [[ "$1" == *"<%= peer.address %>"* ]]; then
+        cli="<%= org.cli.address %>"
+        peer_addresses="$peer_addresses,<%= peer.fullAddress %>"
+        <% if(!global.tls) { %>
+          peer_certs="$peer_certs,crypto/peers/<%= peer.address %>/tls/ca.crt"
+        <% } %>
+      fi
+    <% }) -%>
+  <% }) -%>
+  if [ -z "$peer_addresses" ]; then
+    echo "Unknown peers: $1"
+    exit 1
+  fi
+  <% if(!global.tls) { %>
+    peerChaincodeInvoke "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5"
+  <% } else { %>
+    peerChaincodeInvokeTls "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5" "${peer_certs:1}"
+  <% } %>
 }
 
