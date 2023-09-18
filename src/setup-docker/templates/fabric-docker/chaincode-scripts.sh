@@ -34,7 +34,7 @@ chaincodeInvoke() {
   fi
   cli=""
   peer_addresses=""
-  <% if (!global.tls) { %>
+  <% if (global.tls) { %>
     peer_certs=""
   <% } %>
   <% orgs.forEach((org) => { -%>
@@ -42,7 +42,7 @@ chaincodeInvoke() {
       if [[ "$1" == *"<%= peer.address %>"* ]]; then
         cli="<%= org.cli.address %>"
         peer_addresses="$peer_addresses,<%= peer.fullAddress %>"
-        <% if(!global.tls) { %>
+        <% if(global.tls) { %>
           peer_certs="$peer_certs,crypto/peers/<%= peer.address %>/tls/ca.crt"
         <% } %>
       fi

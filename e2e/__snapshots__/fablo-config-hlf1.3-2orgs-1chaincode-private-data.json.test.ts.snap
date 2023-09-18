@@ -2172,27 +2172,19 @@ chaincodeInvoke() {
   cli=\\"\\"
   peer_addresses=\\"\\"
 
-  peer_certs=\\"\\"
-
   if [[ \\"$1\\" == *\\"peer0.org1.example.com\\"* ]]; then
     cli=\\"cli.org1.example.com\\"
     peer_addresses=\\"$peer_addresses,peer0.org1.example.com:7041\\"
-
-    peer_certs=\\"$peer_certs,crypto/peers/peer0.org1.example.com/tls/ca.crt\\"
 
   fi
   if [[ \\"$1\\" == *\\"peer1.org1.example.com\\"* ]]; then
     cli=\\"cli.org1.example.com\\"
     peer_addresses=\\"$peer_addresses,peer1.org1.example.com:7042\\"
 
-    peer_certs=\\"$peer_certs,crypto/peers/peer1.org1.example.com/tls/ca.crt\\"
-
   fi
   if [[ \\"$1\\" == *\\"peer0.org2.example.com\\"* ]]; then
     cli=\\"cli.org2.example.com\\"
     peer_addresses=\\"$peer_addresses,peer0.org2.example.com:7061\\"
-
-    peer_certs=\\"$peer_certs,crypto/peers/peer0.org2.example.com/tls/ca.crt\\"
 
   fi
   if [ -z \\"$peer_addresses\\" ]; then
