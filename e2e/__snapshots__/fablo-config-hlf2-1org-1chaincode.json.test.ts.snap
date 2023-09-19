@@ -2687,10 +2687,40 @@ peerChaincodeInvoke() {
     --waitForEventTimeout 90s \\\\
     2>&1
 }
-
+# Function to perform chaincode invoke for Tls
 peerChaincodeInvokeTls() {
-  echo \\"chaincode invoke TLS is not yet suppported\\"
-  exit 1
+  local CLI=\\"$1\\"
+  local PEERS=\\"$2\\"
+  local CHANNEL=\\"$3\\"
+  local CHAINCODE=\\"$4\\"
+  local COMMAND=\\"$5\\"
+  local TRANSIENT=\\"$6\\"
+
+  echo \\"Chaincode invoke:\\"
+  inputLog \\"CLI: $CLI\\"
+  inputLog \\"PEERS: $PEERS\\"
+  inputLog \\"CHANNEL: $CHANNEL\\"
+  inputLog \\"CHAINCODE: $CHAINCODE\\"
+  inputLog \\"COMMAND: $COMMAND\\"
+  inputLog \\"TRANSIENT: $TRANSIENT\\"
+
+  PEER_ADDRESSES=\\"--peerAddresses $(echo \\"$PEERS\\" | sed 's/,/ --peerAddresses  /g')\\"
+
+  TLSROOTCERTFILES=\\"--tlsRootCertFiles /var/hyperledger/cli/$(echo \\"$PEERS\\" | sed 's/,/\\\\/tls\\\\/ca.crt --tlsRootCertFiles \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')/tls/ca.crt\\"
+
+  # shellcheck disable=SC2086
+  docker exec \\"$CLI\\" peer chaincode invoke \\\\
+    $PEER_ADDRESSES \\\\
+    $TLSROOTCERTFILES \\\\
+    -C \\"$CHANNEL\\" \\\\
+    -n \\"$CHAINCODE\\" \\\\
+    -c \\"$COMMAND\\" \\\\
+    --transient \\"$TRANSIENT\\" \\\\
+    --waitForEvent \\\\
+    --waitForEventTimeout 90s \\\\
+    --tls \\\\
+    --cafile \\"/var/hyperledger/cli/$CA_CERT\\" \\\\
+    2>&1
 }
 "
 `;
