@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 chaincodeList() {
-  echo " chaincodeList $1 $2 "
   if [ "$#" -ne 2 ]; then
     echo "Expected 2 parameters for chaincode list, but got: $*"
     exit 1

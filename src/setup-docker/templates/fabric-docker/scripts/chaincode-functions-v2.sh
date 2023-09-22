@@ -363,6 +363,7 @@ peerChaincodeInvokeTls () {
   local CHAINCODE="$4"
   local COMMAND="$5"
   local TRANSIENT="$6"
+  local CA_CERT=$7
 
   echo "Chaincode invoke:"
   inputLog "CLI: $CLI"
@@ -371,6 +372,7 @@ peerChaincodeInvokeTls () {
   inputLog "CHAINCODE: $CHAINCODE"
   inputLog "COMMAND: $COMMAND"
   inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "CA_CERT: $CA_CERT"
 
 PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
 
