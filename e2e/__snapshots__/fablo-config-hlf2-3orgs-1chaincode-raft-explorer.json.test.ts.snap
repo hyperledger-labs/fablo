@@ -3361,7 +3361,6 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
 "#!/usr/bin/env bash
 
 chaincodeList() {
-  echo \\" chaincodeList $1 $2 \\"
   if [ \\"$#\\" -ne 2 ]; then
     echo \\"Expected 2 parameters for chaincode list, but got: $*\\"
     exit 1
@@ -5527,6 +5526,7 @@ peerChaincodeInvokeTls() {
   local CHAINCODE=\\"$4\\"
   local COMMAND=\\"$5\\"
   local TRANSIENT=\\"$6\\"
+  local CA_CERT=$7
 
   echo \\"Chaincode invoke:\\"
   inputLog \\"CLI: $CLI\\"
@@ -5535,6 +5535,7 @@ peerChaincodeInvokeTls() {
   inputLog \\"CHAINCODE: $CHAINCODE\\"
   inputLog \\"COMMAND: $COMMAND\\"
   inputLog \\"TRANSIENT: $TRANSIENT\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
 
   PEER_ADDRESSES=\\"--peerAddresses $(echo \\"$PEERS\\" | sed 's/,/ --peerAddresses  /g')\\"
 
