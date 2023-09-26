@@ -28,6 +28,7 @@ echo "done"
 echo -n " - JSON schema URL... "
 schema_update_pattern="s/download\/[0-9-.a-zA-Z]*\/schema.json/download\/${new_version}\/schema.json/g"
 perl -i -pe "$schema_update_pattern" README.md
+perl -i -pe "$schema_update_pattern" docs/sample.json
 perl -i -pe "$schema_update_pattern" docs/schema.json
 perl -i -pe "$schema_update_pattern" samples/*.json
 perl -i -pe "$schema_update_pattern" samples/*.yaml
