@@ -79,7 +79,20 @@ jobs:
           fi
           
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-          helm install hlf-operator --version=1.8.0 kfs/hlf-operator
+          helm install hlf-operator --version=1.8.2 kfs/hlf-operator
+          
+          istio_target=$(pwd)
+          ./install-istio.sh "$istio_target"
+          istio_path_change="export PATH=\"$istio_target/bin:\$PATH\""
+          if [ -f "~/.bashrc" ]; then
+            echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
+          fi
+          if [ -f "~/.zshrc" ]; then
+            echo "$istio_path_change" >> ~/.zshrc && source ~/.zshrc
+          fi
+          
+          ./apply-istio.sh
+          
 
       - name: Build Fablo
         run: |
