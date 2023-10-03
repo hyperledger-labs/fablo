@@ -376,12 +376,16 @@ peerChaincodeInvokeTls () {
 
 PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
 
-TLSROOTCERTFILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEERS" | sed 's/,/\/tls\/ca.crt --tlsRootCertFiles \/var\/hyperledger\/cli\//g')/tls/ca.crt"
+
+TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g')"
+
+inputLog "TLS_ROOT_CERT_FILES: $TLS_ROOT_CERT_FILES"
+inputLog "PEER_ADDRESSES: $PEER_ADDRESSES"
 
 # shellcheck disable=SC2086
   docker exec "$CLI" peer chaincode invoke \
     $PEER_ADDRESSES \
-    $TLSROOTCERTFILES \
+    $TLS_ROOT_CERT_FILES \
     -C "$CHANNEL" \
     -n "$CHAINCODE" \
     -c "$COMMAND" \
