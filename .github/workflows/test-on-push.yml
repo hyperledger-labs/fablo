@@ -50,6 +50,7 @@ jobs:
 
       - name: install k8, hlf plugin and helm
         run: |
+          fablo_root_dir=$(pwd)
           curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
           chmod +x ./kind
           sudo mv ./kind /usr/local/bin/kind
@@ -60,12 +61,13 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
-          set -x; cd "$(mktemp -d)" &&
-          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-          KREW="krew-${OS}_${ARCH}" &&
-          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-          tar zxvf "${KREW}.tar.gz" &&
+          set -x
+          cd "$(mktemp -d)"
+          OS="$(uname | tr '[:upper:]' '[:lower:]')"
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+          KREW="krew-${OS}_${ARCH}"
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+          tar zxvf "${KREW}.tar.gz"
           ./"${KREW}" install krew
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           kubectl krew install hlf
@@ -82,7 +84,7 @@ jobs:
           helm install hlf-operator --version=1.8.2 kfs/hlf-operator
           
           istio_target=$(pwd)
-          ./install-istio.sh "$istio_target"
+          $fablo_root_dir/install-istio.sh "$istio_target"
           istio_path_change="export PATH=\"$istio_target/bin:\$PATH\""
           if [ -f "~/.bashrc" ]; then
             echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
@@ -91,7 +93,7 @@ jobs:
             echo "$istio_path_change" >> ~/.zshrc && source ~/.zshrc
           fi
           
-          ./apply-istio.sh
+          $fablo_root_dir/apply-istio.sh
           
 
       - name: Build Fablo
