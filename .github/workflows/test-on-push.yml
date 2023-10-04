@@ -83,9 +83,12 @@ jobs:
           echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
           
           cat ~/.bashrc
-          echo "$PATH"
           ls -la "$istio_target"
           ls -la "$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin"
+          
+          echo "$PATH"
+          export PATH="$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin:$PATH"
+          echo "$PATH"
           
           $fablo_root_dir/apply-istio.sh
           
