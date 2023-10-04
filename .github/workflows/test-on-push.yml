@@ -71,27 +71,18 @@ jobs:
           ./"${KREW}" install krew
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           kubectl krew install hlf
-
-          echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
           
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
           helm install hlf-operator --version=1.8.2 kfs/hlf-operator
           
-          istio_target=$(pwd)
-          $fablo_root_dir/install-istio.sh "$istio_target"
-          istio_path_change="export PATH=\"$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin:\$PATH\""
-          echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
-          
-          cat ~/.bashrc
-          ls -la "$istio_target"
-          ls -la "$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin"
-          
-          echo "$PATH"
-          export PATH="$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin:$PATH"
-          echo "$PATH"
-          
+          # install istio
+          curl -L https://istio.io/downloadIstio | sh -
+          mkdir -p ~/.istio
+          mv istio-*/* ~/.istio
+          export PATH="${ISTIO_ROOT:-$HOME/.istio}/bin:$PATH"
+          ls -la ~/.istio
+          ls -la ~/.istio/bin
           $fablo_root_dir/apply-istio.sh
-          
 
       - name: Build Fablo
         run: |
@@ -104,6 +95,7 @@ jobs:
       - name: fablo k8 tests
         run: |
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          export PATH="${ISTIO_ROOT:-$HOME/.istio}/bin:$PATH"
           e2e-network/k8s/test-01-simple-k8s.sh
 
   test-02-raft:
