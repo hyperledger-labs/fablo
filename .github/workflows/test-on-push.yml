@@ -71,15 +71,27 @@ jobs:
           ./"${KREW}" install krew
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           kubectl krew install hlf
-          echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+
+          if [ -f "~/.bashrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+          fi
+
+          if [ -f "~/.zshrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+          fi
           
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
           helm install hlf-operator --version=1.8.2 kfs/hlf-operator
           
           istio_target=$(pwd)
           $fablo_root_dir/install-istio.sh "$istio_target"
-          istio_path_change="export PATH=\"$istio_target/bin:\$PATH\""
-          echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
+          istio_path_change="export PATH=\"$istio_target/$(cd "$target_dir" && find istio-* | head -n 1)/bin:\$PATH\""
+          if [ -f "~/.bashrc" ]; then
+            echo "$istio_path_change" >> ~/.bashrc && source ~/.bashrc
+          fi
+          if [ -f "~/.zshrc" ]; then
+            echo "$istio_path_change" >> ~/.zshrc && source ~/.zshrc
+          fi
           
           $fablo_root_dir/apply-istio.sh
           
