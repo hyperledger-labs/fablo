@@ -76,7 +76,7 @@ jobs:
           helm install hlf-operator --version=1.8.2 kfs/hlf-operator
           
           # install istio
-          curl -L https://istio.io/downloadIstio | sh -
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.18.3 sh -
           mkdir -p ~/.istio
           mv istio-*/* ~/.istio
           export PATH="${ISTIO_ROOT:-$HOME/.istio}/bin:$PATH"
