@@ -2409,7 +2409,15 @@ chaincodeInvoke() {
     exit 1
   fi
 
-  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\"
+  if [ \\"$2\\" = \\"my-channel1\\" ]; then
+    ca_cert=\\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
+  fi
+
+  if [ \\"$2\\" = \\"my-channel2\\" ]; then
+    ca_cert=\\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
+  fi
+
+  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\" \\"$ca_cert\\"
 
 }
 "

@@ -1608,7 +1608,11 @@ chaincodeInvoke() {
     exit 1
   fi
 
-  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\"
+  if [ \\"$2\\" = \\"my-channel1\\" ]; then
+    ca_cert=\\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
+  fi
+
+  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\" \\"$ca_cert\\"
 
 }
 "
@@ -2818,7 +2822,8 @@ peerChaincodeInvokeTls() {
   local CHAINCODE=\\"$4\\"
   local COMMAND=\\"$5\\"
   local TRANSIENT=\\"$6\\"
-  local CA_CERT=$7
+  local PEER_CERTS=\\"$7\\"
+  local CA_CERT=\\"$8\\"
 
   echo \\"Chaincode invoke:\\"
   inputLog \\"CLI: $CLI\\"
@@ -2827,16 +2832,17 @@ peerChaincodeInvokeTls() {
   inputLog \\"CHAINCODE: $CHAINCODE\\"
   inputLog \\"COMMAND: $COMMAND\\"
   inputLog \\"TRANSIENT: $TRANSIENT\\"
+  inputLog \\"PEER_CERTS: $PEER_CERTS\\"
   inputLog \\"CA_CERT: $CA_CERT\\"
 
   PEER_ADDRESSES=\\"--peerAddresses $(echo \\"$PEERS\\" | sed 's/,/ --peerAddresses  /g')\\"
 
-  TLSROOTCERTFILES=\\"--tlsRootCertFiles /var/hyperledger/cli/$(echo \\"$PEERS\\" | sed 's/,/\\\\/tls\\\\/ca.crt --tlsRootCertFiles \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')/tls/ca.crt\\"
+  TLS_ROOT_CERT_FILES=\\"--tlsRootCertFiles /var/hyperledger/cli/$(echo \\"$PEER_CERTS\\" | sed 's/,/ --tlsRootCertFiles \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
 
   # shellcheck disable=SC2086
   docker exec \\"$CLI\\" peer chaincode invoke \\\\
     $PEER_ADDRESSES \\\\
-    $TLSROOTCERTFILES \\\\
+    $TLS_ROOT_CERT_FILES \\\\
     -C \\"$CHANNEL\\" \\\\
     -n \\"$CHAINCODE\\" \\\\
     -c \\"$COMMAND\\" \\\\
