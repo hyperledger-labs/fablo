@@ -43,7 +43,7 @@ expectInvokeRest() {
 }
 
 expectInvokeCli() {
-  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5")
+  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "$6")
 }
 
 trap networkDown EXIT

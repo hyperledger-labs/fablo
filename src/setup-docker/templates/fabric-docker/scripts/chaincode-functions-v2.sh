@@ -363,7 +363,8 @@ peerChaincodeInvokeTls () {
   local CHAINCODE="$4"
   local COMMAND="$5"
   local TRANSIENT="$6"
-  local CA_CERT=$7
+  local PEER_CERTS="$7"
+  local CA_CERT="$8"
 
   echo "Chaincode invoke:"
   inputLog "CLI: $CLI"
@@ -372,15 +373,12 @@ peerChaincodeInvokeTls () {
   inputLog "CHAINCODE: $CHAINCODE"
   inputLog "COMMAND: $COMMAND"
   inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERTS"
   inputLog "CA_CERT: $CA_CERT"
 
 PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
 
-
-TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$CA_CERT" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g')"
-
-inputLog "TLS_ROOT_CERT_FILES: $TLS_ROOT_CERT_FILES"
-inputLog "PEER_ADDRESSES: $PEER_ADDRESSES"
+TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEER_CERTS" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g')"
 
 # shellcheck disable=SC2086
   docker exec "$CLI" peer chaincode invoke \
@@ -396,4 +394,3 @@ inputLog "PEER_ADDRESSES: $PEER_ADDRESSES"
     --cafile "/var/hyperledger/cli/$CA_CERT" \
     2>&1
 }
-
