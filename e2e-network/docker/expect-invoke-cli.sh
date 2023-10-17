@@ -9,7 +9,7 @@ transient_default="{}"
 transient="${6:-$transient_default}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [peers[,peers]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
+  echo "Usage: ./expect-invoke.sh [peer[,peer]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
