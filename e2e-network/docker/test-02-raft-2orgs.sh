@@ -43,7 +43,7 @@ expectInvokeRest() {
 }
 
 expectInvokeCli() {
-  sh "$TEST_TMP/../expect-invoke-cli-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "$6")
 }
 
 trap networkDown EXIT
@@ -95,7 +95,7 @@ fablo_rest_org1="localhost:8802"
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Jack Sparrow"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeCli "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "peer0.org2.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Jack Sparrow\"}'
 
@@ -103,7 +103,7 @@ expectInvokeCli "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel
 expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 

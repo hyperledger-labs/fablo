@@ -1473,7 +1473,6 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 "#!/usr/bin/env bash
 
 chaincodeList() {
-  echo \\" chaincodeList $1 $2 \\"
   if [ \\"$#\\" -ne 2 ]; then
     echo \\"Expected 2 parameters for chaincode list, but got: $*\\"
     exit 1
@@ -2687,10 +2686,44 @@ peerChaincodeInvoke() {
     --waitForEventTimeout 90s \\\\
     2>&1
 }
-
+# Function to perform chaincode invoke for Tls
 peerChaincodeInvokeTls() {
-  echo \\"chaincode invoke TLS is not yet suppported\\"
-  exit 1
+  local CLI=\\"$1\\"
+  local PEERS=\\"$2\\"
+  local CHANNEL=\\"$3\\"
+  local CHAINCODE=\\"$4\\"
+  local COMMAND=\\"$5\\"
+  local TRANSIENT=\\"$6\\"
+  local PEER_CERTS=\\"$7\\"
+  local CA_CERT=\\"$8\\"
+
+  echo \\"Chaincode invoke:\\"
+  inputLog \\"CLI: $CLI\\"
+  inputLog \\"PEERS: $PEERS\\"
+  inputLog \\"CHANNEL: $CHANNEL\\"
+  inputLog \\"CHAINCODE: $CHAINCODE\\"
+  inputLog \\"COMMAND: $COMMAND\\"
+  inputLog \\"TRANSIENT: $TRANSIENT\\"
+  inputLog \\"PEER_CERTS: $PEER_CERTS\\"
+  inputLog \\"CA_CERT: $CA_CERT\\"
+
+  PEER_ADDRESSES=\\"--peerAddresses $(echo \\"$PEERS\\" | sed 's/,/ --peerAddresses  /g')\\"
+
+  TLS_ROOT_CERT_FILES=\\"--tlsRootCertFiles /var/hyperledger/cli/$(echo \\"$PEER_CERTS\\" | sed 's/,/ --tlsRootCertFiles \\\\/var\\\\/hyperledger\\\\/cli\\\\//g')\\"
+
+  # shellcheck disable=SC2086
+  docker exec \\"$CLI\\" peer chaincode invoke \\\\
+    $PEER_ADDRESSES \\\\
+    $TLS_ROOT_CERT_FILES \\\\
+    -C \\"$CHANNEL\\" \\\\
+    -n \\"$CHAINCODE\\" \\\\
+    -c \\"$COMMAND\\" \\\\
+    --transient \\"$TRANSIENT\\" \\\\
+    --waitForEvent \\\\
+    --waitForEventTimeout 90s \\\\
+    --tls \\\\
+    --cafile \\"/var/hyperledger/cli/$CA_CERT\\" \\\\
+    2>&1
 }
 "
 `;
