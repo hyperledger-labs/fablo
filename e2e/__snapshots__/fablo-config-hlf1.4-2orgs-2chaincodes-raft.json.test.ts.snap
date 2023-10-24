@@ -2325,7 +2325,6 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
 "#!/usr/bin/env bash
 
 chaincodeList() {
-  echo \\" chaincodeList $1 $2 \\"
   if [ \\"$#\\" -ne 2 ]; then
     echo \\"Expected 2 parameters for chaincode list, but got: $*\\"
     exit 1
@@ -2410,7 +2409,15 @@ chaincodeInvoke() {
     exit 1
   fi
 
-  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\"
+  if [ \\"$2\\" = \\"my-channel1\\" ]; then
+    ca_cert=\\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
+  fi
+
+  if [ \\"$2\\" = \\"my-channel2\\" ]; then
+    ca_cert=\\"crypto-orderer/tlsca.orderer.example.com-cert.pem\\"
+  fi
+
+  peerChaincodeInvokeTls \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\" \\"\${peer_certs:1}\\" \\"$ca_cert\\"
 
 }
 "

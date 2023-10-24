@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 chaincodeList() {
-  echo " chaincodeList $1 $2 "
   if [ "$#" -ne 2 ]; then
     echo "Expected 2 parameters for chaincode list, but got: $*"
     exit 1
@@ -35,7 +34,7 @@ chaincodeInvoke() {
   cli=""
   peer_addresses=""
   <% if (global.tls) { %>
-    peer_certs=""
+     peer_certs=""
   <% } %>
   <% orgs.forEach((org) => { -%>
     <% org.peers.forEach((peer) => { -%>
@@ -43,7 +42,7 @@ chaincodeInvoke() {
         cli="<%= org.cli.address %>"
         peer_addresses="$peer_addresses,<%= peer.fullAddress %>"
         <% if(global.tls) { %>
-          peer_certs="$peer_certs,crypto/peers/<%= peer.address %>/tls/ca.crt"
+           peer_certs="$peer_certs,crypto/peers/<%= peer.address %>/tls/ca.crt"
         <% } %>
       fi
     <% }) -%>
@@ -55,7 +54,11 @@ chaincodeInvoke() {
   <% if(!global.tls) { %>
     peerChaincodeInvoke "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5"
   <% } else { %>
-    peerChaincodeInvokeTls "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5" "${peer_certs:1}"
+    <% channels.forEach((channel) => { %>
+      if [ "$2" = "<%= channel.name %>" ]; then
+        ca_cert="crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem"
+      fi
+    <% }) %>
+    peerChaincodeInvokeTls "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5" "${peer_certs:1}" "$ca_cert"
   <% } %>
 }
-
