@@ -2,7 +2,7 @@
 
 ### Features
 * Initial support for Kubernetes
-* Basic support for `chaincode invoke` command
+* Support for `chaincode invoke` command (tls and non-tls)
 * Support for `chaincodes list` command (tls and non-tls)
 
 ### Fixes

@@ -84,6 +84,12 @@ printHelp() {
   fablo chaincode upgrade <chaincode-name> <version>
     Upgrades chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
 
+  fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
+    Invokes chaincode with specified parameters.
+
+  fablo chaincodes list <peer> <channel>
+    Lists chaincodes installed on specified peer and channel.
+
   fablo channel --help
     To list available channel query options which can be executed on running network.
 
