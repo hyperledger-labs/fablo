@@ -213,7 +213,7 @@ Chaincode directory is specified in Fablo config file.
 Invokes chaincode with specified parameters.
 
 ```
-fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> [transient]
+fablo chaincode invoke <channel-name> <chaincode-name> <peers-domains-comma-separated>  <command> [transient]
 ```
 Sample command:
 
@@ -223,7 +223,6 @@ fablo chaincode invoke "my-channel1" "chaincode1" "peer0.org1.example.com" '{"Ar
 
 ### chaincodes list
 Gets the instantiated or installed chaincodes in the specified channel or peer. 
-
 
 ```
 fablo chaincodes list <peer> <channel>
