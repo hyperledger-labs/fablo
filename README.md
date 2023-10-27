@@ -209,6 +209,25 @@ fablo chaincode upgrade <chaincode-name> <version>
 Upgrades chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fablo config file.
 
+### chaincode invoke
+Invokes chaincode with specified parameters.
+
+```
+fablo chaincode invoke <channel-name> <chaincode-name> <peers-domains-comma-separated>  <command> [transient]
+```
+Sample command:
+
+```
+fablo chaincode invoke "my-channel1" "chaincode1" "peer0.org1.example.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
+```
+
+### chaincodes list
+Gets the instantiated or installed chaincodes in the specified channel or peer. 
+
+```
+fablo chaincodes list <peer> <channel>
+```
+
 ### Running chaincodes in dev mode
 
 Hyperledger Fabric allows to run peers in [dev mode](https://hyperledger-fabric.readthedocs.io/en/release-2.4/peer-chaincode-devmode.html) in order to allow simple develop of chaincodes.
