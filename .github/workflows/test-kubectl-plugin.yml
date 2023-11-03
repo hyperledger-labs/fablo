@@ -54,6 +54,12 @@ jobs:
           
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
           helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+          kubectl hlf 
+
+      - name: Install operator CRDs
+        run: |
+          go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.3.0
+          make generate manifests install
 
       - name: Install Istio
         run: |
@@ -173,6 +179,7 @@ jobs:
 
       - name: Create Peer org
         run: |
+          kubectl hlf 
           export PEER_IMAGE=hyperledger/fabric-peer
           export PEER_VERSION=2.5.0
 
