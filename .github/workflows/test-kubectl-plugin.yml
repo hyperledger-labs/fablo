@@ -172,6 +172,11 @@ jobs:
 
           kubectl get configmap coredns -n kube-system -o yaml
 
+      - name: Install krew
+        uses: developer-guy/setup-krew@main
+        with:
+            krew-version: 'v0.4.2' 
+            
       - name: Create Peer org
         run: |
           kubectl krew install hlf
