@@ -42,8 +42,9 @@ jobs:
             tar zxvf "${KREW}.tar.gz"
             ./"${KREW}" install krew
             ls -lh
-            ls -lh ./"${KREW}"
-            export PATH="$PWD/$KREW/bin:$PATH"
+            ls -lh ./"$KREW"
+            ls -lh ./"$KREW/$KREW"
+            export PATH="$PWD/$KREW/$KREW/bin:$PATH"
             kubectl krew install hlf
             helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
             helm install hlf-operator --version=1.9.2 kfs/hlf-operator
