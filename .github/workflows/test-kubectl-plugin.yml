@@ -30,26 +30,31 @@ jobs:
 
       - name: Install kubectl plugin
         run: |
-          cd kubectl-hlf
-          go build -o kubectl-hlf ./main.go
-          sudo mv kubectl-hlf /usr/local/bin/kubectl-hlf
-      - name: Build Docker Image
-        run: |
-          export GOOS=linux
-          export GOARCH=amd64
-          export CGO_ENABLED=0
-          go build -o hlf-operator ./main.go
-          docker build -t "${IMAGE}:${TAG}" .
-          kind load docker-image "${IMAGE}:${TAG}"
-      - name: Deploy operator
-        run: |
-          helm repo add kfs https://kfsoftware.github.io/hlf-helm-charts --force-update
-          helm install hlf-operator --version=1.9.0-beta4 kfs/hlf-operator --set image.repository="${IMAGE}" --set image.tag="${TAG}" --set image.pullPolicy="IfNotPresent"
+          helm version
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+          set -x; cd "$(mktemp -d)" &&
+          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+          KREW="krew-${OS}_${ARCH}" &&
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+          tar zxvf "${KREW}.tar.gz" &&
+          ./"${KREW}" install krew
+          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          kubectl krew install hlf
 
-      - name: Install operator CRDs
-        run: |
-          go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.3.0
-          make generate manifests install
+          if [ -f "~/.bashrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+          fi
+
+          if [ -f "~/.zshrc" ]; then
+            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+          fi
+          
+          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+
       - name: Install Istio
         run: |
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
