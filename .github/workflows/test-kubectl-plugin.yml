@@ -192,6 +192,9 @@ jobs:
            export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
            kubectl krew install hlf
            helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+           # Uninstall existing hlf-operator
+           RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
+           helm uninstall $RELEASE_NAME || true  # Continue even if the release doesn't exist
            helm install hlf-operator --version=1.9.2 kfs/hlf-operator
           kubectl hlf 
           export PEER_IMAGE=hyperledger/fabric-peer
