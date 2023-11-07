@@ -170,6 +170,9 @@ jobs:
           kubectl get configmap coredns -n kube-system -o yaml
 
       - name: Create Peer org
+        env:
+          KREW_HOME: $HOME/.krew
+          KREW_ROOT: $HOME/.krew
         run: |
           helm version
            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
