@@ -30,8 +30,12 @@ jobs:
           ls -lh ./"$KREW"
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $GITHUB_ENV
-          echo "KREW_HOME"
-          echo "KREW_ROOT"
+          echo "$KREW_HOME"
+          echo "$KREW_ROOT"
+          echo "${KREW}"
+          
+          #list krew commands and to get help
+          kubectl krew
 
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
