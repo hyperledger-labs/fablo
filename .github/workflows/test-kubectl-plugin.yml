@@ -5,10 +5,31 @@ on:
 
 name: Test Kubectl plugin
 jobs:
-  setup-krew:
-    runs-on: ubuntu-latest  # Choose the appropriate runner for your workflow
+  kubectl-hlf:
+    # needs: setup-krew
+    strategy:
+      matrix:
+        go-version: [ 1.18.x ]
+        os: [ ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    env:
+      IMAGE: hlf-operator
+      TAG: test
     steps:
-      - name: Set up Krew kubectl and Helm
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.4.0
+        with:
+          cluster_name: kind
+          node_image: kindest/node:v1.25.8
+          config: .github/kind-config.yaml
+
+      - name: Set up Krew for kubectl and Helm
         env:
           KREW_HOME: $HOME/.krew
           KREW_ROOT: $HOME/.krew
@@ -32,32 +53,7 @@ jobs:
 
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-
-  kubectl-hlf:
-    needs: setup-krew
-    strategy:
-      matrix:
-        go-version: [ 1.18.x ]
-        os: [ ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
-    env:
-      IMAGE: hlf-operator
-      TAG: test
-    steps:
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.4.0
-        with:
-          cluster_name: kind
-          node_image: kindest/node:v1.25.8
-          config: .github/kind-config.yaml
-
+  
       - name: Install kubectl plugin # This job depends on the setup-krew job
         run: |
           #  helm version
