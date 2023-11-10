@@ -57,8 +57,7 @@ jobs:
           node_image: kindest/node:v1.25.8
           config: .github/kind-config.yaml
 
-      - name: Install kubectl plugin
-        needs: setup-krew  # This job depends on the setup-krew job
+      - name: Install kubectl plugin # This job depends on the setup-krew job
         run: |
           #  helm version
           #  kubectl krew install hlf
@@ -191,7 +190,6 @@ jobs:
           kubectl get configmap coredns -n kube-system -o yaml
 
       - name: Create Peer org
-        needs: setup-krew
         run: |
           kubectl hlf 
           export PEER_IMAGE=hyperledger/fabric-peer
