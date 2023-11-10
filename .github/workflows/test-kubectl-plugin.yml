@@ -26,8 +26,15 @@ jobs:
           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
           tar zxvf "${KREW}.tar.gz"
           ./"${KREW}" install krew
+          ls -lh
+          ls -lh ./"$KREW"
           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $GITHUB_ENV
+          echo "KREW_HOME"
+          echo "KREW_ROOT"
+
+          # Install Helm
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
   kubectl-hlf:
     needs: setup-krew
@@ -63,9 +70,9 @@ jobs:
           #  RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
           #  helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
           #  kubectl hlf 
-          #  export PATH="$PWD/$KREW/bin:$PATH"
           #  helm install hlf-operator --version=1.9.2 kfs/hlf-operator
-
+          echo "KREW_HOME"
+          echo "KREW_ROOT"
           kubectl krew install hlf
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
           helm install hlf-operator --version=1.9.2 kfs/hlf-operator
