@@ -35,6 +35,7 @@ jobs:
 
 
   kubectl-hlf:
+    needs: setup-krew
     strategy:
       matrix:
         go-version: [ 1.18.x ]
