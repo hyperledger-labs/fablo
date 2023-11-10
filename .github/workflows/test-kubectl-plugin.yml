@@ -198,6 +198,7 @@ jobs:
        
            # Uninstall any existing hlf-operator release with a unique release name
            helm uninstall $RELEASE_NAME --namespace=default || true
+           sleep 5  # Add a delay to allow Helm to unregister the release
 
            # Continue with the installation of hlf-operator
            helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
