@@ -5,6 +5,35 @@ on:
 
 name: Test Kubectl plugin
 jobs:
+  setup-krew:
+    runs-on: ubuntu-latest  # Choose the appropriate runner for your workflow
+    steps:
+      - name: Set up Krew kubectl and Helm
+        env:
+          KREW_HOME: $HOME/.krew
+          KREW_ROOT: $HOME/.krew
+        run: |
+          # Install kubectl
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+
+          # Install Krew
+          set -x; cd "$(mktemp -d)"
+          OS="$(uname | tr '[:upper:]' '[:lower:]')"
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+          KREW="krew-${OS}_${ARCH}"
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+          tar zxvf "${KREW}.tar.gz"
+          ./"${KREW}" install krew
+          ls -lh
+          ls -lh ./"$KREW"
+          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+          # Install Helm
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+
   kubectl-hlf:
     strategy:
       matrix:
@@ -29,31 +58,21 @@ jobs:
           config: .github/kind-config.yaml
 
       - name: Install kubectl plugin
-        env:
-          KREW_HOME: $HOME/.krew
-          KREW_ROOT: $HOME/.krew
+        needs: setup-krew  # This job depends on the setup-krew job
         run: |
-           helm version
-           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-           chmod +x kubectl
-           sudo mv ./kubectl /usr/local/bin/kubectl
-           set -x; cd "$(mktemp -d)"
-           OS="$(uname | tr '[:upper:]' '[:lower:]')"
-           ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
-           KREW="krew-${OS}_${ARCH}"
-           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
-           tar zxvf "${KREW}.tar.gz"
-           ./"${KREW}" install krew
-           ls -lh
-           ls -lh ./"$KREW"
-           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-           kubectl krew install hlf
-           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-           RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
-           helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
-           kubectl hlf 
+          #  helm version
+          #  kubectl krew install hlf
+          #  helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          #  RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
+          #  helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
+          #  kubectl hlf 
           #  export PATH="$PWD/$KREW/bin:$PATH"
           #  helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+
+          kubectl krew install hlf
+          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+          kubectl hlf
 
       - name: Install Istio
         run: |
@@ -172,42 +191,8 @@ jobs:
           kubectl get configmap coredns -n kube-system -o yaml
 
       - name: Create Peer org
-        env:
-          KREW_HOME: $HOME/.krew
-          KREW_ROOT: $HOME/.krew
+        needs: setup-krew
         run: |
-          helm version
-           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-           chmod +x kubectl
-           sudo mv ./kubectl /usr/local/bin/kubectl
-           set -x; cd "$(mktemp -d)"
-           OS="$(uname | tr '[:upper:]' '[:lower:]')"
-           ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
-           KREW="krew-${OS}_${ARCH}"
-           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
-           tar zxvf "${KREW}.tar.gz"
-           ./"${KREW}" install krew
-           ls -lh
-           ls -lh ./"$KREW"
-           export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-           kubectl krew install hlf
-           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-           
-           # Generate a unique release name
-           RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
-           CRD_NAME="fabriccas.hlf.kungfusoftware.es"
-
-          # Delete existing CRDs
-          kubectl delete crd fabriccas.hlf.kungfusoftware.es
-          kubectl delete crd fabricchaincodes.hlf.kungfusoftware.es
-          sleep 5
-
-          # Uninstall existing Helm release
-          helm uninstall hlf-operator-20231110010709 --namespace=default || true
-          sleep 5  # Add a delay to allow Helm to unregister the release
-
-           # Continue with the installation of hlf-operator
-           helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
           kubectl hlf 
           export PEER_IMAGE=hyperledger/fabric-peer
           export PEER_VERSION=2.5.0
