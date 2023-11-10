@@ -68,15 +68,9 @@ jobs:
   
       - name: Install kubectl plugin # This job depends on the setup-krew job
         run: |
-          #  helm version
-          #  kubectl krew install hlf
-          #  helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-          #  RELEASE_NAME="hlf-operator-$(date +'%Y%m%d%H%M%S')"
-          #  helm install $RELEASE_NAME --version=1.9.2 kfs/hlf-operator
-          #  kubectl hlf 
-          #  helm install hlf-operator --version=1.9.2 kfs/hlf-operator
-          echo "KREW_HOME"
-          echo "KREW_ROOT"
+          helm version
+          echo "$KREW_HOME"
+          echo "$KREW_ROOT"
           kubectl krew install hlf
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
           helm install hlf-operator --version=1.9.2 kfs/hlf-operator
