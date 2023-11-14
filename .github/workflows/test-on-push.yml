@@ -73,7 +73,7 @@ jobs:
           kubectl krew install hlf
           
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-          helm install hlf-operator --version=1.8.2 kfs/hlf-operator
+          helm install hlf-operator --version=1.9.2 kfs/hlf-operator
           
           # install istio
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.18.3 sh -
