@@ -28,11 +28,8 @@ jobs:
           ./"${KREW}" install krew
          
           # Export PATH to Github Actions environment
-          #echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $HOME/krew-path
-
-          echo "KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
-          echo "PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
-          export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH 
+          echo "export KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
+          echo "export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
 
           # Print information for debugging
           ls -lh
@@ -61,9 +58,7 @@ jobs:
     steps:
       - name: Load Krew path
         run: |
-          echo "KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
-          echo "PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
-          export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH 
+          source $GITHUB_ENV
       - name: Install Go
         uses: actions/setup-go@v2
         with:
