@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Set up Krew for kubectl and Helm
         env:
-          KREW_HOME: $GITHUB_WORKSPACE/.krew
+          KREW_HOME: ./.krew
         run: |
           # Install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
