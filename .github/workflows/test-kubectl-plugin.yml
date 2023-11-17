@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Set up Krew for kubectl and Helm
         env:
-          KREW_HOME: $HOME/.krew
-          KREW_ROOT: $HOME/.krew
+          KREW_HOME: $GITHUB_WORKSPACE/.krew
+          KREW_ROOT: $GITHUB_WORKSPACE/.krew
         run: |
           # Install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -28,14 +28,14 @@ jobs:
           ./"${KREW}" install krew
          
           # Export PATH to a file
-          echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $HOME/krew-path
+          #echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $HOME/krew-path
 
+          echo "export PATH=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}/bin:$PATH" >> $GITHUB_ENV
+          echo "export PATH=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}/bin:$PATH" >> $GITHUB_WORKSPACE/krew-path
+
+          # Print information for debugging
           ls -lh
           ls -lh ./"$KREW"
-          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-          echo "export PATH=${KREW_ROOT:-$HOME/.krew}/bin:$PATH" >> $GITHUB_ENV
-
-
           echo "$KREW_HOME"
           echo "${KREW}"
           
@@ -55,12 +55,12 @@ jobs:
     env:
       IMAGE: hlf-operator
       TAG: test
-      KREW_HOME: $HOME/.krew
-      KREW_ROOT: $HOME/.krew
+      KREW_HOME: $GITHUB_WORKSPACE/.krew
+      KREW_ROOT: $GITHUB_WORKSPACE/.krew
     steps:
       - name: Load Krew path
         run: |
-          source $HOME/krew-path
+          source $GITHUB_WORKSPACE/krew-path
       - name: Install Go
         uses: actions/setup-go@v2
         with:
