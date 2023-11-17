@@ -40,18 +40,6 @@ jobs:
 
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-  kubectl-hlf:
-    needs: setup-krew
-    strategy:
-      matrix:
-        go-version: [ 1.18.x ]
-        os: [ ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
-    env:
-      IMAGE: hlf-operator
-      TAG: test
-    steps:
       - name: Load Krew path
         run: |
           export PATH=$HOME/.krew/bin:$PATH
