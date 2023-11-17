@@ -34,12 +34,6 @@ jobs:
           ls -lh $HOME/
           export PATH=$HOME/.krew/bin:$PATH
           kubectl krew version
-
-          # Print information for debugging
-          ls -lh
-          ls -lh ./"$KREW"
-          echo "$KREW_HOME"
-          echo "${KREW}"
           
           #list krew commands and get help
           kubectl krew
