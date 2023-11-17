@@ -30,7 +30,9 @@ jobs:
           $KREW_HOME install krew
           ls -lh
          
-          export PATH=$KREW_HOME/bin:$PATH
+          echo $HOME
+          ls -lh $HOME/
+          export PATH=$HOME/.krew/bin:$PATH
           kubectl krew version
 
           # Print information for debugging
