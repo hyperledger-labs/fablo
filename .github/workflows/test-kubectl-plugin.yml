@@ -32,6 +32,7 @@ jobs:
 
           echo "KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
           echo "PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
+          export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH 
 
           # Print information for debugging
           ls -lh
@@ -62,6 +63,7 @@ jobs:
         run: |
           echo "KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
           echo "PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
+          export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH 
       - name: Install Go
         uses: actions/setup-go@v2
         with:
