@@ -51,18 +51,11 @@ jobs:
     env:
       IMAGE: hlf-operator
       TAG: test
-      KREW_HOME: $GITHUB_WORKSPACE/.krew
-      KREW_ROOT: $GITHUB_WORKSPACE/.krew
     steps:
       - name: Load Krew path
         run: |
-          source $GITHUB_ENV
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Checkout code
-        uses: actions/checkout@v2
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew version
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.4.0
         with:
