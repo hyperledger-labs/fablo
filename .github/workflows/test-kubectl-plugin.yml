@@ -66,7 +66,8 @@ jobs:
       - name: Install Istio
         run: |
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
-          export PATH="$PATH:$PWD/istio-1.16.1/bin"
+          mv $PWD/istio-1.16.1 $HOME/.istio
+          export PATH="$HOME/.istio/bin:$PATH"
           kubectl create namespace istio-system
 
           istioctl operator init
