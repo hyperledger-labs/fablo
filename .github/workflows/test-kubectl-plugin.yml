@@ -40,6 +40,8 @@ jobs:
 
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Load Krew path
         run: |
           export PATH=$HOME/.krew/bin:$PATH
