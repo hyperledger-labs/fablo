@@ -11,7 +11,6 @@ jobs:
       - name: Set up Krew for kubectl and Helm
         env:
           KREW_HOME: $GITHUB_WORKSPACE/.krew
-          KREW_ROOT: $GITHUB_WORKSPACE/.krew
         run: |
           # Install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -25,11 +24,13 @@ jobs:
           KREW="krew-${OS}_${ARCH}"
           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
           tar zxvf "${KREW}.tar.gz"
-          ./"${KREW}" install krew
+          mv ./"${KREW}" $KREW_HOME
+          echo $KREW_HOME
+          ls -l $KREW_HOME/
+          $KREW_HOME install krew
          
-          # Export PATH to Github Actions environment
-          echo "export KREW_ROOT=${KREW_ROOT:-$GITHUB_WORKSPACE/.krew}" >> $GITHUB_ENV
-          echo "export PATH=$GITHUB_WORKSPACE/.krew/bin:$PATH" >> $GITHUB_ENV
+          export PATH=$KREW_HOME/bin:$PATH
+          kubectl krew version
 
           # Print information for debugging
           ls -lh
