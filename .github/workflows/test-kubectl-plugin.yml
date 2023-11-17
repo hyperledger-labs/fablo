@@ -182,6 +182,7 @@ jobs:
 
       - name: Create Peer org
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
           kubectl hlf 
           export PEER_IMAGE=hyperledger/fabric-peer
           export PEER_VERSION=2.5.0
@@ -205,6 +206,7 @@ jobs:
 
       - name: Create Orderer Org
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           export ORDERER_IMAGE=hyperledger/fabric-orderer
           export ORDERER_VERSION=2.5.0
 
@@ -224,6 +226,7 @@ jobs:
           kubectl wait --timeout=180s --for=condition=Running fabricorderernodes.hlf.kungfusoftware.es --all
       - name: Prepare Connection string for Orderer Node
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
           kubectl hlf inspect --output ordservice.yaml -o OrdererMSP
           kubectl hlf ca register --name=ord-ca --user=admin --secret=adminpw \
               --type=admin --enroll-id enroll --enroll-secret=enrollpw --mspid=OrdererMSP
@@ -235,6 +238,7 @@ jobs:
 
       - name: Prepare credentials for orderer
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
 
           # enroll using the TLS CA
           kubectl hlf ca enroll --name=ord-ca --namespace=default --user=admin --secret=adminpw --mspid OrdererMSP \
@@ -242,6 +246,7 @@ jobs:
 
       - name: Prepare connection string for Peer
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           kubectl hlf ca register --name=org1-ca --user=admin --secret=adminpw --type=admin \
           --enroll-id enroll --enroll-secret=enrollpw --mspid Org1MSP  
 
@@ -254,7 +259,7 @@ jobs:
           kubectl hlf utils adduser --userPath=peer-org1.yaml --config=org1.yaml --username=admin --mspid=Org1MSP
       - name: Create a channel
         run: |
-
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
           kubectl create secret generic wallet --namespace=default \
                   --from-file=peer-org1.yaml=$PWD/peer-org1.yaml \
                   --from-file=admin-tls-ordservice.yaml=$PWD/admin-tls-ordservice.yaml
@@ -279,6 +284,7 @@ jobs:
 
       - name: Join peers to channel
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           kubectl get fabricorderernodes ord-node1 -o jsonpath='{.status.tlsCert}' > ./orderer-cert.pem
           kubectl hlf channelcrd follower create \
               --channel-name=demo \
@@ -295,6 +301,7 @@ jobs:
           kubectl wait --timeout=180s --for=condition=Created fabricfollowerchannels.hlf.kungfusoftware.es --all 
       - name: Get channel
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           sleep 3
 
           kubectl hlf channel inspect --channel=demo --config=org1.yaml \
@@ -303,6 +310,7 @@ jobs:
           cat demo.json
       - name: Install/Approve/Commit chaincode
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           # remove the code.tar.gz asset-transfer-basic-external.tgz if they exist
           export CHAINCODE_NAME=asset
           export CHAINCODE_LABEL=asset
@@ -348,6 +356,7 @@ jobs:
 
       - name: Test chaincode
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           sleep 10
           echo "waiting for deployment to be ready"
           kubectl wait --timeout=180s --for=condition=Available deployment asset --namespace=default    
@@ -364,6 +373,7 @@ jobs:
       - name: Show information
         if: ${{ failure() }}
         run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           kubectl get nodes -o=wide
           kubectl get pods -o=wide -A
           kubectl get crds
