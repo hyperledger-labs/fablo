@@ -26,8 +26,9 @@ jobs:
           tar zxvf "${KREW}.tar.gz"
           mv ./"${KREW}" $KREW_HOME
           echo $KREW_HOME
-          ls -l $KREW_HOME/
+          ls -lh
           $KREW_HOME install krew
+          ls -lh
          
           export PATH=$KREW_HOME/bin:$PATH
           kubectl krew version
