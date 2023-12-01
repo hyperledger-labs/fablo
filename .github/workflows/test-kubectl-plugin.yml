@@ -1,0 +1,392 @@
+on:
+  push:
+  pull_request:
+
+
+name: Test Kubectl plugin
+jobs:
+  setup-krew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Krew for kubectl and Helm
+        env:
+          KREW_HOME: ./.krew
+        run: |
+          # Install kubectl
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+
+          # Install Krew
+          set -x; cd "$(mktemp -d)"
+          OS="$(uname | tr '[:upper:]' '[:lower:]')"
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+          KREW="krew-${OS}_${ARCH}"
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+          tar zxvf "${KREW}.tar.gz"
+          mv ./"${KREW}" $KREW_HOME
+          echo $KREW_HOME
+          ls -lh
+          $KREW_HOME install krew
+          ls -lh
+         
+          echo $HOME
+          ls -lh $HOME/
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew version
+          
+          #list krew commands and get help
+          kubectl krew
+
+          # Install Helm
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Load Krew path
+        run: |
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew version
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.4.0
+        with:
+          cluster_name: kind
+          node_image: kindest/node:v1.25.8
+          config: .github/kind-config.yaml
+  
+      - name: Install kubectl plugin # This job depends on the setup-krew job
+        run: |
+          helm version
+          echo "$KREW_HOME"
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew install hlf
+          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
+          helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+          kubectl hlf
+
+      - name: Install Istio
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
+          mv $PWD/istio-1.16.1 $HOME/.istio
+          export PATH="$HOME/.istio/bin:$PATH"
+          kubectl create namespace istio-system
+
+          istioctl operator init
+  
+  
+          kubectl apply -f - <<EOF
+            apiVersion: install.istio.io/v1alpha1
+            kind: IstioOperator
+            metadata:
+              name: istio-gateway
+              namespace: istio-system
+            spec:
+              addonComponents:
+                grafana:
+                  enabled: false
+                kiali:
+                  enabled: false
+                prometheus:
+                  enabled: false
+                tracing:
+                  enabled: false
+              components:
+                ingressGateways:
+                  - enabled: true
+                    k8s:
+                      hpaSpec:
+                        minReplicas: 1
+                      resources:
+                        limits:
+                          cpu: 500m
+                          memory: 512Mi
+                        requests:
+                          cpu: 100m
+                          memory: 128Mi
+                      service:
+                        ports:
+                          - name: http
+                            port: 80
+                            targetPort: 8080
+                            nodePort: 30949
+                          - name: https
+                            port: 443
+                            targetPort: 8443
+                            nodePort: 30950
+                        type: NodePort
+                    name: istio-ingressgateway
+                pilot:
+                  enabled: true
+                  k8s:
+                    hpaSpec:
+                      minReplicas: 1
+                    resources:
+                      limits:
+                        cpu: 300m
+                        memory: 512Mi
+                      requests:
+                        cpu: 100m
+                        memory: 128Mi
+              meshConfig:
+                accessLogFile: /dev/stdout
+                enableTracing: false
+                outboundTrafficPolicy:
+                  mode: ALLOW_ANY
+              profile: default
+
+          EOF
+
+          sleep 2
+
+          kubectl wait --timeout=180s --for=jsonpath='{.status.status}'=HEALTHY istiooperator istio-gateway --namespace=istio-system
+
+      - name: Configure DNS in Kubernetes
+        run: |
+          CLUSTER_IP=$(kubectl -n istio-system get svc istio-ingressgateway -o json | jq -r .spec.clusterIP)
+          echo "CLUSTER_IP=${CLUSTER_IP}"
+          kubectl apply -f - <<EOF
+          kind: ConfigMap
+          apiVersion: v1
+          metadata:
+            name: coredns
+            namespace: kube-system
+          data:
+            Corefile: |
+              .:53 {
+                  errors
+                  health {
+                     lameduck 5s
+                  }
+                  rewrite name regex (.*)\.localho\.st host.ingress.internal
+                  hosts {
+                    ${CLUSTER_IP} host.ingress.internal
+                    fallthrough
+                  }
+                  ready
+                  kubernetes cluster.local in-addr.arpa ip6.arpa {
+                     pods insecure
+                     fallthrough in-addr.arpa ip6.arpa
+                     ttl 30
+                  }
+                  prometheus :9153
+                  forward . /etc/resolv.conf {
+                     max_concurrent 1000
+                  }
+                  cache 30
+                  loop
+                  reload
+                  loadbalance
+              }
+          EOF
+
+          kubectl get configmap coredns -n kube-system -o yaml
+
+      - name: Create Peer org
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
+          kubectl hlf 
+          export PEER_IMAGE=hyperledger/fabric-peer
+          export PEER_VERSION=2.5.0
+
+          export CA_IMAGE=hyperledger/fabric-ca
+          export CA_VERSION=1.5.6
+
+          kubectl hlf ca create --image=$CA_IMAGE --version=$CA_VERSION --storage-class=standard --capacity=2Gi --name=org1-ca \
+              --enroll-id=enroll --hosts=org1-ca.localho.st --enroll-pw=enrollpw
+          kubectl wait --timeout=180s --for=condition=Running fabriccas.hlf.kungfusoftware.es --all    
+
+          # register user for the peers
+          kubectl hlf ca register --name=org1-ca --user=peer --secret=peerpw --type=peer \
+          --enroll-id enroll --enroll-secret=enrollpw --mspid Org1MSP
+
+
+          kubectl hlf peer create --statedb=couchdb --image=$PEER_IMAGE --version=$PEER_VERSION \
+                  --storage-class=standard --enroll-id=peer --mspid=Org1MSP \
+                  --enroll-pw=peerpw --hosts=peer0-org1.localho.st --capacity=5Gi --name=org1-peer0 --ca-name=org1-ca.default
+          kubectl wait --timeout=180s --for=condition=Running fabricpeers.hlf.kungfusoftware.es --all
+
+      - name: Create Orderer Org
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          export ORDERER_IMAGE=hyperledger/fabric-orderer
+          export ORDERER_VERSION=2.5.0
+
+          export CA_IMAGE=hyperledger/fabric-ca
+          export CA_VERSION=1.5.6
+
+          kubectl hlf ca create --image=$CA_IMAGE --version=$CA_VERSION --storage-class=standard --capacity=2Gi --name=ord-ca \
+              --enroll-id=enroll --enroll-pw=enrollpw --hosts=ord-ca.localho.st
+
+          kubectl wait --timeout=180s --for=condition=Running fabriccas.hlf.kungfusoftware.es --all
+          kubectl hlf ca register --name=ord-ca --user=orderer --secret=ordererpw \
+              --type=orderer --enroll-id enroll --enroll-secret=enrollpw --mspid=OrdererMSP
+
+          kubectl hlf ordnode create --image=$ORDERER_IMAGE --version=$ORDERER_VERSION \
+              --storage-class=standard --enroll-id=orderer --mspid=OrdererMSP --hosts=orderer0-ord.localho.st \
+              --enroll-pw=ordererpw --capacity=2Gi --name=ord-node1 --ca-name=ord-ca.default
+          kubectl wait --timeout=180s --for=condition=Running fabricorderernodes.hlf.kungfusoftware.es --all
+      - name: Prepare Connection string for Orderer Node
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
+          kubectl hlf inspect --output ordservice.yaml -o OrdererMSP
+          kubectl hlf ca register --name=ord-ca --user=admin --secret=adminpw \
+              --type=admin --enroll-id enroll --enroll-secret=enrollpw --mspid=OrdererMSP
+
+          kubectl hlf ca enroll --name=ord-ca --user=admin --secret=adminpw --mspid OrdererMSP \
+                  --ca-name ca  --output admin-ordservice.yaml 
+          ## add user from admin-ordservice.yaml to ordservice.yaml
+          kubectl hlf utils adduser --userPath=admin-ordservice.yaml --config=ordservice.yaml --username=admin --mspid=OrdererMSP
+
+      - name: Prepare credentials for orderer
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+
+          # enroll using the TLS CA
+          kubectl hlf ca enroll --name=ord-ca --namespace=default --user=admin --secret=adminpw --mspid OrdererMSP \
+                  --ca-name tlsca  --output admin-tls-ordservice.yaml 
+
+      - name: Prepare connection string for Peer
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          kubectl hlf ca register --name=org1-ca --user=admin --secret=adminpw --type=admin \
+          --enroll-id enroll --enroll-secret=enrollpw --mspid Org1MSP  
+
+          kubectl hlf ca enroll --name=org1-ca --user=admin --secret=adminpw --mspid Org1MSP \
+                  --ca-name ca  --output peer-org1.yaml
+
+          kubectl hlf inspect --output org1.yaml -o Org1MSP -o OrdererMSP
+
+          ## add user key and cert to org1.yaml from admin-ordservice.yaml
+          kubectl hlf utils adduser --userPath=peer-org1.yaml --config=org1.yaml --username=admin --mspid=Org1MSP
+      - name: Create a channel
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"    
+          kubectl create secret generic wallet --namespace=default \
+                  --from-file=peer-org1.yaml=$PWD/peer-org1.yaml \
+                  --from-file=admin-tls-ordservice.yaml=$PWD/admin-tls-ordservice.yaml
+          kubectl get fabricorderernodes ord-node1 -o jsonpath='{.status.tlsCert}' > ./orderer-cert.pem
+
+          kubectl hlf channelcrd main create \
+              --channel-name=demo \
+              --name=demo \
+              --orderer-orgs=OrdererMSP \
+              --peer-orgs=Org1MSP \
+              --admin-orderer-orgs=OrdererMSP \
+              --admin-peer-orgs=Org1MSP \
+              --secret-name=wallet \
+              --secret-ns=default \
+              --consenters=ord-node1.default:7050 \
+              --consenter-certificates=./orderer-cert.pem \
+              --identities="OrdererMSP;admin-tls-ordservice.yaml" \
+              --identities="Org1MSP;peer-org1.yaml"
+
+          kubectl wait --timeout=180s --for=condition=Created fabricmainchannels.hlf.kungfusoftware.es --all 
+
+
+      - name: Join peers to channel
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          kubectl get fabricorderernodes ord-node1 -o jsonpath='{.status.tlsCert}' > ./orderer-cert.pem
+          kubectl hlf channelcrd follower create \
+              --channel-name=demo \
+              --mspid=Org1MSP \
+              --name="demo-org1msp" \
+              --orderer-certificates="./orderer-cert.pem" \
+              --orderer-urls="grpcs://ord-node1.default:7050" \
+              --anchor-peers="org1-peer0:7051" \
+              --peers="org1-peer0.default" \
+              --secret-name=wallet \
+              --secret-ns=default \
+              --secret-key="peer-org1.yaml"
+
+          kubectl wait --timeout=180s --for=condition=Created fabricfollowerchannels.hlf.kungfusoftware.es --all 
+      - name: Get channel
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          sleep 3
+
+          kubectl hlf channel inspect --channel=demo --config=org1.yaml \
+              --user=admin -p=org1-peer0.default > demo.json
+
+          cat demo.json
+      - name: Install/Approve/Commit chaincode
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          # remove the code.tar.gz asset-transfer-basic-external.tgz if they exist
+          export CHAINCODE_NAME=asset
+          export CHAINCODE_LABEL=asset
+          cat << METADATA-EOF > "metadata.json"
+          {
+              "type": "ccaas",
+              "label": "${CHAINCODE_LABEL}"
+          }
+          METADATA-EOF
+
+          cat > "connection.json" <<CONN_EOF
+          {
+            "address": "${CHAINCODE_NAME}:7052",
+            "dial_timeout": "10s",
+            "tls_required": false
+          }
+          CONN_EOF
+
+          tar cfz code.tar.gz connection.json
+          tar cfz asset-transfer-basic-external.tgz metadata.json code.tar.gz
+          export PACKAGE_ID=$(kubectl hlf chaincode calculatepackageid --path=asset-transfer-basic-external.tgz --language=node --label=$CHAINCODE_LABEL)
+          echo "PACKAGE_ID=$PACKAGE_ID"
+
+          kubectl hlf chaincode install --path=./asset-transfer-basic-external.tgz \
+              --config=org1.yaml --language=golang --label=$CHAINCODE_LABEL --user=admin --peer=org1-peer0.default
+
+          # this can take 3-4 minutes
+          kubectl hlf externalchaincode sync --image=kfsoftware/chaincode-external:latest \
+              --name=$CHAINCODE_NAME \
+              --namespace=default \
+              --package-id=$PACKAGE_ID \
+              --tls-required=false \
+              --replicas=1
+          export SEQUENCE=1
+          export VERSION="1.0"
+          kubectl hlf chaincode approveformyorg --config=org1.yaml --user=admin --peer=org1-peer0.default \
+              --package-id=$PACKAGE_ID \
+              --version "$VERSION" --sequence "$SEQUENCE" --name=asset \
+              --policy="OR('Org1MSP.member')" --channel=demo
+          kubectl hlf chaincode commit --config=org1.yaml --user=admin --mspid=Org1MSP \
+              --version "$VERSION" --sequence "$SEQUENCE" --name=asset \
+              --policy="OR('Org1MSP.member')" --channel=demo
+
+      - name: Test chaincode
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          sleep 10
+          echo "waiting for deployment to be ready"
+          kubectl wait --timeout=180s --for=condition=Available deployment asset --namespace=default    
+          kubectl hlf chaincode invoke --config=org1.yaml \
+              --user=admin --peer=org1-peer0.default \
+              --chaincode=asset --channel=demo \
+              --fcn=initLedger -a '[]'
+
+          kubectl hlf chaincode query --config=org1.yaml \
+              --user=admin --peer=org1-peer0.default \
+              --chaincode=asset --channel=demo \
+              --fcn=GetAllAssets -a '[]'
+
+      - name: Show information
+        if: ${{ failure() }}
+        run: |
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          kubectl get nodes -o=wide
+          kubectl get pods -o=wide -A
+          kubectl get crds
+          kubectl get fabricpeers.hlf.kungfusoftware.es  -A -o=custom-columns='NAME:metadata.name,NAMESPACE:metadata.namespace,STATE:status.status,MESSAGE:status.message'
+          kubectl get fabricorderernodes.hlf.kungfusoftware.es  -A -o=custom-columns='NAME:metadata.name,NAMESPACE:metadata.namespace,STATE:status.status,MESSAGE:status.message'
+          kubectl get fabriccas.hlf.kungfusoftware.es -A -o=custom-columns='NAME:metadata.name,NAMESPACE:metadata.namespace,STATE:status.status,MESSAGE:status.message'
+          kubectl get fabricmainchannels.hlf.kungfusoftware.es -A -o=custom-columns='NAME:metadata.name,NAMESPACE:metadata.namespace,STATE:status.status,MESSAGE:status.message'
+          kubectl get fabricfollowerchannels.hlf.kungfusoftware.es -A -o=custom-columns='NAME:metadata.name,NAMESPACE:metadata.namespace,STATE:status.status,MESSAGE:status.message'
+
+          kubectl get fabricmainchannels  -o yaml
+
+          POD=$(kubectl get pod -l 'release in (org1-peer0)'  -o jsonpath="{.items[0].metadata.name}")
+          kubectl logs $POD -c peer
+
+          POD=$(kubectl get pod -l 'release in (ord-node1)'  -o jsonpath="{.items[0].metadata.name}")
+          kubectl logs $POD

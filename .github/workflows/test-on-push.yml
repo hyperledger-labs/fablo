@@ -40,46 +40,183 @@ jobs:
       - name: Lint
         run: npm run lint && ./lint.sh
   test-k8:
-    needs: test-main
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
 
       - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: install k8, hlf plugin and helm
+      - name: Set up Krew for kubectl and Helm
+        env:
+          KREW_HOME: ./.krew
         run: |
-          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
-          chmod +x ./kind
-          sudo mv ./kind /usr/local/bin/kind
-          kind create cluster --wait 5m
-          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-          chmod 700 get_helm.sh
-          ./get_helm.sh
+          # Install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
-          set -x; cd "$(mktemp -d)" &&
-          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-          KREW="krew-${OS}_${ARCH}" &&
-          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-          tar zxvf "${KREW}.tar.gz" &&
-          ./"${KREW}" install krew
-          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-          kubectl krew install hlf
 
-          if [ -f "~/.bashrc" ]; then
-            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
-          fi
-
-          if [ -f "~/.zshrc" ]; then
-            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
-          fi
+          # Install Krew
+          set -x; cd "$(mktemp -d)"
+          OS="$(uname | tr '[:upper:]' '[:lower:]')"
+          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+          KREW="krew-${OS}_${ARCH}"
+          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+          tar zxvf "${KREW}.tar.gz"
+          mv ./"${KREW}" $KREW_HOME
+          echo $KREW_HOME
+          ls -lh
+          $KREW_HOME install krew
+          ls -lh
+         
+          echo $HOME
+          ls -lh $HOME/
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew version
           
+          #list krew commands and get help
+          kubectl krew
+
+          # Install Helm
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Load Krew path
+        run: |
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew version
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.4.0
+        with:
+          cluster_name: kind
+          node_image: kindest/node:v1.25.8
+          config: .github/kind-config.yaml
+  
+      - name: Install kubectl plugin # This job depends on the setup-krew job
+        run: |
+          helm version
+          echo "$KREW_HOME"
+          export PATH=$HOME/.krew/bin:$PATH
+          kubectl krew install hlf
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-          helm install hlf-operator --version=1.8.0 kfs/hlf-operator
+          helm install hlf-operator --version=1.9.2 kfs/hlf-operator
+          kubectl hlf
+
+      - name: Install Istio
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
+          mv $PWD/istio-1.16.1 $HOME/.istio
+          export PATH="$HOME/.istio/bin:$PATH"
+          kubectl create namespace istio-system
+
+          istioctl operator init
+  
+  
+          kubectl apply -f - <<EOF
+            apiVersion: install.istio.io/v1alpha1
+            kind: IstioOperator
+            metadata:
+              name: istio-gateway
+              namespace: istio-system
+            spec:
+              addonComponents:
+                grafana:
+                  enabled: false
+                kiali:
+                  enabled: false
+                prometheus:
+                  enabled: false
+                tracing:
+                  enabled: false
+              components:
+                ingressGateways:
+                  - enabled: true
+                    k8s:
+                      hpaSpec:
+                        minReplicas: 1
+                      resources:
+                        limits:
+                          cpu: 500m
+                          memory: 512Mi
+                        requests:
+                          cpu: 100m
+                          memory: 128Mi
+                      service:
+                        ports:
+                          - name: http
+                            port: 80
+                            targetPort: 8080
+                            nodePort: 30949
+                          - name: https
+                            port: 443
+                            targetPort: 8443
+                            nodePort: 30950
+                        type: NodePort
+                    name: istio-ingressgateway
+                pilot:
+                  enabled: true
+                  k8s:
+                    hpaSpec:
+                      minReplicas: 1
+                    resources:
+                      limits:
+                        cpu: 300m
+                        memory: 512Mi
+                      requests:
+                        cpu: 100m
+                        memory: 128Mi
+              meshConfig:
+                accessLogFile: /dev/stdout
+                enableTracing: false
+                outboundTrafficPolicy:
+                  mode: ALLOW_ANY
+              profile: default
+
+          EOF
+
+          sleep 2
+
+          kubectl wait --timeout=180s --for=jsonpath='{.status.status}'=HEALTHY istiooperator istio-gateway --namespace=istio-system
+
+      - name: Configure DNS in Kubernetes
+        run: |
+          CLUSTER_IP=$(kubectl -n istio-system get svc istio-ingressgateway -o json | jq -r .spec.clusterIP)
+          echo "CLUSTER_IP=${CLUSTER_IP}"
+          kubectl apply -f - <<EOF
+          kind: ConfigMap
+          apiVersion: v1
+          metadata:
+            name: coredns
+            namespace: kube-system
+          data:
+            Corefile: |
+              .:53 {
+                  errors
+                  health {
+                     lameduck 5s
+                  }
+                  rewrite name regex (.*)\.localho\.st host.ingress.internal
+                  hosts {
+                    ${CLUSTER_IP} host.ingress.internal
+                    fallthrough
+                  }
+                  ready
+                  kubernetes cluster.local in-addr.arpa ip6.arpa {
+                     pods insecure
+                     fallthrough in-addr.arpa ip6.arpa
+                     ttl 30
+                  }
+                  prometheus :9153
+                  forward . /etc/resolv.conf {
+                     max_concurrent 1000
+                  }
+                  cache 30
+                  loop
+                  reload
+                  loadbalance
+              }
+          EOF
+
+          kubectl get configmap coredns -n kube-system -o yaml
 
       - name: Build Fablo
         run: |
@@ -91,7 +228,7 @@ jobs:
 
       - name: fablo k8 tests
         run: |
-          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+          export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
           e2e-network/k8s/test-01-simple-k8s.sh
 
   test-02-raft:
