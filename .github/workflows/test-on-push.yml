@@ -39,6 +39,7 @@ jobs:
 
       - name: Lint
         run: npm run lint && ./lint.sh
+
   test-k8:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -46,9 +47,8 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v2
+
       - name: Set up Krew for kubectl and Helm
-        env:
-          KREW_HOME: ./.krew
         run: |
           # Install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -62,15 +62,11 @@ jobs:
           KREW="krew-${OS}_${ARCH}"
           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
           tar zxvf "${KREW}.tar.gz"
-          mv ./"${KREW}" $KREW_HOME
-          echo $KREW_HOME
-          ls -lh
-          $KREW_HOME install krew
-          ls -lh
-         
-          echo $HOME
-          ls -lh $HOME/
-          export PATH=$HOME/.krew/bin:$PATH
+          "$PWD/$KREW" install krew
+          ls -la "$HOME/.krew"
+          ls -la "$HOME/.krew/bin"
+          
+          export PATH="$HOME/.krew/bin:$PATH"
           kubectl krew version
           
           #list krew commands and get help
@@ -78,12 +74,7 @@ jobs:
 
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Load Krew path
-        run: |
-          export PATH=$HOME/.krew/bin:$PATH
-          kubectl krew version
+
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.4.0
         with:
@@ -94,7 +85,6 @@ jobs:
       - name: Install kubectl plugin # This job depends on the setup-krew job
         run: |
           helm version
-          echo "$KREW_HOME"
           export PATH=$HOME/.krew/bin:$PATH
           kubectl krew install hlf
           helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
@@ -104,13 +94,12 @@ jobs:
       - name: Install Istio
         run: |
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.16.1 TARGET_ARCH=x86_64 sh -
-          mv $PWD/istio-1.16.1 $HOME/.istio
+          mv "$PWD/istio-1.16.1" "$HOME/.istio"
           export PATH="$HOME/.istio/bin:$PATH"
           kubectl create namespace istio-system
 
           istioctl operator init
-  
-  
+
           kubectl apply -f - <<EOF
             apiVersion: install.istio.io/v1alpha1
             kind: IstioOperator
@@ -229,6 +218,11 @@ jobs:
       - name: fablo k8 tests
         run: |
           export PATH="$HOME/.krew/bin:$HOME/.istio/bin:$PATH"
+          kubectl version
+          helm version
+          kubectl krew version
+          istioctl version
+          helm list | grep hlf-operator
           e2e-network/k8s/test-01-simple-k8s.sh
 
   test-02-raft:
