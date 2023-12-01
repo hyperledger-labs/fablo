@@ -63,15 +63,10 @@ jobs:
           curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
           tar zxvf "${KREW}.tar.gz"
           "$PWD/$KREW" install krew
-          ls -la "$HOME/.krew"
-          ls -la "$HOME/.krew/bin"
           
           export PATH="$HOME/.krew/bin:$PATH"
           kubectl krew version
           
-          #list krew commands and get help
-          kubectl krew
-
           # Install Helm
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 

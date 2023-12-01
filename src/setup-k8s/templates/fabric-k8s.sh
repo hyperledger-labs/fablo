@@ -18,11 +18,9 @@ BLUE="$(printf '\033[34m')"
 networkUp() {
   printHeadline "Checking dependencies..." "U1F984"
   verifyKubernetesConnectivity
-  printHeadline "Starting Network..." "U1F984"
-  deployPeer
-  deployOrderer
-  installChannels
-  installChaincodes
+  startNetwork
+#  installChannels
+#  installChaincodes
   printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 
