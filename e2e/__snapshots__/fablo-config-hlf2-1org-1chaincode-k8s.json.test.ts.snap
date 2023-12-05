@@ -27,11 +27,9 @@ BLUE=\\"$(printf '\\\\033[34m')\\"
 networkUp() {
   printHeadline \\"Checking dependencies...\\" \\"U1F984\\"
   verifyKubernetesConnectivity
-  printHeadline \\"Starting Network...\\" \\"U1F984\\"
-  deployPeer
-  deployOrderer
-  installChannels
-  installChaincodes
+  startNetwork
+  #  installChannels
+  #  installChaincodes
   printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
 }
 
@@ -91,11 +89,10 @@ FABLO_BUILD=<date with git hash>
 FABLO_CONFIG=<absolute path>
 ORDERER_IMAGE=hyperledger/fabric-orderer
 ORDERER_VERSION=2.4.7
-PEER_IMAGE=quay.io/kfsoftware/fabric-peer
-PEER_VERSION=2.4.1-v0.0.3
-# PEER_VERSION=2.4.7
+PEER_IMAGE=hyperledger/fabric-peer
+PEER_VERSION=2.4.7
 CA_IMAGE=hyperledger/fabric-ca
-CA_VERSION=1.5.5
+CA_VERSION=1.5.6
 LOGGING_LEVEL=info
 
 CHAINCODES_BASE_DIR=<absolute path>
@@ -117,59 +114,114 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 
 source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh\\"
 
+deployCA() {
+  local CA_HOST=\\"$1\\"
+  local MSPID=\\"$2\\"
+  local CA_NAME=\\"$(echo \\"$CA_HOST\\" | sed 's/\\\\./-/g')\\"
+
+  inputLog \\"Deploying $CA_ID ($CA_IMAGE:$CA_VERSION)\\"
+  kubectl hlf ca create \\\\
+    --image=\\"$CA_IMAGE\\" \\\\
+    --version=\\"$CA_VERSION\\" \\\\
+    --storage-class=\\"$STORAGE_CLASS\\" \\\\
+    --capacity=2Gi \\\\
+    --name=\\"$CA_NAME\\" \\\\
+    --hosts=\\"$CA_NAME.localho.st\\" \\\\
+    --enroll-id=enroll \\\\
+    --enroll-pw=enrollpw
+}
+
+registerPeerUser() {
+  local CA_HOST=\\"$1\\"
+  local MSPID=\\"$2\\"
+  local CA_NAME=\\"$(echo \\"$CA_HOST\\" | sed 's/\\\\./-/g')\\"
+
+  inputLog \\"Registering peer user $PEER_USER on $CA_HOST\\"
+  kubectl hlf ca register \\\\
+    --name=\\"$CA_NAME\\" \\\\
+    --user=peer \\\\
+    --secret=peerpw \\\\
+    --type=peer \\\\
+    --enroll-id=enroll \\\\
+    --enroll-secret=enrollpw \\\\
+    --mspid=\\"$MSPID\\"
+}
+
 deployPeer() {
+  local PEER_HOST=\\"$1\\"
+  local CA_HOST=\\"$2\\"
+  local MSPID=\\"$3\\"
+  local PEER_NAME=\\"$(echo \\"$PEER_HOST\\" | sed 's/\\\\./-/g')\\"
+  local CA_NAME=\\"$(echo \\"$CA_HOST\\" | sed 's/\\\\./-/g')\\"
 
-  printItalics \\"Deploying Org1 CA\\" \\"U1F984\\"
-  kubectl hlf ca create --image=\\"$CA_IMAGE\\" --version=\\"$CA_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\"
-  sleep 3
+  inputLog \\"Deploying $PEER_HOST ($PEER_IMAGE:$PEER_VERSION)\\"
+  # TODO: make --statedb configurable
+  kubectl hlf peer create \\\\
+    --statedb=leveldb \\\\
+    --image=\\"$PEER_IMAGE\\" \\\\
+    --version=\\"$PEER_VERSION\\" \\\\
+    --storage-class=\\"$STORAGE_CLASS\\" \\\\
+    --capacity=5Gi \\\\
+    --enroll-id=peer \\\\
+    --enroll-pw=peerpw \\\\
+    --name=\\"$PEER_NAME\\" \\\\
+    --hosts=\\"$PEER_NAME.localho.st\\" \\\\
+    --ca-name=\\"$CA_NAME.$NAMESPACE\\" \\\\
+    --mspid=\\"$MSPID\\"
+}
 
-  while [[ $(kubectl get pods -l release=org1-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
-    sleep 5
-    inputLog \\"waiting for CA\\"
-  done
+registerOrdererUser() {
+  local CA_HOST=\\"$1\\"
+  local MSPID=\\"$2\\"
+  local CA_NAME=\\"$(echo \\"$CA_HOST\\" | sed 's/\\\\./-/g')\\"
 
-  kubectl hlf ca register --name=org1-ca --user=peer --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --type=peer --enroll-id org1 --enroll-secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP
-  inputLog \\"registered Org1 -ca\\"
-
-  printItalics \\"Deploying Peers\\" \\"U1F984\\"
-  sleep 10
-
-  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer0 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
-
-  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer1 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
-
-  while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != \\"true true\\" ]]; do
-    sleep 5
-    inputLog \\"waiting for peer nodes to be ready\\"
-  done
+  inputLog \\"Registering orderer user $ORDERER_USER on $CA_HOST\\"
+  kubectl hlf ca register \\\\
+    --name=\\"$CA_NAME\\" \\\\
+    --user=orderer \\\\
+    --secret=ordererpw \\\\
+    --type=orderer \\\\
+    --enroll-id=enroll \\\\
+    --enroll-secret=enrollpw \\\\
+    --mspid=\\"$MSPID\\"
 }
 
 deployOrderer() {
+  local ORDERER_HOST=\\"$1\\"
+  local CA_HOST=\\"$2\\"
+  local MSPID=\\"$3\\"
+  local CA_NAME=\\"$(echo \\"$CA_HOST\\" | sed 's/\\\\./-/g')\\"
+  local ORDERER_NAME=\\"$(echo \\"$ORDERER_HOST\\" | sed 's/\\\\./-/g')\\"
 
-  printItalics \\"Deploying Orderers\\" \\"U1F984\\"
+  inputLog \\"Deploying $ORDERER_HOST ($ORDERER_IMAGE:$ORDERER_VERSION)\\"
+  kubectl hlf ordnode create \\\\
+    --image=\\"$ORDERER_IMAGE\\" \\\\
+    --version=\\"$ORDERER_VERSION\\" \\\\
+    --storage-class=\\"$STORAGE_CLASS\\" \\\\
+    --capacity=2Gi \\\\
+    --enroll-id=orderer \\\\
+    --enroll-pw=ordererpw \\\\
+    --name=\\"$ORDERER_NAME\\" \\\\
+    --hosts=\\"$ORDERER_NAME.localho.st\\" \\\\
+    --ca-name=\\"$CA_NAME.$NAMESPACE\\" \\\\
+    --mspid=\\"$MSPID\\"
+}
 
-  kubectl hlf ca create --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=orderer-ca --enroll-id=orderer --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\"
-  while [[ $(kubectl get pods -l release=orderer-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
-    sleep 5
-    inputLog \\"waiting for orderer-ca CA to be ready\\" \\"$RESETBG\\"
-  done
-  kubectl hlf ca register --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --type=orderer --enroll-id=orderer --enroll-secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP &&
-    inputLog \\"registered orderer-ca\\"
+startNetwork() {
+  printHeadline \\"Starting network\\" \\"U1F680\\"
 
-  kubectl hlf ordnode create --version=\\"$ORDERER_VERSION\\" \\\\
-    --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP \\\\
-    --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --capacity=2Gi --name=orderer-node --ca-name=\\"orderer-ca.$NAMESPACE\\"
-  while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
-    sleep 5
-    inputLog \\"waiting for orderer Node to be ready\\"
-  done
+  deployCA \\"ca.orderer.example.com\\" \\"OrdererMSP\\"
+  deployCA \\"ca.org1.example.com\\" \\"Org1MSP\\"
+  kubectl wait --timeout=60s --for=condition=Running fabriccas.hlf.kungfusoftware.es --all
 
-  kubectl hlf inspect --output \\"$CONFIG_DIR/ordservice.yaml\\" -o OrdererMSP
-  kubectl hlf ca enroll --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP --ca-name ca --output \\"$CONFIG_DIR/admin-ordservice.yaml\\" &&
-    kubectl hlf utils adduser --userPath=\\"$CONFIG_DIR/admin-ordservice.yaml\\" --config=\\"$CONFIG_DIR/ordservice.yaml\\" --username=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP
+  registerOrdererUser \\"ca.orderer.example.com\\" \\"OrdererMSP\\"
+  deployOrderer \\"orderer0.group1.orderer.example.com\\" \\"ca.orderer.example.com\\" \\"OrdererMSP\\"
+  kubectl wait --timeout=180s --for=condition=Running fabricorderernodes.hlf.kungfusoftware.es --all
 
+  registerPeerUser \\"ca.org1.example.com\\" \\"Org1MSP\\"
+  deployPeer \\"peer0.org1.example.com\\" \\"ca.org1.example.com\\" \\"Org1MSP\\"
+  deployPeer \\"peer1.org1.example.com\\" \\"ca.org1.example.com\\" \\"Org1MSP\\"
+  kubectl wait --timeout=180s --for=condition=Running fabricpeers.hlf.kungfusoftware.es --all
 }
 
 installChannels() {
