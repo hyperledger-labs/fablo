@@ -14,7 +14,7 @@ deployCA() {
     --storage-class="$STORAGE_CLASS" \
     --capacity=2Gi \
     --name="$CA_NAME" \
-    --hosts="$CA_NAME.localho.st" \
+    --hosts="$CA_HOST" \
     --enroll-id=enroll \
     --enroll-pw=enrollpw
 }
@@ -53,7 +53,7 @@ deployPeer() {
     --enroll-id=peer \
     --enroll-pw=peerpw \
     --name="$PEER_NAME" \
-    --hosts="$PEER_NAME.localho.st" \
+    --hosts="$PEER_HOST" \
     --ca-name="$CA_NAME.$NAMESPACE" \
     --mspid="$MSPID"
 }
@@ -90,7 +90,7 @@ deployOrderer() {
     --enroll-id=orderer \
     --enroll-pw=ordererpw \
     --name="$ORDERER_NAME" \
-    --hosts="$ORDERER_NAME.localho.st" \
+    --hosts="$ORDERER_HOST" \
     --ca-name="$CA_NAME.$NAMESPACE" \
     --mspid="$MSPID"
 }
