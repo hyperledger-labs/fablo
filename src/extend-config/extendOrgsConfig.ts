@@ -270,6 +270,16 @@ const getPortsForOrg = (orgIndex: number) => ({
 });
 
 const extendOrgsConfig = (orgsJsonConfigFormat: OrgJson[], global: Global): OrgConfig[] => {
+  if (global.engine === "kubernetes") {
+    // for kubernetes we support only hosts that ends with "localho.st"
+    orgsJsonConfigFormat = orgsJsonConfigFormat.map((org) => {
+      const domain = org.organization.domain.endsWith("localho.st")
+        ? org.organization.domain
+        : `${org.organization.domain}.localho.st`;
+      return { ...org, organization: { ...org.organization, domain } };
+    });
+  }
+
   const peersByOrgDomain = orgsJsonConfigFormat.reduce((all, orgJson, orgIndex) => {
     const domain = orgJson.organization.domain;
     const { caPort, headPeerPort, headPeerCouchDbPort, fabloRestPort, explorerPort } = getPortsForOrg(orgIndex);

@@ -27,7 +27,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
   return {
     fabricVersion,
-    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.5" : fabricVersion,
+    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.6" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
     fabricJavaenvVersion: majorMinor,

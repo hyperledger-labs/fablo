@@ -2,7 +2,7 @@
 
 container="$1"
 expected_message="$2"
-max_attempts="${3:-10}"
+max_attempts="${3:-30}"
 
 end="$(printf '\e[0m')"
 darkGray="$(printf '\e[90m')"
