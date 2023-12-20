@@ -102,6 +102,7 @@ startNetwork() {
     deployCA "<%= org.ca.address %>" "<%= org.mspName %>"
   <% }) -%>
   kubectl wait --timeout=60s --for=condition=Running fabriccas.hlf.kungfusoftware.es --all
+  sleep 1
 
   <% orgs.forEach((org) => { -%>
     <% if(org.ordererGroups.length > 0 ) { -%>

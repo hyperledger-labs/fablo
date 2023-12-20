@@ -213,6 +213,7 @@ startNetwork() {
   deployCA \\"ca.orderer.example.com.localho.st\\" \\"OrdererMSP\\"
   deployCA \\"ca.org1.example.com.localho.st\\" \\"Org1MSP\\"
   kubectl wait --timeout=60s --for=condition=Running fabriccas.hlf.kungfusoftware.es --all
+  sleep 1
 
   registerOrdererUser \\"ca.orderer.example.com.localho.st\\" \\"OrdererMSP\\"
   deployOrderer \\"orderer0.group1.orderer.example.com.localho.st\\" \\"ca.orderer.example.com.localho.st\\" \\"OrdererMSP\\"
