@@ -165,19 +165,30 @@ inputLogShort() {
 verifyKubernetesConnectivity() {
   echo "Verifying kubectl-hlf installation..."
   if ! [[ $(command -v kubectl-hlf) ]]; then
-    echo "Error: Fablo could not detect kubectl hlf plugin. Ensure you have installed:
-  - kubectl - https://kubernetes.io/docs/tasks/tools/
-  - helm - https://helm.sh/docs/intro/install/
-  - krew - https://krew.sigs.k8s.io/docs/user-guide/setup/install/
-  - hlf-operator along with krew hlf plugin - https://github.com/hyperledger-labs/hlf-operator#install-kubernetes-operator"
+    echo "Error: Fablo could not detect kubectl hlf plugin. Ensure you have installed the following tools:
+
+  - kubectl - 'kubectl version'
+    https://kubernetes.io/docs/tasks/tools/
+
+  - helm - 'helm version'
+    https://helm.sh/docs/intro/install/
+
+  - krew - 'kubectl krew version'
+    https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+
+  - hlf-operator along with krew hlf plugin - 'helm list | grep hlf-operator'
+    https://github.com/hyperledger/bevel-operator-fabric/tree/v1.8.2#install-kubernetes-operator"
     exit 1
   else
     echo "  $(command -v kubectl-hlf)"
   fi
 
   if [ "$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items}')" = "[]" ]; then
-    echo "Error: hlf-operator is not running. You can install it with:
-  helm install hlf-operator --version=1.6.0 kfs/hlf-operator"
+    echo "Error: hlf-operator is not running."
+    echo "Tested with:"
+    echo "  kubectl get pods -l=app.kubernetes.io/name=hlf-operator"
+    echo "You can install it with:"
+    echo "  helm install hlf-operator --version=1.8.2 kfs/hlf-operator"
     exit 1
   fi
 
