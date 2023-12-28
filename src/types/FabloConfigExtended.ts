@@ -26,6 +26,8 @@ export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
 
 export interface Global extends FabricVersions {
   tls: boolean;
+  peerDevMode: boolean;
+  serviceDiscoveryOn: boolean;
   engine: "kubernetes" | "docker";
   monitoring: { loglevel: string };
   paths: { fabloConfig: string; chaincodesBaseDir: string };
