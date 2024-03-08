@@ -34,10 +34,8 @@ expectInvoke() {
   sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 }
 
-#trap networkDown EXIT
-#trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
-
-
+trap networkDown EXIT
+trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
 # start the network
 networkUp

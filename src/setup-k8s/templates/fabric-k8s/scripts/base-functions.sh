@@ -74,6 +74,97 @@ registerOrdererUser() {
     --mspid="$MSPID"
 }
 
+registerOrdererAdmin() {
+  local CA_HOST="$1"
+  local MSPID="$2"
+  local CA_NAME="$(echo "$CA_HOST" | sed 's/\./-/g')"
+
+  inputLog "Registering orderer admin user for $MSPID"
+
+  kubectl hlf ca register \
+    --name="$CA_NAME" \
+    --user=admin \
+    --secret=adminpw \
+    --type=admin \
+    --enroll-id=enroll \
+    --enroll-secret=enrollpw \
+    --mspid="$MSPID"
+
+  inputLog "Preparing orderer admin connection for $MSPID"
+
+  kubectl hlf inspect \
+    --output "ordservice-$MSPID.yaml" \
+    -o "$MSPID"
+
+  # TODO `--ca-name ca` or `--ca-name="$CA_NAME.$NAMESPACE" ??
+  kubectl hlf ca enroll \
+    --name="$CA_NAME" \
+    --user=admin \
+    --secret=adminpw \
+    --mspid "$MSPID" \
+    --ca-name=ca \
+    --output "admin-ordservice-$MSPID.yaml"
+
+  ## add user from admin-ordservice.yaml to ordservice.yaml
+  kubectl hlf utils adduser \
+    --userPath="admin-ordservice-$MSPID.yaml" \
+    --config="ordservice-$MSPID.yaml" \
+    --username=admin \
+    --mspid="$MSPID"
+}
+
+saveOrdererCert() {
+  local ORDERER_HOST="$1"
+  local ORDERER_MSPID="$2"
+  local ORDERER_NAME="$(echo "$ORDERER_HOST" | sed 's/\./-/g')"
+
+  inputLog "Saving orderer cert for $ORDERER_NAME"
+
+  kubectl get fabricorderernodes "$ORDERER_NAME" \
+    -o jsonpath='{.status.tlsCert}' \
+    > "orderer-cert-$ORDERER_MSPID.pem"
+}
+
+registerPeerAdmin() {
+  local CA_HOST="$1"
+  local MSPID="$2"
+  local ORDERER_MSPID="$3"
+  local CA_NAME="$(echo "$CA_HOST" | sed 's/\./-/g')"
+
+  inputLog "Registering peer admin user for $MSPID"
+
+  kubectl hlf ca register \
+    --name="$CA_NAME" \
+    --user=admin \
+    --secret=adminpw \
+    --type=admin \
+    --enroll-id=enroll \
+    --enroll-secret=enrollpw \
+    --mspid="$MSPID"
+
+  inputLog "Preparing peer admin connection for $MSPID and $ORDERER_MSPID"
+
+  kubectl hlf inspect \
+    --output "peer-$MSPID-$ORDERER_MSPID.yaml" \
+    -o "$MSPID" \
+    -o "$ORDERER_MSPID"
+
+  # TODO `--ca-name ca` or `--ca-name="$CA_NAME.$NAMESPACE" ??
+  kubectl hlf ca enroll \
+    --name="$CA_NAME" \
+    --user=admin \
+    --secret=adminpw \
+    --mspid "$MSPID" \
+    --ca-name=ca \
+    --output "admin-peer-$MSPID-$ORDERER_MSPID.yaml"
+
+  kubectl hlf utils adduser \
+    --userPath="admin-peer-$MSPID-$ORDERER_MSPID.yaml" \
+    --config="peer-$MSPID-$ORDERER_MSPID.yaml" \
+    --username=admin \
+    --mspid="$MSPID"
+}
+
 deployOrderer() {
   local ORDERER_HOST="$1"
   local CA_HOST="$2"
@@ -128,8 +219,78 @@ startNetwork() {
 }
 
 installChannels() {
+  <% orgs.forEach((org) => { -%>
+    # TODO missing support for orderer groups
+    <% if(org.ordererGroups.length > 0 ) { -%>
+      registerOrdererAdmin "<%= org.ca.address %>" "<%= org.mspName %>"
+      saveOrdererCert "<%= org.ordererGroups[0].orderers[0].address %>" "<%= org.mspName %>"
+    <% } -%>
+  <% }) -%>
+  <% channels.forEach((channel) => { -%>
+    <% channel.orgs.forEach((org) => { -%>
+      registerPeerAdmin "<%= org.ca.address %>" "<%= org.mspName %>" "<%= channel.ordererHead.orgMspName %>"
+    <% }) -%>
+  <% }) -%>
+
+  set -x
+  inputLog "Creating secret wallet for channel creation"
+  kubectl create secret generic wallet \
+    <% orgs.forEach((org) => { -%>
+      <% if(org.ordererGroups.length > 0 ) { -%>
+        --from-file="admin-ordservice-<%= org.mspName %>.yaml=$PWD/admin-ordservice-<%= org.mspName %>.yaml" \
+      <% } -%>
+    <% }) -%>
+    <% channels.forEach((channel) => { -%>
+      <% channel.orgs.forEach((org) => { -%>
+        --from-file="admin-peer-<%= org.mspName %>-<%= channel.ordererHead.orgMspName %>.yaml=$PWD/admin-peer-<%= org.mspName %>-<%= channel.ordererHead.orgMspName %>.yaml" \
+      <% }) -%>
+    <% }) -%>
+    --namespace="$NAMESPACE"
 
   <% channels.forEach((channel) => { -%>
+    kubectl hlf channelcrd main create \
+      --channel-name="<%= channel.name %>" \
+      --name="<%= channel.name %>" \
+      <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
+        --orderer-orgs="<%= orderer.orgMspName %>" \
+        --admin-orderer-orgs="<%= orderer.orgMspName %>" \
+        --consenters="<%= orderer.address.replaceAll(".", "-") %>.default:7050" \
+        --consenter-certificates="./orderer-cert-<%= orderer.orgMspName %>.pem" \
+        --identities="<%= orderer.orgMspName %>;admin-ordservice-<%= orderer.orgMspName %>.yaml" \
+      <% }) -%>
+      <% channel.orgs.forEach((org) => { -%>
+        --peer-orgs="<%= org.mspName %>" \
+        --admin-peer-orgs="<%= org.mspName %>" \
+        --identities="<%= org.mspName %>;admin-peer-<%= org.mspName %>-<%= channel.ordererHead.orgMspName %>.yaml" \
+      <% }) -%>
+      --secret-name=wallet \
+      --secret-ns=default
+  <% }) -%>
+  kubectl wait --timeout=180s --for=condition=Created fabricmainchannels.hlf.kungfusoftware.es --all
+
+  <% channels.forEach((channel) => { -%>
+    <% channel.orgs.forEach((org) => { -%>
+      kubectl hlf channelcrd follower create \
+        --channel-name="<%= channel.name %>" \
+        --mspid="<%= org.mspName %>" \
+        --name="<%= channel.name %>-<%= org.mspName.toLowerCase() %>" \
+        --orderer-urls="<%= channel.ordererHead.address.replaceAll(".", "-") %>.default:7050" \
+        --orderer-certificates="./orderer-cert-<%= channel.ordererHead.orgMspName %>.pem" \
+        <% org.peers.forEach((peer) => { -%>
+          --anchor-peers="<%= peer.address.replaceAll(".", "-") %>.default:7051" \
+          --peers="<%= peer.address.replaceAll(".", "-") %>.default" \
+        <% }) -%>
+        --secret-name=wallet \
+        --secret-ns=default \
+        --secret-key="admin-peer-<%= org.mspName %>-<%= channel.ordererHead.orgMspName %>.yaml"
+    <% }) -%>
+  <% }) -%>
+  kubectl wait --timeout=180s --for=condition=Created fabricfollowerchannels.hlf.kungfusoftware.es --all
+
+  echo "DONE"
+  exit 1
+
+   <% channels.forEach((channel) => { -%>
     <% channel.orgs.forEach((org) => { -%>
        printItalics "Creating '<%= channel.name %>' on /peer0" "U1F63B"
         sleep 10
@@ -184,6 +345,10 @@ installChaincodes() {
 }
 
 destroyNetwork() {
+  # we need to manually remove channels
+  kubectl delete fabricmainchannels.hlf.kungfusoftware.es --all-namespaces --all
+  kubectl delete fabricfollowerchannels.hlf.kungfusoftware.es --all-namespaces --all
+  kubectl delete secret wallet --namespace="$NAMESPACE"
   kubectl delete fabricpeers.hlf.kungfusoftware.es --all-namespaces --all
   kubectl delete fabriccas.hlf.kungfusoftware.es --all-namespaces --all
   kubectl delete fabricorderernodes.hlf.kungfusoftware.es --all-namespaces --all
