@@ -19,7 +19,7 @@ networkUp() {
   printHeadline "Checking dependencies..." "U1F984"
   verifyKubernetesConnectivity
   startNetwork
-#  installChannels
+  installChannels
 #  installChaincodes
   printHeadline "Done! Enjoy your fresh network" "U1F984"
 }

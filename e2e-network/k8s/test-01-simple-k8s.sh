@@ -19,7 +19,6 @@ dumpLogs() {
 }
 
 networkDown() {
-  rm -rf "$TEST_LOGS"
   (cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" down)
 }
 
@@ -54,8 +53,8 @@ waitForContainer "$orderer" "Beginning to serve requests"
 waitForContainer "$peer0" "grpc.peer_subject=\"CN=peer,OU=peer\" grpc.code=OK"
 waitForContainer "$peer1" "grpc.peer_subject=\"CN=peer,OU=peer\" grpc.code=OK"
 #waitForContainer "$orderer" "Starting raft node as part of a new channel channel=my-channel1 node=1"
-#waitForContainer "$peer0" "Joining gossip network of channel my-channel1 with 1 organizations"
-#waitForContainer "$peer1" "Joining gossip network of channel my-channel1 with 1 organizations"
+waitForContainer "$peer0" "Joining gossip network of channel my-channel1 with 1 organizations"
+waitForContainer "$peer1" "Joining gossip network of channel my-channel1 with 1 organizations"
 #waitForContainer "$peer0" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 #waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 
