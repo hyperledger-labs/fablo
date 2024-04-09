@@ -579,6 +579,11 @@ Visit the [Fablo REST](https://github.com/softwaremill/fablo-rest) project for m
 Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you.
 Provide for your organization `"tools": { "explorer": true }`, if you want to use it per organization, or provide the same value in `global` section of the config, if you want to use one global Explorer for all organizations.
 
+## Contributing
+
+We'd love to have you contribute! Please refer to our [contribution guidelines](https://github.com/hyperledger-labs/fablo/blob/main/CONTRIBUTING.md) for details.
+
+
 ## Testimonials
 
 Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
