@@ -155,7 +155,7 @@ function certificateAuthorities(
   if (isTls) {
     return {
       [org.ca.address]: {
-        url: `http://localhost:${org.ca.exposePort}`,
+        url: `https://localhost:${org.ca.exposePort}`,
         caName: org.ca.address,
         tlsCACerts: {
           path: `${rootPath}/peerOrganizations/${org.domain}/ca/${org.ca.address}-cert.pem`,
