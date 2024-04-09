@@ -2113,6 +2113,9 @@ services:
       - COUCHDB_PASSWORD=peer0Password
     ports:
       - 5100:5984
+    depends_on:
+      couchdb.peer0.org1.example.com:
+        condition: service_healthy
     networks:
       - basic
 
