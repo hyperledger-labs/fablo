@@ -280,6 +280,11 @@ services:
       <%_ if(global.peerDevMode) { _%>
       - <%= peer.port + 1500 %>:7050
       <%_ } _%>
+    <%_ if(peer.db.type==="CouchDb") { _%>
+      depends_on:
+        couchdb.<%= peer.name %>.<%= org.domain %>:
+          condition: service_healthy
+    <%_ } _%>
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/msp:/etc/hyperledger/fabric/peer/msp
@@ -298,9 +303,6 @@ services:
       - COUCHDB_PASSWORD=<%= peer.name %>Password
     ports:
       - <%= peer.couchDbExposePort %>:5984
-    depends_on:
-      couchdb.<%= peer.name %>.<%= org.domain %>:
-        condition: service_healthy
     networks:
       - basic
   <%_ } _%>
