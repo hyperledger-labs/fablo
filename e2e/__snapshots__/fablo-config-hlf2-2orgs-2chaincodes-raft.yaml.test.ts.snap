@@ -4667,10 +4667,35 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 dockerPullIfMissing() {
-  local IMAGE="$1"
-  if [[ "$(docker images -q "$IMAGE" 2>/dev/null)" == "" ]]; then
-    docker pull --platform linux/x86_64 "$IMAGE"
+  local IMAGE=\\"$1\\"
+  if [[ \\"$(docker images -q \\"$IMAGE\\" 2>/dev/null)\\" == \\"\\" ]]; then
+    docker pull --platform linux/x86_64 \\"$IMAGE\\"
   fi
+}
+
+node_version_check() {
+
+  local fabric_shim_version=\\"$1\\"
+  local nodejs_version
+
+  if [[ \\"$fabric_shim_version\\" == *\\"1.4.\\"* ]]; then
+    nodejs_version=8.9
+
+  elif [[ \\"$fabric_shim_version\\" == *\\"2.2.\\"* || \\"$fabric_shim_version\\" == *\\"2.3.\\"* ]]; then
+    nodejs_version=12.13
+
+  elif [[ \\"$fabric_shim_version\\" == *\\"2.4.\\"* ]]; then
+    nodejs_version=16.16
+
+  elif [[ \\"$fabric_shim_version\\" == *\\"2.5.\\"* ]]; then
+    nodejs_version=18.12
+
+  else
+    nodejs_version=18.12
+  fi
+
+  echo $nodejs_version
+
 }
 
 chaincodeBuild() {
