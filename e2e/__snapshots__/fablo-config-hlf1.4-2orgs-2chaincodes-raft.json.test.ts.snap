@@ -317,7 +317,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
   },
   \\"certificateAuthorities\\": {
     \\"ca.orderer.example.com\\": {
-      \\"url\\": \\"http://localhost:7020\\",
+      \\"url\\": \\"https://localhost:7020\\",
       \\"caName\\": \\"ca.orderer.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem\\"
@@ -378,7 +378,7 @@ peers:
       ssl-target-name-override: peer1.org2.example.com
 certificateAuthorities:
   ca.orderer.example.com:
-    url: http://localhost:7020
+    url: https://localhost:7020
     caName: ca.orderer.example.com
     tlsCACerts:
       path: >-
@@ -450,7 +450,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
   },
   \\"certificateAuthorities\\": {
     \\"ca.org1.example.com\\": {
-      \\"url\\": \\"http://localhost:7040\\",
+      \\"url\\": \\"https://localhost:7040\\",
       \\"caName\\": \\"ca.org1.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem\\"
@@ -511,7 +511,7 @@ peers:
       ssl-target-name-override: peer1.org2.example.com
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7040
+    url: https://localhost:7040
     caName: ca.org1.example.com
     tlsCACerts:
       path: >-
@@ -583,7 +583,7 @@ exports[`samples/fablo-config-hlf1.4-2orgs-2chaincodes-raft.json should create p
   },
   \\"certificateAuthorities\\": {
     \\"ca.org2.example.com\\": {
-      \\"url\\": \\"http://localhost:7060\\",
+      \\"url\\": \\"https://localhost:7060\\",
       \\"caName\\": \\"ca.org2.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem\\"
@@ -644,7 +644,7 @@ peers:
       ssl-target-name-override: peer1.org2.example.com
 certificateAuthorities:
   ca.org2.example.com:
-    url: http://localhost:7060
+    url: https://localhost:7060
     caName: ca.org2.example.com
     tlsCACerts:
       path: >-
