@@ -33,10 +33,17 @@ See `git help commit`:
 ## Making Changes
 
 1. **Make your changes**: Implement the changes or additions you want to make. Please follow any coding standards and guidelines provided in the project.
-2. **Test your changes**: Ensure that your changes work as expected and don't introduce any new issues. Run the following tests:
-   - **End-to-End (E2E) tests**: Execute E2E tests using the provided scripts. You can run E2E tests with `npm run test:e2e`. Make sure they pass before submitting your changes.
-   - **Regular integration tests**: Run regular integration tests to validate the functionality. You can run integration tests with `npm run test:integration`.
-3. **Update snapshots**: If you've made changes that affect snapshots, update them using `npm run test:e2e-update`.
+2. **Test your changes**: Ensure that your changes work as expected and don't introduce any new issues. Depending on the scope of your changes you may rely on our CI pipelines or run the following tests:
+   - **Unit tests**: Execute unit tests using the provided scripts. Use: `npm run test:unit`.
+   - **End-to-End (E2E) tests**: Execute E2E tests using the provided scripts. Use: `npm run test:e2e`.
+   - **Ent-to-End network tests**: Execute relevant shell scripts from `e2e-network` directory with E2E network tests.
+3. **Update snapshots**: If you've made changes that affect snapshots (esp. any template changes), update them using `npm run test:e2e-update`.
+
+## ## Running Fablo locally
+
+You may want to verify some changes by running Fablo locally. To do so:
+1. Execute `./fablo-build.sh` script to create a Fablo Docker image locally.
+2. Use `./fablo.sh` from source root directory to call Fablo commands.
 
 ## Submitting Changes
 
