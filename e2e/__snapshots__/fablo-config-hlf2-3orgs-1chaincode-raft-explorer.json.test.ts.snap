@@ -423,7 +423,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   },
   \\"certificateAuthorities\\": {
     \\"ca.orderer.example.com\\": {
-      \\"url\\": \\"http://localhost:7020\\",
+      \\"url\\": \\"https://localhost:7020\\",
       \\"caName\\": \\"ca.orderer.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem\\"
@@ -500,7 +500,7 @@ peers:
       ssl-target-name-override: peer1.org3.example.com
 certificateAuthorities:
   ca.orderer.example.com:
-    url: http://localhost:7020
+    url: https://localhost:7020
     caName: ca.orderer.example.com
     tlsCACerts:
       path: >-
@@ -592,7 +592,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   },
   \\"certificateAuthorities\\": {
     \\"ca.org1.example.com\\": {
-      \\"url\\": \\"http://localhost:7040\\",
+      \\"url\\": \\"https://localhost:7040\\",
       \\"caName\\": \\"ca.org1.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem\\"
@@ -669,7 +669,7 @@ peers:
       ssl-target-name-override: peer1.org3.example.com
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7040
+    url: https://localhost:7040
     caName: ca.org1.example.com
     tlsCACerts:
       path: >-
@@ -761,7 +761,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   },
   \\"certificateAuthorities\\": {
     \\"ca.org2.example.com\\": {
-      \\"url\\": \\"http://localhost:7060\\",
+      \\"url\\": \\"https://localhost:7060\\",
       \\"caName\\": \\"ca.org2.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem\\"
@@ -838,7 +838,7 @@ peers:
       ssl-target-name-override: peer1.org3.example.com
 certificateAuthorities:
   ca.org2.example.com:
-    url: http://localhost:7060
+    url: https://localhost:7060
     caName: ca.org2.example.com
     tlsCACerts:
       path: >-
@@ -930,7 +930,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   },
   \\"certificateAuthorities\\": {
     \\"ca.org3.example.com\\": {
-      \\"url\\": \\"http://localhost:7080\\",
+      \\"url\\": \\"https://localhost:7080\\",
       \\"caName\\": \\"ca.org3.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org3.example.com/ca/ca.org3.example.com-cert.pem\\"
@@ -1007,7 +1007,7 @@ peers:
       ssl-target-name-override: peer1.org3.example.com
 certificateAuthorities:
   ca.org3.example.com:
-    url: http://localhost:7080
+    url: https://localhost:7080
     caName: ca.org3.example.com
     tlsCACerts:
       path: >-

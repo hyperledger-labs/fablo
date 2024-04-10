@@ -235,7 +235,7 @@ exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create pro
   },
   \\"certificateAuthorities\\": {
     \\"ca.orderer.example.com\\": {
-      \\"url\\": \\"http://localhost:7020\\",
+      \\"url\\": \\"https://localhost:7020\\",
       \\"caName\\": \\"ca.orderer.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem\\"
@@ -280,7 +280,7 @@ peers:
       ssl-target-name-override: peer1.org1.example.com
 certificateAuthorities:
   ca.orderer.example.com:
-    url: http://localhost:7020
+    url: https://localhost:7020
     caName: ca.orderer.example.com
     tlsCACerts:
       path: >-
@@ -332,7 +332,7 @@ exports[`samples/fablo-config-hlf1.4-1org-1chaincode-raft.json should create pro
   },
   \\"certificateAuthorities\\": {
     \\"ca.org1.example.com\\": {
-      \\"url\\": \\"http://localhost:7040\\",
+      \\"url\\": \\"https://localhost:7040\\",
       \\"caName\\": \\"ca.org1.example.com\\",
       \\"tlsCACerts\\": {
         \\"path\\": \\"<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem\\"
@@ -377,7 +377,7 @@ peers:
       ssl-target-name-override: peer1.org1.example.com
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7040
+    url: https://localhost:7040
     caName: ca.org1.example.com
     tlsCACerts:
       path: >-

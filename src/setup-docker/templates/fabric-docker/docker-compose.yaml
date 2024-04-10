@@ -298,9 +298,6 @@ services:
       - COUCHDB_PASSWORD=<%= peer.name %>Password
     ports:
       - <%= peer.couchDbExposePort %>:5984
-    depends_on:
-      couchdb.<%= peer.name %>.<%= org.domain %>:
-        condition: service_healthy
     networks:
       - basic
   <%_ } _%>
