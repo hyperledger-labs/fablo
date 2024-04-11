@@ -2113,6 +2113,11 @@ services:
     environment:
       - COUCHDB_USER=peer0
       - COUCHDB_PASSWORD=peer0Password
+    healthcheck:
+      test: \\"curl -f http://localhost:5984/\\"
+      interval: 5s
+      timeout: 10s
+      retries: 7
     ports:
       - 5100:5984
     networks:

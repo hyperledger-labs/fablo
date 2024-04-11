@@ -300,6 +300,11 @@ services:
     environment:
       - COUCHDB_USER=<%= peer.name %>
       - COUCHDB_PASSWORD=<%= peer.name %>Password
+    healthcheck:
+      test: "curl -f http://localhost:5984/"
+      interval: 5s
+      timeout: 10s
+      retries: 7
     ports:
       - <%= peer.couchDbExposePort %>:5984
     networks:
