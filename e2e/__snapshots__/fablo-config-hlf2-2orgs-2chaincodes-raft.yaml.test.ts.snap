@@ -4161,7 +4161,6 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     networks:
       - basic
-
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
@@ -4318,7 +4317,6 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     networks:
       - basic
-
   peer1.org2.example.com:
     container_name: peer1.org2.example.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}

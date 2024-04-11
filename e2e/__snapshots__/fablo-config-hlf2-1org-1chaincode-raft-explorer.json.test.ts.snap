@@ -2096,9 +2096,9 @@ services:
     ports:
       - 8041:9440
       - 7041:7041
-      depends_on:
-        couchdb.peer0.org1.example.com:
-          condition: service_healthy
+    depends_on:
+      couchdb.peer0.org1.example.com:
+        condition: service_healthy
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
@@ -2107,7 +2107,6 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     networks:
       - basic
-
   couchdb.peer0.org1.example.com:
     container_name: couchdb.peer0.org1.example.com
     image: couchdb:\${COUCHDB_VERSION}
