@@ -182,6 +182,7 @@ deployOrderer() {
     --enroll-pw=ordererpw \
     --name="$ORDERER_NAME" \
     --hosts="$ORDERER_HOST" \
+    --admin-hosts="admin-$ORDERER_HOST" \
     --ca-name="$CA_NAME.$NAMESPACE" \
     --mspid="$MSPID"
 }
@@ -266,7 +267,7 @@ installChannels() {
       --secret-name=wallet \
       --secret-ns=default
   <% }) -%>
-  kubectl wait --timeout=180s --for=condition=Created fabricmainchannels.hlf.kungfusoftware.es --all
+  kubectl wait --timeout=180s --for=condition=RUNNING fabricmainchannels.hlf.kungfusoftware.es --all
 
   <% channels.forEach((channel) => { -%>
     <% channel.orgs.forEach((org) => { -%>
@@ -348,7 +349,7 @@ destroyNetwork() {
   # we need to manually remove channels
   kubectl delete fabricmainchannels.hlf.kungfusoftware.es --all-namespaces --all
   kubectl delete fabricfollowerchannels.hlf.kungfusoftware.es --all-namespaces --all
-  kubectl delete secret wallet --namespace="$NAMESPACE"
+  kubectl delete secret wallet --namespace="$NAMESPACE" || true
   kubectl delete fabricpeers.hlf.kungfusoftware.es --all-namespaces --all
   kubectl delete fabriccas.hlf.kungfusoftware.es --all-namespaces --all
   kubectl delete fabricorderernodes.hlf.kungfusoftware.es --all-namespaces --all
