@@ -76,6 +76,7 @@ chaincodeBuild() {
         (cd "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH" && npm install && npm run build)
       fi
     fi
+  fi
 }
 
 chaincodePackage() {
