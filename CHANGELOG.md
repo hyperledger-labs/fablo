@@ -1,8 +1,9 @@
 ## 1.2.0-unstable
 
 ### Features
-* Basic support for chaincode invoke command
-  
+* Support for `chaincode invoke` command (tls and non-tls)
+* Support for `chaincodes list` command (tls and non-tls)
+
 ### Fixes
 * Remove unsupported test library and dependencies
 * Updated Node.js version from 12 to 16 in chaincode

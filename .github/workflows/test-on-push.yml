@@ -39,6 +39,7 @@ jobs:
 
       - name: Lint
         run: npm run lint && ./lint.sh
+
   test-k8:
     needs: test-main
     runs-on: ubuntu-latest

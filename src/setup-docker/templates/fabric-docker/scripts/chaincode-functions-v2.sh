@@ -292,3 +292,104 @@ chaincodeCommit() {
     "${TLS_ROOT_CERT_PARAMS[@]+"${TLS_ROOT_CERT_PARAMS[@]}"}" \
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
+
+peerChaincodeList() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  echo "Chaincodes list:"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+
+  # Execute the command to list chaincodes
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
+    --channelID "$CHANNEL_NAME"
+}
+
+peerChaincodeListTls() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+  local CA_CERT=$4
+
+  echo "Chaincodes list:"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CA_CERT: $CA_CERT"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
+    --channelID "$CHANNEL_NAME" \
+    --tls \
+    --cafile "/var/hyperledger/cli/$CA_CERT"
+}
+
+# Function to perform chaincode invoke
+peerChaincodeInvoke() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode invoke:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \
+    $PEER_ADDRESSES \
+    -C "$CHANNEL" \
+    -n "$CHAINCODE" \
+    -c "$COMMAND" \
+    --transient "$TRANSIENT" \
+    --waitForEvent \
+    --waitForEventTimeout 90s \
+    2>&1
+}
+# Function to perform chaincode invoke for Tls
+peerChaincodeInvokeTls() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERTS="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode invoke:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERTS"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEER_CERTS" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \
+    $PEER_ADDRESSES \
+    $TLS_ROOT_CERT_FILES \
+    -C "$CHANNEL" \
+    -n "$CHAINCODE" \
+    -c "$COMMAND" \
+    --transient "$TRANSIENT" \
+    --waitForEvent \
+    --waitForEventTimeout 90s \
+    --tls \
+    --cafile "/var/hyperledger/cli/$CA_CERT" \
+    2>&1
+}

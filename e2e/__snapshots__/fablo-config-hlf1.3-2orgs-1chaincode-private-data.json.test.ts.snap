@@ -2063,6 +2063,8 @@ elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"dev\\" ]; then
   runDevModeChaincode \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"invoke\\" ]; then
   chaincodeInvoke \\"$3\\" \\"$4\\" \\"$5\\" \\"$6\\" \\"$7\\"
+elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"list\\" ]; then
+  chaincodeList \\"$3\\" \\"$4\\"
 elif [ \\"$1\\" = \\"channel\\" ]; then
   channelQuery \\"\${@:2}\\"
 elif [ \\"$1\\" = \\"snapshot\\" ]; then
@@ -2084,7 +2086,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
-"FABLO_VERSION=1.2.0
+"FABLO_VERSION=1.2.1-unstable.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.0
 HYPERLEDGER_EXPLORER_VERSION=1.1.8
@@ -2125,56 +2127,72 @@ ORG2_CA_ADMIN_PASSWORD=adminpw
 exports[`samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json should create proper e2e/__tmp__/samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh from samples/fablo-config-hlf1.3-2orgs-1chaincode-private-data.json 1`] = `
 "#!/usr/bin/env bash
 
-# Function to perform chaincode invoke
+chaincodeList() {
+  if [ \\"$#\\" -ne 2 ]; then
+    echo \\"Expected 2 parameters for chaincode list, but got: $*\\"
+    exit 1
+
+  elif [ \\"$1\\" = \\"peer0.org1.example.com\\" ]; then
+
+    peerChaincodeList \\"cli.org1.example.com\\" \\"peer0.org1.example.com:7041\\" \\"$2\\" # $2 is channel name
+
+  elif
+    [ \\"$1\\" = \\"peer1.org1.example.com\\" ]
+  then
+
+    peerChaincodeList \\"cli.org1.example.com\\" \\"peer1.org1.example.com:7042\\" \\"$2\\" # $2 is channel name
+
+  elif
+    [ \\"$1\\" = \\"peer0.org2.example.com\\" ]
+  then
+
+    peerChaincodeList \\"cli.org2.example.com\\" \\"peer0.org2.example.com:7061\\" \\"$2\\" # $2 is channel name
+
+  else
+
+    echo \\"Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2\\"
+    exit 1
+
+  fi
+}
+
+# Function to perform chaincode invoke. Accepts 5 parameters:
+#   1. comma-separated peers
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
 chaincodeInvoke() {
-  local CHANNEL=\\"$1\\"
-  local CHAINCODE=\\"$2\\"
-  local PEERS=\\"$3\\"
-  local COMMAND=\\"$4\\"
-  local TRANSIENT=\\"$5\\"
-
-  echo \\"-> Chaincode invoke:\\"
-  inputLog \\"CHANNEL: $CHANNEL\\"
-  inputLog \\"CHAINCODE: $CHAINCODE\\"
-  inputLog \\"PEERS: $PEERS\\"
-  inputLog \\"COMMAND: $COMMAND\\"
-  inputLog \\"TRANSIENT: $TRANSIENT\\"
-
-  # Validate the input parameters
-  if [[ -z $CHANNEL || -z $CHAINCODE || -z $PEERS || -z $COMMAND || -z $TRANSIENT ]]; then
-    echo \\"Error: Insufficient arguments provided.\\"
-    echo \\"Usage: fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated> <command> <transient>\\"
-    return 1
+  if [ \\"$#\\" -ne 4 ] && [ \\"$#\\" -ne 5 ]; then
+    echo \\"Expected 4 or 5 parameters for chaincode list, but got: $*\\"
+    echo \\"Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]\\"
+    exit 1
   fi
+  cli=\\"\\"
+  peer_addresses=\\"\\"
 
-  PEER_ADDRESSES=\\"--peerAddresses $(echo \\"$PEERS\\" | sed 's/,/ --peerAddresses  /g')\\"
+  if [[ \\"$1\\" == *\\"peer0.org1.example.com\\"* ]]; then
+    cli=\\"cli.org1.example.com\\"
+    peer_addresses=\\"$peer_addresses,peer0.org1.example.com:7041\\"
 
-  CLI=\\"\\"
+  fi
+  if [[ \\"$1\\" == *\\"peer1.org1.example.com\\"* ]]; then
+    cli=\\"cli.org1.example.com\\"
+    peer_addresses=\\"$peer_addresses,peer1.org1.example.com:7042\\"
 
-  if [ \\"$PEERS\\" = \\"peer0.org1.example.com:7041\\" ]; then
-    CLI=\\"cli.org1.example.com\\"
   fi
-  if [ \\"$PEERS\\" = \\"peer1.org1.example.com:7042\\" ]; then
-    CLI=\\"cli.org1.example.com\\"
+  if [[ \\"$1\\" == *\\"peer0.org2.example.com\\"* ]]; then
+    cli=\\"cli.org2.example.com\\"
+    peer_addresses=\\"$peer_addresses,peer0.org2.example.com:7061\\"
+
   fi
-  if [ \\"$PEERS\\" = \\"peer0.org2.example.com:7061\\" ]; then
-    CLI=\\"cli.org2.example.com\\"
-  fi
-  if [ -z \\"$CLI\\" ]; then
-    echo \\"Unknown peer: $PEERS\\"
+  if [ -z \\"$peer_addresses\\" ]; then
+    echo \\"Unknown peers: $1\\"
     exit 1
   fi
 
-  # shellcheck disable=SC2086
-  docker exec \\"$CLI\\" peer chaincode invoke \\\\
-    $PEER_ADDRESSES \\\\
-    -C \\"$CHANNEL\\" \\\\
-    -n \\"$CHAINCODE\\" \\\\
-    -c \\"$COMMAND\\" \\\\
-    --transient \\"$TRANSIENT\\" \\\\
-    --waitForEvent \\\\
-    --waitForEventTimeout 90s \\\\
-    2>&1
+  peerChaincodeInvoke \\"$cli\\" \\"\${peer_addresses:1}\\" \\"$2\\" \\"$3\\" \\"$4\\" \\"$5\\"
+
 }
 "
 `;
@@ -2680,7 +2698,6 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     networks:
       - basic
-
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
     image: hyperledger/fabric-peer:\${FABRIC_VERSION}
