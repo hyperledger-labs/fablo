@@ -13,7 +13,7 @@ chaincodeBuild() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
   local CAAS_IMAGE_OR_CHAINCODE_DIR_PATH=$3
-  local RECOMMENDED_NODE_VERSION=$5
+  local RECOMMENDED_NODE_VERSION=$4
 
   if [[ "$(docker images -q "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH" 2>/dev/null)" == "" ]]; then
     dockerPullIfMissing "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
