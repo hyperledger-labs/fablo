@@ -59,7 +59,8 @@ export interface ChaincodeJson {
   init?: string;
   initRequired?: boolean;
   endorsement?: string;
-  directory: string;
+  directory?: string;
+  image?: string;
   privateData: PrivateDataJson[];
 }
 

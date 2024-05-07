@@ -134,7 +134,8 @@ export interface OrgConfig {
 }
 
 export interface ChaincodeConfig {
-  directory: string;
+  directory?: string;
+  image?: string;
   name: string;
   version: string;
   lang: string;
