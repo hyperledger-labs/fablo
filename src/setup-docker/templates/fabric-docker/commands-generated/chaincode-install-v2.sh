@@ -8,11 +8,19 @@
    - global
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
+<% if (chaincode.directory) { -%>
 chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
   "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
   "<%= global.fabricRecommendedNodeVersion %>"
+<% } else if (chaincode.image) { -%>
+chaincodeBuild <% -%>
+  "<%= chaincode.name %>" <% -%>
+  "<%= chaincode.lang %>" <% -%>
+  "<%= chaincode.image %>"
+  "<%= global.fabricRecommendedNodeVersion %>"
+<% } -%>
 chaincodePackage <% -%>
   "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
