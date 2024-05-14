@@ -9,72 +9,77 @@ dockerPullIfMissing() {
   fi
 }
 
-chaincodeBuild() {
+chaincodeBuildImage() {
   local CHAINCODE_NAME=$1
   local CHAINCODE_LANG=$2
-  local CAAS_IMAGE_OR_CHAINCODE_DIR_PATH=$3
+  local CHAINCODE_DIR_PATH=$3
+  local RECOMMENDED_NODE_VERSION=$4
+  echo "Building docker image $CHAINCODE_NAME"
+  echo "Dockerfile should be at $CHAINCODE_DIR_PATH"
+  docker build -f $CHAINCODE_DIR_PATH/Dockerfile -t $CHAINCODE_NAME:latest --build-arg CC_SERVER_PORT=9999 $CHAINCODE_DIR_PATH
+}
+
+chaincodeBuildDirPath() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_LANG=$2
+  local CHAINCODE_DIR_PATH=$3
   local RECOMMENDED_NODE_VERSION=$4
 
-  if [[ "$(docker images -q "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH" 2>/dev/null)" == "" ]]; then
-    dockerPullIfMissing "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
-    docker run --name "$CHAINCODE_NAME" "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
-  else
-    mkdir -p "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
+  mkdir -p "$CHAINCODE_DIR_PATH"
 
-    # pull required images upfront in case of arm64 (Apple Silicon) architecture
-    # see https://stackoverflow.com/questions/69699421/hyperledger-fabric-chaincode-installation-failed-no-matching-manifest-for-linu
-    if [ "$(uname -m)" = "arm64" ]; then
-      if [ "$CHAINCODE_LANG" = "node" ]; then
-        dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
-      fi
-      if [ "$CHAINCODE_LANG" = "java" ]; then
-        dockerPullIfMissing "hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION"
-      fi
-      if [ "$CHAINCODE_LANG" = "golang" ]; then
-        dockerPullIfMissing "hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION"
+  # pull required images upfront in case of arm64 (Apple Silicon) architecture
+  # see https://stackoverflow.com/questions/69699421/hyperledger-fabric-chaincode-installation-failed-no-matching-manifest-for-linu
+  if [ "$(uname -m)" = "arm64" ]; then
+    if [ "$CHAINCODE_LANG" = "node" ]; then
+      dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
+    fi
+    if [ "$CHAINCODE_LANG" = "java" ]; then
+      dockerPullIfMissing "hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION"
+    fi
+    if [ "$CHAINCODE_LANG" = "golang" ]; then
+      dockerPullIfMissing "hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION"
+    fi
+  fi
+
+  if [ "$CHAINCODE_LANG" = "node" ]; then
+    if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
+      # note: `source ~/.nvm/nvm.sh || true` seems to not work on some shells (like /bin/zsh on Apple Silicon)
+      set +e
+      source ~/.nvm/nvm.sh
+      set -e
+      if [ "$(command -v nvm)" == "nvm" ]; then
+        current_dir="$(pwd)"
+        cd "$CHAINCODE_DIR_PATH"
+        set +u
+        nvm install
+        set -u
+        cd "$current_dir"
       fi
     fi
 
-    if [ "$CHAINCODE_LANG" = "node" ]; then
-      if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
-        # note: `source ~/.nvm/nvm.sh || true` seems to not work on some shells (like /bin/zsh on Apple Silicon)
-        set +e
-        source ~/.nvm/nvm.sh
-        set -e
-        if [ "$(command -v nvm)" == "nvm" ]; then
-          current_dir="$(pwd)"
-          cd "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
-          set +u
-          nvm install
-          set -u
-          cd "$current_dir"
-        fi
-      fi
+    NODE_VERSION="$(node --version)"
 
-      NODE_VERSION="$(node --version)"
+    USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
+    if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
+      RECOMMENDED_NODE_VERSION="8.9"
+    fi
 
-      USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH/package.json")"
-      if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
-        RECOMMENDED_NODE_VERSION="8.9"
-      fi
+    if ! echo "$NODE_VERSION" | grep -q "v$RECOMMENDED_NODE_VERSION"; then
+      echo "Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)"
+      echo "See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md"
+    fi
 
-      if ! echo "$NODE_VERSION" | grep -q "v$RECOMMENDED_NODE_VERSION"; then
-        echo "Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)"
-        echo "See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md"
-      fi
+    echo "Buiding chaincode '$CHAINCODE_NAME'..."
+    inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+    inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+    inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+    inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
 
-      echo "Buiding chaincode '$CHAINCODE_NAME'..."
-      inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
-      inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-      inputLog "CHAINCODE_DIR_PATH: $CAAS_IMAGE_OR_CHAINCODE_DIR_PATH"
-      inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
-
-      # We have different commands for npm and yarn
-      if [ -f "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH/yarn.lock" ]; then
-        (cd "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH" && npm install -g yarn && yarn install && yarn build)
-      else
-        (cd "$CAAS_IMAGE_OR_CHAINCODE_DIR_PATH" && npm install && npm run build)
-      fi
+    # We have different commands for npm and yarn
+    if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
+      (cd "$CHAINCODE_DIR_PATH" && npm install -g yarn && yarn install && yarn build)
+    else
+      (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
     fi
   fi
 }
