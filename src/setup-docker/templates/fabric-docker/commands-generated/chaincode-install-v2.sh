@@ -8,22 +8,29 @@
    - global
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
-chaincodeBuildImage <% -%>
-  "<%= chaincode.name %>" <% -%>
-  "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-  "<%= global.fabricRecommendedNodeVersion %>"
-chaincodeBuildDirPath <% -%>
-  "<%= chaincode.name %>" <% -%>
-  "<%= chaincode.lang %>" <% -%>
-  "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-  "<%= global.fabricRecommendedNodeVersion %>"
-chaincodePackage <% -%>
-  "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
-  "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-  "<%= chaincode.name %>" <% -%>
-  "$version" <% -%>
-  "<%= chaincode.lang %>" <% -%>
+<% if (chaincode.directory) { -%>
+  chaincodeBuildDirPath <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+    "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
+    "<%= global.fabricRecommendedNodeVersion %>"
+  chaincodePackage <% -%>
+    "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
+    "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "$version" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+<% } else { -%>
+  chaincodeBuildCCAASImage <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>"
+  chaincodeExternalPackage <% -%>
+    "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
+    "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "$version" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+<% } -%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
   <% org.peers.forEach((peer) => { -%>
@@ -60,3 +67,8 @@ chaincodeCommit <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
   "<%= !global.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
+
+<% if (!chaincode.directory) { -%>
+  chaincodeRunDockerContainers <% -%>
+    "<%= chaincode.name %>" <% -%>
+<% } %>
