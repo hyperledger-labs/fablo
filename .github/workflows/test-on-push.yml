@@ -120,30 +120,7 @@ jobs:
             e2e-network/docker/test-02-raft.sh.logs/*
             e2e-network/docker/test-02-raft.sh.tmpdir/fablo-target/**/*
 
-  test-03-private-data:
-    needs: test-main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
 
-      - name: Build Fablo
-        run: |
-          shellcheck --version && \
-          yamllint -v && \
-          npm install && \
-          ./fablo-build.sh
-
-      - name: Test private data
-        run: e2e-network/docker/test-03-private-data.sh
-
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: test-03-private-data
-          path: |
-            e2e-network/docker/test-03-private-data.sh.logs/*
-            e2e-network/docker/test-03-private-data.sh.tmpdir/fablo-target/**/*
 
   test-04-snapshot:
     needs: test-main
@@ -160,7 +137,7 @@ jobs:
           ./fablo-build.sh
 
       - name: Test snapshots
-        run: e2e-network/docker/test-04-snapshot.sh
+        run: e2e-network/docker/test-03-snapshot.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
