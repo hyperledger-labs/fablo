@@ -2472,12 +2472,12 @@ chaincodeExternalPackage() {
   inputLog \\"Chaincode is packaged  \${address}\\"
 }
 
-chaincodeRunDockerContainers() {
-  echo \\"Running docker containers\\"
+chaincodeRunCCAASContainers() {
+  echo \\"Running Chaincode-as-a-Service container\\"
   local CHAINCODE_NAME=$1
   local CCAAS_SERVER_PORT=9999
 
-  docker run --rm -d --name peer0org1_\\"\${CHAINCODE_NAME}\\"_ccaas \\\\
+  docker run --rm -d --name \\"\${CHAINCODE_NAME}\\"_ccaas --network \\"\${COMPOSE_PROJECT_NAME}_basic\\" \\\\
     -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:\${CCAAS_SERVER_PORT} \\\\
     -e CHAINCODE_ID=\\"$CC_PACKAGE_ID\\" -e CORE_CHAINCODE_ID_NAME=\\"$CC_PACKAGE_ID\\" \\\\
     \\"\${CHAINCODE_NAME}\\"_ccaas_image:latest
