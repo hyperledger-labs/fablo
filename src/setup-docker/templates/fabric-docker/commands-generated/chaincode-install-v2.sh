@@ -69,6 +69,6 @@ chaincodeCommit <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
 
 <% if (!chaincode.directory) { -%>
-  chaincodeRunDockerContainers <% -%>
+  chaincodeRunCCAASContainers <% -%>
     "<%= chaincode.name %>" <% -%>
 <% } %>
