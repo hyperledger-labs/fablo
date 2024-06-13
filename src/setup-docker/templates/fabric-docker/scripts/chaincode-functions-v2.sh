@@ -69,7 +69,7 @@ chaincodeBuild() {
     if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
       (cd "$CHAINCODE_DIR_PATH" && npm install -g yarn && yarn install && yarn build)
     else
-      (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
+      (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build && npm install --production)
     fi
   fi
 }
