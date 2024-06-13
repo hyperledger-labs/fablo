@@ -31,10 +31,10 @@ const executeCommand = (c: string, noConsole = false): CommandOutput => {
     log(output);
     return commandOutput(0, output);
   } catch (e) {
-    const output = (e.output || []).join("");
+    const output = ((e as { output?: string[] }).output ?? []).join("");
     // eslint-disable-next-line no-console
     console.error(`Error executing command ${c}`, e, output);
-    return commandOutput(e.status, output);
+    return commandOutput((e as { status: number }).status, output);
   }
 };
 
