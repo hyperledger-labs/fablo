@@ -120,6 +120,18 @@ jobs:
             e2e-network/docker/test-02-raft.sh.logs/*
             e2e-network/docker/test-02-raft.sh.tmpdir/fablo-target/**/*
 
+      - name: Test Private-Data
+        run: e2e-network/docker/test-02-private-data.sh
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-02-private-data
+          path: |
+            e2e-network/docker/test-02-private-data.sh.logs/*
+            e2e-network/docker/test-02-private-data.sh.tmpdir/fablo-target/**/*
+
+
 
 
   test-04-snapshot:
