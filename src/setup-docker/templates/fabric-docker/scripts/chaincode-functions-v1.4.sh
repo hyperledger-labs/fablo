@@ -32,21 +32,6 @@ chaincodeBuild() {
   fi
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
-    if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
-      # note: `source ~/.nvm/nvm.sh || true` seems to not work on some shells (like /bin/zsh on Apple Silicon)
-      set +e
-      source ~/.nvm/nvm.sh
-      set -e
-      if [ "$(command -v nvm)" == "nvm" ]; then
-        current_dir="$(pwd)"
-        cd "$CHAINCODE_DIR_PATH"
-        set +u
-        nvm install
-        set -u
-        cd "$current_dir"
-      fi
-    fi
-
     NODE_VERSION="$(node --version)"
 
     USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
