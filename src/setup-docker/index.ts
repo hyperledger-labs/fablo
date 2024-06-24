@@ -203,7 +203,7 @@ export default class SetupDockerGenerator extends Generator {
 
   _createPrivateDataCollectionConfigs(chaincodes: ChaincodeConfig[]): void {
     chaincodes.forEach(({ privateData, privateDataConfigFile }) => {
-      if (privateData !== [] && !!privateDataConfigFile) {
+      if (privateData && privateData.length && !!privateDataConfigFile) {
         this.fs.write(
           this.destinationPath(`fabric-config/${privateDataConfigFile}`),
           JSON.stringify(privateData, undefined, 2),
