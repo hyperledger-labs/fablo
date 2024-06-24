@@ -135,11 +135,21 @@ executeOnFabloDocker() {
 
     fablo_config="$(cd "$(dirname "$fablo_config")" && pwd)/$(basename "$fablo_config")"
     local chaincodes_base_dir="$(dirname "$fablo_config")"
+
+    # Extract chaincodes information from the config file
+    local chaincodes=$(jq -r '.chaincodes[] | "\(.channel)/\(.name)"' "$fablo_config")
+
     fablo_config_params=(
       -v "$fablo_config":/network/fablo-config.json
       --env "FABLO_CONFIG=$fablo_config"
       --env "CHAINCODES_BASE_DIR=$chaincodes_base_dir"
     )
+
+    # Create volume mounts for each chaincode based on channel-name/chaincode-name
+    for chaincode in $chaincodes; do
+      local chaincode_dir="$chaincodes_base_dir/chaincodes/$chaincode"
+      fablo_config_params+=(-v "$chaincode_dir":"/opt/gopath/src/github.com/chaincode/$chaincode")
+    done
   fi
 
   docker run -i --rm \
@@ -149,6 +159,7 @@ executeOnFabloDocker() {
     $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh \"$command_with_params\"" \
     2>&1
 }
+
 
 useVersion() {
   printSplash
