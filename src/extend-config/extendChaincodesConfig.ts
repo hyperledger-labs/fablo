@@ -21,7 +21,7 @@ const createPrivateCollectionConfig = (
   //  - requiredPeerCount -> minimal number of anchor peers from one organization in a channel
   const anchorPeerCountsInChannel = channel.orgs.map((o) => (o.anchorPeers || []).length);
   const maxPeerCount = anchorPeerCountsInChannel.reduce((a, b) => a + b, 0);
-  const requiredPeerCount = anchorPeerCountsInChannel.reduce((a, b) => Math.min(a, b), maxPeerCount) || 1;
+  const requiredPeerCount = anchorPeerCountsInChannel.reduce((a, b) => Math.min(a, b), maxPeerCount);
 
   const memberOnlyRead = version(fabricVersion).isGreaterOrEqual("1.4.0") ? { memberOnlyRead: true } : {};
   const memberOnlyWrite = version(fabricVersion).isGreaterOrEqual("2.0.0") ? { memberOnlyWrite: true } : {};
