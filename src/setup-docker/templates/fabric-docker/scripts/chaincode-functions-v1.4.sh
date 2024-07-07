@@ -49,11 +49,7 @@ chaincodeBuild() {
     inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
     inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
     inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
-    #!/bin/bash
 
-    if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
-      echo "yarn not supported, installing using npm instead"
-    fi
     
     # Default to using npm for installation and build
     (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
