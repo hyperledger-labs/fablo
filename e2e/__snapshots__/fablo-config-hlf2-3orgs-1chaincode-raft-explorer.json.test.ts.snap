@@ -5204,7 +5204,7 @@ chaincodeBuild() {
     fi
   fi
 
-  if [ \\"$CHAINCODE_LANG\\" = \\"node\\" ]; then
+  if [ "$CHAINCODE_LANG" = "node" ]; then
 
     NODE_VERSION="$(node --version)"
 
@@ -5218,14 +5218,14 @@ chaincodeBuild() {
       echo "See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md"
     fi
 
-    echo \\"Buiding chaincode '$CHAINCODE_NAME'...\\"
-    inputLog \\"CHAINCODE_NAME: $CHAINCODE_NAME\\"
-    inputLog \\"CHAINCODE_LANG: $CHAINCODE_LANG\\"
-    inputLog \\"CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH\\"
-    inputLog \\"NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)\\"
+    echo "Buiding chaincode '$CHAINCODE_NAME'..."
+    inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+    inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+    inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+    inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
 
     # Default to using npm for installation and build
-    (cd \\"$CHAINCODE_DIR_PATH\\" && npm install && npm run build)
+    (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
 
   fi
 }
