@@ -22,7 +22,17 @@ interface CapabilitiesV2 {
   isV2: true;
 }
 
-export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
+
+interface CapabilitiesV_2_5 {
+  application: "V2_5";
+  channel: "V2_5";
+  orderer: "V2_5";
+  isV2: true;
+}
+
+
+
+export type Capabilities = CapabilitiesV1 | CapabilitiesV2 | CapabilitiesV_2_5;
 
 export interface Global extends FabricVersions {
   tls: boolean;
