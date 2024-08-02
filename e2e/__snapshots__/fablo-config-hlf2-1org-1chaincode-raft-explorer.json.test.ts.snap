@@ -1,6 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7a0da9f (resolved the error)
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 "/config
 /crypto-config
@@ -1706,7 +1709,11 @@ generateArtifacts() {
 
 startNetwork() {
   printHeadline "Starting network" "U1F680"
+<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
+=======
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
+>>>>>>> 7a0da9f (resolved the error)
   sleep 4
 }
 
@@ -1832,13 +1839,21 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
+<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
+=======
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
+>>>>>>> 7a0da9f (resolved the error)
   sleep 4
 }
 
 networkDown() {
   printHeadline "Destroying network" "U1F916"
+<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
+=======
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
+>>>>>>> 7a0da9f (resolved the error)
 
   printf "Removing chaincode containers & images... \\U1F5D1 \\n"
   for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
@@ -3216,7 +3231,11 @@ __cloneSnapshot() {
     (cd "$target_dir" && eval "$hook_cmd")
   fi
 
+<<<<<<< HEAD
   (cd "$target_dir/fablo-target/fabric-docker" && docker compose up --no-start)
+=======
+  (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
+>>>>>>> 7a0da9f (resolved the error)
 
   for node in $(__getCASQLiteNodes); do
     echo "Restoring $node..."
@@ -3296,6 +3315,9 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh",
 ]
 `;
+<<<<<<< HEAD
 =======
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `[]`;
 >>>>>>> 93ccee8 (removed the unused templates)
+=======
+>>>>>>> 7a0da9f (resolved the error)

@@ -83,7 +83,7 @@ installChaincodes() {
             local version="<%= chaincode.version %>"
             <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
           <% } -%>
-        <% }
+        <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
