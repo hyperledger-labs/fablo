@@ -104,8 +104,6 @@ installChaincode() {
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (global.capabilities.isV2) { -%>
           <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
-        <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' install. Chaincode directory is empty."
