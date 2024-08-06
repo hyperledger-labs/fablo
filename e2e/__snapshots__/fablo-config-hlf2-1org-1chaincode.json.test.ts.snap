@@ -17,6 +17,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 Capabilities:
     Channel: &ChannelCapabilities
 <<<<<<< HEAD
+<<<<<<< HEAD
         V2_0: true
     Orderer: &OrdererCapabilities
         V2_0: true
@@ -24,11 +25,18 @@ Capabilities:
         V2_0: true
 =======
         V2_5: true
+=======
+        V2_0: true
+>>>>>>> fbcd816 (some minor fixes regarding fabric_version)
     Orderer: &OrdererCapabilities
-        V2_5: true
+        V2_0: true
     Application: &ApplicationCapabilities
+<<<<<<< HEAD
         V2_5: true
 >>>>>>> 7a0da9f (resolved the error)
+=======
+        V2_0: true
+>>>>>>> fbcd816 (some minor fixes regarding fabric_version)
 
 ################################################################################
 #   CHANNEL Defaults
@@ -1461,6 +1469,7 @@ COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 FABRIC_VERSION=2.4.7
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
@@ -1477,6 +1486,15 @@ FABRIC_BASEOS_VERSION=2.5.9
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 >>>>>>> 7a0da9f (resolved the error)
+=======
+FABRIC_VERSION=2.4.7
+FABRIC_CA_VERSION=1.5.5
+FABRIC_CA_POSTGRES_VERSION=14
+FABRIC_CCENV_VERSION=2.4.7
+FABRIC_BASEOS_VERSION=2.4.7
+FABRIC_JAVAENV_VERSION=2.4
+FABRIC_NODEENV_VERSION=2.4
+>>>>>>> fbcd816 (some minor fixes regarding fabric_version)
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
