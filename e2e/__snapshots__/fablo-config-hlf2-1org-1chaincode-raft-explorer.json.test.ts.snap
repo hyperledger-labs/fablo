@@ -1705,7 +1705,7 @@ generateArtifacts() {
 
 startNetwork() {
   printHeadline "Starting network" "U1F680"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
 }
 
@@ -1831,13 +1831,13 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
   sleep 4
 }
 
 networkDown() {
   printHeadline "Destroying network" "U1F916"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
 
   printf "Removing chaincode containers & images... \\U1F5D1 \\n"
   for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
@@ -3215,7 +3215,7 @@ __cloneSnapshot() {
     (cd "$target_dir" && eval "$hook_cmd")
   fi
 
-  (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
+  (cd "$target_dir/fablo-target/fabric-docker" && docker compose up --no-start)
 
   for node in $(__getCASQLiteNodes); do
     echo "Restoring $node..."
