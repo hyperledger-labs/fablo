@@ -1,9 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7a0da9f (resolved the error)
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 "/config
 /crypto-config
@@ -16,27 +12,11 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 ################################################################################
 Capabilities:
     Channel: &ChannelCapabilities
-<<<<<<< HEAD
-<<<<<<< HEAD
         V2_0: true
     Orderer: &OrdererCapabilities
         V2_0: true
     Application: &ApplicationCapabilities
         V2_0: true
-=======
-        V2_5: true
-=======
-        V2_0: true
->>>>>>> fbcd816 (some minor fixes regarding fabric_version)
-    Orderer: &OrdererCapabilities
-        V2_0: true
-    Application: &ApplicationCapabilities
-<<<<<<< HEAD
-        V2_5: true
->>>>>>> 7a0da9f (resolved the error)
-=======
-        V2_0: true
->>>>>>> fbcd816 (some minor fixes regarding fabric_version)
 
 ################################################################################
 #   CHANNEL Defaults
@@ -1468,8 +1448,6 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 FABRIC_VERSION=2.4.7
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
@@ -1477,24 +1455,6 @@ FABRIC_CCENV_VERSION=2.4.7
 FABRIC_BASEOS_VERSION=2.4.7
 FABRIC_JAVAENV_VERSION=2.4
 FABRIC_NODEENV_VERSION=2.4
-=======
-FABRIC_VERSION=2.5.9
-FABRIC_CA_VERSION=1.5.5
-FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.5.9
-FABRIC_BASEOS_VERSION=2.5.9
-FABRIC_JAVAENV_VERSION=2.5
-FABRIC_NODEENV_VERSION=2.5
->>>>>>> 7a0da9f (resolved the error)
-=======
-FABRIC_VERSION=2.4.7
-FABRIC_CA_VERSION=1.5.5
-FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.4.7
-FABRIC_BASEOS_VERSION=2.4.7
-FABRIC_JAVAENV_VERSION=2.4
-FABRIC_NODEENV_VERSION=2.4
->>>>>>> fbcd816 (some minor fixes regarding fabric_version)
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
@@ -1695,11 +1655,7 @@ generateArtifacts() {
 
 startNetwork() {
   printHeadline "Starting network" "U1F680"
-<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
-=======
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
->>>>>>> 7a0da9f (resolved the error)
   sleep 4
 }
 
@@ -1830,21 +1786,13 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
-<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
-=======
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
->>>>>>> 7a0da9f (resolved the error)
   sleep 4
 }
 
 networkDown() {
   printHeadline "Destroying network" "U1F916"
-<<<<<<< HEAD
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
-=======
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
->>>>>>> 7a0da9f (resolved the error)
 
   printf "Removing chaincode containers & images... \\U1F5D1 \\n"
   for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
@@ -3132,11 +3080,7 @@ __cloneSnapshot() {
     (cd "$target_dir" && eval "$hook_cmd")
   fi
 
-<<<<<<< HEAD
   (cd "$target_dir/fablo-target/fabric-docker" && docker compose up --no-start)
-=======
-  (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
->>>>>>> 7a0da9f (resolved the error)
 
   for node in $(__getCASQLiteNodes); do
     echo "Restoring $node..."
@@ -3212,9 +3156,3 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper fil
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/hooks/post-generate.sh",
 ]
 `;
-<<<<<<< HEAD
-=======
-exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `[]`;
->>>>>>> 93ccee8 (removed the unused templates)
-=======
->>>>>>> 7a0da9f (resolved the error)
