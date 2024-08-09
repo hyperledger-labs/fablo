@@ -23,7 +23,7 @@ generateArtifacts() {
 
 startNetwork() {
   printHeadline "Starting network" "U1F680"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose up -d)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
 }
 
@@ -83,8 +83,6 @@ installChaincodes() {
             local version="<%= chaincode.version %>"
             <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
           <% } -%>
-        <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); -%>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
@@ -106,8 +104,6 @@ installChaincode() {
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (global.capabilities.isV2) { -%>
           <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
-        <% } else { -%>
-          <%- include('commands-generated/chaincode-install-v1.4.sh', { chaincode, global }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' install. Chaincode directory is empty."
@@ -209,13 +205,13 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose stop)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
   sleep 4
 }
 
 networkDown() {
   printHeadline "Destroying network" "U1F916"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker-compose down)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
 
   printf "Removing chaincode containers & images... \U1F5D1 \n"
   <% chaincodes.forEach((chaincode) => { -%>

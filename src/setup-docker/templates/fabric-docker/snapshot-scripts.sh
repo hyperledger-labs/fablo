@@ -76,7 +76,7 @@ __cloneSnapshot() {
     (cd "$target_dir" && eval "$hook_cmd")
   fi
 
-  (cd "$target_dir/fablo-target/fabric-docker" && docker-compose up --no-start)
+  (cd "$target_dir/fablo-target/fabric-docker" && docker compose up --no-start)
 
   for node in $(__getCASQLiteNodes); do
     echo "Restoring $node..."
