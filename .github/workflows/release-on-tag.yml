@@ -11,20 +11,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set version from tag and update tag
+      - name: Verify version
         run: |
           TAG=$(git describe --tags --abbrev=0)
           VERSION=${TAG:1}
           echo "TAG: $TAG"
           echo "VERSION: $VERSION"
-          ./bump_version.sh set "$VERSION"
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -a -m "Set version from tag: $TAG"
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
+          PKG_JSON_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
+          if [ "$VERSION" != "$PKG_JSON_VERSION" ]; then
+              echo "Version in package.json ($PKG_JSON_VERSION) does not match tag ($VERSION)"
+              exit 1
+          fi
 
       - name: Build Fablo
         run: |
@@ -53,8 +52,12 @@ jobs:
             docs/schema.json
             fablo.sh
 
-      - name: Set next development version
+      - name: Create next development version PR
         run: |
           ./bump_version.sh unstable
+          NEW_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
+          BRANCH_NAME="bump-version-to-$NEW_VERSION"
+          git checkout -b $BRANCH_NAME
           git commit -a -m "Set new development version: $NEW_VERSION"
-          git push origin HEAD
+          git push --set-upstream origin bump-version-to-$NEW_VERSION
+          git gh pr create --title "Bump Version to $NEW_VERSION" --body "Bump Version to $NEW_VERSION" --label "bump-version-pr" --head "bump-version-to-$NEW_VERSION" --base main
