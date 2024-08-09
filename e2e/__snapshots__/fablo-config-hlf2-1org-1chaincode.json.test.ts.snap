@@ -16,7 +16,7 @@ Capabilities:
     Orderer: &OrdererCapabilities
         V2_0: true
     Application: &ApplicationCapabilities
-        V2_0: true
+        V2_5: true
 
 ################################################################################
 #   CHANNEL Defaults
@@ -1448,13 +1448,13 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=2.4.7
+FABRIC_VERSION=2.5.9
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.4.7
-FABRIC_BASEOS_VERSION=2.4.7
-FABRIC_JAVAENV_VERSION=2.4
-FABRIC_NODEENV_VERSION=2.4
+FABRIC_CCENV_VERSION=2.5.9
+FABRIC_BASEOS_VERSION=2.5.9
+FABRIC_JAVAENV_VERSION=2.5
+FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin

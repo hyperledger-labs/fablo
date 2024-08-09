@@ -18,8 +18,8 @@ interface CapabilitiesV2 {
 
 interface CapabilitiesV_2_5 {
   application: "V2_5";
-  channel: "V2_5";
-  orderer: "V2_5";
+  channel: "V2_0";
+  orderer: "V2_0";
   isV2: true;
 }
 
