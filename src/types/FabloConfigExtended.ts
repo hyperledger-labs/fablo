@@ -8,13 +8,6 @@ export interface FabricVersions {
   fabricRecommendedNodeVersion: string;
 }
 
-interface CapabilitiesV1 {
-  application: "V1_3" | "V1_4_2";
-  channel: "V1_3" | "V1_4_2" | "V1_4_3";
-  orderer: "V1_1" | "V1_4_2";
-  isV2: false;
-}
-
 interface CapabilitiesV2 {
   application: "V2_0";
   channel: "V2_0";
@@ -22,7 +15,17 @@ interface CapabilitiesV2 {
   isV2: true;
 }
 
-export type Capabilities = CapabilitiesV1 | CapabilitiesV2;
+
+interface CapabilitiesV_2_5 {
+  application: "V2_5";
+  channel: "V2_5";
+  orderer: "V2_5";
+  isV2: true;
+}
+
+
+
+export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5;
 
 export interface Global extends FabricVersions {
   tls: boolean;
