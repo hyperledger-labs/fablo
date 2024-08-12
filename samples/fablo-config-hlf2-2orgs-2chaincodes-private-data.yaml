@@ -1,0 +1,58 @@
+---
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.2.1-unstable.0/schema.json
+global:
+  fabricVersion: 2.4.7
+  tls: false
+
+orgs:
+  - organization:
+      name: Orderer
+      domain: orderer.example.com
+    orderers:
+      - groupName: group1
+        prefix: orderer
+        type: solo
+        instances: 1
+  - organization:
+      name: Org1
+      domain: org1.example.com
+    peer:
+      instances: 2
+  - organization:
+      name: Org2
+      domain: org2.example.com
+    peer:
+      instances: 1
+channels:
+  - name: my-channel1
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+          - peer1
+      - name: Org2
+        peers:
+          - peer0
+chaincodes:
+  - name: or-policy-chaincode
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    init: '{"Args":[]}'
+    endorsement: OR('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node"
+    privateData:
+      - name: org1-collection
+        orgNames:
+          - Org1
+  - name: and-policy-chaincode
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    endorsement: AND('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node"
+    privateData:
+      - name: both-orgs-collection
+        orgNames:
+          - Org1
+          - Org2
