@@ -138,12 +138,14 @@ Profiles:
             <%_ }) _%>
             Capabilities:
                 <<: *OrdererCapabilities
+        <% if (!global.capabilities.isV3) { -%>
         Consortiums:
             SampleConsortium:
                 Organizations:
                 <%_ orgs.forEach(function(org){ _%>
                     - *<%= org.name %>
                 <%_ }) _%>
+        <% } -%>
 
 <%_ }) _%>
 <%_ channels.forEach(function(channel) { _%>
@@ -158,11 +160,16 @@ Profiles:
             <%_ }) _%>
             Capabilities:
                 <<: *ApplicationCapabilities
+        <% if (!global.capabilities.isV3) { -%>
         Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:<% channel.orgs.forEach(function(org){ %>
                     - *<%= org.name %><% }) %>
+        <% } -%>
+        <% if (global.capabilities.isV3) { -%>
+        Consortium: SampleConsortium
+        <% } -%>
         Application:
             <<: *ApplicationDefaults
             Organizations:<% channel.orgs.forEach(function(org){ %>
