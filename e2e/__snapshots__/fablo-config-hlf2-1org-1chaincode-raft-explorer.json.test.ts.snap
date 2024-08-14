@@ -156,40 +156,37 @@ Orderer: &Group1Defaults
 Profiles:
     # Profile used to create Genesis block for group group1 #
     Group1Genesis:
-      <<: *ChannelDefaults
-      Orderer:
-        <<: *Group1Defaults
-        Organizations:
-          - *Orderer
-        Capabilities:
-          <<: *OrdererCapabilities
-
-      Consortiums:
-        SampleConsortium:
-          Organizations:
-            - *Orderer
-            - *Org1
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Orderer
+                    - *Org1
 
     # Profile used to create channeltx for my-channel1 #
     MyChannel1:
-      <<: *ChannelDefaults
-      Orderer:
-        <<: *Group1Defaults
-        Organizations:
-          - *Orderer
-        Capabilities:
-          <<: *ApplicationCapabilities
-
-      Consortium: SampleConsortium
-      Consortiums:
-        SampleConsortium:
-          Organizations:
-            - *Org1
-
-      Application:
-        <<: *ApplicationDefaults
-        Organizations:
-          - *Org1
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *ApplicationCapabilities
+        Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
 "
 `;
 
