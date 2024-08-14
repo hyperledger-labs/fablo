@@ -253,91 +253,96 @@ Orderer: &Group1Defaults
 Profiles:
     # Profile used to create Genesis block for group group1 #
     Group1Genesis:
-        <<: *ChannelDefaults
-        Orderer:
-            <<: *Group1Defaults
-            Organizations:
-                - *Orderer
-                - *Org1
-                - *Org2
-                - *Org3
-            Capabilities:
-                <<: *OrdererCapabilities
-                Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Orderer
-                    - *Org1
-                    - *Org2
-                    - *Org3
+      <<: *ChannelDefaults
+      Orderer:
+        <<: *Group1Defaults
+        Organizations:
+          - *Orderer
+          - *Org1
+          - *Org2
+          - *Org3
+        Capabilities:
+          <<: *OrdererCapabilities
+
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+            - *Orderer
+            - *Org1
+            - *Org2
+            - *Org3
 
     # Profile used to create channeltx for my-channel1 #
     MyChannel1:
-        <<: *ChannelDefaults
-        Orderer:
-            <<: *Group1Defaults
-            Organizations:
-                - *Orderer
-                - *Org1
-                - *Org2
-                - *Org3
-            Capabilities:
-                <<: *ApplicationCapabilities
-                Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org1
-                        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Org1
+      <<: *ChannelDefaults
+      Orderer:
+        <<: *Group1Defaults
+        Organizations:
+          - *Orderer
+          - *Org1
+          - *Org2
+          - *Org3
+        Capabilities:
+          <<: *ApplicationCapabilities
 
+      Consortium: SampleConsortium
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+            - *Org1
+
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - *Org1
     # Profile used to create channeltx for my-channel2 #
     MyChannel2:
-        <<: *ChannelDefaults
-        Orderer:
-            <<: *Group1Defaults
-            Organizations:
-                - *Orderer
-                - *Org1
-                - *Org2
-                - *Org3
-            Capabilities:
-                <<: *ApplicationCapabilities
-                Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org2
-                        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Org2
+      <<: *ChannelDefaults
+      Orderer:
+        <<: *Group1Defaults
+        Organizations:
+          - *Orderer
+          - *Org1
+          - *Org2
+          - *Org3
+        Capabilities:
+          <<: *ApplicationCapabilities
 
+      Consortium: SampleConsortium
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+            - *Org2
+
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - *Org2
     # Profile used to create channeltx for my-channel3 #
     MyChannel3:
-        <<: *ChannelDefaults
-        Orderer:
-            <<: *Group1Defaults
-            Organizations:
-                - *Orderer
-                - *Org1
-                - *Org2
-                - *Org3
-            Capabilities:
-                <<: *ApplicationCapabilities
-                Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org1
-                    - *Org2
-                        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Org1
-                - *Org2
+      <<: *ChannelDefaults
+      Orderer:
+        <<: *Group1Defaults
+        Organizations:
+          - *Orderer
+          - *Org1
+          - *Org2
+          - *Org3
+        Capabilities:
+          <<: *ApplicationCapabilities
+
+      Consortium: SampleConsortium
+      Consortiums:
+        SampleConsortium:
+          Organizations:
+            - *Org1
+            - *Org2
+
+      Application:
+        <<: *ApplicationDefaults
+        Organizations:
+          - *Org1
+          - *Org2
 "
 `;
 
