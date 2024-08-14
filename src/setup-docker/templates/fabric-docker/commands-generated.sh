@@ -143,7 +143,7 @@ upgradeChaincode() {
         <% if (global.capabilities.isV2) { -%>
           <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
         <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v1.4.sh', { chaincode, global }); %>
+          <%- include('commands-generated/chaincode-upgrade-v2.sh', { chaincode, global }); %>
         <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."

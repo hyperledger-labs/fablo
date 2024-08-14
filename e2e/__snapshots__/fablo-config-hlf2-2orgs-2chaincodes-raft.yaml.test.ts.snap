@@ -256,7 +256,7 @@ Profiles:
                 - *Orderer1
             Capabilities:
                 <<: *OrdererCapabilities
-        Consortiums:
+                Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Orderer1
@@ -273,7 +273,7 @@ Profiles:
                 - *Orderer2
             Capabilities:
                 <<: *OrdererCapabilities
-        Consortiums:
+                Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Orderer1
@@ -290,13 +290,13 @@ Profiles:
                 - *Orderer1
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
                     - *Org2
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
@@ -311,13 +311,13 @@ Profiles:
                 - *Orderer1
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
                     - *Org2
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
@@ -332,13 +332,13 @@ Profiles:
                 - *Orderer2
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
                     - *Org2
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1

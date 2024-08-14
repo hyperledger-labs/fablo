@@ -263,7 +263,7 @@ Profiles:
                 - *Org3
             Capabilities:
                 <<: *OrdererCapabilities
-        Consortiums:
+                Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Orderer
@@ -283,12 +283,12 @@ Profiles:
                 - *Org3
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
@@ -305,12 +305,12 @@ Profiles:
                 - *Org3
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org2
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org2
@@ -327,13 +327,13 @@ Profiles:
                 - *Org3
             Capabilities:
                 <<: *ApplicationCapabilities
-        Consortium: SampleConsortium
+                Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Org1
                     - *Org2
-        Application:
+                Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
