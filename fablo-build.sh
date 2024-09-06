@@ -33,7 +33,7 @@ npm install
 npm run build:dist
 
 # if --push is passed, then build for all platforms and push the image to the registry
-if [ "$1" = "--push" ]; then
+if [ "${1:-''}" = "--push" ]; then
   docker buildx build \
     --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
     --platform linux/amd64,linux/arm64 \
