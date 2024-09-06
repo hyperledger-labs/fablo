@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Fablo
+      - name: Build and push Docker image
         run: |
           shellcheck --version
           yamllint -v
