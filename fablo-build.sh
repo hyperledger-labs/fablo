@@ -32,8 +32,18 @@ fi
 npm install
 npm run build:dist
 
-docker build \
-  --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
-  --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
+# if --push is passed, then build for all platforms and push the image to the registry
+if [ "$1" = "--push" ]; then
+  docker buildx build \
+    --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
+    --platform linux/amd64,linux/arm64 \
+    --tag "softwaremill/fablo:$FABLO_VERSION" \
+    --push \
+    "$FABLO_HOME"
+else
+  docker build \
+    --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
+    --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
 
-docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
+  docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
+fi
