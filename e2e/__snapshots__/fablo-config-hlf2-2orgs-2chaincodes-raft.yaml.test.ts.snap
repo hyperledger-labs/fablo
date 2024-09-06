@@ -263,7 +263,6 @@ Profiles:
                     - *Orderer2
                     - *Org1
                     - *Org2
-
     # Profile used to create Genesis block for group group2 #
     Group2Genesis:
         <<: *ChannelDefaults
@@ -301,7 +300,6 @@ Profiles:
             Organizations:
                 - *Org1
                 - *Org2
-
     # Profile used to create channeltx for my-channel2 #
     MyChannel2:
         <<: *ChannelDefaults
@@ -322,7 +320,6 @@ Profiles:
             Organizations:
                 - *Org1
                 - *Org2
-
     # Profile used to create channeltx for my-channel3 #
     MyChannel3:
         <<: *ChannelDefaults

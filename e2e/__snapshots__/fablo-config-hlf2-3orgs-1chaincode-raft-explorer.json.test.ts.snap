@@ -292,7 +292,6 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-
     # Profile used to create channeltx for my-channel2 #
     MyChannel2:
         <<: *ChannelDefaults
@@ -314,7 +313,6 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org2
-
     # Profile used to create channeltx for my-channel3 #
     MyChannel3:
         <<: *ChannelDefaults
