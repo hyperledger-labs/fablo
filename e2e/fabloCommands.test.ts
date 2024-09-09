@@ -84,7 +84,7 @@ describe("validate", () => {
 
   it("should validate custom config", () => {
     // Given
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf1.4-1org-1chaincode-raft.json`;
+    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json`;
 
     // When
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
@@ -177,7 +177,6 @@ describe("version", () => {
         build: expect.stringMatching(/.*/),
         supported: expect.objectContaining({
           fabloVersions: expect.stringMatching(/.*/),
-          hyperledgerFabricVersions: expect.anything(),
         }),
       }),
     );

@@ -11,6 +11,8 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
 source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
+source "$FABLO_NETWORK_ROOT/fabric-docker/chaincode-scripts.sh"
+
 
 networkUp() {
   generateArtifacts
@@ -41,6 +43,10 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
   upgradeChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
   runDevModeChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
+  chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
+  chaincodeList "$3" "$4"  
 elif [ "$1" = "channel" ]; then
   channelQuery "${@:2}"
 elif [ "$1" = "snapshot" ]; then

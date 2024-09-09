@@ -23,13 +23,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
@@ -209,6 +209,25 @@ fablo chaincode upgrade <chaincode-name> <version>
 Upgrades chaincode with given name on all relevant peers.
 Chaincode directory is specified in Fablo config file.
 
+### chaincode invoke
+Invokes chaincode with specified parameters.
+
+```
+fablo chaincode invoke <channel-name> <chaincode-name> <peers-domains-comma-separated>  <command> [transient]
+```
+Sample command:
+
+```
+fablo chaincode invoke "my-channel1" "chaincode1" "peer0.org1.example.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
+```
+
+### chaincodes list
+Gets the instantiated or installed chaincodes in the specified channel or peer. 
+
+```
+fablo chaincodes list <peer> <channel>
+```
+
 ### Running chaincodes in dev mode
 
 Hyperledger Fabric allows to run peers in [dev mode](https://hyperledger-fabric.readthedocs.io/en/release-2.4/peer-chaincode-devmode.html) in order to allow simple develop of chaincodes.
@@ -325,7 +344,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -488,7 +507,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.1.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false
@@ -559,6 +578,11 @@ Visit the [Fablo REST](https://github.com/softwaremill/fablo-rest) project for m
 
 Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you.
 Provide for your organization `"tools": { "explorer": true }`, if you want to use it per organization, or provide the same value in `global` section of the config, if you want to use one global Explorer for all organizations.
+
+## Contributing
+
+We'd love to have you contribute! Please refer to our [contribution guidelines](https://github.com/hyperledger-labs/fablo/blob/main/CONTRIBUTING.md) for details.
+
 
 ## Testimonials
 
