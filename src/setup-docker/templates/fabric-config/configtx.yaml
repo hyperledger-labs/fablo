@@ -126,46 +126,51 @@ Orderer: &<%= ordererGroup.configtxOrdererDefaults %>
 # https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
 
 Profiles:
-<%_ ordererGroups.forEach(function(ordererGroup) { _%>
+  <%_ ordererGroups.forEach(function(ordererGroup) { _%>
     # Profile used to create Genesis block for group <%= ordererGroup.name %> #
     <%= ordererGroup.profileName %>:
         <<: *ChannelDefaults
         Orderer:
             <<: *<%= ordererGroup.configtxOrdererDefaults %>
             Organizations:
-            <%_ ordererGroup.hostingOrgs.forEach(function(hostingOrg) { _%>
+              <%_ ordererGroup.hostingOrgs.forEach(function(hostingOrg) { _%>
                 - *<%= hostingOrg %>
-            <%_ }) _%>
+              <%_ }) _%>
             Capabilities:
                 <<: *OrdererCapabilities
+        <%_ if (!global.capabilities.isV3) { _%>
         Consortiums:
             SampleConsortium:
                 Organizations:
-                <%_ orgs.forEach(function(org){ _%>
+                  <%_ orgs.forEach(function(org){ _%>
                     - *<%= org.name %>
-                <%_ }) _%>
+                  <%_ }) _%>
+        <%_ } _%>
+  <%_ }) _%>
 
-<%_ }) _%>
-<%_ channels.forEach(function(channel) { _%>
+  <%_ channels.forEach(function(channel) { _%>
     # Profile used to create channeltx for <%= channel.name %> #
     <%= channel.profileName %>:
         <<: *ChannelDefaults
         Orderer:
             <<: *<%= channel.ordererGroup.configtxOrdererDefaults %>
             Organizations:
-            <%_ channel.ordererGroup.hostingOrgs.forEach(function(hostingOrg) { _%>
+              <%_ channel.ordererGroup.hostingOrgs.forEach(function(hostingOrg) { _%>
                 - *<%= hostingOrg %>
-            <%_ }) _%>
+              <%_ }) _%>
             Capabilities:
                 <<: *ApplicationCapabilities
         Consortium: SampleConsortium
         Consortiums:
             SampleConsortium:
-                Organizations:<% channel.orgs.forEach(function(org){ %>
-                    - *<%= org.name %><% }) %>
+                Organizations:
+                  <%_ channel.orgs.forEach(function(org){ _%>
+                    - *<%= org.name %>
+                  <%_ }) _%>
         Application:
             <<: *ApplicationDefaults
-            Organizations:<% channel.orgs.forEach(function(org){ %>
-                - *<%= org.name %><% }) %>
-
-<%_ }) _%>
+            Organizations:
+              <%_ channel.orgs.forEach(function(org){ _%>
+                - *<%= org.name %>
+              <%_ }) _%>
+  <%_ }) _%>

@@ -6,6 +6,8 @@ TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
 
+export FABLO_HOME
+
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
 networkUp() {
@@ -33,7 +35,7 @@ waitForContainer() {
 }
 
 waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode-tls.sh" "$1" "$2" "$3" "$4" "$5"
+  (cd "$TEST_TMP" && sh ../wait-for-chaincode.sh "$1" "$2" "$3" "$4") 
 }
 
 expectInvokeRest() {
@@ -41,7 +43,7 @@ expectInvokeRest() {
 }
 
 expectInvokeCli() {
-  sh "$TEST_TMP/../expect-invoke-cli-tls.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "$6")
 }
 
 trap networkDown EXIT
@@ -82,10 +84,10 @@ waitForContainer "peer1.org2.example.com" "Anchor peer for channel my-channel2 w
 waitForContainer "peer1.org2.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7062"
 
 # check if chaincodes are instantiated on peers
-waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1"
-waitForChaincode "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer1.org1.example.com" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "peer1.org2.example.com" "my-channel2" "chaincode2" "0.0.1"
 
 fablo_rest_org1="localhost:8802"
 
@@ -93,7 +95,7 @@ fablo_rest_org1="localhost:8802"
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \
   "KVContract:put" '["name", "Jack Sparrow"]' \
   '{"response":{"success":"OK"}}'
-expectInvokeCli "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "peer0.org2.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Jack Sparrow\"}'
 
@@ -101,19 +103,19 @@ expectInvokeCli "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel
 expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "tlsca.orderer1.com-cert.pem" \
+expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 
 # restart the network and wait for chaincodes
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
-waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")
-waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.2"
-waitForChaincode "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.2"
+waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.2"
 
 # check if state is kept after update
 expectInvokeRest "$fablo_rest_org1" "my-channel1" "chaincode1" \

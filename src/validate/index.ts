@@ -92,7 +92,6 @@ class ValidateGenerator extends Generator {
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
-    this._validateFabricVersion(networkConfig.global.fabricVersion);
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
 
@@ -120,6 +119,7 @@ class ValidateGenerator extends Generator {
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
+    this._verifyFabricVersion(networkConfig.global);
   }
 
   async shortSummary() {
@@ -202,16 +202,6 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateFabricVersion(fabricVersion: string) {
-    if (!config.supportedFabricVersions.includes(fabricVersion)) {
-      const objectToEmit = {
-        category: validationCategories.GENERAL,
-        message: `Hyperledger Fabric '${fabricVersion}' version is not supported. Supported versions are: ${config.supportedFabricVersions}`,
-      };
-      this.emit(validationErrorType.ERROR, objectToEmit);
-    }
-  }
-
   _validateOrdererCountForOrg(org: OrgJson) {
     const numerOfOrderersInOrg = org.orderers?.flatMap((o) => o.instances).reduce((a, b) => a + b, 0);
     if (numerOfOrderersInOrg !== undefined && numerOfOrderersInOrg > 9) {
@@ -262,7 +252,7 @@ class ValidateGenerator extends Generator {
             this.emit(validationErrorType.WARN, objectToEmit);
           }
 
-          if (!config.versionsSupportingRaft.includes(global.fabricVersion)) {
+          if (!config.versionsSupportingRaft(global.fabricVersion)) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
               message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
@@ -475,15 +465,16 @@ class ValidateGenerator extends Generator {
   }
 
   _validateDevMode(global: GlobalJson): void {
-    if (global.peerDevMode) {
-      if (global.tls) {
+    if (global.peerDevMode && global.tls) {
         const message = `TLS needs to be disabled when running peers in dev mode`;
         this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
-      }
-      if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
-        const message = `Fablo supports dev mode only for Fabric in version 2.0.0 and higher`;
-        this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
-      }
+    }
+  }
+
+  _verifyFabricVersion(global:GlobalJson){
+    if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
+      const message = `Fablo supports Fabric in version 2.0.0 and higher`;
+      this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }
 }

@@ -185,6 +185,11 @@ export default class SetupDockerGenerator extends Generator {
       config,
     );
     this.fs.copyTpl(
+      this.templatePath("fabric-docker/chaincode-scripts.sh"),
+      this.destinationPath("fabric-docker/chaincode-scripts.sh"),
+      config,
+    );
+    this.fs.copyTpl(
       this.templatePath("fabric-docker/snapshot-scripts.sh"),
       this.destinationPath("fabric-docker/snapshot-scripts.sh"),
       config,
@@ -198,7 +203,7 @@ export default class SetupDockerGenerator extends Generator {
 
   _createPrivateDataCollectionConfigs(chaincodes: ChaincodeConfig[]): void {
     chaincodes.forEach(({ privateData, privateDataConfigFile }) => {
-      if (privateData !== [] && !!privateDataConfigFile) {
+      if (privateData && privateData.length && !!privateDataConfigFile) {
         this.fs.write(
           this.destinationPath(`fabric-config/${privateDataConfigFile}`),
           JSON.stringify(privateData, undefined, 2),

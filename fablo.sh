@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION="1.2.0-unstable"
+FABLO_VERSION=1.2.1-unstable.0
 FABLO_IMAGE_NAME="softwaremill/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -41,11 +41,19 @@ printSplash() {
   darkGray=$'\e[90m'
   end=$'\e[0m'
   echo ""
-  echo "┌──────      .─.       ┌─────.    ╷           .────."
-  echo "│           /   \      │      │   │         ╱        ╲ "
-  echo "├─────     /     \     ├─────:    │        │          │"
-  echo "│         /───────\    │      │   │         ╲        ╱ "
-  printf "╵        /         \   └─────'    └──────     '────'    %24s\n" "v$FABLO_VERSION"
+  if [ "$(date +%m%d)" -gt "1215" ]; then
+    echo "┌──────       *        ┌─────.    ╷           .────."
+    echo "│           _/_\_      │      │   │         ╱        ╲ "
+    echo "├─────     _/___\_     ├─────:    │        │          │"
+    echo "│         _/_____\_    │      │   │         ╲        ╱ "
+    printf "╵            |_|       └─────'    └──────     '────'    %24s\n" "v$FABLO_VERSION"
+  else
+    echo "┌──────      .─.       ┌─────.    ╷           .────."
+    echo "│           /   \      │      │   │         ╱        ╲ "
+    echo "├─────     /     \     ├─────:    │        │          │"
+    echo "│         /───────\    │      │   │         ╲        ╱ "
+    printf "╵        /         \   └─────'    └──────     '────'    %24s\n" "v$FABLO_VERSION"
+  fi
   echo "${darkGray}┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐"
   echo "│ https://fablo.io | created at SoftwareMill | backed by Hyperledger Foundation│"
   echo "└┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘${end}"
@@ -83,6 +91,12 @@ printHelp() {
 
   fablo chaincode upgrade <chaincode-name> <version>
     Upgrades chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
+
+  fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
+    Invokes chaincode with specified parameters.
+
+  fablo chaincodes list <peer> <channel>
+    Lists chaincodes installed on specified peer and channel.
 
   fablo channel --help
     To list available channel query options which can be executed on running network.
@@ -188,7 +202,7 @@ networkPrune() {
   if [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     "$FABLO_TARGET/fabric-k8s.sh" down
   fi
-  
+
   echo "Removing $FABLO_TARGET"
   rm -rf "$FABLO_TARGET"
 }
