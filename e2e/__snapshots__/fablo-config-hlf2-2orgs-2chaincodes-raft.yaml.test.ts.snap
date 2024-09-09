@@ -4683,7 +4683,9 @@ chaincodeBuild() {
 
   # pull required images upfront in case of arm64 (Apple Silicon) architecture
   # see https://stackoverflow.com/questions/69699421/hyperledger-fabric-chaincode-installation-failed-no-matching-manifest-for-linu
-  if [ "$(uname -m)" = "arm64" ]; then
+  # also, starting from Fabric 2.5, the base images for chaincode are available for arm64, so we don't need to pull them separately
+  # and we use \`sort -V\` to compare versions, because \`sort\` handles versions like \`2.4\` and \`2.10\` correctly
+  if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
     if [ "$CHAINCODE_LANG" = "node" ]; then
       dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
     fi
