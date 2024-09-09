@@ -11,71 +11,71 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 
 set -e
 
-FABLO_NETWORK_ROOT=\\"$(cd \\"$(dirname \\"$0\\")\\" && pwd)\\"
+FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
-source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-help.sh\\"
-source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-functions.sh\\"
-source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/chaincode-functions.sh\\"
-source \\"$FABLO_NETWORK_ROOT/fabric-k8s/.env\\"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-help.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/base-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/chaincode-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/.env"
 
 # location of generated configurations
-CONFIG_DIR=\\"$FABLO_NETWORK_ROOT/fabric-config\\"
+CONFIG_DIR="$FABLO_NETWORK_ROOT/fabric-config"
 
-RESETBG=\\"$(printf '\\\\e[0m\\\\n')\\"
-BLUE=\\"$(printf '\\\\033[34m')\\"
+RESETBG="$(printf '\\e[0m\\n')"
+BLUE="$(printf '\\033[34m')"
 
 networkUp() {
-  printHeadline \\"Checking dependencies...\\" \\"U1F984\\"
+  printHeadline "Checking dependencies..." "U1F984"
   verifyKubernetesConnectivity
-  printHeadline \\"Starting Network...\\" \\"U1F984\\"
+  printHeadline "Starting Network..." "U1F984"
   deployPeer
   deployOrderer
   installChannels
   installChaincodes
-  printHeadline \\"Done! Enjoy your fresh network\\" \\"U1F984\\"
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 
 networkDown() {
-  printHeadline \\"Destroying network\\" \\"U1F913\\"
+  printHeadline "Destroying network" "U1F913"
   destroyNetwork
 }
 
-if [ \\"$1\\" = \\"up\\" ]; then
+if [ "$1" = "up" ]; then
   networkUp
-elif [ \\"$1\\" = \\"down\\" ]; then
+elif [ "$1" = "down" ]; then
   networkDown
-elif [ \\"$1\\" = \\"reset\\" ]; then
+elif [ "$1" = "reset" ]; then
   networkDown
   sleep 60
   networkUp
-elif [ \\"$1\\" = \\"start\\" ]; then
+elif [ "$1" = "start" ]; then
   startNetwork
-elif [ \\"$1\\" = \\"stop\\" ]; then
+elif [ "$1" = "stop" ]; then
   stopNetwork
-elif [ \\"$1\\" = \\"chaincodes\\" ] && [ \\"$2\\" = \\"install\\" ]; then
+elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
-elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"install\\" ]; then
-  installChaincode \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"upgrade\\" ]; then
-  upgradeChaincode \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"chaincode\\" ] && [ \\"$2\\" = \\"dev\\" ]; then
-  runDevModeChaincode \\"$3\\" \\"$4\\"
-elif [ \\"$1\\" = \\"channel\\" ]; then
-  channelQuery \\"\${@:2}\\"
-elif [ \\"$1\\" = \\"snapshot\\" ]; then
-  createSnapshot \\"$2\\"
-elif [ \\"$1\\" = \\"clone-to\\" ]; then
-  cloneSnapshot \\"$2\\" \\"\${3:-\\"\\"}\\"
-elif [ \\"$1\\" = \\"help\\" ]; then
+elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
+  installChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
+  upgradeChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
+  runDevModeChaincode "$3" "$4"
+elif [ "$1" = "channel" ]; then
+  channelQuery "\${@:2}"
+elif [ "$1" = "snapshot" ]; then
+  createSnapshot "$2"
+elif [ "$1" = "clone-to" ]; then
+  cloneSnapshot "$2" "\${3:-""}"
+elif [ "$1" = "help" ]; then
   printHelp
-elif [ \\"$1\\" = \\"--help\\" ]; then
+elif [ "$1" = "--help" ]; then
   printHelp
 else
-  echo \\"No command specified\\"
-  echo \\"Basic commands are: up, down, start, stop, reset\\"
-  echo \\"To list channel query helper commands type: 'fablo channel --help'\\"
-  echo \\"Also check: 'chaincode install'\\"
-  echo \\"Use 'help' or '--help' for more information\\"
+  echo "No command specified"
+  echo "Basic commands are: up, down, start, stop, reset"
+  echo "To list channel query helper commands type: 'fablo channel --help'"
+  echo "Also check: 'chaincode install'"
+  echo "Use 'help' or '--help' for more information"
 fi
 "
 `;
@@ -83,10 +83,10 @@ fi
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/.env from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
 "NAMESPACE=default
 
-REPOSITORY=\\"https://kfsoftware.github.io/hlf-helm-charts\\"
+REPOSITORY="https://kfsoftware.github.io/hlf-helm-charts"
 STORAGE_CLASS=$(kubectl describe sc | grep Name | tr -s ' ' | cut -d ':' -f 2 | cut -d ' ' -f 2)
 
-FABLO_VERSION=1.2.0
+FABLO_VERSION=1.2.1-unstable.0
 FABLO_BUILD=<date with git hash>
 FABLO_CONFIG=<absolute path>
 ORDERER_IMAGE=hyperledger/fabric-orderer
@@ -115,118 +115,118 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/scripts/base-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
 "#!/usr/bin/env bash
 
-source \\"$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh\\"
+source "$FABLO_NETWORK_ROOT/fabric-k8s/scripts/util.sh"
 
 deployPeer() {
 
-  printItalics \\"Deploying Org1 CA\\" \\"U1F984\\"
-  kubectl hlf ca create --image=\\"$CA_IMAGE\\" --version=\\"$CA_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\"
+  printItalics "Deploying Org1 CA" "U1F984"
+  kubectl hlf ca create --image="$CA_IMAGE" --version="$CA_VERSION" --storage-class="$STORAGE_CLASS" --capacity=2Gi --name=org1-ca --enroll-id=org1 --enroll-pw="$ORG1_CA_ADMIN_PASSWORD"
   sleep 3
 
-  while [[ $(kubectl get pods -l release=org1-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
+  while [[ $(kubectl get pods -l release=org1-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
     sleep 5
-    inputLog \\"waiting for CA\\"
+    inputLog "waiting for CA"
   done
 
-  kubectl hlf ca register --name=org1-ca --user=peer --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --type=peer --enroll-id org1 --enroll-secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP
-  inputLog \\"registered Org1 -ca\\"
+  kubectl hlf ca register --name=org1-ca --user=peer --secret="$ORG1_CA_ADMIN_PASSWORD" --type=peer --enroll-id org1 --enroll-secret="$ORG1_CA_ADMIN_PASSWORD" --mspid Org1MSP
+  inputLog "registered Org1 -ca"
 
-  printItalics \\"Deploying Peers\\" \\"U1F984\\"
+  printItalics "Deploying Peers" "U1F984"
   sleep 10
 
-  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer0 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
+  kubectl hlf peer create --statedb=leveldb --version="$PEER_VERSION" --storage-class="$STORAGE_CLASS" --enroll-id=peer --mspid=Org1MSP \\
+    --enroll-pw="$ORG1_CA_ADMIN_PASSWORD" --capacity=5Gi --name=peer0 --ca-name="org1-ca.$NAMESPACE" --k8s-builder=true --external-service-builder=false
 
-  kubectl hlf peer create --statedb=leveldb --version=\\"$PEER_VERSION\\" --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=peer --mspid=Org1MSP \\\\
-    --enroll-pw=\\"$ORG1_CA_ADMIN_PASSWORD\\" --capacity=5Gi --name=peer1 --ca-name=\\"org1-ca.$NAMESPACE\\" --k8s-builder=true --external-service-builder=false
+  kubectl hlf peer create --statedb=leveldb --version="$PEER_VERSION" --storage-class="$STORAGE_CLASS" --enroll-id=peer --mspid=Org1MSP \\
+    --enroll-pw="$ORG1_CA_ADMIN_PASSWORD" --capacity=5Gi --name=peer1 --ca-name="org1-ca.$NAMESPACE" --k8s-builder=true --external-service-builder=false
 
-  while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != \\"true true\\" ]]; do
+  while [[ $(kubectl get pods -l app=hlf-peer --output=jsonpath='{.items[*].status.containerStatuses[0].ready}') != "true true" ]]; do
     sleep 5
-    inputLog \\"waiting for peer nodes to be ready\\"
+    inputLog "waiting for peer nodes to be ready"
   done
 }
 
 deployOrderer() {
 
-  printItalics \\"Deploying Orderers\\" \\"U1F984\\"
+  printItalics "Deploying Orderers" "U1F984"
 
-  kubectl hlf ca create --storage-class=\\"$STORAGE_CLASS\\" --capacity=2Gi --name=orderer-ca --enroll-id=orderer --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\"
-  while [[ $(kubectl get pods -l release=orderer-ca -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
+  kubectl hlf ca create --storage-class="$STORAGE_CLASS" --capacity=2Gi --name=orderer-ca --enroll-id=orderer --enroll-pw="$ORDERER_CA_ADMIN_PASSWORD"
+  while [[ $(kubectl get pods -l release=orderer-ca -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
     sleep 5
-    inputLog \\"waiting for orderer-ca CA to be ready\\" \\"$RESETBG\\"
+    inputLog "waiting for orderer-ca CA to be ready" "$RESETBG"
   done
-  kubectl hlf ca register --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --type=orderer --enroll-id=orderer --enroll-secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP &&
-    inputLog \\"registered orderer-ca\\"
+  kubectl hlf ca register --name=orderer-ca --user="$ORDERER_CA_ADMIN_NAME" --secret="$ORDERER_CA_ADMIN_PASSWORD" --type=orderer --enroll-id=orderer --enroll-secret="$ORDERER_CA_ADMIN_PASSWORD" --mspid OrdererMSP &&
+    inputLog "registered orderer-ca"
 
-  kubectl hlf ordnode create --version=\\"$ORDERER_VERSION\\" \\\\
-    --storage-class=\\"$STORAGE_CLASS\\" --enroll-id=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP \\\\
-    --enroll-pw=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --capacity=2Gi --name=orderer-node --ca-name=\\"orderer-ca.$NAMESPACE\\"
-  while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type==\\"Ready\\")].status}') != \\"True\\" ]]; do
+  kubectl hlf ordnode create --version="$ORDERER_VERSION" \\
+    --storage-class="$STORAGE_CLASS" --enroll-id="$ORDERER_CA_ADMIN_NAME" --mspid=OrdererMSP \\
+    --enroll-pw="$ORDERER_CA_ADMIN_PASSWORD" --capacity=2Gi --name=orderer-node --ca-name="orderer-ca.$NAMESPACE"
+  while [[ $(kubectl get pods -l app=hlf-ordnode -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do
     sleep 5
-    inputLog \\"waiting for orderer Node to be ready\\"
+    inputLog "waiting for orderer Node to be ready"
   done
 
-  kubectl hlf inspect --output \\"$CONFIG_DIR/ordservice.yaml\\" -o OrdererMSP
-  kubectl hlf ca enroll --name=orderer-ca --user=\\"$ORDERER_CA_ADMIN_NAME\\" --secret=\\"$ORDERER_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP --ca-name ca --output \\"$CONFIG_DIR/admin-ordservice.yaml\\" &&
-    kubectl hlf utils adduser --userPath=\\"$CONFIG_DIR/admin-ordservice.yaml\\" --config=\\"$CONFIG_DIR/ordservice.yaml\\" --username=\\"$ORDERER_CA_ADMIN_NAME\\" --mspid=OrdererMSP
+  kubectl hlf inspect --output "$CONFIG_DIR/ordservice.yaml" -o OrdererMSP
+  kubectl hlf ca enroll --name=orderer-ca --user="$ORDERER_CA_ADMIN_NAME" --secret="$ORDERER_CA_ADMIN_PASSWORD" --mspid OrdererMSP --ca-name ca --output "$CONFIG_DIR/admin-ordservice.yaml" &&
+    kubectl hlf utils adduser --userPath="$CONFIG_DIR/admin-ordservice.yaml" --config="$CONFIG_DIR/ordservice.yaml" --username="$ORDERER_CA_ADMIN_NAME" --mspid=OrdererMSP
 
 }
 
 installChannels() {
 
-  printItalics \\"Creating 'my-channel1' on /peer0\\" \\"U1F63B\\"
+  printItalics "Creating 'my-channel1' on /peer0" "U1F63B"
   sleep 10
-  kubectl hlf channel generate --output=\\"$CONFIG_DIR/my-channel1.block\\" --name=my-channel1 --organizations Org1MSP --ordererOrganizations OrdererMSP &&
-    kubectl hlf ca enroll --name=orderer-ca --namespace=\\"$NAMESPACE\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid OrdererMSP --ca-name=tlsca --output \\"$CONFIG_DIR/admin-tls-ordservice.yaml\\" &&
+  kubectl hlf channel generate --output="$CONFIG_DIR/my-channel1.block" --name=my-channel1 --organizations Org1MSP --ordererOrganizations OrdererMSP &&
+    kubectl hlf ca enroll --name=orderer-ca --namespace="$NAMESPACE" --user="$ORG1_CA_ADMIN_NAME" --secret="$ORG1_CA_ADMIN_PASSWORD" --mspid OrdererMSP --ca-name=tlsca --output "$CONFIG_DIR/admin-tls-ordservice.yaml" &&
     sleep 10
 
-  kubectl hlf ordnode join --block=\\"$CONFIG_DIR/my-channel1.block\\" --name=orderer-node --namespace=\\"$NAMESPACE\\" --identity=\\"$CONFIG_DIR/admin-tls-ordservice.yaml\\"
+  kubectl hlf ordnode join --block="$CONFIG_DIR/my-channel1.block" --name=orderer-node --namespace="$NAMESPACE" --identity="$CONFIG_DIR/admin-tls-ordservice.yaml"
 
-  kubectl hlf ca register --name=org1-ca --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --type=admin --enroll-id org1 --enroll-secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP &&
-    kubectl hlf ca enroll --name=org1-ca --user=\\"$ORG1_CA_ADMIN_NAME\\" --secret=\\"$ORG1_CA_ADMIN_PASSWORD\\" --mspid Org1MSP --ca-name ca --output \\"$CONFIG_DIR/peer-Org1.yaml\\" &&
-    kubectl hlf inspect --output \\"$CONFIG_DIR/Org1.yaml\\" -o \\"Org1MSP\\" -o \\"OrdererMSP\\" &&
-    kubectl hlf utils adduser --userPath=\\"$CONFIG_DIR/peer-Org1.yaml\\" --config=\\"$CONFIG_DIR/Org1.yaml\\" --username=\\"$ORG1_CA_ADMIN_NAME\\" --mspid=Org1MSP &&
+  kubectl hlf ca register --name=org1-ca --user="$ORG1_CA_ADMIN_NAME" --secret="$ORG1_CA_ADMIN_PASSWORD" --type=admin --enroll-id org1 --enroll-secret="$ORG1_CA_ADMIN_PASSWORD" --mspid Org1MSP &&
+    kubectl hlf ca enroll --name=org1-ca --user="$ORG1_CA_ADMIN_NAME" --secret="$ORG1_CA_ADMIN_PASSWORD" --mspid Org1MSP --ca-name ca --output "$CONFIG_DIR/peer-Org1.yaml" &&
+    kubectl hlf inspect --output "$CONFIG_DIR/Org1.yaml" -o "Org1MSP" -o "OrdererMSP" &&
+    kubectl hlf utils adduser --userPath="$CONFIG_DIR/peer-Org1.yaml" --config="$CONFIG_DIR/Org1.yaml" --username="$ORG1_CA_ADMIN_NAME" --mspid=Org1MSP &&
     sleep 10
 
-  printItalics \\"Joining 'my-channel1' on  org1/peer0\\" \\"U1F638\\"
-  kubectl hlf channel join --name=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" -p=\\"peer0.$NAMESPACE\\"
+  printItalics "Joining 'my-channel1' on  org1/peer0" "U1F638"
+  kubectl hlf channel join --name=my-channel1 --config="$CONFIG_DIR/Org1.yaml" --user="$ORG1_CA_ADMIN_NAME" -p="peer0.$NAMESPACE"
 
-  printItalics \\"Joining 'my-channel1' on  org1/peer1\\" \\"U1F638\\"
-  kubectl hlf channel join --name=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" -p=\\"peer1.$NAMESPACE\\"
+  printItalics "Joining 'my-channel1' on  org1/peer1" "U1F638"
+  kubectl hlf channel join --name=my-channel1 --config="$CONFIG_DIR/Org1.yaml" --user="$ORG1_CA_ADMIN_NAME" -p="peer1.$NAMESPACE"
 
   # add anchor peers
 
-  printItalics \\"Electing on org1/peer0 as Anchor peer\\" \\"U1F638\\"
-  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --peer=\\"peer0.$NAMESPACE\\"
+  printItalics "Electing on org1/peer0 as Anchor peer" "U1F638"
+  kubectl hlf channel addanchorpeer --channel=my-channel1 --config="$CONFIG_DIR/Org1.yaml" --user="$ORG1_CA_ADMIN_NAME" --peer="peer0.$NAMESPACE"
 
-  printItalics \\"Electing on org1/peer1 as Anchor peer\\" \\"U1F638\\"
-  kubectl hlf channel addanchorpeer --channel=my-channel1 --config=\\"$CONFIG_DIR/Org1.yaml\\" --user=\\"$ORG1_CA_ADMIN_NAME\\" --peer=\\"peer1.$NAMESPACE\\"
+  printItalics "Electing on org1/peer1 as Anchor peer" "U1F638"
+  kubectl hlf channel addanchorpeer --channel=my-channel1 --config="$CONFIG_DIR/Org1.yaml" --user="$ORG1_CA_ADMIN_NAME" --peer="peer1.$NAMESPACE"
 
 }
 
 installChaincodes() {
 
-  printItalics \\"Installing chaincodes....\\" \\"U1F618\\"
+  printItalics "Installing chaincodes...." "U1F618"
 
-  printItalics \\"Building chaincode chaincode1\\" \\"U1F618\\"
-  buildAndInstallChaincode \\"chaincode1\\" \\"peer0.$NAMESPACE\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"0.0.1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\"
+  printItalics "Building chaincode chaincode1" "U1F618"
+  buildAndInstallChaincode "chaincode1" "peer0.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
 
-  printItalics \\"Approving chaincode....\\" \\"U1F618\\"
-  approveChaincode \\"chaincode1\\" \\"peer0.$NAMESPACE\\" \\"0.0.1\\" \\"my-channel1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\" \\"Org1MSP\\"
+  printItalics "Approving chaincode...." "U1F618"
+  approveChaincode "chaincode1" "peer0.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
 
-  printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' \\" \\"U1F618\\"
+  printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' " "U1F618"
 
-  commitChaincode \\"chaincode1\\" \\"peer0.$NAMESPACE\\" \\"0.0.1\\" \\"my-channel1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\" \\"Org1MSP\\"
+  commitChaincode "chaincode1" "peer0.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
 
-  printItalics \\"Building chaincode chaincode1\\" \\"U1F618\\"
-  buildAndInstallChaincode \\"chaincode1\\" \\"peer1.$NAMESPACE\\" \\"node\\" \\"$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node\\" \\"0.0.1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\"
+  printItalics "Building chaincode chaincode1" "U1F618"
+  buildAndInstallChaincode "chaincode1" "peer1.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
 
-  printItalics \\"Approving chaincode....\\" \\"U1F618\\"
-  approveChaincode \\"chaincode1\\" \\"peer1.$NAMESPACE\\" \\"0.0.1\\" \\"my-channel1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\" \\"Org1MSP\\"
+  printItalics "Approving chaincode...." "U1F618"
+  approveChaincode "chaincode1" "peer1.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
 
-  printItalics \\"Committing chaincode 'chaincode1' on channel 'my-channel1' \\" \\"U1F618\\"
+  printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' " "U1F618"
 
-  commitChaincode \\"chaincode1\\" \\"peer1.$NAMESPACE\\" \\"0.0.1\\" \\"my-channel1\\" \\"$ORG1_CA_ADMIN_NAME\\" \\"$CONFIG_DIR/Org1.yaml\\" \\"Org1MSP\\"
+  commitChaincode "chaincode1" "peer1.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
 
 }
 
@@ -238,65 +238,65 @@ destroyNetwork() {
 }
 
 printHeadline() {
-  bold=$'\\\\e[1m'
-  end=$'\\\\e[0m'
+  bold=$'\\e[1m'
+  end=$'\\e[0m'
 
   TEXT=$1
   EMOJI=$2
-  printf \\"\${bold}============ %b %s %b ==============\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+  printf "\${bold}============ %b %s %b ==============\${end}\\n" "\\\\$EMOJI" "$TEXT" "\\\\$EMOJI"
 }
 
 printItalics() {
-  italics=$'\\\\e[3m'
-  end=$'\\\\e[0m'
+  italics=$'\\e[3m'
+  end=$'\\e[0m'
 
   TEXT=$1
   EMOJI=$2
-  printf \\"\${italics}==== %b %s %b ====\${end}\\\\n\\" \\"\\\\\\\\$EMOJI\\" \\"$TEXT\\" \\"\\\\\\\\$EMOJI\\"
+  printf "\${italics}==== %b %s %b ====\${end}\\n" "\\\\$EMOJI" "$TEXT" "\\\\$EMOJI"
 }
 
 inputLog() {
-  end=$'\\\\e[0m'
-  darkGray=$'\\\\e[90m'
+  end=$'\\e[0m'
+  darkGray=$'\\e[90m'
 
-  echo \\"\${darkGray}   $1 \${end}\\"
+  echo "\${darkGray}   $1 \${end}"
 }
 
 inputLogShort() {
-  end=$'\\\\e[0m'
-  darkGray=$'\\\\e[90m'
+  end=$'\\e[0m'
+  darkGray=$'\\e[90m'
 
-  echo \\"\${darkGray}   $1 \${end}\\"
+  echo "\${darkGray}   $1 \${end}"
 }
 
 verifyKubernetesConnectivity() {
-  echo \\"Verifying kubectl-hlf installation...\\"
+  echo "Verifying kubectl-hlf installation..."
   if ! [[ $(command -v kubectl-hlf) ]]; then
-    echo \\"Error: Fablo could not detect kubectl hlf plugin. Ensure you have installed:
+    echo "Error: Fablo could not detect kubectl hlf plugin. Ensure you have installed:
   - kubectl - https://kubernetes.io/docs/tasks/tools/
   - helm - https://helm.sh/docs/intro/install/
   - krew - https://krew.sigs.k8s.io/docs/user-guide/setup/install/
-  - hlf-operator along with krew hlf plugin - https://github.com/hyperledger-labs/hlf-operator#install-kubernetes-operator\\"
+  - hlf-operator along with krew hlf plugin - https://github.com/hyperledger-labs/hlf-operator#install-kubernetes-operator"
     exit 1
   else
-    echo \\"  $(command -v kubectl-hlf)\\"
+    echo "  $(command -v kubectl-hlf)"
   fi
 
-  if [ \\"$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items}')\\" = \\"[]\\" ]; then
-    echo \\"Error: hlf-operator is not running. You can install it with:
-  helm install hlf-operator --version=1.6.0 kfs/hlf-operator\\"
+  if [ "$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items}')" = "[]" ]; then
+    echo "Error: hlf-operator is not running. You can install it with:
+  helm install hlf-operator --version=1.6.0 kfs/hlf-operator"
     exit 1
   fi
 
-  echo \\"Verifying default kubernetes cluster\\"
+  echo "Verifying default kubernetes cluster"
   if ! kubectl get ns default >/dev/null 2>&1; then
-    printf \\"No K8 cluster detected\\\\n\\" >&2
+    printf "No K8 cluster detected\\n" >&2
     exit 1
   fi
 
-  while [ \\"$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items[*].status.containerStatuses[0].ready}')\\" != \\"true\\" ]; do
+  while [ "$(kubectl get pods -l=app.kubernetes.io/name=hlf-operator -o jsonpath='{.items[*].status.containerStatuses[0].ready}')" != "true" ]; do
     sleep 5
-    echo \\"$BLUE\\" \\"Waiting for Operator to be ready.\\" \\"$RESETBG\\"
+    echo "$BLUE" "Waiting for Operator to be ready." "$RESETBG"
   done
 }
 "
@@ -306,24 +306,24 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 "#!/usr/bin/env bash
 
 printHelp() {
-  echo \\"Fablo is powered by SoftwareMill\\"
+  echo "Fablo is powered by SoftwareMill"
 
-  echo \\"\\"
-  echo \\"usage: ./fabric-k8.sh <command>\\"
-  echo \\"\\"
+  echo ""
+  echo "usage: ./fabric-k8.sh <command>"
+  echo ""
 
-  echo \\"Commands: \\"
-  echo \\"\\"
-  echo \\"./fabric-k8.sh up\\"
-  echo -e \\"\\\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time.\\"
-  echo -e \\"\\\\t After 'up' commands start/stop are used to manage network and rerun to rerun it\\"
-  echo \\"\\"
-  echo \\"./fabric-k8.sh down\\"
-  echo -e \\"\\\\t Back to empty state - destorys created containers, prunes generated certificates, configs.\\"
-  echo \\"\\"
-  echo \\"./fabric-k8.sh channel --help\\"
-  echo -e \\"\\\\t Detailed help for channel management scripts.\\"
-  echo \\"\\"
+  echo "Commands: "
+  echo ""
+  echo "./fabric-k8.sh up"
+  echo -e "\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time."
+  echo -e "\\t After 'up' commands start/stop are used to manage network and rerun to rerun it"
+  echo ""
+  echo "./fabric-k8.sh down"
+  echo -e "\\t Back to empty state - destorys created containers, prunes generated certificates, configs."
+  echo ""
+  echo "./fabric-k8.sh channel --help"
+  echo -e "\\t Detailed help for channel management scripts."
+  echo ""
 }
 "
 `;
@@ -332,120 +332,120 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 "#!/usr/bin/env bash
 
 buildAndInstallChaincode() {
-  local CHAINCODE_NAME=\\"$1\\"
-  local PEER=\\"$2\\"
-  local CHAINCODE_LANG=\\"$3\\"
-  local CHAINCODE_DIR_PATH=\\"$4\\"
-  local CHAINCODE_VERSION=\\"$5\\"
-  local CHAINCODE_LABEL=\\"\${CHAINCODE_NAME}_$CHAINCODE_VERSION\\"
-  local USER=\\"$6\\"
-  local CONFIG=\\"$7\\"
+  local CHAINCODE_NAME="$1"
+  local PEER="$2"
+  local CHAINCODE_LANG="$3"
+  local CHAINCODE_DIR_PATH="$4"
+  local CHAINCODE_VERSION="$5"
+  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local USER="$6"
+  local CONFIG="$7"
 
-  if [ -z \\"$CHAINCODE_NAME\\" ]; then
-    echo \\"Error: chaincode name is not provided\\"
+  if [ -z "$CHAINCODE_NAME" ]; then
+    echo "Error: chaincode name is not provided"
     exit 1
   fi
 
-  if [ -z \\"$PEER\\" ]; then
-    echo \\"Error: peer number is not provided e.g 0, 1\\"
+  if [ -z "$PEER" ]; then
+    echo "Error: peer number is not provided e.g 0, 1"
     exit 1
   fi
 
-  if [ -z \\"$CHAINCODE_LANG\\" ]; then
-    echo \\"Error: chaincode language is not provided\\"
+  if [ -z "$CHAINCODE_LANG" ]; then
+    echo "Error: chaincode language is not provided"
     exit 1
   fi
 
-  if [ -z \\"$CHAINCODE_VERSION\\" ]; then
-    echo \\"Error: chaincode version is not provided e.g 1.0, 2.0\\"
+  if [ -z "$CHAINCODE_VERSION" ]; then
+    echo "Error: chaincode version is not provided e.g 1.0, 2.0"
     exit 1
   fi
 
-  kubectl hlf chaincode install --path=\\"$CHAINCODE_DIR_PATH\\" \\\\
-    --config=\\"$CONFIG\\" --language=\\"$CHAINCODE_LANG\\" --label=\\"$CHAINCODE_LABEL\\" --user=\\"$USER\\" --peer=\\"$PEER\\"
+  kubectl hlf chaincode install --path="$CHAINCODE_DIR_PATH" \\
+    --config="$CONFIG" --language="$CHAINCODE_LANG" --label="$CHAINCODE_LABEL" --user="$USER" --peer="$PEER"
 }
 
 approveChaincode() {
-  local CHAINCODE_NAME=\\"$1\\"
-  local PEER=\\"$2\\"
-  local CHAINCODE_VERSION=\\"$3\\"
-  local CHANNEL_NAME=\\"$4\\"
-  local USER=\\"$5\\"
-  local CONFIG=\\"$6\\"
-  local MSP=\\"$7\\"
+  local CHAINCODE_NAME="$1"
+  local PEER="$2"
+  local CHAINCODE_VERSION="$3"
+  local CHANNEL_NAME="$4"
+  local USER="$5"
+  local CONFIG="$6"
+  local MSP="$7"
   local SEQUENCE
 
-  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=\\"$CHANNEL_NAME\\" --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
+  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p')"
   SEQUENCE=$((SEQUENCE + 1))
 
-  if [ -z \\"$CHAINCODE_NAME\\" ]; then
-    echo \\"Error: chaincode name is not provided\\"
+  if [ -z "$CHAINCODE_NAME" ]; then
+    echo "Error: chaincode name is not provided"
     exit 1
   fi
 
-  if [ -z \\"$PEER\\" ]; then
-    echo \\"Error: peer number is not provided e.g 0, 1\\"
+  if [ -z "$PEER" ]; then
+    echo "Error: peer number is not provided e.g 0, 1"
     exit 1
   fi
 
-  if [ -z \\"$CHAINCODE_VERSION\\" ]; then
-    echo \\"Error: chaincode version is not provided e.g 1.0, 2.0\\"
+  if [ -z "$CHAINCODE_VERSION" ]; then
+    echo "Error: chaincode version is not provided e.g 1.0, 2.0"
     exit 1
   fi
 
-  if [ -z \\"$CHANNEL_NAME\\" ]; then
-    echo \\"Error: channel name is not provided\\"
+  if [ -z "$CHANNEL_NAME" ]; then
+    echo "Error: channel name is not provided"
     exit 1
   fi
 
-  PACKAGE_ID=\\"$(kubectl hlf chaincode queryinstalled --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" | awk '{print $1}' | grep chaincode)\\"
+  PACKAGE_ID="$(kubectl hlf chaincode queryinstalled --config="$CONFIG" --user="$USER" --peer="$PEER" | awk '{print $1}' | grep chaincode)"
 
-  printItalics \\"Approving chaincode $CHAINCODE_NAME on $PEER\\" \\"U1F618\\"
+  printItalics "Approving chaincode $CHAINCODE_NAME on $PEER" "U1F618"
 
-  kubectl hlf chaincode approveformyorg --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" \\\\
-    --package-id=\\"$PACKAGE_ID\\" --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=\\"$CHAINCODE_NAME\\" \\\\
-    --policy=\\"OR('$MSP.member')\\" --channel=\\"$CHANNEL_NAME\\"
+  kubectl hlf chaincode approveformyorg --config="$CONFIG" --user="$USER" --peer="$PEER" \\
+    --package-id="$PACKAGE_ID" --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name="$CHAINCODE_NAME" \\
+    --policy="OR('$MSP.member')" --channel="$CHANNEL_NAME"
 }
 
 commitChaincode() {
 
-  local CHAINCODE_NAME=\\"$1\\"
+  local CHAINCODE_NAME="$1"
   local PEER=$2
-  local CHAINCODE_VERSION=\\"$3\\"
-  local CHANNEL_NAME=\\"$4\\"
-  local USER=\\"$5\\"
-  local CONFIG=\\"$6\\"
-  local MSP=\\"$7\\"
+  local CHAINCODE_VERSION="$3"
+  local CHANNEL_NAME="$4"
+  local USER="$5"
+  local CONFIG="$6"
+  local MSP="$7"
   local SEQUENCE
 
-  SEQUENCE=\\"$(kubectl hlf chaincode querycommitted --channel=\\"$CHANNEL_NAME\\" --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" 2>/dev/null | awk '{print $3}' | sed -n '2p')\\"
+  SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p')"
   SEQUENCE=$((SEQUENCE + 1))
 
-  if [ -z \\"$CHAINCODE_NAME\\" ]; then
-    echo \\"Error: chaincode name is not provided\\"
+  if [ -z "$CHAINCODE_NAME" ]; then
+    echo "Error: chaincode name is not provided"
     exit 1
   fi
 
-  if [ -z \\"$PEER\\" ]; then
-    echo \\"Error: peer number is not provided e.g 0, 1\\"
+  if [ -z "$PEER" ]; then
+    echo "Error: peer number is not provided e.g 0, 1"
     exit 1
   fi
 
-  if [ -z \\"$CHAINCODE_VERSION\\" ]; then
-    echo \\"Error: chaincode version is not provided e.g 1.0, 2.0\\"
+  if [ -z "$CHAINCODE_VERSION" ]; then
+    echo "Error: chaincode version is not provided e.g 1.0, 2.0"
     exit 1
   fi
 
-  if [ -z \\"$CHANNEL_NAME\\" ]; then
-    echo \\"Error: channel name is not provided\\"
+  if [ -z "$CHANNEL_NAME" ]; then
+    echo "Error: channel name is not provided"
     exit 1
   fi
 
-  PACKAGE_ID=\\"$(kubectl hlf chaincode queryinstalled --config=\\"$CONFIG\\" --user=\\"$USER\\" --peer=\\"$PEER\\" | awk '{print $1}' | grep chaincode)\\"
+  PACKAGE_ID="$(kubectl hlf chaincode queryinstalled --config="$CONFIG" --user="$USER" --peer="$PEER" | awk '{print $1}' | grep chaincode)"
 
-  kubectl hlf chaincode commit --config=\\"$CONFIG\\" --user=\\"$USER\\" --mspid=\\"$MSP\\" \\\\
-    --version \\"$CHAINCODE_VERSION\\" --sequence \\"$SEQUENCE\\" --name=\\"$CHAINCODE_NAME\\" \\\\
-    --policy=\\"OR('$MSP.member')\\" --channel=\\"$CHANNEL_NAME\\"
+  kubectl hlf chaincode commit --config="$CONFIG" --user="$USER" --mspid="$MSP" \\
+    --version "$CHAINCODE_VERSION" --sequence "$SEQUENCE" --name="$CHAINCODE_NAME" \\
+    --policy="OR('$MSP.member')" --channel="$CHANNEL_NAME"
 }
 "
 `;
@@ -456,21 +456,21 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 retry() {
   local n=0
   local try=$1
-  local cmd=\\"\${*:2}\\"
+  local cmd="\${*:2}"
   [[ $# -le 1 ]]
 
   until [[ $n -ge $try ]]; do
     if [[ $cmd ]]; then
       break
     else
-      echo $(printf '\\\\033[31m') \\"Previous command FAILED\\"
+      echo $(printf '\\033[31m') "Previous command FAILED"
       ((n++))
-      echo $(printf '\\\\033[34m') \\"RETRYING...\\"
+      echo $(printf '\\033[34m') "RETRYING..."
       sleep 1
     fi
   done
 }
-retry \\"$*\\"
+retry "$*"
 "
 `;
 
@@ -478,12 +478,12 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 "#!/usr/bin/env bash
 
 # The code from this file was called after Fablo generated Hyperledger Fabric configuration
-echo \\"Executing post-generate hook\\"
+echo "Executing post-generate hook"
 "
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
-Array [
+[
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/.env",

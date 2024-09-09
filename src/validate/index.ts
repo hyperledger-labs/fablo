@@ -119,6 +119,7 @@ class ValidateGenerator extends Generator {
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
+    this._verifyFabricVersion(networkConfig.global);
   }
 
   async shortSummary() {
@@ -464,15 +465,16 @@ class ValidateGenerator extends Generator {
   }
 
   _validateDevMode(global: GlobalJson): void {
-    if (global.peerDevMode) {
-      if (global.tls) {
+    if (global.peerDevMode && global.tls) {
         const message = `TLS needs to be disabled when running peers in dev mode`;
         this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
-      }
-      if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
-        const message = `Fablo supports dev mode only for Fabric in version 2.0.0 and higher`;
-        this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
-      }
+    }
+  }
+
+  _verifyFabricVersion(global:GlobalJson){
+    if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
+      const message = `Fablo supports Fabric in version 2.0.0 and higher`;
+      this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }
 }

@@ -32,21 +32,7 @@ chaincodeBuild() {
   fi
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
-    if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
-      # note: `source ~/.nvm/nvm.sh || true` seems to not work on some shells (like /bin/zsh on Apple Silicon)
-      set +e
-      source ~/.nvm/nvm.sh
-      set -e
-      if [ "$(command -v nvm)" == "nvm" ]; then
-        current_dir="$(pwd)"
-        cd "$CHAINCODE_DIR_PATH"
-        set +u
-        nvm install
-        set -u
-        cd "$current_dir"
-      fi
-    fi
-
+  
     NODE_VERSION="$(node --version)"
 
     USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
@@ -64,13 +50,10 @@ chaincodeBuild() {
     inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
     inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
     inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
-
-    # We have different commands for npm and yarn
-    if [ -f "$CHAINCODE_DIR_PATH/yarn.lock" ]; then
-      (cd "$CHAINCODE_DIR_PATH" && npm install -g yarn && yarn install && yarn build)
-    else
-      (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
-    fi
+    
+    # Default to using npm for installation and build
+    (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
+    
   fi
 }
 
@@ -299,12 +282,12 @@ peerChaincodeList() {
   local CHANNEL_NAME=$3
 
   echo "Chaincodes list:"
-  inputLog "PEER_ADDRESS: $PEER_ADDRESS" 
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
 
   # Execute the command to list chaincodes
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
-   --channelID "$CHANNEL_NAME"
+    --channelID "$CHANNEL_NAME"
 }
 
 peerChaincodeListTls() {
@@ -314,10 +297,9 @@ peerChaincodeListTls() {
   local CA_CERT=$4
 
   echo "Chaincodes list:"
-  inputLog "PEER_ADDRESS: $PEER_ADDRESS" 
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CA_CERT: $CA_CERT"
-
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \
     --channelID "$CHANNEL_NAME" \
@@ -342,10 +324,10 @@ peerChaincodeInvoke() {
   inputLog "COMMAND: $COMMAND"
   inputLog "TRANSIENT: $TRANSIENT"
 
- PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
 
-# shellcheck disable=SC2086
-  docker exec "$CLI"  peer chaincode invoke \
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \
     $PEER_ADDRESSES \
     -C "$CHANNEL" \
     -n "$CHAINCODE" \
@@ -353,11 +335,44 @@ peerChaincodeInvoke() {
     --transient "$TRANSIENT" \
     --waitForEvent \
     --waitForEventTimeout 90s \
-    2>&1 
+    2>&1
 }
+# Function to perform chaincode invoke for Tls
+peerChaincodeInvokeTls() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERTS="$7"
+  local CA_CERT="$8"
 
-peerChaincodeInvokeTls () {
-  echo "chaincode invoke TLS is not yet suppported"
-  exit 1
+  echo "Chaincode invoke:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERTS"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEER_CERTS" | sed 's/,/ --tlsRootCertFiles \/var\/hyperledger\/cli\//g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \
+    $PEER_ADDRESSES \
+    $TLS_ROOT_CERT_FILES \
+    -C "$CHANNEL" \
+    -n "$CHAINCODE" \
+    -c "$COMMAND" \
+    --transient "$TRANSIENT" \
+    --waitForEvent \
+    --waitForEventTimeout 90s \
+    --tls \
+    --cafile "/var/hyperledger/cli/$CA_CERT" \
+    2>&1
 }
-
