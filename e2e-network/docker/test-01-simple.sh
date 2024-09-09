@@ -2,7 +2,6 @@
 
 set -e
 
-
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
@@ -32,11 +31,11 @@ waitForContainer() {
 }
 
 waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+  (cd "$TEST_TMP" && sh ../wait-for-chaincode.sh "$1" "$2" "$3" "$4") 
 }
 
 expectInvoke() {
-  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "$6" "$7")
+  (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "$6")
 }
 
 expectCommand() {
@@ -60,10 +59,10 @@ waitForContainer "peer1.org1.example.com" "Learning about the configured anchor 
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
 
 # Test simple chaincode
-expectInvoke "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" \
+expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
   '{\"success\":\"OK\"}'
-expectInvoke "cli.org1.example.com" "peer1.org1.example.com:7042" "my-channel1" "chaincode1" \
+expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
 
@@ -81,13 +80,13 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
-waitForChaincode "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "cli.org1.example.com" "peer1.org1.example.com:7042" "my-channel1" "chaincode1" "0.0.1"
-expectInvoke "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" \
+waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"error\":\"NOT_FOUND\"}'
 
 # Put some data again
-expectInvoke "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" \
+expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "James Bond"]}' \
   '{\"success\":\"OK\"}'

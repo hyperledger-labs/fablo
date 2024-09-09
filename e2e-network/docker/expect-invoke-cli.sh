@@ -1,26 +1,25 @@
 #!/usr/bin/env bash
 
-cli="$1"
-peers="$2"
-channel="$3"
-chaincode="$4"
-command="$5"
-expected="$6"
+peers="$1"
+channel="$2"
+chaincode="$3"
+command="$4"
+expected="$5"
 transient_default="{}"
-transient="${7:-$transient_default}"
+transient="${6:-$transient_default}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [cli] [peer:port[,peer:port]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
+  echo "Usage: ./expect-invoke.sh [peer[,peer]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
-label="Invoke $channel/$cli/$peers $command"
+label="Invoke $channel/$peers $command"
 echo ""
 echo "➜ testing: $label"
 
 
 response="$(
-   "$FABLO_HOME/fablo.sh" chaincode invoke "$channel" "$chaincode" "$peers" "$command" "$transient"
+   "$FABLO_HOME/fablo.sh" chaincode invoke "$peers" "$channel" "$chaincode" "$command" "$transient"
 )"
 
 echo "$response"

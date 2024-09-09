@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`schema should match snapshot 1`] = `
-Object {
+{
   "$id": "http://example.com/example.json",
   "$schema": "http://json-schema.org/draft-07/schema",
-  "default": Object {},
-  "properties": Object {
-    "$schema": Object {
-      "const": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json",
+  "default": {},
+  "properties": {
+    "$schema": {
+      "const": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.1-unstable.0/schema.json",
     },
-    "chaincodes": Object {
+    "chaincodes": {
       "$id": "#/properties/chaincodes",
-      "default": Array [
-        Object {
+      "default": [
+        {
           "channel": "my-channel1",
           "directory": "chaincode1",
           "endorsement": "AND ('Org1.member')",
@@ -22,14 +22,14 @@ Object {
           "version": "0.0.1",
         },
       ],
-      "items": Object {
+      "items": {
         "$id": "#/properties/chaincodes/items",
-        "properties": Object {
-          "channel": Object {
+        "properties": {
+          "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
-            "enumSource": Array [
-              Array [],
-              Object {
+            "enumSource": [
+              [],
+              {
                 "source": "channels",
                 "value": "{{item.name}}",
               },
@@ -37,33 +37,33 @@ Object {
             "pattern": "^[a-z0-9_-]+$",
             "title": "Channel name",
             "type": "string",
-            "watch": Object {
+            "watch": {
               "channels": "channels",
             },
           },
-          "directory": Object {
+          "directory": {
             "$id": "#/properties/chaincodes/items/properties/directory",
             "title": "Chaincode directory",
             "type": "string",
           },
-          "endorsement": Object {
+          "endorsement": {
             "$id": "#/properties/chaincodes/items/properties/endorsement",
             "title": "Endorsement configuration",
             "type": "string",
           },
-          "init": Object {
+          "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
             "title": "Initialization arguments (for Hyperledger Fabric below 2.0)",
             "type": "string",
           },
-          "initRequired": Object {
+          "initRequired": {
             "$id": "#/properties/chaincodes/items/properties/initRequired",
             "title": "Whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater)",
             "type": "boolean",
           },
-          "lang": Object {
+          "lang": {
             "$id": "#/properties/chaincodes/items/properties/lang",
-            "enum": Array [
+            "enum": [
               "golang",
               "java",
               "node",
@@ -71,30 +71,30 @@ Object {
             "title": "Language",
             "type": "string",
           },
-          "name": Object {
+          "name": {
             "$id": "#/properties/chaincodes/items/properties/name",
             "pattern": "^[a-zA-Z0-9_-]+$",
             "title": "Name",
             "type": "string",
           },
-          "privateData": Object {
+          "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
-            "items": Object {
+            "items": {
               "$id": "#/properties/chaincodes/items/properties/privateData/items",
-              "properties": Object {
-                "name": Object {
+              "properties": {
+                "name": {
                   "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/name",
                   "pattern": "^[A-Za-z0-9_-]+$",
                   "title": "Collection name",
                   "type": "string",
                 },
-                "orgNames": Object {
+                "orgNames": {
                   "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames",
-                  "items": Object {
+                  "items": {
                     "$id": "#/properties/chaincodes/items/properties/privateData/items/properties/orgNames/items",
-                    "enumSource": Array [
-                      Array [],
-                      Object {
+                    "enumSource": [
+                      [],
+                      {
                         "source": "orgs",
                         "value": "{{item.organization.name}}",
                       },
@@ -102,7 +102,7 @@ Object {
                     "pattern": "^[A-Za-z0-9]+$",
                     "title": "Organization name",
                     "type": "string",
-                    "watch": Object {
+                    "watch": {
                       "orgs": "orgs",
                     },
                   },
@@ -110,7 +110,7 @@ Object {
                   "type": "array",
                 },
               },
-              "required": Array [
+              "required": [
                 "name",
                 "orgNames",
               ],
@@ -120,14 +120,14 @@ Object {
             "title": "Private data collections",
             "type": "array",
           },
-          "version": Object {
+          "version": {
             "$id": "#/properties/chaincodes/items/properties/version",
-            "pattern": "^[a-zA-Z0-9\\\\.]+$",
+            "pattern": "^[a-zA-Z0-9\\.]+$",
             "title": "Version",
             "type": "string",
           },
         },
-        "required": Array [
+        "required": [
           "name",
           "version",
           "lang",
@@ -140,57 +140,57 @@ Object {
       "title": "Chaincodes",
       "type": "array",
     },
-    "channels": Object {
+    "channels": {
       "$id": "#/properties/channels",
-      "default": Array [
-        Object {
+      "default": [
+        {
           "name": "my-channel1",
-          "orgs": Array [
-            Object {
+          "orgs": [
+            {
               "name": "Org1",
-              "peers": Array [
+              "peers": [
                 "peer0",
               ],
             },
           ],
         },
-        Object {
+        {
           "name": "my-channel2",
-          "orgs": Array [
-            Object {
+          "orgs": [
+            {
               "name": "Org1",
-              "peers": Array [
+              "peers": [
                 "peer1",
               ],
             },
           ],
         },
       ],
-      "items": Object {
+      "items": {
         "$id": "#/properties/channels/items",
-        "properties": Object {
-          "name": Object {
+        "properties": {
+          "name": {
             "$id": "#/properties/channels/items/properties/name",
             "pattern": "^[a-z0-9_-]+$",
             "title": "Name",
             "type": "string",
           },
-          "ordererGroup": Object {
+          "ordererGroup": {
             "$id": "#/properties/channels/items/properties/ordererGroup",
             "pattern": "^[a-zA-Z0-9]+$",
             "title": "Name of Orderer Org handling the channel",
             "type": "string",
           },
-          "orgs": Object {
+          "orgs": {
             "$id": "#/properties/channels/items/properties/orgs",
-            "items": Object {
+            "items": {
               "$id": "#/properties/channels/items/properties/orgs/items",
-              "properties": Object {
-                "name": Object {
+              "properties": {
+                "name": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/name",
-                  "enumSource": Array [
-                    Array [],
-                    Object {
+                  "enumSource": [
+                    [],
+                    {
                       "source": "orgs",
                       "value": "{{item.organization.name}}",
                     },
@@ -198,13 +198,13 @@ Object {
                   "pattern": "^[a-zA-Z0-9]+$",
                   "title": "Organization name",
                   "type": "string",
-                  "watch": Object {
+                  "watch": {
                     "orgs": "orgs",
                   },
                 },
-                "peers": Object {
+                "peers": {
                   "$id": "#/properties/channels/items/properties/orgs/items/properties/peers",
-                  "items": Object {
+                  "items": {
                     "$id": "#/properties/channels/items/properties/orgs/items/properties/peers/items",
                     "pattern": "^[a-z0-9]+$",
                     "title": "Peer",
@@ -214,7 +214,7 @@ Object {
                   "type": "array",
                 },
               },
-              "required": Array [
+              "required": [
                 "name",
                 "peers",
               ],
@@ -225,7 +225,7 @@ Object {
             "type": "array",
           },
         },
-        "required": Array [
+        "required": [
           "name",
           "orgs",
         ],
@@ -235,34 +235,34 @@ Object {
       "title": "Channels",
       "type": "array",
     },
-    "global": Object {
+    "global": {
       "$id": "#/properties/global",
       "description": "Basic settings of the Hyperledger Fabric network",
-      "properties": Object {
-        "engine": Object {
+      "properties": {
+        "engine": {
           "$id": "#/properties/global/properties/engine",
           "default": "docker",
-          "enum": Array [
+          "enum": [
             "docker",
             "kubernetes",
           ],
           "title": "Engine on which the network will be deployed",
           "type": "string",
         },
-        "fabricVersion": Object {
+        "fabricVersion": {
           "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.2",
           "title": "Hyperledger Fabric version",
           "type": "string",
         },
-        "monitoring": Object {
+        "monitoring": {
           "$id": "#/properties/monitoring",
           "description": "Optional settings for monitoring purposes",
-          "properties": Object {
-            "loglevel": Object {
+          "properties": {
+            "loglevel": {
               "$id": "#/properties/monitoring/properties/loglevel",
               "default": "info",
-              "enum": Array [
+              "enum": [
                 "debug",
                 "info",
                 "warn",
@@ -271,48 +271,48 @@ Object {
               "type": "string",
             },
           },
-          "required": Array [],
+          "required": [],
           "title": "Monitoring settings",
           "type": "object",
         },
-        "peerDevMode": Object {
+        "peerDevMode": {
           "$id": "#/properties/global/properties/peerDevMode",
           "default": false,
           "title": "Start all peers in dev mode",
           "type": "boolean",
         },
-        "tls": Object {
+        "tls": {
           "$id": "#/properties/global/properties/tls",
           "default": true,
           "title": "Use TLS",
           "type": "boolean",
         },
-        "tools": Object {
+        "tools": {
           "$id": "#/properties/global/properties/tools",
-          "properties": Object {
-            "explorer": Object {
+          "properties": {
+            "explorer": {
               "$id": "#/properties/global/properties/tools/properties/explorer",
               "title": "Blockchain Explorer enabled",
               "type": "boolean",
             },
           },
-          "required": Array [],
+          "required": [],
           "title": "Tools",
           "type": "object",
         },
       },
-      "required": Array [
+      "required": [
         "fabricVersion",
         "tls",
       ],
       "title": "Global network settings",
       "type": "object",
     },
-    "hooks": Object {
+    "hooks": {
       "$id": "#/properties/hooks",
       "description": "Operations (bash scripts or commands) that should be executed after specific events. The PWD for the Hooks is set to 'fablo-target' directory",
-      "properties": Object {
-        "postGenerate": Object {
+      "properties": {
+        "postGenerate": {
           "$id": "#/properties/hooks/postGenerate",
           "description": "Operation to run run after a network config is generated",
           "title": "Post generate hook",
@@ -322,102 +322,102 @@ Object {
       "title": "Hooks",
       "type": "object",
     },
-    "orgs": Object {
+    "orgs": {
       "$id": "#/properties/orgs",
-      "default": Array [
-        Object {
-          "ca": Object {
+      "default": [
+        {
+          "ca": {
             "prefix": "ca",
           },
-          "orderer": Object {
+          "orderer": {
             "instances": 1,
             "prefix": "orderer",
             "type": "solo",
           },
-          "organization": Object {
+          "organization": {
             "domain": "orderer.example.com",
             "mspName": "OrdererMSP",
             "name": "Orderer",
           },
         },
-        Object {
-          "ca": Object {
+        {
+          "ca": {
             "prefix": "ca",
           },
-          "organization": Object {
+          "organization": {
             "domain": "org1.example.com",
             "mspName": "Org1MSP",
             "name": "Org1",
           },
-          "peer": Object {
+          "peer": {
             "db": "LevelDb",
             "instances": 2,
             "prefix": "peer",
           },
         },
       ],
-      "items": Object {
+      "items": {
         "$id": "#/properties/orgs/items",
-        "properties": Object {
-          "ca": Object {
+        "properties": {
+          "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
-            "properties": Object {
-              "db": Object {
+            "properties": {
+              "db": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/db",
-                "enum": Array [
+                "enum": [
                   "sqlite",
                   "postgres",
                 ],
                 "title": "Database",
                 "type": "string",
               },
-              "prefix": Object {
+              "prefix": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "pattern": "^[a-z0-9\\.\\-]+$",
                 "title": "Domain prefix",
                 "type": "string",
               },
             },
-            "required": Array [],
+            "required": [],
             "title": "Organization Certificate Authority (CA)",
             "type": "object",
           },
-          "orderers": Object {
+          "orderers": {
             "$id": "#/properties/orgs/items/properties/orderers",
-            "default": Array [
-              Object {
+            "default": [
+              {
                 "groupName": "group1",
                 "instances": 1,
                 "prefix": "orderer",
                 "type": "solo",
               },
             ],
-            "items": Object {
+            "items": {
               "$id": "#/properties/orgs/items/properties/orderers/items",
-              "properties": Object {
-                "groupName": Object {
+              "properties": {
+                "groupName": {
                   "$id": "#/properties/orgs/items/properties/orderers/items/properties/groupName",
-                  "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                  "pattern": "^[a-z0-9\\.\\-]+$",
                   "title": "Name od Orderer group",
                   "type": "string",
                 },
-                "instances": Object {
+                "instances": {
                   "$id": "#/properties/orgs/items/properties/orderers/items/properties/instances",
                   "maximum": 9,
                   "minimum": 1,
                   "title": "Number of instances",
                   "type": "integer",
                 },
-                "prefix": Object {
+                "prefix": {
                   "$id": "#/properties/orgs/items/properties/orderers/items/properties/prefix",
-                  "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                  "pattern": "^[a-z0-9\\.\\-]+$",
                   "title": "Domain prefix",
                   "type": "string",
                 },
-                "type": Object {
+                "type": {
                   "$id": "#/properties/orgs/items/properties/orderers/items/properties/type",
                   "description": "The 'solo' consensus type may be used in development environment only. Use 'raft' in production.",
-                  "enum": Array [
+                  "enum": [
                     "solo",
                     "raft",
                   ],
@@ -425,7 +425,7 @@ Object {
                   "type": "string",
                 },
               },
-              "required": Array [
+              "required": [
                 "groupName",
                 "type",
                 "instances",
@@ -436,94 +436,94 @@ Object {
             "title": "Orderers",
             "type": "array",
           },
-          "organization": Object {
+          "organization": {
             "$id": "#/properties/orgs/items/properties/organization",
-            "properties": Object {
-              "domain": Object {
+            "properties": {
+              "domain": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/domain",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "pattern": "^[a-z0-9\\.\\-]+$",
                 "title": "Domain",
                 "type": "string",
               },
-              "mspName": Object {
+              "mspName": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/mspName",
                 "pattern": "^[a-zA-Z0-9]+$",
                 "title": "MSP Name",
                 "type": "string",
               },
-              "name": Object {
+              "name": {
                 "$id": "#/properties/orgs/items/properties/organization/properties/name",
                 "pattern": "^[a-zA-Z0-9]+$",
                 "title": "Name",
                 "type": "string",
               },
             },
-            "required": Array [
+            "required": [
               "name",
               "domain",
             ],
             "title": "Basic information",
             "type": "object",
           },
-          "peer": Object {
+          "peer": {
             "$id": "#/properties/orgs/items/properties/peer",
-            "properties": Object {
-              "anchorPeerInstances": Object {
+            "properties": {
+              "anchorPeerInstances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/anchorPeerInstances",
                 "maximum": 9,
                 "minimum": 1,
                 "title": "Number of anchor peer instances",
                 "type": "integer",
               },
-              "db": Object {
+              "db": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/db",
-                "enum": Array [
+                "enum": [
                   "LevelDb",
                   "CouchDb",
                 ],
                 "title": "Database Type",
                 "type": "string",
               },
-              "instances": Object {
+              "instances": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/instances",
                 "maximum": 9,
                 "minimum": 1,
                 "title": "Number of instances",
                 "type": "integer",
               },
-              "prefix": Object {
+              "prefix": {
                 "$id": "#/properties/orgs/items/properties/peer/properties/prefix",
-                "pattern": "^[a-z0-9\\\\.\\\\-]+$",
+                "pattern": "^[a-z0-9\\.\\-]+$",
                 "title": "Domain prefix",
                 "type": "string",
               },
             },
-            "required": Array [
+            "required": [
               "instances",
             ],
             "title": "Peer",
             "type": "object",
           },
-          "tools": Object {
+          "tools": {
             "$id": "#/properties/orgs/items/properties/tools",
-            "properties": Object {
-              "explorer": Object {
+            "properties": {
+              "explorer": {
                 "$id": "#/properties/orgs/items/properties/tools/properties/explorer",
                 "title": "Blockchain Explorer enabled",
                 "type": "boolean",
               },
-              "fabloRest": Object {
+              "fabloRest": {
                 "$id": "#/properties/orgs/items/properties/tools/properties/fabloRest",
                 "title": "Fablo REST enabled",
                 "type": "boolean",
               },
             },
-            "required": Array [],
+            "required": [],
             "title": "Tools",
             "type": "object",
           },
         },
-        "required": Array [
+        "required": [
           "organization",
         ],
         "title": "Organization",
@@ -533,7 +533,7 @@ Object {
       "type": "array",
     },
   },
-  "required": Array [
+  "required": [
     "global",
     "orgs",
     "channels",
