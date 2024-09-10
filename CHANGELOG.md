@@ -1,14 +1,64 @@
-## 1.2.0-unstable
+## 2.0.0
+
+### Breaking changes
+* Drop support for capabilities v1, and Fabric versions below 2.0.0
+  [#461](https://github.com/hyperledger-labs/fablo/pull/461)
+  [#462](https://github.com/hyperledger-labs/fablo/pull/462)
+  [#464](https://github.com/hyperledger-labs/fablo/pull/464)
+  [#473](https://github.com/hyperledger-labs/fablo/pull/473)
+  [#486](https://github.com/hyperledger-labs/fablo/pull/486)
+  [#488](https://github.com/hyperledger-labs/fablo/pull/488)
+* Drop yarn and nvm installation support
+  [#455](https://github.com/hyperledger-labs/fablo/pull/455)
 
 ### Features
+* Add application capability V_2_5 [#463]
+  [#463](https://github.com/hyperledger-labs/fablo/pull/463)
 * Support for `chaincode invoke` command (tls and non-tls)
+  [#403](https://github.com/hyperledger-labs/fablo/pull/403)
+* [#413](https://github.com/hyperledger-labs/fablo/pull/413)
 * Support for `chaincodes list` command (tls and non-tls)
+  [#409](https://github.com/hyperledger-labs/fablo/pull/409)
+  [#411](https://github.com/hyperledger-labs/fablo/pull/411)
+* Christmas easter egg
+  [#427](https://github.com/hyperledger-labs/fablo/pull/427)
+* Remove dev dependencies on chaincode installation for Node.js
+  [#450](https://github.com/hyperledger-labs/fablo/pull/450)
+* Update Fabric version in the initial configuration
+  [#470]( https://github.com/hyperledger-labs/fablo/pull/470)
+* Publish Fablo Docker image for ARM architecture
+  [#478](https://github.com/hyperledger-labs/fablo/pull/478)
+  [#487](https://github.com/hyperledger-labs/fablo/pull/487)
 
 ### Fixes
-* Remove unsupported test library and dependencies
+* Fixed https request when tls is enabled
+  [#438](https://github.com/hyperledger-labs/fablo/pull/438)
+* Fixed issue with `fablo up` command when using CouchDB
+  [#443](https://github.com/hyperledger-labs/fablo/pull/443)
+* Update Docker Compose command
+  [#465](https://github.com/hyperledger-labs/fablo/pull/465)
+* Fixed issue with private data collection
+  [#460]( https://github.com/hyperledger-labs/fablo/pull/467)
 * Updated Node.js version from 12 to 16 in chaincode
+* Remove unsupported test library and dependencies
+
+### Chore & Maintenance
+* Add contributing guidelines
+  [#439](https://github.com/hyperledger-labs/fablo/pull/439)
+* Documented the Fablo architecture in `ARCHITECTURE.md` file
+  [#456](https://github.com/hyperledger-labs/fablo/pull/456)
+* Changed recommended Node.js version check
+  [#442](https://github.com/hyperledger-labs/fablo/pull/442)
+* Library updates (mostly by Dependabot)
+* Various CI improvements and fixes
+  [#467](https://github.com/hyperledger-labs/fablo/pull/467)
+  [#458](https://github.com/hyperledger-labs/fablo/pull/458)
+  [#489](https://github.com/hyperledger-labs/fablo/pull/489)
+* Improve .gitignore file
+  [#476]( https://github.com/hyperledger-labs/fablo/pull/476)
 
 ## 1.2.0
+
 ### Features
 * Initial Kubernetes support [#351](https://github.com/hyperledger-labs/fablo/issues/351)
 (not yet so elastic like Fablo in terms of network topology, but ready for first views and comments)
