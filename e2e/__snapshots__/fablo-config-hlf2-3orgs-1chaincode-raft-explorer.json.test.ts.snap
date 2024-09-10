@@ -5174,27 +5174,27 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
 
 dockerPullIfMissing() {
-  local IMAGE=\\"$1\\"
-  if [[ \\"$(docker images -q \\"$IMAGE\\" 2>/dev/null)\\" == \\"\\" ]]; then
-    docker pull --platform linux/x86_64 \\"$IMAGE\\"
+  local IMAGE="$1"
+  if [[ "$(docker images -q "$IMAGE" 2>/dev/null)" == "" ]]; then
+    docker pull --platform linux/x86_64 "$IMAGE"
   fi
 }
 
 node_version_check() {
 
-  local fabric_shim_version=\\"$1\\"
+  local fabric_shim_version="$1"
   local nodejs_version
 
-  if [[ \\"$fabric_shim_version\\" == *\\"1.4.\\"* ]]; then
+  if [[ "$fabric_shim_version" == *"1.4."* ]]; then
     nodejs_version=8.9
 
-  elif [[ \\"$fabric_shim_version\\" == *\\"2.2.\\"* || \\"$fabric_shim_version\\" == *\\"2.3.\\"* ]]; then
+  elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
     nodejs_version=12.13
 
-  elif [[ \\"$fabric_shim_version\\" == *\\"2.4.\\"* ]]; then
+  elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
     nodejs_version=16.16
 
-  elif [[ \\"$fabric_shim_version\\" == *\\"2.5.\\"* ]]; then
+  elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
     nodejs_version=18.12
 
   else
@@ -5230,13 +5230,24 @@ chaincodeBuild() {
   fi
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
-
-    NODE_VERSION="$(node --version)"
-
-    USES_OLD_FABRIC_SHIM="$(jq '.dependencies."fabric-shim" | contains("1.4.")' "$CHAINCODE_DIR_PATH/package.json")"
-    if [ "$USES_OLD_FABRIC_SHIM" == "true" ]; then
-      RECOMMENDED_NODE_VERSION="8.9"
+    if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
+      # note: \`source ~/.nvm/nvm.sh || true\` seems to not work on some shells (like /bin/zsh on Apple Silicon)
+      set +e
+      source ~/.nvm/nvm.sh
+      set -e
+      if [ "$(command -v nvm)" == "nvm" ]; then
+        current_dir="$(pwd)"
+        cd "$CHAINCODE_DIR_PATH"
+        set +u
+        nvm install
+        set -u
+        cd "$current_dir"
+      fi
     fi
+
+    NODE_VERSION=$(node --version)
+    fabric_shim_version=$(jq -r '.dependencies."fabric-shim"' "$CHAINCODE_DIR_PATH/package.json")
+    RECOMMENDED_NODE_VERSION=$(node_version_check "$fabric_shim_version")
 
     if ! echo "$NODE_VERSION" | grep -q "v$RECOMMENDED_NODE_VERSION"; then
       echo "Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)"
