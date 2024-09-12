@@ -1,6 +1,6 @@
 import got from "got";
 
-const repositoryName = "softwaremill/fablo";
+const repositoryName = "ghcr.io/hyperledger-labs/fablo";
 const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
 
 const incrementVersionFragment = (versionFragment: string) => {

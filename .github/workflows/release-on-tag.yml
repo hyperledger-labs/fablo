@@ -41,7 +41,7 @@ jobs:
       - name: Publish Docker image
         run: |
           FABLO_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
-          docker push softwaremill/fablo:"$FABLO_VERSION"
+          docker push ghcr.io/hyperledger-labs/fablo:"$FABLO_VERSION"
 
       - name: Create GitHub Release
         uses: "marvinpinto/action-automatic-releases@latest"
