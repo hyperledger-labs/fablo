@@ -15,7 +15,7 @@ echo "   FABLO_HOME:    $FABLO_HOME"
 echo "   FABLO_VERSION: $FABLO_VERSION"
 echo "   VERSION_DETAILS: $VERSION_DETAILS"
 
-IMAGE_BASE_NAME="softwaremill/fablo:$FABLO_VERSION"
+IMAGE_BASE_NAME="ghcr.io/hyperledger-labs/fablo:$FABLO_VERSION"
 
 if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
   set +e
@@ -37,7 +37,7 @@ if [ "${1:-''}" = "--push" ]; then
   docker buildx build \
     --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
     --platform linux/amd64,linux/arm64 \
-    --tag "softwaremill/fablo:$FABLO_VERSION" \
+    --tag "ghcr.io/hyperledger-labs/fablo:$FABLO_VERSION" \
     --push \
     "$FABLO_HOME"
 else
@@ -45,5 +45,5 @@ else
     --build-arg VERSION_DETAILS="$VERSION_DETAILS" \
     --tag "$IMAGE_BASE_NAME" "$FABLO_HOME"
 
-  docker tag "$IMAGE_BASE_NAME" "softwaremill/fablo:$FABLO_VERSION"
+  docker tag "$IMAGE_BASE_NAME" "ghcr.io/hyperledger-labs/fablo:$FABLO_VERSION"
 fi
