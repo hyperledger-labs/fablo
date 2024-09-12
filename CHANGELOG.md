@@ -56,6 +56,8 @@
   [#489](https://github.com/hyperledger-labs/fablo/pull/489)
 * Improve .gitignore file
   [#476]( https://github.com/hyperledger-labs/fablo/pull/476)
+* Update Fablo docker image registry to GHCR
+  [#491](https://github.com/hyperledger-labs/fablo/pull/491)
 
 ## 1.2.0
 
