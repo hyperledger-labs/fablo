@@ -3,7 +3,7 @@
 set -e
 
 FABLO_VERSION=2.0.0
-FABLO_IMAGE_NAME="ghcr.io/hyperledger-labs/fablo"
+FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
 COMMAND="$1"
