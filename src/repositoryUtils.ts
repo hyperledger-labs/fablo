@@ -1,7 +1,6 @@
 import got from "got";
 
-const repositoryName = "ghcr.io/hyperledger-labs/fablo";
-const repositoryTagsListUrl = `https://registry.hub.docker.com/v2/repositories/${repositoryName}/tags`;
+const repositoryTagsListUrl = `https://api.github.com/repos/hyperledger-labs/fablo/releases`;
 
 const incrementVersionFragment = (versionFragment: string) => {
   if (versionFragment.includes("-")) {
@@ -55,21 +54,23 @@ const version = (v: string): Version => ({
   },
 });
 
-const requestVersionNames = (): Promise<{ results: { name: string }[] }> => {
+const requestVersionNames = (): Promise<{ tag_name: string }[]> => {
   const params = {
     searchParams: {
       tag_status: "active",
       page_size: 1024,
     },
   };
-  return got(repositoryTagsListUrl, params).json<{ results: { name: string }[] }>();
+  return got(repositoryTagsListUrl, params).json<{ tag_name: string }[]>();
 };
+
+const versionRegex = /^v\d+\.\d+\.\d+(-[a-zA-Z0-9-]+)?$/;
 
 const getAvailableTags = async (): Promise<string[]> => {
   try {
-    const versionNames = (await requestVersionNames()).results
-      .filter((v) => v.name !== "latest")
-      .map((tag) => tag.name);
+    const versionNames = (await requestVersionNames())
+      .filter((release) => versionRegex.test(release.tag_name))
+      .map((release) => release.tag_name.slice(1));
     return sortVersions(versionNames);
   } catch (err) {
     console.log(`Could not check for updates. Url: '${repositoryTagsListUrl}' not available`);
