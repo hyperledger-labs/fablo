@@ -110,7 +110,7 @@ services:
   <%_ if (org.tools.fabloRest) { _%>
   <%= org.tools.fabloRest.address %>:
     container_name: <%= org.tools.fabloRest.address %>
-    image: softwaremill/fablo-rest:${FABLO_REST_VERSION}
+    image: ghcr.io/fablo-io/fablo-rest:${FABLO_REST_VERSION}
     environment:
       - PORT=8000
       - MSP_ID=<%= org.tools.fabloRest.mspId %>

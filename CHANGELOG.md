@@ -117,7 +117,7 @@
 ## 0.3.0
 
 ### Features
-* Add [Fablo REST](https://github.com/softwaremill/fablo-rest/) support 
+* Add [Fablo REST](https://github.com/fablo-io/fablo-rest/) support 
 * By default all peers are anchor peers
 * Support `postGenerate` hook
 * Added support for [Orderer sharding](https://github.com/hyperledger-labs/fablo/issues/220) (multiple orderer groups).
