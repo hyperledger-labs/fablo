@@ -57,10 +57,17 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Install Docker
+      - name: Install and start Docker
         run: |
-          brew install docker
+          brew install --cask docker
           docker --version
+          open /Applications/Docker.app
+          for i in {1..30}; do
+            docker version && break
+            echo "Waiting for Docker to start..."
+            sleep 10
+          done
+          
 
       - name: Build Fablo
         run: |
