@@ -61,9 +61,9 @@ jobs:
 
       - name: Install and start Docker
         run: |
-          brew install --cask docker
+          brew install colima docker
           docker --version
-          open /Applications/Docker.app
+          colima start
           for i in {1..30}; do
             docker version && break
             echo "Waiting for Docker to start..."
