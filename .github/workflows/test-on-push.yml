@@ -1,6 +1,8 @@
 name: Tests
 on:
   push:
+    branches:
+      - main  # Only run on push to main branch
   pull_request:
   workflow_dispatch:
 
