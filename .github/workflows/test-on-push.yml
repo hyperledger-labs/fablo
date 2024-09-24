@@ -57,6 +57,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Install Docker
+        run: |
+          brew install docker
+          docker --version
+
       - name: Build Fablo
         run: |
           npm install && \
