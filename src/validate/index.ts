@@ -74,8 +74,8 @@ class ValidateGenerator extends Generator {
     });
 
     this.addListener(validationErrorType.CRITICAL, (event) => {
-      this.log(chalk.bold.bgRed("Critical error occured:"));
-      this.log(chalk.bold(`- ${event.message}`));
+      console.log(chalk.bold.bgRed("Critical error occured:"));
+      console.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
       process.exit(1);
     });
@@ -123,19 +123,19 @@ class ValidateGenerator extends Generator {
   }
 
   async shortSummary() {
-    this.log(`Validation errors count: ${this.errors.count()}`);
-    this.log(`Validation warnings count: ${this.warnings.count()}`);
-    this.log(chalk.bold("==========================================================="));
+    console.log(`Validation errors count: ${this.errors.count()}`);
+    console.log(`Validation warnings count: ${this.warnings.count()}`);
+    console.log(chalk.bold("==========================================================="));
   }
 
   async detailedSummary() {
     const allValidationMessagesCount = this.errors.count() + this.warnings.count();
 
     if (allValidationMessagesCount > 0) {
-      this.log(chalk.bold("=================== Validation summary ===================="));
+      console.log(chalk.bold("=================== Validation summary ===================="));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
       this._printIfNotEmpty(this.warnings.getAllMessages(), chalk.yellow("Warnings found:"));
-      this.log(chalk.bold("==========================================================="));
+      console.log(chalk.bold("==========================================================="));
     }
 
     if (this.errors.count() > 0) {
@@ -179,13 +179,13 @@ class ValidateGenerator extends Generator {
 
   _printIfNotEmpty(messages: Message[], caption: string) {
     if (messages.length > 0) {
-      this.log(caption);
+      console.log(caption);
 
       const grouped: Record<string, Message[]> = _.groupBy(messages, (msg) => msg.category);
 
       Object.keys(grouped).forEach((key) => {
-        this.log(chalk.bold(`  ${key}:`));
-        grouped[key].forEach((msg) => this.log(`   - ${msg.message}`));
+        console.log(chalk.bold(`  ${key}:`));
+        grouped[key].forEach((msg) => console.log(`   - ${msg.message}`));
       });
     }
   }
@@ -466,12 +466,12 @@ class ValidateGenerator extends Generator {
 
   _validateDevMode(global: GlobalJson): void {
     if (global.peerDevMode && global.tls) {
-        const message = `TLS needs to be disabled when running peers in dev mode`;
-        this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
+      const message = `TLS needs to be disabled when running peers in dev mode`;
+      this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }
 
-  _verifyFabricVersion(global:GlobalJson){
+  _verifyFabricVersion(global: GlobalJson) {
     if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
       const message = `Fablo supports Fabric in version 2.0.0 and higher`;
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });

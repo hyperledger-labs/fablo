@@ -14,13 +14,13 @@ export default class ListCompatibleUpdatesGenerator extends Generator {
 
   _printVersions(versionsToPrint: string[]): void {
     if (versionsToPrint.length > 0) {
-      this.log(chalk.bold("====== !Compatible Fablo versions found! :) ============="));
-      this.log(`${chalk.underline.bold("Compatible")} versions:`);
-      versionsToPrint.forEach((version) => this.log(`- ${version}`));
-      this.log("");
-      this.log("To update just run command:");
-      this.log(`\t${chalk.bold("fablo use [version]")}`);
-      this.log(chalk.bold("==========================================================="));
+      console.log(chalk.bold("====== !Compatible Fablo versions found! :) ============="));
+      console.log(`${chalk.underline.bold("Compatible")} versions:`);
+      versionsToPrint.forEach((version) => console.log(`- ${version}`));
+      console.log("");
+      console.log("To update just run command:");
+      console.log(`\t${chalk.bold("fablo use [version]")}`);
+      console.log(chalk.bold("==========================================================="));
     }
   }
 }
