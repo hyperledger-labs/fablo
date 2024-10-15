@@ -1,6 +1,6 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabloVersion } from "../package.json";
-import { FabloConfigJson } from "../generators/types/FabloConfigJson";
+import { FabloConfigJson } from "../src/types/FabloConfigJson";
 import * as fs from "fs";
 
 const commands = new TestCommands("e2e/__tmp__/commands-tests");
