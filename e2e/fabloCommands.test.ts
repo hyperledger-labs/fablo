@@ -1,5 +1,7 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabloVersion } from "../package.json";
+import { FabloConfigJson } from "../generators/types/FabloConfigJson";
+import * as fs from "fs";
 
 const commands = new TestCommands("e2e/__tmp__/commands-tests");
 
@@ -102,6 +104,36 @@ describe("validate", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.failure());
     expect(commandResult.output).toContain("commands-tests/fablo-config.json does not exist\n");
+    expect(commands.getFiles()).toEqual([]);
+  });
+
+  it("should print validation errors", () => {
+    // Given
+    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json");
+    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf2-1org-1chaincode-raft-explorer.json", "");
+    const sourceConfig = require(sourceConfigPath) as FabloConfigJson;
+
+    // old schema
+    sourceConfig.$schema = "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json"
+
+    // invalid org
+    sourceConfig.orgs[0].organization.mspName = "some-org1";
+    sourceConfig.orgs[0].organization.name = "some-org1";
+
+    // save updated config
+    fs.writeFileSync(`${samplesDir}/invalid-fablo-config.json`, JSON.stringify(sourceConfig, null, 2));
+    const fabloConfig = `${commands.relativeRoot}/samples/invalid-fablo-config.json`;
+
+    // When
+    const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Critical error occured");
+    expect(commandResult.output).toContain("Json schema validation failed!");
+    expect(commandResult.output).toContain("instance.$schema : does not exactly match expected constant");
+    expect(commandResult.output).toContain(" instance.orgs[0].organization.name : does not match pattern");
+    expect(commandResult.output).toContain(" instance.orgs[0].organization.mspName : does not match pattern");
     expect(commands.getFiles()).toEqual([]);
   });
 });

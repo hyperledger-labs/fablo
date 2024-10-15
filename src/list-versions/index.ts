@@ -9,6 +9,6 @@ export default class ListVersionsGenerator extends Generator {
       .map((v) => (v === config.fabloVersion ? `${v} <== current` : v))
       .map((v) => (config.isFabloVersionSupported(v) && !v.includes("current") ? `${v} (compatible)` : v));
 
-    versionsSortedAndMarked.forEach((version) => this.log(`- ${version}`));
+    versionsSortedAndMarked.forEach((version) => console.log(`- ${version}`));
   }
 }
