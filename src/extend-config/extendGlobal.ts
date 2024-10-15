@@ -5,14 +5,13 @@ import { GlobalJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
-  
   if (version(fabricVersion).isGreaterOrEqual("2.5.0") && !version(fabricVersion).isGreaterOrEqual("3.0.0"))
     return { channel: "V2_0", orderer: "V2_0", application: "V2_5", isV2: true, isV3: false };
 
   if (version(fabricVersion).isGreaterOrEqual("3.0.0"))
-    return { channel: "V3_0", orderer: "V2_0", application: "V2_5", isV2: false, isV3: true};
+    return { channel: "V3_0", orderer: "V2_0", application: "V2_5", isV2: false, isV3: true };
 
-  return { channel: "V2_0", orderer: "V2_0", application: "V2_0", isV2: true , isV3: false};
+  return { channel: "V2_0", orderer: "V2_0", application: "V2_0", isV2: true, isV3: false };
 };
 
 const getVersions = (fabricVersion: string): FabricVersions => {
