@@ -16,7 +16,6 @@ interface CapabilitiesV2 {
   isV3: false;
 }
 
-
 interface CapabilitiesV_2_5 {
   application: "V2_5";
   channel: "V2_0";
@@ -32,7 +31,6 @@ interface CapabilitiesV3_0 {
   isV2: false;
   isV3: true;
 }
-
 
 export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5 | CapabilitiesV3_0;
 
