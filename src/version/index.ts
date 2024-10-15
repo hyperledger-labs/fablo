@@ -12,9 +12,9 @@ export default class VersionGenerator extends Generator {
 
   async printVersion(): Promise<void> {
     if (typeof this.options.verbose !== "undefined") {
-      this.log(JSON.stringify(fullInfo(), null, 2));
+      console.log(JSON.stringify(fullInfo(), null, 2));
     } else {
-      this.log(JSON.stringify(basicInfo(), null, 2));
+      console.log(JSON.stringify(basicInfo(), null, 2));
     }
   }
 }
