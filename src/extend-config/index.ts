@@ -22,7 +22,7 @@ class ExtendConfigGenerator extends Generator {
     const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
     const json = parseFabloConfig(this.fs.read(fabloConfigPath));
     const configExtended = extendConfig(json);
-    this.log(JSON.stringify(configExtended, undefined, 2));
+    console.log(JSON.stringify(configExtended, undefined, 2));
   }
 }
 

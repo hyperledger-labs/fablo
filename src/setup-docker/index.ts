@@ -48,9 +48,9 @@ export default class SetupDockerGenerator extends Generator {
       .replace(/[^0-9]+/g, "");
     const composeNetworkName = `fablo_network_${dateString}`;
 
-    this.log(`Used network config: ${fabloConfigPath}`);
-    this.log(`Fabric version is: ${global.fabricVersion}`);
-    this.log(`Generating docker-compose network '${composeNetworkName}'...`);
+    console.log(`Used network config: ${fabloConfigPath}`);
+    console.log(`Fabric version is: ${global.fabricVersion}`);
+    console.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
@@ -73,9 +73,9 @@ export default class SetupDockerGenerator extends Generator {
     this._copyHooks(config.hooks);
 
     this.on("end", () => {
-      this.log("Done & done !!! Try the network out: ");
-      this.log("-> fablo up - to start network");
-      this.log("-> fablo help - to view all commands");
+      console.log("Done & done !!! Try the network out: ");
+      console.log("-> fablo up - to start network");
+      console.log("-> fablo help - to view all commands");
     });
   }
 
