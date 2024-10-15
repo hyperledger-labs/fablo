@@ -111,10 +111,11 @@ describe("validate", () => {
     // Given
     const sourceConfigPath = require.resolve("../samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json");
     const samplesDir = sourceConfigPath.replace("/fablo-config-hlf2-1org-1chaincode-raft-explorer.json", "");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const sourceConfig = require(sourceConfigPath) as FabloConfigJson;
 
     // old schema
-    sourceConfig.$schema = "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json"
+    sourceConfig.$schema = "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json";
 
     // invalid org
     sourceConfig.orgs[0].organization.mspName = "some-org1";
