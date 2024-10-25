@@ -22,8 +22,7 @@ createChannelAndJoin() {
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
   <% if(global.capabilities.isV3) { %>
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-  }
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
   <% } else { %>
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
   <% } %>
