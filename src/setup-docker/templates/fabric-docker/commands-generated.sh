@@ -155,11 +155,7 @@ upgradeChaincode() {
   <% chaincodes.forEach((chaincode) => { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (global.capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
-        <% } else { -%>
-          <%- include('commands-generated/chaincode-upgrade-v2.sh', { chaincode, global }); %>
-        <% } -%>
+        <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' upgrade. Chaincode directory is empty."
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
