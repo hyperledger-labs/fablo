@@ -41,37 +41,54 @@ generateChannelsArtifacts() {
 installChannels() {
   <% if (!channels || !channels.length) { -%>
     echo "No channels"
+  <% } else if (global.capabilities.isV3) { -%>
+    <% channels.forEach((channel) => { -%>
+      <% channel.orgs.forEach((org, orgNo) => { -%>
+        <% org.peers.forEach((peer, peerNo) => { -%>
+          <% if (orgNo == 0 && peerNo == 0) { -%>
+            printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
+            <% if (!global.tls) { -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.address %>:<%= channel.ordererHead.adminPort %>';"
+              sleep 5
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
+            <% } else { -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.address %>:<%= channel.ordererHead.adminPort %>';"
+              sleep 5
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
+            <% } %>
+          <% } else { -%>
+            printItalics "Joining '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F638"
+            <% if (!global.tls) { -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
+            <% } else { -%>
+              docker exec -i <%= org.cli.address %> bash -c <% -%>
+                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
+            <% } -%>
+          <% } -%>
+        <% }) -%>
+      <% }) -%>
+    <% }) -%>
   <% } else { -%>
     <% channels.forEach((channel) => { -%>
       <% channel.orgs.forEach((org, orgNo) => { -%>
         <% org.peers.forEach((peer, peerNo) => { -%>
-          <% if(orgNo == 0 && peerNo == 0) { -%>
+          <% if (orgNo == 0 && peerNo == 0) { -%>
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
-            <% if(!global.tls) { -%>
+            <% if (!global.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
-              
-              <% if (global.capabilities.isV3) { -%>
-              #wait for channel creation
-              sleep 5
-               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
-              <% } -%>
-
             <% } else { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
-              <% if (global.capabilities.isV3) { -%>
-              #wait for channel creation
-              sleep 5
-               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTLS '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
-              <% } -%>
-              
             <% } %>
           <% } else { -%>
-            printItalics "Joining '<%= channel.name %>' on  <%= org.name %>/<%= peer.name %>" "U1F638"
-            <% if(!global.tls) { -%>
+            printItalics "Joining '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F638"
+            <% if (!global.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
@@ -85,20 +102,19 @@ installChannels() {
   <% } -%>
 }
 
+
 installChaincodes() {
   <% if (!chaincodes || !chaincodes.length) { -%>
     echo "No chaincodes"
   <% } else { -%>
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (global.capabilities.isV2) { -%>
           <% if (global.peerDevMode) { -%>
             <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
           <% } else { -%>
             local version="<%= chaincode.version %>"
             <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
           <% } -%>
-        <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
@@ -117,9 +133,7 @@ installChaincode() {
   <% chaincodes.forEach((chaincode) => { -%>
     if [ "$chaincodeName" = "<%= chaincode.name %>" ]; then
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-        <% if (global.capabilities.isV2) { -%>
-          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
-        <% } -%>
+        <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); %>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' install. Chaincode directory is empty."
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"

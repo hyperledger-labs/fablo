@@ -21,19 +21,10 @@ createChannelAndJoin() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
-  <% if(global.capabilities.isV3) { %>
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
-  <% } else { %>
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-  <% } %>
-  
-  <% if(global.capabilities.isV3) { %>
-  osnadmin channel join --channelID "${CHANNEL_NAME}" --config-block ./"$CHANNEL_NAME".pb -o "${ORDERER_URL}"
-  <% } else { %>
-  peer channel create -o "${ORDERER_URL}" -c "${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx
-  peer channel join -b "${CHANNEL_NAME}".block
-  <% } %>
 
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
+
+  osnadmin channel join --channelID "${CHANNEL_NAME}" --config-block ./"$CHANNEL_NAME".pb -o "${ORDERER_URL}"
   rm -rf "$DIR_NAME"
 }
 
@@ -65,17 +56,10 @@ createChannelAndJoinTls() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
   
-  <% if(global.capabilities.isV3) { %>
+ 
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
   osnadmin channel join --channelID "${CHANNEL_NAME}" --config-block ./"$CHANNEL_NAME".pb -o "${ORDERER_URL}" # --ca-file "${TLS_CA_CERT_PATH}" --client-cert "${ADMIN_SIGN_CERT}" --client-key "${ADMIN_PRIVATE_KEY}"
-  <% } else { %>
-
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-
-  peer channel create -o "${ORDERER_URL}" -c "${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx --tls --cafile "$TLS_CA_CERT_PATH"
-  peer channel join -b "${CHANNEL_NAME}".block --tls --cafile "$TLS_CA_CERT_PATH"
-  <%  } %>
-
+  
   rm -rf "$DIR_NAME"
 }
 
