@@ -213,20 +213,15 @@ export default class SetupDockerGenerator extends Generator {
   }
 
   _copyUtilityScripts(capabilities: Capabilities): void {
-    this.fs.copyTpl(this.templatePath("fabric-docker.sh"), this.destinationPath("fabric-docker.sh"));
+    this.fs.copyTpl(this.templatePath(`fabric-docker-${capabilities.isV3? "v3": "v2"}.sh`), this.destinationPath("fabric-docker.sh"));
 
     this.fs.copyTpl(
-      this.templatePath("fabric-docker/scripts/cli/channel_fns.sh"),
+      this.templatePath(`fabric-docker/scripts/cli/channel_fns-${capabilities.isV3? "v3": "v2"}.sh`),
       this.destinationPath("fabric-docker/scripts/cli/channel_fns.sh"),
     );
 
     this.fs.copyTpl(
-      this.templatePath("fabric-docker/scripts/cli/channel_fns.sh"),
-      this.destinationPath("fabric-docker/scripts/cli/channel_fns.sh"),
-    );
-
-    this.fs.copyTpl(
-      this.templatePath("fabric-docker/scripts/base-functions.sh"),
+      this.templatePath(`fabric-docker/scripts/base-functions-${capabilities.isV3? "v3": "v2"}.sh`),
       this.destinationPath("fabric-docker/scripts/base-functions.sh"),
     );
 
@@ -241,7 +236,7 @@ export default class SetupDockerGenerator extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`),
+      this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v2"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
     );
   }

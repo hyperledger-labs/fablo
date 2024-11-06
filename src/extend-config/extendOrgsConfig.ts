@@ -61,6 +61,7 @@ const extendOrderersConfig = (
         orgMspName,
         domain: ordererOrgDomainJson,
         consensus,
+        adminPort: 7053,
         port,
         fullAddress: `${address}:${port}`,
       };

@@ -47,6 +47,7 @@ export interface OrdererConfig {
   name: string;
   domain: string;
   address: string;
+  adminPort: number;
   port: number;
   fullAddress: string;
   orgName: string;
