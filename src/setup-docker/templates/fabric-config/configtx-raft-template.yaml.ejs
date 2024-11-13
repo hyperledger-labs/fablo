@@ -6,3 +6,15 @@
               ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
               ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
 <% })} -%>
+
+<% if (ordererGroup.consensus == "BFT") { %>
+    smartBFT: 
+    ConsenterMapping:<% ordererGroup.orderers.forEach(function(orderer, index) { %>
+        - ID: <%= index+1 %>
+          Host: <%= orderer.address %>
+          Port: <%= orderer.port %>
+          MSPID: <%= orderer.orgMspName %>
+          Identity:  crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
+<% })} -%>  
