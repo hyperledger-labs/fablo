@@ -213,7 +213,7 @@ export default class SetupDockerGenerator extends Generator {
   }
 
   _copyUtilityScripts(capabilities: Capabilities): void {
-    this.fs.copyTpl(this.templatePath(`fabric-docker-${capabilities.isV3? "v3": "v2"}.sh`), this.destinationPath("fabric-docker.sh"));
+    this.fs.copyTpl(this.templatePath(`fabric-docker.sh`), this.destinationPath("fabric-docker.sh"));
 
     this.fs.copyTpl(
       this.templatePath(`fabric-docker/scripts/cli/channel_fns-${capabilities.isV3? "v3": "v2"}.sh`),
