@@ -13,9 +13,14 @@ generateArtifacts() {
 
   <% }) -%>
   <%_ ordererGroups.forEach((ordererGroup) => { _%>
+
+  <% if(!global.capabilities.isV3) {%> 
   printItalics "Generating genesis block for group <%= ordererGroup.name %>" "U1F3E0"
   genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "<%= ordererGroup.profileName %>"
-
+  <% } else { %> 
+  echo "System channel not supported for Fabric version 3" 
+  <% } %>
+  
   <%_ }) _%>
   # Create directory for chaincode packages to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
@@ -179,6 +184,7 @@ upgradeChaincode() {
 }
 
 notifyOrgsAboutChannels() {
+  <% if(!global.capabilities.isV3) { %>
   printHeadline "Creating new channel config blocks" "U1F537"
   <% channels.forEach((channel) => { -%>
     <% channel.orgs.forEach((org) => { -%>
@@ -219,6 +225,11 @@ notifyOrgsAboutChannels() {
       deleteNewChannelUpdateTx "<%= channel.name %>" "<%= org.mspName %>" "<%= org.cli.address %>"
     <% }) -%>
   <% }) -%>
+
+  <% } else { %> 
+  echo ""
+  <% } %>
+
 }
 
 printStartSuccessInfo() {

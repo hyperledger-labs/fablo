@@ -77,7 +77,8 @@ createChannelTx() {
   local CONFIG_PATH=$2
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
-  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME".pb
+  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME.pb"
+  echo CHNANEL_TX_PATH: $CHANNEL_TX_PATH
 
   echo "Creating channelTx for $CHANNEL_NAME..."
   inputLog "CONFIG_PATH: $CONFIG_PATH"
@@ -91,17 +92,20 @@ createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run --rm \
+    --name $CONTAINER_NAME \
+    -v "$CONFIG_PATH":/fabric-config \
+    -v "$OUTPUT_PATH":/output \
+    hyperledger/fabric-tools:"${FABRIC_VERSION}" \
+    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile ${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID ${CHANNEL_NAME}"
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  if [ $? -ne 0 ]; then
+    echo "Failed to create channel configuration transaction."
+    exit 1
+  fi
 
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "${CONFIG_PROFILE}" -outputBlock ./config/channel.pb -channelID "${CHANNEL_NAME}"
-  docker cp $CONTAINER_NAME:/config/channel.pb "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
- 
+  echo "Channel configuration created at $CHANNEL_TX_PATH"
 
-
-  removeContainer $CONTAINER_NAME
 }
 
 createNewChannelUpdateTx() {
