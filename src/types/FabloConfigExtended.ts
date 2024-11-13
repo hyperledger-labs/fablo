@@ -160,7 +160,7 @@ export interface ChaincodeConfig {
 
 export interface OrdererGroup {
   name: string;
-  consensus: "solo" | "etcdraft";
+  consensus: "solo" | "etcdraft" | "BFT";
   profileName: string;
   genesisBlockName: string;
   configtxOrdererDefaults: string;
