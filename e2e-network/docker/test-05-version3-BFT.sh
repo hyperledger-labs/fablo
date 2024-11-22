@@ -8,7 +8,7 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-CONFIG="$FABLO_HOME/fablo-config-hlf3-bft-1orgs-1chaincode.json"
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
