@@ -53,9 +53,9 @@ installChannels() {
       <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
         <% const org = orgs.find((org) => org.name === orderer.orgName); -%>
         docker exec -i <%= org.cli.address %> bash -c <% -%>
-          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' 'example.com' 'crypto/users/Admin@test/msp' '<%= orderer.address %>:<%= orderer.adminPort %>';"
+          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
       <% }) -%>
-      sleep 8
+      sleep 8 # TODO: remove sleep
       <% channel.orgs.forEach((org, orgNo) => { -%>
         <% org.peers.forEach((peer, peerNo) => { -%>
           <% if (orgNo == 0 && peerNo == 0) { -%>
