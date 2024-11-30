@@ -27,7 +27,7 @@
           Host: <%= orderer.address %>
           Port: <%= orderer.port %>
           MSPID: <%= orderer.orgMspName %>
-          Identity:  crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+          Identity: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/signcerts/<%= orderer.address %>-cert.pem
           ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
           ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
 <% })} -%>  
