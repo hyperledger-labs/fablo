@@ -44,24 +44,26 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
+  set -x
   <% if (!channels || !channels.length) { -%>
+   
     echo "No channels"
   <% } else if (global.capabilities.isV3) { -%>
     <% channels.forEach((channel) => { -%>
+      <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
+        <% const org = orgs.find((org) => org.name === orderer.orgName); -%>
+        docker exec -i <%= org.cli.address %> bash -c <% -%>
+          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' 'example.com' 'crypto/users/Admin@test/msp' '<%= orderer.address %>:<%= orderer.adminPort %>';"
+      <% }) -%>
+      sleep 8
       <% channel.orgs.forEach((org, orgNo) => { -%>
         <% org.peers.forEach((peer, peerNo) => { -%>
           <% if (orgNo == 0 && peerNo == 0) { -%>
             printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
             <% if (!global.tls) { -%>
               docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.address %>:<%= channel.ordererHead.adminPort %>';"
-              sleep 5
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
             <% } else { -%>
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.address %>:<%= channel.ordererHead.adminPort %>';"
-              sleep 5
               docker exec -i <%= org.cli.address %> bash -c <% -%>
                 "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
             <% } %>
@@ -106,7 +108,6 @@ installChannels() {
     <% }) -%>
   <% } -%>
 }
-
 
 installChaincodes() {
   <% if (!chaincodes || !chaincodes.length) { -%>
