@@ -42,16 +42,14 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
-  set -x
   <% if (!channels || !channels.length) { -%>
-   
     echo "No channels"
   <% } else if (global.capabilities.isV3) { -%>
     <% channels.forEach((channel) => { -%>
       <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
         <% const org = orgs.find((org) => org.name === orderer.orgName); -%>
-        docker exec -i <%= org.cli.address %> bash -c <% -%>
-          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
+          docker exec -i <%= org.cli.address %> bash -c <% -%>
+            "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
       <% }) -%>
       <% if (channel.ordererGroup.consensus !== "BFT") { -%>
         sleep 4  # Wait for Raft cluster to establish consensus
@@ -115,12 +113,12 @@ installChaincodes() {
   <% } else { -%>
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
-          <% if (global.peerDevMode) { -%>
-            <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
-          <% } else { -%>
-            local version="<%= chaincode.version %>"
-            <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
-          <% } -%>
+        <% if (global.peerDevMode) { -%>
+          <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
+        <% } else { -%>
+          local version="<%= chaincode.version %>"
+          <%- include('commands-generated/chaincode-install-v2.sh', { chaincode, global }); -%>
+        <% } -%>
       else
         echo "Warning! Skipping chaincode '<%= chaincode.name %>' installation. Chaincode directory is empty."
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
@@ -201,22 +199,22 @@ notifyOrgsAboutChannels() {
   printHeadline "Notyfing orgs about channels" "U1F4E2"
   <% channels.forEach((channel) => { -%>
     <% channel.orgs.forEach((org) => { -%>
-     <% if(!global.tls) { -%>
-       notifyOrgAboutNewChannel <% -%>
+      <% if(!global.tls) { -%>
+        notifyOrgAboutNewChannel <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= channel.ordererHead.fullAddress %>"
-     <% } else { -%>
-       notifyOrgAboutNewChannelTls <% -%>
+      <% } else { -%>
+        notifyOrgAboutNewChannelTls <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
          "peer0.<%= org.domain %>" <% -%>
          "<%= channel.ordererHead.fullAddress %>" <% -%>
          "crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem"
-     <% } -%>
+      <% } -%>
     <% }) -%>
   <% }) %>
 
@@ -228,7 +226,7 @@ notifyOrgsAboutChannels() {
   <% }) -%>
 
   <% } else { %> 
-  echo ""
+    echo ""
   <% } %>
 
 }
