@@ -2116,11 +2116,9 @@ FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=2.4.7
 FABRIC_BASEOS_VERSION=2.4.7
 
-
-FABRIC_JAVAENV_VERSION=3.0-beta
-FABRIC_NODEENV_VERSION=2.5
-RECOMMENDED_NODE_VERSION=18
-
+FABRIC_JAVAENV_VERSION=2.4
+FABRIC_NODEENV_VERSION=2.4
+RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -2384,7 +2382,6 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
-  set -x
   printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'orderer0.group1.orderer.example.com:7030';"
 
@@ -3078,7 +3075,6 @@ createChannelTx() {
 
 createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
-
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CONFIG_PROFILE=$3
@@ -3853,11 +3849,9 @@ set -eu
 
 createChannelAndJoin() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-
   local ORDERER_URL=$5
 
   local DIR_NAME=step-createChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -3879,7 +3873,6 @@ createChannelAndJoin() {
 
 createChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
@@ -3915,11 +3908,9 @@ createChannelAndJoinTls() {
 
 fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-
   local ORDERER_URL=$5
 
   local DIR_NAME=step-fetchChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -3940,7 +3931,6 @@ fetchChannelAndJoin() {
 
 fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
