@@ -4,11 +4,9 @@ set -eu
 
 createChannelAndJoin() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-
   local ORDERER_URL=$5
 
   local DIR_NAME=step-createChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -21,7 +19,6 @@ createChannelAndJoin() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
-
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
   peer channel create -o "${ORDERER_URL}" -c "${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx
   peer channel join -b "${CHANNEL_NAME}".block
@@ -31,7 +28,6 @@ createChannelAndJoin() {
 
 createChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
@@ -57,8 +53,6 @@ createChannelAndJoinTls() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
   
-
-
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
 
   peer channel create -o "${ORDERER_URL}" -c "${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx --tls --cafile "$TLS_CA_CERT_PATH"
@@ -70,11 +64,9 @@ createChannelAndJoinTls() {
 
 fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-
   local ORDERER_URL=$5
 
   local DIR_NAME=step-fetchChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -95,7 +87,6 @@ fetchChannelAndJoin() {
 
 fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")

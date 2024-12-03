@@ -96,29 +96,23 @@ createChannelTx() {
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
 
- 
   docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
   docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
-
 
   removeContainer $CONTAINER_NAME
 }
 
 createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
-
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CONFIG_PROFILE=$3
   local CONFIG_PATH=$4
   local OUTPUT_PATH=$5
 
-
   ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/${MSP_NAME}anchors-$CHANNEL_NAME.tx"
   OUTPUT_ANCHOR_PEERS_UPDATE_PATH="./config/${MSP_NAME}anchors.tx"
   CONTAINER_COPY_PATH="${CONTAINER_NAME}:/config/${MSP_NAME}anchors.tx"
-
-
 
   echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
