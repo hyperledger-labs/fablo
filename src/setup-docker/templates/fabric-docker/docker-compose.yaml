@@ -188,29 +188,39 @@ services:
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=<%= orderer.port %>
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      <%_ if(global.capabilities.isV2) { _%>
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
-      <%_ } else { _%>
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
-      <%_ } _%>
-      - ORDERER_GENERAL_LOCALMSPID=<%= org.mspName %>
+      - ORDERER_GENERAL_LOCALMSPID=<%= orderer.orgMspName %>
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
       <%_ if(global.tls) { _%>
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=<%= orderer.address %>:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_ADMIN_LISTENADDRESS=<%= orderer.address %>:7053
       <%_ } _%>
+      <%_ if(global.capabilities.isV2) { _%>
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/<%= ordererGroup.genesisBlockName %>
+      <%_ } _%>
+      <%_ if(global.capabilities.isV3) { _%>
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:<%= orderer.adminPort %>
+      <%_ } _%>
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=<%= orderer.address %>:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
