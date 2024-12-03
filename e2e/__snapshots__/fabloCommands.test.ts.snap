@@ -4,6 +4,7 @@ exports[`extend config should extend custom config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.4.3",
@@ -49,6 +50,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         },
@@ -59,6 +61,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7031,
           "fullAddress": "orderer1.group1.orderer1.com:7031"
         },
@@ -69,6 +72,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7032,
           "fullAddress": "orderer2.group1.orderer1.com:7032"
         }
@@ -81,6 +85,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         }
@@ -92,6 +97,7 @@ Validation warnings count: 0
         "orgMspName": "Orderer1MSP",
         "domain": "orderer1.com",
         "consensus": "etcdraft",
+        "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer1.com:7030"
       }
@@ -113,6 +119,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
         }
@@ -125,6 +132,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
         }
@@ -136,6 +144,7 @@ Validation warnings count: 0
         "orgMspName": "Orderer2MSP",
         "domain": "orderer2.com",
         "consensus": "solo",
+        "adminPort": 7053,
         "port": 7050,
         "fullAddress": "orderer0.group2.orderer2.com:7050"
       }
@@ -149,6 +158,7 @@ Validation warnings count: 0
       "orgMspName": "Orderer1MSP",
       "domain": "orderer1.com",
       "consensus": "etcdraft",
+      "adminPort": 7053,
       "port": 7030,
       "fullAddress": "orderer0.group1.orderer1.com:7030"
     },
@@ -159,6 +169,7 @@ Validation warnings count: 0
       "orgMspName": "Orderer2MSP",
       "domain": "orderer2.com",
       "consensus": "solo",
+      "adminPort": 7053,
       "port": 7050,
       "fullAddress": "orderer0.group2.orderer2.com:7050"
     }
@@ -204,6 +215,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             },
@@ -214,6 +226,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7031,
               "fullAddress": "orderer1.group1.orderer1.com:7031"
             },
@@ -224,6 +237,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7032,
               "fullAddress": "orderer2.group1.orderer1.com:7032"
             }
@@ -236,6 +250,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             }
@@ -284,6 +299,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer2MSP",
               "domain": "orderer2.com",
               "consensus": "solo",
+              "adminPort": 7053,
               "port": 7050,
               "fullAddress": "orderer0.group2.orderer2.com:7050"
             }
@@ -296,6 +312,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer2MSP",
               "domain": "orderer2.com",
               "consensus": "solo",
+              "adminPort": 7053,
               "port": 7050,
               "fullAddress": "orderer0.group2.orderer2.com:7050"
             }
@@ -686,6 +703,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           },
@@ -696,6 +714,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7031,
             "fullAddress": "orderer1.group1.orderer1.com:7031"
           },
@@ -706,6 +725,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7032,
             "fullAddress": "orderer2.group1.orderer1.com:7032"
           }
@@ -718,6 +738,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           }
@@ -729,6 +750,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         }
@@ -740,6 +762,7 @@ Validation warnings count: 0
         "orgMspName": "Orderer1MSP",
         "domain": "orderer1.com",
         "consensus": "etcdraft",
+        "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer1.com:7030"
       },
@@ -1025,6 +1048,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           },
@@ -1035,6 +1059,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7031,
             "fullAddress": "orderer1.group1.orderer1.com:7031"
           },
@@ -1045,6 +1070,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7032,
             "fullAddress": "orderer2.group1.orderer1.com:7032"
           }
@@ -1057,6 +1083,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           }
@@ -1068,6 +1095,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         }
@@ -1079,6 +1107,7 @@ Validation warnings count: 0
         "orgMspName": "Orderer1MSP",
         "domain": "orderer1.com",
         "consensus": "etcdraft",
+        "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer1.com:7030"
       },
@@ -1388,6 +1417,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer2MSP",
             "domain": "orderer2.com",
             "consensus": "solo",
+            "adminPort": 7053,
             "port": 7050,
             "fullAddress": "orderer0.group2.orderer2.com:7050"
           }
@@ -1400,6 +1430,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer2MSP",
             "domain": "orderer2.com",
             "consensus": "solo",
+            "adminPort": 7053,
             "port": 7050,
             "fullAddress": "orderer0.group2.orderer2.com:7050"
           }
@@ -1411,6 +1442,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
         }
@@ -1422,6 +1454,7 @@ Validation warnings count: 0
         "orgMspName": "Orderer2MSP",
         "domain": "orderer2.com",
         "consensus": "solo",
+        "adminPort": 7053,
         "port": 7050,
         "fullAddress": "orderer0.group2.orderer2.com:7050"
       },
@@ -1726,6 +1759,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             },
@@ -1736,6 +1770,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7031,
               "fullAddress": "orderer1.group1.orderer1.com:7031"
             },
@@ -1746,6 +1781,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7032,
               "fullAddress": "orderer2.group1.orderer1.com:7032"
             }
@@ -1758,6 +1794,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             }
@@ -1769,6 +1806,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           }
@@ -1780,6 +1818,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         },
@@ -2166,6 +2205,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             },
@@ -2176,6 +2216,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7031,
               "fullAddress": "orderer1.group1.orderer1.com:7031"
             },
@@ -2186,6 +2227,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7032,
               "fullAddress": "orderer2.group1.orderer1.com:7032"
             }
@@ -2198,6 +2240,7 @@ Validation warnings count: 0
               "orgMspName": "Orderer1MSP",
               "domain": "orderer1.com",
               "consensus": "etcdraft",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer1.com:7030"
             }
@@ -2209,6 +2252,7 @@ Validation warnings count: 0
             "orgMspName": "Orderer1MSP",
             "domain": "orderer1.com",
             "consensus": "etcdraft",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer1.com:7030"
           }
@@ -2220,6 +2264,7 @@ Validation warnings count: 0
           "orgMspName": "Orderer1MSP",
           "domain": "orderer1.com",
           "consensus": "etcdraft",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer1.com:7030"
         },
@@ -2426,6 +2471,7 @@ exports[`extend config should extend default config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.5.9",
@@ -2472,6 +2518,7 @@ Validation warnings count: 0
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
         }
@@ -2484,6 +2531,7 @@ Validation warnings count: 0
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
         }
@@ -2495,6 +2543,7 @@ Validation warnings count: 0
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
         "consensus": "solo",
+        "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
       }
@@ -2508,6 +2557,7 @@ Validation warnings count: 0
       "orgMspName": "OrdererMSP",
       "domain": "orderer.example.com",
       "consensus": "solo",
+      "adminPort": 7053,
       "port": 7030,
       "fullAddress": "orderer0.group1.orderer.example.com:7030"
     }
@@ -2553,6 +2603,7 @@ Validation warnings count: 0
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
               "consensus": "solo",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
             }
@@ -2565,6 +2616,7 @@ Validation warnings count: 0
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
               "consensus": "solo",
+              "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
             }
@@ -2771,6 +2823,7 @@ Validation warnings count: 0
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
             "consensus": "solo",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
           }
@@ -2783,6 +2836,7 @@ Validation warnings count: 0
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
             "consensus": "solo",
+            "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
           }
@@ -2794,6 +2848,7 @@ Validation warnings count: 0
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
+          "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
         }
@@ -2805,6 +2860,7 @@ Validation warnings count: 0
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
         "consensus": "solo",
+        "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
       },
