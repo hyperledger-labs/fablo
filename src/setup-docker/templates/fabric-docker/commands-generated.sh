@@ -15,10 +15,8 @@ generateArtifacts() {
   <%_ ordererGroups.forEach((ordererGroup) => { _%>
 
   <% if(!global.capabilities.isV3) {%> 
-  printItalics "Generating genesis block for group <%= ordererGroup.name %>" "U1F3E0"
-  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "<%= ordererGroup.profileName %>"
-  <% } else { %> 
-  echo "System channel not supported for Fabric version 3" 
+    printItalics "Generating genesis block for group <%= ordererGroup.name %>" "U1F3E0"
+    genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "<%= ordererGroup.profileName %>"
   <% } %>
   
   <%_ }) _%>
@@ -44,18 +42,18 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
-  set -x
   <% if (!channels || !channels.length) { -%>
-   
     echo "No channels"
   <% } else if (global.capabilities.isV3) { -%>
     <% channels.forEach((channel) => { -%>
       <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
         <% const org = orgs.find((org) => org.name === orderer.orgName); -%>
         docker exec -i <%= org.cli.address %> bash -c <% -%>
-          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' 'example.com' 'crypto/users/Admin@test/msp' '<%= orderer.address %>:<%= orderer.adminPort %>';"
+          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
       <% }) -%>
-      sleep 8
+      <% if (channel.ordererGroup.consensus !== "BFT") { -%>
+        sleep 4  # Wait for Raft cluster to establish consensus
+      <% } -%>
       <% channel.orgs.forEach((org, orgNo) => { -%>
         <% org.peers.forEach((peer, peerNo) => { -%>
           <% if (orgNo == 0 && peerNo == 0) { -%>
