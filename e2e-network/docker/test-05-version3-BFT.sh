@@ -52,6 +52,9 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 networkUp
 
 waitForContainer "orderer0.group1.orderer.example.com" "Channel created"
+waitForContainer "orderer1.group1.orderer.example.com" "Channel created"
+waitForContainer "orderer2.group1.orderer.example.com" "Channel created"
+waitForContainer "orderer3.group1.orderer.example.com" "Channel created"
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
