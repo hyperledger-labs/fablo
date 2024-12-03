@@ -3333,9 +3333,12 @@ FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=2.3.2
 FABRIC_BASEOS_VERSION=2.3.2
-FABRIC_JAVAENV_VERSION=2.3
-FABRIC_NODEENV_VERSION=2.3
-RECOMMENDED_NODE_VERSION=12
+
+
+FABRIC_JAVAENV_VERSION=3.0-beta
+FABRIC_NODEENV_VERSION=2.5
+RECOMMENDED_NODE_VERSION=18
+
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -3833,24 +3836,25 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
+  set -x
   printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
-  printItalics "Joining 'my-channel1' on  Org1/peer1" "U1F638"
+  printItalics "Joining 'my-channel1' on Org1/peer1" "U1F638"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
   printHeadline "Creating 'my-channel2' on Org2/peer0" "U1F63B"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer0.org2.example.com:7061' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
-  printItalics "Joining 'my-channel2' on  Org2/peer1" "U1F638"
+  printItalics "Joining 'my-channel2' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.example.com:7062' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
   printHeadline "Creating 'my-channel3' on Org1/peer0" "U1F63B"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel3' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
-  printItalics "Joining 'my-channel3' on  Org1/peer1" "U1F638"
+  printItalics "Joining 'my-channel3' on Org1/peer1" "U1F638"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
-  printItalics "Joining 'my-channel3' on  Org2/peer0" "U1F638"
+  printItalics "Joining 'my-channel3' on Org2/peer0" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer0.org2.example.com:7061' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
-  printItalics "Joining 'my-channel3' on  Org2/peer1" "U1F638"
+  printItalics "Joining 'my-channel3' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer1.org2.example.com:7062' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 }
 
@@ -3952,6 +3956,7 @@ upgradeChaincode() {
 }
 
 notifyOrgsAboutChannels() {
+
   printHeadline "Creating new channel config blocks" "U1F537"
   createNewChannelUpdateTx "my-channel1" "Org1MSP" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
   createNewChannelUpdateTx "my-channel2" "Org2MSP" "MyChannel2" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
@@ -3969,6 +3974,7 @@ notifyOrgsAboutChannels() {
   deleteNewChannelUpdateTx "my-channel2" "Org2MSP" "cli.org2.example.com"
   deleteNewChannelUpdateTx "my-channel3" "Org1MSP" "cli.org1.example.com"
   deleteNewChannelUpdateTx "my-channel3" "Org2MSP" "cli.org2.example.com"
+
 }
 
 printStartSuccessInfo() {
@@ -4089,22 +4095,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7030
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4124,22 +4131,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7031
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.orderer.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4221,22 +4229,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7050
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org1MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org1.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org1.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4256,22 +4265,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7051
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org1MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org1.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org1.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4300,6 +4310,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4346,6 +4357,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4446,22 +4458,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7070
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org2MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org2.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org2.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4481,22 +4494,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7071
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org2MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org2.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org2.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4525,6 +4539,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4571,6 +4586,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4671,22 +4687,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7090
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org3MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org3.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.org3.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4706,22 +4723,23 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_LISTENPORT=7091
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
       - ORDERER_GENERAL_LOCALMSPID=Org3MSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      - GODEBUG=netdns=go
-      # metrics
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org3.example.com:9440
-      - ORDERER_METRICS_PROVIDER=prometheus
-      # enabled TLS
+      # TLS Configuration
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.org3.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /var/hyperledger/orderer
     command: orderer
     ports:
@@ -4750,6 +4768,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4796,6 +4815,7 @@ services:
       - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
       - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
       - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4970,8 +4990,8 @@ createChannelTx() {
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "\${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "\${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
 
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "\${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "\${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
   docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
@@ -4985,7 +5005,10 @@ createNewChannelUpdateTx() {
   local CONFIG_PROFILE=$3
   local CONFIG_PATH=$4
   local OUTPUT_PATH=$5
-  local ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+
+  ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+  OUTPUT_ANCHOR_PEERS_UPDATE_PATH="./config/\${MSP_NAME}anchors.tx"
+  CONTAINER_COPY_PATH="\${CONTAINER_NAME}:/config/\${MSP_NAME}anchors.tx"
 
   echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
@@ -5008,11 +5031,11 @@ createNewChannelUpdateTx() {
   docker exec -i $CONTAINER_NAME configtxgen \\
     --configPath ./fabric-config \\
     -profile "\${CONFIG_PROFILE}" \\
-    -outputAnchorPeersUpdate ./config/"\${MSP_NAME}"anchors.tx \\
+    -outputAnchorPeersUpdate "\${OUTPUT_ANCHOR_PEERS_UPDATE_PATH}" \\
     -channelID "\${CHANNEL_NAME}" \\
     -asOrg "\${MSP_NAME}" || removeContainer $CONTAINER_NAME
 
-  docker cp $CONTAINER_NAME:/config/"\${MSP_NAME}"anchors.tx "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
+  docker cp "$CONTAINER_COPY_PATH" "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
 
   removeContainer $CONTAINER_NAME
 }
@@ -5769,7 +5792,6 @@ createChannelAndJoin() {
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-
   peer channel create -o "\${ORDERER_URL}" -c "\${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx
   peer channel join -b "\${CHANNEL_NAME}".block
 
