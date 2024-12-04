@@ -169,3 +169,55 @@ jobs:
           path: |
             e2e-network/docker/test-04-snapshot.sh.logs/*
             e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
+  
+  test-05-v3:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+  
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+  
+      - name: Test version 3
+        run: e2e-network/docker/test-05-version3.sh
+  
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-05-version3
+          path: |
+            e2e-network/docker/test-05-version3-snapshot.sh.logs/*
+            e2e-network/docker/test-05-version3-snapshot.sh.tmpdir/fablo-target/**/*
+
+  test-05-v3-BFT:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+  
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+  
+      - name: Test version 3 with BFT
+        run: e2e-network/docker/test-05-version3.sh
+  
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-05-version3-BFT-snapshot
+          path: |
+            e2e-network/docker/test-05-version3-BFT-snapshot.sh.logs/*
+            e2e-network/docker/test-05-version3-BFT-snapshot.sh.tmpdir/fablo-target/**/*
+  
+  
