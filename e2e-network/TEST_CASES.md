@@ -8,8 +8,8 @@
 | Consensus                 |      solo       |    RAFT     |    solo    |           RAFT           |        RAFT        |          BFT          |
 | Orderer nodes             |        1        |      3      |     1      |            1             |         3          |          4            |
 | Organizations             |        1        |      2      |     2      |            1             |         1          |          1            |
-| CA database               |     SQLite      |   SQLite    |   SQLite   |         Postgres         |        Postgres    |          Postgres     |
-| Peer database             |     LevelDB     |   LevelDB   |  LevelDB   |         CouchDB          |        CouchDB     |          CouchDB      |
+| CA database               |     SQLite      |   SQLite    |   SQLite   |         Postgres         |        SQLite      |         SQLite        |
+| Peer database             |     LevelDB     |   LevelDB   |  LevelDB   |         CouchDB          |        LevelDB     |         LevelDB       |
 | Peer count                |        2        |    2, 2     |    2, 1    |            2             |          2         |          2            |
 | Channels                  |        1        |      2      |     1      |            1             |          1         |          1            |
 | Node chaincode            |       yes       |     yes     |    yes     |           yes            |         yes        |          yes          |
@@ -18,5 +18,5 @@
 | Private data              |       no        |     no      |    yes     |           yes            |         no         |          no           |
 | Java chaincode            |       no        |     yes     |     no     |            no            |         no         |          no           |
 | Go chaincode              |       no        |     no      |     no     |            no            |         no         |          no           |
-| Tools                     | channel scripts | Fablo REST  |     -      |  Fablo REST, Explorer    |   channel scripts  |      channel scripts  |
-| Other Fablo commands      |   init, reset   | stop, start |     -      | snapshot, prune, restore |     init, reset    |       init, reset     |
+| Tools                     | channel scripts | Fablo REST  |     -      |  Fablo REST, Explorer    |         -          |          -            |
+| Other Fablo commands      |   init, reset   | stop, start |     -      | snapshot, prune, restore |         -          |          -            |

@@ -78,7 +78,6 @@ createChannelTx() {
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
   local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME.pb"
-  echo CHNANEL_TX_PATH: $CHANNEL_TX_PATH
 
   echo "Creating channelTx for $CHANNEL_NAME..."
   inputLog "CONFIG_PATH: $CONFIG_PATH"
@@ -98,7 +97,8 @@ createChannelTx() {
     -v "$OUTPUT_PATH":/output \
     hyperledger/fabric-tools:"${FABRIC_VERSION}" \
     bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile ${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID ${CHANNEL_NAME}"
-
+  
+  # shellcheck disable=SC2181
   if [ $? -ne 0 ]; then
     echo "Failed to create channel configuration transaction."
     exit 1
