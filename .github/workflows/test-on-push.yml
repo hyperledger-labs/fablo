@@ -210,7 +210,7 @@ jobs:
           ./fablo-build.sh
   
       - name: Test version 3 with BFT
-        run: e2e-network/docker/test-05-version3.sh
+        run: e2e-network/docker/test-05-version3-BFT.sh
   
       - uses: actions/upload-artifact@v4
         if: always()
