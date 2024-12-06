@@ -56,7 +56,7 @@ services:
 
   <%= org.cli.address %>:
     container_name: <%= org.cli.address %>
-    image: hyperledger/fabric-tools:${FABRIC_VERSION}
+    image: hyperledger/fabric-tools:${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
