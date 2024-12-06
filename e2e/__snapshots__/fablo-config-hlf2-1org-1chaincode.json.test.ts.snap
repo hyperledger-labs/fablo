@@ -2064,7 +2064,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -2100,7 +2100,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -2133,7 +2133,7 @@ createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -2170,7 +2170,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
