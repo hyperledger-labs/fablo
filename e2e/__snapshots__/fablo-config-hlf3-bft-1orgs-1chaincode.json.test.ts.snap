@@ -1,12 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/.config/configstore/update-notifier-yo.json from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
-"{
-	"optOut": false,
-	"lastUpdateCheck": 1733480539656
-}"
-`;
-
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
 "/config
 /crypto-config
@@ -26,7 +19,210 @@ Capabilities:
         V2_5: true
 
 ################################################################################
-#   CHANNEL 
+#   CHANNEL Defaults
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#   Section: Organizations
+################################################################################
+Organizations:
+    - &Orderer
+      Name: OrdererMSP
+      ID: OrdererMSP
+      MSPDir: crypto-config/peerOrganizations/orderer.example.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('OrdererMSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+
+      AnchorPeers:
+
+    - &Org1
+      Name: Org1MSP
+      ID: Org1MSP
+      MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('Org1MSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+
+      AnchorPeers:
+          - Host: peer0.org1.example.com
+            Port: 7041
+
+          - Host: peer1.org1.example.com
+            Port: 7042
+
+################################################################################
+#   SECTION: Application
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#   SECTION: Orderer
+################################################################################
+Orderer: &Group1Defaults
+    OrdererType: BFT
+    Addresses:
+        - orderer0.group1.orderer.example.com:7030
+        - orderer1.group1.orderer.example.com:7031
+        - orderer2.group1.orderer.example.com:7032
+        - orderer3.group1.orderer.example.com:7033
+
+    SmartBFT:
+        RequestBatchMaxCount: 100
+        RequestBatchMaxInterval: 50ms
+        RequestForwardTimeout: 2s
+        RequestComplainTimeout: 20s
+        RequestAutoRemoveTimeout: 3m0s
+        ViewChangeResendInterval: 5s
+        ViewChangeTimeout: 20s
+        LeaderHeartbeatTimeout: 1m0s
+        CollectTimeout: 1s
+        RequestBatchMaxBytes: 10485760
+        IncomingMessageBufferSize: 200
+        RequestPoolSize: 100000
+        LeaderHeartbeatCount: 10
+    ConsenterMapping:
+        - ID: 1
+          Host: orderer0.group1.orderer.example.com
+          Port: 7030
+          MSPID: OrdererMSP
+          Identity: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/signcerts/orderer0.group1.orderer.example.com-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
+
+        - ID: 2
+          Host: orderer1.group1.orderer.example.com
+          Port: 7031
+          MSPID: OrdererMSP
+          Identity: crypto-config/peerOrganizations/orderer.example.com/peers/orderer1.group1.orderer.example.com/msp/signcerts/orderer1.group1.orderer.example.com-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer1.group1.orderer.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer1.group1.orderer.example.com/tls/server.crt
+
+        - ID: 3
+          Host: orderer2.group1.orderer.example.com
+          Port: 7032
+          MSPID: OrdererMSP
+          Identity: crypto-config/peerOrganizations/orderer.example.com/peers/orderer2.group1.orderer.example.com/msp/signcerts/orderer2.group1.orderer.example.com-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer2.group1.orderer.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer2.group1.orderer.example.com/tls/server.crt
+
+        - ID: 4
+          Host: orderer3.group1.orderer.example.com
+          Port: 7033
+          MSPID: OrdererMSP
+          Identity: crypto-config/peerOrganizations/orderer.example.com/peers/orderer3.group1.orderer.example.com/msp/signcerts/orderer3.group1.orderer.example.com-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer3.group1.orderer.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer3.group1.orderer.example.com/tls/server.crt
+
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    Capabilities:
+        <<: *OrdererCapabilities
+
+################################################################################
+#   Profile
+################################################################################
+# https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
+
+Profiles:
+    # Profile used to create Genesis block for group group1 #
+    Group1Genesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *OrdererCapabilities
+
+    # Profile used to create channeltx for my-channel1 #
+    MyChannel1:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
 "
 `;
 
@@ -225,7 +421,18 @@ certificateAuthorities:
 `;
 
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
-"
+"PeerOrgs:
+  - Name: Orderer
+    Domain: orderer.example.com
+    Specs:
+      - Hostname: orderer0.group1
+      - Hostname: orderer1.group1
+      - Hostname: orderer2.group1
+      - Hostname: orderer3.group1
+    Template:
+      Count: 0
+    Users:
+      Count: 1
 "
 `;
 
@@ -1710,7 +1917,390 @@ networkDown() {
 `;
 
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
-"
+"networks:
+  basic:
+
+services:
+
+  ca.orderer.example.com:
+    container_name: ca.orderer.example.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.orderer.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+    ports:
+      - 7020:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORDERER_CA_ADMIN_NAME}:\${ORDERER_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    networks:
+      - basic
+
+  cli.orderer.example.com:
+    container_name: cli.orderer.example.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.orderer.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/msp
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org1.example.com/tls/ca.crt:ro
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  orderer0.group1.orderer.example.com:
+    container_name: orderer0.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7030
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # TLS Configuration
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7030:7030
+      - 8030:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  orderer1.group1.orderer.example.com:
+    container_name: orderer1.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7031
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # TLS Configuration
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7031:7031
+      - 8031:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer1.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer1.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  orderer2.group1.orderer.example.com:
+    container_name: orderer2.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7032
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # TLS Configuration
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7032:7032
+      - 8032:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer2.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer2.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  orderer3.group1.orderer.example.com:
+    container_name: orderer3.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7033
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # TLS Configuration
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer3.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7033:7033
+      - 8033:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer3.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer3.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  ca.org1.example.com:
+    container_name: ca.org1.example.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+    ports:
+      - 7040:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    networks:
+      - basic
+
+  cli.org1.example.com:
+    container_name: cli.org1.example.com
+    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.org1.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/msp
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org1.example.com/tls/ca.crt:ro
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_LISTENADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7041 peer1.org1.example.com:7042"
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start
+    ports:
+      - 8041:9440
+      - 7041:7041
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ID=peer1.org1.example.com
+      - CORE_PEER_ADDRESS=peer1.org1.example.com:7042
+      - CORE_PEER_LISTENADDRESS=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_ENDPOINT=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7042
+      - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7041 peer1.org1.example.com:7042"
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.example.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start
+    ports:
+      - 8042:9440
+      - 7042:7042
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
 "
 `;
 
