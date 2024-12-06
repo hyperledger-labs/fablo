@@ -22,13 +22,15 @@ const getVersions = (fabricVersion: string): FabricVersions => {
     "2.4.1": "2.4.2",
   };
 
+  const below3_0_0 = (v: string) => (v.startsWith("3.") ? "2.5" : v);
+
   return {
     fabricVersion,
     fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.5" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
-    fabricJavaenvVersion: majorMinor,
-    fabricNodeenvVersion: fabricNodeenvExceptions[fabricVersion] ?? majorMinor,
+    fabricJavaenvVersion: below3_0_0(majorMinor),
+    fabricNodeenvVersion: fabricNodeenvExceptions[fabricVersion] ?? below3_0_0(majorMinor),
     fabricRecommendedNodeVersion: version(fabricVersion).isGreaterOrEqual("2.4") ? "16" : "12",
   };
 };
