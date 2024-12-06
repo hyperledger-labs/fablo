@@ -24,9 +24,11 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
   const below3_0_0 = (v: string) => (v.startsWith("3.") ? "2.5" : v);
 
+  const beta3_0_0 = (v: string) => (v.startsWith("3.0.") ? "3.0.0-beta" : v);
+
   return {
     fabricVersion,
-    fabricToolsVersion: below3_0_0(fabricVersion),
+    fabricToolsVersion: beta3_0_0(fabricVersion),
     fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.5" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
