@@ -2111,11 +2111,11 @@ COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
 FABRIC_VERSION=2.4.7
+FABRIC_TOOLS_VERSION=2.4.7
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=2.4.7
 FABRIC_BASEOS_VERSION=2.4.7
-
 FABRIC_JAVAENV_VERSION=2.4
 FABRIC_NODEENV_VERSION=2.4
 RECOMMENDED_NODE_VERSION=16
@@ -2681,7 +2681,7 @@ services:
 
   cli.orderer.example.com:
     container_name: cli.orderer.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2755,7 +2755,7 @@ services:
 
   cli.org1.example.com:
     container_name: cli.org1.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2892,7 +2892,7 @@ services:
 
   cli.org2.example.com:
     container_name: cli.org2.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_VERSION}
+    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath

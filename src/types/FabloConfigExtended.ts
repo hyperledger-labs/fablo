@@ -1,5 +1,6 @@
 export interface FabricVersions {
   fabricVersion: string;
+  fabricToolsVersion: string;
   fabricCaVersion: string;
   fabricCcenvVersion: string;
   fabricBaseosVersion: string;
