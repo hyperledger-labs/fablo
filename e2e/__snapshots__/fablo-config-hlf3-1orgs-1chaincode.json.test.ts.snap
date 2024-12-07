@@ -1,5 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/.npm/_logs/2024-12-07T09_57_41_821Z-debug-0.log from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+"0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@9.5.1
+2 info using node@v18.16.0
+3 timing npm:load:whichnode Completed in 6ms
+4 timing config:load:defaults Completed in 1ms
+5 timing config:load:file:/usr/local/lib/node_modules/npm/npmrc Completed in 1ms
+6 timing config:load:builtin Completed in 1ms
+7 timing config:load:cli Completed in 2ms
+8 timing config:load:env Completed in 0ms
+9 timing config:load:project Completed in 7ms
+10 timing config:load:file:/network/workspace/.npmrc Completed in 2ms
+11 timing config:load:user Completed in 2ms
+12 timing config:load:file:/usr/local/etc/npmrc Completed in 0ms
+13 timing config:load:global Completed in 0ms
+14 timing config:load:setEnvs Completed in 0ms
+15 timing config:load Completed in 15ms
+16 timing npm:load:configload Completed in 15ms
+17 timing npm:load:mkdirpcache Completed in 8ms
+18 timing npm:load:mkdirplogs Completed in 12ms
+19 verbose title npm root
+20 verbose argv "root" "--global"
+21 timing npm:load:setTitle Completed in 2ms
+22 timing config:load:flatten Completed in 2ms
+23 timing npm:load:display Completed in 3ms
+24 verbose logfile logs-max:10 dir:/network/workspace/.npm/_logs/2024-12-07T09_57_41_821Z-
+25 verbose logfile /network/workspace/.npm/_logs/2024-12-07T09_57_41_821Z-debug-0.log
+26 timing npm:load:logFile Completed in 68ms
+27 timing npm:load:timers Completed in 0ms
+28 timing npm:load:configScope Completed in 0ms
+29 timing npm:load Completed in 118ms
+30 timing command:root Completed in 5ms
+31 verbose exit 0
+32 timing npm Completed in 140ms
+33 info ok
+"
+`;
+
 exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
 "/config
 /crypto-config
@@ -1521,12 +1559,12 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
-FABRIC_VERSION=3.0.0
+FABRIC_VERSION=3.0.0-beta
 FABRIC_TOOLS_VERSION=3.0.0-beta
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=3.0.0
-FABRIC_BASEOS_VERSION=3.0.0
+FABRIC_CCENV_VERSION=3.0.0-beta
+FABRIC_BASEOS_VERSION=3.0.0-beta
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
@@ -3406,6 +3444,7 @@ echo "Executing post-generate hook"
 
 exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper files from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/.npm/_logs/2024-12-07T09_57_41_821Z-debug-0.log",
   "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",

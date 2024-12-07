@@ -90,6 +90,7 @@ class ValidateGenerator extends Generator {
     this._validateIfConfigFileExists(this.options.fabloConfig);
 
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
+    this._validateFabricVersion(networkConfig.global);
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateOrgs(networkConfig.orgs);
@@ -120,6 +121,26 @@ class ValidateGenerator extends Generator {
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
     this._verifyFabricVersion(networkConfig.global);
+  }
+
+  private _validateFabricVersion(global: GlobalJson) {
+    // 1. we support fabric up to 3.0.0-beta
+    if (version(global.fabricVersion).isGreaterOrEqual("3.0.0") && global.fabricVersion !== "3.0.0-beta") {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `Fabric ${global.fabricVersion} is not supported. Fablo supports only Fabric up to 3.0.0-beta.`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    }
+
+    // 2. we support Fabric starting from 2.0.0
+    if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `Fabric ${global.fabricVersion} is not supported. Fablo supports only Fabric starting from 2.0.0.`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    }
   }
 
   async shortSummary() {
