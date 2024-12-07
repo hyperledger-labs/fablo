@@ -20,8 +20,9 @@ generateArtifacts() {
   <% } %>
   
   <%_ }) _%>
-  # Create directory for chaincode packages to avoid permission errors on linux
+  # Create directories to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
+  mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/config"
 }
 
 startNetwork() {
