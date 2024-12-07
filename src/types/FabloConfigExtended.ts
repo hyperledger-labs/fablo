@@ -1,5 +1,6 @@
 export interface FabricVersions {
   fabricVersion: string;
+  fabricToolsVersion: string;
   fabricCaVersion: string;
   fabricCcenvVersion: string;
   fabricBaseosVersion: string;
@@ -47,6 +48,7 @@ export interface OrdererConfig {
   name: string;
   domain: string;
   address: string;
+  adminPort: number;
   port: number;
   fullAddress: string;
   orgName: string;
@@ -159,7 +161,7 @@ export interface ChaincodeConfig {
 
 export interface OrdererGroup {
   name: string;
-  consensus: "solo" | "etcdraft";
+  consensus: "solo" | "etcdraft" | "BFT";
   profileName: string;
   genesisBlockName: string;
   configtxOrdererDefaults: string;

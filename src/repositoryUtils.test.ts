@@ -19,5 +19,9 @@ describe("repositoryUtils", () => {
     expect(version("1.4.0").isGreaterOrEqual("1.4.1")).toBe(false);
     expect(version("1.4.0").isGreaterOrEqual("1.3.0")).toBe(true);
     expect(version("1.4.0").isGreaterOrEqual("2.1.0")).toBe(false);
+    expect(version("3.0.0").isGreaterOrEqual("3.0.0-beta")).toBe(true);
+    expect(version("3.0.0-beta").isGreaterOrEqual("3.0.0")).toBe(true);
+    expect(version("3.0.0").isGreaterOrEqual("3.0.0")).toBe(true);
+    expect(version("3.0.0").isGreaterOrEqual("3.0.1")).toBe(false);
   });
 });

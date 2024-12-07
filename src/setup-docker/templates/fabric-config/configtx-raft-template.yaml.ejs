@@ -6,3 +6,28 @@
               ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
               ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
 <% })} -%>
+
+<% if (ordererGroup.consensus == "BFT") { %>
+    SmartBFT:
+        RequestBatchMaxCount: 100
+        RequestBatchMaxInterval: 50ms
+        RequestForwardTimeout: 2s
+        RequestComplainTimeout: 20s
+        RequestAutoRemoveTimeout: 3m0s
+        ViewChangeResendInterval: 5s
+        ViewChangeTimeout: 20s
+        LeaderHeartbeatTimeout: 1m0s
+        CollectTimeout: 1s
+        RequestBatchMaxBytes: 10485760
+        IncomingMessageBufferSize: 200
+        RequestPoolSize: 100000
+        LeaderHeartbeatCount: 10
+    ConsenterMapping:<% ordererGroup.orderers.forEach(function(orderer, index) { %>
+        - ID: <%= index+1 %>
+          Host: <%= orderer.address %>
+          Port: <%= orderer.port %>
+          MSPID: <%= orderer.orgMspName %>
+          Identity: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/msp/signcerts/<%= orderer.address %>-cert.pem
+          ClientTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
+          ServerTLSCert: crypto-config/peerOrganizations/<%= orderer.domain %>/peers/<%= orderer.address %>/tls/server.crt
+<% })} -%>  
