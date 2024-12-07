@@ -2366,8 +2366,9 @@ generateArtifacts() {
   printItalics "Generating genesis block for group group1" "U1F3E0"
   genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "Group1Genesis"
 
-  # Create directory for chaincode packages to avoid permission errors on linux
+  # Create directories to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
+  mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/config"
 }
 
 startNetwork() {

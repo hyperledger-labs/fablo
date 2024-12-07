@@ -21,11 +21,10 @@ createChannelAndJoin() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
-
   cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
 
   osnadmin channel join --channelID "${CHANNEL_NAME}" --config-block ./"$CHANNEL_NAME".pb -o "${ORDERER_URL}"
-  rm -rf "$DIR_NAME"
+  cd .. && rm -rf "$DIR_NAME"
 }
 
 createChannelAndJoinTls() {
@@ -46,7 +45,7 @@ createChannelAndJoinTls() {
   echo "   TLS_CA_CERT_PATH:      $TLS_CA_CERT_PATH"
 
   if [ ! -d "$DIR_NAME" ]; then
-    mkdir "$DIR_NAME"
+    mkdir -p "$DIR_NAME"
     cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb "$DIR_NAME"
   fi
 
@@ -58,16 +57,15 @@ createChannelAndJoinTls() {
     --client-key "${ADMIN_TLS_PRIVATE_KEY}" \
     --ca-file "${TLS_CA_CERT_PATH}"
 
+  cd ..
   rm -rf "$DIR_NAME"
 }
 
 fetchChannelAndJoin() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-
   local ORDERER_URL=$5
 
   local DIR_NAME=step-fetchChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -83,12 +81,11 @@ fetchChannelAndJoin() {
   peer channel fetch newest -c "${CHANNEL_NAME}" --orderer "${ORDERER_URL}"
   peer channel join -b "${CHANNEL_NAME}"_newest.block
 
-  rm -rf "$DIR_NAME"
+  cd .. && rm -rf "$DIR_NAME"
 }
 
 fetchChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
@@ -117,5 +114,5 @@ fetchChannelAndJoinTls() {
   peer channel fetch newest -c "${CHANNEL_NAME}" --orderer "${ORDERER_URL}" --tls --cafile "$TLS_CA_CERT_PATH"
   peer channel join -b "${CHANNEL_NAME}"_newest.block --tls --cafile "$TLS_CA_CERT_PATH"
 
-  rm -rf "$DIR_NAME"
+  cd .. && rm -rf "$DIR_NAME"
 }
