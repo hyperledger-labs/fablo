@@ -7,9 +7,9 @@ include_readme=true
 ver_arg="${1:-unstable}"
 
 if [ "$ver_arg" = "patch" ] || [ "$ver_arg" = "minor" ] || [ "$ver_arg" = "major" ]; then
-  new_version=$(semver "$old_version" -i "$ver_arg")
+  new_version=$(semver next "$ver_arg" "$old_version")
 elif [ "$ver_arg" = "unstable" ]; then
-  new_version=$(semver "$old_version" -i prerelease --preid unstable)
+  new_version="$(semver next patch "$old_version")-unstable"
   include_readme=false
 elif [ "$ver_arg" = "set" ]; then
   new_version="$2"

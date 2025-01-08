@@ -86,7 +86,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 REPOSITORY="https://kfsoftware.github.io/hlf-helm-charts"
 STORAGE_CLASS=$(kubectl describe sc | grep Name | tr -s ' ' | cut -d ':' -f 2 | cut -d ' ' -f 2)
 
-FABLO_VERSION=2.0.0
+FABLO_VERSION=2.1.0
 FABLO_BUILD=<date with git hash>
 FABLO_CONFIG=<absolute path>
 ORDERER_IMAGE=hyperledger/fabric-orderer
