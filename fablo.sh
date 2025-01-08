@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION=1.2.1-unstable.0
+FABLO_VERSION=2.1.0
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
