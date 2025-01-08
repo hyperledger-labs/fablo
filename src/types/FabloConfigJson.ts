@@ -21,7 +21,7 @@ export interface CAJson {
 export interface OrdererJson {
   groupName: string;
   prefix: string;
-  type: "solo" | "raft";
+  type: "solo" | "raft" | "BFT";
   instances: number;
 }
 

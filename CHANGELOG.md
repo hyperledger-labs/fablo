@@ -1,3 +1,9 @@
+## 2.1.0
+
+### Features
+* Support Fabric 3.0.0-beta, along with BFT consensus
+  [#501](https://github.com/hyperledger-labs/fablo/pull/501)
+
 ## 2.0.0
 
 ### Breaking changes

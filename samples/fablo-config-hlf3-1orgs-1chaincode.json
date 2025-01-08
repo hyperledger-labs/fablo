@@ -1,0 +1,59 @@
+{
+    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.0.0/schema.json",
+    "global": {
+      "fabricVersion": "3.0.0-beta",
+      "tls": true,
+      "monitoring": {
+        "loglevel": "debug"
+      }
+    },
+    "orgs": [
+      {
+        "organization": {
+          "name": "Orderer",
+          "domain": "orderer.example.com"
+        },
+        "orderers": [
+          {
+            "groupName": "group1",
+            "type": "raft",
+            "instances": 4
+          }
+        ]
+      },
+      {
+        "organization": {
+          "name": "Org1",
+          "domain": "org1.example.com"
+        },
+        "peer": {
+          "instances": 2,
+          "db": "LevelDb"
+        }
+      }
+    ],
+    "channels": [
+      {
+        "name": "my-channel1",
+        "orgs": [
+          {
+            "name": "Org1",
+            "peers": [
+              "peer0",
+              "peer1"
+            ]
+          }
+        ]
+      }
+    ],
+    "chaincodes": [
+      {
+        "name": "chaincode1",
+        "version": "0.0.1",
+        "lang": "node",
+        "channel": "my-channel1",
+        "directory": "./chaincodes/chaincode-kv-node"
+      }
+    ]
+  }
+  
