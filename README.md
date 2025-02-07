@@ -213,12 +213,12 @@ Chaincode directory is specified in Fablo config file.
 Invokes chaincode with specified parameters.
 
 ```
-fablo chaincode invoke <channel-name> <chaincode-name> <peers-domains-comma-separated>  <command> [transient]
+fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient] 
 ```
 Sample command:
 
 ```
-fablo chaincode invoke "my-channel1" "chaincode1" "peer0.org1.example.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
+fablo chaincode invoke "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
 ```
 
 ### chaincodes list
