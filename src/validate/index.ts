@@ -98,7 +98,7 @@ class ValidateGenerator extends Generator {
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
-    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers));
+    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
     networkConfig.orgs.forEach((org) => this._validateOrdererGroupNameUniqueForOrg(org));
@@ -124,16 +124,7 @@ class ValidateGenerator extends Generator {
   }
 
   private _validateFabricVersion(global: GlobalJson) {
-    // 1. we support fabric up to 3.0.0-beta
-    if (version(global.fabricVersion).isGreaterOrEqual("3.0.0") && global.fabricVersion !== "3.0.0-beta") {
-      const objectToEmit = {
-        category: validationCategories.CRITICAL,
-        message: `Fabric ${global.fabricVersion} is not supported. Fablo supports only Fabric up to 3.0.0-beta.`,
-      };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
-    }
-
-    // 2. we support Fabric starting from 2.0.0
+    // we support Fabric starting from 2.0.0
     if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
       const objectToEmit = {
         category: validationCategories.CRITICAL,
@@ -246,15 +237,25 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined) {
+  _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
     if (orderers !== undefined) {
       orderers.forEach((orderer) => {
-        if (orderer.type === "solo" && orderer.instances > 1) {
-          const objectToEmit = {
-            category: validationCategories.ORDERER,
-            message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
-          };
-          this.emit(validationErrorType.WARN, objectToEmit);
+        if (orderer.type === "solo") {
+          if (version(global.fabricVersion).isGreaterOrEqual("3.0.0")) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `Solo consensus type is not supported in Fabric version ${global.fabricVersion}. Please use 'raft' or 'bft' instead.`,
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+          }
+
+          if (orderer.instances > 1) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
+            };
+            this.emit(validationErrorType.WARN, objectToEmit);
+          }
         }
       });
     }
