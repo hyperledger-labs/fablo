@@ -44,10 +44,11 @@ Organizations:
       ID: OrdererMSP
       MSPDir: crypto-config/peerOrganizations/orderer.example.com/msp
       OrdererEndpoints:
-        - orderer0.group1.orderer.example.com:7030
-        - orderer1.group1.orderer.example.com:7031
-        - orderer2.group1.orderer.example.com:7032
-        - orderer3.group1.orderer.example.com:7033
+
+          - orderer0.group1.orderer.example.com:7030
+          - orderer1.group1.orderer.example.com:7031
+          - orderer2.group1.orderer.example.com:7032
+          - orderer3.group1.orderer.example.com:7033
       Policies:
           Readers:
               Type: Signature
@@ -69,10 +70,11 @@ Organizations:
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
       OrdererEndpoints:
-        - orderer0.group1.orderer.example.com:7030
-        - orderer1.group1.orderer.example.com:7031
-        - orderer2.group1.orderer.example.com:7032
-        - orderer3.group1.orderer.example.com:7033
+
+          - orderer0.group1.orderer.example.com:7030
+          - orderer1.group1.orderer.example.com:7031
+          - orderer2.group1.orderer.example.com:7032
+          - orderer3.group1.orderer.example.com:7033
       Policies:
           Readers:
               Type: Signature
