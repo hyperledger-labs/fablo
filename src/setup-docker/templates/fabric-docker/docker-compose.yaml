@@ -57,7 +57,7 @@ services:
   <%= org.cli.address %>:
     container_name: <%= org.cli.address %>
     <%_ if(global.capabilities.isV3) { _%>
-    image: fablo/fabric-tools:${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:${FABRIC_TOOLS_VERSION}
     <%_ } else { _%>
     image: hyperledger/fabric-tools:${FABRIC_TOOLS_VERSION}
     <%_ } _%>
