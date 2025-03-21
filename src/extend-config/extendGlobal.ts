@@ -63,10 +63,11 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
       };
 
   return {
+    engine,
     ...globalJson,
     ...getVersions(globalJson.fabricVersion),
-    engine,
     paths: getPathsFromEnv(),
+    serviceDiscoveryOn: !globalJson.peerDevMode,
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),
     tools: { ...explorer },
