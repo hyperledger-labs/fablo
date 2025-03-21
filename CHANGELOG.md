@@ -1,3 +1,9 @@
+## 2.2.0
+
+### Features
+* Full support for Fabric 3.0.0 and drop solo consensus
+  [#513](https://github.com/hyperledger-labs/fablo/pull/513)
+
 ## 2.1.0
 
 ### Features
