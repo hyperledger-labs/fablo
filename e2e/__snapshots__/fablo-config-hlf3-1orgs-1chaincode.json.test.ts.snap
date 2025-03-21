@@ -43,7 +43,11 @@ Organizations:
       Name: OrdererMSP
       ID: OrdererMSP
       MSPDir: crypto-config/peerOrganizations/orderer.example.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer.example.com:7030
+          - orderer1.group1.orderer.example.com:7031
+          - orderer2.group1.orderer.example.com:7032
+          - orderer3.group1.orderer.example.com:7033
       Policies:
           Readers:
               Type: Signature
@@ -64,7 +68,11 @@ Organizations:
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer.example.com:7030
+          - orderer1.group1.orderer.example.com:7031
+          - orderer2.group1.orderer.example.com:7032
+          - orderer3.group1.orderer.example.com:7033
       Policies:
           Readers:
               Type: Signature
@@ -115,11 +123,7 @@ Application: &ApplicationDefaults
 ################################################################################
 Orderer: &Group1Defaults
     OrdererType: etcdraft
-    Addresses:
-        - orderer0.group1.orderer.example.com:7030
-        - orderer1.group1.orderer.example.com:7031
-        - orderer2.group1.orderer.example.com:7032
-        - orderer3.group1.orderer.example.com:7033
+
     EtcdRaft:
         Consenters:
             - Host: orderer0.group1.orderer.example.com
@@ -1521,12 +1525,12 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
-FABRIC_VERSION=3.0.0-beta
-FABRIC_TOOLS_VERSION=3.0.0-beta
+FABRIC_VERSION=3.0.0
+FABRIC_TOOLS_VERSION=3.0.0
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=3.0.0-beta
-FABRIC_BASEOS_VERSION=3.0.0-beta
+FABRIC_CCENV_VERSION=3.0.0
+FABRIC_BASEOS_VERSION=3.0.0
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
@@ -1920,7 +1924,7 @@ services:
 
   cli.orderer.example.com:
     container_name: cli.orderer.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2146,7 +2150,7 @@ services:
 
   cli.org1.example.com:
     container_name: cli.org1.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2305,7 +2309,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -2341,7 +2345,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -2378,7 +2382,7 @@ createChannelTx() {
     --name $CONTAINER_NAME \\
     -v "$CONFIG_PATH":/fabric-config \\
     -v "$OUTPUT_PATH":/output \\
-    hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" \\
+    ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" \\
     bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile \${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID \${CHANNEL_NAME}"
 
   # shellcheck disable=SC2181
@@ -2417,7 +2421,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
