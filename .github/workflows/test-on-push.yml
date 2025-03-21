@@ -1,6 +1,8 @@
 name: Tests
 on:
   push:
+    branches:
+      - main  # Only run on push to main branch
   pull_request:
   workflow_dispatch:
 
@@ -39,6 +41,52 @@ jobs:
 
       - name: Lint
         run: npm run lint && ./lint.sh
+
+  test-arm64:
+    runs-on: macos-14
+    steps:
+
+      - name: Ensure Apple M1 architecture
+        run: |
+          uname -a
+          if [ "$(uname -m)" = "arm64" ]; then
+            echo "Detected Apple M1 architecture"
+          else
+            echo "Not detected Apple M1 architecture"
+            exit 1
+          fi
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install and start Docker
+        run: |
+          brew install colima docker
+          docker --version
+          colima start
+          for i in {1..30}; do
+            docker version && break
+            echo "Waiting for Docker to start..."
+            sleep 10
+          done
+          
+
+      - name: Build Fablo
+        run: |
+          npm install && \
+          npm run build && \
+          ./fablo-build.sh
+
+      - name: Test simple network
+        run: e2e-network/docker/test-01-simple.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-arm64
+          path: |
+            e2e-network/docker/test-01-simple.sh.logs/*
+            e2e-network/docker/test-01-simple.sh.tmpdir/fablo-target/**/*
 
   #  test-k8:
   #    needs: test-main
