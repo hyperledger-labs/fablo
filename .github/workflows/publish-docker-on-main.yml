@@ -25,10 +25,6 @@ jobs:
           username: ${{ secrets.GHCR_USER }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Build and push Fabric tools docker image
-        run: |
-          ./fablo-build.sh tools --push
-
       - name: Build and push Docker image
         run: |
           shellcheck --version
