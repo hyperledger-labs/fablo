@@ -109,6 +109,7 @@ function createPeers(
   orgName: string,
   isExplorer: boolean,
   isTls: boolean,
+  isServiceDiscoveryOn: boolean,
   rootPath: string,
   orgs: OrgConfig[],
 ): { [key: string]: Peer } {
@@ -187,9 +188,10 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   return cs;
 }
 
+//todo hejwo ===> continure here
 export function createConnectionProfile(global: Global, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
   const rootPath = `${global.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
-  const peers = createPeers(org.name, false, global.tls, rootPath, orgs);
+  const peers = createPeers(org.name, false, global.tls, global.serviceDiscoveryOn, rootPath, orgs);
   return {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for ${org.name} in Fablo network`,
@@ -215,7 +217,7 @@ export function createExplorerConnectionProfile(
   orgs: OrgConfig[],
 ): ExplorerConnectionProfile {
   const rootPath = "/tmp/crypto";
-  const peers = createPeers(p.org.name, true, global.tls, rootPath, orgs);
+  const peers = createPeers(p.org.name, true, global.tls, global.serviceDiscoveryOn, rootPath, orgs);
   return {
     name: `fablo-test-network-${p.org.name.toLowerCase()}`,
     description: `Connection profile for Hyperledger Explorer in Fablo network`,
