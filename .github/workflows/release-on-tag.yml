@@ -3,7 +3,7 @@ name: Release on tag
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - '*.*.*'
 
 jobs:
   release:
@@ -15,9 +15,7 @@ jobs:
 
       - name: Verify version
         run: |
-          TAG=$(git describe --tags --abbrev=0)
-          VERSION=${TAG:1}
-          echo "TAG: $TAG"
+          VERSION=$(git describe --tags --abbrev=0)
           echo "VERSION: $VERSION"
           PKG_JSON_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
           if [ "$VERSION" != "$PKG_JSON_VERSION" ]; then
@@ -53,7 +51,7 @@ jobs:
 
       - name: Create next development version PR
         run: |
-          ./bump_version.sh unstable
+          ./bump-version.sh unstable
           NEW_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
           BRANCH_NAME="bump-version-to-$NEW_VERSION"
           git checkout -b $BRANCH_NAME
