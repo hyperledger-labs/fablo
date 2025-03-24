@@ -194,7 +194,22 @@ generateNetworkConfig() {
   ("$fablo_target/hooks/post-generate.sh")
 }
 
+confirmationPrompt() {
+    for arg in "$@"; do
+        if [ "$arg" = "--silent" ]; then
+            return 0
+        fi
+    done
+
+    read -p "Are you sure you want to prune the network? This action will stop and remove all running Fabric containers. (y/n): " answer
+    if [ "$answer" != "y" ]; then
+        echo "Operation aborted."
+        exit 1
+    fi
+}
+
 networkPrune() {
+  confirmationPrompt "$@"
   if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
     "$FABLO_TARGET/fabric-docker.sh" down
   fi
@@ -293,10 +308,10 @@ elif [ "$COMMAND" = "up" ]; then
   networkUp "$2"
 
 elif [ "$COMMAND" = "prune" ]; then
-  networkPrune
+  networkPrune "$2"
 
 elif [ "$COMMAND" = "recreate" ]; then
-  networkPrune
+  networkPrune "$2"
   networkUp "$2"
 
 elif [ "$COMMAND" = "snapshot" ]; then
@@ -306,5 +321,8 @@ elif [ "$COMMAND" = "restore" ]; then
   restoreSnapshot "$2" "${3:-""}"
 
 else
+  if [ "$COMMAND" = "down" ]; then
+    confirmationPrompt "$2"
+  fi
   executeFabloCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 fi
