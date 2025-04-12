@@ -191,7 +191,11 @@ generateNetworkConfig() {
 
   mkdir -p "$fablo_target"
   executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
-  ("$fablo_target/hooks/post-generate.sh")
+  if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
+    ("$fablo_target/hooks/post-generate.sh")
+  else
+    echo "Note: No post-generate.sh hook found. This might be due to validation errors in your configuration."
+  fi
 }
 
 networkPrune() {
