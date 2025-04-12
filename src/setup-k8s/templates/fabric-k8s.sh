@@ -23,6 +23,9 @@ networkUp() {
   deployOrderer
   installChannels
   installChaincodes
+  if [ -f "$FABLO_NETWORK_ROOT/hooks/post-start.sh" ]; then
+    ("$FABLO_NETWORK_ROOT/hooks/post-start.sh")
+  fi
   printHeadline "Done! Enjoy your fresh network" "U1F984"
 }
 

@@ -39,7 +39,7 @@ To create a local Hyperledger Fabric network with Node.js chaincode and REST API
 ```bash
 fablo init node rest    # if installed globally
 # or
-./fablo init node rest  # if using local script 
+./fablo init node rest  # if using local script
 ./fablo up
 ```
 
@@ -76,7 +76,7 @@ fablo init [node] [rest] [dev]
 ```
 
 Creates simple network config file in current dir.
-Good step to start your adventure with Fablo or set up a fast prototype. 
+Good step to start your adventure with Fablo or set up a fast prototype.
 
 Fablo `init` command takes three parameters (the order does not matter):
 * Option `node` makes Fablo to generate a sample Node.js chaincode as well.
@@ -140,7 +140,7 @@ fablo recreate [/path/to/fablo-config.json|yaml]
 ```
 
 * `reset` -- down and up steps combined. Network state is lost, but the configuration is kept intact. Useful in cases when you want a fresh instance of network without any state.
-* `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fablo-config` file and want to start newer network version in one command.    
+* `recreate` -- prunes the network, generates new config files and ups the network. Useful when you edited `fablo-config` file and want to start newer network version in one command.
 
 ### validate
 
@@ -149,7 +149,7 @@ fablo validate [/path/to/fablo-config.json|yaml]
 ```
 
 Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks.
-Please note that this step is also executed automatically before each `generate` to ensure that at least critical errors where fixed. 
+Please note that this step is also executed automatically before each `generate` to ensure that at least critical errors where fixed.
 
 ### snapshot and restore
 
@@ -215,7 +215,7 @@ Chaincode directory is specified in Fablo config file.
 Invokes chaincode with specified parameters.
 
 ```
-fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient] 
+fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient]
 ```
 Sample command:
 
@@ -224,7 +224,7 @@ fablo chaincode invoke "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Ar
 ```
 
 ### chaincodes list
-Gets the instantiated or installed chaincodes in the specified channel or peer. 
+Gets the instantiated or installed chaincodes in the specified channel or peer.
 
 ```
 fablo chaincodes list <peer> <channel>
@@ -277,11 +277,11 @@ Feel free to update this scripts to adjust it to your chaincode definition.
 ```bash
 fablo channel --help
 ```
-Use it to list all available channel commands.  
+Use it to list all available channel commands.
 Commands are generated using fablo-config.json to cover all cases (queries for each channel. organization and peer)
 
 ### channel list
- 
+
 ```bash
 fablo channel list org1 peer0
 ```
@@ -323,7 +323,7 @@ With optional `-v` or `--verbose` flag it prints supported Fablo and Hyperledger
 
 ```bash
 fablo use
-```   
+```
 
 Lists all available Fablo versions.
 
@@ -331,7 +331,7 @@ Lists all available Fablo versions.
 
 ```bash
 fablo use <version-number>
-```   
+```
 
 Switches current script to selected version.
 
@@ -411,14 +411,14 @@ The other available parameters for entries in `orgs` array are:
  * `orderers` (defaults to empty: `[]`)
  * `tools.explorer` - whether run Blockchain Explorer for the organization (default: `false`)
  * `tools.fabloRest` - whether run Fablo REST for the organization (default: `false`)
- 
-### property `peer.db`:  
-- may be `LevelDb` (default) or `CouchDb`.  
 
-### property `orderers`:  
+### property `peer.db`:
+- may be `LevelDb` (default) or `CouchDb`.
+
+### property `orderers`:
 - is optional as some organizations may have orderer defined, but some don't.
-- At least one orderer group is required to run Fabric network (requirement is validated before run).   
-- If you want to spread orderers in group between many organizations use same `groupName` in every group definition.  
+- At least one orderer group is required to run Fabric network (requirement is validated before run).
+- If you want to spread orderers in group between many organizations use same `groupName` in every group definition.
 - The property `orderers.type` may be `solo` or `raft`. We do not support the Kafka orderer.
 
 ### channels
@@ -429,7 +429,7 @@ Example:
   "channels": [
     {
       "name": "my-channel1",
-      "groupName": "group1",      
+      "groupName": "group1",
       "orgs": [
         {
           "name": "Org1",
@@ -450,7 +450,7 @@ Example:
   ],
 ```
 
-- Property `groupName` is optional (defaults to first orderer group found). If you want to handle channel with different orderer group define it in `orgs` and pass it's name here. 
+- Property `groupName` is optional (defaults to first orderer group found). If you want to handle channel with different orderer group define it in `orgs` and pass it's name here.
 
 ### chaincodes
 
@@ -491,18 +491,21 @@ The `privateData` parameter is optional. You don't need to define the private da
 ### hooks
 
 Hooks in Fablo are Bash commands to be executed after a specific event.
-Right now Fablo supports only one kind of hook: `postGenerate`.
-It will be executed each time after the network config is generated -- after `./fablo generate` command (executed separately or automatically by `./fablo up`).
+Fablo supports the following hooks:
+
+1. `postGenerate` - executed each time after the network config is generated -- after `./fablo generate` command (executed separately or automatically by `./fablo up`).
+2. `postStart` - executed after the network is started -- after `./fablo up` or `./fablo start` command.
 
 The following hook example will change `MaxMessageCount` to 1 in generated Hyperledger Fabric config:
 
 ```json
   "hooks": {
-    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\"",
+    "postStart": "echo 'Network started successfully!' && curl -X POST https://example.com/webhook/network-started"
   }
 ```
 
-Genrated Hooks are saved in `fablo-target/hooks`.
+Generated Hooks are saved in `fablo-target/hooks`.
 
 
 ### Sample YAML config file
@@ -521,7 +524,7 @@ orgs:
       - groupName: group1
         prefix: orderer
         type: solo
-        instances: 1 
+        instances: 1
   - organization:
       name: Org1
       domain: org1.example.com

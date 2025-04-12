@@ -245,5 +245,8 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(this.templatePath("hooks/post-generate.sh"), this.destinationPath("hooks/post-generate.sh"), {
       hooks,
     });
+    this.fs.copyTpl(this.templatePath("hooks/post-start.sh"), this.destinationPath("hooks/post-start.sh"), {
+      hooks,
+    });
   }
 }
