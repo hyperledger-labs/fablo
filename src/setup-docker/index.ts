@@ -162,7 +162,7 @@ export default class SetupDockerGenerator extends Generator {
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.1.2",
-      hyperledgerExplorerVersion: "1.1.8",
+      hyperledgerExplorerVersion: "2.0.0",
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
       fabricCaPostgresVersion: "14",
