@@ -3,7 +3,7 @@ import { FabloConfigExtended } from "../types/FabloConfigExtended";
 import { extendOrgsConfig } from "./extendOrgsConfig";
 import extendGlobal from "./extendGlobal";
 import extendChannelsConfig from "./extendChannelsConfig";
-import extendChaincodesConfig from "./extendChaincodesConfig";
+import extendChaincodesConfig, { checkUniqueChaincodeNames } from "./extendChaincodesConfig";
 import extendHooksConfig from "./extendHooksConfig";
 import { distinctOrdererHeads, mergeOrdererGroups } from "./mergeOrdererGroups";
 
@@ -22,6 +22,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const orderedHeadsDistinct = distinctOrdererHeads(ordererGroups);
 
   const channels = extendChannelsConfig(channelsJson, orgs, ordererGroups);
+  checkUniqueChaincodeNames(chaincodesJson);
   const chaincodes = extendChaincodesConfig(chaincodesJson, channels, global);
   const hooks = extendHooksConfig(hooksJson);
 
