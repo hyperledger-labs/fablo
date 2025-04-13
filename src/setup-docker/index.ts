@@ -101,7 +101,7 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createConnectionProfiles(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[] = [], ordererGroups: OrdererGroup[] = []): void {
+  _createConnectionProfiles(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[], ordererGroups: OrdererGroup[]): void {
     orgsTransformed.forEach((org: OrgConfig) => {
       const connectionProfile = createConnectionProfile(global, org, orgsTransformed, channels, ordererGroups);
       this.fs.writeJSON(
