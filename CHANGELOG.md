@@ -4,6 +4,10 @@
 * Full support for Fabric 3.0.0 and drop solo consensus
   [#513](https://github.com/hyperledger-labs/fablo/pull/513)
 
+### Bug Fixes
+* Fix connection profile issues (CA URL, missing orderers and channels sections)
+  [#340](https://github.com/hyperledger-labs/fablo/issues/340)
+
 ## 2.1.0
 
 ### Features
@@ -129,7 +133,7 @@
 ## 0.3.0
 
 ### Features
-* Add [Fablo REST](https://github.com/fablo-io/fablo-rest/) support 
+* Add [Fablo REST](https://github.com/fablo-io/fablo-rest/) support
 * By default all peers are anchor peers
 * Support `postGenerate` hook
 * Added support for [Orderer sharding](https://github.com/hyperledger-labs/fablo/issues/220) (multiple orderer groups).
