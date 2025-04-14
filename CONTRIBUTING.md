@@ -39,7 +39,7 @@ See `git help commit`:
    - **Ent-to-End network tests**: Execute relevant shell scripts from `e2e-network` directory with E2E network tests.
 3. **Update snapshots**: If you've made changes that affect snapshots (esp. any template changes), update them using `npm run test:e2e-update`.
 
-## ## Running Fablo locally
+## Running Fablo locally
 
 You may want to verify some changes by running Fablo locally. To do so:
 1. Execute `./fablo-build.sh` script to create a Fablo Docker image locally.
