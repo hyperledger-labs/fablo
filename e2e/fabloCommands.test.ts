@@ -138,7 +138,7 @@ describe("validate", () => {
     expect(commands.getFiles()).toEqual([]);
   });
   
-  it.only("should throw an error for duplicate chaincode names across different channels", () => {
+  it("should throw an error for duplicate chaincode names across different channels", () => {
     // Given
     const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data-duplicate.yaml`;
   
