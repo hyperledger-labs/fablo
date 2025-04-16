@@ -191,7 +191,9 @@ generateNetworkConfig() {
 
   mkdir -p "$fablo_target"
   executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
-  ("$fablo_target/hooks/post-generate.sh")
+  if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
+    ("$fablo_target/hooks/post-generate.sh")
+  fi
 }
 
 networkPrune() {
