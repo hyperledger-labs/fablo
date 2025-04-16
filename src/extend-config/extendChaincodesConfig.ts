@@ -37,11 +37,22 @@ const createPrivateCollectionConfig = (
   };
 };
 
+const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
+  const chaincodeNames = new Set<string>();
+  chaincodes.forEach((chaincode) => {
+    if (chaincodeNames.has(chaincode.name)) {
+      throw new Error(`Duplicate chaincode name found: '${chaincode.name}'`);
+    }
+    chaincodeNames.add(chaincode.name);
+  });
+};
+
 const extendChaincodesConfig = (
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
+  checkUniqueChaincodeNames(chaincodes);
   return chaincodes.map((chaincode) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
