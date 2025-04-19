@@ -1,7 +1,6 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
-import parseFabloConfig from "../utils/parseFabloConfig";
-import { GlobalJson } from "../types/FabloConfigJson";
+import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
 
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
@@ -9,7 +8,61 @@ export default class InitGenerator extends Generator {
   }
 
   async copySampleConfig(): Promise<void> {
-    let fabloConfigJson = parseFabloConfig(this.fs.read(this.templatePath("fablo-config.json")));
+    let fabloConfigJson: FabloConfigJson = {
+      "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+      "global": {
+        "fabricVersion": "2.5.9",
+        "tls": false
+      },
+      "orgs": [
+        {
+          "organization": {
+            "name": "Orderer",
+            "domain": "orderer.example.com"
+          },
+          "orderers": [
+            {
+              "groupName": "group1",
+              "type": "solo",
+              "instances": 1
+            }
+          ]
+        },
+        {
+          "organization": {
+            "name": "Org1",
+            "domain": "org1.example.com"
+          },
+          "peer": {
+            "instances": 2,
+            "db": "LevelDb"
+          }
+        }
+      ],
+      "channels": [
+        {
+          "name": "my-channel1",
+          "orgs": [
+            {
+              "name": "Org1",
+              "peers": [
+                "peer0",
+                "peer1"
+              ]
+            }
+          ]
+        }
+      ],
+      "chaincodes": [
+        {
+          "name": "chaincode1",
+          "version": "0.0.1",
+          "lang": "node",
+          "channel": "my-channel1",
+          "directory": "./chaincodes/chaincode-kv-node"
+        }
+      ]
+    };
 
     const shouldInitWithNodeChaincode = this.args.length && this.args.find((v) => v === "node");
     if (shouldInitWithNodeChaincode) {
