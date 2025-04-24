@@ -37,11 +37,13 @@ curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/fablo
 To create a local Hyperledger Fabric network with Node.js chaincode and REST API client, install Fablo and execute:
 
 ```bash
-./fablo init node rest
+fablo init node rest    # if installed globally
+# or
+./fablo init node rest  # if using local script 
 ./fablo up
 ```
 
-After a few minutes the whole network will be set up and running.
+After a few minutes, the whole network will be set up and running.
 You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.example.com` container) or REST API client (via [Fablo REST](https://github.com/fablo-io/fablo-rest)).
 
 ## Basic usage
