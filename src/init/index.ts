@@ -2,9 +2,9 @@ import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import { GlobalJson } from "../types/FabloConfigJson";
 
-const DEFAULT_FABLO_CONFIG = {
+const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
-  "global": {
+  global: {
     "fabricVersion": "2.5.9",
     "tls": false
   },
