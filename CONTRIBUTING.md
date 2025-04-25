@@ -2,6 +2,16 @@
 
 Thank you for considering contributing to our project! We welcome contributions from everyone and appreciate your interest in making our project better.
 
+## Table of Contents
+
+- [Contributing Guidelines](#contributing-guidelines)
+  - [Table of Contents](#table-of-contents)
+  - [Sign off Your Work](#sign-off-your-work)
+  - [Getting Started](#getting-started)
+  - [Making Changes](#making-changes)
+  - [Running Fablo locally](#running-fablo-locally)
+  - [Submitting Changes](#submitting-changes)
+
 ## Sign off Your Work
 
 The Developer Certificate of Origin (DCO) is a lightweight way for contributors to certify that they wrote or otherwise have the right to submit the code they are contributing to the project. Here is the full text of the [DCO](http://developercertificate.org/). Contributors must sign-off that they adhere to these requirements by adding a `Signed-off-by` line to commit messages.
@@ -39,7 +49,7 @@ See `git help commit`:
    - **Ent-to-End network tests**: Execute relevant shell scripts from `e2e-network` directory with E2E network tests.
 3. **Update snapshots**: If you've made changes that affect snapshots (esp. any template changes), update them using `npm run test:e2e-update`.
 
-## ## Running Fablo locally
+## Running Fablo locally
 
 You may want to verify some changes by running Fablo locally. To do so:
 1. Execute `./fablo-build.sh` script to create a Fablo Docker image locally.
