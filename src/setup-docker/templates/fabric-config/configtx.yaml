@@ -35,6 +35,10 @@ Organizations:
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
+      <%_ if (global.capabilities.isV3) { _%>
+      OrdererEndpoints:<% ordererGroups[0].orderers.forEach(function(orderer) { %>
+          - <%= orderer.fullAddress %><% }) -%>
+      <%_ } _%>
 
       Policies:
           Readers:
@@ -89,8 +93,10 @@ Application: &ApplicationDefaults
 <%_ ordererGroups.forEach(function(ordererGroup) { _%>
 Orderer: &<%= ordererGroup.configtxOrdererDefaults %>
     OrdererType: <%= ordererGroup.consensus %>
+    <%_ if (!global.capabilities.isV3) { _%>
     Addresses:<% ordererGroup.orderers.forEach(function(orderer) { %>
         - <%= orderer.fullAddress %><% })-%>
+    <%_ } _%>
 <%- include('configtx-raft-template.yaml.ejs', {ordererGroup: ordererGroup}); %>
     BatchTimeout: 2s
     BatchSize:

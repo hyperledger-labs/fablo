@@ -23,13 +23,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.1.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.1.0/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
@@ -37,11 +37,13 @@ curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.1.0/fablo
 To create a local Hyperledger Fabric network with Node.js chaincode and REST API client, install Fablo and execute:
 
 ```bash
-./fablo init node rest
+fablo init node rest    # if installed globally
+# or
+./fablo init node rest  # if using local script 
 ./fablo up
 ```
 
-After a few minutes the whole network will be set up and running.
+After a few minutes, the whole network will be set up and running.
 You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.example.com` container) or REST API client (via [Fablo REST](https://github.com/fablo-io/fablo-rest)).
 
 ## Basic usage
@@ -213,12 +215,12 @@ Chaincode directory is specified in Fablo config file.
 Invokes chaincode with specified parameters.
 
 ```
-fablo chaincode invoke <channel-name> <chaincode-name> <peers-domains-comma-separated>  <command> [transient]
+fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient] 
 ```
 Sample command:
 
 ```
-fablo chaincode invoke "my-channel1" "chaincode1" "peer0.org1.example.com" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
+fablo chaincode invoke "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
 ```
 
 ### chaincodes list
@@ -344,7 +346,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.1.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -507,7 +509,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.1.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false
