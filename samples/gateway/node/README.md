@@ -16,5 +16,7 @@ Git
 7. Start the node server with `node --env-file=.env server.js`.
 
 You should see a response like this:
-`Put result: {"success":"OK"}
+```
+Put result: {"success":"OK"}
 Get result: {"success":"2025-04-29T16:13:42.097Z"}`
+```
