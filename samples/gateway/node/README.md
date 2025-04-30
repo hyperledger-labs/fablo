@@ -3,7 +3,9 @@ To provide an example connection of Fablo with Node.js.
 
 # Pre-requisites
 Docker
+
 Node >22
+
 Git
 
 # Instructions
