@@ -82,6 +82,7 @@ Fablo `init` command takes three parameters (the order does not matter):
 * Option `node` makes Fablo to generate a sample Node.js chaincode as well.
 * Option `rest` enables simple REST API with [Fablo REST](https://github.com/fablo-io/fablo-rest) as standalone Docker container.
 * Option `dev` enables running peers in dev mode (so the hot reload for chaincode is possible).
+* Option `gateway` makes Fablo generate a sample Node.js server that connects to the gateway.
 
 Sample command:
 
