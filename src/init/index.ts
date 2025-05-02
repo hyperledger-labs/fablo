@@ -21,6 +21,14 @@ export default class InitGenerator extends Generator {
       fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
     }
 
+    const shouldInitWithNodeSampleGateway = this.args.length && this.args.find((v) => v === "gateway");
+    if (shouldInitWithNodeSampleGateway) {
+      console.log("Creating sample Node.js gateway");
+      this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
+    } else {
+      fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
+    }
+
     const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
     if (shouldAddFabloRest) {
       const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
