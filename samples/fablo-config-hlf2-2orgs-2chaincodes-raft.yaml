@@ -64,10 +64,10 @@ channels:
 chaincodes:
   - name: chaincode1
     version: 0.0.1
-    lang: node
+    lang: golang
     channel: my-channel1
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
-    directory: "./chaincodes/chaincode-kv-node"
+    directory: "./chaincodes/chaincode-kv-go"
   - name: chaincode2
     version: 0.0.1
     lang: java
