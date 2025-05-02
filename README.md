@@ -72,7 +72,7 @@ In this case, however, you should use generated `fablo-docker.sh` instead of `fa
 ### init
 
 ```bash
-fablo init [node] [rest] [dev]
+fablo init [node] [rest] [dev] [gateway]
 ```
 
 Creates simple network config file in current dir.
