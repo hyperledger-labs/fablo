@@ -26,7 +26,7 @@ export default class InitGenerator extends Generator {
       console.log("Creating sample Node.js gateway");
       this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
     } else {
-      fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
+      fabloConfigJson = { ...fabloConfigJson, gateway: [] };
     }
 
     const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
