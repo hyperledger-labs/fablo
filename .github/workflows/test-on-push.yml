@@ -40,6 +40,38 @@ jobs:
       - name: Lint
         run: npm run lint && ./lint.sh
 
+
+  test-cross-platform:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install shellcheck yamllint
+          npm install -g npm@latest
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          npm run build && \
+          ./fablo-build.sh
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Lint
+        run: npm run lint
+      
+        
   #  test-k8:
   #    needs: test-main
   #    runs-on: ubuntu-latest
