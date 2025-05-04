@@ -3519,11 +3519,11 @@ installChannels() {
 }
 
 installChaincodes() {
-  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    chaincodeBuild "chaincode1" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "golang" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" ""
     printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
@@ -3533,7 +3533,7 @@ installChaincodes() {
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
-    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
   fi
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
     local version="0.0.1"
@@ -3568,10 +3568,10 @@ installChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodeBuild "chaincode1" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "golang" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" ""
       printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
@@ -3582,7 +3582,7 @@ installChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
     fi
   fi
   if [ "$chaincodeName" = "chaincode2" ]; then
@@ -3648,10 +3648,10 @@ upgradeChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodeBuild "chaincode1" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "golang" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" ""
       printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
@@ -3662,7 +3662,7 @@ upgradeChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
     fi
   fi
   if [ "$chaincodeName" = "chaincode2" ]; then
@@ -3830,7 +3830,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode1/"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
@@ -3996,7 +3996,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode1/"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
@@ -4091,7 +4091,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode1/"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
@@ -4270,7 +4270,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode1/"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic

@@ -4235,7 +4235,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": "./chaincodes/chaincode-kv-go",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "initRequired": false,
       "instantiatingOrg": {
@@ -4330,7 +4330,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
           },
         },
       },
-      "lang": "node",
+      "lang": "golang",
       "name": "chaincode1",
       "privateData": [],
       "privateDataConfigFile": undefined,
