@@ -66,6 +66,33 @@ expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
 
+# Test Node.js Gateway client
+echo "### Testing Node.js Gateway client ###"
+GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
+ORG1_PEER0_ENV="$TEST_TMP/fablo-target/fabric-config/connection-profiles/connection-profile-org1-peer0.env"
+
+if [ ! -f "$ORG1_PEER0_ENV" ]; then
+    echo "ERROR: Org1 Peer0 env file not found at $ORG1_PEER0_ENV"
+    exit 1
+fi
+
+echo "Installing gateway client dependencies..."
+(cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
+
+echo "Running gateway client..."
+set +e
+(cd "$GATEWAY_CLIENT_DIR" && set -a && source "$ORG1_PEER0_ENV" && set +a && node server.js)
+GATEWAY_EXIT_CODE=$?
+set -e
+
+if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
+  echo "ERROR: Gateway client failed with exit code $GATEWAY_EXIT_CODE"
+  exit 1
+else
+  echo "Gateway client executed successfully."
+fi
+echo "### Node.js Gateway client test complete ###"
+
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
 expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:get"
