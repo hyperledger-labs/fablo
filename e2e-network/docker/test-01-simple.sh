@@ -66,7 +66,7 @@ expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
 
-# Test Node.js Gateway client
+# Test Node.js Gateway CLI client
 echo "### Testing Node.js Gateway client ###"
 GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
 ORG1_PEER0_ENV="$TEST_TMP/fablo-target/fabric-config/connection-profiles/connection-profile-org1-peer0.env"
