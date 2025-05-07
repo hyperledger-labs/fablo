@@ -66,7 +66,7 @@ describe("repositoryUtils", () => {
     expect(version("3.0.0").isGreaterOrEqual("3.0.1")).toBe(false);
   });
 
-  it("should treat prerelease tags as equal to the corresponding stable tag for ≥ comparison", () => {
+  it("should treat pre-release tags as equal to the corresponding stable tag for ≥ comparison", () => {
     expect(version("0.0.1-alpha").isGreaterOrEqual("0.0.1")).toBe(true);
     expect(version("0.0.1").isGreaterOrEqual("0.0.1-alpha")).toBe(true);
   });
