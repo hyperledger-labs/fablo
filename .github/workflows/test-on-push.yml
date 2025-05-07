@@ -42,44 +42,44 @@ jobs:
 
 
   test-cross-platform:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-           driver: docker
-
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install shellcheck yamllint
-          npm install -g npm@latest
-
-      - name: Verify Docker
-        run: docker --version
-
-      - name: Build Fablo
-        run: |
-          shellcheck --version && \
-          yamllint -v && \
-          npm install && \
-          npm run build && \
-          ./fablo-build.sh
-
-      - name: Run unit tests
-        run: npm run test:unit
-
-      - name: Lint
-        run: npm run lint
-
-
+          runs-on: ${{ matrix.os }}
+          strategy:
+            fail-fast: false
+            matrix:
+              os: [ubuntu-latest, macos-13]
+          steps:
+            - name: Check out repository code
+              uses: actions/checkout@v2
+                
+            - name: Set up Docker on macOS with Colima
+              if: runner.os == 'macOS'
+              uses: douglascamata/setup-docker-macos-action@v1
+      
+            - name: Verify Docker
+              run: docker --version
+            
+            - name: Install dependencies (macOS)
+              if: runner.os == 'macOS'
+              run: |
+                  brew install shellcheck yamllint
+                  npm install -g npm@latest
+    
+            - name: Build Fablo
+              run: |
+                shellcheck --version && \
+                yamllint -v && \
+                npm install && \
+                npm run build && \
+                ./fablo-build.sh
+            
+            - name: Run unit tests
+              run: npm run test:unit
+            
+            - name: Lint
+              run: npm run lint
+    
+    
+    
   #  test-k8:
   #    needs: test-main
   #    runs-on: ubuntu-latest
