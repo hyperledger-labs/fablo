@@ -8,6 +8,10 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
+GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
+ORG1_PEER0_ENV="$TEST_TMP/fablo-target/fabric-config/connection-profiles/connection-profile-org1-peer0.env"
+GATEWAY_CLIENT_OUTPUT_FILE="$TEST_LOGS/gateway_client.log"
+
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
@@ -67,9 +71,7 @@ expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{\"success\":\"Willy Wonka\"}'
 
 # Test Node.js Gateway CLI client
-echo "### Testing Node.js Gateway client ###"
-GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
-ORG1_PEER0_ENV="$TEST_TMP/fablo-target/fabric-config/connection-profiles/connection-profile-org1-peer0.env"
+echo "Testing Node.js Gateway client..."
 
 if [ ! -f "$ORG1_PEER0_ENV" ]; then
     echo "ERROR: Org1 Peer0 env file not found at $ORG1_PEER0_ENV"
@@ -79,19 +81,26 @@ fi
 echo "Installing gateway client dependencies..."
 (cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
 
-echo "Running gateway client..."
-set +e
-(cd "$GATEWAY_CLIENT_DIR" && set -a && source "$ORG1_PEER0_ENV" && set +a && node server.js)
+echo "Running Node.js Gateway client and checking output..."
+(cd "$GATEWAY_CLIENT_DIR" && set -a && source "$ORG1_PEER0_ENV" && set +a && node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1)
 GATEWAY_EXIT_CODE=$?
-set -e
 
 if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
-  echo "ERROR: Gateway client failed with exit code $GATEWAY_EXIT_CODE"
+  echo "❌ failed: Node.js Gateway client script failed with exit code $GATEWAY_EXIT_CODE."
+  echo "Check $GATEWAY_CLIENT_OUTPUT_FILE for details"
   exit 1
-else
-  echo "Gateway client executed successfully."
 fi
-echo "### Node.js Gateway client test complete ###"
+
+EXPECTED_GATEWAY_OUTPUT='Put result: {"success":"OK"}'
+if grep -qF "$EXPECTED_GATEWAY_OUTPUT" "$GATEWAY_CLIENT_OUTPUT_FILE"; then
+  echo "✅ ok: Node.js Gateway client test passed!"
+else
+  echo "❌ failed: Node.js Gateway client failed."
+  echo "Check $GATEWAY_CLIENT_OUTPUT_FILE for details"
+  exit 1
+fi
+
+echo "Node.js Gateway client test complete"
 
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
