@@ -87,7 +87,7 @@ GATEWAY_EXIT_CODE=$?
 
 if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
   echo "❌ failed: Node.js Gateway client script failed with exit code $GATEWAY_EXIT_CODE."
-  echo "Check $GATEWAY_CLIENT_OUTPUT_FILE for details"
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
   exit 1
 fi
 
