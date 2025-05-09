@@ -9,7 +9,6 @@ FABLO_HOME="$TEST_TMP/../../.."
 export FABLO_HOME
 
 GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
-ORG1_PEER0_ENV="$TEST_TMP/fablo-target/fabric-config/connection-profiles/connection-profile-org1-peer0.env"
 GATEWAY_CLIENT_OUTPUT_FILE="$TEST_LOGS/gateway_client.log"
 
 networkUp() {
@@ -73,16 +72,23 @@ expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
 # Test Node.js Gateway CLI client
 echo "Testing Node.js Gateway client..."
 
-if [ ! -f "$ORG1_PEER0_ENV" ]; then
-    echo "ERROR: Org1 Peer0 env file not found at $ORG1_PEER0_ENV"
-    exit 1
-fi
-
 echo "Installing gateway client dependencies..."
 (cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
 
 echo "Running Node.js Gateway client and checking output..."
-(cd "$GATEWAY_CLIENT_DIR" && set -a && source "$ORG1_PEER0_ENV" && set +a && node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1)
+(
+  cd "$GATEWAY_CLIENT_DIR" &&
+    export \ 
+      CHANNEL_NAME="my-channel1" \
+      CONTRACT_NAME="chaincode1" \
+      MSP_ID="Org1MSP" \
+      PEER_ORG_NAME="peer0.org1.example.com" \
+      PEER_GATEWAY_URL="localhost:7041" \
+      TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
+      CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
+      PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
+  node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1
+)
 GATEWAY_EXIT_CODE=$?
 
 if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
