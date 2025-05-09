@@ -91,8 +91,7 @@ if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
   exit 1
 fi
 
-EXPECTED_GATEWAY_OUTPUT='Put result: {"success":"OK"}'
-if grep -qF "$EXPECTED_GATEWAY_OUTPUT" "$GATEWAY_CLIENT_OUTPUT_FILE"; then
+if grep -qF 'Put result: {"success":"OK"}' "$GATEWAY_CLIENT_OUTPUT_FILE"; then
   echo "✅ ok: Node.js Gateway client test passed!"
 else
   echo "❌ failed: Node.js Gateway client failed."
