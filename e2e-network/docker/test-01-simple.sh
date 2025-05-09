@@ -95,7 +95,7 @@ if grep -qF 'Put result: {"success":"OK"}' "$GATEWAY_CLIENT_OUTPUT_FILE"; then
   echo "✅ ok: Node.js Gateway client test passed!"
 else
   echo "❌ failed: Node.js Gateway client failed."
-  echo "Check $GATEWAY_CLIENT_OUTPUT_FILE for details"
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
   exit 1
 fi
 
