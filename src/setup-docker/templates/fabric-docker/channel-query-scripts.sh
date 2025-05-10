@@ -5,8 +5,6 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 set -eu
 
 channelQuery() {
-  echo "-> Channel query: " + "$@"
-
 if [ "$#" -eq 1 ]; then
   printChannelsHelp
 <% orgs.forEach((org) => { org.peers.forEach((peer) => { %>

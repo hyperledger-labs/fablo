@@ -31,34 +31,40 @@ chaincodeInvoke() {
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi
-  cli=""
-  peer_addresses=""
-  <% if (global.tls) { %>
-     peer_certs=""
-  <% } %>
+
+  # Cli needs to be from the same org as the first peer
   <% orgs.forEach((org) => { -%>
     <% org.peers.forEach((peer) => { -%>
-      if [[ "$1" == *"<%= peer.address %>"* ]]; then
+      if [[ "$1" == "<%= peer.address %>"* ]]; then
         cli="<%= org.cli.address %>"
-        peer_addresses="$peer_addresses,<%= peer.fullAddress %>"
-        <% if(global.tls) { %>
-           peer_certs="$peer_certs,crypto/peers/<%= peer.address %>/tls/ca.crt"
-        <% } %>
       fi
     <% }) -%>
   <% }) -%>
-  if [ -z "$peer_addresses" ]; then
-    echo "Unknown peers: $1"
-    exit 1
-  fi
-  <% if(!global.tls) { %>
-    peerChaincodeInvoke "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5"
-  <% } else { %>
-    <% channels.forEach((channel) => { %>
+
+  peer_addresses="$1"
+  <% orgs.forEach((org) => { -%>
+    <% org.peers.forEach((peer) => { -%>
+      peer_addresses="${peer_addresses//<%= peer.address %>/<%= peer.fullAddress %>}"
+    <% }) -%>
+  <% }) -%>
+
+  <% if (global.tls) { -%>
+    peer_certs="$1"
+    <% orgs.forEach((org) => { -%>
+      <% org.peers.forEach((peer) => { -%>
+        peer_certs="${peer_certs//<%= peer.address %>/crypto/peers/<%= peer.address %>/tls/ca.crt}"
+      <% }) -%>
+    <% }) -%>
+  <% } -%>
+
+  <% if(!global.tls) { -%>
+    peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
+  <% } else { -%>
+    <% channels.forEach((channel) => { -%>
       if [ "$2" = "<%= channel.name %>" ]; then
         ca_cert="crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem"
       fi
-    <% }) %>
-    peerChaincodeInvokeTls "$cli" "${peer_addresses:1}" "$2" "$3" "$4" "$5" "${peer_certs:1}" "$ca_cert"
-  <% } %>
+    <% }) -%>
+    peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
+  <% } -%>
 }

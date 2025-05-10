@@ -3111,58 +3111,43 @@ chaincodeInvoke() {
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi
-  cli=""
-  peer_addresses=""
 
-  peer_certs=""
-
-  if [[ "$1" == *"peer0.org1.example.com"* ]]; then
+  # Cli needs to be from the same org as the first peer
+  if [[ "$1" == "peer0.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer0.org1.example.com:7061"
-
-    peer_certs="$peer_certs,crypto/peers/peer0.org1.example.com/tls/ca.crt"
-
   fi
-  if [[ "$1" == *"peer1.org1.example.com"* ]]; then
+  if [[ "$1" == "peer1.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer1.org1.example.com:7062"
-
-    peer_certs="$peer_certs,crypto/peers/peer1.org1.example.com/tls/ca.crt"
-
   fi
-  if [[ "$1" == *"peer0.org2.example.com"* ]]; then
+  if [[ "$1" == "peer0.org2.example.com"* ]]; then
     cli="cli.org2.example.com"
-    peer_addresses="$peer_addresses,peer0.org2.example.com:7081"
-
-    peer_certs="$peer_certs,crypto/peers/peer0.org2.example.com/tls/ca.crt"
-
   fi
-  if [[ "$1" == *"peer1.org2.example.com"* ]]; then
+  if [[ "$1" == "peer1.org2.example.com"* ]]; then
     cli="cli.org2.example.com"
-    peer_addresses="$peer_addresses,peer1.org2.example.com:7082"
-
-    peer_certs="$peer_certs,crypto/peers/peer1.org2.example.com/tls/ca.crt"
-
   fi
-  if [ -z "$peer_addresses" ]; then
-    echo "Unknown peers: $1"
-    exit 1
-  fi
+
+  peer_addresses="$1"
+  peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7061}"
+  peer_addresses="\${peer_addresses//peer1.org1.example.com/peer1.org1.example.com:7062}"
+  peer_addresses="\${peer_addresses//peer0.org2.example.com/peer0.org2.example.com:7081}"
+  peer_addresses="\${peer_addresses//peer1.org2.example.com/peer1.org2.example.com:7082}"
+
+  peer_certs="$1"
+  peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
+  peer_certs="\${peer_certs//peer1.org1.example.com/crypto/peers/peer1.org1.example.com/tls/ca.crt}"
+  peer_certs="\${peer_certs//peer0.org2.example.com/crypto/peers/peer0.org2.example.com/tls/ca.crt}"
+  peer_certs="\${peer_certs//peer1.org2.example.com/crypto/peers/peer1.org2.example.com/tls/ca.crt}"
 
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
   fi
-
   if [ "$2" = "my-channel2" ]; then
     ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
   fi
-
   if [ "$2" = "my-channel3" ]; then
     ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
   fi
-
-  peerChaincodeInvokeTls "$cli" "\${peer_addresses:1}" "$2" "$3" "$4" "$5" "\${peer_certs:1}" "$ca_cert"
-
+  peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 "
 `;
@@ -3175,8 +3160,6 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 set -eu
 
 channelQuery() {
-  echo "-> Channel query: " + "$@"
-
   if [ "$#" -eq 1 ]; then
     printChannelsHelp
 
