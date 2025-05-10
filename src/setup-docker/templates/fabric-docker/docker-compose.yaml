@@ -2,6 +2,18 @@ networks:
   basic:
 
 services:
+<% chaincodes.forEach(function(chaincode) { if (chaincode.lang === 'ccaas' || chaincode.image) { %>
+  <%= chaincode.name%>:
+    container_name: <%= chaincode.name %>
+    image: <%= chaincode.image %>
+    environment:
+      - CHAINCODE_SERVER_ADDRESS=0.0.0.0:<%= chaincode.port %>
+      - CHAINCODE_ID=<%= chaincode.name %>:<%= chaincode.version %>
+    ports:
+      - "<%= chaincode.port %>:<%= chaincode.port %>"
+    networks:
+      - basic
+<% } }) %>
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
