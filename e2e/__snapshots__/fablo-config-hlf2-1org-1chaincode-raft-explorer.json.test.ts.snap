@@ -1593,12 +1593,15 @@ chaincodeInvoke() {
     exit 1
   fi
 
-  # First peer from the comma-separated list is used as the CLI
-  cli=$(echo "$1" | cut -d',' -f1)
+  # Cli needs to be from the same org as the first peer
+  if [[ "$1" == "peer0.org1.example.com"* ]]; then
+    cli="cli.org1.example.com"
+  fi
 
   peer_addresses="$1"
-  peer_certs="$1"
   peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
+
+  peer_certs="$1"
   peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
 
   if [ "$2" = "my-channel1" ]; then

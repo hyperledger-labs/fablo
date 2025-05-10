@@ -32,21 +32,30 @@ chaincodeInvoke() {
     exit 1
   fi
 
-  # First peer from the comma-separated list is used as the CLI
-  cli=$(echo "$1" | cut -d',' -f1)
+  # Cli needs to be from the same org as the first peer
+  <% orgs.forEach((org) => { -%>
+    <% org.peers.forEach((peer) => { -%>
+      if [[ "$1" == "<%= peer.address %>"* ]]; then
+        cli="<%= org.cli.address %>"
+      fi
+    <% }) -%>
+  <% }) -%>
 
   peer_addresses="$1"
-  <% if (global.tls) { -%>
-     peer_certs="$1"
-  <% } -%>
   <% orgs.forEach((org) => { -%>
     <% org.peers.forEach((peer) => { -%>
       peer_addresses="${peer_addresses//<%= peer.address %>/<%= peer.fullAddress %>}"
-      <% if(global.tls) { -%>
-         peer_certs="${peer_certs//<%= peer.address %>/crypto/peers/<%= peer.address %>/tls/ca.crt}"
-      <% } -%>
     <% }) -%>
   <% }) -%>
+
+  <% if (global.tls) { -%>
+    peer_certs="$1"
+    <% orgs.forEach((org) => { -%>
+      <% org.peers.forEach((peer) => { -%>
+        peer_certs="${peer_certs//<%= peer.address %>/crypto/peers/<%= peer.address %>/tls/ca.crt}"
+      <% }) -%>
+    <% }) -%>
+  <% } -%>
 
   <% if(!global.tls) { -%>
     peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
