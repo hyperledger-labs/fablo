@@ -439,7 +439,8 @@
             "enum": [
               "golang",
               "java",
-              "node"
+              "node",
+              "ccaas"
             ]
           },
           "channel": {
@@ -477,6 +478,19 @@
             "$id": "#/properties/chaincodes/items/properties/directory",
             "title": "Chaincode directory",
             "type": "string"
+          },
+          "image": {
+            "$id": "#/properties/chaincodes/items/properties/image",
+            "title": "Chaincode image URI",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9\\.\\-]+$"
+          },
+          "port": {
+            "$id": "#/properties/chaincodes/items/properties/port",
+            "title": "Chaincode port",
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 65535
           },
           "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
@@ -522,6 +536,30 @@
             }
           }
         }
+      },
+      "required": [
+        "name",
+        "version",
+        "lang",
+        "channel"
+      ],
+      "if": {
+        "properties": {
+          "lang": {
+            "const": "ccaas"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "image",
+          "port"
+        ]
+      },
+      "else": {
+        "required": [
+          "directory"
+        ]
       }
     },
     "hooks": {

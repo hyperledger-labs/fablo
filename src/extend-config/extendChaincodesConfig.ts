@@ -57,12 +57,27 @@ const extendChaincodesConfig = (
     );
     const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
 
+    if (chaincode.lang === "ccaas") {
+      if (!chaincode.image) {
+        throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify an image field`);
+      }
+      if (!chaincode.port) {
+        throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify a port field`);
+      }
+    } else {
+      if (!chaincode.directory) {
+        throw new Error(`Chaincode '${chaincode.name}' must specify a directory field when not of type 'ccaas'`);
+      }
+    }
+
     return {
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
       channel,
+      image: chaincode.image,
+      port: chaincode.port,
       ...initParams,
       endorsement,
       instantiatingOrg: channel.instantiatingOrg,
