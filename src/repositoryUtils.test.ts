@@ -1,7 +1,6 @@
 import { sortVersions, version } from "./repositoryUtils";
 
 describe("repositoryUtils", () => {
-  /* ---------- sortVersions ------------------------------------------------ */
 
   it("should sort versions", () => {
     const unsorted = [
@@ -40,7 +39,7 @@ describe("repositoryUtils", () => {
       "0.1.2",
       "0.1.1",
       "0.1.2-alpha",
-      "0.1.1-beta", // “beta” > “alpha” after reverse
+      "0.1.1-beta",
       "0.1.1-alpha",
     ];
 
@@ -53,7 +52,6 @@ describe("repositoryUtils", () => {
     expect(sortVersions(unsorted)).toEqual(expected);
   });
 
-  /* ---------- version().isGreaterOrEqual ---------------------------------- */
 
   it("should compare versions", () => {
     expect(version("1.4.0").isGreaterOrEqual("1.4.0")).toBe(true);
@@ -71,7 +69,6 @@ describe("repositoryUtils", () => {
     expect(version("0.0.1").isGreaterOrEqual("0.0.1-alpha")).toBe(true);
   });
 
-  /* ---------- version().isOneOf ------------------------------------------- */
 
   it("should check membership with isOneOf()", () => {
     const list = ["1.2.3", "2.0.0", "3.1.4-alpha"];
@@ -79,7 +76,6 @@ describe("repositoryUtils", () => {
     expect(version("3.1.4").isOneOf(list)).toBe(false);
   });
 
-  /* ---------- version().takeMajorMinor ------------------------------------ */
 
   it("should take major.minor fragments only", () => {
     expect(version("10.5.7").takeMajorMinor()).toBe("10.5");
