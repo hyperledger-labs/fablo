@@ -146,11 +146,13 @@ export interface OrgConfig {
 }
 
 export interface ChaincodeConfig {
-  directory: string;
+  directory?: string;
   name: string;
   version: string;
   lang: string;
   channel: ChannelConfig;
+  image?: string;
+  port?: number;
   init?: string;
   initRequired?: boolean;
   endorsement?: string;
