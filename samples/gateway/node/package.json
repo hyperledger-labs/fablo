@@ -6,8 +6,8 @@
   "author": "",
   "main": "server.js",
   "type": "module",
-  "engines" : { 
-    "node" : ">=22"
+  "engines": {
+    "node": ">=22"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
-    "@hyperledger/fabric-gateway": "^1.7.1"
+    "@hyperledger/fabric-gateway": "^1.7.1",
+    "dotenv": "^16.5.0"
   }
 }
-

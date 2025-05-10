@@ -78,15 +78,15 @@ echo "Installing gateway client dependencies..."
 echo "Running Node.js Gateway client and checking output..."
 (
   cd "$GATEWAY_CLIENT_DIR" &&
-    export \ 
-      CHANNEL_NAME="my-channel1" \
-      CONTRACT_NAME="chaincode1" \
-      MSP_ID="Org1MSP" \
-      PEER_ORG_NAME="peer0.org1.example.com" \
-      PEER_GATEWAY_URL="localhost:7041" \
-      TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
-      CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
-      PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
+    export \
+           CHANNEL_NAME="my-channel1" \
+           CONTRACT_NAME="chaincode1" \
+           MSP_ID="Org1MSP" \
+           PEER_ORG_NAME="peer0.org1.example.com" \
+           PEER_GATEWAY_URL="localhost:7041" \
+           TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
+           CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
+           PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
   node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1
 )
 GATEWAY_EXIT_CODE=$?
