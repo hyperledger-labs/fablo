@@ -8,17 +8,21 @@
    - global
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
-chaincodeBuild <% -%>
+<% if (!chaincode.image) { -%>
+  chaincodeBuild <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.lang %>" <% -%>
   "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
   "<%= global.fabricRecommendedNodeVersion %>"
+<% } -%>
 chaincodePackage <% -%>
   "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.lang %>" <% -%>
+  "<%= chaincode.image || '' %>" <% -%>
+  "<%= chaincode.port || '' %>" <% -%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
   <% org.peers.forEach((peer) => { -%>

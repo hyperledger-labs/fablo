@@ -87,13 +87,43 @@ chaincodePackage() {
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
+  local CHAINCODE_IMAGE=$6
+  local CHAINCODE_PORT=$7
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
+  inputLog "CHAINCODE_PORT: $CHAINCODE_PORT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
 
+  if [ -n "$CHAINCODE_IMAGE" ]; then
+    echo "Packaging chaincode as CCAAS (external builder)..."
+
+    local PACKAGE_DIR="/tmp/ccaas_$CHAINCODE_LABEL"
+    mkdir -p "$PACKAGE_DIR"
+
+    echo "{\"type\":\"ccaas\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
+
+    mkdir -p "$PACKAGE_DIR/code"
+    echo "{\"address\":\"$CHAINCODE_NAME:$CHAINCODE_PORT\",\"dial_timeout\":\"10s\",\"tls_required\":false}" > "$PACKAGE_DIR/code/connection.json"
+
+    tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
+
+    mkdir -p "./chaincode-packages"
+    tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+
+    docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+
+    # clean up
+    rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" 
+
+    echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+    return
+  fi
+
+  # Default to using the local chaincode directory
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode package \
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
     --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \

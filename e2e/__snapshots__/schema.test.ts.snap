@@ -22,6 +22,18 @@ exports[`schema should match snapshot 1`] = `
           "version": "0.0.1",
         },
       ],
+      "else": {
+        "required": [
+          "directory",
+        ],
+      },
+      "if": {
+        "properties": {
+          "lang": {
+            "const": "ccaas",
+          },
+        },
+      },
       "items": {
         "$id": "#/properties/chaincodes/items",
         "properties": {
@@ -51,6 +63,12 @@ exports[`schema should match snapshot 1`] = `
             "title": "Endorsement configuration",
             "type": "string",
           },
+          "image": {
+            "$id": "#/properties/chaincodes/items/properties/image",
+            "pattern": "^[a-zA-Z0-9\\.\\-]+$",
+            "title": "Chaincode image URI",
+            "type": "string",
+          },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
             "title": "Initialization arguments (for Hyperledger Fabric below 2.0)",
@@ -67,6 +85,7 @@ exports[`schema should match snapshot 1`] = `
               "golang",
               "java",
               "node",
+              "ccaas",
             ],
             "title": "Language",
             "type": "string",
@@ -76,6 +95,13 @@ exports[`schema should match snapshot 1`] = `
             "pattern": "^[a-zA-Z0-9_-]+$",
             "title": "Name",
             "type": "string",
+          },
+          "port": {
+            "$id": "#/properties/chaincodes/items/properties/port",
+            "maximum": 65535,
+            "minimum": 10,
+            "title": "Chaincode port",
+            "type": "integer",
           },
           "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
@@ -136,6 +162,18 @@ exports[`schema should match snapshot 1`] = `
         ],
         "title": "Chaincode",
         "type": "object",
+      },
+      "required": [
+        "name",
+        "version",
+        "lang",
+        "channel",
+      ],
+      "then": {
+        "required": [
+          "image",
+          "port",
+        ],
       },
       "title": "Chaincodes",
       "type": "array",
