@@ -304,16 +304,14 @@ peers:
     url: grpcs://localhost:7041
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
   peer1.org1.example.com:
     url: grpcs://localhost:7042
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: peer1.org1.example.com
 certificateAuthorities:
@@ -322,8 +320,7 @@ certificateAuthorities:
     caName: ca.orderer.example.com
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
     httpOptions:
       verify: false
 "
@@ -404,16 +401,14 @@ peers:
     url: grpcs://localhost:7041
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
   peer1.org1.example.com:
     url: grpcs://localhost:7042
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: peer1.org1.example.com
 certificateAuthorities:
@@ -422,8 +417,7 @@ certificateAuthorities:
     caName: ca.org1.example.com
     tlsCACerts:
       path: >-
-        /Users/abhinavpandey/Software
-        Development/fablo/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
     httpOptions:
       verify: false
 "
