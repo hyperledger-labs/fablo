@@ -41,7 +41,7 @@ const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
   const chaincodeNames = new Set<string>();
   chaincodes.forEach((chaincode) => {
     if (chaincodeNames.has(chaincode.name)) {
-      throw new Error(`Duplicate chaincode name found: '${chaincode.name}'`);
+      throw new Error(`Chaincode name '${chaincode.name}' is not unique across channels.`);
     }
     chaincodeNames.add(chaincode.name);
   });
