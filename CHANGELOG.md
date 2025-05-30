@@ -1,3 +1,7 @@
+## 2.3.0 
+* Support for running Java chaincode in development mode
+ [#553](https://github.com/hyperledger-labs/fablo/pull/553)
+
 ## 2.2.0
 
 ### Features
