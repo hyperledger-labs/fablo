@@ -2,7 +2,8 @@ import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
 
-const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
+function getDefaultFabloConfig(): FabloConfigJson {
+  return {
   $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   global: {
     fabricVersion: "2.5.9",
@@ -69,7 +70,8 @@ const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
     },
   ],
   hooks: {},
-};
+ };
+}
 
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
@@ -77,7 +79,7 @@ export default class InitGenerator extends Generator {
   }
 
   async copySampleConfig(): Promise<void> {
-    let fabloConfigJson = { ...DEFAULT_FABLO_CONFIG };
+    let fabloConfigJson = getDefaultFabloConfig();
 
     const shouldInitWithNodeChaincode = this.args.length && this.args.find((v) => v === "node");
     if (shouldInitWithNodeChaincode) {
