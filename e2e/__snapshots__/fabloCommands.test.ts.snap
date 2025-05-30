@@ -2475,8 +2475,8 @@ Validation warnings count: 0
   "global": {
     "fabricVersion": "2.5.9",
     "tls": false,
-    "engine": "docker",
     "peerDevMode": false,
+    "engine": "docker",
     "fabricToolsVersion": "2.5.9",
     "fabricCaVersion": "1.5.5",
     "fabricCcenvVersion": "2.5.9",
@@ -2512,54 +2512,54 @@ Validation warnings count: 0
       ],
       "orderers": [
         {
-          "name": "orderer0.group1",
-          "address": "orderer0.group1.orderer.example.com",
+          "name": "ord0.group1",
+          "address": "ord0.group1.orderer.example.com",
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
           "adminPort": 7053,
           "port": 7030,
-          "fullAddress": "orderer0.group1.orderer.example.com:7030"
+          "fullAddress": "ord0.group1.orderer.example.com:7030"
         }
       ],
       "ordererHeads": [
         {
-          "name": "orderer0.group1",
-          "address": "orderer0.group1.orderer.example.com",
+          "name": "ord0.group1",
+          "address": "ord0.group1.orderer.example.com",
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
           "adminPort": 7053,
           "port": 7030,
-          "fullAddress": "orderer0.group1.orderer.example.com:7030"
+          "fullAddress": "ord0.group1.orderer.example.com:7030"
         }
       ],
       "ordererHead": {
-        "name": "orderer0.group1",
-        "address": "orderer0.group1.orderer.example.com",
+        "name": "ord0.group1",
+        "address": "ord0.group1.orderer.example.com",
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
         "consensus": "solo",
         "adminPort": 7053,
         "port": 7030,
-        "fullAddress": "orderer0.group1.orderer.example.com:7030"
+        "fullAddress": "ord0.group1.orderer.example.com:7030"
       }
     }
   ],
   "orderedHeadsDistinct": [
     {
-      "name": "orderer0.group1",
-      "address": "orderer0.group1.orderer.example.com",
+      "name": "ord0.group1",
+      "address": "ord0.group1.orderer.example.com",
       "orgName": "Orderer",
       "orgMspName": "OrdererMSP",
       "domain": "orderer.example.com",
       "consensus": "solo",
       "adminPort": 7053,
       "port": 7030,
-      "fullAddress": "orderer0.group1.orderer.example.com:7030"
+      "fullAddress": "ord0.group1.orderer.example.com:7030"
     }
   ],
   "orgs": [
@@ -2597,28 +2597,28 @@ Validation warnings count: 0
           ],
           "orderers": [
             {
-              "name": "orderer0.group1",
-              "address": "orderer0.group1.orderer.example.com",
+              "name": "ord0.group1",
+              "address": "ord0.group1.orderer.example.com",
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
               "consensus": "solo",
               "adminPort": 7053,
               "port": 7030,
-              "fullAddress": "orderer0.group1.orderer.example.com:7030"
+              "fullAddress": "ord0.group1.orderer.example.com:7030"
             }
           ],
           "ordererHeads": [
             {
-              "name": "orderer0.group1",
-              "address": "orderer0.group1.orderer.example.com",
+              "name": "ord0.group1",
+              "address": "ord0.group1.orderer.example.com",
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
               "consensus": "solo",
               "adminPort": 7053,
               "port": 7030,
-              "fullAddress": "orderer0.group1.orderer.example.com:7030"
+              "fullAddress": "ord0.group1.orderer.example.com:7030"
             }
           ]
         }
@@ -2817,52 +2817,52 @@ Validation warnings count: 0
         ],
         "orderers": [
           {
-            "name": "orderer0.group1",
-            "address": "orderer0.group1.orderer.example.com",
+            "name": "ord0.group1",
+            "address": "ord0.group1.orderer.example.com",
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
             "consensus": "solo",
             "adminPort": 7053,
             "port": 7030,
-            "fullAddress": "orderer0.group1.orderer.example.com:7030"
+            "fullAddress": "ord0.group1.orderer.example.com:7030"
           }
         ],
         "ordererHeads": [
           {
-            "name": "orderer0.group1",
-            "address": "orderer0.group1.orderer.example.com",
+            "name": "ord0.group1",
+            "address": "ord0.group1.orderer.example.com",
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
             "consensus": "solo",
             "adminPort": 7053,
             "port": 7030,
-            "fullAddress": "orderer0.group1.orderer.example.com:7030"
+            "fullAddress": "ord0.group1.orderer.example.com:7030"
           }
         ],
         "ordererHead": {
-          "name": "orderer0.group1",
-          "address": "orderer0.group1.orderer.example.com",
+          "name": "ord0.group1",
+          "address": "ord0.group1.orderer.example.com",
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
           "consensus": "solo",
           "adminPort": 7053,
           "port": 7030,
-          "fullAddress": "orderer0.group1.orderer.example.com:7030"
+          "fullAddress": "ord0.group1.orderer.example.com:7030"
         }
       },
       "ordererHead": {
-        "name": "orderer0.group1",
-        "address": "orderer0.group1.orderer.example.com",
+        "name": "ord0.group1",
+        "address": "ord0.group1.orderer.example.com",
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
         "consensus": "solo",
         "adminPort": 7053,
         "port": 7030,
-        "fullAddress": "orderer0.group1.orderer.example.com:7030"
+        "fullAddress": "ord0.group1.orderer.example.com:7030"
       },
       "instantiatingOrg": {
         "name": "Org1",
@@ -2969,20 +2969,26 @@ exports[`init should init simple fablo config 1`] = `
   "global": {
     "fabricVersion": "2.5.9",
     "tls": false,
-    "engine": "docker",
-    "peerDevMode": false
+    "peerDevMode": false,
+    "engine": "docker"
   },
   "orgs": [
     {
       "organization": {
         "name": "Orderer",
-        "domain": "orderer.example.com"
+        "domain": "orderer.example.com",
+        "mspName": "OrdererMSP"
+      },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
       },
       "orderers": [
         {
           "groupName": "group1",
           "type": "solo",
-          "instances": 1
+          "instances": 1,
+          "prefix": "ord"
         }
       ],
       "tools": {}
@@ -2990,11 +2996,18 @@ exports[`init should init simple fablo config 1`] = `
     {
       "organization": {
         "name": "Org1",
-        "domain": "org1.example.com"
+        "domain": "org1.example.com",
+        "mspName": "Org1MSP"
       },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
+      },
+      "orderers": [],
       "peer": {
         "instances": 2,
-        "db": "LevelDb"
+        "db": "LevelDb",
+        "prefix": "peer"
       },
       "tools": {}
     }
@@ -3013,7 +3026,8 @@ exports[`init should init simple fablo config 1`] = `
       ]
     }
   ],
-  "chaincodes": []
+  "chaincodes": [],
+  "hooks": {}
 }"
 `;
 
@@ -3023,20 +3037,26 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
   "global": {
     "fabricVersion": "2.5.9",
     "tls": false,
-    "engine": "docker",
-    "peerDevMode": false
+    "peerDevMode": false,
+    "engine": "docker"
   },
   "orgs": [
     {
       "organization": {
         "name": "Orderer",
-        "domain": "orderer.example.com"
+        "domain": "orderer.example.com",
+        "mspName": "OrdererMSP"
+      },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
       },
       "orderers": [
         {
           "groupName": "group1",
           "type": "solo",
-          "instances": 1
+          "instances": 1,
+          "prefix": "ord"
         }
       ],
       "tools": {}
@@ -3044,11 +3064,18 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
     {
       "organization": {
         "name": "Org1",
-        "domain": "org1.example.com"
+        "domain": "org1.example.com",
+        "mspName": "Org1MSP"
       },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
+      },
+      "orderers": [],
       "peer": {
         "instances": 2,
-        "db": "LevelDb"
+        "db": "LevelDb",
+        "prefix": "peer"
       },
       "tools": {}
     }
@@ -3073,9 +3100,11 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       "version": "0.0.1",
       "lang": "node",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
     }
-  ]
+  ],
+  "hooks": {}
 }"
 `;
 
@@ -3085,20 +3114,26 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
   "global": {
     "fabricVersion": "2.5.9",
     "tls": false,
-    "engine": "docker",
-    "peerDevMode": false
+    "peerDevMode": false,
+    "engine": "docker"
   },
   "orgs": [
     {
       "organization": {
         "name": "Orderer",
-        "domain": "orderer.example.com"
+        "domain": "orderer.example.com",
+        "mspName": "OrdererMSP"
+      },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
       },
       "orderers": [
         {
           "groupName": "group1",
           "type": "solo",
-          "instances": 1
+          "instances": 1,
+          "prefix": "ord"
         }
       ],
       "tools": {
@@ -3108,11 +3143,18 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
     {
       "organization": {
         "name": "Org1",
-        "domain": "org1.example.com"
+        "domain": "org1.example.com",
+        "mspName": "Org1MSP"
       },
+      "ca": {
+        "prefix": "ca",
+        "db": "sqlite"
+      },
+      "orderers": [],
       "peer": {
         "instances": 2,
-        "db": "LevelDb"
+        "db": "LevelDb",
+        "prefix": "peer"
       },
       "tools": {
         "fabloRest": true
@@ -3139,8 +3181,10 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
       "version": "0.0.1",
       "lang": "node",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
     }
-  ]
+  ],
+  "hooks": {}
 }"
 `;

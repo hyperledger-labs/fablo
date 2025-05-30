@@ -3,35 +3,49 @@ import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
 
 const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+  $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   global: {
     fabricVersion: "2.5.9",
-    tls: false
+    tls: false,
+    peerDevMode: false,
   },
   orgs: [
     {
       organization: {
         name: "Orderer",
-        domain: "orderer.example.com"
+        domain: "orderer.example.com",
+        mspName: "OrdererMSP",
+      },
+      ca: {
+        prefix: "ca",
+        db: "sqlite",
       },
       orderers: [
         {
           groupName: "group1",
           type: "solo",
-          instances: 1
-        }
-      ]
+          instances: 1,
+          prefix: "ord",
+        },
+      ],
     },
     {
       organization: {
         name: "Org1",
-        domain: "org1.example.com"
+        domain: "org1.example.com",
+        mspName: "Org1MSP",
       },
+      ca: {
+        prefix: "ca",
+        db: "sqlite",
+      },
+      orderers: [],
       peer: {
         instances: 2,
-        db: "LevelDb"
-      }
-    }
+        db: "LevelDb",
+        prefix: "peer",
+      },
+    },
   ],
   channels: [
     {
@@ -39,13 +53,10 @@ const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
       orgs: [
         {
           name: "Org1",
-          peers: [
-            "peer0",
-            "peer1"
-          ]
-        }
-      ]
-    }
+          peers: ["peer0", "peer1"],
+        },
+      ],
+    },
   ],
   chaincodes: [
     {
@@ -53,9 +64,11 @@ const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
       version: "0.0.1",
       lang: "node",
       channel: "my-channel1",
-      directory: "./chaincodes/chaincode-kv-node"
-    }
-  ]
+      directory: "./chaincodes/chaincode-kv-node",
+      privateData: [],
+    },
+  ],
+  hooks: {},
 };
 
 export default class InitGenerator extends Generator {
@@ -65,7 +78,7 @@ export default class InitGenerator extends Generator {
 
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = { ...DEFAULT_FABLO_CONFIG };
-    
+
     const shouldInitWithNodeChaincode = this.args.length && this.args.find((v) => v === "node");
     if (shouldInitWithNodeChaincode) {
       console.log("Creating sample Node.js chaincode");
@@ -75,16 +88,16 @@ export default class InitGenerator extends Generator {
     } else {
       fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
     }
-    
+
     const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
     if (shouldAddFabloRest) {
-      const orgs = fabloConfigJson.orgs.map((org: any) => ({ ...org, tools: { fabloRest: true } }));
+      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
       fabloConfigJson = { ...fabloConfigJson, orgs };
     } else {
-      const orgs = fabloConfigJson.orgs.map((org: any) => ({ ...org, tools: {} }));
+      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: {} }));
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
-    
+
     const shouldUseKubernetes = this.args.length && this.args.find((v) => v === "kubernetes" || v === "k8s");
     const shouldRunInDevMode = this.args.length && this.args.find((v) => v === "dev");
     const global: GlobalJson = {
@@ -93,9 +106,9 @@ export default class InitGenerator extends Generator {
       peerDevMode: !!shouldRunInDevMode,
     };
     fabloConfigJson = { ...fabloConfigJson, global };
-    
+
     this.fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
-    
+
     this.on("end", () => {
       console.log("===========================================================");
       console.log(chalk.bold("Sample config file created! :)"));
