@@ -25,7 +25,7 @@ const DEFAULT_FABLO_CONFIG: FabloConfigJson = {
           groupName: "group1",
           type: "solo",
           instances: 1,
-          prefix: "ord",
+          prefix: "orderer",
         },
       ],
     },
