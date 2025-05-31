@@ -280,7 +280,7 @@ To run Java chaincode in dev mode:
 
 2. Start the network with `fablo up`.
 
-3. Build and run the Java chaincode locally:
+3. Build and run the Java chaincode locally. As a sample you may use the chaincode from the Fablo source code from the `samples/chaincodes/java-chaincode` directory. Ensure a proper relative path is provided in Fablo config.
    ```bash
    cd samples/chaincodes/java-chaincode
    ./run-dev.sh
@@ -300,12 +300,8 @@ For local development and review:
 
 **Worth considering for Java chaincode:**
 - If you want the chaincode running on multiple peers, start multiple instances with different `CORE_PEER_ADDRESS` values
-- Ensure `CORE_CHAINCODE_ID_NAME` matches the chaincode name and version in your Fablo config
+- Ensure `CORE_CHAINCODE_ID_NAME` matches the chaincode name and version in your Fablo config (for instance `chaincode1:0.0.1`)
 - The Java chaincode uses Gradle's ShadowJar plugin to package all dependencies into a single JAR file
-
-
-
-
 
 ## Channel scripts
 
