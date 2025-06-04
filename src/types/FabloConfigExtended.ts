@@ -145,6 +145,11 @@ export interface OrgConfig {
   tools: { fabloRest?: FabloRestConfig; explorer?: ExplorerConfig };
 }
 
+export interface peerChaincodeInstances{
+  containerName: string;
+  peerAddress: string;
+  port: number;
+}
 export interface ChaincodeConfig {
   directory?: string;
   name: string;
@@ -153,6 +158,7 @@ export interface ChaincodeConfig {
   channel: ChannelConfig;
   image?: string;
   port?: number;
+  peerChaincodeInstances?: peerChaincodeInstances[];
   init?: string;
   initRequired?: boolean;
   endorsement?: string;

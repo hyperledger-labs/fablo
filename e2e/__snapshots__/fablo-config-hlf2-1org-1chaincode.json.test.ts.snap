@@ -1680,7 +1680,8 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
     chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "false"
+    printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
     chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" ""
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
@@ -1710,7 +1711,8 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "false"
+      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
@@ -1758,7 +1760,8 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "false"
+      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
@@ -2430,6 +2433,7 @@ chaincodePackage() {
   local CHAINCODE_LANG=$5
   local CHAINCODE_IMAGE=$6
   local CHAINCODE_PORT=$7
+  local TLS_ENABLED=$8
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -2438,17 +2442,18 @@ chaincodePackage() {
   inputLog "CHAINCODE_PORT: $CHAINCODE_PORT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
 
   if [ -n "$CHAINCODE_IMAGE" ]; then
     echo "Packaging chaincode as CCAAS (external builder)..."
 
-    local PACKAGE_DIR="/tmp/ccaas_$CHAINCODE_LABEL"
+    local PACKAGE_DIR="./chaincode-packages/ccaas_$CHAINCODE_LABEL"
     mkdir -p "$PACKAGE_DIR"
 
     echo "{\\"type\\":\\"ccaas\\",\\"label\\":\\"$CHAINCODE_LABEL\\"}" >"$PACKAGE_DIR/metadata.json"
 
     mkdir -p "$PACKAGE_DIR/code"
-    echo "{\\"address\\":\\"$CHAINCODE_NAME:$CHAINCODE_PORT\\",\\"dial_timeout\\":\\"10s\\",\\"tls_required\\":false}" >"$PACKAGE_DIR/code/connection.json"
+    echo "{\\"address\\":\\"$CHAINCODE_NAME:$CHAINCODE_PORT\\",\\"dial_timeout\\":\\"10s\\",\\"tls_required\\":$TLS_ENABLED}" >"$PACKAGE_DIR/code/connection.json"
 
     tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
 
@@ -2459,6 +2464,7 @@ chaincodePackage() {
 
     # clean up
     rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+    rm -rf "$PACKAGE_DIR"
 
     echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
     return
