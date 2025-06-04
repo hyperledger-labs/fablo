@@ -88,36 +88,47 @@ chaincodePackage() {
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
   local CHAINCODE_IMAGE=$6
-  local CHAINCODE_PORT=$7
+  local CONTAINER_PORT=$7
+  local CONTAINER_NAME=$8
+  local TLS_ENABLED=$9
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
-  inputLog "CHAINCODE_PORT: $CHAINCODE_PORT"
+  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
 
   if [ -n "$CHAINCODE_IMAGE" ]; then
     echo "Packaging chaincode as CCAAS (external builder)..."
 
-    local PACKAGE_DIR="/tmp/ccaas_$CHAINCODE_LABEL"
+    local PACKAGE_DIR="./chaincode-packages/ccaas_$CONTAINER_NAME"
     mkdir -p "$PACKAGE_DIR"
 
-    echo "{\"type\":\"ccaas\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
+    echo "{\"type\":\"external\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
 
     mkdir -p "$PACKAGE_DIR/code"
-    echo "{\"address\":\"$CHAINCODE_NAME:$CHAINCODE_PORT\",\"dial_timeout\":\"10s\",\"tls_required\":false}" > "$PACKAGE_DIR/code/connection.json"
+    echo "{\"address\":\"${PEER_ADDRESS}_${CHAINCODE_NAME}:${CONTAINER_PORT}\",\"dial_timeout\":\"10s\",\"tls_required\":$TLS_ENABLED}" > "$PACKAGE_DIR/code/connection.json"
 
     tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
 
     mkdir -p "./chaincode-packages"
     tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
 
-    docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+    if docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"; then
+      echo "Successfully copied chaincode package to $CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+    else
+      echo "Failed to copy chaincode package to container" >&2
+      rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+      rm -rf "$PACKAGE_DIR"
+      return 1
+    fi
 
     # clean up
-    rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" 
+    rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+    rm -rf "$PACKAGE_DIR" 
 
     echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
     return
