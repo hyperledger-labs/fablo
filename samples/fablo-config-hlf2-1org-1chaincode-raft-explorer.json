@@ -1,8 +1,11 @@
 {
-  "$schema": "../docs/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   "global": {
-    "fabricVersion": "2.3.3",
-    "tls": true
+    "fabricVersion": "2.5.12",
+    "tls": true,
+    "tools": {
+      "explorer": true
+    }
   },
   "orgs": [
     {
@@ -29,6 +32,9 @@
       "peer": {
         "instances": 1,
         "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
       }
     }
   ],
@@ -49,9 +55,9 @@
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "ccaas_builder",
+      "lang": "ccaas",
       "channel": "my-channel1",
-      "image": "localhost:5000/fablo-test-case-ccaas:0.0.1"
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
     }
   ],
   "hooks": {

@@ -257,7 +257,6 @@ describe("schema", () => {
     expect(withChaincodeLanguage("java")).toMatchSchema(schema);
     expect(withChaincodeLanguage("node")).toMatchSchema(schema);
     expect(withChaincodeLanguage("golang")).toMatchSchema(schema);
-    expect(withChaincodeLanguage("ccaas")).toMatchSchema(schema);
     expect(withChaincodeLanguage("cobol")).not.toMatchSchema(schema);
   });
 

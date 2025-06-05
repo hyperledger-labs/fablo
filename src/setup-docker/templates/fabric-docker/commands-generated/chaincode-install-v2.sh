@@ -8,9 +8,9 @@
    - global
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
-<% if (chaincode.lang === 'ccaas_builder') { -%>
+<% if (chaincode.lang === "ccaas") { -%>
   <% chaincode.peerChaincodeInstances.forEach((instance) => { -%>
-    chaincodePackage <% -%>
+    chaincodePackageCaas <% -%>
       "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
       "<%= instance.peerAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
@@ -35,9 +35,6 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "<%= chaincode.name %>" <% -%>
     "$version" <% -%>
     "<%= chaincode.lang %>" <% -%>
-    "<%= chaincode.image || '' %>" <% -%>
-    "<%= chaincode.port || '' %>" <% -%>
-    "<%= global.tls %>"
 <% } -%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"

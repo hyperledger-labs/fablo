@@ -64,7 +64,6 @@ export default class SetupDockerGenerator extends Generator {
     // ======= fabric-docker ===========================================================
     this._copyDockerComposeEnv(global, orgs, composeNetworkName);
     this._copyDockerCompose(config);
-    this._copyBuildScripts(config);
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
@@ -175,24 +174,6 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(
       this.templatePath("fabric-docker/docker-compose.yaml"),
       this.destinationPath("fabric-docker/docker-compose.yaml"),
-      config,
-    );
-  }
-
-  _copyBuildScripts(config: FabloConfigExtended): void {
-    this.fs.copyTpl(
-      this.templatePath("fabric-docker/ccaas_builder/bin/build"),
-      this.destinationPath("fabric-docker/ccaas_builder/bin/build"),
-      config,
-    );
-    this.fs.copyTpl(
-      this.templatePath("fabric-docker/ccaas_builder/bin/detect"),
-      this.destinationPath("fabric-docker/ccaas_builder/bin/detect"),
-      config,
-    );
-    this.fs.copyTpl(
-      this.templatePath("fabric-docker/ccaas_builder/bin/release"),
-      this.destinationPath("fabric-docker/ccaas_builder/bin/release"),
       config,
     );
   }

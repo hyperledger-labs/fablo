@@ -1,5 +1,5 @@
 import * as Generator from "yeoman-generator";
-// import { Validator as SchemaValidator } from "jsonschema";
+import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
 import * as config from "../config";
 import parseFabloConfig from "../utils/parseFabloConfig";
@@ -91,7 +91,7 @@ class ValidateGenerator extends Generator {
 
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateFabricVersion(networkConfig.global);
-    // this._validateJsonSchema(networkConfig);
+    this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
@@ -169,25 +169,25 @@ class ValidateGenerator extends Generator {
     }
   }
 
-  // _validateJsonSchema(configToValidate: FabloConfigJson) {
-  //   const validator = new SchemaValidator();
-  //   const results = validator.validate(configToValidate, config.schema);
-  //   results.errors.forEach((result) => {
-  //     const msg = `${result.property} : ${result.message}`;
-  //     const objectToEmit = {
-  //       category: validationCategories.VALIDATION,
-  //       message: msg,
-  //     };
-  //     this.emit(validationErrorType.ERROR, objectToEmit);
-  //   });
-  //   if (results.errors.length > 0) {
-  //     const objectToEmit = {
-  //       category: validationCategories.CRITICAL,
-  //       message: "Json schema validation failed!",
-  //     };
-  //     this.emit(validationErrorType.CRITICAL, objectToEmit);
-  //   }
-  // }
+  _validateJsonSchema(configToValidate: FabloConfigJson) {
+    const validator = new SchemaValidator();
+    const results = validator.validate(configToValidate, config.schema);
+    results.errors.forEach((result) => {
+      const msg = `${result.property} : ${result.message}`;
+      const objectToEmit = {
+        category: validationCategories.VALIDATION,
+        message: msg,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    });
+    if (results.errors.length > 0) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: "Json schema validation failed!",
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    }
+  }
 
   _printIfNotEmpty(messages: Message[], caption: string) {
     if (messages.length > 0) {

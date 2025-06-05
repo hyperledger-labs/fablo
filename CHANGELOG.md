@@ -1,3 +1,15 @@
+## 2.3.0
+
+### Features
+* Hardcode fablo config inside init generator
+  [#554](https://github.com/hyperledger-labs/fablo/pull/554)
+* Publish sample chaincode Docker image
+  [#555](https://github.com/hyperledger-labs/fablo/pull/555)
+* Support installing Chaincode from Docker image using CCAAS
+  [#550](https://github.com/hyperledger-labs/fablo/pull/550)
+
+
+
 ## 2.2.0
 
 ### Features
