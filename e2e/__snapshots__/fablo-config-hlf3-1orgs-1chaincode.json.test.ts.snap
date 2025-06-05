@@ -1585,36 +1585,27 @@ chaincodeInvoke() {
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi
-  cli=""
-  peer_addresses=""
 
-  peer_certs=""
-
-  if [[ "$1" == *"peer0.org1.example.com"* ]]; then
+  # Cli needs to be from the same org as the first peer
+  if [[ "$1" == "peer0.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer0.org1.example.com:7041"
-
-    peer_certs="$peer_certs,crypto/peers/peer0.org1.example.com/tls/ca.crt"
-
   fi
-  if [[ "$1" == *"peer1.org1.example.com"* ]]; then
+  if [[ "$1" == "peer1.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer1.org1.example.com:7042"
-
-    peer_certs="$peer_certs,crypto/peers/peer1.org1.example.com/tls/ca.crt"
-
   fi
-  if [ -z "$peer_addresses" ]; then
-    echo "Unknown peers: $1"
-    exit 1
-  fi
+
+  peer_addresses="$1"
+  peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
+  peer_addresses="\${peer_addresses//peer1.org1.example.com/peer1.org1.example.com:7042}"
+
+  peer_certs="$1"
+  peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
+  peer_certs="\${peer_certs//peer1.org1.example.com/crypto/peers/peer1.org1.example.com/tls/ca.crt}"
 
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
-
-  peerChaincodeInvokeTls "$cli" "\${peer_addresses:1}" "$2" "$3" "$4" "$5" "\${peer_certs:1}" "$ca_cert"
-
+  peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 "
 `;
@@ -1627,8 +1618,6 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 set -eu
 
 channelQuery() {
-  echo "-> Channel query: " + "$@"
-
   if [ "$#" -eq 1 ]; then
     printChannelsHelp
 
@@ -1768,8 +1757,7 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
     chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "true"
-    printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -1799,8 +1787,7 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "true"
-      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -1836,8 +1823,7 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "" "" "true"
-      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -2222,6 +2208,8 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2271,6 +2259,8 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2681,46 +2671,13 @@ chaincodePackage() {
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
-  local CHAINCODE_IMAGE=$6
-  local CHAINCODE_PORT=$7
-  local TLS_ENABLED=$8
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
-  inputLog "CHAINCODE_PORT: $CHAINCODE_PORT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "TLS_ENABLED: $TLS_ENABLED"
 
-  if [ -n "$CHAINCODE_IMAGE" ]; then
-    echo "Packaging chaincode as CCAAS (external builder)..."
-
-    local PACKAGE_DIR="./chaincode-packages/ccaas_$CHAINCODE_LABEL"
-    mkdir -p "$PACKAGE_DIR"
-
-    echo "{\\"type\\":\\"ccaas\\",\\"label\\":\\"$CHAINCODE_LABEL\\"}" >"$PACKAGE_DIR/metadata.json"
-
-    mkdir -p "$PACKAGE_DIR/code"
-    echo "{\\"address\\":\\"$CHAINCODE_NAME:$CHAINCODE_PORT\\",\\"dial_timeout\\":\\"10s\\",\\"tls_required\\":$TLS_ENABLED}" >"$PACKAGE_DIR/code/connection.json"
-
-    tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
-
-    mkdir -p "./chaincode-packages"
-    tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
-
-    docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-
-    # clean up
-    rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-    rm -rf "$PACKAGE_DIR"
-
-    echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-    return
-  fi
-
-  # Default to using the local chaincode directory
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode package \\
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \\
     --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \\
@@ -2729,6 +2686,48 @@ chaincodePackage() {
 
   # set package owner as current (host) user to fix permission issues
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+}
+
+chaincodePackageCaas() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LANG=$5
+  local CHAINCODE_IMAGE=$6
+  local CONTAINER_PORT=$7
+  local CONTAINER_NAME=$8
+  local TLS_ENABLED=$9
+
+  echo "Packaging chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
+  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
+
+  echo "Packaging chaincode as CCAAS (external builder)..."
+
+  local PACKAGE_DIR="./chaincode-packages/ccaas_$CONTAINER_NAME"
+
+  mkdir -p "$PACKAGE_DIR"
+  echo "{\\"type\\":\\"$CHAINCODE_LANG\\",\\"label\\":\\"$CHAINCODE_LABEL\\"}" >"$PACKAGE_DIR/metadata.json"
+
+  mkdir -p "$PACKAGE_DIR/code"
+  echo "{\\"address\\":\\"\${PEER_ADDRESS}_\${CHAINCODE_NAME}:\${CONTAINER_PORT}\\",\\"dial_timeout\\":\\"10s\\",\\"tls_required\\":$TLS_ENABLED}" >"$PACKAGE_DIR/code/connection.json"
+
+  tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
+  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+
+  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+
+  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm -rf "$PACKAGE_DIR"
+
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
 chaincodeInstall() {

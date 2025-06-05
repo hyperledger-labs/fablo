@@ -5,23 +5,11 @@ set -e
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
-REGISTRY_PORT=5000
-REGISTRY_NAME="fablo-test-case-ccaas"
-CHAINCODE_IMAGE="localhost:$REGISTRY_PORT/fablo-test-case-ccaas:0.0.1"
 
 export FABLO_HOME
 
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json"
 CHAINCODE_SRC="$FABLO_HOME/samples/chaincodes/chaincode-kv-node"
-
-echo "Starting local registry on port $REGISTRY_PORT"
-docker run -d -p "$REGISTRY_PORT:$REGISTRY_PORT" --restart=always --name $REGISTRY_NAME registry:2 || true
-
-echo "Building CCAAS chaincode image..."
-docker build -t "$CHAINCODE_IMAGE" "$CHAINCODE_SRC"
-
-echo "Pushing chaincode image to local registry..."
-docker push "$CHAINCODE_IMAGE"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
@@ -38,7 +26,6 @@ networkDown() {
   sleep 2
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
-  docker rm -f "$REGISTRY_NAME" || true
 }
 
 waitForContainer() {
@@ -71,7 +58,7 @@ waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. T
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
-waitForContainer "chaincode1-peer0.org1.example.com" "Starting chaincode container from image"
+waitForContainer "peer0.org1.example.com_chaincode1" "Bootstrap process completed"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"

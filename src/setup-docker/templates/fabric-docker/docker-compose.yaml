@@ -1,23 +1,7 @@
 networks:
   basic:
 
-services:
-<% chaincodes.forEach(function(chaincode) { if (chaincode.lang === 'ccaas' || chaincode.image) { %>
-  <% chaincode.peerChaincodeInstances.forEach(function(instance) { %>
-  <%= instance.containerName %>:
-    container_name: <%= instance.containerName %>
-    image: <%= chaincode.image %>
-    pull_policy: always
-    environment:
-      - CHAINCODE_SERVER_ADDRESS=0.0.0.0:<%= instance.port %>
-      - CHAINCODE_ID=<%= chaincode.name %>:<%= chaincode.version %>
-    ports:
-      - <%= instance.port %>:7052
-    networks:
-      - basic  
-  <% }) %>
-<% } }) %>
- 
+services: 
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
@@ -259,7 +243,6 @@ services:
     container_name: <%= peer.address %>
     image: hyperledger/fabric-peer:${FABRIC_VERSION}
     environment:
-      - CORE_CHAINCODE_EXTERNALBUILDERS=[{"name":"external","path":"/opt/hyperledger/ccaas_builder","propagateEnvironment":["CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG"]}]
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_ID=<%= peer.address %>
       - CORE_PEER_ADDRESS=<%= peer.fullAddress %>
@@ -303,7 +286,7 @@ services:
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
       # ccaas builder configuration
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG="{\"peername\":\"<%= peer.address %>\"}"
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"<%= peer.name %><%= org.name %>"}
       <%_ } _%>
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start <%= global.peerDevMode ? '--peer-chaincodedev=true' : '' %>
@@ -324,7 +307,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/peers/<%= peer.address %>/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-      - ./ccaas_builder:/opt/hyperledger/ccaas_builder
     networks:
       - basic
   <%_ if(peer.db.type==="CouchDb") { _%>
@@ -391,3 +373,18 @@ services:
     networks:
       - basic
   <%_ } _%>
+<% chaincodes.forEach(function(chaincode) { if (chaincode.lang === 'ccaas' || chaincode.image) { %>
+  <% chaincode.peerChaincodeInstances.forEach(function(instance) { %>
+  <%= instance.containerName %>:
+    container_name: <%= instance.containerName %>
+    image: <%= chaincode.image %>
+    pull_policy: always
+    environment:
+      - CHAINCODE_SERVER_ADDRESS=0.0.0.0:<%= instance.port %>
+      - CHAINCODE_ID=<%= chaincode.name %>:<%= chaincode.version %>
+    ports:
+      - <%= instance.port %>:7052
+    networks:
+      - basic  
+  <% }) %>
+<% } }) %>

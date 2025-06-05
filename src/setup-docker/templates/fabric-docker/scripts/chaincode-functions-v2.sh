@@ -87,54 +87,13 @@ chaincodePackage() {
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
-  local CHAINCODE_IMAGE=$6
-  local CONTAINER_PORT=$7
-  local CONTAINER_NAME=$8
-  local TLS_ENABLED=$9
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
-  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
-  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
-  inputLog "TLS_ENABLED: $TLS_ENABLED"
 
-  if [ -n "$CHAINCODE_IMAGE" ]; then
-    echo "Packaging chaincode as CCAAS (external builder)..."
-
-    local PACKAGE_DIR="./chaincode-packages/ccaas_$CONTAINER_NAME"
-    mkdir -p "$PACKAGE_DIR"
-
-    echo "{\"type\":\"external\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
-
-    mkdir -p "$PACKAGE_DIR/code"
-    echo "{\"address\":\"${PEER_ADDRESS}_${CHAINCODE_NAME}:${CONTAINER_PORT}\",\"dial_timeout\":\"10s\",\"tls_required\":$TLS_ENABLED}" > "$PACKAGE_DIR/code/connection.json"
-
-    tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
-
-    mkdir -p "./chaincode-packages"
-    tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
-
-    if docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"; then
-      echo "Successfully copied chaincode package to $CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-    else
-      echo "Failed to copy chaincode package to container" >&2
-      rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-      rm -rf "$PACKAGE_DIR"
-      return 1
-    fi
-
-    # clean up
-    rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-    rm -rf "$PACKAGE_DIR" 
-
-    echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-    return
-  fi
-
-  # Default to using the local chaincode directory
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode package \
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
     --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \
@@ -143,6 +102,48 @@ chaincodePackage() {
 
   # set package owner as current (host) user to fix permission issues
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+}
+
+chaincodePackageCaas() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LANG=$5
+  local CHAINCODE_IMAGE=$6
+  local CONTAINER_PORT=$7
+  local CONTAINER_NAME=$8
+  local TLS_ENABLED=$9
+
+  echo "Packaging chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
+  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
+  
+  echo "Packaging chaincode as CCAAS (external builder)..."
+  
+  local PACKAGE_DIR="./chaincode-packages/ccaas_$CONTAINER_NAME"
+  
+  mkdir -p "$PACKAGE_DIR"
+  echo "{\"type\":\"$CHAINCODE_LANG\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
+
+  mkdir -p "$PACKAGE_DIR/code"
+  echo "{\"address\":\"${PEER_ADDRESS}_${CHAINCODE_NAME}:${CONTAINER_PORT}\",\"dial_timeout\":\"10s\",\"tls_required\":$TLS_ENABLED}" > "$PACKAGE_DIR/code/connection.json"
+
+  tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
+  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+
+  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz";
+
+  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm -rf "$PACKAGE_DIR" 
+
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
 chaincodeInstall() {
