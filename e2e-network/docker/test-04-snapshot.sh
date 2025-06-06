@@ -58,7 +58,7 @@ waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. T
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
-waitForContainer "peer0.org1.example.com_chaincode1" "Bootstrap process completed"
+# waitForContainer "chaincode1_peer0.org1.example.com" "Bootstrap process completed"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"

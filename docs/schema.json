@@ -418,7 +418,7 @@
           "lang",
           "channel"
         ],
-        "oneOf": [
+        "allOf": [
           {
             "if": {
               "properties": { "lang": { "const": "ccaas"}}
