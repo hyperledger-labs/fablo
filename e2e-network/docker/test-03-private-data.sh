@@ -89,18 +89,11 @@ expectInvoke "peer0.org2.example.com" "my-channel1" "or-policy-chaincode" \
   'tx creator does not have write access permission on privatedata in chaincodeName:or-policy-chaincode collectionName: org1-collection' \
   '{"message":"Q29ycnVwdGVkIG1lc3NhZ2U="}'
 
-# TODO to be added in https://github.com/hyperledger-labs/fablo/issues/466
-#expectInvoke "peer0.org1.example.com,peer0.org2.example.com" "my-channel1" "and-policy-chaincode" \
-#  '{"Args":["KVContract:putPrivateMessage", "both-orgs-collection"]}' \
-#  '{\"success\":\"OK\"}' \
-#  '{"message":"RG9udCBjaGFuZ2UgbWUgcGx6"}'
-#expectInvoke "peer0.org2.example.com,peer0.org1.example.com" "my-channel1" "and-policy-chaincode" \
-#  '{"Args":["KVContract:getPrivateMessage", "both-orgs-collection"]}' \
-#  'tx creator does not have read access permission on privatedata in chaincodeName:and-policy-chaincode collectionName: org1-collection'
-#expectInvoke "peer0.org2.example.com,peer0.org1.example.com" "my-channel1" "and-policy-chaincode" \
-#  '{"Args":["KVContract:putPrivateMessage", "both-orgs-collection"]}' \
-#  '{\"success\":\"OK\"}' \
-#  '{"message":"QW5kIGFub3RoZXIgb25l"}'
-#expectInvoke "peer0.org1.example.com,peer0.org2.example.com" "my-channel1" "and-policy-chaincode" \
-#  '{"Args":["KVContract:getPrivateMessage", "both-orgs-collection"]}' \
-#  'Error: could not assemble transaction: ProposalResponsePayloads do not match'
+# Org1 and Org2: Test chaincode with AND endorsement policy
+expectInvoke "peer0.org2.example.com,peer0.org1.example.com" "my-channel1" "and-policy-chaincode" \
+ '{"Args":["KVContract:putPrivateMessage", "both-orgs-collection"]}' \
+ '{\"success\":\"OK\"}' \
+ '{"message":"QW5kIGFub3RoZXIgb25l"}'
+expectInvoke "peer0.org1.example.com,peer0.org2.example.com" "my-channel1" "and-policy-chaincode" \
+ '{"Args":["KVContract:getPrivateMessage", "both-orgs-collection"]}' \
+ '{\"success\":\"And another one\"}'
