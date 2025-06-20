@@ -15,16 +15,16 @@ Legend:
 
 | Feature                          | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |----------------------------------|-----------|-----------|--------|-------------|----------------------|
-| Solo Consensus                   | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
-| RAFT Consensus                   | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
-| BFT Consensus                    | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
-| TLS                              | ❔        | ❔        | ❔     | ❔          |                      |
-| Orderer Groups                   | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
-| Peer DB - LevelDB                | ❔        | ❔        | ❔     | ❔          |                      |
-| Peer DB - CouchDB                | ❔        | ❔        | ❔     | ❔          |                      |
-| CA DB - SQLite                   | ❔        | ❔        | ❔     | ❔          |                      |
-| CA DB - Postgres                 | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
-| CA DB - MySQL                    | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
+| Solo Consensus                   | ✅        | ❌        | ✅     | ✅          |                      |
+| RAFT Consensus                   | ✅        | ✅        | ✅     | ✅          |                      |
+| BFT Consensus                    | ❌        | ✅        | ✅     | ✅          | [559](https://github.com/hyperledger-labs/fablo/issues/559)           |
+| TLS                              | ✅        | ✅        | ✅     | ✅          |                      |
+| Orderer Groups                   | ✅        | ❌        | ✅     | ✅          | [560](https://github.com/hyperledger-labs/fablo/issues/560)           |
+| Peer DB - LevelDB                | ✅        | ✅        | ✅     | ✅          |                      |
+| Peer DB - CouchDB                | ✅        | ✅        | ✅     | ✅          |                      |
+| CA DB - SQLite                   | ✅        | ✅        | ✅     | ✅          |                      |
+| CA DB - Postgres                 | ✅        | ✅        | ✅     | ✅          |                      |
+| CA DB - MySQL                    | ❌        | ❌        | ❌     | ✅          | [561](https://github.com/hyperledger-labs/fablo/issues/561)           |
 
 ---
 
