@@ -78,9 +78,9 @@ Legend:
 
 | Feature               | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |------------------------|-----------|-----------|--------|-------------|----------------------|
-| Create snapshot        | ❔        | ❔        | ❔     | ❔          |                      |
-| Restore snapshot       | ❔        | ❔        | ❔     | ❔          |                      |
-| Post-restore hook      | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
+| Create snapshot        | ✅        | ✅        | ✅     | ✅          |                      |
+| Restore snapshot       | ✅        | ✅        | ✅     | ✅          |                      |
+| Post-restore hook      | ❔        | ❔        | ❔     | ❔          | [Add post-start hooks](https://github.com/hyperledger-labs/fablo/issues/111)           |
 
 ---
 
