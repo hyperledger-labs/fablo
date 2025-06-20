@@ -91,6 +91,7 @@ class ValidateGenerator extends Generator {
 
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateFabricVersion(networkConfig.global);
+    networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateOrgs(networkConfig.orgs);
@@ -129,6 +130,16 @@ class ValidateGenerator extends Generator {
       const objectToEmit = {
         category: validationCategories.CRITICAL,
         message: `Fabric ${global.fabricVersion} is not supported. Fablo supports only Fabric starting from 2.0.0.`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    }
+  }
+
+  private _validateCcaaTLS(global: GlobalJson, chaincode: ChaincodeJson) {
+    if (chaincode.lang === "ccaas" && global.tls) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `Chaincode '${chaincode.name}' is using CCAAS, but TLS is enabled in the network. CCAAS does not support TLS yet.`,
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     }

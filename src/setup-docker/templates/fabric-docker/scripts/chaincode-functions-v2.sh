@@ -104,7 +104,7 @@ chaincodePackage() {
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
-chaincodePackageCaas() {
+chaincodePackageCCaaS() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
@@ -133,8 +133,33 @@ chaincodePackageCaas() {
   echo "{\"type\":\"$CHAINCODE_LANG\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
 
   mkdir -p "$PACKAGE_DIR/code"
-  echo "{\"address\":\"${PEER_ADDRESS}_${CHAINCODE_NAME}:${CONTAINER_PORT}\",\"dial_timeout\":\"10s\",\"tls_required\":$TLS_ENABLED}" > "$PACKAGE_DIR/code/connection.json"
 
+  if [ "$TLS_ENABLED" = true ]; then
+    local ROOT_CERT=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/peer.crt | awk '{printf "%s\\n", $0}')
+    local SERVER_CERT=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/client.crt | awk '{printf "%s\\n", $0}')
+    local SERVER_KEY=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/client.key | awk '{printf "%s\\n", $0}')
+
+    cat <<EOF > "$PACKAGE_DIR/code/connection.json"
+{
+  "address": "${CONTAINER_NAME}:${CONTAINER_PORT}",
+  "domain": "${CONTAINER_NAME}",
+  "dial_timeout": "10s",
+  "tls_required": $TLS_ENABLED,
+  "client_auth_required": true,
+  "client_cert": "$SERVER_CERT",
+  "client_key": "$SERVER_KEY",
+  "root_cert": "$ROOT_CERT"
+}
+EOF
+  else
+    cat <<EOF > "$PACKAGE_DIR/code/connection.json"
+{
+  "address": "${CONTAINER_NAME}:${CONTAINER_PORT}",
+  "dial_timeout": "10s",
+  "tls_required": $TLS_ENABLED,
+}
+EOF
+  fi
   tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
   tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
 
@@ -169,6 +194,54 @@ chaincodeInstall() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
+restartChaincodeContainerWithCorrectId() {
+  local PEER_ADDRESS="$1"
+  local CHAINCODE_NAME="$2"
+  local CHAINCODE_LABEL="$3"
+  local CC_PACKAGE_ID="$4"
+  local CHAINCODE_IMAGE="$5"
+
+  local PACKAGE_HASH="${CC_PACKAGE_ID#*:}"
+  local CONTAINER_NAME="${CHAINCODE_NAME}_${PEER_ADDRESS%%:*}"
+
+  echo "🌀 Restarting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
+
+  local TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/ccaas/$CONTAINER_NAME/tls"
+  local PORT_MAP="7052:7052"
+  
+  local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
+
+
+  docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1 || true
+
+  docker run -d \
+    --name "$CONTAINER_NAME" \
+    -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \
+    -e CHAINCODE_SERVER_ADDRESS=0.0.0:7052 \
+    -e DEBUG=true \
+    -e CORE_CHAINCODE_ID_NAME="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
+    -e CHAINCODE_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
+    -e CORE_CHAINCODE_LOGGING_LEVEL=info \
+    -e CORE_CHAINCODE_LOGGING_SHIM=info \
+    -e CORE_PEER_TLS_ENABLED=true \
+    -e CORE_TLS_CLIENT_KEY_PATH=/etc/hyperledger/fabric/client.key \
+    -e CORE_TLS_CLIENT_CERT_PATH=/etc/hyperledger/fabric/client.crt \
+    -e CORE_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client_pem.key \
+    -e CORE_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client_pem.crt \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
+    -e CORE_PEER_LOCALMSPID=Org1MSP \
+    -e CORE_CHAINCODE_TLS_CERT_FILE=/etc/hyperledger/fabric/client.crt \
+    -e CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key \
+    -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
+    -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
+    -v "$TLS_PATH/client_pem.key:/etc/hyperledger/fabric/client_pem.key" \
+    -v "$TLS_PATH/client_pem.crt:/etc/hyperledger/fabric/client_pem.crt" \
+    -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
+    -p "$PORT_MAP" \
+    --network "$NETWORK" \
+    "$CHAINCODE_IMAGE"
+}
+
 chaincodeApprove() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
@@ -181,6 +254,7 @@ chaincodeApprove() {
   local INIT_REQUIRED=$8
   local CA_CERT=$9
   local COLLECTIONS_CONFIG=${10}
+  local CHAINCODE_LANG=${11}
 
   echo "Approving chaincode $CHAINCODE_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -193,6 +267,7 @@ chaincodeApprove() {
   inputLog "INIT_REQUIRED: $INIT_REQUIRED"
   inputLog "CA_CERT: $CA_CERT"
   inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
@@ -227,6 +302,10 @@ chaincodeApprove() {
     CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
   fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
+  if [ "$CHAINCODE_LANG" = "ccaas" ]; then
+    local CHAINCODE_IMAGE=${12}
+    restartChaincodeContainerWithCorrectId "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_LABEL" "$CC_PACKAGE_ID" "$CHAINCODE_IMAGE"
+  fi
 
   local QUERYCOMMITTED_RESPONSE
   local SEQUENCE

@@ -19,4 +19,4 @@
 | Java chaincode            |       no        |     yes     |     no     |             no               |         no         |          no           |
 | Go chaincode              |       no        |     no      |     no     |             no               |         no         |          no           |
 | Tools                     | channel scripts | Fablo REST  |     -      |  Fablo REST, Explorer, CCAAS |         -          |          -            |
-| Other Fablo commands      |   init, reset   | stop, start |     -      | snapshot, prune, restore     |         -          |          -            |
+| Other Fablo commands      |   init, reset   | stop, start |     -      |   snapshot, prune, restore   |         -          |          -            |

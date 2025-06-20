@@ -12,6 +12,19 @@ generateArtifacts() {
       "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 
   <% }) -%>
+  <% chaincodes.forEach((chaincode) => {
+    if (chaincode.lang === "ccaas" && global.tls === true) {
+      chaincode.channel.orgs.forEach((org) => {
+        org.peers.forEach((peer) => { %>
+  printItalics "Generating certs for CCaaS '<%= chaincode.name %>' on <%= peer.address %>" "U1F511"
+  certsGenerateCCaaS <% -%>
+    "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" <% -%>
+    "<%= chaincode.name %>_<%= peer.address %>" <% -%>
+    "<%= org.domain %>" <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "<%= peer.address %>"
+  <% }); }); } }); %>
+
   <%_ ordererGroups.forEach((ordererGroup) => { _%>
 
   <% if(!global.capabilities.isV3) {%> 
