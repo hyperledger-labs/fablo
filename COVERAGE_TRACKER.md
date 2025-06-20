@@ -65,12 +65,13 @@ Legend:
 
 | Feature                                | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |----------------------------------------|-----------|-----------|--------|-------------|----------------------|
-| `generate`                             | ❔        | ❔        | ❔     | ❔          |                      |
-| `up`, `start`, `stop`, `down`, `reset`, `recreate` | ❔ | ❔ | ❔ | ❔  |                      |
-| `validate`, `extendConfig`             | ❔        | ❔        | ❔     | ❔          |                      |
-| `update`, `version`                    | ❔        | ❔        | ❔     | ❔          |                      |
-| `init` (node, rest, dev)               | ❔        | ❔        | ❔     | ❔          |                      |
-| Other init options                     | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
+| `generate`                             | ✅        | ✅        | ✅     | ✅          |                      |
+| `up`, `start`, `stop`, `down`, `reset`, `recreate` | ✅ | ✅ | ✅ | ✅  |                     |
+| `validate`                            | ✅       | ✅        | ✅     | ✅          |                      |
+| `extendConfig`                       | ✅        | ✅          | ✅      | ❌             |                      |
+| `version`                    | ✅        | ✅        | ✅     | ✅          |                      |
+| `init` (node, rest, dev)               | ✅        | ✅        | ✅     | ✅          |                      |
+| Other init options                     | ❔        | ❔        | ❔     | ❔          | [feature- add CLI options to init command ](https://github.com/hyperledger-labs/fablo/issues/444)           |
 
 ---
 
