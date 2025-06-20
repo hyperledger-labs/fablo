@@ -10,7 +10,7 @@
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 <% if (chaincode.lang === "ccaas") { -%>
   <% chaincode.peerChaincodeInstances.forEach((instance) => { -%>
-    chaincodePackageCaas <% -%>
+    chaincodePackageCCaaS <% -%>
       "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
       "<%= instance.peerAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
@@ -56,7 +56,9 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "<%- chaincode.endorsement || '' %>" <% -%>
     "<%= `${chaincode.initRequired}` %>" <% -%>
     "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
-    "<%= chaincode.privateDataConfigFile || '' %>"
+    "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+    "<%= chaincode.lang === 'ccaas' ? chaincode.image : '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
 chaincodeCommit <% -%>

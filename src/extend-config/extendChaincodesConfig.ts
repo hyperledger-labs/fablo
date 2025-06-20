@@ -61,9 +61,10 @@ const extendChaincodesConfig = (
     const peerChaincodeInstances = !chaincode.image ? [] : channel.orgs.flatMap((org) =>
         org.peers.map((peer) => {
           return {
-            containerName: `${peer.address}_${chaincode.name}`,
+            containerName: `${chaincode.name}_${peer.address}`,
             peerAddress: peer.address,
             port: portCounter++,
+            orgDomain: org.domain
           };
         })
       );
