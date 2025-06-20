@@ -9,7 +9,6 @@
   [#550](https://github.com/hyperledger-labs/fablo/pull/550)
 
 
-
 ## 2.2.0
 
 ### Features

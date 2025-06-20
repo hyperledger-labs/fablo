@@ -2358,7 +2358,6 @@ certsGenerateCCaaS() {
   cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
   echo "TLS certs generated for \${CONTAINER_NAME} at \${OUTPUT_PATH}"
 }
-
 genesisBlockCreate() {
   local CONTAINER_NAME=genesisBlockCreate
 
@@ -2795,7 +2794,6 @@ EOF
 
   echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
-
 chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
@@ -2865,7 +2863,6 @@ restartChaincodeContainerWithCorrectId() {
     --network "$NETWORK" \\
     "$CHAINCODE_IMAGE"
 }
-
 chaincodeApprove() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
