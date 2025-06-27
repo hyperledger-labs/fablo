@@ -28,6 +28,7 @@ describe("init", () => {
     expect(commandResult.output).toContain("Sample config file created! :)");
     expect(commands.getFiles()).toEqual([
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/.nvmrc",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/Dockerfile",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
@@ -45,6 +46,7 @@ describe("init", () => {
     expect(commandResult.output).toContain("Sample config file created! :)");
     expect(commands.getFiles()).toEqual([
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/.nvmrc",
+      "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/Dockerfile",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/index.js",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",

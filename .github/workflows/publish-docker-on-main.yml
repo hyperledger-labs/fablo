@@ -31,3 +31,12 @@ jobs:
           yamllint -v
           npm install
           ./fablo-build.sh --push
+      
+      - name: Build and push node chaincode
+        run: |
+          FABLO_VERSION=$(cat package.json | jq -r '.version')
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag "ghcr.io/fablo-io/fablo-kv-node-chaincode-sample:$FABLO_VERSION" \
+            --push \
+            samples/chaincodes/chaincode-kv-node
