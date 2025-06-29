@@ -80,7 +80,7 @@ Legend:
 |------------------------|-----------|-----------|--------|-------------|----------------------|
 | Create snapshot        | ✅        | ✅        | ✅     | ✅          |                      |
 | Restore snapshot       | ✅        | ✅        | ✅     | ✅          |                      |
-| Post-restore hook      | ❔        | ❔        | ❔     | ❔          | [Add post-start hooks](https://github.com/hyperledger-labs/fablo/issues/111)           |
+| Post-start hook        | ❔        | ❔        | ❔     | ❔          | [Add post-start hooks](https://github.com/hyperledger-labs/fablo/issues/111)           |
 
 ---
 
