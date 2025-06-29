@@ -44,7 +44,7 @@ Fabric v3 = 3.0.0
 |-----------------------------------|-----------|-----------|--------|-------------|----------------------|
 | Node                              | ✅        | ✅        | ✅     | ❔          |                      |
 | Go                                | ❔        | ❔        | ❔     | ❔          |                      |
-| Java                              | ✅        | ✅        | ✅     | ❔          | [#TODO](#)           |
+| Java                              | ✅        | ✅        | ✅     | ❔          |                      |
 | Chaincode-as-a-Service (CCaaS)    | ❌        | ❌        | ✅     | ❔          |                      |
 | Endorsement Policies              | ✅        | ✅        | ✅     | ❔          |                      |
 | Multi-org Endorsements            | ✅        | ✅        | ✅     | ❔          |                      |
@@ -59,7 +59,7 @@ Fabric v3 = 3.0.0
 | Feature       | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |---------------|-----------|-----------|--------|-------------|----------------------|
 | Fablo REST    | ✅        | ✅        | ✅     | ❔          |                      |
-| Explorer      | ✅        | ✅        | ✅     | ❔          | [#TODO](#)           |
+| Explorer      | ✅        | ❌        | ✅     | ❔          |                      |
 
 ---
 
