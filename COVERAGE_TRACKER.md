@@ -88,8 +88,8 @@ Legend:
 
 | Feature                | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |------------------------|-----------|-----------|--------|-------------|----------------------|
-| Peer dev mode          | ❔        | ❔        | ❔     | ❔          |                      |
-| Connection profiles    | ❔        | ❔        | ❔     | ❔          |                      |
-| Gateway client         | ❔        | ❔        | ❔     | ❔          |                      |
-| Hooks: post-generate   | ❔        | ❔        | ❔     | ❔          |                      |
-| JSON/YAML support      | ❔        | ❔        | ❔     | ❔          |                      |
+| Peer dev mode          |✅         |✅         |✅      |✅           |                      |
+| Connection profiles    |✅         |✅         |✅      |✅           |                      |
+| Gateway client         | ❔        | ❔        | ❔     | ❔          |[Adds gateway option to init](https://github.com/hyperledger-labs/fablo/pull/544)                      |
+| Hooks: post-generate   |✅         |✅         |✅      |✅           |                      |
+| JSON/YAML support      |✅         |✅         |✅      |✅           |                      |
