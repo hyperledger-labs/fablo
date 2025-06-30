@@ -4,6 +4,7 @@ import extendConfig from "../extend-config/extendConfig";
 import { generateMermaidDiagram } from "./generateMermaidDiagram";
 import { FabloConfigExtended } from "../types/FabloConfigExtended";
 import * as fs from "fs";
+import * as path from "path";
 
 class ExportNetworkTopologyGenerator extends Generator {
   private fabloConfigPath: string;
@@ -15,7 +16,7 @@ class ExportNetworkTopologyGenerator extends Generator {
       type: String,
       optional: true,
       description: "Fablo config file path",
-      default: "fablo-config.json",
+      default: "/network/fablo-config.json",
     });
     this.argument("outputFile", {
       type: String,
@@ -26,24 +27,36 @@ class ExportNetworkTopologyGenerator extends Generator {
 
     const arg0 = this.options.fabloConfig;
     const arg1 = this.options.outputFile;
-    if (arg1 && arg1 !== "network-topology.mmd") {
-      this.fabloConfigPath = arg0;
-      this.outputFile = arg1;
-    } else if (arg0 && (arg0.endsWith(".json") || arg0.endsWith(".yaml") || arg0.endsWith(".yml"))) {
-      this.fabloConfigPath = arg0;
-      this.outputFile = "network-topology.mmd";
-    } else {
-      this.fabloConfigPath = "fablo-config.json";
-      this.outputFile = arg0 || "network-topology.mmd";
-    }
+
+    this.fabloConfigPath = path.isAbsolute(arg0) ? arg0 : path.resolve(process.cwd(), arg0);
+    this.outputFile = path.isAbsolute(arg1) ? arg1 : path.resolve(process.cwd(), arg1);
   }
 
   async writing(): Promise<void> {
-    const json = parseFabloConfig(this.fs.read(this.fabloConfigPath));
-    const configExtended: FabloConfigExtended = extendConfig(json);
-    const mermaidDiagram = generateMermaidDiagram(configExtended);
-    fs.writeFileSync(this.outputFile, mermaidDiagram);
-    this.log(`✅ Network topology exported to ${this.outputFile}`);
+    try {
+      if (!fs.existsSync(this.fabloConfigPath)) {
+        throw new Error(`Configuration file not found: ${this.fabloConfigPath}`);
+      }
+
+      const configContent = this.fs.read(this.fabloConfigPath);
+      if (!configContent) {
+        throw new Error(`Failed to read configuration file: ${this.fabloConfigPath}`);
+      }
+
+      const json = parseFabloConfig(configContent);
+      const configExtended: FabloConfigExtended = extendConfig(json);
+      const mermaidDiagram = generateMermaidDiagram(configExtended);
+      const outputDir = path.dirname(this.outputFile);
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      fs.writeFileSync(this.outputFile, mermaidDiagram);
+      this.log(`✅ Network topology exported to ${this.outputFile}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+      this.log(`❌ Error: ${errorMessage}`);
+      throw err;
+    }
   }
 }
 
