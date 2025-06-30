@@ -60,18 +60,24 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
     });
   }
 
-  diagram += "\n  %% Channel as a regular node, not a subgraph\n";
   if (Array.isArray(config.channels)) {
     config.channels.forEach((channel) => {
       const channelId = safeId(`Channel_${channel.name}`);
-      diagram += `  ${channelId}[Channel: ${channel.name}]\n`;
-    });
-  }
-
-  if (Array.isArray(config.chaincodes)) {
-    config.chaincodes.forEach((cc) => {
-      const ccId = safeId(`Chaincode_${cc.name}`);
-      diagram += `\n  ${ccId}[Chaincode: ${cc.name}]\n`;
+      diagram += `\n  subgraph ${channelId} [Channel: ${channel.name}]\n`;
+      // Add chaincodes belonging to this channel
+      if (Array.isArray(config.chaincodes)) {
+        config.chaincodes.forEach((cc) => {
+          if (
+            cc.channel &&
+            ((typeof cc.channel === "string" && cc.channel === channel.name) ||
+              (cc.channel.name && cc.channel.name === channel.name))
+          ) {
+            const ccId = safeId(`Chaincode_${cc.name}`);
+            diagram += `    ${ccId}[Chaincode: ${cc.name}]\n`;
+          }
+        });
+      }
+      diagram += `  end\n`;
     });
   }
 
@@ -134,10 +140,11 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
   if (Array.isArray(config.chaincodes)) {
     config.chaincodes.forEach((cc) => {
       if (cc.channel) {
-        const channelName = typeof cc.channel === "string" ? cc.channel : (cc.channel as any).name;
-        const channelId = safeId(`Channel_${channelName}`);
-        const ccId = safeId(`Chaincode_${cc.name}`);
-        diagram += `  ${ccId} -->|on ${channelName}| ${channelId}\n`;
+        // const channelName = typeof cc.channel === "string" ? cc.channel : (cc.channel as any).name;
+        // const channelId = safeId(`Channel_${channelName}`);
+        // const ccId = safeId(`Chaincode_${cc.name}`);
+        // Optionally, you can skip this connection since chaincode is inside the channel subgraph
+        // diagram += `  ${ccId} -->|on ${channelName}| ${channelId}\n`;
       }
     });
   }
