@@ -88,7 +88,7 @@ Legend:
 
 | Feature                | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |------------------------|-----------|-----------|--------|-------------|----------------------|
-| Peer dev mode          |✅         |✅         |✅      |✅           |                      |
+| Peer dev mode          |✅         |❌         |  ❌    |✅           |[Support dev mode for Fabric v3](https://github.com/hyperledger-labs/fablo/issues/472)                      |
 | Connection profiles    |✅         |✅         |✅      |✅           |                      |
 | Gateway client         | ❔        | ❔        | ❔     | ❔          |[Adds gateway option to init](https://github.com/hyperledger-labs/fablo/pull/544)                      |
 | Hooks: post-generate   |✅         |✅         |✅      |✅           |                      |
