@@ -7,7 +7,8 @@ CHAINCODE_NAME="chaincode1"
 CHAINCODE_VERSION="0.0.1"
 CHANNEL_NAME="my-channel1"
 PEER_NAME="peer0.org1.example.com"
-JAR_PATH="build/libs/java-chaincode-1.0-SNAPSHOT-all.jar"
+JAR_PATH="build/libs/chaincode-all.jar"
+CHAINCODE_PORT=7041
 
 # ========== CHECK COMMANDS ==========
 for cmd in docker java grep gradle; do
@@ -19,7 +20,7 @@ done
 
 # ========== BUILD THE JAR ==========
 gradle wrapper
-./gradlew clean shadowJar
+./gradlew clean shadowJar 
 
 if [ ! -f "$JAR_PATH" ]; then
     echo "Error: JAR file was not created. Build may have failed."
@@ -33,9 +34,6 @@ if ! docker ps | grep -q "$PEER_NAME"; then
     exit 1
 fi
 
-
-
-
 # ========== GET PEER IP ==========
 PEER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $PEER_NAME)
 if [ -z "$PEER_IP" ]; then
@@ -43,21 +41,19 @@ if [ -z "$PEER_IP" ]; then
     exit 1
 fi
 
-echo "Testing connectivity to peer at $PEER_IP:7041..."
-if ! nc -z $PEER_IP 7041 2>/dev/null; then
-    echo "Error: Cannot connect to peer chaincode port $PEER_IP:7041."
-    echo "Ensure the peer is running in dev mode and listening on port 7041."
+echo "Testing connectivity to peer at $PEER_IP:$CHAINCODE_PORT..."
+if ! nc -z $PEER_IP $CHAINCODE_PORT 2>/dev/null; then
+    echo "Error: Cannot connect to peer chaincode port $PEER_IP:$CHAINCODE_PORT."
+    echo "Ensure the peer is running in dev mode and listening on port $CHAINCODE_PORT."
     exit 1
 fi
 
-
 # ========== EXPORT ENVIRONMENT VARIABLES ==========
+export CHAINCODE_SERVER_ADDRESS=0.0.0.0:$CHAINCODE_PORT
 export CORE_CHAINCODE_ID_NAME="$CHAINCODE_NAME:$CHAINCODE_VERSION"
-# export CORE_CHAINCODE_SERVER_ADDRESS="0.0.0.0:7041"
-export CORE_CHAINCODE_LISTENADDRESS=0.0.0.0:7041
 export CORE_CHAINCODE_LOGGING_LEVEL="DEBUG"
 export CORE_CHAINCODE_LOGGING_SHIM="debug"
-export CORE_PEER_ADDRESS="$PEER_IP:7041"               
+export CORE_PEER_ADDRESS="$PEER_IP:$CHAINCODE_PORT"               
 export CORE_PEER_LOCALMSPID="Org1MSP"                   
 export CORE_PEER_TLS_ENABLED=false
 export CORE_CHAINCODE_LOGLEVEL=debug
