@@ -43,7 +43,7 @@ Fabric v3 = 3.0.0
 | Feature                           | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |-----------------------------------|-----------|-----------|--------|-------------|----------------------|
 | Node                              | ✅        | ✅        | ✅     | ❔          |                      |
-| Go                                | ❔        | ❔        | ❔     | ❔          |                      |
+| Go                                | ✅        | ✅        | ✅     | ❔          |                      |
 | Java                              | ✅        | ✅        | ✅     | ❔          |                      |
 | Chaincode-as-a-Service (CCaaS)    | ❌        | ❌        | ✅     | ❔          |                      |
 | Endorsement Policies              | ✅        | ✅        | ✅     | ❔          |                      |
