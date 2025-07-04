@@ -183,7 +183,7 @@ exportNetworkTopology() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   local output_file=${2:-network-topology.mmd}
 
-  executeOnFabloDocker "fablo:export-network-topology /network/fablo-config.json $output_file" "$(dirname \"$output_file\")" "$fablo_config"
+  executeOnFabloDocker "fablo:export-network-topology /network/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
 }
 
 generateNetworkConfig() {
