@@ -157,7 +157,7 @@ Please note that this step is also executed automatically before each `generate`
 fablo extend-config [/path/to/fablo-config.json|yaml]
 ```
 
-Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file.
+Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file and making some config parts more verbos. 
 
 ### snapshot and restore
 
