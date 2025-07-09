@@ -137,17 +137,5 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
     });
   }
 
-  if (Array.isArray(config.chaincodes)) {
-    config.chaincodes.forEach((cc) => {
-      if (cc.channel) {
-        // const channelName = typeof cc.channel === "string" ? cc.channel : (cc.channel as any).name;
-        // const channelId = safeId(`Channel_${channelName}`);
-        // const ccId = safeId(`Chaincode_${cc.name}`);
-        // Optionally, you can skip this connection since chaincode is inside the channel subgraph
-        // diagram += `  ${ccId} -->|on ${channelName}| ${channelId}\n`;
-      }
-    });
-  }
-
   return diagram;
 }
