@@ -2,7 +2,7 @@
 
 | Test case                 |    01-simple    |   02-raft   | 03-private |       04-snapshot        |  test-05-version3  |  test-05-version3-BFT |
 | ------------------------- |:---------------:|:-----------:|:----------:|:------------------------:|:------------------:|:---------------------:|
-| Fabric versions           |      2.4.7      |    2.3.2    |   2.4.7    |       2.3.3/2.4.2        |     3.0.0-beta     |      3.0.0-beta       |
+| Fabric versions           |      2.4.7      |    2.3.2    |   2.5.9    |       2.3.3/2.4.2        |     3.0.0-beta     |      3.0.0-beta       |
 | TLS                       |       no        |     yes     |     no     |           yes            |        yes         |          yes          |
 | Channel capabilities      |       v2        |     v2      |    v2_5    |            v2            |        v3_0        |          v3_0         |
 | Consensus                 |      solo       |    RAFT     |    solo    |           RAFT           |        RAFT        |          BFT          |
@@ -17,6 +17,6 @@
 | Node chaincode endorsement|       OR        |     OR      |  OR, AND   |         default          |         OR         |          OR           |
 | Private data              |       no        |     no      |    yes     |           yes            |         no         |          no           |
 | Java chaincode            |       no        |     yes     |     no     |            no            |         no         |          no           |
-| Go chaincode              |       no        |     no      |     no     |            no            |         no         |          no           |
+| Go chaincode              |       no        |     no      |     yes     |            no            |         no         |          no           |
 | Tools                     | channel scripts | Fablo REST  |     -      |  Fablo REST, Explorer    |         -          |          -            |
 | Other Fablo commands      |   init, reset   | stop, start |     -      | snapshot, prune, restore |         -          |          -            |
