@@ -1,6 +1,6 @@
 # Test cases
 
-| Test case                 |    01-simple    |   02-raft   | 03-private |       04-snapshot        |  test-05-version3  |  test-05-version3-BFT |
+| Test case                 |    01-v2-simple    |   02-v2-raft-2orgs   | 03-v2-private-data |       04-v2-snapshot        |  test-05-v3  |  test-06-v3-bft |
 | ------------------------- |:---------------:|:-----------:|:----------:|:------------------------:|:------------------:|:---------------------:|
 | Fabric versions           |      2.4.7      |    2.3.2    |   2.4.7    |       2.3.3/2.4.2        |     3.0.0-beta     |      3.0.0-beta       |
 | TLS                       |       no        |     yes     |     no     |           yes            |        yes         |          yes          |
