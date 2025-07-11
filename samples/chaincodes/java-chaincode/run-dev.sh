@@ -2,46 +2,75 @@
 
 set -eu
 
-echo "Checking if chaincode is installed and running..."
+# ========== CONFIGURATION ==========
+CHAINCODE_NAME="chaincode1"
+CHAINCODE_VERSION="0.0.1"
+CHANNEL_NAME="my-channel1"
+PEER_NAME="peer0.org1.example.com"
+JAR_PATH="build/libs/chaincode-all.jar"
+CHAINCODE_PORT=7041
 
-if ! docker exec peer0.org1.example.com peer chaincode list --installed 2>/dev/null | grep -q "simple-asset"; then
-    echo "ERROR: Chaincode 'simple-asset' is not installed on the peer."
-    echo "Please install the chaincode first"
-    exit 1
-fi
+# ========== CHECK COMMANDS ==========
+for cmd in docker java grep gradle; do
+    if ! command -v $cmd &>/dev/null; then
+        echo "Error: '$cmd' command not found. Please install it first."
+        exit 1
+    fi
+done
 
+# ========== BUILD THE JAR ==========
+gradle wrapper
+./gradlew clean shadowJar 
 
-if ! docker exec peer0.org1.example.com peer chaincode list --instantiated -C mychannel 2>/dev/null | grep -q "simple-asset"; then
-    echo "ERROR: Chaincode 'simple-asset' is not committed to the channel."
-    echo "Please commit the chaincode first."
-    exit 1
-fi
-
-
-./gradlew clean shadowJar
-
-if [ ! -f "build/libs/java-chaincode-1.0-SNAPSHOT-all.jar" ]; then
+if [ ! -f "$JAR_PATH" ]; then
     echo "Error: JAR file was not created. Build may have failed."
     exit 1
 fi
 
-if ! docker ps | grep -q "peer0.org1.example.com"; then
-    echo "Error: peer0.org1.example.com container is not running."
+# ========== VALIDATE PEER CONTAINER ==========
+if ! docker ps | grep -q "$PEER_NAME"; then
+    echo "Error: $PEER_NAME container is not running."
     echo "Please make sure the Fabric network is up and running."
     exit 1
 fi
 
-# Get the IP address of peer0.org1.example.com
-peer_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org1.example.com)
-if [ -z "$peer_ip" ]; then
-  echo "Error: Could not find peer0.org1.example.com IP address."
-  exit 1
+# ========== GET PEER IP ==========
+PEER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $PEER_NAME)
+if [ -z "$PEER_IP" ]; then
+    echo "Error: Could not find $PEER_NAME IP address."
+    exit 1
 fi
-# Run the chaincode in dev mode
-CORE_CHAINCODE_LOGLEVEL=debug \
-CORE_PEER_TLS_ENABLED=true \
-CORE_CHAINCODE_ID_NAME=simple-asset:1.0 \
-CORE_PEER_ADDRESS=$peer_ip:7051 \
-CORE_CHAINCODE_LOGGING_LEVEL=DEBUG \
-CORE_CHAINCODE_LOGGING_SHIM=debug \
-java -jar build/libs/java-chaincode-1.0-SNAPSHOT-all.jar
+
+echo "Testing connectivity to peer at $PEER_IP:$CHAINCODE_PORT..."
+if ! nc -z $PEER_IP $CHAINCODE_PORT 2>/dev/null; then
+    echo "Error: Cannot connect to peer chaincode port $PEER_IP:$CHAINCODE_PORT."
+    echo "Ensure the peer is running in dev mode and listening on port $CHAINCODE_PORT."
+    exit 1
+fi
+
+# ========== EXPORT ENVIRONMENT VARIABLES ==========
+export CHAINCODE_SERVER_ADDRESS=0.0.0.0:$CHAINCODE_PORT
+export CORE_CHAINCODE_ID_NAME="$CHAINCODE_NAME:$CHAINCODE_VERSION"
+export CORE_CHAINCODE_LOGGING_LEVEL="DEBUG"
+export CORE_CHAINCODE_LOGGING_SHIM="debug"
+export CORE_PEER_ADDRESS="$PEER_IP:$CHAINCODE_PORT"               
+export CORE_PEER_LOCALMSPID="Org1MSP"                   
+export CORE_PEER_TLS_ENABLED=false
+export CORE_CHAINCODE_LOGLEVEL=debug
+export FABRIC_LOGGING_SPEC=debug 
+
+# ========== RUN CHAINCODE ==========
+echo "========================================"
+echo "Running Java chaincode in dev mode..."
+echo "Chaincode Name: $CORE_CHAINCODE_ID_NAME"
+echo "Peer Address: $CORE_PEER_ADDRESS"
+echo "========================================"
+
+if java -jar "$JAR_PATH" -peer.address $PEER_IP:7041; then
+    echo "========================================"
+    echo "Successfully running Java in dev Mode"
+    echo "========================================"
+else
+    echo "Error: Failed to start the chaincode JAR"
+    exit 1
+fi
