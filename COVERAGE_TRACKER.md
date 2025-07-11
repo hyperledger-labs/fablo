@@ -65,14 +65,14 @@ Fabric v3 = 3.0.0
 
 ## Fablo Commands
 
-| Feature                                | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
-|----------------------------------------|-----------|-----------|--------|-------------|----------------------|
-| `generate`                             | ❔        | ❔        | ❔     | ❔          |                      |
-| `up`, `start`, `stop`, `down`, `reset`, `recreate` | ❔ | ❔ | ❔ | ❔  |                      |
-| `validate`, `extendConfig`             | ❔        | ❔        | ❔     | ❔          |                      |
-| `update`, `version`                    | ❔        | ❔        | ❔     | ❔          |                      |
-| `init` (node, rest, dev)               | ❔        | ❔        | ❔     | ❔          |                      |
-| Other init options                     | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
+| Feature                                                                 | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue                                                                 |
+|-------------------------------------------------------------------------|-----------|-----------|--------|----------|------------------------------------------------------------------------------|
+| `generate`                                                              |    ✅     |    ✅     |   ✅   |     ✅     |                                                                              |
+| `up`, `start`, `stop`, `down`, `reset`, `recreate`                      |    ✅     |    ✅     |   ✅   |     ✅     |                                                                              |
+| `validate`, `extend-config`                                             |    ✅     |    ✅     |   ✅   |     ✅     |                                                                              |
+| `version`                                                               |    ✅     |    ✅     |   ✅   |     ✅     |                                                                              |
+| `init` (node, rest, dev)                                                |    ✅     |    ✅     |   ✅   |     ✅     |                                                                              |
+| Other `init` options                                                    |    ❔     |    ❔     |   ❔   |     ❔     | [Add CLI options to init command](https://github.com/hyperledger-labs/fablo/issues/444) |
 
 ---
 
