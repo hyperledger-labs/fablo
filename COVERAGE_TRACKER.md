@@ -10,19 +10,19 @@ This document provides an overview of Fablo features. The table below tracks fea
 | RAFT Consensus                         | ✓         | ✓         | ✓          |          |                 |
 | BFT Consensus                          | -         | ✓         | ✓          | [05_v3](/e2e-network/docker/test-06-v3-bft.sh) | [#559](https://github.com/hyperledger-labs/fablo/issues/559) |
 | TLS                                    | ✓         | ✓         | ✓          |          |                 |
-| Orderer Groups                         | ✓         | 𐄂         | ✓          |          | [#560](https://github.com/hyperledger-labs/fablo/issues/560) |
+| Orderer Groups                         | ✓         | ✕         | ✓          |          | [#560](https://github.com/hyperledger-labs/fablo/issues/560) |
 | Peer DB - LevelDB                      | ✓         | ✓         | ✓          |          |                 |
 | Peer DB - CouchDB                      | ✓         | ✓         | ✓          |          |                 |
 | CA DB - SQLite                         | ✓         | ✓         | ✓          |          |                 |
 | CA DB - Postgres                       | ✓         | ✓         | ✓          |          |                 |
-| CA DB - MySQL                          | 𐄂         | 𐄂         | ✓          |          | [#561](https://github.com/hyperledger-labs/fablo/issues/561) |
+| CA DB - MySQL                          | ✕         | ✕         | ✓          |          | [#561](https://github.com/hyperledger-labs/fablo/issues/561) |
 | <br>**CHANNELS**                       |           |           |            |          |                 |
 | Channel query scripts                  | ✓         | ✓         |            |          |                 |
 | <br>**CHAINCODES**                     |           |           |            |          |                 |
 | Node                                   | ✓         | ✓         |            |          |                 |
 | Go                                     | ✓         | ✓         |            |          |                 |
 | Java                                   | ✓         | ✓         |            |          |                 |
-| Chaincode-as-a-Service (CCaaS)         | 𐄂         | 𐄂         |            |          |                 |
+| Chaincode-as-a-Service (CCaaS)         | ✕         | ✕         |            |          |                 |
 | Endorsement Policies                   | ✓         | ✓         |            |          |                 |
 | Multi-org Endorsements                 | ✓         | ✓         |            |          |                 |
 | Private Data Collections               | ✓         | ✓         |            |          |                 |
@@ -30,7 +30,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Commands: install / upgrade            | ✓         | ✓         |            |          |                 |
 | <br>**TOOLS**                          |           |           |            |          |                 |
 | Fablo REST                             | ✓         | ✓         |            |          |                 |
-| Explorer                               | ✓         | 𐄂         |            |          |                 |
+| Explorer                               | ✓         | ✕         |            |          |                 |
 | <br>**FABLO COMMANDS**                 |           |           |            |          |                 |
 | `generate`                             | ✓         | ✓         | ✓          |          |                 |
 | `up`                                   | ✓         | ✓         | ✓          |          |                 |
@@ -47,7 +47,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Restore snapshot                       | ✓         | ✓         | ✓          |          |                 |
 | Post-start hook                        |           |           |            |          | [#111](https://github.com/hyperledger-labs/fablo/issues/111) |
 | <br>**OTHER FEATURES**                 |           |           |            |          |                 |
-| Peer dev mode                          | ✓         | 𐄂         | ✓          |          | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
+| Peer dev mode                          | ✓         | ✕         | ✓          |          | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
 | Connection profiles                    | ✓         | ✓         | ✓          |          |                 |
 | Gateway client                         |           |           |            |          | [#544](https://github.com/hyperledger-labs/fablo/pull/544) |
 | Hooks: post-generate                   | ✓         | ✓         | ✓          |          |                 |
@@ -63,5 +63,5 @@ Fabric v3 = 3.0.0
 **Legend:**
 
 ✓ = supported<br>
-𐄂 = not supported<br>
-- = not applicable
+✕ = not supported<br>
+<span>-</span> = not applicable
