@@ -5,6 +5,8 @@
   [#554](https://github.com/hyperledger-labs/fablo/pull/554)
 * Publish sample chaincode Docker image
   [#555](https://github.com/hyperledger-labs/fablo/pull/555)
+* Export network topology with Mermaid 
+  [#565](https://github.com/hyperledger-labs/fablo/pull/565)
 
 
 ## 2.2.0
