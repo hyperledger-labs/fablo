@@ -96,7 +96,7 @@ describe("validate", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Validation errors count: 0");
-    expect(commandResult.output).toContain("Validation warnings count: 1");
+    expect(commandResult.output).toContain("Validation warnings count: 2");
     expect(commands.getFiles()).toEqual([]);
   });
 

@@ -42,6 +42,7 @@ const extendChaincodesConfig = (
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
+  let portCounter = 7052;
   return chaincodes.map((chaincode) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
@@ -57,18 +58,36 @@ const extendChaincodesConfig = (
     );
     const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
 
-    return {
-      directory: chaincode.directory,
-      name: chaincode.name,
-      version: chaincode.version,
-      lang: chaincode.lang,
-      channel,
-      ...initParams,
-      endorsement,
-      instantiatingOrg: channel.instantiatingOrg,
-      privateDataConfigFile,
-      privateData,
-    };
+    const peerChaincodeInstances = !chaincode.image ? [] : channel.orgs.flatMap((org) =>
+        org.peers.map((peer) => {
+          return {
+            containerName: `${chaincode.name}_${peer.address}`,
+            peerAddress: peer.address,
+            port: portCounter++,
+            orgDomain: org.domain
+          };
+        })
+      );
+
+    if (chaincode.lang === "ccaas") {
+      if (!chaincode.image) {
+        throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify an image field`);
+      }
+    }
+      return {
+        directory: chaincode.directory,
+        name: chaincode.name,
+        version: chaincode.version,
+        lang: chaincode.lang,
+        channel,
+        image: chaincode.image,
+        ...initParams,
+        endorsement,
+        instantiatingOrg: channel.instantiatingOrg,
+        privateDataConfigFile,
+        peerChaincodeInstances,
+        privateData,
+      };
   });
 };
 
