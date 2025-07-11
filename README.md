@@ -167,6 +167,14 @@ fablo export-network-topology fablo-config.json network-topology.mmd
 
 You can visualize the output using any Mermaid-compatible tool or online editor.
 
+### extend-config 
+
+```bash
+fablo extend-config [/path/to/fablo-config.json|yaml]
+```
+
+Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file and making some config parts more verbos. 
+
 ### snapshot and restore
 
 Fablo supports saving state snapshot (backup) of the network and restoring it.
