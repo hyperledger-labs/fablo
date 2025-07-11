@@ -80,9 +80,9 @@ Fabric v3 = 3.0.0
 
 | Feature               | Fabric v2 | Fabric v3 | Tested | Documented | Todo / Issue        |
 |------------------------|-----------|-----------|--------|-------------|----------------------|
-| Create snapshot        | ❔        | ❔        | ❔     | ❔          |                      |
-| Restore snapshot       | ❔        | ❔        | ❔     | ❔          |                      |
-| Post-restore hook      | ❔        | ❔        | ❔     | ❔          | [#TODO](#)           |
+| Create snapshot        | ✅        | ✅        | ✅     | ✅          |                      |
+| Restore snapshot       | ✅        | ✅        | ✅     | ✅          |                      |
+| Post-start hook        | ❔        | ❔        | ❔     | ❔          | [Add post-start hooks](https://github.com/hyperledger-labs/fablo/issues/111)           |
 
 ---
 
