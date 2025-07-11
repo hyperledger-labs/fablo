@@ -3166,7 +3166,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": "./chaincodes/chaincode-kv-go",
       "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
       "initRequired": false,
       "instantiatingOrg": {
@@ -3256,7 +3256,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
         "peersCount": 2,
         "tools": {},
       },
-      "lang": "node",
+      "lang": "golang",
       "name": "and-policy-chaincode",
       "privateData": [
         {
@@ -3578,21 +3578,21 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
   ],
   "global": {
     "capabilities": {
-      "application": "V2_0",
+      "application": "V2_5",
       "channel": "V2_0",
       "isV2": true,
       "isV3": false,
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "2.4.7",
+    "fabricBaseosVersion": "2.5.9",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "2.4.7",
-    "fabricJavaenvVersion": "2.4",
-    "fabricNodeenvVersion": "2.4",
+    "fabricCcenvVersion": "2.5.9",
+    "fabricJavaenvVersion": "2.5",
+    "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
-    "fabricToolsVersion": "2.4.7",
-    "fabricVersion": "2.4.7",
+    "fabricToolsVersion": "2.5.9",
+    "fabricVersion": "2.5.9",
     "monitoring": {
       "loglevel": "info",
     },
