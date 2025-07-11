@@ -8,6 +8,9 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
+GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
+GATEWAY_CLIENT_OUTPUT_FILE="$TEST_LOGS/gateway_client.log"
+
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
@@ -65,6 +68,44 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{\"success\":\"Willy Wonka\"}'
+
+# Test Node.js Gateway CLI client
+echo "Testing Node.js Gateway client..."
+
+echo "Installing gateway client dependencies..."
+(cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
+
+echo "Running Node.js Gateway client and checking output..."
+(
+  cd "$GATEWAY_CLIENT_DIR" &&
+    export \
+           CHANNEL_NAME="my-channel1" \
+           CONTRACT_NAME="chaincode1" \
+           MSP_ID="Org1MSP" \
+           PEER_ORG_NAME="peer0.org1.example.com" \
+           PEER_GATEWAY_URL="localhost:7041" \
+           TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
+           CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
+           PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
+  node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1
+)
+GATEWAY_EXIT_CODE=$?
+
+if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
+  echo "❌ failed: Node.js Gateway client script failed with exit code $GATEWAY_EXIT_CODE."
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
+  exit 1
+fi
+
+if grep -qF 'Put result: {"success":"OK"}' "$GATEWAY_CLIENT_OUTPUT_FILE"; then
+  echo "✅ ok: Node.js Gateway client test passed!"
+else
+  echo "❌ failed: Node.js Gateway client failed."
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
+  exit 1
+fi
+
+echo "Node.js Gateway client test complete"
 
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
