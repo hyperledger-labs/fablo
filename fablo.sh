@@ -179,6 +179,13 @@ extendConfig() {
   executeOnFabloDocker "fablo:extend-config" "" "$fablo_config"
 }
 
+exportNetworkTopology() {
+  local fablo_config=${1:-$(getDefaultFabloConfig)}
+  local output_file=${2:-network-topology.mmd}
+
+  executeOnFabloDocker "fablo:export-network-topology /network/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
+}
+
 generateNetworkConfig() {
   printSplash
   local fablo_config=${1:-$(getDefaultFabloConfig)}
@@ -287,6 +294,9 @@ elif [ "$COMMAND" = "validate" ]; then
 
 elif [ "$COMMAND" = "extend-config" ]; then
   extendConfig "$2"
+
+elif [ "$COMMAND" = "export-network-topology" ]; then
+  exportNetworkTopology "$2" "$3"
 
 elif [ "$COMMAND" = "generate" ]; then
   generateNetworkConfig "$2" "$3"
