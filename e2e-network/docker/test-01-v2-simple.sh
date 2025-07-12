@@ -90,3 +90,12 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "James Bond"]}' \
   '{\"success\":\"OK\"}'
+
+
+# Test export-network-topology to Mermaid
+cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/simple-config.json"
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" export-network-topology simple-config.json simple-network-topology.mmd)
+expectCommand "head -n 1 \"$TEST_TMP/simple-network-topology.mmd\"" "graph TD"
+expectCommand "cat \"$TEST_TMP/simple-network-topology.mmd\"" "Org_Orderer"
+expectCommand "cat \"$TEST_TMP/simple-network-topology.mmd\"" "Org_Org1"
+expectCommand "cat \"$TEST_TMP/simple-network-topology.mmd\"" "Channel_my_channel1"
