@@ -90,3 +90,17 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "James Bond"]}' \
   '{\"success\":\"OK\"}'
+
+# Fablo CLI commands
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" version)
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" version)" "\"version\":"
+
+# validate
+cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/fablo-config.json"
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" validate)
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" validate)" "Validation errors count: 0"
+
+# 'extend-config' 
+cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/extend-config.json"
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" extend-config "$TEST_TMP/extend-config.json")
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" extend-config \"$TEST_TMP/extend-config.json\")" "Validation errors count: 0"
