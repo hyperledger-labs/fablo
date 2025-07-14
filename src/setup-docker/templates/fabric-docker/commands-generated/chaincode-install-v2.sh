@@ -55,21 +55,19 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
         "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
     <% } -%>
   <% }) -%>
-  <% org.peers.forEach((peer) => { -%>
-    chaincodeApprove <% -%>
-      "<%= org.cli.address %>" <% -%>
-      "<%= peer.fullAddress %>" <% -%>
-      "<%= chaincode.channel.name %>" <% -%>
-      "<%= chaincode.name %>" <% -%>
-      "$version" <% -%>
-      "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-      "<%- chaincode.endorsement || '' %>" <% -%>
-      "<%= `${chaincode.initRequired}` %>" <% -%>
-      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
-      "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
-      "<%= chaincode.lang %>" <% -%>
-      "<%= chaincode.lang === 'ccaas' ? chaincode.image : '' %>"
-  <% }) -%>
+  chaincodeApprove <% -%>
+    "<%= org.cli.address %>" <% -%>
+    "<%= org.headPeer.fullAddress %>" <% -%>
+    "<%= chaincode.channel.name %>" <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "$version" <% -%>
+    "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
+    "<%- chaincode.endorsement || '' %>" <% -%>
+    "<%= `${chaincode.initRequired}` %>" <% -%>
+    "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+    "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+    "<%= chaincode.lang === 'ccaas' ? chaincode.image : '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
 chaincodeCommit <% -%>
