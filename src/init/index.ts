@@ -1,76 +1,77 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
+import { version } from "../../package.json";
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
-  $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
-  global: {
-    fabricVersion: "2.5.9",
-    tls: false,
-    peerDevMode: false,
-  },
-  orgs: [
-    {
-      organization: {
-        name: "Orderer",
-        domain: "orderer.example.com",
-        mspName: "OrdererMSP",
-      },
-      ca: {
-        prefix: "ca",
-        db: "sqlite",
-      },
-      orderers: [
-        {
-          groupName: "group1",
-          type: "solo",
-          instances: 1,
-          prefix: "orderer",
+    $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
+    global: {
+      fabricVersion: "2.5.12",
+      tls: true,
+      peerDevMode: false,
+    },
+    orgs: [
+      {
+        organization: {
+          name: "Orderer",
+          domain: "orderer.example.com",
+          mspName: "OrdererMSP",
         },
-      ],
-    },
-    {
-      organization: {
-        name: "Org1",
-        domain: "org1.example.com",
-        mspName: "Org1MSP",
+        ca: {
+          prefix: "ca",
+          db: "sqlite",
+        },
+        orderers: [
+          {
+            groupName: "group1",
+            type: "raft",
+            instances: 1,
+            prefix: "orderer",
+          },
+        ],
       },
-      ca: {
-        prefix: "ca",
-        db: "sqlite",
-      },
-      orderers: [],
-      peer: {
-        instances: 2,
-        db: "LevelDb",
-        prefix: "peer",
-      },
-    },
-  ],
-  channels: [
-    {
-      name: "my-channel1",
-      orgs: [
-        {
+      {
+        organization: {
           name: "Org1",
-          peers: ["peer0", "peer1"],
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
         },
-      ],
-    },
-  ],
-  chaincodes: [
-    {
-      name: "chaincode1",
-      version: "0.0.1",
-      lang: "node",
-      channel: "my-channel1",
-      directory: "./chaincodes/chaincode-kv-node",
-      privateData: [],
-    },
-  ],
-  hooks: {},
- };
+        ca: {
+          prefix: "ca",
+          db: "sqlite",
+        },
+        orderers: [],
+        peer: {
+          instances: 1,
+          db: "LevelDb",
+          prefix: "peer",
+        },
+      },
+    ],
+    channels: [
+      {
+        name: "my-channel1",
+        orgs: [
+          {
+            name: "Org1",
+            peers: ["peer0", "peer1"],
+          },
+        ],
+      },
+    ],
+    chaincodes: [
+      {
+        name: "chaincode1",
+        version: "0.0.1",
+        lang: "ccaas",
+        channel: "my-channel1",
+        image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+        privateData: [],
+      },
+    ],
+    hooks: {},
+  };
 }
 
 export default class InitGenerator extends Generator {

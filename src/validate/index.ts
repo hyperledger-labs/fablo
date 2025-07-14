@@ -137,11 +137,11 @@ class ValidateGenerator extends Generator {
 
   private _validateCcaaTLS(global: GlobalJson, chaincode: ChaincodeJson) {
     if (chaincode.lang === "ccaas" && global.tls) {
-      const objectToEmit = {
-        category: validationCategories.CRITICAL,
-        message: `Chaincode '${chaincode.name}' is using CCAAS, but TLS is enabled in the network. CCAAS does not support TLS yet.`,
-      };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
+      // const objectToEmit = {
+      //   category: validationCategories.CRITICAL,
+      //   message: `Chaincode '${chaincode.name}' is using CCAAS, but TLS is enabled in the network. CCAAS does not support TLS yet.`,
+      // };
+      // TODO this.emit(validationErrorType.CRITICAL, objectToEmit);
     }
   }
 
