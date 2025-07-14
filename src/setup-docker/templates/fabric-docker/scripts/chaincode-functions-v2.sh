@@ -135,10 +135,11 @@ chaincodePackageCCaaS() {
   mkdir -p "$PACKAGE_DIR/code"
 
   if [ "$TLS_ENABLED" = true ]; then
-    local TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/ccaas/$CONTAINER_NAME/tls"
-    local ROOT_CERT=$(cat "$TLS_PATH/peer.crt" | awk '{printf "%s\\n", $0}')
-    local SERVER_CERT=$(cat "$TLS_PATH/client.crt" | awk '{printf "%s\\n", $0}')
-    local SERVER_KEY=$(cat "$TLS_PATH/client.key" | awk '{printf "%s\\n", $0}')
+    # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local ROOT_CERT=$(cat "$PEER_TLS_PATH/ca.crt" | awk '{printf "%s\\n", $0}')
+    local SERVER_CERT=$(cat "$PEER_TLS_PATH/server.crt" | awk '{printf "%s\\n", $0}')
+    local SERVER_KEY=$(cat "$PEER_TLS_PATH/server.key" | awk '{printf "%s\\n", $0}')
 
     cat <<EOF > "$PACKAGE_DIR/code/connection.json"
 {
@@ -209,7 +210,10 @@ restartChaincodeContainerWithCorrectId() {
 
   echo "🌀 Restarting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
 
-  local TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/ccaas/$CONTAINER_NAME/tls"
+  # Extract peer name and organization domain from peer address
+  local PEER_NAME="${PEER_ADDRESS%%:*}"
+  local ORG_DOMAIN=$(echo "$PEER_NAME" | sed 's/^[^.]*\.//')
+  local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
   local PORT_MAP="7052:7052"
   
   # Use different ports for different containers to avoid conflicts
@@ -219,19 +223,24 @@ restartChaincodeContainerWithCorrectId() {
   
   local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
 
-  # Verify all required TLS files exist
+  # Generate CCAAS-specific certificates with correct CN
+  echo "Generating CCAAS certificates for $CONTAINER_NAME..."
+  certsGenerateCCaaS "$CONFIG_PATH" "$CONTAINER_NAME" "$ORG_DOMAIN" "$CHAINCODE_NAME" "$PEER_ADDRESS"
+
+  # Use generated CCAAS certificates
+  local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  # Verify CCAAS TLS files exist
   local REQUIRED_TLS_FILES=(
-    "$TLS_PATH/client.key"
-    "$TLS_PATH/client.crt"
-    "$TLS_PATH/client_pem.key"
-    "$TLS_PATH/client_pem.crt"
-    "$TLS_PATH/peer.crt"
+    "$CCAAS_TLS_PATH/client.key"
+    "$CCAAS_TLS_PATH/client.crt"
+    "$CCAAS_TLS_PATH/peer.crt"
   )
 
-  echo "Verifying TLS files exist..."
+  echo "Verifying CCAAS TLS files exist for $CONTAINER_NAME..."
   for file in "${REQUIRED_TLS_FILES[@]}"; do
     if [ ! -f "$file" ]; then
-      echo "ERROR: Required TLS file missing: $file"
+      echo "ERROR: Required CCAAS TLS file missing: $file"
       exit 1
     fi
     echo "✓ Found: $file"
@@ -242,7 +251,7 @@ restartChaincodeContainerWithCorrectId() {
   docker run -d \
     --name "$CONTAINER_NAME" \
     -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \
-    -e CHAINCODE_SERVER_ADDRESS=0.0.0:7052 \
+    -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:7052 \
     -e CORE_CHAINCODE_ID_NAME="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
     -e CHAINCODE_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
     -e CORE_CHAINCODE_LOGGING_LEVEL=info \
@@ -252,11 +261,9 @@ restartChaincodeContainerWithCorrectId() {
     -e CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key \
     -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
     -e CORE_PEER_LOCALMSPID=Org1MSP \
-    -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
-    -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
-    -v "$TLS_PATH/client_pem.key:/etc/hyperledger/fabric/client_pem.key" \
-    -v "$TLS_PATH/client_pem.crt:/etc/hyperledger/fabric/client_pem.crt" \
-    -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
+    -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
+    -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
+    -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
     -p "$PORT_MAP" \
     --network "$NETWORK" \
     "$CHAINCODE_IMAGE"
@@ -264,6 +271,46 @@ restartChaincodeContainerWithCorrectId() {
   # Redirect container logs to the log file in the background
   echo "Redirecting container logs to $(pwd)/$CONTAINER_NAME.log"
   docker logs -f "$CONTAINER_NAME" > "./$CONTAINER_NAME.log" 2>&1 &
+
+  # Wait for the container to be ready
+  echo "Waiting for CCaaS container to be ready..."
+  local MAX_ATTEMPTS=30
+  local ATTEMPT=1
+  
+  # Give the container a moment to start
+  sleep 3
+  
+  while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+    # First check if container is running
+    if ! docker ps --format "{{.Names}}" | grep -q "^$CONTAINER_NAME$"; then
+      echo "❌ Container $CONTAINER_NAME is not running"
+      docker logs "$CONTAINER_NAME"
+      exit 1
+    fi
+    
+    # Check if the container is listening on port 7052
+    if docker exec "$CONTAINER_NAME" sh -c "netstat -tlnp 2>/dev/null | grep :7052" > /dev/null 2>&1; then
+      echo "✅ CCaaS container is ready on port 7052"
+      break
+    fi
+    
+    # Alternative check: try to connect to the port from outside
+    if timeout 2 bash -c "</dev/tcp/localhost/7052" > /dev/null 2>&1; then
+      echo "✅ CCaaS container is ready on port 7052 (external check)"
+      break
+    fi
+    
+    if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+      echo "❌ Timeout waiting for CCaaS container to be ready"
+      echo "Container logs:"
+      docker logs "$CONTAINER_NAME"
+      exit 1
+    fi
+    
+    echo "⏳ Waiting for CCaaS container to be ready... (attempt $ATTEMPT/$MAX_ATTEMPTS)"
+    sleep 2
+    ATTEMPT=$((ATTEMPT + 1))
+  done
 }
 
 chaincodeApprove() {
