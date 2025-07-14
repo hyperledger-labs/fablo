@@ -9,29 +9,27 @@ dockerPullIfMissing() {
   fi
 }
 
-node_version_check(){
-    
-    local fabric_shim_version="$1"
-    local nodejs_version
+node_version_check() {
+  local fabric_shim_version="$1"
+  local nodejs_version
 
-    if [[ "$fabric_shim_version" == *"1.4."* ]]; then
-        nodejs_version=8.9
+  if [[ "$fabric_shim_version" == *"1.4."* ]]; then
+    nodejs_version=8.9
 
-    elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
-        nodejs_version=12.13
+  elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
+    nodejs_version=12.13
 
-    elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
-        nodejs_version=16.16
+  elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
+    nodejs_version=16.16
 
-    elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
-        nodejs_version=18.12
+  elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
+    nodejs_version=18.12
 
-    else
-        nodejs_version=18.12
-    fi
+  else
+    nodejs_version=18.12
+  fi
 
-    echo $nodejs_version
-
+  echo $nodejs_version
 }
 
 chaincodeBuild() {
@@ -73,10 +71,9 @@ chaincodeBuild() {
     inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
     inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
     inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
-    
+
     # Default to using npm for installation and build
     (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
-    
   fi
 }
 
@@ -116,7 +113,7 @@ chaincodePackageCCaaS() {
   local CONTAINER_NAME=$8
   local TLS_ENABLED=$9
 
-  echo "Packaging chaincode $CHAINCODE_NAME..."
+  echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
@@ -124,13 +121,13 @@ chaincodePackageCCaaS() {
   inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
   inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "TLS_ENABLED: $TLS_ENABLED"
-  
-  echo "Packaging chaincode as CCAAS (external builder)..."
-  
-  local PACKAGE_DIR="./chaincode-packages/ccaas_$CONTAINER_NAME"
-  
+
+  # Use the same container name logic as startCCaaSContainer
+  local ACTUAL_CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
+  local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
+
   mkdir -p "$PACKAGE_DIR"
-  echo "{\"type\":\"$CHAINCODE_LANG\",\"label\":\"$CHAINCODE_LABEL\"}" > "$PACKAGE_DIR/metadata.json"
+  echo "{\"type\":\"$CHAINCODE_LANG\",\"label\":\"$CHAINCODE_LABEL\"}" >"$PACKAGE_DIR/metadata.json"
 
   mkdir -p "$PACKAGE_DIR/code"
 
@@ -141,34 +138,31 @@ chaincodePackageCCaaS() {
     local SERVER_CERT=$(cat "$PEER_TLS_PATH/server.crt" | awk '{printf "%s\\n", $0}')
     local SERVER_KEY=$(cat "$PEER_TLS_PATH/server.key" | awk '{printf "%s\\n", $0}')
 
-    cat <<EOF > "$PACKAGE_DIR/code/connection.json"
-{
-  "address": "${CONTAINER_NAME}:${CONTAINER_PORT}",
-  "domain": "${CONTAINER_NAME}",
-  "dial_timeout": "10s",
-  "tls_required": $TLS_ENABLED,
-  "client_auth_required": true,
-  "client_cert": "$SERVER_CERT",
-  "client_key": "$SERVER_KEY",
-  "root_cert": "$ROOT_CERT"
-}
-EOF
+    echo "{ 
+      \"address\": \"${ACTUAL_CONTAINER_NAME}:7052\",
+      \"domain\": \"${ACTUAL_CONTAINER_NAME}\",
+      \"dial_timeout\": \"10s\",
+      \"tls_required\": $TLS_ENABLED,
+      \"client_auth_required\": true,
+      \"client_cert\": \"$SERVER_CERT\",
+      \"client_key\": \"$SERVER_KEY\",
+      \"root_cert\": \"$ROOT_CERT\"
+    }" >"$PACKAGE_DIR/code/connection.json"
   else
-    cat <<EOF > "$PACKAGE_DIR/code/connection.json"
-{
-  "address": "${CONTAINER_NAME}:${CONTAINER_PORT}",
-  "dial_timeout": "10s",
-  "tls_required": $TLS_ENABLED,
-}
-EOF
+    echo "{ 
+      \"address\": \"${ACTUAL_CONTAINER_NAME}:7052\",
+      \"dial_timeout\": \"10s\",
+      \"tls_required\": $TLS_ENABLED
+    }" >"$PACKAGE_DIR/code/connection.json"
   fi
+
   tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
   tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
 
-  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz";
+  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 
   rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
-  rm -rf "$PACKAGE_DIR" 
+  rm -rf "$PACKAGE_DIR"
 
   echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
@@ -190,37 +184,90 @@ chaincodeInstall() {
   if [ -n "$CA_CERT" ]; then
     CA_CERT_PARAMS=(--tlsRootCertFiles "/var/hyperledger/cli/$CA_CERT")
   fi
-  
-  set -x
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-restartChaincodeContainerWithCorrectId() {
+chaincodeInstallCCaaS() {
+  set -x
+
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_IMAGE=$5
+  local EXTERNAL_PORT=$6
+  local CA_CERT=$7
+
+  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
+
+  # Install the chaincode
+  INSTALL_RESPONSE="$(chaincodeInstall "$CLI_NAME" "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_VERSION" "$CA_CERT")"
+  echo "INSTALL_RESPONSE: $INSTALL_RESPONSE"
+  
+  # Query installed chaincodes to get the package ID
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  local QUERYINSTALLED_RESPONSE
+  local PACKAGE_ID
+
+  QUERYINSTALLED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \
+      --output json \
+      "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
+  )"
+  echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
+  PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
+  
+  if [ -z "$PACKAGE_ID" ]; then
+    echo "ERROR: Package ID not found for chaincode $CHAINCODE_LABEL"
+    echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
+    exit 1
+  fi
+  
+  echo "PACKAGE_ID: $PACKAGE_ID"
+
+  startCCaaSContainer "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_LABEL" "$PACKAGE_ID" "$CHAINCODE_IMAGE" "$EXTERNAL_PORT"
+}
+
+startCCaaSContainer() {
   local PEER_ADDRESS="$1"
   local CHAINCODE_NAME="$2"
   local CHAINCODE_LABEL="$3"
   local CC_PACKAGE_ID="$4"
   local CHAINCODE_IMAGE="$5"
+  local EXTERNAL_PORT="$6"
 
   local PACKAGE_HASH="${CC_PACKAGE_ID#*:}"
   local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
 
-  echo "🌀 Restarting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
+  # If PACKAGE_HASH is empty, use the full CC_PACKAGE_ID
+  if [ -z "$PACKAGE_HASH" ]; then
+    PACKAGE_HASH="$CC_PACKAGE_ID"
+  fi
+
+  echo "Starting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
 
   # Extract peer name and organization domain from peer address
   local PEER_NAME="${PEER_ADDRESS%%:*}"
   local ORG_DOMAIN=$(echo "$PEER_NAME" | sed 's/^[^.]*\.//')
   local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
-  local PORT_MAP="7052:7052"
-  
+  # The connection.json expects the container to be accessible on CONTAINER_PORT (17041)
+  # The container internally listens on 7052, so we map EXTERNAL_PORT:7052
+  # This allows the peer to connect to EXTERNAL_PORT and reach the container's 7052 port
+  local PORT_MAP="${EXTERNAL_PORT}:7052"
+
   # Use different ports for different containers to avoid conflicts
   if [[ "$CONTAINER_NAME" == *"peer1"* ]]; then
     PORT_MAP="7053:7052"
   fi
-  
+
   local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
 
   # Generate CCAAS-specific certificates with correct CN
@@ -246,7 +293,7 @@ restartChaincodeContainerWithCorrectId() {
     echo "✓ Found: $file"
   done
 
-  docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1 || true
+  docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
 
   docker run -d \
     --name "$CONTAINER_NAME" \
@@ -267,50 +314,6 @@ restartChaincodeContainerWithCorrectId() {
     -p "$PORT_MAP" \
     --network "$NETWORK" \
     "$CHAINCODE_IMAGE"
-  
-  # Redirect container logs to the log file in the background
-  echo "Redirecting container logs to $(pwd)/$CONTAINER_NAME.log"
-  docker logs -f "$CONTAINER_NAME" > "./$CONTAINER_NAME.log" 2>&1 &
-
-  # Wait for the container to be ready
-  echo "Waiting for CCaaS container to be ready..."
-  local MAX_ATTEMPTS=30
-  local ATTEMPT=1
-  
-  # Give the container a moment to start
-  sleep 3
-  
-  while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-    # First check if container is running
-    if ! docker ps --format "{{.Names}}" | grep -q "^$CONTAINER_NAME$"; then
-      echo "❌ Container $CONTAINER_NAME is not running"
-      docker logs "$CONTAINER_NAME"
-      exit 1
-    fi
-    
-    # Check if the container is listening on port 7052
-    if docker exec "$CONTAINER_NAME" sh -c "netstat -tlnp 2>/dev/null | grep :7052" > /dev/null 2>&1; then
-      echo "✅ CCaaS container is ready on port 7052"
-      break
-    fi
-    
-    # Alternative check: try to connect to the port from outside
-    if timeout 2 bash -c "</dev/tcp/localhost/7052" > /dev/null 2>&1; then
-      echo "✅ CCaaS container is ready on port 7052 (external check)"
-      break
-    fi
-    
-    if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-      echo "❌ Timeout waiting for CCaaS container to be ready"
-      echo "Container logs:"
-      docker logs "$CONTAINER_NAME"
-      exit 1
-    fi
-    
-    echo "⏳ Waiting for CCaaS container to be ready... (attempt $ATTEMPT/$MAX_ATTEMPTS)"
-    sleep 2
-    ATTEMPT=$((ATTEMPT + 1))
-  done
 }
 
 chaincodeApprove() {
@@ -375,10 +378,6 @@ chaincodeApprove() {
     CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
   fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
-  if [ "$CHAINCODE_LANG" = "ccaas" ]; then
-    local CHAINCODE_IMAGE=${12}
-    restartChaincodeContainerWithCorrectId "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_LABEL" "$CC_PACKAGE_ID" "$CHAINCODE_IMAGE"
-  fi
 
   local QUERYCOMMITTED_RESPONSE
   local SEQUENCE
