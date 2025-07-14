@@ -45,6 +45,9 @@ chaincodeBuild() {
   # also, starting from Fabric 2.5, the base images for chaincode are available for arm64, so we don't need to pull them separately
   # and we use `sort -V` to compare versions, because `sort` handles versions like `2.4` and `2.10` correctly
   if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
+  # also, starting from Fabric 2.5, the base images for chaincode are available for arm64, so we don't need to pull them separately
+  # and we use `sort -V` to compare versions, because `sort` handles versions like `2.4` and `2.10` correctly
+  if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
     if [ "$CHAINCODE_LANG" = "node" ]; then
       dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
     fi
@@ -57,6 +60,9 @@ chaincodeBuild() {
   fi
 
   if [ "$CHAINCODE_LANG" = "node" ]; then
+    NODE_VERSION=$(node --version)
+    fabric_shim_version=$(jq -r '.dependencies."fabric-shim"' "$CHAINCODE_DIR_PATH/package.json")
+    RECOMMENDED_NODE_VERSION=$(node_version_check "$fabric_shim_version")
     NODE_VERSION=$(node --version)
     fabric_shim_version=$(jq -r '.dependencies."fabric-shim"' "$CHAINCODE_DIR_PATH/package.json")
     RECOMMENDED_NODE_VERSION=$(node_version_check "$fabric_shim_version")
