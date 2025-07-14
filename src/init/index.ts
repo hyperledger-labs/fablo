@@ -43,7 +43,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
         },
         orderers: [],
         peer: {
-          instances: 1,
+          instances: 2,
           db: "LevelDb",
           prefix: "peer",
         },
@@ -55,7 +55,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
         orgs: [
           {
             name: "Org1",
-            peers: ["peer0"],
+            peers: ["peer0", "peer1"],
           },
         ],
       },

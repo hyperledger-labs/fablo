@@ -263,11 +263,6 @@ startCCaaSContainer() {
   # This allows the peer to connect to EXTERNAL_PORT and reach the container's 7052 port
   local PORT_MAP="${EXTERNAL_PORT}:7052"
 
-  # Use different ports for different containers to avoid conflicts
-  if [[ "$CONTAINER_NAME" == *"peer1"* ]]; then
-    PORT_MAP="7053:7052"
-  fi
-
   local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
 
   # Generate CCAAS-specific certificates with correct CN
