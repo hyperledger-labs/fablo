@@ -2,7 +2,7 @@
 
 | Test case                 |    01-v2-simple    |   02-v2-raft-2orgs   | 03-v2-private-data |       04-v2-snapshot        |  test-05-v3  |  test-06-v3-bft |
 | ------------------------- |:---------------:|:-----------:|:----------:|:------------------------:|:------------------:|:---------------------:|
-| Fabric versions           |      2.4.7      |    2.3.2    |   2.5.9    |       2.3.3/2.4.2        |     3.0.0-beta     |      3.0.0-beta       |
+| Fabric versions           |      2.5.12      |    2.4.3    |   2.5.12    |       2.5.12        |     3.0.0     |      3.0.0       |
 | TLS                       |       no        |     yes     |     no     |           yes            |        yes         |          yes          |
 | Channel capabilities      |       v2        |     v2      |    v2_5    |            v2            |        v3_0        |          v3_0         |
 | Consensus                 |      solo       |    RAFT     |    solo    |           RAFT           |        RAFT        |          BFT          |
