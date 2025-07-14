@@ -6,7 +6,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
   return {
   $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   global: {
-    fabricVersion: "2.5.9",
+    fabricVersion: "2.5.12",
     tls: false,
     peerDevMode: false,
   },
