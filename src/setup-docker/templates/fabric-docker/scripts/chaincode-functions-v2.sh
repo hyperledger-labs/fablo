@@ -135,9 +135,10 @@ chaincodePackageCCaaS() {
   mkdir -p "$PACKAGE_DIR/code"
 
   if [ "$TLS_ENABLED" = true ]; then
-    local ROOT_CERT=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/peer.crt | awk '{printf "%s\\n", $0}')
-    local SERVER_CERT=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/client.crt | awk '{printf "%s\\n", $0}')
-    local SERVER_KEY=$(docker exec "$CONTAINER_NAME" cat /etc/hyperledger/fabric/client.key | awk '{printf "%s\\n", $0}')
+    local TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/ccaas/$CONTAINER_NAME/tls"
+    local ROOT_CERT=$(cat "$TLS_PATH/peer.crt" | awk '{printf "%s\\n", $0}')
+    local SERVER_CERT=$(cat "$TLS_PATH/client.crt" | awk '{printf "%s\\n", $0}')
+    local SERVER_KEY=$(cat "$TLS_PATH/client.key" | awk '{printf "%s\\n", $0}')
 
     cat <<EOF > "$PACKAGE_DIR/code/connection.json"
 {
@@ -188,6 +189,8 @@ chaincodeInstall() {
   if [ -n "$CA_CERT" ]; then
     CA_CERT_PARAMS=(--tlsRootCertFiles "/var/hyperledger/cli/$CA_CERT")
   fi
+  
+  set -x
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \
     "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
@@ -202,15 +205,37 @@ restartChaincodeContainerWithCorrectId() {
   local CHAINCODE_IMAGE="$5"
 
   local PACKAGE_HASH="${CC_PACKAGE_ID#*:}"
-  local CONTAINER_NAME="${CHAINCODE_NAME}_${PEER_ADDRESS%%:*}"
+  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
 
   echo "🌀 Restarting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
 
   local TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/ccaas/$CONTAINER_NAME/tls"
   local PORT_MAP="7052:7052"
   
+  # Use different ports for different containers to avoid conflicts
+  if [[ "$CONTAINER_NAME" == *"peer1"* ]]; then
+    PORT_MAP="7053:7052"
+  fi
+  
   local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
 
+  # Verify all required TLS files exist
+  local REQUIRED_TLS_FILES=(
+    "$TLS_PATH/client.key"
+    "$TLS_PATH/client.crt"
+    "$TLS_PATH/client_pem.key"
+    "$TLS_PATH/client_pem.crt"
+    "$TLS_PATH/peer.crt"
+  )
+
+  echo "Verifying TLS files exist..."
+  for file in "${REQUIRED_TLS_FILES[@]}"; do
+    if [ ! -f "$file" ]; then
+      echo "ERROR: Required TLS file missing: $file"
+      exit 1
+    fi
+    echo "✓ Found: $file"
+  done
 
   docker rm -f "$CONTAINER_NAME" > /dev/null 2>&1 || true
 
@@ -218,20 +243,15 @@ restartChaincodeContainerWithCorrectId() {
     --name "$CONTAINER_NAME" \
     -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \
     -e CHAINCODE_SERVER_ADDRESS=0.0.0:7052 \
-    -e DEBUG=true \
     -e CORE_CHAINCODE_ID_NAME="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
     -e CHAINCODE_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
     -e CORE_CHAINCODE_LOGGING_LEVEL=info \
     -e CORE_CHAINCODE_LOGGING_SHIM=info \
     -e CORE_PEER_TLS_ENABLED=true \
-    -e CORE_TLS_CLIENT_KEY_PATH=/etc/hyperledger/fabric/client.key \
-    -e CORE_TLS_CLIENT_CERT_PATH=/etc/hyperledger/fabric/client.crt \
-    -e CORE_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client_pem.key \
-    -e CORE_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client_pem.crt \
-    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
-    -e CORE_PEER_LOCALMSPID=Org1MSP \
     -e CORE_CHAINCODE_TLS_CERT_FILE=/etc/hyperledger/fabric/client.crt \
     -e CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
+    -e CORE_PEER_LOCALMSPID=Org1MSP \
     -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
     -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
     -v "$TLS_PATH/client_pem.key:/etc/hyperledger/fabric/client_pem.key" \
@@ -240,6 +260,10 @@ restartChaincodeContainerWithCorrectId() {
     -p "$PORT_MAP" \
     --network "$NETWORK" \
     "$CHAINCODE_IMAGE"
+  
+  # Redirect container logs to the log file in the background
+  echo "Redirecting container logs to $(pwd)/$CONTAINER_NAME.log"
+  docker logs -f "$CONTAINER_NAME" > "./$CONTAINER_NAME.log" 2>&1 &
 }
 
 chaincodeApprove() {
@@ -297,8 +321,10 @@ chaincodeApprove() {
       --output json \
       "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
+  echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
   if [ -z "$CC_PACKAGE_ID" ]; then
+    echo "CC_PACKAGE_ID not found, using default: $CHAINCODE_NAME:$CHAINCODE_VERSION"
     CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
   fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"

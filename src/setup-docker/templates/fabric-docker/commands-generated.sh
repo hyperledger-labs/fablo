@@ -14,16 +14,15 @@ generateArtifacts() {
   <% }) -%>
   <% chaincodes.forEach((chaincode) => {
     if (chaincode.lang === "ccaas" && global.tls === true) {
-      chaincode.channel.orgs.forEach((org) => {
-        org.peers.forEach((peer) => { %>
-  printItalics "Generating certs for CCaaS '<%= chaincode.name %>' on <%= peer.address %>" "U1F511"
+      chaincode.peerChaincodeInstances.forEach((instance) => { %>
+  printItalics "Generating certs for CCaaS '<%= chaincode.name %>' on <%= instance.peerAddress %>" "U1F511"
   certsGenerateCCaaS <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" <% -%>
-    "<%= chaincode.name %>_<%= peer.address %>" <% -%>
-    "<%= org.domain %>" <% -%>
+    "<%= instance.containerName %>" <% -%>
+    "<%= instance.orgDomain %>" <% -%>
     "<%= chaincode.name %>" <% -%>
-    "<%= peer.address %>"
-  <% }); }); } }); %>
+    "<%= instance.peerAddress %>"
+  <% }); } }); %>
 
   <%_ ordererGroups.forEach((ordererGroup) => { _%>
 
@@ -266,7 +265,7 @@ networkDown() {
   <% chaincodes.forEach((chaincode) => { -%>
     <% chaincode.channel.orgs.forEach((org) => { -%>
       <% org.peers.forEach((peer) => { -%>
-        <% const chaincodeContainerName=`dev-${peer.address}-${chaincode.name}` -%>
+        <% const chaincodeContainerName=`ccaas-${peer.address}-${chaincode.name}` -%>
         for container in $(docker ps -a | grep "<%= chaincodeContainerName %>" | awk '{print $1}'); do echo "Removing container $container..."; docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"; done
         for image in $(docker images "<%= chaincodeContainerName %>*" -q); do echo "Removing image $image..."; docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"; done
       <% }) -%>

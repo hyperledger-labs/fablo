@@ -373,21 +373,3 @@ services:
     networks:
       - basic
   <%_ } _%>
-<% chaincodes.forEach(function(chaincode) { if (chaincode.lang === 'ccaas' || chaincode.image) { %>
-  <% chaincode.peerChaincodeInstances.forEach(function(instance) { %>
-  <%= instance.containerName %>:
-    container_name: <%= instance.containerName %>
-    hostname: <%= instance.containerName %>
-    image: <%= chaincode.image %>
-    pull_policy: always
-    environment:
-      - CORE_CHAINCODE_ADDRESS=0.0.0.0:<%= instance.port %>
-      - CORE_CHAINCODE_ID=<%= chaincode.name %>:<%= chaincode.version %>
-    volumes:
-      - ../fabric-config/crypto-config/ccaas/<%= instance.containerName %>/tls:/etc/hyperledger/fabric
-    ports:
-      - <%= instance.port %>:7052
-    networks:
-      - basic  
-  <% }) %>
-<% } }) %>
