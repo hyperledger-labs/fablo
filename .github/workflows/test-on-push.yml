@@ -40,7 +40,6 @@ jobs:
       - name: Lint
         run: npm run lint && ./lint.sh
 
-    
   #  test-k8:
   #    needs: test-main
   #    runs-on: ubuntu-latest
@@ -168,20 +167,20 @@ jobs:
         with:
           name: test-04-snapshot
           path: |
-            e2e-network/docker/test-04-snapshot.sh.logs/*
-            e2e-network/docker/test-04-snapshot.sh.tmpdir/fablo-target/**/*
-  
+            e2e-network/docker/test-04-v2-snapshot.sh.logs/*
+            e2e-network/docker/test-04-v2-snapshot.sh.tmpdir/fablo-target/**/*
+
   test-05-v3:
     needs: test-main
-    runs-on:  macos-15
+    runs-on: macos-15
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      
+
       - name: Install Docker + Colima
         run: |
           brew update
-          brew install qemu colima  docker 
+          brew install qemu colima  docker
           brew uninstall --ignore-dependencies lima
           curl https://raw.githubusercontent.com/Homebrew/homebrew-core/45464b6c4788a80be3f131ab5e2a4468cdfa960c/Formula/l/lima.rb > lima.rb
           brew install lima.rb
@@ -199,24 +198,23 @@ jobs:
           npm install -g npm@latest
           npm install
 
-  
       - name: Build Fablo
         run: |
           shellcheck --version && \
           yamllint -v && \
           npm install && \
           ./fablo-build.sh
-  
+
       - name: Test version 3
-        run: e2e-network/docker/test-05-version3.sh
-  
+        run: e2e-network/docker/test-05-v3.sh
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-05-version3
           path: |
-            e2e-network/docker/test-05-version3-snapshot.sh.logs/*
-            e2e-network/docker/test-05-version3-snapshot.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-05-v3.sh.logs/*
+            e2e-network/docker/test-05-v3.sh.tmpdir/fablo-target/**/*
 
   test-05-v3-BFT:
     needs: test-main
@@ -224,23 +222,21 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-  
+
       - name: Build Fablo
         run: |
           shellcheck --version && \
           yamllint -v && \
           npm install && \
           ./fablo-build.sh
-  
+
       - name: Test version 3 with BFT
-        run: e2e-network/docker/test-05-version3-BFT.sh
-  
+        run: e2e-network/docker/test-06-v3-bft.sh
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-05-version3-BFT-snapshot
           path: |
-            e2e-network/docker/test-05-version3-BFT-snapshot.sh.logs/*
-            e2e-network/docker/test-05-version3-BFT-snapshot.sh.tmpdir/fablo-target/**/*
-  
-  
+            e2e-network/docker/test-06-v3-bft.sh.logs/*
+            e2e-network/docker/test-06-v3-bft.sh.tmpdir/fablo-target/**/*

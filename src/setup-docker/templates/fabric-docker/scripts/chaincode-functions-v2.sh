@@ -107,15 +107,13 @@ chaincodePackageCCaaS() {
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
   local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local CHAINCODE_LANG=$5
-  local CHAINCODE_IMAGE=$6
-  local CONTAINER_PORT=$7
-  local CONTAINER_NAME=$8
-  local TLS_ENABLED=$9
+  local CHAINCODE_IMAGE=$5
+  local CONTAINER_PORT=$6
+  local CONTAINER_NAME=$7
+  local TLS_ENABLED=$8
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
-  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CLI_NAME: $CLI_NAME"
   inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
@@ -127,7 +125,7 @@ chaincodePackageCCaaS() {
   local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
 
   mkdir -p "$PACKAGE_DIR"
-  echo "{\"type\":\"$CHAINCODE_LANG\",\"label\":\"$CHAINCODE_LABEL\"}" >"$PACKAGE_DIR/metadata.json"
+  echo "{\"type\":\"ccaas\",\"label\":\"$CHAINCODE_LABEL\"}" >"$PACKAGE_DIR/metadata.json"
 
   mkdir -p "$PACKAGE_DIR/code"
 
@@ -231,11 +229,9 @@ startCCaaSContainer() {
 
   # Extract peer name and organization domain from peer address
   local PEER_NAME="${PEER_ADDRESS%%:*}"
+
   local ORG_DOMAIN=$(echo "$PEER_NAME" | sed 's/^[^.]*\.//')
   local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
-  # The connection.json expects the container to be accessible on CONTAINER_PORT (17041)
-  # The container internally listens on 7052, so we map EXTERNAL_PORT:7052
-  # This allows the peer to connect to EXTERNAL_PORT and reach the container's 7052 port
   local PORT_MAP="${EXTERNAL_PORT}:7052"
 
   local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
@@ -280,7 +276,6 @@ chaincodeApprove() {
   local INIT_REQUIRED=$8
   local CA_CERT=$9
   local COLLECTIONS_CONFIG=${10}
-  local CHAINCODE_LANG=${11}
 
   echo "Approving chaincode $CHAINCODE_NAME..."
   inputLog "CLI_NAME: $CLI_NAME"
@@ -293,7 +288,6 @@ chaincodeApprove() {
   inputLog "INIT_REQUIRED: $INIT_REQUIRED"
   inputLog "CA_CERT: $CA_CERT"
   inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
-  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
 
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then

@@ -496,13 +496,6 @@
             "title": "Chaincode image URI",
             "type": "string"
           },
-          "port": {
-            "$id": "#/properties/chaincodes/items/properties/port",
-            "title": "Chaincode port",
-            "type": "integer",
-            "minimum": 10,
-            "maximum": 65535
-          },
           "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
             "title": "Private data collections",
