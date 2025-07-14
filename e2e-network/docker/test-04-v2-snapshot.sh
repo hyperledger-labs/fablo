@@ -9,7 +9,6 @@ FABLO_HOME="$TEST_TMP/../../.."
 export FABLO_HOME
 
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json"
-CHAINCODE_SRC="$FABLO_HOME/samples/chaincodes/chaincode-kv-node"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
@@ -58,7 +57,6 @@ waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. T
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
-# waitForContainer "chaincode1_peer0.org1.example.com" "Bootstrap process completed"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"
@@ -130,3 +128,5 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
+
+echo "✅ Test passed!"

@@ -15,7 +15,6 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= instance.peerAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= chaincode.lang %>" <% -%>
       "<%= chaincode.image %>" <% -%>
       "<%= instance.port %>" <% -%>
       "<%= instance.containerName %>" <% -%>
@@ -62,7 +61,7 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "$version" <% -%>
     "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
     "<%- chaincode.endorsement || '' %>" <% -%>
-    "<%= `${chaincode.initRequired}` %>" <% -%>
+    "<%= chaincode.initRequired %>" <% -%>
     "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
     "<%= chaincode.lang %>" <% -%>
@@ -77,7 +76,7 @@ chaincodeCommit <% -%>
   "$version" <% -%>
   "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
   "<%- chaincode.endorsement || '' %>" <% -%>
-  "<%= `${chaincode.initRequired}` %>" <% -%>
+  "<%= chaincode.initRequired %>" <% -%>
   "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
   "<%= !global.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>

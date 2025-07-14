@@ -145,7 +145,7 @@ export interface OrgConfig {
   tools: { fabloRest?: FabloRestConfig; explorer?: ExplorerConfig };
 }
 
-export interface peerChaincodeInstances{
+export interface peerChaincodeInstances {
   containerName: string;
   peerAddress: string;
   port: number;
