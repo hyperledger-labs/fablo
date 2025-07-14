@@ -190,24 +190,17 @@ chaincodeInstall() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
-chaincodeInstallCCaaS() {
-  set -x
-
-  local CLI_NAME=$1
-  local PEER_ADDRESS=$2
-  local CHAINCODE_NAME=$3
-  local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local CHAINCODE_IMAGE=$5
-  local EXTERNAL_PORT=$6
-  local CA_CERT=$7
+startCCaaSContainer() {
+  local PEER_ADDRESS="$1"
+  local CHAINCODE_NAME="$2"
+  local CHAINCODE_LABEL="$3"
+  local CHAINCODE_IMAGE="$4"
+  local EXTERNAL_PORT="$5"
+  local CLI_NAME="$6"
+  local CA_CERT="$7"
 
   local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
 
-  # Install the chaincode
-  INSTALL_RESPONSE="$(chaincodeInstall "$CLI_NAME" "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_VERSION" "$CA_CERT")"
-  echo "INSTALL_RESPONSE: $INSTALL_RESPONSE"
-  
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
   if [ -n "$CA_CERT" ]; then
@@ -222,35 +215,17 @@ chaincodeInstallCCaaS() {
       --output json \
       "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
-  echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
   PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
-  
+
   if [ -z "$PACKAGE_ID" ]; then
     echo "ERROR: Package ID not found for chaincode $CHAINCODE_LABEL"
     echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
     exit 1
   fi
-  
+
   echo "PACKAGE_ID: $PACKAGE_ID"
 
-  startCCaaSContainer "$PEER_ADDRESS" "$CHAINCODE_NAME" "$CHAINCODE_LABEL" "$PACKAGE_ID" "$CHAINCODE_IMAGE" "$EXTERNAL_PORT"
-}
-
-startCCaaSContainer() {
-  local PEER_ADDRESS="$1"
-  local CHAINCODE_NAME="$2"
-  local CHAINCODE_LABEL="$3"
-  local CC_PACKAGE_ID="$4"
-  local CHAINCODE_IMAGE="$5"
-  local EXTERNAL_PORT="$6"
-
-  local PACKAGE_HASH="${CC_PACKAGE_ID#*:}"
-  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
-
-  # If PACKAGE_HASH is empty, use the full CC_PACKAGE_ID
-  if [ -z "$PACKAGE_HASH" ]; then
-    PACKAGE_HASH="$CC_PACKAGE_ID"
-  fi
+  local PACKAGE_HASH="${PACKAGE_ID#*:}"
 
   echo "Starting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
 
@@ -271,24 +246,6 @@ startCCaaSContainer() {
 
   # Use generated CCAAS certificates
   local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
-
-  # Verify CCAAS TLS files exist
-  local REQUIRED_TLS_FILES=(
-    "$CCAAS_TLS_PATH/client.key"
-    "$CCAAS_TLS_PATH/client.crt"
-    "$CCAAS_TLS_PATH/peer.crt"
-  )
-
-  echo "Verifying CCAAS TLS files exist for $CONTAINER_NAME..."
-  for file in "${REQUIRED_TLS_FILES[@]}"; do
-    if [ ! -f "$file" ]; then
-      echo "ERROR: Required CCAAS TLS file missing: $file"
-      exit 1
-    fi
-    echo "✓ Found: $file"
-  done
-
-  docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
 
   docker run -d \
     --name "$CONTAINER_NAME" \
@@ -366,7 +323,6 @@ chaincodeApprove() {
       --output json \
       "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
   )"
-  echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
   if [ -z "$CC_PACKAGE_ID" ]; then
     echo "CC_PACKAGE_ID not found, using default: $CHAINCODE_NAME:$CHAINCODE_VERSION"
