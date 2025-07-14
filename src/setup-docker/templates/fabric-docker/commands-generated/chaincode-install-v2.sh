@@ -22,13 +22,11 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= global.tls %>"
   <% }) -%>
 <% } else { -%>
-  <% if (!chaincode.image) { -%>
-    chaincodeBuild <% -%>
-      "<%= chaincode.name %>" <% -%>
-      "<%= chaincode.lang %>" <% -%>
-      "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
-      "<%= global.fabricRecommendedNodeVersion %>"
-  <% } -%>
+  chaincodeBuild <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "<%= chaincode.lang %>" <% -%>
+    "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>" <% -%>
+    "<%= global.fabricRecommendedNodeVersion %>"
   chaincodePackage <% -%>
     "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
     "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
@@ -38,13 +36,24 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 <% } -%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
-  <% org.peers.forEach((peer) => { -%>
-    chaincodeInstall <% -%>
-      "<%= org.cli.address %>" <% -%>
-      "<%= peer.fullAddress %>" <% -%>
-      "<%= chaincode.name %>" <% -%>
-      "$version" <% -%>
-      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+  <% org.peers.forEach((peer, i) => { -%>
+    <% if (chaincode.lang === "ccaas") { -%>
+      chaincodeInstallCCaaS <% -%>
+        "<%= org.cli.address %>" <% -%>
+        "<%= peer.fullAddress %>" <% -%>
+        "<%= chaincode.name %>" <% -%>
+        "$version" <% -%>
+        "<%= chaincode.image %>" <% -%>
+        "<%= chaincode.peerChaincodeInstances[i].port %>" <% -%>
+        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+    <% } else { -%>
+      chaincodeInstall <% -%>
+        "<%= org.cli.address %>" <% -%>
+        "<%= peer.fullAddress %>" <% -%>
+        "<%= chaincode.name %>" <% -%>
+        "$version" <% -%>
+        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+    <% } -%>
   <% }) -%>
   <% org.peers.forEach((peer) => { -%>
     chaincodeApprove <% -%>

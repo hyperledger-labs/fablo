@@ -42,8 +42,7 @@ const extendChaincodesConfig = (
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
-  let portCounter = 7052;
-  return chaincodes.map((chaincode) => {
+  return chaincodes.map((chaincode, index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
@@ -63,10 +62,9 @@ const extendChaincodesConfig = (
       : channel.orgs.flatMap((org) =>
           org.peers.map((peer) => {
             return {
-              // the beginning of the name matches the convention used by regular local Fabric chaincode containers
               containerName: `ccaas-${peer.address}-${chaincode.name}`,
               peerAddress: peer.address,
-              port: portCounter++,
+              port: 10000 * (index + 1) + peer.port,
               orgDomain: org.domain,
             };
           }),
