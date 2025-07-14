@@ -82,7 +82,7 @@ describe("validate", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Validation errors count: 0");
-    expect(commandResult.output).toContain("Validation warnings count: 0");
+    expect(commandResult.output).toContain("Validation warnings count: 1");
     expect(commands.getFiles()).toContain("e2e/__tmp__/commands-tests/fablo-config.json");
   });
 
