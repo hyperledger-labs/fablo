@@ -55,7 +55,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
         orgs: [
           {
             name: "Org1",
-            peers: ["peer0", "peer1"],
+            peers: ["peer0"],
           },
         ],
       },
