@@ -48,6 +48,12 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
+# Test for connection profiles 
+CONN_PROFILE_DIR="$TEST_TMP/fablo-target/fabric-config/connection-profiles"
+expectCommand "test -d \"$CONN_PROFILE_DIR\" && echo exists" "exists"
+expectCommand "ls \"$CONN_PROFILE_DIR\"/connection-profile-*.json | head -n 1" "connection-profile-"
+expectCommand "ls \"$CONN_PROFILE_DIR\"/connection-profile-*.yaml | head -n 1" "connection-profile-"
+
 waitForContainer "orderer0.group1.orderer.example.com" "Created and started new.*my-channel1"
 waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
