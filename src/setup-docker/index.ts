@@ -72,6 +72,13 @@ export default class SetupDockerGenerator extends Generator {
     // ======= hooks ====================================================================
     this._copyHooks(config.hooks);
 
+    // generate the diagram by default
+    const ExportNetworkTopologyPath = require.resolve("../export-network-topology");
+    const outputFile = this.destinationPath("network-topology.mmd");
+    this.composeWith(ExportNetworkTopologyPath, {
+      arguments: [fabloConfigPath, outputFile],
+    });
+
     this.on("end", () => {
       console.log("Done & done !!! Try the network out: ");
       console.log("-> fablo up - to start network");
