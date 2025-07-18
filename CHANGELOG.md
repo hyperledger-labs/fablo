@@ -3,6 +3,12 @@
 ### Features
 * Hardcode fablo config inside init generator
   [#554](https://github.com/hyperledger-labs/fablo/pull/554)
+* Publish sample chaincode Docker image
+  [#555](https://github.com/hyperledger-labs/fablo/pull/555)
+* Include and test Sample Go chaincode in samples/chaincodes/chaincode-kv-go
+  [#569](https://github.com/hyperledger-labs/fablo/pull/569)
+* Export network topology with Mermaid 
+  [#565](https://github.com/hyperledger-labs/fablo/pull/565)
 
 
 ## 2.2.0

@@ -8,12 +8,12 @@
   },
   "scripts": {
     "start": "fabric-chaincode-node start",
+    "start:ccaas": "fabric-chaincode-node server --chaincode-address 0.0.0.0:7052 --chaincode-id \"chaincode1:0.0.1\"",
     "start:dev": "fabric-chaincode-node start --peer.address \"127.0.0.1:8541\" --chaincode-id-name \"chaincode1:0.0.1\" --tls.enabled false",
     "start:watch": "nodemon --exec \"npm run start:dev\"",
     "build": "echo \"No need to build the chaincode\"",
     "lint": "eslint . --fix --ext .js"
   },
-  "author": "SoftwareMill",
   "dependencies": {
     "fabric-contract-api": "2.4.2",
     "fabric-shim": "2.4.2"
