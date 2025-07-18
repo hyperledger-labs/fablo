@@ -37,10 +37,10 @@ This document provides an overview of Fablo features. The table below tracks fea
 | `start`, `stop`, `restart`             | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | `down`, `reset`                        | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | `prune`, `recreate`                    | ✓         | ✓         | ✓          | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
-| `validate`, `extend-config`            | ✓         | ✓         | ✓          |          |                 |
-| `version`                              | ✓         | ✓         | ✓          |          |                 |
+| `validate`, `extend-config`            | ✓         | ✓         | ✓          |          | [#578](https://github.com/hyperledger-labs/fablo/pull/578) |
+| `version`                              | ✓         | ✓         | ✓          |          | [#578](https://github.com/hyperledger-labs/fablo/pull/578) |
 | `init` (node, rest, dev)               | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
-| `export-network-topology` to Mermaid   | ✓         | ✓         | ✓          |          |                 |
+| `export-network-topology` to Mermaid   | ✓         | ✓         | ✓          |          | [#579](https://github.com/hyperledger-labs/fablo/pull/579)        |
 | Other `init` options                   |           |           |            |          | [#444](https://github.com/hyperledger-labs/fablo/issues/444)      |
 | <br>**SNAPSHOT**                       |           |           |            |          |                 |
 | Create snapshot                        | ✓         | ✓         | ✓          | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
@@ -48,9 +48,9 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Post-start hook                        |           |           |            |          | [#111](https://github.com/hyperledger-labs/fablo/issues/111) |
 | <br>**OTHER FEATURES**                 |           |           |            |          |                 |
 | Peer dev mode                          | ✓         | ✕         | ✓          |          | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
-| Connection profiles                    | ✓         | ✓         | ✓          |          |                 |
+| Connection profiles                    | ✓         | ✓         | ✓          |          | [#585](https://github.com/hyperledger-labs/fablo/pull/585)       |
 | Gateway client                         |           |           |            |          | [#544](https://github.com/hyperledger-labs/fablo/pull/544) |
-| Hooks: post-generate                   | ✓         | ✓         | ✓          |          |                 |
+| Hooks: post-generate                   | ✓         | ✓         | ✓          |          | [#580](https://github.com/hyperledger-labs/fablo/pull/580) |
 | JSON/YAML support                      | ✓         | ✓         | ✓          |          |                 |
 
 ---
