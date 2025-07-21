@@ -4968,7 +4968,7 @@ EOF
     '
 
   cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
-  chmod -R 644 "$OUTPUT_PATH"
+  chown -R "$(id -u):$(id -g)" "$OUTPUT_PATH"
   echo "TLS certs generated for \${CONTAINER_NAME} at \${OUTPUT_PATH}"
 }
 
