@@ -15,7 +15,7 @@ response="$(eval "$command" 2>&1)"
 
 echo "$response"
 
-if echo "$response" | grep -a -F "$expected"; then
+if echo "$response" | grep -a -E "$expected"; then
   echo "✅ ok (cli): $command"
 else
   echo "❌ failed (cli): $command | expected: $expected"
