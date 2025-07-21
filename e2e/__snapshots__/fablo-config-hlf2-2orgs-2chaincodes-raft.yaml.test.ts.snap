@@ -4464,11 +4464,11 @@ EOF
       openssl x509 -req -in /certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial \\
         -out /certs/client.crt -days 365 -sha256 -extensions v3_req -extfile /certs/openssl.cnf &&
       base64 /certs/client.crt > /certs/client_pem.crt &&
-      base64 /certs/client.key > /certs/client_pem.key
+      base64 /certs/client.key > /certs/client_pem.key &&
+      chown -R '"$(id -u):$(id -g)"' /certs
     '
 
   cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
-  chown -R "$(id -u):$(id -g)" "$OUTPUT_PATH"
   echo "TLS certs generated for \${CONTAINER_NAME} at \${OUTPUT_PATH}"
 }
 
