@@ -251,7 +251,7 @@ describe("schema", () => {
   it("should validate chaincode language", () => {
     const withChaincodeLanguage = (l: string) =>
       updatedBase((json: FabloConfigJson) => {
-        json.chaincodes[0].lang = l as "java" | "golang" | "node";
+        json.chaincodes[0].lang = l as "java" | "golang" | "node" | "ccaas";
       });
 
     expect(withChaincodeLanguage("java")).toMatchSchema(schema);

@@ -128,3 +128,5 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
+
+echo "✅ Test passed!"
