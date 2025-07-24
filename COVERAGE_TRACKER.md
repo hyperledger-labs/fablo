@@ -9,7 +9,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | <br>**NETWORK CONFIGURATION**          |           |           |            |          |                 |
 | RAFT Consensus                         | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | BFT Consensus                          | -         | ✓         | ✓          | [06_v3](/e2e-network/docker/test-06-v3-bft.sh) | [#559](https://github.com/hyperledger-labs/fablo/issues/559) |
-| TLS                                    | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
+| TLS                                    | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Orderer Groups                         | ✓         | ✕         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) | [#560](https://github.com/hyperledger-labs/fablo/issues/560) |
 | Peer DB - LevelDB                      | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Peer DB - CouchDB                      | ✓         | ✓         | ✓          | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
@@ -37,8 +37,8 @@ This document provides an overview of Fablo features. The table below tracks fea
 | `start`, `stop`, `restart`             | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | `down`, `reset`                        | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | `prune`, `recreate`                    | ✓         | ✓         | ✓          | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
-| `validate`, `extend-config`            | ✓         | ✓         | ✓          |          | [#578](https://github.com/hyperledger-labs/fablo/pull/578) |
-| `version`                              | ✓         | ✓         | ✓          |          | [#578](https://github.com/hyperledger-labs/fablo/pull/578) |
+| `validate`, `extend-config`            | ✓         | ✓         | ✓          | [e2e](/e2e/fabloCommands.test.ts)         |  |
+| `version`                              | ✓         | ✓         | ✓          | [e2e](/e2e/fabloCommands.test.ts)         |  |
 | `init` (node, rest, dev)               | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | `export-network-topology` to Mermaid   | ✓         | ✓         | ✓          |          | [#579](https://github.com/hyperledger-labs/fablo/pull/579)        |
 | Other `init` options                   |           |           |            |          | [#444](https://github.com/hyperledger-labs/fablo/issues/444)      |
@@ -48,10 +48,11 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Post-start hook                        |           |           |            |          | [#111](https://github.com/hyperledger-labs/fablo/issues/111) |
 | <br>**OTHER FEATURES**                 |           |           |            |          |                 |
 | Peer dev mode                          | ✓         | ✕         | ✓          |          | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
-| Connection profiles                    | ✓         | ✓         | ✓          |          | [#585](https://github.com/hyperledger-labs/fablo/pull/585)       |
+| Connection profiles                    | ✓         | ✓         | ✓          | [e2e_snap](/e2e/__snapshots__/fablo-config-hlf2-1org-1chaincode.json.test.ts.snap)         |        |
 | Gateway client                         |           |           |            |          | [#544](https://github.com/hyperledger-labs/fablo/pull/544) |
 | Hooks: post-generate                   | ✓         | ✓         | ✓          |          | [#580](https://github.com/hyperledger-labs/fablo/pull/580) |
 | JSON/YAML support                      | ✓         | ✓         | ✓          |          |                 |
+| Apple Silicon                          | ✕         | ✓         | ✓          | [05_v3](/e2e-network/docker/test-05-v3.sh) |        |
 
 ---
 
