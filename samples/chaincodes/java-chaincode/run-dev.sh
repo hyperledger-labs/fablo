@@ -6,6 +6,7 @@ set -eu
 CHAINCODE_NAME="chaincode1"
 CHAINCODE_VERSION="0.0.1"
 CHANNEL_NAME="my-channel1"
+PEER_IP="0.0.0.0"
 PEER_NAME="peer0.org1.example.com"
 JAR_PATH="build/libs/chaincode-all.jar"
 
@@ -41,7 +42,6 @@ if [ -z "$CHAINCODE_PORT" ]; then
     exit 1
 fi
 
-PEER_IP="0.0.0.0"
 
 echo "Testing connectivity to peer at $PEER_IP:$CHAINCODE_PORT..."
 if ! nc -z $PEER_IP $CHAINCODE_PORT 2>/dev/null; then
