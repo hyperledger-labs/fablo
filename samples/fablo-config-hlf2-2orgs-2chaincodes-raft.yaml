@@ -37,6 +37,7 @@ orgs:
     peer: *defaultPeerConfig
 channels:
   - name: my-channel1
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:
@@ -45,6 +46,7 @@ channels:
         peers:
           - peer0
   - name: my-channel2
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:

@@ -69,6 +69,8 @@ waitForContainer "orderer1.group1.orderer1.com" "Starting Raft node channel=my-c
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel1"
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel2"
 
+waitForContainer "orderer0.group1.orderer1.com" "Created and started new channel my-channel1"
+waitForContainer "orderer0.group1.orderer1.com" "Created and started new channel my-channel2"
 waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
