@@ -10,10 +10,19 @@ export FABLO_HOME
 
 CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml"
 
+expectCommand() {
+  sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
+}
+
 networkUp() {
   # separate generate and up is intentional just to check if it works
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
+
+
+  # Check if the hook was executed (MaxMessageCount should be 1)
+  expectCommand "cat \"$TEST_TMP/fablo-target/fabric-config/configtx.yaml\"" "MaxMessageCount: 1$"
+
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
