@@ -28,6 +28,8 @@ generateArtifacts() {
 startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
+  # todo start ccaas containers if needed
+  # todo remore ccaas start from chaincode scripts
   sleep 4
 }
 
@@ -241,6 +243,7 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
+  # todo stop ccaas containers
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
   sleep 4
 }
