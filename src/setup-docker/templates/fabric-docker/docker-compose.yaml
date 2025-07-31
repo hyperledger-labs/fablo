@@ -138,14 +138,14 @@ services:
 
   <%_ if (org.tools.explorer && !global.tools.explorer) { _%>
   db.<%= org.tools.explorer.address %>:
-    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    image:  ghcr.io/hyperledger-labs/explorer-db:latest
     container_name: db.<%= org.tools.explorer.address %>
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -155,7 +155,7 @@ services:
       - basic
 
   <%= org.tools.explorer.address %>:
-    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer:latest
     restart: on-failure:8
     container_name: <%= org.tools.explorer.address %>
     environment:
@@ -329,14 +329,14 @@ services:
 
   <%_ if (global.tools.explorer) { _%>
   db.<%= global.tools.explorer.address %>:
-    image: hyperledger/explorer-db:${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer-db:latest
     container_name: db.<%= global.tools.explorer.address %>
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -346,7 +346,7 @@ services:
       - basic
 
   <%= global.tools.explorer.address %>:
-    image: hyperledger/explorer:${HYPERLEDGER_EXPLORER_VERSION}
+    image:  ghcr.io/hyperledger-labs/explorer:latest
     restart: on-failure:8
     container_name: <%= global.tools.explorer.address %>
     environment:
