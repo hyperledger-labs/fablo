@@ -186,7 +186,7 @@ jobs:
         run: |
           set -x
           sudo chmod ugo+w /usr/local/bin
-          brew install docker docker-compose lima
+          brew install docker docker-compose lima qemu
 
       - name: Install and start Colima
         run: |
