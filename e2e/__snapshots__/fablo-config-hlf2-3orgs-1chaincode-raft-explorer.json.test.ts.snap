@@ -3317,7 +3317,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -4838,14 +4838,14 @@ services:
       - basic
 
   db.explorer.example.com:
-    image: hyperledger/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.explorer.example.com
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -4855,7 +4855,7 @@ services:
       - basic
 
   explorer.example.com:
-    image: hyperledger/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
     container_name: explorer.example.com
     environment:
