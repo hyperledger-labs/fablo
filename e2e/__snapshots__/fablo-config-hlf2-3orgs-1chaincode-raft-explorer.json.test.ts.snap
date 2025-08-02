@@ -4823,7 +4823,7 @@ services:
       - basic
 
   db.explorer.example.com:
-    image: ghcr.io/hyperledger-labs/explorer-db:latest
+    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.explorer.example.com
     environment:
       - DATABASE_DATABASE=fabricexplorer
@@ -4840,7 +4840,7 @@ services:
       - basic
 
   explorer.example.com:
-    image:  ghcr.io/hyperledger-labs/explorer:latest
+    image:  ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
     container_name: explorer.example.com
     environment:
