@@ -240,3 +240,27 @@ jobs:
           path: |
             e2e-network/docker/test-06-v3-bft.sh.logs/*
             e2e-network/docker/test-06-v3-bft.sh.tmpdir/fablo-target/**/*
+  test-07-v2-peer-dev-mode:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+
+      - name: Test v2 peer dev mode
+        run: e2e-network/docker/test-07-v2-peer-dev-mode.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-07-v2-peer-dev-mode-snapshot
+          path: |
+            e2e-network/docker/test-07-v2-peer-dev-mode.sh.logs/*
+            e2e-network/docker/test-07-v2-peer-dev-mode.sh.tmpdir/fablo-target/**/*
