@@ -56,7 +56,6 @@ waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
-waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"
@@ -113,6 +112,8 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
     "$FABLO_HOME/fablo.sh" start
 )
+
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 sleep 5
