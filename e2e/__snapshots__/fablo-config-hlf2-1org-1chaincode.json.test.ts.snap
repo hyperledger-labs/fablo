@@ -223,6 +223,11 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
         "verify": false
       }
     }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpc://localhost:7030"
+    }
   }
 }
 "
@@ -253,6 +258,9 @@ certificateAuthorities:
     caName: ca.orderer.example.com
     httpOptions:
       verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpc://localhost:7030
 "
 `;
 
@@ -292,6 +300,16 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
         "verify": false
       }
     }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpc://localhost:7030"
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    }
   }
 }
 "
@@ -322,6 +340,12 @@ certificateAuthorities:
     caName: ca.org1.example.com
     httpOptions:
       verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpc://localhost:7030
+channels:
+  my-channel1:
+    peers: {}
 "
 `;
 
