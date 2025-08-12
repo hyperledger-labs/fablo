@@ -486,7 +486,7 @@ class ValidateGenerator extends Generator {
 
   _validateExplorerWithFabricVersion(global: GlobalJson, orgs: OrgJson[]): void {
     const fabricVersion = global.fabricVersion;
-    if (!version(fabricVersion).isGreaterOrEqual("1.4.0") || version(fabricVersion).isGreaterOrEqual("2.4.0")) {
+    if (!version(fabricVersion).isGreaterOrEqual("1.4.0") || version(fabricVersion).isGreaterOrEqual("2.5.13")) {
       const warnMessage = `You are using fabric version '${global.fabricVersion}' which may not be supported by the Hyperledger Explorer`;
       if (global.tools?.explorer === true) {
         this.emit(validationErrorType.WARN, { category: validationCategories.GENERAL, message: warnMessage });
