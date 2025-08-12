@@ -112,6 +112,7 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
     "$FABLO_HOME/fablo.sh" prune &&
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
     "$FABLO_HOME/fablo.sh" start
+    "$FABLO_HOME/fablo.sh" chaincodes install
 )
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 

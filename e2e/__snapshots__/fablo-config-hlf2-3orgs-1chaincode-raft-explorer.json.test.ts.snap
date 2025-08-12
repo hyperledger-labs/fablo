@@ -3801,6 +3801,8 @@ generateArtifacts() {
 startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
+  # todo start ccaas containers if needed
+  # todo remore ccaas start from chaincode scripts
   sleep 4
 }
 
@@ -3960,6 +3962,7 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
+  # todo stop ccaas containers
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
   sleep 4
 }
@@ -4303,6 +4306,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -4350,6 +4355,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -4532,6 +4539,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org2"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -4579,6 +4588,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1Org2"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -4761,6 +4772,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org3"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -4808,6 +4821,8 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1Org3"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:

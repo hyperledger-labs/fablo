@@ -1888,9 +1888,9 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.j
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": undefined,
       "endorsement": undefined,
-      "image": undefined,
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -1974,9 +1974,16 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.j
           },
         },
       },
-      "lang": "node",
+      "lang": "ccaas",
       "name": "chaincode1",
-      "peerChaincodeInstances": [],
+      "peerChaincodeInstances": [
+        {
+          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "orgDomain": "org1.example.com",
+          "peerAddress": "peer0.org1.example.com",
+          "port": 17041,
+        },
+      ],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -11320,9 +11327,9 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": undefined,
       "endorsement": undefined,
-      "image": undefined,
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -11406,9 +11413,16 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
           },
         },
       },
-      "lang": "node",
+      "lang": "ccaas",
       "name": "chaincode1",
-      "peerChaincodeInstances": [],
+      "peerChaincodeInstances": [
+        {
+          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "orgDomain": "org1.example.com",
+          "peerAddress": "peer0.org1.example.com",
+          "port": 17041,
+        },
+      ],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
