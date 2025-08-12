@@ -1699,6 +1699,8 @@ generateArtifacts() {
 startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
+  # todo start ccaas containers if needed
+  # todo remore ccaas start from chaincode scripts
   sleep 4
 }
 
@@ -1714,18 +1716,19 @@ installChannels() {
 }
 
 installChaincodes() {
-  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+    printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+    startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
-    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/'"
   fi
 
 }
@@ -1744,18 +1747,19 @@ installChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+      startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/'"
     fi
   fi
 }
@@ -1791,18 +1795,19 @@ upgradeChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+      printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+      startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/'"
     fi
   fi
 }
@@ -1826,6 +1831,7 @@ printStartSuccessInfo() {
 
 stopNetwork() {
   printHeadline "Stopping network" "U1F68F"
+  # todo stop ccaas containers
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
   sleep 4
 }
@@ -1909,7 +1915,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
     networks:
       - basic
 
@@ -2022,7 +2028,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
     networks:
       - basic
 

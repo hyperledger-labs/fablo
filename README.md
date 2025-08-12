@@ -184,6 +184,7 @@ Example:
 3. Execute `./fablo prune` to destroy the current network. If the network was present, Fablo would not be able to restore the new one from backup.
 4. Execute `./fablo restore /tmp/my-snapshot` to restore the network.
 5. Execute `./fablo start` to start the restored network.
+6. When running external chaincodes(CCAAS), Execute `./fablo chaincodes install` to start the CCAAS container
 
 Typically, a snapshot of the network with little data will take less than 1 MB, so it is easy to share.
 
