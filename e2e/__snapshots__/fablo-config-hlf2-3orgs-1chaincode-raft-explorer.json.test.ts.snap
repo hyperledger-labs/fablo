@@ -423,11 +423,85 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
     "ca.orderer.example.com": {
       "url": "https://localhost:7020",
       "caName": "ca.orderer.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem"
-      },
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem"
+      }
+    }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
+    },
+    "orderer1.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7031",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+      }
+    },
+    "orderer0.group1.org1.example.com": {
+      "url": "grpcs://localhost:7050",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org1.example.com"
+      }
+    },
+    "orderer1.group1.org1.example.com": {
+      "url": "grpcs://localhost:7051",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org1.example.com"
+      }
+    },
+    "orderer0.group1.org2.example.com": {
+      "url": "grpcs://localhost:7070",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org2.example.com"
+      }
+    },
+    "orderer1.group1.org2.example.com": {
+      "url": "grpcs://localhost:7071",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org2.example.com"
+      }
+    },
+    "orderer0.group1.org3.example.com": {
+      "url": "grpcs://localhost:7090",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org3.example.com"
+      }
+    },
+    "orderer1.group1.org3.example.com": {
+      "url": "grpcs://localhost:7091",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org3.example.com"
       }
     }
   }
@@ -500,11 +574,68 @@ certificateAuthorities:
   ca.orderer.example.com:
     url: https://localhost:7020
     caName: ca.orderer.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
-    httpOptions:
-      verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
+  orderer1.group1.orderer.example.com:
+    url: grpcs://localhost:7031
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.orderer.example.com
+  orderer0.group1.org1.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org1.example.com
+  orderer1.group1.org1.example.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org1.example.com
+  orderer0.group1.org2.example.com:
+    url: grpcs://localhost:7070
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org2.example.com
+  orderer1.group1.org2.example.com:
+    url: grpcs://localhost:7071
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org2.example.com
+  orderer0.group1.org3.example.com:
+    url: grpcs://localhost:7090
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org3.example.com
+  orderer1.group1.org3.example.com:
+    url: grpcs://localhost:7091
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org3.example.com
 "
 `;
 
@@ -592,12 +723,94 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
     "ca.org1.example.com": {
       "url": "https://localhost:7040",
       "caName": "ca.org1.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
-      },
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
       }
+    }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
+    },
+    "orderer1.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7031",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+      }
+    },
+    "orderer0.group1.org1.example.com": {
+      "url": "grpcs://localhost:7050",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org1.example.com"
+      }
+    },
+    "orderer1.group1.org1.example.com": {
+      "url": "grpcs://localhost:7051",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org1.example.com"
+      }
+    },
+    "orderer0.group1.org2.example.com": {
+      "url": "grpcs://localhost:7070",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org2.example.com"
+      }
+    },
+    "orderer1.group1.org2.example.com": {
+      "url": "grpcs://localhost:7071",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org2.example.com"
+      }
+    },
+    "orderer0.group1.org3.example.com": {
+      "url": "grpcs://localhost:7090",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org3.example.com"
+      }
+    },
+    "orderer1.group1.org3.example.com": {
+      "url": "grpcs://localhost:7091",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org3.example.com"
+      }
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    },
+    "my-channel3": {
+      "peers": {}
     }
   }
 }
@@ -669,11 +882,73 @@ certificateAuthorities:
   ca.org1.example.com:
     url: https://localhost:7040
     caName: ca.org1.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
-    httpOptions:
-      verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
+  orderer1.group1.orderer.example.com:
+    url: grpcs://localhost:7031
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.orderer.example.com
+  orderer0.group1.org1.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org1.example.com
+  orderer1.group1.org1.example.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org1.example.com
+  orderer0.group1.org2.example.com:
+    url: grpcs://localhost:7070
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org2.example.com
+  orderer1.group1.org2.example.com:
+    url: grpcs://localhost:7071
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org2.example.com
+  orderer0.group1.org3.example.com:
+    url: grpcs://localhost:7090
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org3.example.com
+  orderer1.group1.org3.example.com:
+    url: grpcs://localhost:7091
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org3.example.com
+channels:
+  my-channel1:
+    peers: {}
+  my-channel3:
+    peers: {}
 "
 `;
 
@@ -761,12 +1036,94 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
     "ca.org2.example.com": {
       "url": "https://localhost:7060",
       "caName": "ca.org2.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
-      },
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
       }
+    }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
+    },
+    "orderer1.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7031",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+      }
+    },
+    "orderer0.group1.org1.example.com": {
+      "url": "grpcs://localhost:7050",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org1.example.com"
+      }
+    },
+    "orderer1.group1.org1.example.com": {
+      "url": "grpcs://localhost:7051",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org1.example.com"
+      }
+    },
+    "orderer0.group1.org2.example.com": {
+      "url": "grpcs://localhost:7070",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org2.example.com"
+      }
+    },
+    "orderer1.group1.org2.example.com": {
+      "url": "grpcs://localhost:7071",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org2.example.com"
+      }
+    },
+    "orderer0.group1.org3.example.com": {
+      "url": "grpcs://localhost:7090",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org3.example.com"
+      }
+    },
+    "orderer1.group1.org3.example.com": {
+      "url": "grpcs://localhost:7091",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org3.example.com"
+      }
+    }
+  },
+  "channels": {
+    "my-channel2": {
+      "peers": {}
+    },
+    "my-channel3": {
+      "peers": {}
     }
   }
 }
@@ -838,11 +1195,73 @@ certificateAuthorities:
   ca.org2.example.com:
     url: https://localhost:7060
     caName: ca.org2.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem
-    httpOptions:
-      verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
+  orderer1.group1.orderer.example.com:
+    url: grpcs://localhost:7031
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.orderer.example.com
+  orderer0.group1.org1.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org1.example.com
+  orderer1.group1.org1.example.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org1.example.com
+  orderer0.group1.org2.example.com:
+    url: grpcs://localhost:7070
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org2.example.com
+  orderer1.group1.org2.example.com:
+    url: grpcs://localhost:7071
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org2.example.com
+  orderer0.group1.org3.example.com:
+    url: grpcs://localhost:7090
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org3.example.com
+  orderer1.group1.org3.example.com:
+    url: grpcs://localhost:7091
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org3.example.com
+channels:
+  my-channel2:
+    peers: {}
+  my-channel3:
+    peers: {}
 "
 `;
 
@@ -930,11 +1349,85 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
     "ca.org3.example.com": {
       "url": "https://localhost:7080",
       "caName": "ca.org3.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org3.example.com/ca/ca.org3.example.com-cert.pem"
-      },
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org3.example.com/ca/ca.org3.example.com-cert.pem"
+      }
+    }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
+    },
+    "orderer1.group1.orderer.example.com": {
+      "url": "grpcs://localhost:7031",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+      }
+    },
+    "orderer0.group1.org1.example.com": {
+      "url": "grpcs://localhost:7050",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org1.example.com"
+      }
+    },
+    "orderer1.group1.org1.example.com": {
+      "url": "grpcs://localhost:7051",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org1.example.com"
+      }
+    },
+    "orderer0.group1.org2.example.com": {
+      "url": "grpcs://localhost:7070",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org2.example.com"
+      }
+    },
+    "orderer1.group1.org2.example.com": {
+      "url": "grpcs://localhost:7071",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org2.example.com"
+      }
+    },
+    "orderer0.group1.org3.example.com": {
+      "url": "grpcs://localhost:7090",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.org3.example.com"
+      }
+    },
+    "orderer1.group1.org3.example.com": {
+      "url": "grpcs://localhost:7091",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.org3.example.com"
       }
     }
   }
@@ -1007,11 +1500,68 @@ certificateAuthorities:
   ca.org3.example.com:
     url: https://localhost:7080
     caName: ca.org3.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org3.example.com/ca/ca.org3.example.com-cert.pem
-    httpOptions:
-      verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
+  orderer1.group1.orderer.example.com:
+    url: grpcs://localhost:7031
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.orderer.example.com
+  orderer0.group1.org1.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org1.example.com
+  orderer1.group1.org1.example.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.group1.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org1.example.com
+  orderer0.group1.org2.example.com:
+    url: grpcs://localhost:7070
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org2.example.com
+  orderer1.group1.org2.example.com:
+    url: grpcs://localhost:7071
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.group1.org2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org2.example.com
+  orderer0.group1.org3.example.com:
+    url: grpcs://localhost:7090
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer0.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.org3.example.com
+  orderer1.group1.org3.example.com:
+    url: grpcs://localhost:7091
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/org3.example.com/orderers/orderer1.group1.org3.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.org3.example.com
 "
 `;
 
