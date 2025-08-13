@@ -62,7 +62,7 @@ printSplash() {
 printHelp() {
   printSplash
   echo "Usage:
-  fablo init [node] [rest] [dev]
+  fablo init [node] [rest] [dev] [gateway]
     Creates simple Fablo config in current directory with optional Node.js, chaincode and REST API and dev mode.
 
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
