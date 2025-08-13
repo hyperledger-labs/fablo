@@ -6,7 +6,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
   return {
   $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   global: {
-    fabricVersion: "2.5.9",
+    fabricVersion: "2.5.12",
     tls: false,
     peerDevMode: false,
   },
@@ -89,6 +89,12 @@ export default class InitGenerator extends Generator {
       this.fs.write(this.destinationPath("chaincodes/chaincode-kv-node/.nvmrc"), "12");
     } else {
       fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
+    }
+
+    const shouldInitWithNodeSampleGateway = this.args.length && this.args.find((v) => v === "gateway");
+    if (shouldInitWithNodeSampleGateway) {
+      console.log("Creating sample Node.js gateway");
+      this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
     }
 
     const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");

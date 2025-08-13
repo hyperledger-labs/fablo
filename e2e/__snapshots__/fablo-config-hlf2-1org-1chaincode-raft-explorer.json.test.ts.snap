@@ -16,7 +16,7 @@ Capabilities:
     Orderer: &OrdererCapabilities
         V2_0: true
     Application: &ApplicationCapabilities
-        V2_0: true
+        V2_5: true
 
 ################################################################################
 #   CHANNEL Defaults
@@ -1527,7 +1527,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -1538,15 +1538,15 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=2.3.3
-FABRIC_TOOLS_VERSION=2.3.3
+FABRIC_VERSION=2.5.12
+FABRIC_TOOLS_VERSION=2.5.12
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.3.3
-FABRIC_BASEOS_VERSION=2.3.3
-FABRIC_JAVAENV_VERSION=2.3
-FABRIC_NODEENV_VERSION=2.3
-RECOMMENDED_NODE_VERSION=12
+FABRIC_CCENV_VERSION=2.5.12
+FABRIC_BASEOS_VERSION=2.5.12
+FABRIC_JAVAENV_VERSION=2.5
+FABRIC_NODEENV_VERSION=2.5
+RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
 ROOT_CA_ADMIN_PASSWORD=adminpw
@@ -1717,7 +1717,7 @@ installChaincodes() {
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "12"
+    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
     chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -1746,7 +1746,7 @@ installChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "12"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -1793,7 +1793,7 @@ upgradeChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "12"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" ""
@@ -2086,6 +2086,8 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org1.example.com:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=peer0Password
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2119,14 +2121,14 @@ services:
       - basic
 
   db.explorer.example.com:
-    image: hyperledger/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.explorer.example.com
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -2136,7 +2138,7 @@ services:
       - basic
 
   explorer.example.com:
-    image: hyperledger/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
     container_name: explorer.example.com
     environment:
@@ -3278,6 +3280,29 @@ perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
+"graph TD
+
+  subgraph Org_Orderer [Org: Orderer]
+    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - postgres]
+    Org1_peer0[Peer: peer0]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  %% Connections
+  Org_Orderer --> Channel_my_channel1
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore",
@@ -3306,5 +3331,6 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

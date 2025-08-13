@@ -3317,7 +3317,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -4823,14 +4823,14 @@ services:
       - basic
 
   db.explorer.example.com:
-    image: hyperledger/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.explorer.example.com
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -4840,7 +4840,7 @@ services:
       - basic
 
   explorer.example.com:
-    image: hyperledger/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
     container_name: explorer.example.com
     environment:
@@ -5994,6 +5994,60 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
+"graph TD
+
+  subgraph Org_Orderer [Org: Orderer]
+    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - sqlite]
+    Org1_peer0[Peer: peer0]
+    Org1_peer1[Peer: peer1]
+  end
+
+  subgraph Org_Org2 [Org: Org2]
+    CA_ca_Org2[CA: ca_Org2 - sqlite]
+    Org2_peer0[Peer: peer0]
+    Org2_peer1[Peer: peer1]
+  end
+
+  subgraph Org_Org3 [Org: Org3]
+    CA_ca_Org3[CA: ca_Org3 - sqlite]
+    Org3_peer0[Peer: peer0]
+    Org3_peer1[Peer: peer1]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  subgraph Channel_my_channel2 [Channel: my-channel2]
+  end
+
+  subgraph Channel_my_channel3 [Channel: my-channel3]
+  end
+
+  %% Connections
+  Org_Orderer --> Channel_my_channel1
+  Org_Orderer --> Channel_my_channel2
+  Org_Orderer --> Channel_my_channel3
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+  Org1_peer1 --> Channel_my_channel1
+  Org_Org2 -.-> Channel_my_channel2
+  Org2_peer0 --> Channel_my_channel2
+  Org2_peer1 --> Channel_my_channel2
+  Org_Org1 -.-> Channel_my_channel3
+  Org1_peer0 --> Channel_my_channel3
+  Org1_peer1 --> Channel_my_channel3
+  Org_Org2 -.-> Channel_my_channel3
+  Org2_peer0 --> Channel_my_channel3
+  Org2_peer1 --> Channel_my_channel3
+"
+`;
+
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore",
@@ -6032,5 +6086,6 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

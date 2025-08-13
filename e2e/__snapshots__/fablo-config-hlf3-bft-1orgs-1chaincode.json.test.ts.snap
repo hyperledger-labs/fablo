@@ -1539,7 +1539,7 @@ exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create prope
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -1550,12 +1550,12 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
-FABRIC_VERSION=3.0.0-beta
+FABRIC_VERSION=3.0.0
 FABRIC_TOOLS_VERSION=3.0.0
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=3.0.0-beta
-FABRIC_BASEOS_VERSION=3.0.0-beta
+FABRIC_CCENV_VERSION=3.0.0
+FABRIC_BASEOS_VERSION=3.0.0
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
@@ -3420,6 +3420,31 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
+"graph TD
+
+  subgraph Org_Orderer [Org: Orderer]
+    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - sqlite]
+    Org1_peer0[Peer: peer0]
+    Org1_peer1[Peer: peer1]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  %% Connections
+  Org_Orderer --> Channel_my_channel1
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+  Org1_peer1 --> Channel_my_channel1
+"
+`;
+
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper files from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
@@ -3446,5 +3471,6 @@ exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create prope
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;
