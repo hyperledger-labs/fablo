@@ -1438,7 +1438,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -1509,26 +1509,20 @@ chaincodeInvoke() {
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi
-  cli=""
-  peer_addresses=""
 
-  if [[ "$1" == *"peer0.org1.example.com"* ]]; then
+  # Cli needs to be from the same org as the first peer
+  if [[ "$1" == "peer0.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer0.org1.example.com:7041"
-
   fi
-  if [[ "$1" == *"peer1.org1.example.com"* ]]; then
+  if [[ "$1" == "peer1.org1.example.com"* ]]; then
     cli="cli.org1.example.com"
-    peer_addresses="$peer_addresses,peer1.org1.example.com:7042"
-
-  fi
-  if [ -z "$peer_addresses" ]; then
-    echo "Unknown peers: $1"
-    exit 1
   fi
 
-  peerChaincodeInvoke "$cli" "\${peer_addresses:1}" "$2" "$3" "$4" "$5"
+  peer_addresses="$1"
+  peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
+  peer_addresses="\${peer_addresses//peer1.org1.example.com/peer1.org1.example.com:7042}"
 
+  peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
 }
 "
 `;
@@ -1541,8 +1535,6 @@ source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
 set -eu
 
 channelQuery() {
-  echo "-> Channel query: " + "$@"
-
   if [ "$#" -eq 1 ]; then
     printChannelsHelp
 
@@ -3154,6 +3146,31 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
+"graph TD
+
+  subgraph Org_Orderer [Org: Orderer]
+    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - sqlite]
+    Org1_peer0[Peer: peer0]
+    Org1_peer1[Peer: peer1]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  %% Connections
+  Org_Orderer --> Channel_my_channel1
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+  Org1_peer1 --> Channel_my_channel1
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
@@ -3180,5 +3197,6 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper fil
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

@@ -72,6 +72,13 @@ export default class SetupDockerGenerator extends Generator {
     // ======= hooks ====================================================================
     this._copyHooks(config.hooks);
 
+    // generate the diagram by default
+    const ExportNetworkTopologyPath = require.resolve("../export-network-topology");
+    const outputFile = this.destinationPath("network-topology.mmd");
+    this.composeWith(ExportNetworkTopologyPath, {
+      arguments: [fabloConfigPath, outputFile],
+    });
+
     this.on("end", () => {
       console.log("Done & done !!! Try the network out: ");
       console.log("-> fablo up - to start network");
@@ -162,7 +169,7 @@ export default class SetupDockerGenerator extends Generator {
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.1.2",
-      hyperledgerExplorerVersion: "1.1.8",
+      hyperledgerExplorerVersion: "2.0.0",
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
       fabricCaPostgresVersion: "14",

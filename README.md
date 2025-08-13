@@ -72,7 +72,7 @@ In this case, however, you should use generated `fablo-docker.sh` instead of `fa
 ### init
 
 ```bash
-fablo init [node] [rest] [dev]
+fablo init [node] [rest] [dev] [gateway]
 ```
 
 Creates simple network config file in current dir.
@@ -82,6 +82,7 @@ Fablo `init` command takes three parameters (the order does not matter):
 * Option `node` makes Fablo to generate a sample Node.js chaincode as well.
 * Option `rest` enables simple REST API with [Fablo REST](https://github.com/fablo-io/fablo-rest) as standalone Docker container.
 * Option `dev` enables running peers in dev mode (so the hot reload for chaincode is possible).
+* Option `gateway` makes Fablo generate a sample Node.js server that connects to the gateway.
 
 Sample command:
 
@@ -150,6 +151,30 @@ fablo validate [/path/to/fablo-config.json|yaml]
 
 Validates network config. This command will validate your network config try to suggest necessary changes or additional tweaks.
 Please note that this step is also executed automatically before each `generate` to ensure that at least critical errors where fixed. 
+
+### export-network-topology
+
+```bash
+fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
+
+```
+- `outputFile.mmd`: (optional) Path to the output Mermaid file. Defaults to `network-topology.mmd`.
+
+#### Example
+
+```bash
+fablo export-network-topology fablo-config.json network-topology.mmd
+```
+
+You can visualize the output using any Mermaid-compatible tool or online editor.
+
+### extend-config 
+
+```bash
+fablo extend-config [/path/to/fablo-config.json|yaml]
+```
+
+Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file and making some config parts more verbos. 
 
 ### snapshot and restore
 
