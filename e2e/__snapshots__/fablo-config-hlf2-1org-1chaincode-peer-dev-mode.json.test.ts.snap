@@ -1,0 +1,3138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"/config
+/crypto-config
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/configtx.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"################################################################################
+#   SECTION: Capabilities
+################################################################################
+Capabilities:
+    Channel: &ChannelCapabilities
+        V2_0: true
+    Orderer: &OrdererCapabilities
+        V2_0: true
+    Application: &ApplicationCapabilities
+        V2_5: true
+
+################################################################################
+#   CHANNEL Defaults
+################################################################################
+Channel: &ChannelDefaults
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#   Section: Organizations
+################################################################################
+Organizations:
+    - &Orderer
+      Name: OrdererMSP
+      ID: OrdererMSP
+      MSPDir: crypto-config/peerOrganizations/orderer.example.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('OrdererMSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('OrdererMSP.member')"
+
+      AnchorPeers:
+
+    - &Org1
+      Name: Org1MSP
+      ID: Org1MSP
+      MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+
+      Policies:
+          Readers:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+          Writers:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+          Admins:
+              Type: Signature
+              Rule: "OR('Org1MSP.admin')"
+          Endorsement:
+              Type: Signature
+              Rule: "OR('Org1MSP.member')"
+
+      AnchorPeers:
+          - Host: peer0.org1.example.com
+            Port: 7041
+
+################################################################################
+#   SECTION: Application
+################################################################################
+Application: &ApplicationDefaults
+    Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#   SECTION: Orderer
+################################################################################
+Orderer: &Group1Defaults
+    OrdererType: solo
+    Addresses:
+        - orderer0.group1.orderer.example.com:7030
+
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+    Capabilities:
+        <<: *OrdererCapabilities
+
+################################################################################
+#   Profile
+################################################################################
+# https://github:com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml
+
+Profiles:
+    # Profile used to create Genesis block for group group1 #
+    Group1Genesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Orderer
+                    - *Org1
+
+    # Profile used to create channeltx for my-channel1 #
+    MyChannel1:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *Group1Defaults
+            Organizations:
+                - *Orderer
+            Capabilities:
+                <<: *ApplicationCapabilities
+        Consortium: SampleConsortium
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"{
+  "name": "fablo-test-network-orderer",
+  "description": "Connection profile for Orderer in Fablo network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Orderer"
+  },
+  "organizations": {
+    "Orderer": {
+      "mspid": "OrdererMSP",
+      "peers": [
+        "peer0.org1.example.com"
+      ],
+      "certificateAuthorities": [
+        "ca.orderer.example.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.org1.example.com": {
+      "url": "grpc://localhost:7041"
+    }
+  },
+  "certificateAuthorities": {
+    "ca.orderer.example.com": {
+      "url": "http://localhost:7020",
+      "caName": "ca.orderer.example.com",
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"name: fablo-test-network-orderer
+description: Connection profile for Orderer in Fablo network
+version: 1.0.0
+client:
+  organization: Orderer
+organizations:
+  Orderer:
+    mspid: OrdererMSP
+    peers:
+      - peer0.org1.example.com
+    certificateAuthorities:
+      - ca.orderer.example.com
+peers:
+  peer0.org1.example.com:
+    url: grpc://localhost:7041
+certificateAuthorities:
+  ca.orderer.example.com:
+    url: http://localhost:7020
+    caName: ca.orderer.example.com
+    httpOptions:
+      verify: false
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"{
+  "name": "fablo-test-network-org1",
+  "description": "Connection profile for Org1 in Fablo network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Org1"
+  },
+  "organizations": {
+    "Org1": {
+      "mspid": "Org1MSP",
+      "peers": [
+        "peer0.org1.example.com"
+      ],
+      "certificateAuthorities": [
+        "ca.org1.example.com"
+      ]
+    }
+  },
+  "peers": {
+    "peer0.org1.example.com": {
+      "url": "grpc://localhost:7041"
+    }
+  },
+  "certificateAuthorities": {
+    "ca.org1.example.com": {
+      "url": "http://localhost:7040",
+      "caName": "ca.org1.example.com",
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"name: fablo-test-network-org1
+description: Connection profile for Org1 in Fablo network
+version: 1.0.0
+client:
+  organization: Org1
+organizations:
+  Org1:
+    mspid: Org1MSP
+    peers:
+      - peer0.org1.example.com
+    certificateAuthorities:
+      - ca.org1.example.com
+peers:
+  peer0.org1.example.com:
+    url: grpc://localhost:7041
+certificateAuthorities:
+  ca.org1.example.com:
+    url: http://localhost:7040
+    caName: ca.org1.example.com
+    httpOptions:
+      verify: false
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"PeerOrgs:
+  - Name: Orderer
+    Domain: orderer.example.com
+    Specs:
+      - Hostname: orderer0.group1
+    Template:
+      Count: 0
+    Users:
+      Count: 1
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    Specs:
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"{
+  "network-configs": {
+    "network-org1": {
+      "name": "Network of Org1",
+      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json"
+    }
+  },
+  "license": "Apache-2.0"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#############################################################################
+#   This is a configuration file for the fabric-ca-server command.
+#
+#   COMMAND LINE ARGUMENTS AND ENVIRONMENT VARIABLES
+#   ------------------------------------------------
+#   Each configuration element can be overridden via command line
+#   arguments or environment variables.  The precedence for determining
+#   the value of each element is as follows:
+#   1) command line argument
+#      Examples:
+#      a) --port 443
+#         To set the listening port
+#      b) --ca.keyfile ../mykey.pem
+#         To set the "keyfile" element in the "ca" section below;
+#         note the '.' separator character.
+#   2) environment variable
+#      Examples:
+#      a) FABRIC_CA_SERVER_PORT=443
+#         To set the listening port
+#      b) FABRIC_CA_SERVER_CA_KEYFILE="../mykey.pem"
+#         To set the "keyfile" element in the "ca" section below;
+#         note the '_' separator character.
+#   3) configuration file
+#   4) default value (if there is one)
+#      All default values are shown beside each element below.
+#
+#   FILE NAME ELEMENTS
+#   ------------------
+#   The value of all fields whose name ends with "file" or "files" are
+#   name or names of other files.
+#   For example, see "tls.certfile" and "tls.clientauth.certfiles".
+#   The value of each of these fields can be a simple filename, a
+#   relative path, or an absolute path.  If the value is not an
+#   absolute path, it is interpreted as being relative to the location
+#   of this configuration file.
+#
+#############################################################################
+
+# Version of config file
+version: 1.5.5
+
+# Server's listening port (default: 7054)
+port: 7054
+
+# Cross-Origin Resource Sharing (CORS)
+cors:
+  enabled: false
+  origins:
+    - "*"
+
+# Enables debug logging (default: false)
+debug: false
+
+# Size limit of an acceptable CRL in bytes (default: 512000)
+crlsizelimit: 512000
+
+#############################################################################
+#  TLS section for the server's listening port
+#
+#  The following types are supported for client authentication: NoClientCert,
+#  RequestClientCert, RequireAnyClientCert, VerifyClientCertIfGiven,
+#  and RequireAndVerifyClientCert.
+#
+#  Certfiles is a list of root certificate authorities that the server uses
+#  when verifying client certificates.
+#############################################################################
+tls:
+  # Enable TLS (default: false)
+  enabled: false
+  # TLS for the server's listening port
+  certfile:
+  keyfile:
+  clientauth:
+    type: noclientcert
+    certfiles:
+
+#############################################################################
+#  The CA section contains information related to the Certificate Authority
+#  including the name of the CA, which should be unique for all members
+#  of a blockchain network.  It also includes the key and certificate files
+#  used when issuing enrollment certificates (ECerts).
+#  The chainfile (if it exists) contains the certificate chain which
+#  should be trusted for this CA, where the 1st in the chain is always the
+#  root CA certificate.
+#############################################################################
+ca:
+  # Name of this CA
+  name:
+  # Key file (is only used to import a private key into BCCSP)
+  keyfile:
+  # Certificate file (default: ca-cert.pem)
+  certfile:
+  # Chain file
+  chainfile:
+
+#############################################################################
+#  The gencrl REST endpoint is used to generate a CRL that contains revoked
+#  certificates. This section contains configuration options that are used
+#  during gencrl request processing.
+#############################################################################
+crl:
+  # Specifies expiration for the generated CRL. The number of hours
+  # specified by this property is added to the UTC time, the resulting time
+  # is used to set the 'Next Update' date of the CRL.
+  expiry: 24h
+
+#############################################################################
+#  The registry section controls how the fabric-ca-server does two things:
+#  1) authenticates enrollment requests which contain a username and password
+#     (also known as an enrollment ID and secret).
+#  2) once authenticated, retrieves the identity's attribute names and values.
+#     These attributes are useful for making access control decisions in
+#     chaincode.
+#  There are two main configuration options:
+#  1) The fabric-ca-server is the registry.
+#     This is true if "ldap.enabled" in the ldap section below is false.
+#  2) An LDAP server is the registry, in which case the fabric-ca-server
+#     calls the LDAP server to perform these tasks.
+#     This is true if "ldap.enabled" in the ldap section below is true,
+#     which means this "registry" section is ignored.
+#############################################################################
+registry:
+  # Maximum number of times a password/secret can be reused for enrollment
+  # (default: -1, which means there is no limit)
+  maxenrollments: -1
+
+  # Contains identity information which is used when LDAP is disabled
+  identities:
+    - name: admin
+      pass: adminpw
+      type: client
+      affiliation: ""
+      attrs:
+        hf.Registrar.Roles: "*"
+        hf.Registrar.DelegateRoles: "*"
+        hf.Revoker: true
+        hf.IntermediateCA: true
+        hf.GenCRL: true
+        hf.Registrar.Attributes: "*"
+        hf.AffiliationMgr: true
+
+#############################################################################
+#  Database section
+#  Supported types are: "sqlite3", "postgres", and "mysql".
+#  The datasource value depends on the type.
+#  If the type is "sqlite3", the datasource value is a file name to use
+#  as the database store.  Since "sqlite3" is an embedded database, it
+#  may not be used if you want to run the fabric-ca-server in a cluster.
+#  To run the fabric-ca-server in a cluster, you must choose "postgres"
+#  or "mysql".
+#############################################################################
+db:
+  type: sqlite3
+  datasource: fabric-ca-server.db
+  tls:
+    enabled: false
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+
+#############################################################################
+#  LDAP section
+#  If LDAP is enabled, the fabric-ca-server calls LDAP to:
+#  1) authenticate enrollment ID and secret (i.e. username and password)
+#     for enrollment requests;
+#  2) To retrieve identity attributes
+#############################################################################
+ldap:
+  # Enables or disables the LDAP client (default: false)
+  # If this is set to true, the "registry" section is ignored.
+  enabled: false
+  # The URL of the LDAP server
+  url: ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
+  # TLS configuration for the client connection to the LDAP server
+  tls:
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+  # Attribute related configuration for mapping from LDAP entries to Fabric CA attributes
+  attribute:
+    # 'names' is an array of strings containing the LDAP attribute names which are
+    # requested from the LDAP server for an LDAP identity's entry
+    names: ['uid', 'member']
+    # The 'converters' section is used to convert an LDAP entry to the value of
+    # a fabric CA attribute.
+    # For example, the following converts an LDAP 'uid' attribute
+    # whose value begins with 'revoker' to a fabric CA attribute
+    # named "hf.Revoker" with a value of "true" (because the boolean expression
+    # evaluates to true).
+    #    converters:
+    #       - name: hf.Revoker
+    #         value: attr("uid") =~ "revoker*"
+    converters:
+      - name:
+        value:
+    # The 'maps' section contains named maps which may be referenced by the 'map'
+    # function in the 'converters' section to map LDAP responses to arbitrary values.
+    # For example, assume a user has an LDAP attribute named 'member' which has multiple
+    # values which are each a distinguished name (i.e. a DN). For simplicity, assume the
+    # values of the 'member' attribute are 'dn1', 'dn2', and 'dn3'.
+    # Further assume the following configuration.
+    #    converters:
+    #       - name: hf.Registrar.Roles
+    #         value: map(attr("member"),"groups")
+    #    maps:
+    #       groups:
+    #          - name: dn1
+    #            value: peer
+    #          - name: dn2
+    #            value: client
+    # The value of the user's 'hf.Registrar.Roles' attribute is then computed to be
+    # "peer,client,dn3".  This is because the value of 'attr("member")' is
+    # "dn1,dn2,dn3", and the call to 'map' with a 2nd argument of
+    # "group" replaces "dn1" with "peer" and "dn2" with "client".
+    maps:
+      groups:
+        - name:
+          value:
+
+#############################################################################
+# Affiliations section. Fabric CA server can be bootstrapped with the
+# affiliations specified in this section. Affiliations are specified as maps.
+# For example:
+#   businessunit1:
+#     department1:
+#       - team1
+#   businessunit2:
+#     - department2
+#     - department3
+#
+# Affiliations are hierarchical in nature. In the above example,
+# department1 (used as businessunit1.department1) is the child of businessunit1.
+# team1 (used as businessunit1.department1.team1) is the child of department1.
+# department2 (used as businessunit2.department2) and department3 (businessunit2.department3)
+# are children of businessunit2.
+# Note: Affiliations are case sensitive except for the non-leaf affiliations
+# (like businessunit1, department1, businessunit2) that are specified in the configuration file,
+# which are always stored in lower case.
+#############################################################################
+affiliations:
+  orderer:
+
+#############################################################################
+#  Signing section
+#
+#  The "default" subsection is used to sign enrollment certificates;
+#  the default expiration ("expiry" field) is "8760h", which is 1 year in hours.
+#
+#  The "ca" profile subsection is used to sign intermediate CA certificates;
+#  the default expiration ("expiry" field) is "43800h" which is 5 years in hours.
+#  Note that "isca" is true, meaning that it issues a CA certificate.
+#  A maxpathlen of 0 means that the intermediate CA cannot issue other
+#  intermediate CA certificates, though it can still issue end entity certificates.
+#  (See RFC 5280, section 4.2.1.9)
+#
+#  The "tls" profile subsection is used to sign TLS certificate requests;
+#  the default expiration ("expiry" field) is "8760h", which is 1 year in hours.
+#############################################################################
+signing:
+  default:
+    usage:
+      - digital signature
+    expiry: 8760h
+  profiles:
+    ca:
+      usage:
+        - cert sign
+        - crl sign
+      expiry: 43800h
+      caconstraint:
+        isca: true
+        maxpathlen: 0
+    tls:
+      usage:
+        - signing
+        - key encipherment
+        - server auth
+        - client auth
+        - key agreement
+      expiry: 8760h
+
+###########################################################################
+#  Certificate Signing Request (CSR) section.
+#  This controls the creation of the root CA certificate.
+#  The expiration for the root CA certificate is configured with the
+#  "ca.expiry" field below, whose default value is "131400h" which is
+#  15 years in hours.
+#  The pathlength field is used to limit CA certificate hierarchy as described
+#  in section 4.2.1.9 of RFC 5280.
+#  Examples:
+#  1) No pathlength value means no limit is requested.
+#  2) pathlength == 1 means a limit of 1 is requested which is the default for
+#     a root CA.  This means the root CA can issue intermediate CA certificates,
+#     but these intermediate CAs may not in turn issue other CA certificates
+#     though they can still issue end entity certificates.
+#  3) pathlength == 0 means a limit of 0 is requested;
+#     this is the default for an intermediate CA, which means it can not issue
+#     CA certificates though it can still issue end entity certificates.
+###########################################################################
+csr:
+  cn: fabric-ca-server
+  keyrequest:
+    algo: ecdsa
+    size: 256
+  names:
+    - C: US
+      ST: "North Carolina"
+      L:
+      O: Hyperledger
+      OU: Fabric
+  hosts:
+    - 483cccf16a98
+    - localhost
+  ca:
+    expiry: 131400h
+    pathlength: 1
+
+###########################################################################
+# Each CA can issue both X509 enrollment certificate as well as Idemix
+# Credential. This section specifies configuration for the issuer component
+# that is responsible for issuing Idemix credentials.
+###########################################################################
+idemix:
+  # Specifies pool size for revocation handles. A revocation handle is an unique identifier of an
+  # Idemix credential. The issuer will create a pool revocation handles of this specified size. When
+  # a credential is requested, issuer will get handle from the pool and assign it to the credential.
+  # Issuer will repopulate the pool with new handles when the last handle in the pool is used.
+  # A revocation handle and credential revocation information (CRI) are used to create non revocation proof
+  # by the prover to prove to the verifier that her credential is not revoked.
+  rhpoolsize: 1000
+
+  # The Idemix credential issuance is a two step process. First step is to  get a nonce from the issuer
+  # and second step is send credential request that is constructed using the nonce to the isuser to
+  # request a credential. This configuration property specifies expiration for the nonces. By default is
+  # nonces expire after 15 seconds. The value is expressed in the time.Duration format (see https://golang.org/pkg/time/#ParseDuration).
+  nonceexpiration: 15s
+
+  # Specifies interval at which expired nonces are removed from datastore. Default value is 15 minutes.
+  #  The value is expressed in the time.Duration format (see https://golang.org/pkg/time/#ParseDuration)
+  noncesweepinterval: 15m
+
+#############################################################################
+# BCCSP (BlockChain Crypto Service Provider) section is used to select which
+# crypto library implementation to use
+#############################################################################
+bccsp:
+  default: SW
+  sw:
+    hash: SHA2
+    security: 256
+    filekeystore:
+      # The directory used for the software file-based keystore
+      keystore: msp/keystore
+
+#############################################################################
+# Multi CA section
+#
+# Each Fabric CA server contains one CA by default.  This section is used
+# to configure multiple CAs in a single server.
+#
+# 1) --cacount <number-of-CAs>
+# Automatically generate <number-of-CAs> non-default CAs.  The names of these
+# additional CAs are "ca1", "ca2", ... "caN", where "N" is <number-of-CAs>
+# This is particularly useful in a development environment to quickly set up
+# multiple CAs. Note that, this config option is not applicable to intermediate CA server
+# i.e., Fabric CA server that is started with intermediate.parentserver.url config
+# option (-u command line option)
+#
+# 2) --cafiles <CA-config-files>
+# For each CA config file in the list, generate a separate signing CA.  Each CA
+# config file in this list MAY contain all of the same elements as are found in
+# the server config file except port, debug, and tls sections.
+#
+# Examples:
+# fabric-ca-server start -b admin:adminpw --cacount 2
+#
+# fabric-ca-server start -b admin:adminpw --cafiles ca/ca1/fabric-ca-server-config.yaml
+# --cafiles ca/ca2/fabric-ca-server-config.yaml
+#
+#############################################################################
+
+cacount:
+
+cafiles:
+
+#############################################################################
+# Intermediate CA section
+#
+# The relationship between servers and CAs is as follows:
+#   1) A single server process may contain or function as one or more CAs.
+#      This is configured by the "Multi CA section" above.
+#   2) Each CA is either a root CA or an intermediate CA.
+#   3) Each intermediate CA has a parent CA which is either a root CA or another intermediate CA.
+#
+# This section pertains to configuration of #2 and #3.
+# If the "intermediate.parentserver.url" property is set,
+# then this is an intermediate CA with the specified parent
+# CA.
+#
+# parentserver section
+#    url - The URL of the parent server
+#    caname - Name of the CA to enroll within the server
+#
+# enrollment section used to enroll intermediate CA with parent CA
+#    profile - Name of the signing profile to use in issuing the certificate
+#    label - Label to use in HSM operations
+#
+# tls section for secure socket connection
+#   certfiles - PEM-encoded list of trusted root certificate files
+#   client:
+#     certfile - PEM-encoded certificate file for when client authentication
+#     is enabled on server
+#     keyfile - PEM-encoded key file for when client authentication
+#     is enabled on server
+#############################################################################
+intermediate:
+  parentserver:
+    url:
+    caname:
+
+  enrollment:
+    hosts:
+    profile:
+    label:
+
+  tls:
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+
+#############################################################################
+# CA configuration section
+#
+# Configure the number of incorrect password attempts are allowed for
+# identities. By default, the value of 'passwordattempts' is 10, which
+# means that 10 incorrect password attempts can be made before an identity get
+# locked out.
+#############################################################################
+cfg:
+  identities:
+    passwordattempts: 10
+
+###############################################################################
+#
+#    Operations section
+#
+###############################################################################
+operations:
+  # host and port for the operations server
+  listenAddress: 127.0.0.1:9443
+
+  # TLS configuration for the operations endpoint
+  tls:
+    # TLS enabled
+    enabled: false
+
+    # path to PEM encoded server certificate for the operations server
+    cert:
+      file:
+
+    # path to PEM encoded server key for the operations server
+    key:
+      file:
+
+    # require client certificate authentication to access all resources
+    clientAuthRequired: false
+
+    # paths to PEM encoded ca certificates to trust for client authentication
+    clientRootCAs:
+      files: []
+
+###############################################################################
+#
+#    Metrics section
+#
+###############################################################################
+metrics:
+  # statsd, prometheus, or disabled
+  provider: disabled
+
+  # statsd configuration
+  statsd:
+    # network type: tcp or udp
+    network: udp
+
+    # statsd server address
+    address: 127.0.0.1:8125
+
+    # the interval at which locally cached counters and gauges are pushed
+    # to statsd; timings are pushed immediately
+    writeInterval: 10s
+
+    # prefix is prepended to all emitted statsd metrics
+    prefix: server
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#############################################################################
+#   This is a configuration file for the fabric-ca-server command.
+#
+#   COMMAND LINE ARGUMENTS AND ENVIRONMENT VARIABLES
+#   ------------------------------------------------
+#   Each configuration element can be overridden via command line
+#   arguments or environment variables.  The precedence for determining
+#   the value of each element is as follows:
+#   1) command line argument
+#      Examples:
+#      a) --port 443
+#         To set the listening port
+#      b) --ca.keyfile ../mykey.pem
+#         To set the "keyfile" element in the "ca" section below;
+#         note the '.' separator character.
+#   2) environment variable
+#      Examples:
+#      a) FABRIC_CA_SERVER_PORT=443
+#         To set the listening port
+#      b) FABRIC_CA_SERVER_CA_KEYFILE="../mykey.pem"
+#         To set the "keyfile" element in the "ca" section below;
+#         note the '_' separator character.
+#   3) configuration file
+#   4) default value (if there is one)
+#      All default values are shown beside each element below.
+#
+#   FILE NAME ELEMENTS
+#   ------------------
+#   The value of all fields whose name ends with "file" or "files" are
+#   name or names of other files.
+#   For example, see "tls.certfile" and "tls.clientauth.certfiles".
+#   The value of each of these fields can be a simple filename, a
+#   relative path, or an absolute path.  If the value is not an
+#   absolute path, it is interpreted as being relative to the location
+#   of this configuration file.
+#
+#############################################################################
+
+# Version of config file
+version: 1.5.5
+
+# Server's listening port (default: 7054)
+port: 7054
+
+# Cross-Origin Resource Sharing (CORS)
+cors:
+  enabled: false
+  origins:
+    - "*"
+
+# Enables debug logging (default: false)
+debug: false
+
+# Size limit of an acceptable CRL in bytes (default: 512000)
+crlsizelimit: 512000
+
+#############################################################################
+#  TLS section for the server's listening port
+#
+#  The following types are supported for client authentication: NoClientCert,
+#  RequestClientCert, RequireAnyClientCert, VerifyClientCertIfGiven,
+#  and RequireAndVerifyClientCert.
+#
+#  Certfiles is a list of root certificate authorities that the server uses
+#  when verifying client certificates.
+#############################################################################
+tls:
+  # Enable TLS (default: false)
+  enabled: false
+  # TLS for the server's listening port
+  certfile:
+  keyfile:
+  clientauth:
+    type: noclientcert
+    certfiles:
+
+#############################################################################
+#  The CA section contains information related to the Certificate Authority
+#  including the name of the CA, which should be unique for all members
+#  of a blockchain network.  It also includes the key and certificate files
+#  used when issuing enrollment certificates (ECerts).
+#  The chainfile (if it exists) contains the certificate chain which
+#  should be trusted for this CA, where the 1st in the chain is always the
+#  root CA certificate.
+#############################################################################
+ca:
+  # Name of this CA
+  name:
+  # Key file (is only used to import a private key into BCCSP)
+  keyfile:
+  # Certificate file (default: ca-cert.pem)
+  certfile:
+  # Chain file
+  chainfile:
+
+#############################################################################
+#  The gencrl REST endpoint is used to generate a CRL that contains revoked
+#  certificates. This section contains configuration options that are used
+#  during gencrl request processing.
+#############################################################################
+crl:
+  # Specifies expiration for the generated CRL. The number of hours
+  # specified by this property is added to the UTC time, the resulting time
+  # is used to set the 'Next Update' date of the CRL.
+  expiry: 24h
+
+#############################################################################
+#  The registry section controls how the fabric-ca-server does two things:
+#  1) authenticates enrollment requests which contain a username and password
+#     (also known as an enrollment ID and secret).
+#  2) once authenticated, retrieves the identity's attribute names and values.
+#     These attributes are useful for making access control decisions in
+#     chaincode.
+#  There are two main configuration options:
+#  1) The fabric-ca-server is the registry.
+#     This is true if "ldap.enabled" in the ldap section below is false.
+#  2) An LDAP server is the registry, in which case the fabric-ca-server
+#     calls the LDAP server to perform these tasks.
+#     This is true if "ldap.enabled" in the ldap section below is true,
+#     which means this "registry" section is ignored.
+#############################################################################
+registry:
+  # Maximum number of times a password/secret can be reused for enrollment
+  # (default: -1, which means there is no limit)
+  maxenrollments: -1
+
+  # Contains identity information which is used when LDAP is disabled
+  identities:
+    - name: admin
+      pass: adminpw
+      type: client
+      affiliation: ""
+      attrs:
+        hf.Registrar.Roles: "*"
+        hf.Registrar.DelegateRoles: "*"
+        hf.Revoker: true
+        hf.IntermediateCA: true
+        hf.GenCRL: true
+        hf.Registrar.Attributes: "*"
+        hf.AffiliationMgr: true
+
+#############################################################################
+#  Database section
+#  Supported types are: "sqlite3", "postgres", and "mysql".
+#  The datasource value depends on the type.
+#  If the type is "sqlite3", the datasource value is a file name to use
+#  as the database store.  Since "sqlite3" is an embedded database, it
+#  may not be used if you want to run the fabric-ca-server in a cluster.
+#  To run the fabric-ca-server in a cluster, you must choose "postgres"
+#  or "mysql".
+#############################################################################
+db:
+  type: sqlite3
+  datasource: fabric-ca-server.db
+  tls:
+    enabled: false
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+
+#############################################################################
+#  LDAP section
+#  If LDAP is enabled, the fabric-ca-server calls LDAP to:
+#  1) authenticate enrollment ID and secret (i.e. username and password)
+#     for enrollment requests;
+#  2) To retrieve identity attributes
+#############################################################################
+ldap:
+  # Enables or disables the LDAP client (default: false)
+  # If this is set to true, the "registry" section is ignored.
+  enabled: false
+  # The URL of the LDAP server
+  url: ldap://<adminDN>:<adminPassword>@<host>:<port>/<base>
+  # TLS configuration for the client connection to the LDAP server
+  tls:
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+  # Attribute related configuration for mapping from LDAP entries to Fabric CA attributes
+  attribute:
+    # 'names' is an array of strings containing the LDAP attribute names which are
+    # requested from the LDAP server for an LDAP identity's entry
+    names: ['uid', 'member']
+    # The 'converters' section is used to convert an LDAP entry to the value of
+    # a fabric CA attribute.
+    # For example, the following converts an LDAP 'uid' attribute
+    # whose value begins with 'revoker' to a fabric CA attribute
+    # named "hf.Revoker" with a value of "true" (because the boolean expression
+    # evaluates to true).
+    #    converters:
+    #       - name: hf.Revoker
+    #         value: attr("uid") =~ "revoker*"
+    converters:
+      - name:
+        value:
+    # The 'maps' section contains named maps which may be referenced by the 'map'
+    # function in the 'converters' section to map LDAP responses to arbitrary values.
+    # For example, assume a user has an LDAP attribute named 'member' which has multiple
+    # values which are each a distinguished name (i.e. a DN). For simplicity, assume the
+    # values of the 'member' attribute are 'dn1', 'dn2', and 'dn3'.
+    # Further assume the following configuration.
+    #    converters:
+    #       - name: hf.Registrar.Roles
+    #         value: map(attr("member"),"groups")
+    #    maps:
+    #       groups:
+    #          - name: dn1
+    #            value: peer
+    #          - name: dn2
+    #            value: client
+    # The value of the user's 'hf.Registrar.Roles' attribute is then computed to be
+    # "peer,client,dn3".  This is because the value of 'attr("member")' is
+    # "dn1,dn2,dn3", and the call to 'map' with a 2nd argument of
+    # "group" replaces "dn1" with "peer" and "dn2" with "client".
+    maps:
+      groups:
+        - name:
+          value:
+
+#############################################################################
+# Affiliations section. Fabric CA server can be bootstrapped with the
+# affiliations specified in this section. Affiliations are specified as maps.
+# For example:
+#   businessunit1:
+#     department1:
+#       - team1
+#   businessunit2:
+#     - department2
+#     - department3
+#
+# Affiliations are hierarchical in nature. In the above example,
+# department1 (used as businessunit1.department1) is the child of businessunit1.
+# team1 (used as businessunit1.department1.team1) is the child of department1.
+# department2 (used as businessunit2.department2) and department3 (businessunit2.department3)
+# are children of businessunit2.
+# Note: Affiliations are case sensitive except for the non-leaf affiliations
+# (like businessunit1, department1, businessunit2) that are specified in the configuration file,
+# which are always stored in lower case.
+#############################################################################
+affiliations:
+  org1:
+
+#############################################################################
+#  Signing section
+#
+#  The "default" subsection is used to sign enrollment certificates;
+#  the default expiration ("expiry" field) is "8760h", which is 1 year in hours.
+#
+#  The "ca" profile subsection is used to sign intermediate CA certificates;
+#  the default expiration ("expiry" field) is "43800h" which is 5 years in hours.
+#  Note that "isca" is true, meaning that it issues a CA certificate.
+#  A maxpathlen of 0 means that the intermediate CA cannot issue other
+#  intermediate CA certificates, though it can still issue end entity certificates.
+#  (See RFC 5280, section 4.2.1.9)
+#
+#  The "tls" profile subsection is used to sign TLS certificate requests;
+#  the default expiration ("expiry" field) is "8760h", which is 1 year in hours.
+#############################################################################
+signing:
+  default:
+    usage:
+      - digital signature
+    expiry: 8760h
+  profiles:
+    ca:
+      usage:
+        - cert sign
+        - crl sign
+      expiry: 43800h
+      caconstraint:
+        isca: true
+        maxpathlen: 0
+    tls:
+      usage:
+        - signing
+        - key encipherment
+        - server auth
+        - client auth
+        - key agreement
+      expiry: 8760h
+
+###########################################################################
+#  Certificate Signing Request (CSR) section.
+#  This controls the creation of the root CA certificate.
+#  The expiration for the root CA certificate is configured with the
+#  "ca.expiry" field below, whose default value is "131400h" which is
+#  15 years in hours.
+#  The pathlength field is used to limit CA certificate hierarchy as described
+#  in section 4.2.1.9 of RFC 5280.
+#  Examples:
+#  1) No pathlength value means no limit is requested.
+#  2) pathlength == 1 means a limit of 1 is requested which is the default for
+#     a root CA.  This means the root CA can issue intermediate CA certificates,
+#     but these intermediate CAs may not in turn issue other CA certificates
+#     though they can still issue end entity certificates.
+#  3) pathlength == 0 means a limit of 0 is requested;
+#     this is the default for an intermediate CA, which means it can not issue
+#     CA certificates though it can still issue end entity certificates.
+###########################################################################
+csr:
+  cn: fabric-ca-server
+  keyrequest:
+    algo: ecdsa
+    size: 256
+  names:
+    - C: US
+      ST: "North Carolina"
+      L:
+      O: Hyperledger
+      OU: Fabric
+  hosts:
+    - 483cccf16a98
+    - localhost
+  ca:
+    expiry: 131400h
+    pathlength: 1
+
+###########################################################################
+# Each CA can issue both X509 enrollment certificate as well as Idemix
+# Credential. This section specifies configuration for the issuer component
+# that is responsible for issuing Idemix credentials.
+###########################################################################
+idemix:
+  # Specifies pool size for revocation handles. A revocation handle is an unique identifier of an
+  # Idemix credential. The issuer will create a pool revocation handles of this specified size. When
+  # a credential is requested, issuer will get handle from the pool and assign it to the credential.
+  # Issuer will repopulate the pool with new handles when the last handle in the pool is used.
+  # A revocation handle and credential revocation information (CRI) are used to create non revocation proof
+  # by the prover to prove to the verifier that her credential is not revoked.
+  rhpoolsize: 1000
+
+  # The Idemix credential issuance is a two step process. First step is to  get a nonce from the issuer
+  # and second step is send credential request that is constructed using the nonce to the isuser to
+  # request a credential. This configuration property specifies expiration for the nonces. By default is
+  # nonces expire after 15 seconds. The value is expressed in the time.Duration format (see https://golang.org/pkg/time/#ParseDuration).
+  nonceexpiration: 15s
+
+  # Specifies interval at which expired nonces are removed from datastore. Default value is 15 minutes.
+  #  The value is expressed in the time.Duration format (see https://golang.org/pkg/time/#ParseDuration)
+  noncesweepinterval: 15m
+
+#############################################################################
+# BCCSP (BlockChain Crypto Service Provider) section is used to select which
+# crypto library implementation to use
+#############################################################################
+bccsp:
+  default: SW
+  sw:
+    hash: SHA2
+    security: 256
+    filekeystore:
+      # The directory used for the software file-based keystore
+      keystore: msp/keystore
+
+#############################################################################
+# Multi CA section
+#
+# Each Fabric CA server contains one CA by default.  This section is used
+# to configure multiple CAs in a single server.
+#
+# 1) --cacount <number-of-CAs>
+# Automatically generate <number-of-CAs> non-default CAs.  The names of these
+# additional CAs are "ca1", "ca2", ... "caN", where "N" is <number-of-CAs>
+# This is particularly useful in a development environment to quickly set up
+# multiple CAs. Note that, this config option is not applicable to intermediate CA server
+# i.e., Fabric CA server that is started with intermediate.parentserver.url config
+# option (-u command line option)
+#
+# 2) --cafiles <CA-config-files>
+# For each CA config file in the list, generate a separate signing CA.  Each CA
+# config file in this list MAY contain all of the same elements as are found in
+# the server config file except port, debug, and tls sections.
+#
+# Examples:
+# fabric-ca-server start -b admin:adminpw --cacount 2
+#
+# fabric-ca-server start -b admin:adminpw --cafiles ca/ca1/fabric-ca-server-config.yaml
+# --cafiles ca/ca2/fabric-ca-server-config.yaml
+#
+#############################################################################
+
+cacount:
+
+cafiles:
+
+#############################################################################
+# Intermediate CA section
+#
+# The relationship between servers and CAs is as follows:
+#   1) A single server process may contain or function as one or more CAs.
+#      This is configured by the "Multi CA section" above.
+#   2) Each CA is either a root CA or an intermediate CA.
+#   3) Each intermediate CA has a parent CA which is either a root CA or another intermediate CA.
+#
+# This section pertains to configuration of #2 and #3.
+# If the "intermediate.parentserver.url" property is set,
+# then this is an intermediate CA with the specified parent
+# CA.
+#
+# parentserver section
+#    url - The URL of the parent server
+#    caname - Name of the CA to enroll within the server
+#
+# enrollment section used to enroll intermediate CA with parent CA
+#    profile - Name of the signing profile to use in issuing the certificate
+#    label - Label to use in HSM operations
+#
+# tls section for secure socket connection
+#   certfiles - PEM-encoded list of trusted root certificate files
+#   client:
+#     certfile - PEM-encoded certificate file for when client authentication
+#     is enabled on server
+#     keyfile - PEM-encoded key file for when client authentication
+#     is enabled on server
+#############################################################################
+intermediate:
+  parentserver:
+    url:
+    caname:
+
+  enrollment:
+    hosts:
+    profile:
+    label:
+
+  tls:
+    certfiles:
+    client:
+      certfile:
+      keyfile:
+
+#############################################################################
+# CA configuration section
+#
+# Configure the number of incorrect password attempts are allowed for
+# identities. By default, the value of 'passwordattempts' is 10, which
+# means that 10 incorrect password attempts can be made before an identity get
+# locked out.
+#############################################################################
+cfg:
+  identities:
+    passwordattempts: 10
+
+###############################################################################
+#
+#    Operations section
+#
+###############################################################################
+operations:
+  # host and port for the operations server
+  listenAddress: 127.0.0.1:9443
+
+  # TLS configuration for the operations endpoint
+  tls:
+    # TLS enabled
+    enabled: false
+
+    # path to PEM encoded server certificate for the operations server
+    cert:
+      file:
+
+    # path to PEM encoded server key for the operations server
+    key:
+      file:
+
+    # require client certificate authentication to access all resources
+    clientAuthRequired: false
+
+    # paths to PEM encoded ca certificates to trust for client authentication
+    clientRootCAs:
+      files: []
+
+###############################################################################
+#
+#    Metrics section
+#
+###############################################################################
+metrics:
+  # statsd, prometheus, or disabled
+  provider: disabled
+
+  # statsd configuration
+  statsd:
+    # network type: tcp or udp
+    network: udp
+
+    # statsd server address
+    address: 127.0.0.1:8125
+
+    # the interval at which locally cached counters and gauges are pushed
+    # to statsd; timings are pushed immediately
+    writeInterval: 10s
+
+    # prefix is prepended to all emitted statsd metrics
+    prefix: server
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+set -eu
+
+FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-help.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/base-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/chaincode-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/channel-query-scripts.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/snapshot-scripts.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/commands-generated.sh"
+source "$FABLO_NETWORK_ROOT/fabric-docker/.env"
+source "$FABLO_NETWORK_ROOT/fabric-docker/chaincode-scripts.sh"
+
+networkUp() {
+  generateArtifacts
+  startNetwork
+  generateChannelsArtifacts
+  installChannels
+  installChaincodes
+  notifyOrgsAboutChannels
+  printStartSuccessInfo
+}
+
+if [ "$1" = "up" ]; then
+  networkUp
+elif [ "$1" = "down" ]; then
+  networkDown
+elif [ "$1" = "reset" ]; then
+  networkDown
+  networkUp
+elif [ "$1" = "start" ]; then
+  startNetwork
+elif [ "$1" = "stop" ]; then
+  stopNetwork
+elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
+  installChaincodes
+elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
+  installChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
+  upgradeChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
+  runDevModeChaincode "$3" "$4"
+elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
+  chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
+  chaincodeList "$3" "$4"
+elif [ "$1" = "channel" ]; then
+  channelQuery "\${@:2}"
+elif [ "$1" = "snapshot" ]; then
+  createSnapshot "$2"
+elif [ "$1" = "clone-to" ]; then
+  cloneSnapshot "$2" "\${3:-""}"
+elif [ "$1" = "help" ]; then
+  printHelp
+elif [ "$1" = "--help" ]; then
+  printHelp
+else
+  echo "No command specified"
+  echo "Basic commands are: up, down, start, stop, reset"
+  echo "To list channel query helper commands type: 'fablo channel --help'"
+  echo "Also check: 'chaincode install'"
+  echo "Use 'help' or '--help' for more information"
+fi
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"FABLO_VERSION=2.2.0
+FABLO_BUILD=<date with git hash>
+FABLO_REST_VERSION=0.1.2
+HYPERLEDGER_EXPLORER_VERSION=1.1.8
+
+COUCHDB_VERSION=3.1
+FABRIC_COUCHDB_VERSION=0.4.18
+
+FABLO_CONFIG=<absolute path>
+CHAINCODES_BASE_DIR=<absolute path>
+
+COMPOSE_PROJECT_NAME=<name with timestamp>
+LOGGING_LEVEL=info
+
+FABRIC_VERSION=2.5.12
+FABRIC_TOOLS_VERSION=2.5.12
+FABRIC_CA_VERSION=1.5.5
+FABRIC_CA_POSTGRES_VERSION=14
+FABRIC_CCENV_VERSION=2.5.12
+FABRIC_BASEOS_VERSION=2.5.12
+FABRIC_JAVAENV_VERSION=2.5
+FABRIC_NODEENV_VERSION=2.5
+RECOMMENDED_NODE_VERSION=16
+
+ROOT_CA_ADMIN_NAME=admin
+ROOT_CA_ADMIN_PASSWORD=adminpw
+
+ORDERER_CA_ADMIN_NAME=admin
+ORDERER_CA_ADMIN_PASSWORD=adminpw
+
+ORG1_CA_ADMIN_NAME=admin
+ORG1_CA_ADMIN_PASSWORD=adminpw
+
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+chaincodeList() {
+  if [ "$#" -ne 2 ]; then
+    echo "Expected 2 parameters for chaincode list, but got: $*"
+    exit 1
+
+  elif [ "$1" = "peer0.org1.example.com" ]; then
+
+    peerChaincodeList "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" # $2 is channel name
+
+  else
+
+    echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
+    exit 1
+
+  fi
+}
+
+# Function to perform chaincode invoke. Accepts 5 parameters:
+#   1. comma-separated peers
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
+chaincodeInvoke() {
+  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+    echo "Expected 4 or 5 parameters for chaincode list, but got: $*"
+    echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
+    exit 1
+  fi
+
+  # Cli needs to be from the same org as the first peer
+  if [[ "$1" == "peer0.org1.example.com"* ]]; then
+    cli="cli.org1.example.com"
+  fi
+
+  peer_addresses="$1"
+  peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
+
+  peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
+
+set -eu
+
+channelQuery() {
+  if [ "$#" -eq 1 ]; then
+    printChannelsHelp
+
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer0" ]; then
+
+    peerChannelList "cli.org1.example.com" "peer0.org1.example.com:7041"
+
+  elif
+
+    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
+  then
+
+    peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041"
+
+  elif [ "$1" = "fetch" ] && [ "$2" = "config" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer0" ]; then
+    TARGET_FILE=\${6:-"$channel-config.json"}
+
+    peerChannelFetchConfig "my-channel1" "cli.org1.example.com" "$TARGET_FILE" "peer0.org1.example.com:7041"
+
+  elif [ "$1" = "fetch" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer0" ]; then
+    BLOCK_NAME=$2
+    TARGET_FILE=\${6:-"$BLOCK_NAME.block"}
+
+    peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "$TARGET_FILE"
+
+  else
+
+    echo "$@"
+    echo "$1, $2, $3, $4, $5, $6, $7, $#"
+    printChannelsHelp
+  fi
+
+}
+
+printChannelsHelp() {
+  echo "Channel management commands:"
+  echo ""
+
+  echo "fablo channel list org1 peer0"
+  echo -e "\\t List channels on 'peer0' of 'Org1'".
+  echo ""
+
+  echo "fablo channel getinfo my-channel1 org1 peer0"
+  echo -e "\\t Get channel info on 'peer0' of 'Org1'".
+  echo ""
+  echo "fablo channel fetch config my-channel1 org1 peer0 [file-name.json]"
+  echo -e "\\t Download latest config block and save it. Uses first peer 'peer0' of 'Org1'".
+  echo ""
+  echo "fablo channel fetch <newest|oldest|block-number> my-channel1 org1 peer0 [file name]"
+  echo -e "\\t Fetch a block with given number and save it. Uses first peer 'peer0' of 'Org1'".
+  echo ""
+
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+generateArtifacts() {
+  printHeadline "Generating basic configs" "U1F913"
+
+  printItalics "Generating crypto material for Orderer" "U1F512"
+  certsGenerate "$FABLO_NETWORK_ROOT/fabric-config" "crypto-config-orderer.yaml" "peerOrganizations/orderer.example.com" "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+
+  printItalics "Generating crypto material for Org1" "U1F512"
+  certsGenerate "$FABLO_NETWORK_ROOT/fabric-config" "crypto-config-org1.yaml" "peerOrganizations/org1.example.com" "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+
+  printItalics "Generating genesis block for group group1" "U1F3E0"
+  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "Group1Genesis"
+
+  # Create directories to avoid permission errors on linux
+  mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
+  mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/config"
+}
+
+startNetwork() {
+  printHeadline "Starting network" "U1F680"
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
+  sleep 4
+}
+
+generateChannelsArtifacts() {
+  printHeadline "Generating config for 'my-channel1'" "U1F913"
+  createChannelTx "my-channel1" "$FABLO_NETWORK_ROOT/fabric-config" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config/config"
+}
+
+installChannels() {
+  printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'orderer0.group1.orderer.example.com:7030';"
+
+}
+
+installChaincodes() {
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
+    printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+  else
+    echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+  fi
+
+}
+
+installChaincode() {
+  local chaincodeName="$1"
+  if [ -z "$chaincodeName" ]; then
+    echo "Error: chaincode name is not provided"
+    exit 1
+  fi
+
+  local version="$2"
+  if [ -z "$version" ]; then
+    echo "Error: chaincode version is not provided"
+    exit 1
+  fi
+
+  if [ "$chaincodeName" = "chaincode1" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+      printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
+      printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+
+    else
+      echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    fi
+  fi
+}
+
+runDevModeChaincode() {
+  local chaincodeName=$1
+  if [ -z "$chaincodeName" ]; then
+    echo "Error: chaincode name is not provided"
+    exit 1
+  fi
+
+  if [ "$chaincodeName" = "chaincode1" ]; then
+    local version="0.0.1"
+    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
+    printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+
+  fi
+}
+
+upgradeChaincode() {
+  local chaincodeName="$1"
+  if [ -z "$chaincodeName" ]; then
+    echo "Error: chaincode name is not provided"
+    exit 1
+  fi
+
+  local version="$2"
+  if [ -z "$version" ]; then
+    echo "Error: chaincode version is not provided"
+    exit 1
+  fi
+
+  if [ "$chaincodeName" = "chaincode1" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+      printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" ""
+      printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+
+    else
+      echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    fi
+  fi
+}
+
+notifyOrgsAboutChannels() {
+
+  printHeadline "Creating new channel config blocks" "U1F537"
+  createNewChannelUpdateTx "my-channel1" "Org1MSP" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
+
+  printHeadline "Notyfing orgs about channels" "U1F4E2"
+  notifyOrgAboutNewChannel "my-channel1" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer.example.com:7030"
+
+  printHeadline "Deleting new channel config blocks" "U1F52A"
+  deleteNewChannelUpdateTx "my-channel1" "Org1MSP" "cli.org1.example.com"
+
+}
+
+printStartSuccessInfo() {
+  printHeadline "Done! Enjoy your fresh network" "U1F984"
+  echo "It has peerDevMode enabled, so remember to start your chaincodes manually."
+}
+
+stopNetwork() {
+  printHeadline "Stopping network" "U1F68F"
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose stop)
+  sleep 4
+}
+
+networkDown() {
+  printHeadline "Destroying network" "U1F916"
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
+
+  printf "Removing chaincode containers & images... \\U1F5D1 \\n"
+  for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "dev-peer0.org1.example.com-chaincode1*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+
+  printf "Removing generated configs... \\U1F5D1 \\n"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
+  rm -rf "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
+
+  printHeadline "Done! Network was purged" "U1F5D1"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"networks:
+  basic:
+
+services:
+
+  ca.orderer.example.com:
+    container_name: ca.orderer.example.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.orderer.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+    ports:
+      - 7020:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORDERER_CA_ADMIN_NAME}:\${ORDERER_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    networks:
+      - basic
+
+  cli.orderer.example.com:
+    container_name: cli.orderer.example.com
+    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.orderer.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=OrdererMSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/msp
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  orderer0.group1.orderer.example.com:
+    container_name: orderer0.group1.orderer.example.com
+    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    environment:
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7030
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # Genesis file configuration (for solo and raft)
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # Metrics configuration
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer.example.com:9443
+      - ORDERER_METRICS_PROVIDER=prometheus
+    working_dir: /var/hyperledger/orderer
+    command: orderer
+    ports:
+      - 7030:7030
+      - 8030:9440
+    volumes:
+      - ../fabric-config/config/:/var/hyperledger/config
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/:/var/hyperledger/orderer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/:/var/hyperledger/orderer/tls
+    networks:
+      - basic
+
+  ca.org1.example.com:
+    container_name: ca.org1.example.com
+    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_DB_TYPE=postgres
+      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
+    ports:
+      - 7040:7054
+    working_dir: /etc/hyperledger/fabric-ca-server
+    command: sh -c 'fabric-ca-server start -b \${ORG1_CA_ADMIN_NAME}:\${ORG1_CA_ADMIN_PASSWORD} -d'
+    volumes:
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server/crypto
+      - ../fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
+    depends_on:
+      db.ca.org1.example.com:
+        condition: service_healthy
+    networks:
+      - basic
+
+  db.ca.org1.example.com:
+    container_name: db.ca.org1.example.com
+    image: postgres:\${FABRIC_CA_POSTGRES_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=caDbPass12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fabriccaserver
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  cli.org1.example.com:
+    container_name: cli.org1.example.com
+    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - CORE_PEER_ID=cli.org1.example.com
+      - CORE_CHAINCODE_KEEPALIVE=10
+      #
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/msp
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+    working_dir: /var/hyperledger/cli/
+    command: /bin/bash
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
+      - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+    networks:
+      - basic
+
+  fablo-rest.org1.example.com:
+    container_name: fablo-rest.org1.example.com
+    image: ghcr.io/fablo-io/fablo-rest:\${FABLO_REST_VERSION}
+    environment:
+      - PORT=8000
+      - MSP_ID=Org1MSP
+      - FABRIC_CA_URL=http://ca.org1.example.com:7054
+      - FABRIC_CA_NAME=ca.org1.example.com
+      - AS_LOCALHOST=false
+      - DISCOVERY_URLS=grpc://peer0.org1.example.com:7041
+      - HFC_LOGGING={"error":"console","warn":"console","info":"console"}
+    ports:
+      - 8801:8000
+    networks:
+      - basic
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    environment:
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_LISTENADDRESS=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_ENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7041
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7041
+      - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7050
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
+      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
+      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      #
+      - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
+      - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
+      - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      # metrics
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9440
+      - CORE_METRICS_PROVIDER=prometheus
+      #
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=\${COMPOSE_PROJECT_NAME}_basic
+      - CORE_VM_DOCKER_ATTACHSTDOUT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - GODEBUG=netdns=go
+      # CouchDB
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org1.example.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=peer0
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=peer0Password
+      # enabled gateway
+      - CORE_PEER_GATEWAY_ENABLED=true
+    working_dir: /etc/hyperledger/fabric/peer/
+    command: peer node start --peer-chaincodedev=true
+    ports:
+      - 8041:9440
+      - 7041:7041
+      - 8541:7050
+    depends_on:
+      couchdb.peer0.org1.example.com:
+        condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/peer/msp
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/peer/tls
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/fabric/peer/msp/users
+      - ../fabric-config/config:/etc/hyperledger/fabric/config
+    networks:
+      - basic
+  couchdb.peer0.org1.example.com:
+    container_name: couchdb.peer0.org1.example.com
+    image: couchdb:\${COUCHDB_VERSION}
+    environment:
+      - COUCHDB_USER=peer0
+      - COUCHDB_PASSWORD=peer0Password
+    healthcheck:
+      test: "curl -f http://localhost:5984/"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    ports:
+      - 5100:5984
+    networks:
+      - basic
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+certsGenerate() {
+  local CONTAINER_NAME=certsGenerate
+
+  local CONFIG_PATH=$1
+  local CRYPTO_CONFIG_FILE_NAME=$2
+  local ORG_PATH=$3
+  local OUTPUT_PATH=$4
+  local FULL_CERT_PATH=$OUTPUT_PATH$ORG_PATH
+
+  echo "Generating certs..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CRYPTO_CONFIG_FILE_NAME: $CRYPTO_CONFIG_FILE_NAME"
+  inputLog "ORG_PATH: $ORG_PATH"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "FULL_CERT_PATH: $FULL_CERT_PATH"
+
+  if [ -d "$FULL_CERT_PATH" ]; then
+    echo "Can't generate certs, directory already exists : $FULL_CERT_PATH"
+    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
+    exit 1
+  fi
+
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+
+  docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
+
+  docker cp $CONTAINER_NAME:/crypto-config/. "$OUTPUT_PATH" || removeContainer $CONTAINER_NAME
+
+  removeContainer $CONTAINER_NAME
+
+  # shellcheck disable=2044
+  for file in $(find "$OUTPUT_PATH"/ -iname '*_sk'); do
+    dir=$(dirname "$file")
+    mv "\${dir}"/*_sk "\${dir}"/priv-key.pem
+  done
+}
+
+genesisBlockCreate() {
+  local CONTAINER_NAME=genesisBlockCreate
+
+  local CONFIG_PATH=$1
+  local OUTPUT_PATH=$2
+  local GENESIS_PROFILE_NAME=$3
+  local GENESIS_FILE_NAME=$GENESIS_PROFILE_NAME.block
+
+  echo "Creating genesis block..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "GENESIS_PROFILE_NAME: $GENESIS_PROFILE_NAME"
+  inputLog "GENESIS_FILE_NAME: $GENESIS_FILE_NAME"
+
+  if [ -f "$OUTPUT_PATH/$GENESIS_FILE_NAME" ]; then
+    echo "Cant't generate genesis block, file already exists: $OUTPUT_PATH/$GENESIS_FILE_NAME"
+    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
+    exit 1
+  fi
+
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "$GENESIS_PROFILE_NAME" -outputBlock "./config/$GENESIS_FILE_NAME" -channelID system-channel || removeContainer $CONTAINER_NAME
+
+  mkdir -p "$OUTPUT_PATH"
+  docker cp "$CONTAINER_NAME:/config/$GENESIS_FILE_NAME" "$OUTPUT_PATH/$GENESIS_FILE_NAME" || removeContainer $CONTAINER_NAME
+
+  removeContainer $CONTAINER_NAME
+}
+
+createChannelTx() {
+  local CONTAINER_NAME=createChannelTx
+
+  local CHANNEL_NAME=$1
+  local CONFIG_PATH=$2
+  local CONFIG_PROFILE=$3
+  local OUTPUT_PATH=$4
+  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME".tx
+
+  echo "Creating channelTx for $CHANNEL_NAME..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CONFIG_PROFILE: $CONFIG_PROFILE"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "CHANNEL_TX_PATH: $CHANNEL_TX_PATH"
+
+  if [ -f "$CHANNEL_TX_PATH" ]; then
+    echo "Can't create channel configuration, it already exists : $CHANNEL_TX_PATH"
+    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
+    exit 1
+  fi
+
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+
+  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "\${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "\${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
+  docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
+
+  removeContainer $CONTAINER_NAME
+}
+
+createNewChannelUpdateTx() {
+  local CONTAINER_NAME=createAnchorPeerUpdateTx
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CONFIG_PROFILE=$3
+  local CONFIG_PATH=$4
+  local OUTPUT_PATH=$5
+
+  ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+  OUTPUT_ANCHOR_PEERS_UPDATE_PATH="./config/\${MSP_NAME}anchors.tx"
+  CONTAINER_COPY_PATH="\${CONTAINER_NAME}:/config/\${MSP_NAME}anchors.tx"
+
+  echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "MSP_NAME: $MSP_NAME"
+  inputLog "CONFIG_PROFILE: $CONFIG_PROFILE"
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ -f "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    echo "Cant't create anchor peer update, it already exists : $ANCHOR_PEER_UPDATE_PATH"
+    echo "Try using 'reset' or 'down' to remove whole network or 'start' to reuse it"
+    exit 1
+  fi
+
+  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+
+  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  docker exec -i $CONTAINER_NAME configtxgen \\
+    --configPath ./fabric-config \\
+    -profile "\${CONFIG_PROFILE}" \\
+    -outputAnchorPeersUpdate "\${OUTPUT_ANCHOR_PEERS_UPDATE_PATH}" \\
+    -channelID "\${CHANNEL_NAME}" \\
+    -asOrg "\${MSP_NAME}" || removeContainer $CONTAINER_NAME
+
+  docker cp "$CONTAINER_COPY_PATH" "$ANCHOR_PEER_UPDATE_PATH" || removeContainer $CONTAINER_NAME
+
+  removeContainer $CONTAINER_NAME
+}
+
+notifyOrgAboutNewChannel() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local PEER_ADDRESS=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+
+  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "MSP_NAME: $MSP_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+      "$CLI_NAME" peer channel update \\
+      -c "$CHANNEL_NAME" \\
+      -o "$ORDERER_URL" \\
+      -f "$ANCHOR_PEER_UPDATE_PATH"
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+}
+
+notifyOrgAboutNewChannelTls() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local PEER_ADDRESS=$4
+  local ORDERER_URL=$5
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+  local CA_CERT="/var/hyperledger/cli/"\${6}
+
+  echo "Updating channel $CHANNEL_NAME for organization $MSP_NAME (TLS)..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "MSP_NAME: $MSP_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+      "$CLI_NAME" peer channel update \\
+      -c "$CHANNEL_NAME" \\
+      -o "$ORDERER_URL" \\
+      -f "$ANCHOR_PEER_UPDATE_PATH" \\
+      --tls --cafile "$CA_CERT"
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+}
+
+deleteNewChannelUpdateTx() {
+  local CHANNEL_NAME=$1
+  local MSP_NAME=$2
+  local CLI_NAME=$3
+  local ANCHOR_PEER_UPDATE_PATH="/var/hyperledger/cli/config/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
+
+  echo "Deleting new channel config block. Channel: $CHANNEL_NAME, Organization: $MSP_NAME"
+  inputLogShort "CHANNEL_NAME: $CHANNEL_NAME, MSP_NAME: $MSP_NAME, CLI_NAME: $CLI_NAME, ANCHOR_PEER_UPDATE_PATH: $ANCHOR_PEER_UPDATE_PATH"
+
+  if [ -n "$ANCHOR_PEER_UPDATE_PATH" ]; then
+    docker exec "$CLI_NAME" rm "$ANCHOR_PEER_UPDATE_PATH"
+  else
+    echo "channel update tx not found! Looked for: $ANCHOR_PEER_UPDATE_PATH"
+  fi
+}
+
+printHeadline() {
+  bold=$'\\e[1m'
+  end=$'\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf "\${bold}============ %b %s %b ==============\${end}\\n" "\\\\$EMOJI" "$TEXT" "\\\\$EMOJI"
+}
+
+printItalics() {
+  italics=$'\\e[3m'
+  end=$'\\e[0m'
+
+  TEXT=$1
+  EMOJI=$2
+  printf "\${italics}==== %b %s %b ====\${end}\\n" "\\\\$EMOJI" "$TEXT" "\\\\$EMOJI"
+}
+
+inputLog() {
+  end=$'\\e[0m'
+  darkGray=$'\\e[90m'
+
+  echo "\${darkGray}   $1 \${end}"
+}
+
+inputLogShort() {
+  end=$'\\e[0m'
+  darkGray=$'\\e[90m'
+
+  echo "\${darkGray}   $1 \${end}"
+}
+
+certsRemove() {
+  local CERTS_DIR_PATH=$1
+  rm -rf "$CERTS_DIR_PATH"
+}
+
+removeContainer() {
+  CONTAINER_NAME=$1
+  docker rm -f "$CONTAINER_NAME"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+printHelp() {
+  echo "Fablo is powered by SoftwareMill"
+
+  echo ""
+  echo "usage: ./fabric-docker.sh <command>"
+  echo ""
+
+  echo "Commands: "
+  echo ""
+  echo "./fabric-docker.sh up"
+  echo -e "\\t Use for first run. Creates all needed artifacts (certs, genesis block) and starts network for the first time."
+  echo -e "\\t After 'up' commands start/stop are used to manage network and rerun to rerun it"
+  echo ""
+  echo "./fabric-docker.sh down"
+  echo -e "\\t Back to empty state - destorys created containers, prunes generated certificates, configs."
+  echo ""
+  echo "./fabric-docker.sh start"
+  echo -e "\\t Starts already created network."
+  echo ""
+  echo "./fabric-docker.sh stop"
+  echo -e "\\t Stops already running network."
+  echo ""
+  echo "./fabric-docker.sh reset"
+  echo -e "\\t Fresh start - it destroys whole network, certs, configs and then reruns everything."
+  echo ""
+  echo "./fabric-docker.sh channel --help"
+  echo -e "\\t Detailed help for channel management scripts."
+  echo ""
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+# phrase "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
+# see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
+
+dockerPullIfMissing() {
+  local IMAGE="$1"
+  if [[ "$(docker images -q "$IMAGE" 2>/dev/null)" == "" ]]; then
+    docker pull --platform linux/x86_64 "$IMAGE"
+  fi
+}
+
+node_version_check() {
+
+  local fabric_shim_version="$1"
+  local nodejs_version
+
+  if [[ "$fabric_shim_version" == *"1.4."* ]]; then
+    nodejs_version=8.9
+
+  elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
+    nodejs_version=12.13
+
+  elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
+    nodejs_version=16.16
+
+  elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
+    nodejs_version=18.12
+
+  else
+    nodejs_version=18.12
+  fi
+
+  echo $nodejs_version
+
+}
+
+chaincodeBuild() {
+  local CHAINCODE_NAME=$1
+  local CHAINCODE_LANG=$2
+  local CHAINCODE_DIR_PATH=$3
+  local RECOMMENDED_NODE_VERSION=$4
+
+  mkdir -p "$CHAINCODE_DIR_PATH"
+
+  # pull required images upfront in case of arm64 (Apple Silicon) architecture
+  # see https://stackoverflow.com/questions/69699421/hyperledger-fabric-chaincode-installation-failed-no-matching-manifest-for-linu
+  # also, starting from Fabric 2.5, the base images for chaincode are available for arm64, so we don't need to pull them separately
+  # and we use \`sort -V\` to compare versions, because \`sort\` handles versions like \`2.4\` and \`2.10\` correctly
+  if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
+    if [ "$CHAINCODE_LANG" = "node" ]; then
+      dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
+    fi
+    if [ "$CHAINCODE_LANG" = "java" ]; then
+      dockerPullIfMissing "hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION"
+    fi
+    if [ "$CHAINCODE_LANG" = "golang" ]; then
+      dockerPullIfMissing "hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION"
+    fi
+  fi
+
+  if [ "$CHAINCODE_LANG" = "node" ]; then
+    NODE_VERSION=$(node --version)
+    fabric_shim_version=$(jq -r '.dependencies."fabric-shim"' "$CHAINCODE_DIR_PATH/package.json")
+    RECOMMENDED_NODE_VERSION=$(node_version_check "$fabric_shim_version")
+
+    if ! echo "$NODE_VERSION" | grep -q "v$RECOMMENDED_NODE_VERSION"; then
+      echo "Warning: Your Node.js version is $NODE_VERSION, but recommended is $RECOMMENDED_NODE_VERSION)"
+      echo "See: https://github.com/hyperledger/fabric-chaincode-node/blob/main/COMPATIBILITY.md"
+    fi
+
+    echo "Buiding chaincode '$CHAINCODE_NAME'..."
+    inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+    inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+    inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
+    inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
+
+    # Default to using npm for installation and build
+    (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
+
+  fi
+}
+
+chaincodePackage() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LANG=$5
+
+  echo "Packaging chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CLI_NAME: $CLI_NAME"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode package \\
+    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \\
+    --path "/var/hyperledger/cli/$CHAINCODE_NAME/" \\
+    --lang "$CHAINCODE_LANG" \\
+    --label "$CHAINCODE_LABEL"
+
+  # set package owner as current (host) user to fix permission issues
+  docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+}
+
+chaincodeInstall() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CA_CERT=$5
+
+  echo "Installing chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CA_CERT: $CA_CERT"
+
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tlsRootCertFiles "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \\
+    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \\
+    "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+}
+
+chaincodeApprove() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME="$3"
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local ORDERER_URL=$6
+  local ENDORSEMENT=$7
+  local INIT_REQUIRED=$8
+  local CA_CERT=$9
+  local COLLECTIONS_CONFIG=\${10}
+
+  echo "Approving chaincode $CHAINCODE_NAME..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ENDORSEMENT: $ENDORSEMENT"
+  inputLog "INIT_REQUIRED: $INIT_REQUIRED"
+  inputLog "CA_CERT: $CA_CERT"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
+
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  local ENDORSEMENT_PARAMS=()
+  if [ -n "$ENDORSEMENT" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
+  fi
+
+  local INIT_REQUIRED_PARAMS=()
+  if [ "$INIT_REQUIRED" = "true" ]; then
+    INIT_REQUIRED_PARAMS=(--init-required)
+  fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n "$COLLECTIONS_CONFIG" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
+  fi
+
+  local QUERYINSTALLED_RESPONSE
+  local CC_PACKAGE_ID
+
+  QUERYINSTALLED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \\
+      --output json \\
+      "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+  )"
+  CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\\"$CHAINCODE_LABEL\\") ][0].package_id // \\"\\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
+  if [ -z "$CC_PACKAGE_ID" ]; then
+    CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
+  fi
+  inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
+
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \\
+      --channelID "$CHANNEL_NAME" \\
+      --output json \\
+      "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+  )"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\\"$CHAINCODE_NAME\\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog "SEQUENCE: $SEQUENCE"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" -e CC_PACKAGE_ID="$CC_PACKAGE_ID" "$CLI_NAME" peer lifecycle chaincode approveformyorg \\
+    -o "$ORDERER_URL" \\
+    -C "$CHANNEL_NAME" \\
+    -n "$CHAINCODE_NAME" \\
+    -v "$CHAINCODE_VERSION" \\
+    --package-id "$CC_PACKAGE_ID" \\
+    --sequence "$SEQUENCE" \\
+    "\${ENDORSEMENT_PARAMS[@]+"\${ENDORSEMENT_PARAMS[@]}"}" \\
+    "\${INIT_REQUIRED_PARAMS[@]+"\${INIT_REQUIRED_PARAMS[@]}"}" \\
+    "\${COLLECTIONS_CONFIG_PARAMS[@]+"\${COLLECTIONS_CONFIG_PARAMS[@]}"}" \\
+    "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+}
+
+chaincodeCommit() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME="$3"
+  local CHAINCODE_NAME=$4
+  local CHAINCODE_VERSION=$5
+  local ORDERER_URL=$6
+  local ENDORSEMENT=$7
+  local INIT_REQUIRED=$8
+  local CA_CERT=$9
+  local COMMIT_PEER_ADDRESSES=\${10}
+  local TLS_ROOT_CERT_FILES=\${11}
+  local COLLECTIONS_CONFIG=\${12}
+
+  echo "Committing chaincode $CHAINCODE_NAME..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "ORDERER_URL: $ORDERER_URL"
+  inputLog "ENDORSEMENT: $ENDORSEMENT"
+  inputLog "INIT_REQUIRED: $INIT_REQUIRED"
+  inputLog "CA_CERT: $CA_CERT"
+  inputLog "COMMIT_PEER_ADDRESSES: $COMMIT_PEER_ADDRESSES"
+  inputLog "TLS_ROOT_CERT_FILES: $TLS_ROOT_CERT_FILES"
+  inputLog "COLLECTIONS_CONFIG: $COLLECTIONS_CONFIG"
+
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  local COMMIT_PEER_PARAMS=()
+  if [ -n "$COMMIT_PEER_ADDRESSES" ]; then
+    # shellcheck disable=SC2207
+    COMMIT_PEER_PARAMS=($(echo ",$COMMIT_PEER_ADDRESSES" | sed 's/,/ --peerAddresses /g'))
+  fi
+
+  local TLS_ROOT_CERT_PARAMS=()
+  if [ -n "$TLS_ROOT_CERT_FILES" ]; then
+    # shellcheck disable=SC2207
+    TLS_ROOT_CERT_PARAMS=(--tls $(echo ",$TLS_ROOT_CERT_FILES" | sed 's/,/ --tlsRootCertFiles \\/var\\/hyperledger\\/cli\\//g'))
+  fi
+
+  local ENDORSEMENT_PARAMS=()
+  if [ -n "$ENDORSEMENT" ]; then
+    ENDORSEMENT_PARAMS=(--signature-policy "$ENDORSEMENT")
+  fi
+
+  local INIT_REQUIRED_PARAMS=()
+  if [ "$INIT_REQUIRED" = "true" ]; then
+    INIT_REQUIRED_PARAMS=(--init-required)
+  fi
+
+  local COLLECTIONS_CONFIG_PARAMS=()
+  if [ -n "$COLLECTIONS_CONFIG" ]; then
+    COLLECTIONS_CONFIG_PARAMS=(--collections-config "$COLLECTIONS_CONFIG")
+  fi
+
+  local QUERYCOMMITTED_RESPONSE
+  local SEQUENCE
+
+  QUERYCOMMITTED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \\
+      --channelID "$CHANNEL_NAME" \\
+      --output json \\
+      "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+  )"
+  SEQUENCE="$(jq ".chaincode_definitions | [.[]? | select(.name==\\"$CHAINCODE_NAME\\").sequence ] | max | select(.!= null)" -r <<<"$QUERYCOMMITTED_RESPONSE")"
+  SEQUENCE=$((SEQUENCE + 1))
+  inputLog "SEQUENCE: $SEQUENCE"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode commit \\
+    -o "$ORDERER_URL" \\
+    -C "$CHANNEL_NAME" \\
+    -n "$CHAINCODE_NAME" \\
+    -v "$CHAINCODE_VERSION" \\
+    --sequence "$SEQUENCE" \\
+    "\${ENDORSEMENT_PARAMS[@]+"\${ENDORSEMENT_PARAMS[@]}"}" \\
+    "\${INIT_REQUIRED_PARAMS[@]+"\${INIT_REQUIRED_PARAMS[@]}"}" \\
+    "\${COLLECTIONS_CONFIG_PARAMS[@]+"\${COLLECTIONS_CONFIG_PARAMS[@]}"}" \\
+    "\${COMMIT_PEER_PARAMS[@]+"\${COMMIT_PEER_PARAMS[@]}"}" \\
+    "\${TLS_ROOT_CERT_PARAMS[@]+"\${TLS_ROOT_CERT_PARAMS[@]}"}" \\
+    "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+}
+
+peerChaincodeList() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+
+  echo "Chaincodes list:"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+
+  # Execute the command to list chaincodes
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \\
+    --channelID "$CHANNEL_NAME"
+}
+
+peerChaincodeListTls() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHANNEL_NAME=$3
+  local CA_CERT=$4
+
+  echo "Chaincodes list:"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CA_CERT: $CA_CERT"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode querycommitted \\
+    --channelID "$CHANNEL_NAME" \\
+    --tls \\
+    --cafile "/var/hyperledger/cli/$CA_CERT"
+}
+
+# Function to perform chaincode invoke
+peerChaincodeInvoke() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode invoke:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \\
+    $PEER_ADDRESSES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    --waitForEvent \\
+    --waitForEventTimeout 90s \\
+    2>&1
+}
+# Function to perform chaincode invoke for Tls
+peerChaincodeInvokeTls() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERTS="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode invoke:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERTS"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEER_CERTS" | sed 's/,/ --tlsRootCertFiles \\/var\\/hyperledger\\/cli\\//g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode invoke \\
+    $PEER_ADDRESSES \\
+    $TLS_ROOT_CERT_FILES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    --waitForEvent \\
+    --waitForEventTimeout 90s \\
+    --tls \\
+    --cafile "/var/hyperledger/cli/$CA_CERT" \\
+    2>&1
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+peerChannelList() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+
+  echo "Listing channels using $CLI_NAME using peer $PEER_ADDRESS..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list
+}
+
+peerChannelGetInfo() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local PEER_ADDRESS=$3
+
+  echo "Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel getinfo \\
+    -c "$CHANNEL_NAME"
+}
+
+peerChannelFetchConfig() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+
+  echo "Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/assets/
+  docker exec \\
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\
+    -c "$CHANNEL_NAME"
+
+  docker exec "$CLI_NAME" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec \\
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" configtxlator proto_decode \\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\
+    --type common.Block |
+    jq .data.data[0].payload.data.config >"$CONFIG_FILE_NAME"
+
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
+}
+
+peerChannelFetchBlock() {
+  local CHANNEL_NAME="$1"
+  local CLI_NAME="$2"
+  local BLOCK_NAME="$3"
+  local PEER_ADDRESS="$4"
+  local TARGET_FILE="$5"
+  local TEMP_FILE="/tmp/hyperledger/blocks/$BLOCK_NAME.block"
+
+  echo "Fetching block $BLOCK_NAME from $CHANNEL_NAME using peer $PEER_ADDRESS..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "BLOCK_NAME: $BLOCK_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "TARGET_FILE: $TARGET_FILE"
+
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" peer channel fetch "$BLOCK_NAME" "$TEMP_FILE" \\
+    -c "$CHANNEL_NAME"
+
+  docker exec "$CLI_NAME" cat "$TEMP_FILE" >"$TARGET_FILE"
+
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/blocks/
+}
+
+#=== TLS equivalents =========================================================
+
+peerChannelListTls() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CA_CERT=$3
+
+  echo "Listing channels using $CLI_NAME using peer $PEER_ADDRESS (TLS)..."
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel list --tls --cafile "$CA_CERT"
+}
+
+peerChannelGetInfoTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local PEER_ADDRESS=$3
+  local CA_CERT=$4
+
+  echo "Getting info about $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer channel getinfo \\
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+}
+
+peerChannelFetchConfigTls() {
+  local CHANNEL_NAME=$1
+  local CLI_NAME=$2
+  local CONFIG_FILE_NAME=$3
+  local PEER_ADDRESS=$4
+  local CA_CERT=$5
+
+  echo "Fetching config block from $CHANNEL_NAME using peer $PEER_ADDRESS (TLS)..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CONFIG_FILE_NAME: $CONFIG_FILE_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/assets/
+  docker exec \\
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" peer channel fetch config /tmp/hyperledger/assets/config_block_before.pb \\
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+
+  docker exec "$CLI_NAME" chmod 777 /tmp/hyperledger/assets/config_block_before.pb
+  docker exec \\
+    -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" configtxlator proto_decode \\
+    --input /tmp/hyperledger/assets/config_block_before.pb \\
+    --type common.Block |
+    jq .data.data[0].payload.data.config >"$CONFIG_FILE_NAME"
+
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/assets/
+}
+
+peerChannelFetchBlockTls() {
+  local CHANNEL_NAME="$1"
+  local CLI_NAME="$2"
+  local BLOCK_NAME="$3"
+  local PEER_ADDRESS="$4"
+  local CA_CERT="$5"
+  local TARGET_FILE="$6"
+  local TEMP_FILE="/tmp/hyperledger/blocks/$BLOCK_NAME.block"
+
+  echo "Fetching block $BLOCK_NAME from $CHANNEL_NAME using peer $PEER_ADDRESS..."
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "BLOCK_NAME: $BLOCK_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "TARGET_FILE: $TARGET_FILE"
+
+  docker exec "$CLI_NAME" mkdir -p /tmp/hyperledger/blocks/
+
+  docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" \\
+    "$CLI_NAME" peer channel fetch "$BLOCK_NAME" "$TEMP_FILE" \\
+    -c "$CHANNEL_NAME" --tls --cafile "$CA_CERT"
+
+  docker exec "$CLI_NAME" cat "$TEMP_FILE" >"$TARGET_FILE"
+
+  docker exec "$CLI_NAME" rm -rf /tmp/hyperledger/blocks/
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+set -eu
+
+createChannelAndJoin() {
+  local CHANNEL_NAME=$1
+  local CORE_PEER_LOCALMSPID=$2
+  local CORE_PEER_ADDRESS=$3
+  local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
+  local ORDERER_URL=$5
+
+  local DIR_NAME=step-createChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
+
+  echo "Creating channel with name: \${CHANNEL_NAME}"
+  echo "   Orderer: $ORDERER_URL"
+  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
+  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
+  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+
+  mkdir "$DIR_NAME" && cd "$DIR_NAME"
+
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
+  peer channel create -o "\${ORDERER_URL}" -c "\${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx
+  peer channel join -b "\${CHANNEL_NAME}".block
+
+  rm -rf "$DIR_NAME"
+}
+
+createChannelAndJoinTls() {
+  local CHANNEL_NAME=$1
+  local CORE_PEER_LOCALMSPID=$2
+  local CORE_PEER_ADDRESS=$3
+  local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
+  local CORE_PEER_TLS_MSPCONFIGPATH=$(realpath "$5")
+  local TLS_CA_CERT_PATH=$(realpath "$6")
+  local ORDERER_URL=$7
+
+  local CORE_PEER_TLS_CERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.crt
+  local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
+  local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
+
+  local DIR_NAME=step-createChannelAndJoinTls-$CHANNEL_NAME-$CORE_PEER_ADDRESS
+
+  echo "Creating channel with name (TLS): \${CHANNEL_NAME}"
+  echo "   Orderer: $ORDERER_URL"
+  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
+  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
+  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+  echo "   TLS_CA_CERT_PATH is: $TLS_CA_CERT_PATH"
+  echo "   CORE_PEER_TLS_CERT_FILE: $CORE_PEER_TLS_CERT_FILE"
+  echo "   CORE_PEER_TLS_KEY_FILE: $CORE_PEER_TLS_KEY_FILE"
+  echo "   CORE_PEER_TLS_ROOTCERT_FILE: $CORE_PEER_TLS_ROOTCERT_FILE"
+
+  mkdir "$DIR_NAME" && cd "$DIR_NAME"
+
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
+
+  peer channel create -o "\${ORDERER_URL}" -c "\${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx --tls --cafile "$TLS_CA_CERT_PATH"
+  peer channel join -b "\${CHANNEL_NAME}".block --tls --cafile "$TLS_CA_CERT_PATH"
+
+  rm -rf "$DIR_NAME"
+}
+
+fetchChannelAndJoin() {
+  local CHANNEL_NAME=$1
+  local CORE_PEER_LOCALMSPID=$2
+  local CORE_PEER_ADDRESS=$3
+  local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
+  local ORDERER_URL=$5
+
+  local DIR_NAME=step-fetchChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
+
+  echo "Fetching channel with name: \${CHANNEL_NAME}"
+  echo "   Orderer: $ORDERER_URL"
+  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
+  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
+  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+
+  mkdir "$DIR_NAME" && cd "$DIR_NAME"
+
+  peer channel fetch newest -c "\${CHANNEL_NAME}" --orderer "\${ORDERER_URL}"
+  peer channel join -b "\${CHANNEL_NAME}"_newest.block
+
+  rm -rf "$DIR_NAME"
+}
+
+fetchChannelAndJoinTls() {
+  local CHANNEL_NAME=$1
+  local CORE_PEER_LOCALMSPID=$2
+  local CORE_PEER_ADDRESS=$3
+  local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
+  local CORE_PEER_TLS_MSPCONFIGPATH=$(realpath "$5")
+  local TLS_CA_CERT_PATH=$(realpath "$6")
+  local ORDERER_URL=$7
+
+  local CORE_PEER_TLS_CERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.crt
+  local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
+  local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
+
+  local DIR_NAME=step-fetchChannelAndJoinTls-$CHANNEL_NAME-$CORE_PEER_ADDRESS
+
+  echo "Fetching channel with name (TLS): \${CHANNEL_NAME}"
+  echo "   Orderer: $ORDERER_URL"
+  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
+  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
+  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
+  echo "   TLS_CA_CERT_PATH is: $TLS_CA_CERT_PATH"
+  echo "   CORE_PEER_TLS_CERT_FILE: $CORE_PEER_TLS_CERT_FILE"
+  echo "   CORE_PEER_TLS_KEY_FILE: $CORE_PEER_TLS_KEY_FILE"
+  echo "   CORE_PEER_TLS_ROOTCERT_FILE: $CORE_PEER_TLS_ROOTCERT_FILE"
+
+  mkdir "$DIR_NAME" && cd "$DIR_NAME"
+
+  peer channel fetch newest -c "\${CHANNEL_NAME}" --orderer "\${ORDERER_URL}" --tls --cafile "$TLS_CA_CERT_PATH"
+  peer channel join -b "\${CHANNEL_NAME}"_newest.block --tls --cafile "$TLS_CA_CERT_PATH"
+
+  rm -rf "$DIR_NAME"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+__getOrdererAndPeerNodes() {
+  echo "
+      orderer0.group1.orderer.example.com
+      peer0.org1.example.com
+  "
+}
+
+__getCASQLiteNodes() {
+  echo "
+      ca.orderer.example.com
+  "
+}
+
+__getCAPostgresNodes() {
+  echo "
+      db.ca.org1.example.com
+  "
+}
+
+__createSnapshot() {
+  cd "$FABLO_NETWORK_ROOT/.."
+  backup_dir="\${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
+
+  if [ -d "$backup_dir" ] && [ "$(ls -A "$backup_dir")" ]; then
+    echo "Error: Directory '$backup_dir' already exists and is not empty!"
+    exit 1
+  fi
+
+  mkdir -p "$backup_dir"
+  cp -R ./fablo-target "$backup_dir/"
+
+  for node in $(__getCASQLiteNodes); do
+    echo "Saving state of $node..."
+    mkdir -p "$backup_dir/$node"
+    docker cp "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db" "$backup_dir/$node/fabric-ca-server.db"
+  done
+
+  for node in $(__getCAPostgresNodes); do
+    echo "Saving state of $node..."
+    mkdir -p "$backup_dir/$node/pg-data"
+    docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
+    echo "Saving state of $node..."
+    docker cp "$node:/var/hyperledger/production/" "$backup_dir/$node/"
+  done
+}
+
+__cloneSnapshot() {
+  cd "$FABLO_NETWORK_ROOT/.."
+  target_dir="$1"
+  hook_cmd="$2"
+
+  if [ -d "$target_dir/fablo-target" ]; then
+    echo "Error: Directory '$target_dir/fablo-target' already exists! Execute 'fablo prune' to remove the current network."
+    exit 1
+  fi
+
+  cp -R ./fablo-target "$target_dir/fablo-target"
+
+  if [ -n "$hook_cmd" ]; then
+    echo "Executing pre-restore hook: '$hook_cmd'"
+    (cd "$target_dir" && eval "$hook_cmd")
+  fi
+
+  (cd "$target_dir/fablo-target/fabric-docker" && docker compose up --no-start)
+
+  for node in $(__getCASQLiteNodes); do
+    echo "Restoring $node..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabric-ca-server.db" "$node:/etc/hyperledger/fabric-ca-server/fabric-ca-server.db"
+    fi
+  done
+
+  for node in $(__getCAPostgresNodes); do
+    echo "Restoring $node..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getOrdererAndPeerNodes); do
+    echo "Restoring $node..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/" "$node:/var/hyperledger/production/"
+    fi
+  done
+}
+
+createSnapshot() {
+  (set -eu && __createSnapshot "$1")
+}
+
+cloneSnapshot() {
+  (set -eu && __cloneSnapshot "$1" "$2")
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/hooks/post-generate.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file was called after Fablo generated Hyperledger Fabric configuration
+echo "Executing post-generate hook"
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"graph TD
+
+  subgraph Org_Orderer [Org: Orderer]
+    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - postgres]
+    Org1_peer0[Peer: peer0]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  %% Connections
+  Org_Orderer --> Channel_my_channel1
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+"
+`;
+
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+[
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/network-topology.mmd",
+]
+`;
