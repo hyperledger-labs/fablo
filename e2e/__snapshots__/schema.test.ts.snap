@@ -104,13 +104,6 @@ exports[`schema should match snapshot 1`] = `
             "title": "Name",
             "type": "string",
           },
-          "port": {
-            "$id": "#/properties/chaincodes/items/properties/port",
-            "maximum": 65535,
-            "minimum": 10,
-            "title": "Chaincode port",
-            "type": "integer",
-          },
           "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
             "items": {
