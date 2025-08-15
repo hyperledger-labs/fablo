@@ -5655,6 +5655,68 @@ perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-
 "
 `;
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"graph TD
+
+  subgraph Org_Orderer1 [Org: Orderer1]
+    CA_ca_Orderer1[CA: ca_Orderer1 - sqlite]
+  end
+
+  subgraph Org_Orderer2 [Org: Orderer2]
+    CA_ca_Orderer2[CA: ca_Orderer2 - sqlite]
+  end
+
+  subgraph Org_Org1 [Org: Org1]
+    CA_ca_Org1[CA: ca_Org1 - sqlite]
+    Org1_peer0[Peer: peer0]
+    Org1_peer1[Peer: peer1]
+  end
+
+  subgraph Org_Org2 [Org: Org2]
+    CA_ca_Org2[CA: ca_Org2 - sqlite]
+    Org2_peer0[Peer: peer0]
+    Org2_peer1[Peer: peer1]
+  end
+
+  subgraph Channel_my_channel1 [Channel: my-channel1]
+    Chaincode_chaincode1[Chaincode: chaincode1]
+  end
+
+  subgraph Channel_my_channel2 [Channel: my-channel2]
+    Chaincode_chaincode2[Chaincode: chaincode2]
+  end
+
+  subgraph Channel_my_channel3 [Channel: my-channel3]
+  end
+
+  %% Connections
+  Org_Orderer1 --> Channel_my_channel1
+  Org_Orderer1 --> Channel_my_channel2
+  Org_Orderer1 --> Channel_my_channel3
+  Org_Orderer2 --> Channel_my_channel1
+  Org_Orderer2 --> Channel_my_channel2
+  Org_Orderer2 --> Channel_my_channel3
+  Org_Org1 -.-> Channel_my_channel1
+  Org1_peer0 --> Channel_my_channel1
+  Org1_peer1 --> Channel_my_channel1
+  Org_Org2 -.-> Channel_my_channel1
+  Org2_peer0 --> Channel_my_channel1
+  Org2_peer1 --> Channel_my_channel1
+  Org_Org1 -.-> Channel_my_channel2
+  Org1_peer0 --> Channel_my_channel2
+  Org1_peer1 --> Channel_my_channel2
+  Org_Org2 -.-> Channel_my_channel2
+  Org2_peer0 --> Channel_my_channel2
+  Org2_peer1 --> Channel_my_channel2
+  Org_Org1 -.-> Channel_my_channel3
+  Org1_peer0 --> Channel_my_channel3
+  Org1_peer1 --> Channel_my_channel3
+  Org_Org2 -.-> Channel_my_channel3
+  Org2_peer0 --> Channel_my_channel3
+  Org2_peer1 --> Channel_my_channel3
+"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper files from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/.gitignore",
@@ -5689,5 +5751,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;
