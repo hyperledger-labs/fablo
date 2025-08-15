@@ -149,6 +149,7 @@ describe("validate", () => {
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
 
     // Then
+    // expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Chaincode name 'duplicateChaincode' is not unique");
   });
 
