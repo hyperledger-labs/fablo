@@ -76,6 +76,8 @@ class ValidateGenerator extends Generator {
     this.addListener(validationErrorType.CRITICAL, (event) => {
       console.log(chalk.bold.bgRed("Critical error occured:"));
       console.log(chalk.bold(`- ${event.message}`));
+      console.log(chalk.bold.bgRed("Critical error occured:"));
+      console.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
       process.exit(1);
     });
@@ -91,6 +93,7 @@ class ValidateGenerator extends Generator {
 
     const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
     this._validateFabricVersion(networkConfig.global);
+    networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateOrgs(networkConfig.orgs);
@@ -98,6 +101,7 @@ class ValidateGenerator extends Generator {
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
+    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
@@ -134,7 +138,20 @@ class ValidateGenerator extends Generator {
     }
   }
 
+  private _validateCcaaTLS(global: GlobalJson, chaincode: ChaincodeJson) {
+    if (chaincode.lang === "ccaas" && !global.tls) {
+      const objectToEmit = {
+        category: validationCategories.CRITICAL,
+        message: `Chaincode '${chaincode.name}' is using CCAAS, but TLS is disabled in the network. CCAAS with no TLS is not supported yet.`,
+      };
+      this.emit(validationErrorType.CRITICAL, objectToEmit);
+    }
+  }
+
   async shortSummary() {
+    console.log(`Validation errors count: ${this.errors.count()}`);
+    console.log(`Validation warnings count: ${this.warnings.count()}`);
+    console.log(chalk.bold("==========================================================="));
     console.log(`Validation errors count: ${this.errors.count()}`);
     console.log(`Validation warnings count: ${this.warnings.count()}`);
     console.log(chalk.bold("==========================================================="));

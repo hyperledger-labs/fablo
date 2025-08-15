@@ -38,6 +38,47 @@ certsGenerate() {
   done
 }
 
+certsGenerateCCaaS() {
+  local CONFIG_PATH=$1
+  local CONTAINER_NAME=$2
+  local ORG_DOMAIN=$3
+  local CHAINCODE_NAME=$4
+  local PEER_ADDRESS=$5
+
+  local OUTPUT_PATH="${CONFIG_PATH}ccaas/${CONTAINER_NAME}/tls"
+  mkdir -p "$OUTPUT_PATH"
+
+  local CA_CERT="${CONFIG_PATH}peerOrganizations/${ORG_DOMAIN}/tlsca/tlsca.${ORG_DOMAIN}-cert.pem"
+  local CA_KEY="${CONFIG_PATH}peerOrganizations/${ORG_DOMAIN}/tlsca/priv-key.pem"
+
+  echo "Generating TLS certs for ${CONTAINER_NAME}..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CA cert: $CA_CERT"
+  inputLog "CA key : $CA_KEY"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+
+  docker run --rm \
+    -v "$OUTPUT_PATH:/certs" \
+    -v "$CA_CERT:/ca/ca.crt:ro" \
+    -v "$CA_KEY:/ca/ca.key:ro" \
+    alpine:latest sh -c '
+      apk add --no-cache openssl >/dev/null &&
+      openssl genrsa -out /certs/client.key 2048 &&
+      openssl req -new -key /certs/client.key -out /certs/client.csr -subj "/CN='"$CONTAINER_NAME"'" &&
+      openssl x509 -req -in /certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial \
+        -out /certs/client.crt -days 365 -sha256 &&
+      base64 /certs/client.crt > /certs/client_pem.crt &&
+      base64 /certs/client.key > /certs/client_pem.key
+    '
+
+  cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
+  echo "TLS certs generated for ${CONTAINER_NAME} at ${OUTPUT_PATH}"
+}
+
 genesisBlockCreate() {
   local CONTAINER_NAME=genesisBlockCreate
 

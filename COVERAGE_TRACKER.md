@@ -22,7 +22,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Node                                   | ✓         | ✓         |            |          |                 |
 | Go                                     | ✓         | ✓         |            |          |                 |
 | Java                                   | ✓         | ✓         |            |          |                 |
-| Chaincode-as-a-Service (CCaaS)         | ✕         | ✕         |            |          |                 |
+| Chaincode-as-a-Service (CCaaS)         | ✓         | ✕         |            |  [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh)        |                 |
 | Endorsement Policies                   | ✓         | ✓         |            |          |                 |
 | Multi-org Endorsements                 | ✓         | ✓         |            |          |                 |
 | Private Data Collections               | ✓         | ✓         |            |          |                 |

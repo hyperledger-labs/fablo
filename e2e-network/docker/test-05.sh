@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-set -e
+set -eux
 
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
 
-export FABLO_HOME
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1orgs-1chaincode.json"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
@@ -23,6 +23,7 @@ dumpLogs() {
 networkDown() {
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
+  dumpLogs orderer0.group1.orderer.example.com
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
@@ -49,7 +50,7 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 networkUp
 
 waitForContainer "orderer0.group1.orderer.example.com" "Created and started new.*my-channel1"
-waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
@@ -90,5 +91,3 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "James Bond"]}' \
   '{\"success\":\"OK\"}'
-
-echo "✅ Test passed!"

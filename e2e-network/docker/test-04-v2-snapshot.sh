@@ -111,6 +111,7 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
     "$FABLO_HOME/fablo.sh" prune &&
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
     "$FABLO_HOME/fablo.sh" start
+    "$FABLO_HOME/fablo.sh" chaincodes install
 )
 
 waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
@@ -129,3 +130,5 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
+
+echo "✅ Test passed!"
