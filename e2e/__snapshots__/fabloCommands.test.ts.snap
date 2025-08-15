@@ -4,7 +4,6 @@ exports[`extend config should extend custom config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
-Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.4.3",
@@ -2472,7 +2471,6 @@ exports[`extend config should extend default config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
-Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.5.12",
@@ -3096,7 +3094,16 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       ]
     }
   ],
-  "chaincodes": [],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
+    }
+  ],
   "hooks": {}
 }"
 `;
