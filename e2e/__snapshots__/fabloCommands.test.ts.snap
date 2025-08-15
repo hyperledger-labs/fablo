@@ -3136,7 +3136,9 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
           "prefix": "orderer"
         }
       ],
-      "tools": {}
+      "tools": {
+        "fabloRest": true
+      }
     },
     {
       "organization": {
@@ -3154,7 +3156,9 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
         "db": "LevelDb",
         "prefix": "peer"
       },
-      "tools": {}
+      "tools": {
+        "fabloRest": true
+      }
     }
   ],
   "channels": [
@@ -3171,7 +3175,16 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
       ]
     }
   ],
-  "chaincodes": [],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
+    }
+  ],
   "hooks": {}
 }"
 `;
