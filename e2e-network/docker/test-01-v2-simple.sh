@@ -42,6 +42,10 @@ expectCommand() {
   sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
 }
 
+expectQuery() {
+  (cd "$TEST_TMP" && sh ../expect-query-cli.sh "$1" "$2" "$3" "$4" "$5")
+}
+
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
@@ -62,13 +66,13 @@ waitForContainer "peer1.org1.example.com" "Membership view has changed. peers we
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
   '{\"success\":\"OK\"}'
-expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Willy Wonka\"}'
+  '{"success":"Willy Wonka"}'
 
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
-expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:get"
+expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 4 my-channel1 org1 peer1 "another.block")
 expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
@@ -76,15 +80,15 @@ expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":6"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":5"
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
-expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
+expectQuery "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{\"error\":\"NOT_FOUND\"}'
+  '{"error":"NOT_FOUND"}'
 
 # Put some data again
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
