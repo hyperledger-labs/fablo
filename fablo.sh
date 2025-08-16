@@ -97,6 +97,9 @@ printHelp() {
 
   fablo chaincodes list <peer> <channel>
     Lists chaincodes installed on specified peer and channel.
+    
+  fablo chaincode query <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
+    Queries chaincode with specified parameters.
 
   fablo channel --help
     To list available channel query options which can be executed on running network.
