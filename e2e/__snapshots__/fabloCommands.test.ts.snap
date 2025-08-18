@@ -4,6 +4,9 @@ exports[`extend config should extend custom config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
+Validation errors count: 0
+Validation warnings count: 0
+===========================================================
 {
   "global": {
     "fabricVersion": "2.4.3",
@@ -2009,6 +2012,7 @@ Validation warnings count: 0
           }
         }
       },
+      "peerChaincodeInstances": [],
       "privateData": []
     },
     {
@@ -2455,6 +2459,7 @@ Validation warnings count: 0
           }
         }
       },
+      "peerChaincodeInstances": [],
       "privateData": []
     }
   ],
@@ -2469,12 +2474,20 @@ Validation warnings count: 0
 
 exports[`extend config should extend default config 1`] = `
 "Validation errors count: 0
-Validation warnings count: 0
+Validation warnings count: 1
+===========================================================
+Validation errors count: 0
+Validation warnings count: 1
+===========================================================
+=================== Validation summary ====================
+Warnings found:
+  Orderer:
+   - Orderer consesus type is set to 'raft', but number of instances is 1. Network won't be fault tolerant! Consider higher value.
 ===========================================================
 {
   "global": {
     "fabricVersion": "2.5.12",
-    "tls": false,
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker",
     "fabricToolsVersion": "2.5.12",
@@ -2503,7 +2516,7 @@ Validation warnings count: 0
   "ordererGroups": [
     {
       "name": "group1",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "configtxOrdererDefaults": "Group1Defaults",
       "profileName": "Group1Genesis",
       "genesisBlockName": "Group1Genesis.block",
@@ -2517,7 +2530,7 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2530,7 +2543,7 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2542,7 +2555,7 @@ Validation warnings count: 0
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2556,7 +2569,7 @@ Validation warnings count: 0
       "orgName": "Orderer",
       "orgMspName": "OrdererMSP",
       "domain": "orderer.example.com",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "adminPort": 7053,
       "port": 7030,
       "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2588,7 +2601,7 @@ Validation warnings count: 0
       "ordererGroups": [
         {
           "name": "group1",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "configtxOrdererDefaults": "Group1Defaults",
           "profileName": "Group1Genesis",
           "genesisBlockName": "Group1Genesis.block",
@@ -2602,7 +2615,7 @@ Validation warnings count: 0
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2615,7 +2628,7 @@ Validation warnings count: 0
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2808,7 +2821,7 @@ Validation warnings count: 0
       ],
       "ordererGroup": {
         "name": "group1",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "configtxOrdererDefaults": "Group1Defaults",
         "profileName": "Group1Genesis",
         "genesisBlockName": "Group1Genesis.block",
@@ -2822,7 +2835,7 @@ Validation warnings count: 0
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2835,7 +2848,7 @@ Validation warnings count: 0
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2847,7 +2860,7 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2859,7 +2872,7 @@ Validation warnings count: 0
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2968,7 +2981,7 @@ exports[`init should init simple fablo config 1`] = `
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   "global": {
     "fabricVersion": "2.5.12",
-    "tls": false,
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -2986,7 +2999,7 @@ exports[`init should init simple fablo config 1`] = `
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
+          "type": "raft",
           "instances": 1,
           "prefix": "orderer"
         }
@@ -3036,7 +3049,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   "global": {
     "fabricVersion": "2.5.12",
-    "tls": false,
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -3054,7 +3067,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
+          "type": "raft",
           "instances": 1,
           "prefix": "orderer"
         }
@@ -3098,9 +3111,9 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "node",
+      "lang": "ccaas",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "privateData": []
     }
   ],
@@ -3113,7 +3126,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
   "global": {
     "fabricVersion": "2.5.12",
-    "tls": false,
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -3131,7 +3144,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
+          "type": "raft",
           "instances": 1,
           "prefix": "orderer"
         }
@@ -3179,9 +3192,9 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "node",
+      "lang": "ccaas",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "privateData": []
     }
   ],
