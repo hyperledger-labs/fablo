@@ -10,6 +10,7 @@ COPY package-lock.json /fablo/package-lock.json
 
 # copy files for init network
 COPY samples/chaincodes/chaincode-kv-node /fablo/generators/init/templates/chaincodes/chaincode-kv-node
+COPY samples/gateway/node /fablo/generators/init/templates/gateway/node
 
 WORKDIR /fablo
 RUN npm install --silent --only=prod
