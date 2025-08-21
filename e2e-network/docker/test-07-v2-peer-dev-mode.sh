@@ -60,6 +60,14 @@ waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 echo "All nodes are ready"
 echo "Starting chaincode in development mode..."
+# make sure nodemon is installed and Install if not
+if ! command -v nodemon &> /dev/null; then
+  echo "nodemon could not be found, installing..."
+  npm install -g nodemon
+else
+  echo "nodemon is already installed"
+fi
+# start the chaincode in development mode
 (cd "$NODECHAINCODE" && npm i && npm run start:watch) &
 
 sleep 5
