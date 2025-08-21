@@ -17,7 +17,7 @@
         {
           "groupName": "group1",
           "type": "raft",
-          "instances": 2
+          "instances": 1
         }
       ]
     },
@@ -30,7 +30,7 @@
         "db": "postgres"
       },
       "peer": {
-        "instances": 2,
+        "instances": 1,
         "db": "CouchDb"
       },
       "tools": {
@@ -45,8 +45,7 @@
         {
           "name": "Org1",
           "peers": [
-            "peer0",
-            "peer1"
+            "peer0"
           ]
         }
       ]
