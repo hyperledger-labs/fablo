@@ -1715,6 +1715,23 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
+  elif
+    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
+  then
+
+    peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+
+  elif [ "$1" = "fetch" ] && [ "$2" = "config" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer1" ]; then
+    TARGET_FILE=\${6:-"$channel-config.json"}
+
+    peerChannelFetchConfigTls "my-channel1" "cli.org1.example.com" "$TARGET_FILE" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+
+  elif [ "$1" = "fetch" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer1" ]; then
+    BLOCK_NAME=$2
+    TARGET_FILE=\${6:-"$BLOCK_NAME.block"}
+
+    peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
+
   else
 
     echo "$@"
@@ -1744,6 +1761,16 @@ printChannelsHelp() {
   echo ""
   echo "fablo channel fetch <newest|oldest|block-number> my-channel1 org1 peer0 [file name]"
   echo -e "\\t Fetch a block with given number and save it. Uses first peer 'peer0' of 'Org1'".
+  echo ""
+
+  echo "fablo channel getinfo my-channel1 org1 peer1"
+  echo -e "\\t Get channel info on 'peer1' of 'Org1'".
+  echo ""
+  echo "fablo channel fetch config my-channel1 org1 peer1 [file-name.json]"
+  echo -e "\\t Download latest config block and save it. Uses first peer 'peer1' of 'Org1'".
+  echo ""
+  echo "fablo channel fetch <newest|oldest|block-number> my-channel1 org1 peer1 [file name]"
+  echo -e "\\t Fetch a block with given number and save it. Uses first peer 'peer1' of 'Org1'".
   echo ""
 
 }
@@ -1787,6 +1814,8 @@ installChannels() {
   printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
+  printItalics "Joining 'my-channel1' on Org1/peer1" "U1F638"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 }
 
 installChaincodes() {
@@ -1794,9 +1823,12 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
     chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+    chaincodePackageCCaaS "cli.org1.example.com" "peer1.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "ccaas-peer1.org1.example.com-chaincode1" "true"
     printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    startCCaaSContainer "peer1.org1.example.com:7042" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
@@ -1824,9 +1856,12 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer1.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "ccaas-peer1.org1.example.com-chaincode1" "true"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      startCCaaSContainer "peer1.org1.example.com:7042" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
@@ -1872,9 +1907,12 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas-peer0.org1.example.com-chaincode1" "true"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer1.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "ccaas-peer1.org1.example.com-chaincode1" "true"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      startCCaaSContainer "peer1.org1.example.com:7042" "chaincode1" "chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17042" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "ccaas" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
@@ -1917,6 +1955,14 @@ networkDown() {
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
   for image in $(docker images "peer0.org1.example.com-chaincode1*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer1.org1.example.com-chaincode1" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer1.org1.example.com-chaincode1*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done

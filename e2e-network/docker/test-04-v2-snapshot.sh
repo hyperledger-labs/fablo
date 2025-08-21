@@ -116,6 +116,7 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
 
 waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 sleep 5
 
