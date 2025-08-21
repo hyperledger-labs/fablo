@@ -57,6 +57,7 @@ waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. T
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"
 snapshot_name="fablo-snapshot-$(date -u +"%Y%m%d%H%M%S")"
