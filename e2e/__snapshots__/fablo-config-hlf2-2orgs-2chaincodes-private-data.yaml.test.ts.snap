@@ -3464,9 +3464,9 @@ chaincodePackageCCaaS() {
   if [ "$TLS_ENABLED" = true ]; then
     # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
     local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
-    local ROOT_CERT=$(cat "$PEER_TLS_PATH/ca.crt" | awk '{printf "%s\\\\n", $0}')
-    local SERVER_CERT=$(cat "$PEER_TLS_PATH/server.crt" | awk '{printf "%s\\\\n", $0}')
-    local SERVER_KEY=$(cat "$PEER_TLS_PATH/server.key" | awk '{printf "%s\\\\n", $0}')
+    local ROOT_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/ca.crt")
+    local SERVER_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.crt")
+    local SERVER_KEY=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.key")
 
     echo "{ 
       \\"address\\": \\"\${ACTUAL_CONTAINER_NAME}:7052\\",
