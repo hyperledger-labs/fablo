@@ -4,73 +4,73 @@ import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
-  $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
-  global: {
-    fabricVersion: "2.5.12",
-    tls: false,
-    peerDevMode: false,
-  },
-  orgs: [
-    {
-      organization: {
-        name: "Orderer",
-        domain: "orderer.example.com",
-        mspName: "OrdererMSP",
-      },
-      ca: {
-        prefix: "ca",
-        db: "sqlite",
-      },
-      orderers: [
-        {
-          groupName: "group1",
-          type: "solo",
-          instances: 1,
-          prefix: "orderer",
+    $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+    global: {
+      fabricVersion: "2.5.12",
+      tls: false,
+      peerDevMode: false,
+    },
+    orgs: [
+      {
+        organization: {
+          name: "Orderer",
+          domain: "orderer.example.com",
+          mspName: "OrdererMSP",
         },
-      ],
-    },
-    {
-      organization: {
-        name: "Org1",
-        domain: "org1.example.com",
-        mspName: "Org1MSP",
+        ca: {
+          prefix: "ca",
+          db: "sqlite",
+        },
+        orderers: [
+          {
+            groupName: "group1",
+            type: "solo",
+            instances: 1,
+            prefix: "orderer",
+          },
+        ],
       },
-      ca: {
-        prefix: "ca",
-        db: "sqlite",
-      },
-      orderers: [],
-      peer: {
-        instances: 2,
-        db: "LevelDb",
-        prefix: "peer",
-      },
-    },
-  ],
-  channels: [
-    {
-      name: "my-channel1",
-      orgs: [
-        {
+      {
+        organization: {
           name: "Org1",
-          peers: ["peer0", "peer1"],
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
         },
-      ],
-    },
-  ],
-  chaincodes: [
-    {
-      name: "chaincode1",
-      version: "0.0.1",
-      lang: "node",
-      channel: "my-channel1",
-      directory: "./chaincodes/chaincode-kv-node",
-      privateData: [],
-    },
-  ],
-  hooks: {},
- };
+        ca: {
+          prefix: "ca",
+          db: "sqlite",
+        },
+        orderers: [],
+        peer: {
+          instances: 2,
+          db: "LevelDb",
+          prefix: "peer",
+        },
+      },
+    ],
+    channels: [
+      {
+        name: "my-channel1",
+        orgs: [
+          {
+            name: "Org1",
+            peers: ["peer0", "peer1"],
+          },
+        ],
+      },
+    ],
+    chaincodes: [
+      {
+        name: "chaincode1",
+        version: "0.0.1",
+        lang: "node",
+        channel: "my-channel1",
+        directory: "./chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+    ],
+    hooks: {},
+  };
 }
 
 export default class InitGenerator extends Generator {
@@ -89,6 +89,12 @@ export default class InitGenerator extends Generator {
       this.fs.write(this.destinationPath("chaincodes/chaincode-kv-node/.nvmrc"), "12");
     } else {
       fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
+    }
+
+    const shouldInitWithNodeSampleGateway = this.args.length && this.args.find((v) => v === "gateway");
+    if (shouldInitWithNodeSampleGateway) {
+      console.log("Creating sample Node.js gateway");
+      this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
     }
 
     const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
