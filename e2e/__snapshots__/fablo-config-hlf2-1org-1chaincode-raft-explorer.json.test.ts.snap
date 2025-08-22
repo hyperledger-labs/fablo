@@ -224,22 +224,11 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
     "ca.orderer.example.com": {
       "url": "https://localhost:7020",
       "caName": "ca.orderer.example.com",
-      "httpOptions": {
-        "verify": false
-      },
       "tlsCACerts": {
         "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem"
-      }
-    }
-  },
-  "orderers": {
-    "orderer0.group1.orderer.example.com": {
-      "url": "grpcs://localhost:7030",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
       },
-      "grpcOptions": {
-        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      "httpOptions": {
+        "verify": false
       }
     }
   }
@@ -272,19 +261,11 @@ certificateAuthorities:
   ca.orderer.example.com:
     url: https://localhost:7020
     caName: ca.orderer.example.com
-    httpOptions:
-      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
-orderers:
-  orderer0.group1.orderer.example.com:
-    url: grpcs://localhost:7030
-    tlsCACerts:
-      path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
-    grpcOptions:
-      ssl-target-name-override: orderer0.group1.orderer.example.com
+    httpOptions:
+      verify: false
 "
 `;
 
@@ -322,28 +303,12 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
     "ca.org1.example.com": {
       "url": "https://localhost:7040",
       "caName": "ca.org1.example.com",
-      "httpOptions": {
-        "verify": false
-      },
       "tlsCACerts": {
         "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
-      }
-    }
-  },
-  "orderers": {
-    "orderer0.group1.orderer.example.com": {
-      "url": "grpcs://localhost:7030",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
       },
-      "grpcOptions": {
-        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      "httpOptions": {
+        "verify": false
       }
-    }
-  },
-  "channels": {
-    "my-channel1": {
-      "peers": {}
     }
   }
 }
@@ -375,22 +340,11 @@ certificateAuthorities:
   ca.org1.example.com:
     url: https://localhost:7040
     caName: ca.org1.example.com
-    httpOptions:
-      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
-orderers:
-  orderer0.group1.orderer.example.com:
-    url: grpcs://localhost:7030
-    tlsCACerts:
-      path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
-    grpcOptions:
-      ssl-target-name-override: orderer0.group1.orderer.example.com
-channels:
-  my-channel1:
-    peers: {}
+    httpOptions:
+      verify: false
 "
 `;
 
@@ -1573,7 +1527,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json should cre
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=2.0.0
+HYPERLEDGER_EXPLORER_VERSION=1.1.8
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -2167,14 +2121,14 @@ services:
       - basic
 
   db.explorer.example.com:
-    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: hyperledger/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
     container_name: db.explorer.example.com
     environment:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
       interval: 5s
       timeout: 10s
       retries: 7
@@ -2184,7 +2138,7 @@ services:
       - basic
 
   explorer.example.com:
-    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    image: hyperledger/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
     restart: on-failure:8
     container_name: explorer.example.com
     environment:

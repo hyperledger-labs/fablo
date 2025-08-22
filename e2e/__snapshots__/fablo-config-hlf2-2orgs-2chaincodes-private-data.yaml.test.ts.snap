@@ -281,11 +281,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
-  },
-  "orderers": {
-    "orderer0.group1.orderer.example.com": {
-      "url": "grpc://localhost:7030"
-    }
   }
 }
 "
@@ -319,9 +314,6 @@ certificateAuthorities:
     caName: ca.orderer.example.com
     httpOptions:
       verify: false
-orderers:
-  orderer0.group1.orderer.example.com:
-    url: grpc://localhost:7030
 "
 `;
 
@@ -365,16 +357,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
-  },
-  "orderers": {
-    "orderer0.group1.orderer.example.com": {
-      "url": "grpc://localhost:7030"
-    }
-  },
-  "channels": {
-    "my-channel1": {
-      "peers": {}
-    }
   }
 }
 "
@@ -408,12 +390,6 @@ certificateAuthorities:
     caName: ca.org1.example.com
     httpOptions:
       verify: false
-orderers:
-  orderer0.group1.orderer.example.com:
-    url: grpc://localhost:7030
-channels:
-  my-channel1:
-    peers: {}
 "
 `;
 
@@ -457,16 +433,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
-  },
-  "orderers": {
-    "orderer0.group1.orderer.example.com": {
-      "url": "grpc://localhost:7030"
-    }
-  },
-  "channels": {
-    "my-channel1": {
-      "peers": {}
-    }
   }
 }
 "
@@ -500,12 +466,6 @@ certificateAuthorities:
     caName: ca.org2.example.com
     httpOptions:
       verify: false
-orderers:
-  orderer0.group1.orderer.example.com:
-    url: grpc://localhost:7030
-channels:
-  my-channel1:
-    peers: {}
 "
 `;
 
@@ -2139,7 +2099,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 "FABLO_VERSION=2.2.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=2.0.0
+HYPERLEDGER_EXPLORER_VERSION=1.1.8
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
