@@ -1,0 +1,62 @@
+{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+  "global": {
+    "fabricVersion": "2.4.3",
+    "tls": false,
+    "peerDevMode": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "mspName": "OrdererMSP",
+        "domain": "root.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "prefix": "orderer",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "mspName": "Org1MSP",
+        "domain": "org1.example.com"
+      },
+      "ca": {
+        "prefix": "ca"
+      },
+      "peer": {
+        "prefix": "peer",
+        "instances": 1,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "mychannel",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "java",
+      "channel": "mychannel",
+      "directory": "./chaincodes/java-chaincode"
+    }
+  ]
+} 
