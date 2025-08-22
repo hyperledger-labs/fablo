@@ -68,11 +68,34 @@ certsGenerateCCaaS() {
     alpine:latest sh -c '
       apk add --no-cache openssl >/dev/null &&
       openssl genrsa -out /certs/client.key 2048 &&
-      openssl req -new -key /certs/client.key -out /certs/client.csr -subj "/CN='"$CONTAINER_NAME"'" &&
+      
+      # Create openssl config with SANs
+      cat > /certs/openssl.cnf << EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = '"$CONTAINER_NAME"'
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = '"$CONTAINER_NAME"'
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+EOF
+      
+      openssl req -new -key /certs/client.key -out /certs/client.csr -config /certs/openssl.cnf &&
       openssl x509 -req -in /certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial \
-        -out /certs/client.crt -days 365 -sha256 &&
+        -out /certs/client.crt -days 365 -sha256 -extensions v3_req -extfile /certs/openssl.cnf &&
       base64 /certs/client.crt > /certs/client_pem.crt &&
-      base64 /certs/client.key > /certs/client_pem.key
+      base64 /certs/client.key > /certs/client_pem.key &&
+      chown -R '"$(id -u):$(id -g)"' /certs
     '
 
   cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"

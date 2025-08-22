@@ -12,6 +12,8 @@
 * Support installing Chaincode from Docker image using CCaaS
   [#550](https://github.com/hyperledger-labs/fablo/pull/550)
   [#582](https://github.com/hyperledger-labs/fablo/pull/582)
+* Starting from this PR, `fablo init` command will generate network with TLS enabled and RAFT consensus instead of SOLO with TLS disabled
+  [#594](https://github.com/hyperledger-labs/fablo/pull/594)
 
 ## 2.2.0
 
