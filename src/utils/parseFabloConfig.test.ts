@@ -19,21 +19,21 @@ describe("parseFabloConfig", () => {
     }`;
 
     const result = parseFabloConfig(jsonConfig);
-    
+
     expect(result).toEqual({
       global: {
         fabricVersion: "2.5.9",
         tls: false,
-        engine: "docker"
+        engine: "docker",
       },
       orgs: [
         {
           organization: {
             name: "Org1",
-            domain: "org1.example.com"
-          }
-        }
-      ]
+            domain: "org1.example.com",
+          },
+        },
+      ],
     });
   });
 
@@ -55,16 +55,16 @@ describe("parseFabloConfig", () => {
       global: {
         fabricVersion: "2.5.9",
         tls: false,
-        engine: "docker"
+        engine: "docker",
       },
       orgs: [
         {
           organization: {
             name: "Org1",
-            domain: "org1.example.com"
-          }
-        }
-      ]
+            domain: "org1.example.com",
+          },
+        },
+      ],
     });
   });
 
@@ -100,7 +100,7 @@ describe("parseFabloConfig", () => {
       global: {
         fabricVersion: "2.4.7",
         tls: true,
-        engine: "kubernetes"
+        engine: "kubernetes",
       },
       orgs: [
         {
@@ -110,14 +110,14 @@ describe("parseFabloConfig", () => {
             peers: [
               {
                 name: "peer0",
-                port: 7041
+                port: 7041,
               },
               {
-                name: "peer1", 
-                port: 7042
-              }
-            ]
-          }
+                name: "peer1",
+                port: 7042,
+              },
+            ],
+          },
         },
         {
           organization: {
@@ -126,18 +126,18 @@ describe("parseFabloConfig", () => {
             peers: [
               {
                 name: "peer0",
-                port: 8041
-              }
-            ]
-          }
-        }
+                port: 8041,
+              },
+            ],
+          },
+        },
       ],
       channels: [
         {
           name: "mychannel",
-          orgs: ["Org1", "Org2"]
-        }
-      ]
+          orgs: ["Org1", "Org2"],
+        },
+      ],
     });
   });
 

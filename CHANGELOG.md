@@ -1,6 +1,6 @@
-## 2.3.0
-
-### Features
+## 2.3.0 
+* Support for running Java chaincode in development mode
+ [#553](https://github.com/hyperledger-labs/fablo/pull/553)
 * Hardcode fablo config inside init generator
   [#554](https://github.com/hyperledger-labs/fablo/pull/554)
 * Publish sample chaincode Docker image
@@ -9,7 +9,6 @@
   [#569](https://github.com/hyperledger-labs/fablo/pull/569)
 * Export network topology with Mermaid 
   [#565](https://github.com/hyperledger-labs/fablo/pull/565)
-
 
 ## 2.2.0
 
