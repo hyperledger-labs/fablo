@@ -264,6 +264,8 @@ This feature allows hot reload of chaincode code and speeds up the development a
 Fablo will run peers in dev mode when `global.peerDevMode` is set to `true`.
 Note: in this case TLS has to be disabled, otherwise config validation fails.
 
+#### For Node.js Chaincode:
+
 The simplest way of trying Fablo with dev mode is as follows:
 
 1. Execute `fablo init node dev`.
@@ -278,7 +280,7 @@ The simplest way of trying Fablo with dev mode is as follows:
    ```
    Now, when you update the chaincode source code, it will be automatically refreshed on Hyperledger Fabric Network.
 
-Our sample chaincode definition contains some scripts for running chaincode in dev mode:
+The relevant scripts in `package.json` look like:
 
 ```json
   "scripts": {
@@ -288,12 +290,43 @@ Our sample chaincode definition contains some scripts for running chaincode in d
     ...
   },
 ```
-
-Worth considering:
+**Worth considering for Node.js chaincode:**
 * If you want chaincode to be running on multiple peers, you need to start it multiple times, specifying different `--peer.address`
 * In case of errors ensure you have the same `--chaincode-id-name` as `CC_PACKAGE_ID` in Fablo output.
 
 Feel free to update this scripts to adjust it to your chaincode definition.
+
+
+#### For Java Chaincode:
+
+To run Java chaincode in dev mode:
+
+1. Make sure your Fablo config has `global.peerDevMode` set to `true` and TLS disabled.
+
+2. Start the network with `fablo up`.
+
+3. Build and run the Java chaincode locally. As a sample you may use the chaincode from the Fablo source code from the `samples/chaincodes/java-chaincode` directory. Ensure a proper relative path is provided in Fablo config.
+   ```bash
+   cd samples/chaincodes/java-chaincode
+   ./run-dev.sh
+   ```
+
+   The `run-dev.sh` script will:
+   - Build the chaincode using Gradle's shadowJar task
+   - Automatically detect the peer's IP address from the Docker container
+   - Start the chaincode with debug logging enabled
+   - Connect to the peer at port 7051
+
+For local development and review:
+- The chaincode will run with the name `simple-asset:1.0`
+- Debug level logging is enabled via `CORE_CHAINCODE_LOGLEVEL=debug`
+- You can modify the Java code and rebuild/restart to see changes
+- The peer connection is automatically configured using the Docker container's IP
+
+**Worth considering for Java chaincode:**
+- If you want the chaincode running on multiple peers, start multiple instances with different `CORE_PEER_ADDRESS` values
+- Ensure `CORE_CHAINCODE_ID_NAME` matches the chaincode name and version in your Fablo config (for instance `chaincode1:0.0.1`)
+- The Java chaincode uses Gradle's ShadowJar plugin to package all dependencies into a single JAR file
 
 ## Channel scripts
 
