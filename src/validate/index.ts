@@ -152,9 +152,6 @@ class ValidateGenerator extends Generator {
     console.log(`Validation errors count: ${this.errors.count()}`);
     console.log(`Validation warnings count: ${this.warnings.count()}`);
     console.log(chalk.bold("==========================================================="));
-    console.log(`Validation errors count: ${this.errors.count()}`);
-    console.log(`Validation warnings count: ${this.warnings.count()}`);
-    console.log(chalk.bold("==========================================================="));
   }
 
   async detailedSummary() {
