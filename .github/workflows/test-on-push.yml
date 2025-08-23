@@ -172,29 +172,15 @@ jobs:
 
   test-05-v3:
     needs: test-main
-    runs-on: macos-15
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Install Docker + Colima
-        run: |
-          brew update
-          brew install qemu colima  docker
-          brew uninstall --ignore-dependencies lima
-          curl https://raw.githubusercontent.com/Homebrew/homebrew-core/45464b6c4788a80be3f131ab5e2a4468cdfa960c/Formula/l/lima.rb > lima.rb
-          brew install lima.rb
-          LIMACTL_PATH=$(brew --prefix)/bin/limactl
-          sudo curl -L -o $LIMACTL_PATH https://github.com/mikekazakov/lima-nohvf/raw/master/limactl
-          sudo chmod +x $LIMACTL_PATH
-          colima start --network-address --arch arm64 --vm-type=qemu
-          mkdir -p ~/.docker/cli-plugins
-          brew install docker-compose
-          ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-
       - name: Install dependencies
         run: |
-          brew install shellcheck yamllint
+          sudo apt-get update
+          sudo apt-get install -y shellcheck yamllint
           npm install -g npm@latest
           npm install
 
@@ -216,7 +202,7 @@ jobs:
             e2e-network/docker/test-05-v3.sh.logs/*
             e2e-network/docker/test-05-v3.sh.tmpdir/fablo-target/**/*
 
-  test-05-v3-BFT:
+  test-06-v3-BFT:
     needs: test-main
     runs-on: ubuntu-latest
     steps:
