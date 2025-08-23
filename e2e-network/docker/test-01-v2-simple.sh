@@ -91,7 +91,6 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "James Bond"]}' \
   '{\"success\":\"OK\"}'
 
-
 # Test export-network-topology to Mermaid
 cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/simple-config.json"
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" export-network-topology simple-config.json simple-network-topology.mmd)
