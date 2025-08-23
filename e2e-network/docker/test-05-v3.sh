@@ -61,6 +61,41 @@ waitForContainer "peer0.org1.example.com" "Membership view has changed. peers we
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
 
+# Gateway client test
+GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
+GATEWAY_CLIENT_OUTPUT_FILE="$TEST_LOGS/gateway_client.log"
+echo "Testing Node.js Gateway client..."
+
+echo "Installing gateway client dependencies..."
+(cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
+
+echo "Running Node.js Gateway client and checking output..."
+(
+  cd "$GATEWAY_CLIENT_DIR" &&
+    export \
+      CHANNEL_NAME="my-channel1" \
+      CONTRACT_NAME="chaincode1" \
+      MSP_ID="Org1MSP" \
+      PEER_ORG_NAME="peer0.org1.example.com" \
+      PEER_GATEWAY_URL="localhost:7041" \
+      TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
+      CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
+      PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
+  node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1
+)
+GATEWAY_EXIT_CODE=$?
+
+if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
+  echo "❌ failed: Node.js Gateway client script failed with exit code $GATEWAY_EXIT_CODE."
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
+  exit 1
+fi
+
+expectCommand "cat \"$GATEWAY_CLIENT_OUTPUT_FILE\"" "\"success\":\"OK\""
+
+echo "🎉 Node.js Gateway client test complete 🎉"
+
+
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
