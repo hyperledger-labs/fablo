@@ -176,14 +176,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y shellcheck yamllint
-          npm install -g npm@latest
-          npm install
-
+        
       - name: Build Fablo
         run: |
           shellcheck --version && \
