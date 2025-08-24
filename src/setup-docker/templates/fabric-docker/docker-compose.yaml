@@ -286,6 +286,8 @@ services:
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
       <%_ } _%>
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"<%= peer.name %><%= org.name %>"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start <%= global.peerDevMode ? '--peer-chaincodedev=true' : '' %>
     ports:
