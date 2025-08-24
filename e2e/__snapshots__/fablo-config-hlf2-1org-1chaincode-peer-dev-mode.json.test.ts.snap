@@ -1395,6 +1395,8 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
   runDevModeChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
   chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+elif [ "$1" = "chaincode" ] && [ "$2" = "query" ]; then
+  chaincodeQuery "$3" "$4" "$5" "$6" "$7"
 elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
   chaincodeList "$3" "$4"
 elif [ "$1" = "channel" ]; then
@@ -1496,6 +1498,44 @@ chaincodeInvoke() {
   peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
 
   peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
+}
+
+# Function to perform chaincode query for single peer
+# Accepts 4-5 parameters:
+#   1. single peer domain
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
+chaincodeQuery() {
+  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+    echo "Expected 4 or 5 parameters for chaincode query, but got: $*"
+    echo "Usage: fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]"
+    exit 1
+  fi
+
+  peer_domain="$1"
+  channel_name="$2"
+  chaincode_name="$3"
+  command="$4"
+  transient="$5"
+
+  cli=""
+  peer_address=""
+
+  if [ "$peer_domain" = "peer0.org1.example.com" ]; then
+    cli="cli.org1.example.com"
+    peer_address="peer0.org1.example.com:7041"
+
+  fi
+
+  if [ -z "$peer_address" ]; then
+    echo "Unknown peer: $peer_domain"
+    exit 1
+  fi
+
+  peerChaincodeQuery "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient"
+
 }
 "
 `;
@@ -2667,6 +2707,71 @@ peerChaincodeInvokeTls() {
     --transient "$TRANSIENT" \\
     --waitForEvent \\
     --waitForEventTimeout 90s \\
+    --tls \\
+    --cafile "/var/hyperledger/cli/$CA_CERT" \\
+    2>&1
+}
+
+peerChaincodeQuery() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESSES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    2>&1
+}
+
+peerChaincodeQueryTls() {
+  local CLI="$1"
+  local PEERS="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERTS="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEERS: $PEERS"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERTS"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESSES="--peerAddresses $(echo "$PEERS" | sed 's/,/ --peerAddresses  /g')"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$(echo "$PEER_CERTS" | sed 's/,/ --tlsRootCertFiles \\/var\\/hyperledger\\/cli\\//g')"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESSES \\
+    $TLS_ROOT_CERT_FILES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
     --tls \\
     --cafile "/var/hyperledger/cli/$CA_CERT" \\
     2>&1
