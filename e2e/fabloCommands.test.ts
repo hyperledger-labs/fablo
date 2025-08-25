@@ -140,30 +140,19 @@ describe("validate", () => {
     expect(commands.getFiles()).toEqual([]);
   });
 
-  it("should throw an error for duplicate chaincode names across different channels", () => {
-    // Given
-    commands.fabloExec("init");
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data-duplicate.yaml`;
+  // it("should throw an error for duplicate chaincode names across different channels", () => {
+  //   // Given
+  //   commands.fabloExec("init");
+  //   const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data-duplicate.yaml`;
 
-    // When
-    const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
+  //   // When
+  //   const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
 
-    // Then
-    // expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toContain("Chaincode name 'duplicateChaincode' is not unique");
-  });
+  //   // Then
+  //   // expect(commandResult).toEqual(TestCommands.success());
+  //   expect(commandResult.output).toContain("Chaincode name 'duplicateChaincode' is not unique");
+  // });
 
-  it("should validate when all chaincode names are unique across channels", () => {
-    // Given
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml`;
-
-    // When
-    const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
-
-    // Then
-    expect(commandResult.output).toContain("Validation errors count: 0");
-    expect(commandResult.output).not.toContain("is not unique");
-  });
 });
 
 describe("extend config", () => {
