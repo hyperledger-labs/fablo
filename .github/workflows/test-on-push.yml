@@ -172,35 +172,11 @@ jobs:
 
   test-05-v3:
     needs: test-main
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-
-      - name: Fix Python conflicts between macOS runner and Homebrew
-        run: |
-          # see https://github.com/actions/setup-python/issues/577
-          brew list -1 | grep python | while read formula; do brew unlink $formula; brew link --overwrite $formula; done
-
-      - name: Install homebrew dependencies
-        run: |
-          set -x
-          sudo chmod ugo+w /usr/local/bin
-          brew install docker docker-compose lima qemu
-
-      - name: Install and start Colima
-        run: |
-          brew install colima
-          colima version
-          colima start --cpu 3 --memory 6 --disk 100 --vm-type=qemu --mount-type=sshfs --dns=1.1.1.1
-          colima restart
-
-      - name: Install dependencies
-        run: |
-          brew install shellcheck yamllint
-          npm install -g npm@latest
-          npm install
-
+        
       - name: Build Fablo
         run: |
           shellcheck --version && \
@@ -219,7 +195,7 @@ jobs:
             e2e-network/docker/test-05-v3.sh.logs/*
             e2e-network/docker/test-05-v3.sh.tmpdir/fablo-target/**/*
 
-  test-05-v3-BFT:
+  test-06-v3-BFT:
     needs: test-main
     runs-on: ubuntu-latest
     steps:
