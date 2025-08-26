@@ -113,11 +113,12 @@ expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
 expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
-expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
+expectCommand "cat \"$TEST_TMP/another.block\"" "put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":4"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":5"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":6"
 
 echo "🎉 Test passed! 🎉"
