@@ -54,12 +54,14 @@ export interface PrivateDataJson {
 export interface ChaincodeJson {
   name: string;
   version: string;
-  lang: "node" | "java" | "golang";
+  lang: "node" | "java" | "golang" | "ccaas";
   channel: string;
   init?: string;
   initRequired?: boolean;
   endorsement?: string;
-  directory: string;
+  directory?: string;
+  image?: string;
+  port?: number;
   privateData: PrivateDataJson[];
 }
 

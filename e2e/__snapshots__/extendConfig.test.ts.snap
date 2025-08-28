@@ -244,6 +244,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": undefined,
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -334,6 +335,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -1070,6 +1072,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": undefined,
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -1160,6 +1163,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -1886,6 +1890,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": undefined,
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -1971,6 +1976,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -2681,8 +2687,9 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.j
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": undefined,
       "endorsement": undefined,
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -2766,8 +2773,16 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.j
           },
         },
       },
-      "lang": "node",
+      "lang": "ccaas",
       "name": "chaincode1",
+      "peerChaincodeInstances": [
+        {
+          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "orgDomain": "org1.example.com",
+          "peerAddress": "peer0.org1.example.com",
+          "port": 17041,
+        },
+      ],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -3557,6 +3572,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR('Org1MSP.member', 'Org2MSP.member')",
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -3647,6 +3663,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
       },
       "lang": "node",
       "name": "or-policy-chaincode",
+      "peerChaincodeInstances": [],
       "privateData": [
         {
           "blockToLive": 0,
@@ -3965,6 +3982,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
       },
       "directory": "./chaincodes/chaincode-kv-go",
       "endorsement": "AND('Org1MSP.member', 'Org2MSP.member')",
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -4055,6 +4073,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
       },
       "lang": "golang",
       "name": "and-policy-chaincode",
+      "peerChaincodeInstances": [],
       "privateData": [
         {
           "blockToLive": 0,
@@ -5034,6 +5053,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -5129,6 +5149,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -5481,6 +5502,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       },
       "directory": "./chaincodes/chaincode-java-simple",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -5576,6 +5598,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       },
       "lang": "java",
       "name": "chaincode2",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -7601,6 +7624,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": undefined,
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -7739,6 +7763,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -10226,6 +10251,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "AND ('Org1MSP.member')",
+      "image": undefined,
       "init": "{"Args":[]}",
       "instantiatingOrg": {
         "anchorPeers": [
@@ -10316,6 +10342,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -11184,6 +11211,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
       },
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "AND ('Org1MSP.member')",
+      "image": undefined,
       "init": "{"Args":[]}",
       "instantiatingOrg": {
         "anchorPeers": [
@@ -11274,6 +11302,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
       },
       "lang": "node",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -12097,8 +12126,9 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": undefined,
       "endorsement": undefined,
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -12182,8 +12212,16 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
           },
         },
       },
-      "lang": "node",
+      "lang": "ccaas",
       "name": "chaincode1",
+      "peerChaincodeInstances": [
+        {
+          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "orgDomain": "org1.example.com",
+          "peerAddress": "peer0.org1.example.com",
+          "port": 17041,
+        },
+      ],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -12862,6 +12900,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
       },
       "directory": "./chaincodes/java-chaincode",
       "endorsement": undefined,
+      "image": undefined,
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -12928,6 +12967,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
       },
       "lang": "java",
       "name": "chaincode1",
+      "peerChaincodeInstances": [],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",

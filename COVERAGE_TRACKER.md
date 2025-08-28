@@ -22,7 +22,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Node                                   | ✓         | ✓         |            | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Go                                     | ✓         | ✓         |            |          |                 |
 | Java                                   | ✓         | ✓         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
-| Chaincode-as-a-Service (CCaaS)         | ✕         | ✕         |            |          |                 |
+| Chaincode-as-a-Service (CCaaS)         | ✓         | ✕         |            | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh)         |                 |
 | Endorsement Policies                   | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | Multi-org Endorsements                 | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh) |                 |
 | Private Data Collections               | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh) |                 |

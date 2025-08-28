@@ -9,6 +9,9 @@
   [#569](https://github.com/hyperledger-labs/fablo/pull/569)
 * Export network topology with Mermaid 
   [#565](https://github.com/hyperledger-labs/fablo/pull/565)
+* Support installing Chaincode from Docker image using CCaaS
+  [#550](https://github.com/hyperledger-labs/fablo/pull/550)
+  [#582](https://github.com/hyperledger-labs/fablo/pull/582)
 
 ## 2.2.0
 
