@@ -1,10 +1,11 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
+import { version } from "../../package.json";
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
-    $schema: "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+    $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
       fabricVersion: "2.5.12",
       tls: false,

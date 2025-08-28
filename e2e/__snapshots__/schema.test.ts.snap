@@ -24,6 +24,27 @@ exports[`schema should match snapshot 1`] = `
       ],
       "items": {
         "$id": "#/properties/chaincodes/items",
+        "allOf": [
+          {
+            "else": {
+              "required": [
+                "directory",
+              ],
+            },
+            "if": {
+              "properties": {
+                "lang": {
+                  "const": "ccaas",
+                },
+              },
+            },
+            "then": {
+              "required": [
+                "image",
+              ],
+            },
+          },
+        ],
         "properties": {
           "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
@@ -51,6 +72,11 @@ exports[`schema should match snapshot 1`] = `
             "title": "Endorsement configuration",
             "type": "string",
           },
+          "image": {
+            "$id": "#/properties/chaincodes/items/properties/image",
+            "title": "Chaincode image URI",
+            "type": "string",
+          },
           "init": {
             "$id": "#/properties/chaincodes/items/properties/init",
             "title": "Initialization arguments (for Hyperledger Fabric below 2.0)",
@@ -67,6 +93,7 @@ exports[`schema should match snapshot 1`] = `
               "golang",
               "java",
               "node",
+              "ccaas",
             ],
             "title": "Language",
             "type": "string",
@@ -132,7 +159,6 @@ exports[`schema should match snapshot 1`] = `
           "version",
           "lang",
           "channel",
-          "directory",
         ],
         "title": "Chaincode",
         "type": "object",

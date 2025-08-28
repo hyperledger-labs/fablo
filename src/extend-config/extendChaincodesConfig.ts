@@ -77,16 +77,36 @@ const extendChaincodesConfig = (
     );
     const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
 
+    const peerChaincodeInstances = !chaincode.image
+      ? []
+      : channel.orgs.flatMap((org) =>
+          org.peers.map((peer) => {
+            return {
+              containerName: `ccaas-${peer.address}-${chaincode.name}`,
+              peerAddress: peer.address,
+              port: 10000 * (index + 1) + peer.port,
+              orgDomain: org.domain,
+            };
+          }),
+        );
+
+    if (chaincode.lang === "ccaas") {
+      if (!chaincode.image) {
+        throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify an image field`);
+      }
+    }
     return {
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
       channel,
+      image: chaincode.image,
       ...initParams,
       endorsement,
       instantiatingOrg: channel.instantiatingOrg,
       privateDataConfigFile,
+      peerChaincodeInstances,
       privateData,
     };
   });
