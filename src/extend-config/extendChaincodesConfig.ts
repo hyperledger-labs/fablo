@@ -39,7 +39,7 @@ const createPrivateCollectionConfig = (
 
 const checkUniqueChaincodeNames = (allChannelsConfig: any): void => {
   const chaincodeNames = new Set<string>();
-  
+
   const allChaincodes: ChaincodeJson[] = [];
 
   Object.values(allChannelsConfig.channels || {}).forEach((channel: any) => {
@@ -47,7 +47,7 @@ const checkUniqueChaincodeNames = (allChannelsConfig: any): void => {
       allChaincodes.push(...channel.chaincodes);
     }
   });
-  
+
   allChaincodes.forEach((chaincode) => {
     if (chaincodeNames.has(chaincode.name)) {
       throw new Error(`Chaincode name '${chaincode.name}' is not unique across channels.`);
@@ -62,7 +62,7 @@ const extendChaincodesConfig = (
   network: Global,
 ): ChaincodeConfig[] => {
   checkUniqueChaincodeNames(chaincodes);
-  return chaincodes.map((chaincode,index) => {
+  return chaincodes.map((chaincode, index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
