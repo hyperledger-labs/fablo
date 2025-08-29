@@ -182,6 +182,31 @@ describe("extend config", () => {
     expect(commandResult).toEqual(TestCommands.failure());
     expect(commandResult.output).toContain("commands-tests/fablo-config.json does not exist\n");
   });
+
+  it("should throw an error for duplicate chaincode names across different channels", () => {
+    // Given
+    commands.fabloExec("init node");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(fs.readFileSync(configPath, "utf8")) as FabloConfigJson;
+
+    config.channels.push({
+      name: "my-channel2",
+      orgs: [{ name: "Org1", peers: ["peer0"] }],
+    });
+
+    const existingChaincode = JSON.parse(JSON.stringify(config.chaincodes[0]));
+    existingChaincode.channel = "my-channel2";
+    config.chaincodes.push(existingChaincode);
+
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const commandResult = commands.fabloExec("validate", true);
+
+    // Then
+    expect(commandResult.output).toContain("Chaincode name 'chaincode1' is not unique");
+    expect(commandResult.output).toContain("Validation errors count: 1");
+  });
 });
 
 describe("version", () => {

@@ -37,11 +37,31 @@ const createPrivateCollectionConfig = (
   };
 };
 
+const checkUniqueChaincodeNames = (allChannelsConfig: any): void => {
+  const chaincodeNames = new Set<string>();
+
+  const allChaincodes: ChaincodeJson[] = [];
+
+  Object.values(allChannelsConfig.channels || {}).forEach((channel: any) => {
+    if (channel.chaincodes) {
+      allChaincodes.push(...channel.chaincodes);
+    }
+  });
+
+  allChaincodes.forEach((chaincode) => {
+    if (chaincodeNames.has(chaincode.name)) {
+      throw new Error(`Chaincode name '${chaincode.name}' is not unique across channels.`);
+    }
+    chaincodeNames.add(chaincode.name);
+  });
+};
+
 const extendChaincodesConfig = (
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
+  checkUniqueChaincodeNames(chaincodes);
   return chaincodes.map((chaincode, index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
