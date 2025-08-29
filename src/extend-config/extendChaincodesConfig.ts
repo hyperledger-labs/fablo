@@ -62,7 +62,7 @@ const extendChaincodesConfig = (
   network: Global,
 ): ChaincodeConfig[] => {
   checkUniqueChaincodeNames(chaincodes);
-  return chaincodes.map((chaincode) => {
+  return chaincodes.map((chaincode,index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
