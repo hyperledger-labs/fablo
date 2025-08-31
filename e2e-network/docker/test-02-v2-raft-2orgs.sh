@@ -80,6 +80,8 @@ waitForContainer "peer0.org1.example.com" "Membership view has changed. peers we
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer1.org2.example.com:7082"
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
+waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 
 # check if org2 is ready
 waitForContainer "ca.org2.example.com" "Listening on https://0.0.0.0:7054"
