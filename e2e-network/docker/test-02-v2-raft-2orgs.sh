@@ -80,7 +80,6 @@ waitForContainer "peer0.org1.example.com" "Membership view has changed. peers we
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer1.org2.example.com:7082"
-waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
 
 # check if org2 is ready
@@ -93,6 +92,7 @@ waitForContainer "peer1.org2.example.com" "Joining gossip network of channel my-
 waitForContainer "peer1.org2.example.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
 waitForContainer "peer1.org2.example.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
 waitForContainer "peer1.org2.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7062"
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # check if chaincodes are instantiated on peers
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
