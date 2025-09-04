@@ -92,7 +92,6 @@ waitForContainer "peer1.org2.example.com" "Joining gossip network of channel my-
 waitForContainer "peer1.org2.example.com" "Learning about the configured anchor peers of Org2MSP for channel my-channel2"
 waitForContainer "peer1.org2.example.com" "Anchor peer for channel my-channel2 with same endpoint, skipping connecting to myself"
 waitForContainer "peer1.org2.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7062"
-waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # check if chaincodes are instantiated on peers
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
@@ -122,6 +121,7 @@ expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")

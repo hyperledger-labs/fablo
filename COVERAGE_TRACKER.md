@@ -22,7 +22,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Node                                   | ✓         | ✓         |            | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Go                                     | ✓         | ✓         |            |          |                 |
 | Java                                   | ✓         | ✓         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
-| Chaincode-as-a-Service (CCaaS)         | ✓         | ✕         |            | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh)         |                 |
+| Chaincode-as-a-Service (CCaaS)         | ✓         | ✓         |            | [04_v3](/e2e-network/docker/test-04-v3-ccaas.sh)         |                 |
 | Endorsement Policies                   | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | Multi-org Endorsements                 | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh) |                 |
 | Private Data Collections               | ✓         | ✓         |            | [03_v2](/e2e-network/docker/test-03-v2-private-data.sh) |                 |
@@ -30,7 +30,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Commands: install / upgrade            | ✓         | ✓         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | <br>**TOOLS**                          |           |           |            |          |                 |
 | Fablo REST                             | ✓         | ✓         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
-| Explorer                               | ✓         | ✕         |            | [04_v2](/e2e-network/docker/test-04-v2-snapshot.sh) |                 |
+| Explorer                               | ✓         | ✕         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | <br>**FABLO COMMANDS**                 |           |           |            |          |                 |
 | `generate`                             | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | `up`                                   | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
