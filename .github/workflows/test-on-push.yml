@@ -160,15 +160,15 @@ jobs:
           ./fablo-build.sh
 
       - name: Test snapshots
-        run: e2e-network/docker/test-04-v2-snapshot.sh
+        run: e2e-network/docker/test-04-v3-snapshot-ccaas.sh
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-04-snapshot
           path: |
-            e2e-network/docker/test-04-v2-snapshot.sh.logs/*
-            e2e-network/docker/test-04-v2-snapshot.sh.tmpdir/fablo-target/**/*
+            e2e-network/docker/test-04-v3-snapshot-ccaas.sh.logs/*
+            e2e-network/docker/test-04-v3-snapshot-ccaas.sh.tmpdir/fablo-target/**/*
 
   test-05-v3:
     needs: test-main
