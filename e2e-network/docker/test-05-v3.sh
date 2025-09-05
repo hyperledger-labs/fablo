@@ -41,6 +41,10 @@ expectInvoke() {
   (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "")
 }
 
+expectQuery() {
+  (cd "$TEST_TMP" && sh ../expect-query-cli.sh "$1" "$2" "$3" "$4" "$5")
+}
+
 expectCommand() {
   sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
 }
@@ -100,13 +104,13 @@ echo "🎉 Node.js Gateway client test complete 🎉"
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
   '{\"success\":\"OK\"}'
-expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Willy Wonka\"}'
+  '{"success":"Willy Wonka"}'
 
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
-expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:get"
+expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
 expectCommand "cat \"$TEST_TMP/another.block\"" "put"
@@ -114,6 +118,6 @@ expectCommand "cat \"$TEST_TMP/another.block\"" "put"
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":6"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":5"
 
 echo "🎉 Test passed! 🎉"
