@@ -6,17 +6,23 @@ Validation warnings count: 0
 ===========================================================
 {
   "global": {
-    "fabricVersion": "2.4.3",
+    "fabricVersion": "2.5.12",
     "tls": true,
+    "tools": {
+      "explorer": {
+        "address": "explorer.example.com",
+        "port": 7010
+      }
+    },
     "monitoring": {
       "loglevel": "debug"
     },
-    "fabricToolsVersion": "2.4.3",
+    "fabricToolsVersion": "2.5.12",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "2.4.3",
-    "fabricBaseosVersion": "2.4.3",
-    "fabricJavaenvVersion": "2.4",
-    "fabricNodeenvVersion": "2.4",
+    "fabricCcenvVersion": "2.5.12",
+    "fabricBaseosVersion": "2.5.12",
+    "fabricJavaenvVersion": "2.5",
+    "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
     "engine": "docker",
     "paths": {
@@ -26,11 +32,10 @@ Validation warnings count: 0
     "capabilities": {
       "channel": "V2_0",
       "orderer": "V2_0",
-      "application": "V2_0",
+      "application": "V2_5",
       "isV2": true,
       "isV3": false
-    },
-    "tools": {}
+    }
   },
   "ordererGroups": [
     {
