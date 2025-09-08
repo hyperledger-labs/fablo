@@ -182,6 +182,47 @@ describe("extend config", () => {
     expect(commandResult).toEqual(TestCommands.failure());
     expect(commandResult.output).toContain("commands-tests/fablo-config.json does not exist\n");
   });
+
+  it("should throw an error for duplicate chaincode names across different channels", () => {
+    // Given
+    commands.fabloExec("init");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    // const config = JSON.parse(fs.readFileSync(configPath, "utf8")) as FabloConfigJson;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    config.channels.push({
+      name: "my-channel2",
+      orgs: [{ name: "Org1", peers: ["peer0"] }],
+    });
+
+    config.chaincodes.push(
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel2",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+    );
+
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const commandResult = commands.fabloExec("validate", true);
+
+    // Then
+    expect(commandResult.output).toContain("Chaincode name 'chaincode1' is not unique");
+    expect(commandResult.output).toContain("Validation errors count: 1");
+  });
 });
 
 describe("version", () => {
