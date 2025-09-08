@@ -80,6 +80,10 @@ waitForContainer "peer0.org1.example.com" "Membership view has changed. peers we
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel2 with 2 organizations"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer1.org2.example.com:7082"
+waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
+# // the next check is not working because explorer needs needs to be restarted first
+# // see the issue: https://github.com/hyperledger-labs/fablo/issues/604
+# waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # check if org2 is ready
 waitForContainer "ca.org2.example.com" "Listening on https://0.0.0.0:7054"
@@ -120,6 +124,7 @@ expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")

@@ -2661,7 +2661,7 @@ createChannelTx() {
     -v "$CONFIG_PATH":/fabric-config \\
     -v "$OUTPUT_PATH":/output \\
     ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" \\
-    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile \${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID \${CHANNEL_NAME}"
+    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile \${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID \${CHANNEL_NAME} && chown -R $(id -u):$(id -g) /output"
 
   # shellcheck disable=SC2181
   if [ $? -ne 0 ]; then
