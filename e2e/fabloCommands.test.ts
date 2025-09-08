@@ -185,18 +185,34 @@ describe("extend config", () => {
 
   it("should throw an error for duplicate chaincode names across different channels", () => {
     // Given
-    commands.fabloExec("init node");
+    commands.fabloExec("init");
     const configPath = `${commands.workdir}/fablo-config.json`;
-    const config = JSON.parse(fs.readFileSync(configPath, "utf8")) as FabloConfigJson;
+    // const config = JSON.parse(fs.readFileSync(configPath, "utf8")) as FabloConfigJson;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
 
     config.channels.push({
       name: "my-channel2",
       orgs: [{ name: "Org1", peers: ["peer0"] }],
     });
 
-    const existingChaincode = JSON.parse(JSON.stringify(config.chaincodes[0]));
-    existingChaincode.channel = "my-channel2";
-    config.chaincodes.push(existingChaincode);
+    config.chaincodes.push(
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel2",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+    );
 
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
