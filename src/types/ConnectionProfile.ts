@@ -1,4 +1,4 @@
-import { ChannelConfig, Global, OrgConfig, PeerConfig } from "./FabloConfigExtended";
+import { ChannelConfig, Global, OrdererGroup, OrgConfig, PeerConfig } from "./FabloConfigExtended";
 
 interface BaseConnectionProfile {
   name: string;
@@ -10,6 +10,8 @@ interface BaseConnectionProfile {
 interface ConnectionProfile extends BaseConnectionProfile {
   client: Client;
   organizations: { [key: string]: Organization };
+  orderers?: { [key: string]: Orderer };
+  channels?: { [name: string]: Channel };
   certificateAuthorities: { [key: string]: CertificateAuthority };
 }
 
@@ -24,6 +26,12 @@ interface Organization {
 }
 
 interface Peer {
+  url: string;
+  tlsCACerts?: TlsCACerts;
+  grpcOptions?: { [key: string]: string };
+}
+
+interface Orderer {
   url: string;
   tlsCACerts?: TlsCACerts;
   grpcOptions?: { [key: string]: string };
@@ -152,29 +160,50 @@ function certificateAuthorities(
   rootPath: string,
   org: OrgConfig,
 ): { [key: string]: CertificateAuthority } {
-  if (isTls) {
-    return {
-      [org.ca.address]: {
-        url: `https://localhost:${org.ca.exposePort}`,
-        caName: org.ca.address,
-        tlsCACerts: {
-          path: `${rootPath}/peerOrganizations/${org.domain}/ca/${org.ca.address}-cert.pem`,
-        },
-        httpOptions: {
-          verify: false,
-        },
-      },
-    };
-  }
-  return {
-    [org.ca.address]: {
-      url: `http://localhost:${org.ca.exposePort}`,
-      caName: org.ca.address,
-      httpOptions: {
-        verify: false,
-      },
+  const protocol = isTls ? "https" : "http";
+  const caConfig: CertificateAuthority = {
+    url: `${protocol}://localhost:${org.ca.exposePort}`,
+    caName: org.ca.address,
+    httpOptions: {
+      verify: false,
     },
   };
+
+  if (isTls) {
+    caConfig.tlsCACerts = {
+      path: `${rootPath}/peerOrganizations/${org.domain}/ca/${org.ca.address}-cert.pem`,
+    };
+  }
+
+  return {
+    [org.ca.address]: caConfig,
+  };
+}
+
+function createOrderers(isTls: boolean, rootPath: string, ordererGroups: OrdererGroup[]): { [key: string]: Orderer } {
+  const orderers: { [key: string]: Orderer } = {};
+
+  ordererGroups.forEach((group) => {
+    group.orderers.forEach((orderer) => {
+      if (isTls) {
+        orderers[orderer.address] = {
+          url: `grpcs://localhost:${orderer.port}`,
+          tlsCACerts: {
+            path: `${rootPath}/ordererOrganizations/${orderer.domain}/orderers/${orderer.address}/tls/ca.crt`,
+          },
+          grpcOptions: {
+            "ssl-target-name-override": orderer.address,
+          },
+        };
+      } else {
+        orderers[orderer.address] = {
+          url: `grpc://localhost:${orderer.port}`,
+        };
+      }
+    });
+  });
+
+  return orderers;
 }
 
 function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: string]: Channel } {
@@ -187,10 +216,19 @@ function createChannels(org: OrgConfig, channels: ChannelConfig[]): { [name: str
   return cs;
 }
 
-export function createConnectionProfile(global: Global, org: OrgConfig, orgs: OrgConfig[]): ConnectionProfile {
+export function createConnectionProfile(
+  global: Global,
+  org: OrgConfig,
+  orgs: OrgConfig[],
+  channels: ChannelConfig[] = [],
+  ordererGroups: OrdererGroup[] = [],
+): ConnectionProfile {
   const rootPath = `${global.paths.chaincodesBaseDir}/fablo-target/fabric-config/crypto-config`;
   const peers = createPeers(org.name, false, global.tls, rootPath, orgs);
-  return {
+  const orderers = createOrderers(global.tls, rootPath, ordererGroups);
+  const channelsObj = createChannels(org, channels);
+
+  const profile: ConnectionProfile = {
     name: `fablo-test-network-${org.name.toLowerCase()}`,
     description: `Connection profile for ${org.name} in Fablo network`,
     version: "1.0.0",
@@ -207,6 +245,18 @@ export function createConnectionProfile(global: Global, org: OrgConfig, orgs: Or
     peers: peers,
     certificateAuthorities: certificateAuthorities(global.tls, rootPath, org),
   };
+
+  // Add orderers section if there are any orderers
+  if (Object.keys(orderers).length > 0) {
+    profile.orderers = orderers;
+  }
+
+  // Add channels section if there are any channels
+  if (Object.keys(channelsObj).length > 0) {
+    profile.channels = channelsObj;
+  }
+
+  return profile;
 }
 
 export function createExplorerConnectionProfile(
