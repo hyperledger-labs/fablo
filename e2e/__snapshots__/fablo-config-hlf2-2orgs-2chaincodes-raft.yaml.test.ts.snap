@@ -16,7 +16,7 @@ Capabilities:
     Orderer: &OrdererCapabilities
         V2_0: true
     Application: &ApplicationCapabilities
-        V2_0: true
+        V2_5: true
 
 ################################################################################
 #   CHANNEL Defaults
@@ -941,6 +941,164 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     }
   },
   "license": "Apache-2.0"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org1.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"{
+  "network-configs": {
+    "network-org1": {
+      "name": "Network of Org1",
+      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json"
+    }
+  },
+  "license": "Apache-2.0"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org2.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"{
+  "network-configs": {
+    "network-org2": {
+      "name": "Network of Org2",
+      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org2.json"
+    }
+  },
+  "license": "Apache-2.0"
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"{
+  "name": "fablo-test-network-org1",
+  "description": "Connection profile for Hyperledger Explorer in Fablo network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Org1",
+    "tlsEnable": true,
+    "enableAuthentication": true,
+    "adminCredential": {
+      "id": "admin",
+      "password": "adminpw"
+    },
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "organizations": {
+    "Org1": {
+      "mspid": "Org1MSP",
+      "adminPrivateKey": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv-key.pem"
+      },
+      "peers": [
+        "peer0.org1.example.com",
+        "peer1.org1.example.com"
+      ],
+      "signedCert": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+      }
+    }
+  },
+  "peers": {
+    "peer0.org1.example.com": {
+      "url": "grpcs://peer0.org1.example.com:7061",
+      "tlsCACerts": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
+      }
+    },
+    "peer1.org1.example.com": {
+      "url": "grpcs://peer1.org1.example.com:7062",
+      "tlsCACerts": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
+      }
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    },
+    "my-channel2": {
+      "peers": {}
+    },
+    "my-channel3": {
+      "peers": {}
+    }
+  }
+}
+"
+`;
+
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org2.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"{
+  "name": "fablo-test-network-org2",
+  "description": "Connection profile for Hyperledger Explorer in Fablo network",
+  "version": "1.0.0",
+  "client": {
+    "organization": "Org2",
+    "tlsEnable": true,
+    "enableAuthentication": true,
+    "adminCredential": {
+      "id": "admin",
+      "password": "adminpw"
+    },
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+  "organizations": {
+    "Org2": {
+      "mspid": "Org2MSP",
+      "adminPrivateKey": {
+        "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/priv-key.pem"
+      },
+      "peers": [
+        "peer0.org2.example.com",
+        "peer1.org2.example.com"
+      ],
+      "signedCert": {
+        "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+      }
+    }
+  },
+  "peers": {
+    "peer0.org2.example.com": {
+      "url": "grpcs://peer0.org2.example.com:7081",
+      "tlsCACerts": {
+        "path": "/tmp/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
+      }
+    },
+    "peer1.org2.example.com": {
+      "url": "grpcs://peer1.org2.example.com:7082",
+      "tlsCACerts": {
+        "path": "/tmp/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
+      }
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    },
+    "my-channel2": {
+      "peers": {}
+    },
+    "my-channel3": {
+      "peers": {}
+    }
+  }
 }
 "
 `;
@@ -2996,6 +3154,8 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
   runDevModeChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
   chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+elif [ "$1" = "chaincode" ] && [ "$2" = "query" ]; then
+  chaincodeQuery "$3" "$4" "$5" "$6" "$7"
 elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
   chaincodeList "$3" "$4"
 elif [ "$1" = "channel" ]; then
@@ -3033,14 +3193,14 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
-FABRIC_VERSION=2.4.3
-FABRIC_TOOLS_VERSION=2.4.3
+FABRIC_VERSION=2.5.12
+FABRIC_TOOLS_VERSION=2.5.12
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.4.3
-FABRIC_BASEOS_VERSION=2.4.3
-FABRIC_JAVAENV_VERSION=2.4
-FABRIC_NODEENV_VERSION=2.4
+FABRIC_CCENV_VERSION=2.5.12
+FABRIC_BASEOS_VERSION=2.5.12
+FABRIC_JAVAENV_VERSION=2.5
+FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
@@ -3148,6 +3308,81 @@ chaincodeInvoke() {
     ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
   fi
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
+}
+
+# Function to perform chaincode query for single peer
+# Accepts 4-5 parameters:
+#   1. single peer domain
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
+chaincodeQuery() {
+  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+    echo "Expected 4 or 5 parameters for chaincode query, but got: $*"
+    echo "Usage: fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]"
+    exit 1
+  fi
+
+  peer_domain="$1"
+  channel_name="$2"
+  chaincode_name="$3"
+  command="$4"
+  transient="$5"
+
+  cli=""
+  peer_address=""
+
+  peer_cert=""
+
+  if [ "$peer_domain" = "peer0.org1.example.com" ]; then
+    cli="cli.org1.example.com"
+    peer_address="peer0.org1.example.com:7061"
+
+    peer_cert="crypto/peers/peer0.org1.example.com/tls/ca.crt"
+
+  fi
+  if [ "$peer_domain" = "peer1.org1.example.com" ]; then
+    cli="cli.org1.example.com"
+    peer_address="peer1.org1.example.com:7062"
+
+    peer_cert="crypto/peers/peer1.org1.example.com/tls/ca.crt"
+
+  fi
+  if [ "$peer_domain" = "peer0.org2.example.com" ]; then
+    cli="cli.org2.example.com"
+    peer_address="peer0.org2.example.com:7081"
+
+    peer_cert="crypto/peers/peer0.org2.example.com/tls/ca.crt"
+
+  fi
+  if [ "$peer_domain" = "peer1.org2.example.com" ]; then
+    cli="cli.org2.example.com"
+    peer_address="peer1.org2.example.com:7082"
+
+    peer_cert="crypto/peers/peer1.org2.example.com/tls/ca.crt"
+
+  fi
+
+  if [ -z "$peer_address" ]; then
+    echo "Unknown peer: $peer_domain"
+    exit 1
+  fi
+
+  if [ "$channel_name" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
+  fi
+
+  if [ "$channel_name" = "my-channel2" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
+  fi
+
+  if [ "$channel_name" = "my-channel3" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
+  fi
+
+  peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
+
 }
 "
 `;
@@ -4364,6 +4599,49 @@ services:
       - ../fabric-config/config:/etc/hyperledger/fabric/config
     networks:
       - basic
+
+  db.explorer.example.com:
+    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
+    container_name: db.explorer.example.com
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
+      interval: 5s
+      timeout: 10s
+      retries: 7
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - basic
+
+  explorer.example.com:
+    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
+    restart: on-failure:8
+    container_name: explorer.example.com
+    environment:
+      - DATABASE_HOST=db.explorer.example.com
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
+      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
+      - ../fabric-config/crypto-config:/tmp/crypto
+    ports:
+      - "7010:8080"
+    depends_on:
+      db.explorer.example.com:
+        condition: service_healthy
+    networks:
+      - basic
 "
 `;
 
@@ -5269,6 +5547,70 @@ peerChaincodeInvokeTls() {
     --cafile "/var/hyperledger/cli/$CA_CERT" \\
     2>&1
 }
+
+peerChaincodeQuery() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESS \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    2>&1
+}
+
+peerChaincodeQueryTls() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERT="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERT"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$PEER_CERT"
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESS \\
+    $TLS_ROOT_CERT_FILES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    --tls \\
+    --cafile "/var/hyperledger/cli/$CA_CERT" \\
+    2>&1
+}
 "
 `;
 
@@ -5771,6 +6113,10 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org2.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org2.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org2.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer1.com/fabric-ca-server-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer2.com/fabric-ca-server-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml",
