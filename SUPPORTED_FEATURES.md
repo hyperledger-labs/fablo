@@ -10,7 +10,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | RAFT Consensus                         | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | BFT Consensus                          | -         | ✓         | ✓          | [06_v3](/e2e-network/docker/test-06-v3-bft.sh) | [#559](https://github.com/hyperledger-labs/fablo/issues/559) |
 | TLS                                    | ✓         | ✓         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
-| Orderer Groups                         | ✓         | ✕         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) | [#560](https://github.com/hyperledger-labs/fablo/issues/560) |
+| Orderer Groups                         | ✓         | ✕         | ✓          | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) | [#560](https://github.com/Eyperledger-labs/fablo/issues/560) |
 | Peer DB - LevelDB                      | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Peer DB - CouchDB                      | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
 | CA DB - SQLite                         | ✓         | ✓         | ✓          | [01_v2](/e2e-network/docker/test-01-v2-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |

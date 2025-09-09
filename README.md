@@ -5,11 +5,13 @@
 Fablo supports:
 
 * Environment: Docker
-* RAFT and solo consensus protocols
+* RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
 * Chaincode installation and upgrade
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
+
+Visit [SUPPORTED_FEATURES.mb](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
 
 ## See it in action
 
