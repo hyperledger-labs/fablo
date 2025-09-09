@@ -22,6 +22,12 @@
   [#595](https://github.com/hyperledger-labs/fablo/pull/595)
 * Add check for unique chaincode names
   [#596](https://github.com/hyperledger-labs/fablo/pull/596)
+* Hardcode fablo config inside init generator
+  [#554](https://github.com/hyperledger-labs/fablo/pull/554)
+* Publish sample chaincode Docker image
+  [#555](https://github.com/hyperledger-labs/fablo/pull/555)
+* Include and test Sample Go chaincode in samples/chaincodes/chaincode-kv-go
+  [#569](https://github.com/hyperledger-labs/fablo/pull/569)
 
 ### Bug Fixes
 * Verify if post-generate.sh exists before executing
@@ -69,12 +75,6 @@
   [#603](https://github.com/hyperledger-labs/fablo/pull/603)
 
 ### Chore & Maintenance
-* Hardcode fablo config inside init generator
-  [#554](https://github.com/hyperledger-labs/fablo/pull/554)
-* Publish sample chaincode Docker image
-  [#555](https://github.com/hyperledger-labs/fablo/pull/555)
-* Include and test Sample Go chaincode in samples/chaincodes/chaincode-kv-go
-  [#569](https://github.com/hyperledger-labs/fablo/pull/569)
 * Bump all dependencies from Dependabot PRs
   [#600](https://github.com/hyperledger-labs/fablo/pull/600)
 * Unify Fabric version in tests and samples
