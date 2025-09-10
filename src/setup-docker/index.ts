@@ -11,6 +11,7 @@ import {
   HooksConfig,
   Global,
   OrgConfig,
+  OrdererGroup,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../extend-config/";
 import {
@@ -54,7 +55,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= fabric-config ============================================================
     this._copyOrgCryptoConfig(orgs);
-    this._createConnectionProfiles(global, orgs);
+    this._createConnectionProfiles(global, orgs, channels, config.ordererGroups);
     this._createFabricCaServerConfigs(orgs);
     this._createExplorerMaterial(global, orgs, channels);
     this._copyConfigTx(config);
@@ -108,9 +109,14 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _createConnectionProfiles(global: Global, orgsTransformed: OrgConfig[]): void {
+  _createConnectionProfiles(
+    global: Global,
+    orgsTransformed: OrgConfig[],
+    channels: ChannelConfig[],
+    ordererGroups: OrdererGroup[],
+  ): void {
     orgsTransformed.forEach((org: OrgConfig) => {
-      const connectionProfile = createConnectionProfile(global, org, orgsTransformed);
+      const connectionProfile = createConnectionProfile(global, org, orgsTransformed, channels, ordererGroups);
       this.fs.writeJSON(
         this.destinationPath(`fabric-config/connection-profiles/connection-profile-${org.name.toLowerCase()}.json`),
         connectionProfile,
