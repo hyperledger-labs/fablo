@@ -5,11 +5,13 @@
 Fablo supports:
 
 * Environment: Docker
-* RAFT and solo consensus protocols
+* RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
 * Chaincode installation and upgrade
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
+
+Visit [SUPPORTED_FEATURES.mb](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
 
 ## See it in action
 
@@ -23,13 +25,13 @@ You may keep the script in the root directory of your project or install it glob
 To install it globally:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 ## Getting started
@@ -405,7 +407,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -568,7 +570,7 @@ Genrated Hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false

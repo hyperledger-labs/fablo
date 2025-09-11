@@ -1,17 +1,86 @@
-## 2.3.0 
+## 2.3.0
+
+### Features
 * Support for running Java chaincode in development mode
- [#553](https://github.com/hyperledger-labs/fablo/pull/553)
+  [#553](https://github.com/hyperledger-labs/fablo/pull/553)
+* Support installing Chaincode from Docker image using CCaaS
+  [#550](https://github.com/hyperledger-labs/fablo/pull/550)
+  [#582](https://github.com/hyperledger-labs/fablo/pull/582)
+  [#594](https://github.com/hyperledger-labs/fablo/pull/594)
+* Export network topology with Mermaid 
+  [#565](https://github.com/hyperledger-labs/fablo/pull/565)
+  [#579](https://github.com/hyperledger-labs/fablo/pull/579)
+* Generate diagrams by default for each 'generate' command
+  [#584](https://github.com/hyperledger-labs/fablo/pull/584)
+* Added Fablo Sample Gateway Connection for Node.js
+  [#541](https://github.com/hyperledger-labs/fablo/pull/541)
+* Adds gateway option to init
+  [#544](https://github.com/hyperledger-labs/fablo/pull/544)
+* Support query command for docker setup
+  [#597](https://github.com/hyperledger-labs/fablo/pull/597)
+* Add orderers and channels in connection profile
+  [#595](https://github.com/hyperledger-labs/fablo/pull/595)
+* Add check for unique chaincode names
+  [#596](https://github.com/hyperledger-labs/fablo/pull/596)
 * Hardcode fablo config inside init generator
   [#554](https://github.com/hyperledger-labs/fablo/pull/554)
 * Publish sample chaincode Docker image
   [#555](https://github.com/hyperledger-labs/fablo/pull/555)
 * Include and test Sample Go chaincode in samples/chaincodes/chaincode-kv-go
   [#569](https://github.com/hyperledger-labs/fablo/pull/569)
-* Export network topology with Mermaid 
-  [#565](https://github.com/hyperledger-labs/fablo/pull/565)
-* Support installing Chaincode from Docker image using CCaaS
-  [#550](https://github.com/hyperledger-labs/fablo/pull/550)
-  [#582](https://github.com/hyperledger-labs/fablo/pull/582)
+
+### Bug Fixes
+* Verify if post-generate.sh exists before executing
+  [#521](https://github.com/hyperledger-labs/fablo/pull/521)
+  [#526](https://github.com/hyperledger-labs/fablo/pull/526)
+* Fix chaincode invoke CLI for endorsement policy involving multiple peers
+  [#549](https://github.com/hyperledger-labs/fablo/pull/549)
+* Fix tag format for release CI
+  [#504](https://github.com/hyperledger-labs/fablo/pull/504)
+* Fix missing FABLO_VERSION in publish docker workflow
+  [#556](https://github.com/hyperledger-labs/fablo/pull/556)
+* CI: Update release workflow to match proper version tagging
+  [#516](https://github.com/hyperledger-labs/fablo/pull/516)
+* Fix Gradle build for Java chaincode
+  [#583](https://github.com/hyperledger-labs/fablo/pull/583)
+
+### Documentation
+* Docs: Clarify usage of global vs local fablo installation in README
+  [#520](https://github.com/hyperledger-labs/fablo/pull/520)
+* Fix: correct typo in CONTRIBUTING.md
+  [#538](https://github.com/hyperledger-labs/fablo/pull/538)
+* Docs: Coverage tracker / supported features
+  [#557](https://github.com/hyperledger-labs/fablo/pull/557)
+  [#564](https://github.com/hyperledger-labs/fablo/pull/564)
+  [#562](https://github.com/hyperledger-labs/fablo/pull/562)
+  [#566](https://github.com/hyperledger-labs/fablo/pull/566)
+  [#563](https://github.com/hyperledger-labs/fablo/pull/563)
+  [#570](https://github.com/hyperledger-labs/fablo/pull/570)
+  [#586](https://github.com/hyperledger-labs/fablo/pull/586)
+
+### Testing & CI
+* Test cases for `repositoryUtils.ts`
+  [#548](https://github.com/hyperledger-labs/fablo/pull/548)
+* Unit tests for `parseFabloConfig`
+  [#552](https://github.com/hyperledger-labs/fablo/pull/552)
+* Test golang chaincode in Github Actions
+  [#569](https://github.com/hyperledger-labs/fablo/pull/569)
+* Test post-generate hook creation and execution in CI
+  [#580](https://github.com/hyperledger-labs/fablo/pull/580)
+* Test peer dev mode
+  [#592](https://github.com/hyperledger-labs/fablo/pull/592)
+* Test Gateway client
+  [#587](https://github.com/hyperledger-labs/fablo/pull/587)
+* Test: Test CCaaS for Fabric v3
+  [#603](https://github.com/hyperledger-labs/fablo/pull/603)
+
+### Chore & Maintenance
+* Bump all dependencies from Dependabot PRs
+  [#600](https://github.com/hyperledger-labs/fablo/pull/600)
+* Unify Fabric version in tests and samples
+  [#581](https://github.com/hyperledger-labs/fablo/pull/581)
+* Upgrade Blockchain Explorer
+  [#590](https://github.com/hyperledger-labs/fablo/pull/590)
 
 ## 2.2.0
 
