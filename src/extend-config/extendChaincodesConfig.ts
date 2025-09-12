@@ -37,22 +37,15 @@ const createPrivateCollectionConfig = (
   };
 };
 
-const checkUniqueChaincodeNames = (allChannelsConfig: any): void => {
-  const chaincodeNames = new Set<string>();
+const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
+  const chaincodeKeys = new Set<string>();
 
-  const allChaincodes: ChaincodeJson[] = [];
-
-  Object.values(allChannelsConfig.channels || {}).forEach((channel: any) => {
-    if (channel.chaincodes) {
-      allChaincodes.push(...channel.chaincodes);
+  chaincodes.forEach((chaincode) => {
+    const chaincodeKey = `${chaincode.channel}.${chaincode.name}`;
+    if (chaincodeKeys.has(chaincodeKey)) {
+      throw new Error(`Duplicate chaincode '${chaincode.name}' found in channel '${chaincode.channel}'. Chaincode names must be unique within a channel.`);
     }
-  });
-
-  allChaincodes.forEach((chaincode) => {
-    if (chaincodeNames.has(chaincode.name)) {
-      throw new Error(`Chaincode name '${chaincode.name}' is not unique across channels.`);
-    }
-    chaincodeNames.add(chaincode.name);
+    chaincodeKeys.add(chaincodeKey);
   });
 };
 
@@ -75,14 +68,18 @@ const extendChaincodesConfig = (
     const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(network.fabricVersion, channel, d.name, d.orgNames),
     );
-    const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
+   
+    const privateDataConfigFile = privateData.length > 0 
+      ? `collections/${chaincode.channel}-${chaincode.name}.json` 
+      : undefined;
 
     const peerChaincodeInstances = !chaincode.image
       ? []
       : channel.orgs.flatMap((org) =>
           org.peers.map((peer) => {
+            const containerName = `ccaas-${peer.address}-${chaincode.channel}-${chaincode.name}`.toLowerCase();
             return {
-              containerName: `ccaas-${peer.address}-${chaincode.name}`,
+              containerName,
               peerAddress: peer.address,
               port: 10000 * (index + 1) + peer.port,
               orgDomain: org.domain,
@@ -111,5 +108,7 @@ const extendChaincodesConfig = (
     };
   });
 };
+
+export { checkUniqueChaincodeNames };
 
 export default extendChaincodesConfig;

@@ -2865,7 +2865,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
           "requiredPeerCount": 1,
         },
       ],
-      "privateDataConfigFile": "collections/or-policy-chaincode.json",
+      "privateDataConfigFile": "collections/my-channel1-or-policy-chaincode.json",
       "version": "0.0.1",
     },
     {
@@ -3275,7 +3275,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
           "requiredPeerCount": 1,
         },
       ],
-      "privateDataConfigFile": "collections/and-policy-chaincode.json",
+      "privateDataConfigFile": "collections/my-channel1-and-policy-chaincode.json",
       "version": "0.0.1",
     },
   ],
@@ -9491,7 +9491,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json
       "name": "chaincode1",
       "peerChaincodeInstances": [
         {
-          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "containerName": "ccaas-peer0.org1.example.com-my-channel1-chaincode1",
           "orgDomain": "org1.example.com",
           "peerAddress": "peer0.org1.example.com",
           "port": 17041,
@@ -12216,7 +12216,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
       "name": "chaincode1",
       "peerChaincodeInstances": [
         {
-          "containerName": "ccaas-peer0.org1.example.com-chaincode1",
+          "containerName": "ccaas-peer0.org1.example.com-my-channel1-chaincode1",
           "orgDomain": "org1.example.com",
           "peerAddress": "peer0.org1.example.com",
           "port": 17041,

@@ -395,13 +395,31 @@ class ValidateGenerator extends Generator {
   }
 
   _validateChaincodeNames(chaincodes: ChaincodeJson[]) {
-    const chaincodeNames = chaincodes.map((ch) => ch.name);
-    const duplicatedChaincodeNames = findDuplicatedItems(chaincodeNames);
+    const chaincodeKeys = chaincodes.map((ch) => `${ch.channel}.${ch.name}`);
+    const duplicatedChaincodeKeys = findDuplicatedItems(chaincodeKeys);
 
-    duplicatedChaincodeNames.forEach((duplicatedName) => {
+    const chaincodeMap = new Map<string, string[]>();
+    chaincodes.forEach((ch) => {
+      if (!chaincodeMap.has(ch.name)) {
+        chaincodeMap.set(ch.name, []);
+      }
+      chaincodeMap.get(ch.name)?.push(ch.channel);
+    });
+
+    // Find all chaincode names that are duplicated within the same channel
+    const duplicatedInSameChannel = new Set<string>();
+    for (const key of duplicatedChaincodeKeys as string[]) {
+      const [channel, name] = key.split('.');
+      const count = chaincodes.filter(ch => ch.channel === channel && ch.name === name).length;
+      if (count > 1) {
+        duplicatedInSameChannel.add(`${name} in channel ${channel}`);
+      }
+    }
+
+    duplicatedInSameChannel.forEach((duplicated) => {
       const objectToEmit = {
         category: validationCategories.CHAINCODE,
-        message: `Chaincode name '${duplicatedName}' is not unique.`,
+        message: `Chaincode name '${duplicated.split(' in channel ')[0]}' is not unique in channel '${duplicated.split(' in channel ')[1]}'.`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     });
