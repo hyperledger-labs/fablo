@@ -341,7 +341,6 @@ buildAndInstallChaincode() {
   local CONFIG="$7"
   local CHANNEL_NAME="$8"
 
-  # Include channel name in the chaincode label to ensure uniqueness
   local CHAINCODE_LABEL="\${CHANNEL_NAME}-\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   if [ -z "$CHAINCODE_NAME" ]; then
@@ -378,7 +377,6 @@ approveChaincode() {
   local MSP="$7"
   local SEQUENCE
 
-  # Include channel name in the chaincode label to ensure uniqueness
   local CHAINCODE_LABEL="\${CHANNEL_NAME}-\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p')"
@@ -423,7 +421,6 @@ commitChaincode() {
   local MSP="$7"
   local SEQUENCE
 
-  # Include channel name in the chaincode label to ensure uniqueness
   local CHAINCODE_LABEL="\${CHANNEL_NAME}-\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p')"
