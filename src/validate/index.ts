@@ -17,7 +17,26 @@ import { Capabilities } from "../types/FabloConfigExtended";
 import { version } from "../repositoryUtils";
 
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
-const findDuplicatedItems = (arr: unknown[]) => arr.filter((item, index) => arr.indexOf(item) != index);
+const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
+  const duplicates: Record<string, string[]> = {};
+  const seen = new Map<string, number>();
+
+  arr.forEach((item, index) => {
+    if (seen.has(item)) {
+      const [channel, name] = item.split('_');
+      if (!duplicates[channel]) {
+        duplicates[channel] = [];
+      }
+      if (!duplicates[channel].includes(name)) {
+        duplicates[channel].push(name);
+      }
+    } else {
+      seen.set(item, index);
+    }
+  });
+
+  return duplicates;
+};
 
 const validationErrorType = {
   CRITICAL: "validation-critical",
@@ -240,15 +259,20 @@ class ValidateGenerator extends Generator {
   }
 
   _validateOrdererGroupNameUniqueForOrg(org: OrgJson) {
-    const groupNames = org.orderers?.flatMap((o) => o.groupName);
-    const duplicatedGroupNames = groupNames != undefined ? findDuplicatedItems(groupNames) : [];
-    if (duplicatedGroupNames.length > 0) {
-      const objectToEmit = {
-        category: validationCategories.ORDERER,
-        message: `groupName must be unique within every organization, but '${duplicatedGroupNames}' is not`,
-      };
-      this.emit(validationErrorType.ERROR, objectToEmit);
-    }
+    if (!org.orderers?.length) return;
+    
+    const groupNames = org.orderers.flatMap((o) => o.groupName);
+    const duplicatedGroupNames = findDuplicatedItems(groupNames.map(name => `_${name}`));
+    
+    Object.entries(duplicatedGroupNames).forEach(([_, names]) => {
+      names.forEach(name => {
+        const objectToEmit = {
+          category: validationCategories.ORDERER,
+          message: `Orderer group name '${name}' is not unique in organization '${org.organization.name}'.`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      });
+    });
   }
 
   _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
@@ -383,45 +407,31 @@ class ValidateGenerator extends Generator {
 
   _validateChannelNames(channels: ChannelJson[]) {
     const channelNames = channels.map((ch) => ch.name);
-    const duplicatedChannelNames = findDuplicatedItems(channelNames);
+    const duplicatedChannels = findDuplicatedItems(channelNames.map(name => `_${name}`));
 
-    duplicatedChannelNames.forEach((duplicatedName) => {
-      const objectToEmit = {
-        category: validationCategories.CHANNEL,
-        message: `Channel name '${duplicatedName}' is not unique.`,
-      };
-      this.emit(validationErrorType.ERROR, objectToEmit);
+    Object.entries(duplicatedChannels).forEach(([_, names]) => {
+      names.forEach(name => {
+        const objectToEmit = {
+          category: validationCategories.CHANNEL,
+          message: `Channel name '${name}' is not unique.`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      });
     });
   }
 
   _validateChaincodeNames(chaincodes: ChaincodeJson[]) {
-    const chaincodeKeys = chaincodes.map((ch) => `${ch.channel}.${ch.name}`);
-    const duplicatedChaincodeKeys = findDuplicatedItems(chaincodeKeys);
+    const chaincodeKeys = chaincodes.map((ch) => `${ch.channel}_${ch.name}`);
+    const duplicatedChaincodes = findDuplicatedItems(chaincodeKeys);
 
-    const chaincodeMap = new Map<string, string[]>();
-    chaincodes.forEach((ch) => {
-      if (!chaincodeMap.has(ch.name)) {
-        chaincodeMap.set(ch.name, []);
-      }
-      chaincodeMap.get(ch.name)?.push(ch.channel);
-    });
-
-    // Find all chaincode names that are duplicated within the same channel
-    const duplicatedInSameChannel = new Set<string>();
-    for (const key of duplicatedChaincodeKeys as string[]) {
-      const [channel, name] = key.split('.');
-      const count = chaincodes.filter(ch => ch.channel === channel && ch.name === name).length;
-      if (count > 1) {
-        duplicatedInSameChannel.add(`${name} in channel ${channel}`);
-      }
-    }
-
-    duplicatedInSameChannel.forEach((duplicated) => {
-      const objectToEmit = {
-        category: validationCategories.CHAINCODE,
-        message: `Chaincode name '${duplicated.split(' in channel ')[0]}' is not unique in channel '${duplicated.split(' in channel ')[1]}'.`,
-      };
-      this.emit(validationErrorType.ERROR, objectToEmit);
+    Object.entries(duplicatedChaincodes).forEach(([channel, names]) => {
+      names.forEach(name => {
+        const objectToEmit = {
+          category: validationCategories.CHAINCODE,
+          message: `Chaincode name '${name}' is not unique in channel '${channel}'.`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      });
     });
   }
 

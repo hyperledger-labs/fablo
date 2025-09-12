@@ -122,7 +122,7 @@ chaincodePackageCCaaS() {
 
   
   local CHANNEL_NAME=$9  
-  local ACTUAL_CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHANNEL_NAME}-${CHAINCODE_NAME}"
+  local ACTUAL_CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHANNEL_NAME}_${CHAINCODE_NAME}"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
 
@@ -174,7 +174,7 @@ chaincodeInstall() {
   local CHAINCODE_VERSION=$4
   local CHANNEL_NAME=$5
   local CA_CERT=$6
-  local CHAINCODE_LABEL="${CHANNEL_NAME}-${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -200,7 +200,7 @@ startCCaaSContainer() {
   local CLI_NAME="$6"
   local CA_CERT="$7"
   local CHANNEL_NAME="$8" 
-  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHANNEL_NAME}-${CHAINCODE_NAME}"
+  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHANNEL_NAME}_${CHAINCODE_NAME}"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
 
   # Query installed chaincodes to get the package ID
@@ -274,7 +274,7 @@ chaincodeApprove() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="${CHANNEL_NAME}-${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -360,7 +360,7 @@ chaincodeCommit() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="${CHANNEL_NAME}-${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
