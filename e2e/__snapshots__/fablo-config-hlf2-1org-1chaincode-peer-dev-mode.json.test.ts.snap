@@ -2522,8 +2522,8 @@ chaincodePackageCCaaS() {
   inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "TLS_ENABLED: $TLS_ENABLED"
 
-  local CHANNEL_NAME=$9
-  local ACTUAL_CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHANNEL_NAME}_\${CHAINCODE_NAME}"
+  # local CHANNEL_NAME=$9
+  local ACTUAL_CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHAINCODE_NAME}"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
 
