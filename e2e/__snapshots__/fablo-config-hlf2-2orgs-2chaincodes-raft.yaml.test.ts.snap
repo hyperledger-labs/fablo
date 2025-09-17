@@ -5441,6 +5441,8 @@ chaincodePackageCCaaS() {
   inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
   inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "TLS_ENABLED: $TLS_ENABLED"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
 
   local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
@@ -5567,6 +5569,21 @@ startCCaaSContainer() {
 
   # Use generated CCAAS certificates
   local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  if docker ps -a --format '{{.Names}}' | grep -q "^\${CONTAINER_NAME}$"; then
+    local STATE
+    STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo "unknown")
+    local DESIRED_ID="\${CHAINCODE_LABEL}:\${PACKAGE_HASH}"
+    local CURRENT_ID
+    CURRENT_ID=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$CONTAINER_NAME" 2>/dev/null | grep '^CORE_CHAINCODE_ID_NAME=' | sed 's/CORE_CHAINCODE_ID_NAME=//')
+    if [ "$STATE" = "running" ] && [ "$CURRENT_ID" = "$DESIRED_ID" ]; then
+      echo "CCaaS container '$CONTAINER_NAME' already running with desired ID '$DESIRED_ID'. Skipping start."
+      return 0
+    else
+      echo "CCaaS container '$CONTAINER_NAME' exists (state='$STATE', id='$CURRENT_ID'), expected '$DESIRED_ID'. Recreating..."
+      docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    fi
+  fi
 
   docker run -d \\
     --name "$CONTAINER_NAME" \\

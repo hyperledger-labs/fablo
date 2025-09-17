@@ -77,7 +77,8 @@ const extendChaincodesConfig = (
       ? []
       : channel.orgs.flatMap((org) =>
           org.peers.map((peer) => {
-            const containerName = `ccaas-${peer.address}-${chaincode.channel}-${chaincode.name}`.toLowerCase();
+            const versionSuffix = `${chaincode.version}`.replace(/[^a-zA-Z0-9_.-]/g, "_");
+            const containerName = `ccaas_${peer.address.replace(/[^a-zA-Z0-9_.-]/g, "_")}_${channel.name}_${chaincode.name}_${versionSuffix}`.toLowerCase();
             return {
               containerName,
               peerAddress: peer.address,
