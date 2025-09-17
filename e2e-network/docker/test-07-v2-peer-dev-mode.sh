@@ -25,7 +25,7 @@ dumpLogs() {
 networkDown() {
   sleep 2
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
+  # (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
 waitForContainer() {
