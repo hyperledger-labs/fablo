@@ -6,20 +6,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 "
 `;
 
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
-"[
-  {
-    "name": "both-orgs-collection",
-    "policy": "OR('Org1MSP.member','Org2MSP.member')",
-    "requiredPeerCount": 1,
-    "maxPeerCount": 3,
-    "blockToLive": 0,
-    "memberOnlyRead": true,
-    "memberOnlyWrite": true
-  }
-]"
-`;
-
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
@@ -35,20 +21,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
-"[
-  {
-    "name": "org1-collection",
-    "policy": "OR('Org1MSP.member')",
-    "requiredPeerCount": 1,
-    "maxPeerCount": 3,
-    "blockToLive": 0,
-    "memberOnlyRead": true,
-    "memberOnlyWrite": true
-  }
-]"
-`;
-
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
     "name": "org1-collection",
@@ -2506,12 +2478,13 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
     chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+    printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
     printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
+    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
     chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
     printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
@@ -2523,12 +2496,13 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
     chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+    printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
     printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
+    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
     chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
     printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
@@ -2556,12 +2530,13 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
       chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+      printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
@@ -2575,12 +2550,13 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
       chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
@@ -2638,12 +2614,13 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
       chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+      printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
@@ -2657,12 +2634,13 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
       chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
       chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
@@ -3529,8 +3507,9 @@ chaincodePackage() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
+  local CHANNEL_NAME=$6
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -3553,11 +3532,12 @@ chaincodePackageCCaaS() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_IMAGE=$5
   local CONTAINER_PORT=$6
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
+  local CHANNEL_NAME=$9
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -3567,8 +3547,7 @@ chaincodePackageCCaaS() {
   inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "TLS_ENABLED: $TLS_ENABLED"
 
-  # local CHANNEL_NAME=$9
-  local ACTUAL_CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHAINCODE_NAME}"
+  local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
 
@@ -3618,9 +3597,9 @@ chaincodeInstall() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  # local CHANNEL_NAME=\${6:-my-channel}
-  local CA_CERT=\${5:-}
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHANNEL_NAME=$5
+  local CA_CERT=\${6:-}
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -3647,8 +3626,7 @@ startCCaaSContainer() {
   local EXTERNAL_PORT="$5"
   local CLI_NAME="$6"
   local CA_CERT="$7"
-  # local CHANNEL_NAME="$8"
-  local CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHAINCODE_NAME}"
+  local CONTAINER_NAME="$8"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
 
   # Query installed chaincodes to get the package ID
@@ -3722,7 +3700,7 @@ chaincodeApprove() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -3808,7 +3786,7 @@ chaincodeCommit() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
