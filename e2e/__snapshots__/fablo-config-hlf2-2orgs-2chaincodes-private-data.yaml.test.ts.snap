@@ -6,6 +6,20 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 "
 `;
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
+"[
+  {
+    "name": "both-orgs-collection",
+    "policy": "OR('Org1MSP.member','Org2MSP.member')",
+    "requiredPeerCount": 1,
+    "maxPeerCount": 3,
+    "blockToLive": 0,
+    "memberOnlyRead": true,
+    "memberOnlyWrite": true
+  }
+]"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
@@ -21,6 +35,20 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
+"[
+  {
+    "name": "org1-collection",
+    "policy": "OR('Org1MSP.member')",
+    "requiredPeerCount": 1,
+    "maxPeerCount": 3,
+    "blockToLive": 0,
+    "memberOnlyRead": true,
+    "memberOnlyWrite": true
+  }
+]"
+`;
+
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
     "name": "org1-collection",
@@ -3590,7 +3618,7 @@ chaincodeInstall() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHANNEL_NAME=\${6:-my-channel}
+  # local CHANNEL_NAME=\${6:-my-channel}
   local CA_CERT=\${5:-}
   local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
@@ -3619,8 +3647,8 @@ startCCaaSContainer() {
   local EXTERNAL_PORT="$5"
   local CLI_NAME="$6"
   local CA_CERT="$7"
-  local CHANNEL_NAME="$8"
-  local CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHANNEL_NAME}_\${CHAINCODE_NAME}"
+  # local CHANNEL_NAME="$8"
+  local CONTAINER_NAME="ccaas-\${PEER_ADDRESS%%:*}-\${CHAINCODE_NAME}"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
 
   # Query installed chaincodes to get the package ID

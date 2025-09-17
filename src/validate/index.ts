@@ -19,19 +19,23 @@ import { version } from "../repositoryUtils";
 const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
   const duplicates: Record<string, string[]> = {};
-  const seen = new Map<string, number>();
+  const seenCounts = new Map<string, number>();
 
-  arr.forEach((item, index) => {
-    if (seen.has(item)) {
-      const [channel, name] = item.split('_');
+  arr.forEach((item) => {
+    seenCounts.set(item, (seenCounts.get(item) || 0) + 1);
+  });
+
+  seenCounts.forEach((count, item) => {
+    if (count > 1) {
+      const sepIndex = item.indexOf('_');
+      const channel = sepIndex >= 0 ? item.slice(0, sepIndex) : '';
+      const name = sepIndex >= 0 ? item.slice(sepIndex + 1) : item;
       if (!duplicates[channel]) {
         duplicates[channel] = [];
       }
       if (!duplicates[channel].includes(name)) {
         duplicates[channel].push(name);
       }
-    } else {
-      seen.set(item, index);
     }
   });
 
