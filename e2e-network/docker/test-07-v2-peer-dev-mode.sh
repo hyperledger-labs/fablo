@@ -53,22 +53,22 @@ networkUp
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.example.com" "Beginning to serve requests"
 waitForContainer "db.ca.org1.example.com" "database system is ready to accept connections"
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 echo "All nodes are ready"
-echo "Starting chaincode in development mode..."
-# make sure nodemon is installed and Install if not
-if ! command -v nodemon &> /dev/null; then
-  echo "nodemon could not be found, installing..."
-  npm install -g nodemon
-else
-  echo "nodemon is already installed"
-fi
-# start the chaincode in development mode
-(cd "$NODECHAINCODE" && npm i && npm run start:watch) &
+# echo "Starting chaincode in development mode..."
+# # make sure nodemon is installed and Install if not
+# if ! command -v nodemon &> /dev/null; then
+#   echo "nodemon could not be found, installing..."
+#   npm install -g nodemon
+# else
+#   echo "nodemon is already installed"
+# fi
+# # start the chaincode in development mode
+# (cd "$NODECHAINCODE" && npm i && npm run start:watch) &
 
 sleep 5
 

@@ -289,7 +289,7 @@ services:
       # ccaas builder configuration
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"<%= peer.name %><%= org.name %>"}
     working_dir: /etc/hyperledger/fabric/peer/
-    command: peer node start <%= global.peerDevMode ? '--peer-chaincodedev=true' : '' %>
+    command: peer node start <%= global.peerDevMode && !global.tls ? '--peer-chaincodedev=true' : '' %>
     ports:
       - <%= peer.port + 1000 %>:9440
       - <%= peer.port %>:<%= peer.port %>
