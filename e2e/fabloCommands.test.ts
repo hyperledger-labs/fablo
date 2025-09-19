@@ -88,7 +88,7 @@ describe("validate", () => {
 
   it("should validate custom config", () => {
     // Given
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json`;
+    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json`;
 
     // When
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
@@ -111,8 +111,8 @@ describe("validate", () => {
 
   it("should print validation errors", () => {
     // Given
-    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json");
-    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json", "");
+    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json");
+    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json", "");
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const sourceConfig = require(sourceConfigPath) as FabloConfigJson;
 
