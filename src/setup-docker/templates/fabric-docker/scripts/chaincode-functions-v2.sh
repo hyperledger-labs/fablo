@@ -331,7 +331,7 @@ startDevModeChaincodeProcess() {
     -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
     -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
     -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
-    -v $ORDERER_TLS_CA:/etc/hyperledger/fabric/orderer.crt \
+    -v "$ORDERER_TLS_CA:/etc/hyperledger/fabric/orderer.crt" \
     -v "$CHAINCODE_DIR:/usr/src/app" \
     --network "$DOCKER_NETWORK" \
     "$CC_IMAGE" \

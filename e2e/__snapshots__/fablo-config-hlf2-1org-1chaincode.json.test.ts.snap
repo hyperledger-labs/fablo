@@ -1796,10 +1796,12 @@ runDevModeChaincode() {
     local version="0.0.1"
     printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "" ""
+
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
 
   fi
+
 }
 
 upgradeChaincode() {
@@ -2732,6 +2734,80 @@ startCCaaSContainer() {
     -p "$PORT_MAP" \\
     --network "$NETWORK" \\
     "$CHAINCODE_IMAGE"
+}
+
+startDevModeChaincodeProcess() {
+  local CHAINCODE_NAME="$1"
+  local CHAINCODE_VERSION="$2"
+  local CHAINCODE_LANG="$3"
+  local CHAINCODE_DIR="$4"
+  local ORG_MSP="$5"
+  local PEER_TLS_CA_REL="$6"
+  local ORDERER_TLS_CA_REL="$7"
+  local TLS_ENABLED="$8"
+  local PEER_ADDRESS="$9"
+  local ORG_DOMAIN=\${10}
+
+  local CC_ID="\${CHAINCODE_NAME}:\${CHAINCODE_VERSION}"
+  local CONTAINER_NAME="devmode-\${CHAINCODE_NAME}"
+
+  local BASE_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
+  local PEER_TLS_CA=$(realpath "$BASE_PATH/$PEER_TLS_CA_REL")
+  local ORDERER_TLS_CA=$(realpath "$BASE_PATH/$ORDERER_TLS_CA_REL")
+  local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+  # Generate certs for dev mode container
+  echo "Generating certifcates for dev mode container"
+  certsGenerateCCaaS "$CONFIG_PATH" "$CONTAINER_NAME" "$ORG_DOMAIN" "$CHAINCODE_NAME" "$PEER_ADDRESS"
+
+  echo "Launching devmode chaincode container $CONTAINER_NAME"
+  echo "   CHAINCODE: $CHAINCODE_NAME v$CHAINCODE_VERSION ($CHAINCODE_LANG)"
+  echo "   MSP: $ORG_MSP"
+  echo "   PEER_TLS_CA: $PEER_TLS_CA_REL"
+  echo "   ORDERER_TLS_CA: $ORDERER_TLS_CA_REL"
+
+  local TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  # Pick base image depending on lang
+  local CC_IMAGE=""
+  case "$CHAINCODE_LANG" in
+  node)
+    CC_IMAGE="node:16"
+    START_CMD="cd /usr/src/app && npm install && npm run start:watch"
+    ;;
+  golang | go)
+    CC_IMAGE="golang:1.20"
+    START_CMD="cd /usr/src/app && go mod tidy && go run ."
+    ;;
+  java)
+    CC_IMAGE="openjdk:11"
+    START_CMD="cd /usr/src/app && ./gradlew installDist && ./build/install/chaincode/bin/chaincode"
+    ;;
+  *)
+    echo "Unsupported chaincode language: $CHAINCODE_LANG"
+    exit 1
+    ;;
+  esac
+
+  local DOCKER_NETWORK
+  DOCKER_NETWORK=$(docker inspect peer0.org1.example.com | jq -r '.[0].NetworkSettings.Networks | keys[0]')
+
+  docker run -d \\
+    --name "$CONTAINER_NAME" \\
+    -e CORE_CHAINCODE_ID_NAME="$CC_ID" \\
+    -e CORE_PEER_LOCALMSPID="$ORG_MSP" \\
+    -e CORE_CHAINCODE_LOGGING_LEVEL=debug \\
+    -e CORE_PEER_TLS_ENABLED=true \\
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \\
+    -e CORE_PEER_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client.crt \\
+    -e CORE_PEER_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client.key \\
+    -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \\
+    -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \\
+    -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \\
+    -v $ORDERER_TLS_CA:/etc/hyperledger/fabric/orderer.crt \\
+    -v "$CHAINCODE_DIR:/usr/src/app" \\
+    --network "$DOCKER_NETWORK" \\
+    "$CC_IMAGE" \\
+    bash -c "$START_CMD"
 }
 
 chaincodeApprove() {

@@ -111,9 +111,15 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &Group1Defaults
-    OrdererType: solo
+    OrdererType: etcdraft
     Addresses:
         - orderer0.group1.orderer.example.com:7030
+    EtcdRaft:
+        Consenters:
+            - Host: orderer0.group1.orderer.example.com
+              Port: 7030
+              ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
+              ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
 
     BatchTimeout: 2s
     BatchSize:
@@ -205,21 +211,36 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should cre
   },
   "peers": {
     "peer0.org1.example.com": {
-      "url": "grpc://localhost:7041"
+      "url": "grpcs://localhost:7041",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org1.example.com"
+      }
     }
   },
   "certificateAuthorities": {
     "ca.orderer.example.com": {
-      "url": "http://localhost:7020",
+      "url": "https://localhost:7020",
       "caName": "ca.orderer.example.com",
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem"
       }
     }
   },
   "orderers": {
     "orderer0.group1.orderer.example.com": {
-      "url": "grpc://localhost:7030"
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
     }
   }
 }
@@ -241,16 +262,29 @@ organizations:
       - ca.orderer.example.com
 peers:
   peer0.org1.example.com:
-    url: grpc://localhost:7041
+    url: grpcs://localhost:7041
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
 certificateAuthorities:
   ca.orderer.example.com:
-    url: http://localhost:7020
+    url: https://localhost:7020
     caName: ca.orderer.example.com
     httpOptions:
       verify: false
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
 orderers:
   orderer0.group1.orderer.example.com:
-    url: grpc://localhost:7030
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
 "
 `;
 
@@ -275,21 +309,36 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should cre
   },
   "peers": {
     "peer0.org1.example.com": {
-      "url": "grpc://localhost:7041"
+      "url": "grpcs://localhost:7041",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org1.example.com"
+      }
     }
   },
   "certificateAuthorities": {
     "ca.org1.example.com": {
-      "url": "http://localhost:7040",
+      "url": "https://localhost:7040",
       "caName": "ca.org1.example.com",
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
       }
     }
   },
   "orderers": {
     "orderer0.group1.orderer.example.com": {
-      "url": "grpc://localhost:7030"
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+      }
     }
   },
   "channels": {
@@ -316,16 +365,29 @@ organizations:
       - ca.org1.example.com
 peers:
   peer0.org1.example.com:
-    url: grpc://localhost:7041
+    url: grpcs://localhost:7041
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: peer0.org1.example.com
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7040
+    url: https://localhost:7040
     caName: ca.org1.example.com
     httpOptions:
       verify: false
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
 orderers:
   orderer0.group1.orderer.example.com:
-    url: grpc://localhost:7030
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer.example.com
 channels:
   my-channel1:
     peers: {}
@@ -1490,7 +1552,7 @@ chaincodeList() {
 
   elif [ "$1" = "peer0.org1.example.com" ]; then
 
-    peerChaincodeList "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" # $2 is channel name
+    peerChaincodeListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
   else
 
@@ -1521,7 +1583,13 @@ chaincodeInvoke() {
   peer_addresses="$1"
   peer_addresses="\${peer_addresses//peer0.org1.example.com/peer0.org1.example.com:7041}"
 
-  peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
+  peer_certs="$1"
+  peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
+
+  if [ "$2" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+  peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 
 # Function to perform chaincode query for single peer
@@ -1547,9 +1615,13 @@ chaincodeQuery() {
   cli=""
   peer_address=""
 
+  peer_cert=""
+
   if [ "$peer_domain" = "peer0.org1.example.com" ]; then
     cli="cli.org1.example.com"
     peer_address="peer0.org1.example.com:7041"
+
+    peer_cert="crypto/peers/peer0.org1.example.com/tls/ca.crt"
 
   fi
 
@@ -1558,7 +1630,11 @@ chaincodeQuery() {
     exit 1
   fi
 
-  peerChaincodeQuery "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient"
+  if [ "$channel_name" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+
+  peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
 
 }
 "
@@ -1577,25 +1653,25 @@ channelQuery() {
 
   elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer0" ]; then
 
-    peerChannelList "cli.org1.example.com" "peer0.org1.example.com:7041"
+    peerChannelListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
   elif
 
     [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
   then
 
-    peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041"
+    peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
   elif [ "$1" = "fetch" ] && [ "$2" = "config" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer0" ]; then
     TARGET_FILE=\${6:-"$channel-config.json"}
 
-    peerChannelFetchConfig "my-channel1" "cli.org1.example.com" "$TARGET_FILE" "peer0.org1.example.com:7041"
+    peerChannelFetchConfigTls "my-channel1" "cli.org1.example.com" "$TARGET_FILE" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
   elif [ "$1" = "fetch" ] && [ "$3" = "my-channel1" ] && [ "$4" = "org1" ] && [ "$5" = "peer0" ]; then
     BLOCK_NAME=$2
     TARGET_FILE=\${6:-"$BLOCK_NAME.block"}
 
-    peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "$TARGET_FILE"
+    peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
   else
 
@@ -1661,16 +1737,21 @@ generateChannelsArtifacts() {
 
 installChannels() {
   printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoin 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'orderer0.group1.orderer.example.com:7030';"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
 }
 
 installChaincodes() {
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
     printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "" ""
+
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
+
+    printHeadline "Launching devmode chaincode runtime for 'chaincode1'" "U1F680"
+    startDevModeChaincodeProcess "chaincode1" "0.0.1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "Org1MSP" "peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" "peerOrganizations/orderer.example.com/tlsca/tlsca.orderer.example.com-cert.pem" "true" "peer0.org1.example.com" "org1.example.com"
+
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
@@ -1696,10 +1777,10 @@ installChaincode() {
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "node" ""
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
@@ -1718,11 +1799,16 @@ runDevModeChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     local version="0.0.1"
     printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "" ""
+
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
+
+    printHeadline "Launching devmode chaincode runtime for 'chaincode1'" "U1F680"
+    startDevModeChaincodeProcess "chaincode1" "0.0.1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "Org1MSP" "peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" "peerOrganizations/orderer.example.com/tlsca/tlsca.orderer.example.com-cert.pem" "true" "peer0.org1.example.com" "org1.example.com"
 
   fi
+
 }
 
 upgradeChaincode() {
@@ -1743,10 +1829,10 @@ upgradeChaincode() {
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "node" ""
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
@@ -1761,7 +1847,7 @@ notifyOrgsAboutChannels() {
   createNewChannelUpdateTx "my-channel1" "Org1MSP" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
 
   printHeadline "Notyfing orgs about channels" "U1F4E2"
-  notifyOrgAboutNewChannel "my-channel1" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer.example.com:7030"
+  notifyOrgAboutNewChannelTls "my-channel1" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer.example.com:7030" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
   printHeadline "Deleting new channel config blocks" "U1F52A"
   deleteNewChannelUpdateTx "my-channel1" "Org1MSP" "cli.org1.example.com"
@@ -1818,6 +1904,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.orderer.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
     ports:
       - 7020:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -1841,6 +1928,12 @@ services:
       #
       - CORE_PEER_LOCALMSPID=OrdererMSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/msp
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@orderer.example.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -1848,6 +1941,8 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
     networks:
@@ -1862,6 +1957,15 @@ services:
       - ORDERER_GENERAL_LISTENPORT=7030
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # TLS Configuration
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # Cluster TLS Configuration
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       # Genesis file configuration (for solo and raft)
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
@@ -1889,6 +1993,7 @@ services:
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server/crypto/ca.org1.example.com-cert.pem
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server/crypto/priv-key.pem
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
       - FABRIC_CA_SERVER_DB_TYPE=postgres
       - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
@@ -1936,6 +2041,12 @@ services:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7041
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/client.crt
+      - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/cli/crypto/users/Admin@org1.example.com/tls/ca.crt
+      - TLS_CA_CERT_PATH=/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem
     working_dir: /var/hyperledger/cli/
     command: /bin/bash
     volumes:
@@ -1943,6 +2054,8 @@ services:
       - ../fabric-docker/scripts/cli:/var/hyperledger/cli/scripts/
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
+      - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
+      - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
     networks:
@@ -1954,11 +2067,16 @@ services:
     environment:
       - PORT=8000
       - MSP_ID=Org1MSP
-      - FABRIC_CA_URL=http://ca.org1.example.com:7054
+      - FABRIC_CA_URL=https://ca.org1.example.com:7054
       - FABRIC_CA_NAME=ca.org1.example.com
       - AS_LOCALHOST=false
-      - DISCOVERY_URLS=grpc://peer0.org1.example.com:7041
+      - DISCOVERY_URLS=grpcs://peer0.org1.example.com:7041
+      - DISCOVERY_SSL_TARGET_NAME_OVERRIDES=
+      - DISCOVERY_TLS_CA_CERT_FILES=/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
       - HFC_LOGGING={"error":"console","warn":"console","info":"console"}
+    volumes:
+      # note: fablo needs access to all anchor peer certs
+      - ../fabric-config/crypto-config/peerOrganizations:/crypto:ro
     ports:
       - 8801:8000
     networks:
@@ -1993,6 +2111,11 @@ services:
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - GODEBUG=netdns=go
+      # enabled TLS
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       # CouchDB
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb.peer0.org1.example.com:5984
@@ -2003,7 +2126,7 @@ services:
       # ccaas builder configuration
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
-    command: peer node start --peer-chaincodedev=true
+    command: peer node start
     ports:
       - 8041:9440
       - 7041:7041
@@ -2664,6 +2787,80 @@ startCCaaSContainer() {
     -p "$PORT_MAP" \\
     --network "$NETWORK" \\
     "$CHAINCODE_IMAGE"
+}
+
+startDevModeChaincodeProcess() {
+  local CHAINCODE_NAME="$1"
+  local CHAINCODE_VERSION="$2"
+  local CHAINCODE_LANG="$3"
+  local CHAINCODE_DIR="$4"
+  local ORG_MSP="$5"
+  local PEER_TLS_CA_REL="$6"
+  local ORDERER_TLS_CA_REL="$7"
+  local TLS_ENABLED="$8"
+  local PEER_ADDRESS="$9"
+  local ORG_DOMAIN=\${10}
+
+  local CC_ID="\${CHAINCODE_NAME}:\${CHAINCODE_VERSION}"
+  local CONTAINER_NAME="devmode-\${CHAINCODE_NAME}"
+
+  local BASE_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
+  local PEER_TLS_CA=$(realpath "$BASE_PATH/$PEER_TLS_CA_REL")
+  local ORDERER_TLS_CA=$(realpath "$BASE_PATH/$ORDERER_TLS_CA_REL")
+  local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+  # Generate certs for dev mode container
+  echo "Generating certifcates for dev mode container"
+  certsGenerateCCaaS "$CONFIG_PATH" "$CONTAINER_NAME" "$ORG_DOMAIN" "$CHAINCODE_NAME" "$PEER_ADDRESS"
+
+  echo "Launching devmode chaincode container $CONTAINER_NAME"
+  echo "   CHAINCODE: $CHAINCODE_NAME v$CHAINCODE_VERSION ($CHAINCODE_LANG)"
+  echo "   MSP: $ORG_MSP"
+  echo "   PEER_TLS_CA: $PEER_TLS_CA_REL"
+  echo "   ORDERER_TLS_CA: $ORDERER_TLS_CA_REL"
+
+  local TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  # Pick base image depending on lang
+  local CC_IMAGE=""
+  case "$CHAINCODE_LANG" in
+  node)
+    CC_IMAGE="node:16"
+    START_CMD="cd /usr/src/app && npm install && npm run start:watch"
+    ;;
+  golang | go)
+    CC_IMAGE="golang:1.20"
+    START_CMD="cd /usr/src/app && go mod tidy && go run ."
+    ;;
+  java)
+    CC_IMAGE="openjdk:11"
+    START_CMD="cd /usr/src/app && ./gradlew installDist && ./build/install/chaincode/bin/chaincode"
+    ;;
+  *)
+    echo "Unsupported chaincode language: $CHAINCODE_LANG"
+    exit 1
+    ;;
+  esac
+
+  local DOCKER_NETWORK
+  DOCKER_NETWORK=$(docker inspect peer0.org1.example.com | jq -r '.[0].NetworkSettings.Networks | keys[0]')
+
+  docker run -d \\
+    --name "$CONTAINER_NAME" \\
+    -e CORE_CHAINCODE_ID_NAME="$CC_ID" \\
+    -e CORE_PEER_LOCALMSPID="$ORG_MSP" \\
+    -e CORE_CHAINCODE_LOGGING_LEVEL=debug \\
+    -e CORE_PEER_TLS_ENABLED=true \\
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \\
+    -e CORE_PEER_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client.crt \\
+    -e CORE_PEER_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client.key \\
+    -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \\
+    -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \\
+    -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \\
+    -v $ORDERER_TLS_CA:/etc/hyperledger/fabric/orderer.crt \\
+    -v "$CHAINCODE_DIR:/usr/src/app" \\
+    --network "$DOCKER_NETWORK" \\
+    "$CC_IMAGE" \\
+    bash -c "$START_CMD"
 }
 
 chaincodeApprove() {
