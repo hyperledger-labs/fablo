@@ -326,8 +326,8 @@ startDevModeChaincodeProcess() {
     -e CORE_CHAINCODE_LOGGING_LEVEL=debug \
     -e CORE_PEER_TLS_ENABLED=true \
     -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
-    -e CORE_PEER_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client.crt \
-    -e CORE_PEER_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client.key \
+    -e CORE_CHAINCODE_TLS_CLIENT_CERT_FILE=/etc/hyperledger/fabric/client.crt \
+    -e CORE_CHAINCODE_TLS_CLIENT_KEY_FILE=/etc/hyperledger/fabric/client.key \
     -v "$TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
     -v "$TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
     -v "$TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
