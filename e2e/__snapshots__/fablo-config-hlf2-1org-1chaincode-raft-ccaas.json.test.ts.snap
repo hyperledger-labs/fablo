@@ -1723,11 +1723,14 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
-  docker exec -i cli.orderer.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'OrdererMSP' 'orderer0.group1.orderer.example.com:7053' 'crypto/users/Admin@orderer.example.com/tls/client.crt' 'crypto/users/Admin@orderer.example.com/tls/client.key' 'crypto-orderer/tlsca.orderer.example.com-cert.pem';"
-  sleep 4 # Wait for Raft cluster to establish consensus
-  printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 
+  printHeadline "Creating 'my-channel1' on orderer group 'group1'" "U1F63B"
+  docker exec -i cli.orderer.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'OrdererMSP' 'orderer0.group1.orderer.example.com:7053' 'crypto/users/Admin@orderer.example.com/tls/client.crt' 'crypto/users/Admin@orderer.example.com/tls/client.key' 'crypto-orderer/tlsca.orderer.example.com-cert.pem';"
+
+  sleep 4 # Wait for Raft cluster to establish consensus
+
+  printHeadline "Joining 'my-channel1' on Org1/peer0" "U1F63B"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7041' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
 }
 
 installChaincodes() {

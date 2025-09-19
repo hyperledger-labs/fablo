@@ -47,34 +47,36 @@ installChannels() {
     echo "No channels"
   <% } else if (global.capabilities.isV3) { -%>
     <% channels.forEach((channel) => { -%>
-      <% channel.ordererGroup.orderers.forEach((orderer) => { -%>
+      
+      <% const firstOrderer = channel.ordererGroup.orderers[0]; -%>
+      <% const firstOrdererOrg = orgs.find((org) => org.name === firstOrderer.orgName); -%>
+      printHeadline "Creating '<%= channel.name %>' on orderer group '<%= channel.ordererGroup.name %>'" "U1F63B"
+      docker exec -i <%= firstOrdererOrg.cli.address %> bash -c <% -%>
+        "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= firstOrderer.orgMspName %>' '<%= firstOrderer.address %>:<%= firstOrderer.adminPort %>' 'crypto/users/Admin@<%= firstOrderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= firstOrderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= firstOrderer.domain %>-cert.pem';"
+      
+      <% channel.ordererGroup.orderers.slice(1).forEach((orderer) => { -%>
         <% const org = orgs.find((org) => org.name === orderer.orgName); -%>
-          docker exec -i <%= org.cli.address %> bash -c <% -%>
-            "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
+        printItalics "Joining '<%= channel.name %>' on orderer '<%= orderer.address %>'" "U1F638"
+        docker exec -i <%= org.cli.address %> bash -c <% -%>
+          "source scripts/channel_fns.sh; createChannelAndJoinTls '<%= channel.name %>' '<%= orderer.orgMspName %>' '<%= orderer.address %>:<%= orderer.adminPort %>' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.crt' 'crypto/users/Admin@<%= orderer.domain %>/tls/client.key' 'crypto-orderer/tlsca.<%= orderer.domain %>-cert.pem';"
       <% }) -%>
       <% if (channel.ordererGroup.consensus !== "BFT") { -%>
         sleep 4  # Wait for Raft cluster to establish consensus
       <% } -%>
+      
       <% channel.orgs.forEach((org, orgNo) => { -%>
         <% org.peers.forEach((peer, peerNo) => { -%>
           <% if (orgNo == 0 && peerNo == 0) { -%>
-            printHeadline "Creating '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
-            <% if (!global.tls) { -%>
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
-            <% } else { -%>
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
-            <% } %>
+            printHeadline "Joining '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F63B"
           <% } else { -%>
             printItalics "Joining '<%= channel.name %>' on <%= org.name %>/<%= peer.name %>" "U1F638"
-            <% if (!global.tls) { -%>
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
-            <% } else { -%>
-              docker exec -i <%= org.cli.address %> bash -c <% -%>
-                "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
-            <% } -%>
+          <% } -%>
+          <% if (!global.tls) { -%>
+            docker exec -i <%= org.cli.address %> bash -c <% -%>
+              "source scripts/channel_fns.sh; fetchChannelAndJoin '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' '<%= channel.ordererHead.fullAddress %>';"
+          <% } else { -%>
+            docker exec -i <%= org.cli.address %> bash -c <% -%>
+              "source scripts/channel_fns.sh; fetchChannelAndJoinTls '<%= channel.name %>' '<%= org.mspName %>' '<%= peer.fullAddress %>' 'crypto/users/Admin@<%= org.domain %>/msp' 'crypto/users/Admin@<%= org.domain %>/tls' 'crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem' '<%= channel.ordererHead.fullAddress %>';"
           <% } -%>
         <% }) -%>
       <% }) -%>

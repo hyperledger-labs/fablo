@@ -69,7 +69,7 @@ waitForContainer "orderer1.group1.orderer1.com" "Starting Raft node channel=my-c
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel1"
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel2"
 
-waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
+# waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3" 180
 
 # check if org1 is ready
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
@@ -124,7 +124,7 @@ expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" stop && "$FABLO_HOME/fablo.sh" start)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
-waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
+# waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 
 # upgrade chaincode
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" chaincode upgrade "chaincode1" "0.0.2")

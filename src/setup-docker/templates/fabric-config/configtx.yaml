@@ -36,8 +36,24 @@ Organizations:
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
       <%_ if (global.capabilities.isV3) { _%>
-      OrdererEndpoints:<% ordererGroups[0].orderers.forEach(function(orderer) { %>
-          - <%= orderer.fullAddress %><% }) -%>
+      OrdererEndpoints:<% 
+        // For Fabric v3, we need to find the orderer groups that this org participates in
+        const orgOrdererGroups = [];
+        channels.forEach(function(channel) {
+          if (channel.orgs.some(function(channelOrg) { return channelOrg.name === org.name; })) {
+            if (!orgOrdererGroups.some(function(group) { return group.name === channel.ordererGroup.name; })) {
+              orgOrdererGroups.push(channel.ordererGroup);
+            }
+          }
+        });
+        // If no channels found, use the first orderer group as fallback
+        if (orgOrdererGroups.length === 0) {
+          orgOrdererGroups.push(ordererGroups[0]);
+        }
+        orgOrdererGroups.forEach(function(ordererGroup) {
+          ordererGroup.orderers.forEach(function(orderer) { %>
+          - <%= orderer.fullAddress %><% }) 
+        }); -%>
       <%_ } _%>
 
       Policies:
