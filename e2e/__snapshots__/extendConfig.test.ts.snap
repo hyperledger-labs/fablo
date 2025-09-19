@@ -4244,7 +4244,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "directory": "./chaincodes/chaincode-kv-node",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "image": undefined,
-      "initRequired": false,
+      "init": "{"Args":[]}",
       "instantiatingOrg": {
         "anchorPeers": [
           {
@@ -4693,7 +4693,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "directory": "./chaincodes/chaincode-java-simple",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "image": undefined,
-      "initRequired": false,
+      "init": "{"Args":[]}",
       "instantiatingOrg": {
         "anchorPeers": [
           {
@@ -5593,7 +5593,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "name": "my-channel3",
       "ordererGroup": {
         "configtxOrdererDefaults": "Group2Defaults",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "genesisBlockName": "Group2Genesis.block",
         "hostingOrgs": [
           "Orderer2",
@@ -5602,7 +5602,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         "ordererHead": {
           "address": "orderer0.group2.orderer2.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer2.com",
           "fullAddress": "orderer0.group2.orderer2.com:7050",
           "name": "orderer0.group2",
@@ -5614,7 +5614,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
           {
             "address": "orderer0.group2.orderer2.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer2.com",
             "fullAddress": "orderer0.group2.orderer2.com:7050",
             "name": "orderer0.group2",
@@ -5627,7 +5627,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
           {
             "address": "orderer0.group2.orderer2.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer2.com",
             "fullAddress": "orderer0.group2.orderer2.com:7050",
             "name": "orderer0.group2",
@@ -5641,7 +5641,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "ordererHead": {
         "address": "orderer0.group2.orderer2.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer2.com",
         "fullAddress": "orderer0.group2.orderer2.com:7050",
         "name": "orderer0.group2",
@@ -5848,20 +5848,20 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
   "global": {
     "capabilities": {
       "application": "V2_5",
-      "channel": "V2_0",
-      "isV2": true,
-      "isV3": false,
+      "channel": "V3_0",
+      "isV2": false,
+      "isV3": true,
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "2.5.12",
+    "fabricBaseosVersion": "3.0.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "2.5.12",
+    "fabricCcenvVersion": "3.0.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
-    "fabricToolsVersion": "2.5.12",
-    "fabricVersion": "2.5.12",
+    "fabricToolsVersion": "3.0.0",
+    "fabricVersion": "3.0.0",
     "monitoring": {
       "loglevel": "debug",
     },
@@ -5895,7 +5895,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     {
       "address": "orderer0.group2.orderer2.com",
       "adminPort": 7053,
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "domain": "orderer2.com",
       "fullAddress": "orderer0.group2.orderer2.com:7050",
       "name": "orderer0.group2",
@@ -5976,7 +5976,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     },
     {
       "configtxOrdererDefaults": "Group2Defaults",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "genesisBlockName": "Group2Genesis.block",
       "hostingOrgs": [
         "Orderer2",
@@ -5985,7 +5985,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "ordererHead": {
         "address": "orderer0.group2.orderer2.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer2.com",
         "fullAddress": "orderer0.group2.orderer2.com:7050",
         "name": "orderer0.group2",
@@ -5997,7 +5997,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         {
           "address": "orderer0.group2.orderer2.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer2.com",
           "fullAddress": "orderer0.group2.orderer2.com:7050",
           "name": "orderer0.group2",
@@ -6010,7 +6010,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         {
           "address": "orderer0.group2.orderer2.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer2.com",
           "fullAddress": "orderer0.group2.orderer2.com:7050",
           "name": "orderer0.group2",
@@ -6132,7 +6132,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "ordererGroups": [
         {
           "configtxOrdererDefaults": "Group2Defaults",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "genesisBlockName": "Group2Genesis.block",
           "hostingOrgs": [
             "Orderer2",
@@ -6142,7 +6142,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             {
               "address": "orderer0.group2.orderer2.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer2.com",
               "fullAddress": "orderer0.group2.orderer2.com:7050",
               "name": "orderer0.group2",
@@ -6155,7 +6155,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             {
               "address": "orderer0.group2.orderer2.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer2.com",
               "fullAddress": "orderer0.group2.orderer2.com:7050",
               "name": "orderer0.group2",

@@ -12,7 +12,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 ################################################################################
 Capabilities:
     Channel: &ChannelCapabilities
-        V2_0: true
+        V3_0: true
     Orderer: &OrdererCapabilities
         V2_0: true
     Application: &ApplicationCapabilities
@@ -43,7 +43,10 @@ Organizations:
       Name: Orderer1MSP
       ID: Orderer1MSP
       MSPDir: crypto-config/peerOrganizations/orderer1.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer1.com:7030
+          - orderer1.group1.orderer1.com:7031
+          - orderer2.group1.orderer1.com:7032
       Policies:
           Readers:
               Type: Signature
@@ -64,7 +67,10 @@ Organizations:
       Name: Orderer2MSP
       ID: Orderer2MSP
       MSPDir: crypto-config/peerOrganizations/orderer2.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer1.com:7030
+          - orderer1.group1.orderer1.com:7031
+          - orderer2.group1.orderer1.com:7032
       Policies:
           Readers:
               Type: Signature
@@ -85,7 +91,11 @@ Organizations:
       Name: Org1MSP
       ID: Org1MSP
       MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer1.com:7030
+          - orderer1.group1.orderer1.com:7031
+          - orderer2.group1.orderer1.com:7032
+          - orderer0.group2.orderer2.com:7050
       Policies:
           Readers:
               Type: Signature
@@ -111,7 +121,11 @@ Organizations:
       Name: Org2MSP
       ID: Org2MSP
       MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
-
+      OrdererEndpoints:
+          - orderer0.group1.orderer1.com:7030
+          - orderer1.group1.orderer1.com:7031
+          - orderer2.group1.orderer1.com:7032
+          - orderer0.group2.orderer2.com:7050
       Policies:
           Readers:
               Type: Signature
@@ -162,10 +176,7 @@ Application: &ApplicationDefaults
 ################################################################################
 Orderer: &Group1Defaults
     OrdererType: etcdraft
-    Addresses:
-        - orderer0.group1.orderer1.com:7030
-        - orderer1.group1.orderer1.com:7031
-        - orderer2.group1.orderer1.com:7032
+
     EtcdRaft:
         Consenters:
             - Host: orderer0.group1.orderer1.com
@@ -211,9 +222,14 @@ Orderer: &Group1Defaults
         <<: *OrdererCapabilities
 
 Orderer: &Group2Defaults
-    OrdererType: solo
-    Addresses:
-        - orderer0.group2.orderer2.com:7050
+    OrdererType: etcdraft
+
+    EtcdRaft:
+        Consenters:
+            - Host: orderer0.group2.orderer2.com
+              Port: 7050
+              ClientTLSCert: crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/server.crt
+              ServerTLSCert: crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/server.crt
 
     BatchTimeout: 2s
     BatchSize:
@@ -257,13 +273,6 @@ Profiles:
                 - *Orderer1
             Capabilities:
                 <<: *OrdererCapabilities
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Orderer1
-                    - *Orderer2
-                    - *Org1
-                    - *Org2
     # Profile used to create Genesis block for group group2 #
     Group2Genesis:
         <<: *ChannelDefaults
@@ -273,13 +282,6 @@ Profiles:
                 - *Orderer2
             Capabilities:
                 <<: *OrdererCapabilities
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Orderer1
-                    - *Orderer2
-                    - *Org1
-                    - *Org2
 
     # Profile used to create channeltx for my-channel1 #
     MyChannel1:
@@ -288,14 +290,7 @@ Profiles:
             <<: *Group1Defaults
             Organizations:
                 - *Orderer1
-            Capabilities:
-                <<: *ApplicationCapabilities
         Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org1
-                    - *Org2
         Application:
             <<: *ApplicationDefaults
             Organizations:
@@ -308,14 +303,7 @@ Profiles:
             <<: *Group1Defaults
             Organizations:
                 - *Orderer1
-            Capabilities:
-                <<: *ApplicationCapabilities
         Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org1
-                    - *Org2
         Application:
             <<: *ApplicationDefaults
             Organizations:
@@ -328,14 +316,7 @@ Profiles:
             <<: *Group2Defaults
             Organizations:
                 - *Orderer2
-            Capabilities:
-                <<: *ApplicationCapabilities
         Consortium: SampleConsortium
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                    - *Org1
-                    - *Org2
         Application:
             <<: *ApplicationDefaults
             Organizations:
@@ -3497,12 +3478,12 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
-FABRIC_VERSION=2.5.12
-FABRIC_TOOLS_VERSION=2.5.12
+FABRIC_VERSION=3.0.0
+FABRIC_TOOLS_VERSION=3.0.0
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=2.5.12
-FABRIC_BASEOS_VERSION=2.5.12
+FABRIC_CCENV_VERSION=3.0.0
+FABRIC_BASEOS_VERSION=3.0.0
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
@@ -3992,12 +3973,6 @@ generateArtifacts() {
   printItalics "Generating crypto material for Org2" "U1F512"
   certsGenerate "$FABLO_NETWORK_ROOT/fabric-config" "crypto-config-org2.yaml" "peerOrganizations/org2.example.com" "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
 
-  printItalics "Generating genesis block for group group1" "U1F3E0"
-  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "Group1Genesis"
-
-  printItalics "Generating genesis block for group group2" "U1F3E0"
-  genesisBlockCreate "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config" "Group2Genesis"
-
   # Create directories to avoid permission errors on linux
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages"
   mkdir -p "$FABLO_NETWORK_ROOT/fabric-config/config"
@@ -4019,19 +3994,42 @@ generateChannelsArtifacts() {
 }
 
 installChannels() {
-  printHeadline "Creating 'my-channel1' on Org1/peer0" "U1F63B"
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7061' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
 
+  printHeadline "Creating 'my-channel1' on orderer group 'group1'" "U1F63B"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Orderer1MSP' 'orderer0.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+
+  printItalics "Joining 'my-channel1' on orderer 'orderer1.group1.orderer1.com'" "U1F638"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Orderer1MSP' 'orderer1.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+  printItalics "Joining 'my-channel1' on orderer 'orderer2.group1.orderer1.com'" "U1F638"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel1' 'Orderer1MSP' 'orderer2.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+  sleep 4 # Wait for Raft cluster to establish consensus
+
+  printHeadline "Joining 'my-channel1' on Org1/peer0" "U1F63B"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7061' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
   printItalics "Joining 'my-channel1' on Org2/peer0" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org2MSP' 'peer0.org2.example.com:7081' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
-  printHeadline "Creating 'my-channel2' on Org1/peer1" "U1F63B"
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.example.com:7062' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
 
+  printHeadline "Creating 'my-channel2' on orderer group 'group1'" "U1F63B"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Orderer1MSP' 'orderer0.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+
+  printItalics "Joining 'my-channel2' on orderer 'orderer1.group1.orderer1.com'" "U1F638"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Orderer1MSP' 'orderer1.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+  printItalics "Joining 'my-channel2' on orderer 'orderer2.group1.orderer1.com'" "U1F638"
+  docker exec -i cli.orderer1.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Orderer1MSP' 'orderer2.group1.orderer1.com:7053' 'crypto/users/Admin@orderer1.com/tls/client.crt' 'crypto/users/Admin@orderer1.com/tls/client.key' 'crypto-orderer/tlsca.orderer1.com-cert.pem';"
+  sleep 4 # Wait for Raft cluster to establish consensus
+
+  printHeadline "Joining 'my-channel2' on Org1/peer1" "U1F63B"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.example.com:7062' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
   printItalics "Joining 'my-channel2' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org2MSP' 'peer1.org2.example.com:7082' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer1.com-cert.pem' 'orderer0.group1.orderer1.com:7030';"
-  printHeadline "Creating 'my-channel3' on Org1/peer0" "U1F63B"
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel3' 'Org1MSP' 'peer0.org1.example.com:7061' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
 
+  printHeadline "Creating 'my-channel3' on orderer group 'group2'" "U1F63B"
+  docker exec -i cli.orderer2.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel3' 'Orderer2MSP' 'orderer0.group2.orderer2.com:7053' 'crypto/users/Admin@orderer2.com/tls/client.crt' 'crypto/users/Admin@orderer2.com/tls/client.key' 'crypto-orderer/tlsca.orderer2.com-cert.pem';"
+
+  sleep 4 # Wait for Raft cluster to establish consensus
+
+  printHeadline "Joining 'my-channel3' on Org1/peer0" "U1F63B"
+  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org1MSP' 'peer0.org1.example.com:7061' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
   printItalics "Joining 'my-channel3' on Org1/peer1" "U1F638"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org1MSP' 'peer1.org1.example.com:7062' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
   printItalics "Joining 'my-channel3' on Org2/peer0" "U1F638"
@@ -4047,12 +4045,12 @@ installChaincodes() {
     chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
     chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
     printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
     chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
@@ -4063,12 +4061,12 @@ installChaincodes() {
     chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
     chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+    chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
     printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
     chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+    chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
     printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
+    chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'"
@@ -4095,12 +4093,12 @@ installChaincode() {
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
       printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
       chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
@@ -4113,12 +4111,12 @@ installChaincode() {
       chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
       chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
       printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
       chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
       printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
+      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' install. Chaincode directory is empty."
@@ -4128,32 +4126,8 @@ installChaincode() {
 }
 
 runDevModeChaincode() {
-  local chaincodeName=$1
-  if [ -z "$chaincodeName" ]; then
-    echo "Error: chaincode name is not provided"
-    exit 1
-  fi
-
-  if [ "$chaincodeName" = "chaincode1" ]; then
-    local version="0.0.1"
-    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printHeadline "Approving 'chaincode1' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "" ""
-
-  fi
-  if [ "$chaincodeName" = "chaincode2" ]; then
-    local version="0.0.1"
-    printHeadline "Approving 'chaincode2' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printHeadline "Approving 'chaincode2' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "" ""
-
-  fi
+  echo "Running chaincode in dev mode is supported by Fablo only for V2 channel capabilities"
+  exit 1
 }
 
 upgradeChaincode() {
@@ -4175,12 +4149,12 @@ upgradeChaincode() {
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
       printHeadline "Installing 'chaincode1' for Org2" "U1F60E"
       chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
@@ -4193,12 +4167,12 @@ upgradeChaincode() {
       chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
       chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
       printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
       chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
+      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
       printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
+      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty."
@@ -4209,29 +4183,7 @@ upgradeChaincode() {
 
 notifyOrgsAboutChannels() {
 
-  printHeadline "Creating new channel config blocks" "U1F537"
-  createNewChannelUpdateTx "my-channel1" "Org1MSP" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-  createNewChannelUpdateTx "my-channel1" "Org2MSP" "MyChannel1" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-  createNewChannelUpdateTx "my-channel2" "Org1MSP" "MyChannel2" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-  createNewChannelUpdateTx "my-channel2" "Org2MSP" "MyChannel2" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-  createNewChannelUpdateTx "my-channel3" "Org1MSP" "MyChannel3" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-  createNewChannelUpdateTx "my-channel3" "Org2MSP" "MyChannel3" "$FABLO_NETWORK_ROOT/fabric-config" "$FABLO_NETWORK_ROOT/fabric-config/config"
-
-  printHeadline "Notyfing orgs about channels" "U1F4E2"
-  notifyOrgAboutNewChannelTls "my-channel1" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel1" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel2" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel2" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel3" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group2.orderer2.com:7050" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel3" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group2.orderer2.com:7050" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-
-  printHeadline "Deleting new channel config blocks" "U1F52A"
-  deleteNewChannelUpdateTx "my-channel1" "Org1MSP" "cli.org1.example.com"
-  deleteNewChannelUpdateTx "my-channel1" "Org2MSP" "cli.org2.example.com"
-  deleteNewChannelUpdateTx "my-channel2" "Org1MSP" "cli.org1.example.com"
-  deleteNewChannelUpdateTx "my-channel2" "Org2MSP" "cli.org2.example.com"
-  deleteNewChannelUpdateTx "my-channel3" "Org1MSP" "cli.org1.example.com"
-  deleteNewChannelUpdateTx "my-channel3" "Org2MSP" "cli.org2.example.com"
+  echo ""
 
 }
 
@@ -4321,7 +4273,7 @@ services:
 
   cli.orderer1.com:
     container_name: cli.orderer1.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4375,9 +4327,16 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      # Genesis file configuration (for solo and raft)
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
       # Metrics configuration
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group1.orderer1.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
@@ -4411,9 +4370,16 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      # Genesis file configuration (for solo and raft)
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
       # Metrics configuration
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer1.group1.orderer1.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
@@ -4447,9 +4413,16 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      # Genesis file configuration (for solo and raft)
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group1Genesis.block
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
       # Metrics configuration
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer2.group1.orderer1.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
@@ -4487,7 +4460,7 @@ services:
 
   cli.orderer2.com:
     container_name: cli.orderer2.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4541,9 +4514,16 @@ services:
       - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      # Genesis file configuration (for solo and raft)
-      - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/config/Group2Genesis.block
+      # V3 specific settings
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # Admin endpoint configuration
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
       # Metrics configuration
       - ORDERER_OPERATIONS_LISTENADDRESS=orderer0.group2.orderer2.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
@@ -4581,7 +4561,7 @@ services:
 
   cli.org1.example.com:
     container_name: cli.org1.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4764,7 +4744,7 @@ services:
 
   cli.org2.example.com:
     container_name: cli.org2.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4974,7 +4954,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -5074,7 +5054,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -5093,7 +5073,7 @@ createChannelTx() {
   local CONFIG_PATH=$2
   local CONFIG_PROFILE=$3
   local OUTPUT_PATH=$4
-  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME".tx
+  local CHANNEL_TX_PATH="$OUTPUT_PATH/$CHANNEL_NAME.pb"
 
   echo "Creating channelTx for $CHANNEL_NAME..."
   inputLog "CONFIG_PATH: $CONFIG_PATH"
@@ -5107,28 +5087,34 @@ createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
-  docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
+  docker run --rm \\
+    --name $CONTAINER_NAME \\
+    -v "$CONFIG_PATH":/fabric-config \\
+    -v "$OUTPUT_PATH":/output \\
+    ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" \\
+    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile \${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID \${CHANNEL_NAME} && chown -R $(id -u):$(id -g) /output"
 
-  docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
+  # shellcheck disable=SC2181
+  if [ $? -ne 0 ]; then
+    echo "Failed to create channel configuration transaction."
+    exit 1
+  fi
 
-  docker exec -i $CONTAINER_NAME configtxgen --configPath ./fabric-config -profile "\${CONFIG_PROFILE}" -outputCreateChannelTx ./config/channel.tx -channelID "\${CHANNEL_NAME}" || removeContainer $CONTAINER_NAME
-  docker cp $CONTAINER_NAME:/config/channel.tx "$CHANNEL_TX_PATH" || removeContainer $CONTAINER_NAME
+  echo "Channel configuration created at $CHANNEL_TX_PATH"
 
-  removeContainer $CONTAINER_NAME
 }
 
 createNewChannelUpdateTx() {
   local CONTAINER_NAME=createAnchorPeerUpdateTx
+
   local CHANNEL_NAME=$1
   local MSP_NAME=$2
   local CONFIG_PROFILE=$3
   local CONFIG_PATH=$4
   local OUTPUT_PATH=$5
 
-  ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.tx"
-  OUTPUT_ANCHOR_PEERS_UPDATE_PATH="./config/\${MSP_NAME}anchors.tx"
-  CONTAINER_COPY_PATH="\${CONTAINER_NAME}:/config/\${MSP_NAME}anchors.tx"
+  ANCHOR_PEER_UPDATE_PATH="$OUTPUT_PATH/\${MSP_NAME}anchors-$CHANNEL_NAME.pb"
+  OUTPUT_ANCHOR_PEERS_UPDATE_PATH="./config/\${MSP_NAME}anchors.pb"
 
   echo "Creating new channel config block. Channel: $CHANNEL_NAME for organization $MSP_NAME..."
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
@@ -5144,7 +5130,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -6096,9 +6082,11 @@ set -eu
 
 createChannelAndJoin() {
   local CHANNEL_NAME=$1
+
   local CORE_PEER_LOCALMSPID=$2
   local CORE_PEER_ADDRESS=$3
   local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
+
   local ORDERER_URL=$5
 
   local DIR_NAME=step-createChannelAndJoin-$CHANNEL_NAME-$CORE_PEER_ADDRESS
@@ -6111,45 +6099,43 @@ createChannelAndJoin() {
 
   mkdir "$DIR_NAME" && cd "$DIR_NAME"
 
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
-  peer channel create -o "\${ORDERER_URL}" -c "\${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx
-  peer channel join -b "\${CHANNEL_NAME}".block
+  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb .
 
-  rm -rf "$DIR_NAME"
+  osnadmin channel join --channelID "\${CHANNEL_NAME}" --config-block ./"$CHANNEL_NAME".pb -o "\${ORDERER_URL}"
+  cd .. && rm -rf "$DIR_NAME"
 }
 
 createChannelAndJoinTls() {
   local CHANNEL_NAME=$1
-  local CORE_PEER_LOCALMSPID=$2
-  local CORE_PEER_ADDRESS=$3
-  local CORE_PEER_MSPCONFIGPATH=$(realpath "$4")
-  local CORE_PEER_TLS_MSPCONFIGPATH=$(realpath "$5")
+  local ORDERER_MSP_NAME=$2
+  local ORDERER_ADMIN_ADDRESS=$3
+  local ADMIN_TLS_SIGN_CERT=$(realpath "$4")
+  local ADMIN_TLS_PRIVATE_KEY=$(realpath "$5")
   local TLS_CA_CERT_PATH=$(realpath "$6")
-  local ORDERER_URL=$7
 
-  local CORE_PEER_TLS_CERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.crt
-  local CORE_PEER_TLS_KEY_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/client.key
-  local CORE_PEER_TLS_ROOTCERT_FILE=$CORE_PEER_TLS_MSPCONFIGPATH/ca.crt
-
-  local DIR_NAME=step-createChannelAndJoinTls-$CHANNEL_NAME-$CORE_PEER_ADDRESS
+  local DIR_NAME=step-createChannelAndJoinTls-$CHANNEL_NAME-$ORDERER_MSP_NAME
 
   echo "Creating channel with name (TLS): \${CHANNEL_NAME}"
-  echo "   Orderer: $ORDERER_URL"
-  echo "   CORE_PEER_LOCALMSPID: $CORE_PEER_LOCALMSPID"
-  echo "   CORE_PEER_ADDRESS: $CORE_PEER_ADDRESS"
-  echo "   CORE_PEER_MSPCONFIGPATH: $CORE_PEER_MSPCONFIGPATH"
-  echo "   TLS_CA_CERT_PATH is: $TLS_CA_CERT_PATH"
-  echo "   CORE_PEER_TLS_CERT_FILE: $CORE_PEER_TLS_CERT_FILE"
-  echo "   CORE_PEER_TLS_KEY_FILE: $CORE_PEER_TLS_KEY_FILE"
-  echo "   CORE_PEER_TLS_ROOTCERT_FILE: $CORE_PEER_TLS_ROOTCERT_FILE"
+  echo "   ORDERER_MSP_NAME:      $ORDERER_MSP_NAME"
+  echo "   ORDERER_ADMIN_ADDRESS: $ORDERER_ADMIN_ADDRESS"
+  echo "   ADMIN_TLS_SIGN_CERT:   $ADMIN_TLS_SIGN_CERT"
+  echo "   ADMIN_TLS_PRIVATE_KEY: $ADMIN_TLS_PRIVATE_KEY"
+  echo "   TLS_CA_CERT_PATH:      $TLS_CA_CERT_PATH"
 
-  mkdir "$DIR_NAME" && cd "$DIR_NAME"
+  if [ ! -d "$DIR_NAME" ]; then
+    mkdir -p "$DIR_NAME"
+    cp /var/hyperledger/cli/config/"$CHANNEL_NAME".pb "$DIR_NAME"
+  fi
 
-  cp /var/hyperledger/cli/config/"$CHANNEL_NAME".tx .
+  osnadmin channel join \\
+    --channelID "\${CHANNEL_NAME}" \\
+    --config-block "$DIR_NAME/$CHANNEL_NAME.pb" \\
+    -o "\${ORDERER_ADMIN_ADDRESS}" \\
+    --client-cert "\${ADMIN_TLS_SIGN_CERT}" \\
+    --client-key "\${ADMIN_TLS_PRIVATE_KEY}" \\
+    --ca-file "\${TLS_CA_CERT_PATH}"
 
-  peer channel create -o "\${ORDERER_URL}" -c "\${CHANNEL_NAME}" -f ./"$CHANNEL_NAME".tx --tls --cafile "$TLS_CA_CERT_PATH"
-  peer channel join -b "\${CHANNEL_NAME}".block --tls --cafile "$TLS_CA_CERT_PATH"
-
+  cd ..
   rm -rf "$DIR_NAME"
 }
 
@@ -6173,7 +6159,7 @@ fetchChannelAndJoin() {
   peer channel fetch newest -c "\${CHANNEL_NAME}" --orderer "\${ORDERER_URL}"
   peer channel join -b "\${CHANNEL_NAME}"_newest.block
 
-  rm -rf "$DIR_NAME"
+  cd .. && rm -rf "$DIR_NAME"
 }
 
 fetchChannelAndJoinTls() {
@@ -6206,7 +6192,7 @@ fetchChannelAndJoinTls() {
   peer channel fetch newest -c "\${CHANNEL_NAME}" --orderer "\${ORDERER_URL}" --tls --cafile "$TLS_CA_CERT_PATH"
   peer channel join -b "\${CHANNEL_NAME}"_newest.block --tls --cafile "$TLS_CA_CERT_PATH"
 
-  rm -rf "$DIR_NAME"
+  cd .. && rm -rf "$DIR_NAME"
 }
 "
 `;

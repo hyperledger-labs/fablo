@@ -2,11 +2,18 @@
 
 exports[`extend config should extend custom config 1`] = `
 "Validation errors count: 0
-Validation warnings count: 0
+Validation warnings count: 2
+===========================================================
+=================== Validation summary ====================
+Warnings found:
+  Orderer:
+   - Orderer consesus type is set to 'raft', but number of instances is 1. Network won't be fault tolerant! Consider higher value.
+  General:
+   - You are using fabric version '3.0.0' which may not be supported by the Hyperledger Explorer
 ===========================================================
 {
   "global": {
-    "fabricVersion": "2.5.12",
+    "fabricVersion": "3.0.0",
     "tls": true,
     "tools": {
       "explorer": {
@@ -17,10 +24,10 @@ Validation warnings count: 0
     "monitoring": {
       "loglevel": "debug"
     },
-    "fabricToolsVersion": "2.5.12",
+    "fabricToolsVersion": "3.0.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "2.5.12",
-    "fabricBaseosVersion": "2.5.12",
+    "fabricCcenvVersion": "3.0.0",
+    "fabricBaseosVersion": "3.0.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
@@ -30,11 +37,11 @@ Validation warnings count: 0
       "chaincodesBaseDir": "<absolute path>"
     },
     "capabilities": {
-      "channel": "V2_0",
+      "channel": "V3_0",
       "orderer": "V2_0",
       "application": "V2_5",
-      "isV2": true,
-      "isV3": false
+      "isV2": false,
+      "isV3": true
     }
   },
   "ordererGroups": [
@@ -109,7 +116,7 @@ Validation warnings count: 0
     },
     {
       "name": "group2",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "configtxOrdererDefaults": "Group2Defaults",
       "profileName": "Group2Genesis",
       "genesisBlockName": "Group2Genesis.block",
@@ -123,7 +130,7 @@ Validation warnings count: 0
           "orgName": "Orderer2",
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -136,7 +143,7 @@ Validation warnings count: 0
           "orgName": "Orderer2",
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -148,7 +155,7 @@ Validation warnings count: 0
         "orgName": "Orderer2",
         "orgMspName": "Orderer2MSP",
         "domain": "orderer2.com",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "adminPort": 7053,
         "port": 7050,
         "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -173,7 +180,7 @@ Validation warnings count: 0
       "orgName": "Orderer2",
       "orgMspName": "Orderer2MSP",
       "domain": "orderer2.com",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "adminPort": 7053,
       "port": 7050,
       "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -289,7 +296,7 @@ Validation warnings count: 0
       "ordererGroups": [
         {
           "name": "group2",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "configtxOrdererDefaults": "Group2Defaults",
           "profileName": "Group2Genesis",
           "genesisBlockName": "Group2Genesis.block",
@@ -303,7 +310,7 @@ Validation warnings count: 0
               "orgName": "Orderer2",
               "orgMspName": "Orderer2MSP",
               "domain": "orderer2.com",
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "adminPort": 7053,
               "port": 7050,
               "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -316,7 +323,7 @@ Validation warnings count: 0
               "orgName": "Orderer2",
               "orgMspName": "Orderer2MSP",
               "domain": "orderer2.com",
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "adminPort": 7053,
               "port": 7050,
               "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -1407,7 +1414,7 @@ Validation warnings count: 0
       ],
       "ordererGroup": {
         "name": "group2",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "configtxOrdererDefaults": "Group2Defaults",
         "profileName": "Group2Genesis",
         "genesisBlockName": "Group2Genesis.block",
@@ -1421,7 +1428,7 @@ Validation warnings count: 0
             "orgName": "Orderer2",
             "orgMspName": "Orderer2MSP",
             "domain": "orderer2.com",
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "adminPort": 7053,
             "port": 7050,
             "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -1434,7 +1441,7 @@ Validation warnings count: 0
             "orgName": "Orderer2",
             "orgMspName": "Orderer2MSP",
             "domain": "orderer2.com",
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "adminPort": 7053,
             "port": 7050,
             "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -1446,7 +1453,7 @@ Validation warnings count: 0
           "orgName": "Orderer2",
           "orgMspName": "Orderer2MSP",
           "domain": "orderer2.com",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "adminPort": 7053,
           "port": 7050,
           "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -1458,7 +1465,7 @@ Validation warnings count: 0
         "orgName": "Orderer2",
         "orgMspName": "Orderer2MSP",
         "domain": "orderer2.com",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "adminPort": 7053,
         "port": 7050,
         "fullAddress": "orderer0.group2.orderer2.com:7050"
@@ -1920,7 +1927,7 @@ Validation warnings count: 0
           }
         }
       },
-      "initRequired": false,
+      "init": "{\\"Args\\":[]}",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "instantiatingOrg": {
         "name": "Org1",
@@ -2367,7 +2374,7 @@ Validation warnings count: 0
           }
         }
       },
-      "initRequired": false,
+      "init": "{\\"Args\\":[]}",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
       "instantiatingOrg": {
         "name": "Org1",
