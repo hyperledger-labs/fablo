@@ -1729,10 +1729,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             "fabloRest": {
               "address": "fablo-rest.org1.example.com",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "",
-              "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+              "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+              "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
               "fabricCaName": "ca.org1.example.com",
-              "fabricCaUrl": "http://ca.org1.example.com:7054",
+              "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
                 "error": "console",
                 "info": "console",
@@ -1746,7 +1746,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         "name": "my-channel1",
         "ordererGroup": {
           "configtxOrdererDefaults": "Group1Defaults",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "genesisBlockName": "Group1Genesis.block",
           "hostingOrgs": [
             "Orderer",
@@ -1755,7 +1755,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
           "ordererHead": {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -1767,7 +1767,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -1780,7 +1780,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -1794,7 +1794,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         "ordererHead": {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -1871,10 +1871,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
               "fabloRest": {
                 "address": "fablo-rest.org1.example.com",
                 "discoverySslTargetNameOverrides": "",
-                "discoveryTlsCaCertFiles": "",
-                "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+                "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+                "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
                 "fabricCaName": "ca.org1.example.com",
-                "fabricCaUrl": "http://ca.org1.example.com:7054",
+                "fabricCaUrl": "https://ca.org1.example.com:7054",
                 "logging": {
                   "error": "console",
                   "info": "console",
@@ -1960,10 +1960,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
           "fabloRest": {
             "address": "fablo-rest.org1.example.com",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "",
-            "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+            "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+            "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
             "fabricCaName": "ca.org1.example.com",
-            "fabricCaUrl": "http://ca.org1.example.com:7054",
+            "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
               "error": "console",
               "info": "console",
@@ -2052,10 +2052,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
           "fabloRest": {
             "address": "fablo-rest.org1.example.com",
             "discoverySslTargetNameOverrides": "",
-            "discoveryTlsCaCertFiles": "",
-            "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+            "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+            "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
             "fabricCaName": "ca.org1.example.com",
-            "fabricCaUrl": "http://ca.org1.example.com:7054",
+            "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
               "error": "console",
               "info": "console",
@@ -2069,7 +2069,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "name": "my-channel1",
       "ordererGroup": {
         "configtxOrdererDefaults": "Group1Defaults",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "genesisBlockName": "Group1Genesis.block",
         "hostingOrgs": [
           "Orderer",
@@ -2078,7 +2078,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         "ordererHead": {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -2090,7 +2090,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
           {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -2103,7 +2103,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
           {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -2117,7 +2117,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "ordererHead": {
         "address": "orderer0.group1.orderer.example.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer.example.com",
         "fullAddress": "orderer0.group1.orderer.example.com:7030",
         "name": "orderer0.group1",
@@ -2194,10 +2194,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             "fabloRest": {
               "address": "fablo-rest.org1.example.com",
               "discoverySslTargetNameOverrides": "",
-              "discoveryTlsCaCertFiles": "",
-              "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+              "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+              "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
               "fabricCaName": "ca.org1.example.com",
-              "fabricCaUrl": "http://ca.org1.example.com:7054",
+              "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
                 "error": "console",
                 "info": "console",
@@ -2237,7 +2237,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "fabloConfig": "<absolute path>",
     },
     "peerDevMode": true,
-    "tls": false,
+    "tls": true,
     "tools": {},
   },
   "hooks": {
@@ -2247,7 +2247,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
     {
       "address": "orderer0.group1.orderer.example.com",
       "adminPort": 7053,
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "domain": "orderer.example.com",
       "fullAddress": "orderer0.group1.orderer.example.com:7030",
       "name": "orderer0.group1",
@@ -2259,7 +2259,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
   "ordererGroups": [
     {
       "configtxOrdererDefaults": "Group1Defaults",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "genesisBlockName": "Group1Genesis.block",
       "hostingOrgs": [
         "Orderer",
@@ -2268,7 +2268,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "ordererHead": {
         "address": "orderer0.group1.orderer.example.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer.example.com",
         "fullAddress": "orderer0.group1.orderer.example.com:7030",
         "name": "orderer0.group1",
@@ -2280,7 +2280,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -2293,7 +2293,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -2330,7 +2330,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "ordererGroups": [
         {
           "configtxOrdererDefaults": "Group1Defaults",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "genesisBlockName": "Group1Genesis.block",
           "hostingOrgs": [
             "Orderer",
@@ -2340,7 +2340,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -2353,7 +2353,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -2437,10 +2437,10 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
         "fabloRest": {
           "address": "fablo-rest.org1.example.com",
           "discoverySslTargetNameOverrides": "",
-          "discoveryTlsCaCertFiles": "",
-          "discoveryUrls": "grpc://peer0.org1.example.com:7041",
+          "discoveryTlsCaCertFiles": "/crypto/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt",
+          "discoveryUrls": "grpcs://peer0.org1.example.com:7041",
           "fabricCaName": "ca.org1.example.com",
-          "fabricCaUrl": "http://ca.org1.example.com:7054",
+          "fabricCaUrl": "https://ca.org1.example.com:7054",
           "logging": {
             "error": "console",
             "info": "console",

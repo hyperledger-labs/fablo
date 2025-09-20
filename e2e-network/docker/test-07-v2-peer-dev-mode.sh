@@ -25,6 +25,8 @@ dumpLogs() {
 networkDown() {
   sleep 2
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
+  # remove .env
+  rm "$NODECHAINCODE/.env"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
@@ -53,12 +55,24 @@ networkUp
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.example.com" "Beginning to serve requests"
 waitForContainer "db.ca.org1.example.com" "database system is ready to accept connections"
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 echo "All nodes are ready"
+
+# create .env in chaincode directory
+cat >"$NODECHAINCODE/.env" <<EOF
+CHAINCODE_ID=chaincode1:0.0.1
+CORE_CHAINCODE_LOGGING_LEVEL=debug
+CORE_PEER_TLS_ENABLED=true
+CORE_PEER_TLS_ROOTCERT_FILE="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/peer.crt"
+CORE_TLS_CLIENT_CERT_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/client.crt"
+CORE_TLS_CLIENT_KEY_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/client.key"
+CORE_PEER_LOCALMSPID=Org1MSP
+EOF
+
 echo "Starting chaincode in development mode..."
 # make sure nodemon is installed and Install if not
 if ! command -v nodemon &> /dev/null; then
@@ -68,11 +82,13 @@ else
   echo "nodemon is already installed"
 fi
 # start the chaincode in development mode
-(cd "$NODECHAINCODE" && npm i && npm run start:watch) &
-
+(cd "$NODECHAINCODE" && npm i && npm run start:dev:tls) &
+CHAINCODE_PID=$!
 sleep 5
-
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
   '{\"success\":\"OK\"}'
+
+# kill background chaincode process
+kill $CHAINCODE_PID
