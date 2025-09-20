@@ -115,6 +115,7 @@ installChaincodes() {
     <% chaincodes.forEach((chaincode) => { -%>
       if [ -n "$(ls "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>")" ]; then
         <% if (global.peerDevMode) { -%>
+          local version="<%= chaincode.version %>"
           <%- include('commands-generated/chaincode-dev-v2.sh', { chaincode }); -%>
         <% } else { -%>
           local version="<%= chaincode.version %>"
