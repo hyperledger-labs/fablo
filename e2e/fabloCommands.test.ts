@@ -88,7 +88,7 @@ describe("validate", () => {
 
   it("should validate custom config", () => {
     // Given
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json`;
+    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json`;
 
     // When
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
@@ -111,8 +111,8 @@ describe("validate", () => {
 
   it("should print validation errors", () => {
     // Given
-    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json");
-    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf3-1org-1chaincode-raft-ccaas.json", "");
+    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json");
+    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json", "");
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const sourceConfig = require(sourceConfigPath) as FabloConfigJson;
 
@@ -183,13 +183,13 @@ describe("extend config", () => {
     expect(commandResult.output).toContain("commands-tests/fablo-config.json does not exist\n");
   });
 
-  it("should throw an error for duplicate chaincode names across different channels", () => {
+  it("should allow chaincodes with the same name in different channels", () => {
     // Given
     commands.fabloExec("init");
     const configPath = `${commands.workdir}/fablo-config.json`;
-    // const config = JSON.parse(fs.readFileSync(configPath, "utf8")) as FabloConfigJson;
     const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
 
+    // Add a second channel
     config.channels.push({
       name: "my-channel2",
       orgs: [{ name: "Org1", peers: ["peer0"] }],
@@ -220,8 +220,9 @@ describe("extend config", () => {
     const commandResult = commands.fabloExec("validate", true);
 
     // Then
-    expect(commandResult.output).toContain("Chaincode name 'chaincode1' is not unique");
-    expect(commandResult.output).toContain("Validation errors count: 1");
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation errors count: 0");
+    expect(commandResult.output).toContain("Validation warnings count: 0");
   });
 });
 

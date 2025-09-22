@@ -82,8 +82,9 @@ chaincodePackage() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
+  local CHANNEL_NAME=$6
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -106,11 +107,12 @@ chaincodePackageCCaaS() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_IMAGE=$5
   local CONTAINER_PORT=$6
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
+  local CHANNEL_NAME=$9
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -119,9 +121,12 @@ chaincodePackageCCaaS() {
   inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
   inputLog "CONTAINER_PORT: $CONTAINER_PORT"
   inputLog "TLS_ENABLED: $TLS_ENABLED"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
 
-  # Use the same container name logic as startCCaaSContainer
-  local ACTUAL_CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
+  
+  local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
+  ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
 
   mkdir -p "$PACKAGE_DIR"
@@ -170,12 +175,15 @@ chaincodeInstall() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local CA_CERT=$5
+  local CHANNEL_NAME=$5
+  local CA_CERT=${6:-}
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
   inputLog "CA_CERT: $CA_CERT"
 
   local CA_CERT_PARAMS=()
@@ -196,8 +204,8 @@ startCCaaSContainer() {
   local EXTERNAL_PORT="$5"
   local CLI_NAME="$6"
   local CA_CERT="$7"
-
-  local CONTAINER_NAME="ccaas-${PEER_ADDRESS%%:*}-${CHAINCODE_NAME}"
+  local CONTAINER_NAME="$8"
+  CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -243,6 +251,22 @@ startCCaaSContainer() {
   # Use generated CCAAS certificates
   local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
 
+  if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    local STATE
+    STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo "unknown")
+    local DESIRED_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}"
+    local CURRENT_ID
+    CURRENT_ID=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$CONTAINER_NAME" 2>/dev/null | grep '^CORE_CHAINCODE_ID_NAME=' | sed 's/CORE_CHAINCODE_ID_NAME=//')
+    if [ "$STATE" = "running" ] && [ "$CURRENT_ID" = "$DESIRED_ID" ]; then
+      echo "CCaaS container '$CONTAINER_NAME' already running with desired ID '$DESIRED_ID'. Skipping start."
+      return 0
+    else
+      echo "CCaaS container '$CONTAINER_NAME' exists (state='$STATE', id='$CURRENT_ID'), expected '$DESIRED_ID'. Recreating..."
+      docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    fi
+  fi
+
+
   docker run -d \
     --name "$CONTAINER_NAME" \
     -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \
@@ -270,7 +294,7 @@ chaincodeApprove() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -356,6 +380,7 @@ chaincodeCommit() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8

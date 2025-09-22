@@ -46,6 +46,17 @@
           ]
         }
       ]
+    },
+    {
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
     }
   ],
   "chaincodes": [
@@ -54,6 +65,13 @@
       "version": "0.0.1",
       "lang": "ccaas",
       "channel": "my-channel1",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    },
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel2",
       "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
     }
   ],
