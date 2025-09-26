@@ -7,21 +7,21 @@
    - chaincode
 */-%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
-  chaincodePackage <% -%>
-    "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
-    "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
-    "<%= chaincode.name %>" <% -%>
-    "$version" <% -%>
-    "<%= chaincode.lang %>" <% -%>
-  <% org.peers.forEach((peer, i) => { -%>
-    printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
-    chaincodeInstall <% -%>
-      "<%= org.cli.address %>" <% -%>
-      "<%= peer.fullAddress %>" <% -%>
-      "<%= chaincode.name %>" <% -%>
-      "$version" <% -%>
-      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
-  <% }) -%>
+  # chaincodePackage <% -%>
+  #   "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
+  #   "<%= chaincode.instantiatingOrg.headPeer.fullAddress %>" <% -%>
+  #   "<%= chaincode.name %>" <% -%>
+  #   "$version" <% -%>
+  #   "<%= chaincode.lang %>" <% -%>
+  # <% org.peers.forEach((peer, i) => { -%>
+  #   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
+  #   chaincodeInstall <% -%>
+  #     "<%= org.cli.address %>" <% -%>
+  #     "<%= peer.fullAddress %>" <% -%>
+  #     "<%= chaincode.name %>" <% -%>
+  #     "$version" <% -%>
+  #     "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+  # <% }) -%>
   printHeadline "Approving '<%= chaincode.name %>' for <%= org.name %> (dev mode)" "U1F60E"
   chaincodeApprove <% -%>
     "<%= org.cli.address %>" <% -%>
@@ -54,7 +54,7 @@
   printHeadline "Generating TLS certs to be used by '<%= chaincode.name %>'" "U1F680"
   certsGenerateCCaaS <% -%>
     "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" <% -%>
-    "devmode-<%= chaincode.name %>" <% -%>
+    "devmode-<%= chaincode.instantiatingOrg.headPeer.address %>-<%= chaincode.name %>" <% -%>
     "<%= org.domain %>" <% -%>
     "<%= chaincode.name %>" <% -%>
     "<%= chaincode.instantiatingOrg.headPeer.address %>"

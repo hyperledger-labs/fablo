@@ -66,10 +66,11 @@ echo "All nodes are ready"
 cat >"$NODECHAINCODE/.env" <<EOF
 CHAINCODE_ID=chaincode1:0.0.1
 CORE_CHAINCODE_LOGGING_LEVEL=debug
+CORE_CHAINCODE_LOGGING_SHIM=debug
 CORE_PEER_TLS_ENABLED=true
-CORE_PEER_TLS_ROOTCERT_FILE="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/peer.crt"
-CORE_TLS_CLIENT_CERT_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/client.crt"
-CORE_TLS_CLIENT_KEY_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-chaincode1/tls/client.key"
+CORE_PEER_TLS_ROOTCERT_FILE="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-peer0.org1.example.com-chaincode1/tls/peer.crt"
+CORE_TLS_CLIENT_CERT_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-peer0.org1.example.com-chaincode1/tls/client.crt"
+CORE_TLS_CLIENT_KEY_PATH="$TEST_TMP/fablo-target/fabric-config/crypto-config/ccaas/devmode-peer0.org1.example.com-chaincode1/tls/client.key"
 CORE_PEER_LOCALMSPID=Org1MSP
 EOF
 

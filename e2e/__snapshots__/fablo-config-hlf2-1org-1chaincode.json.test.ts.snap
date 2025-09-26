@@ -1794,11 +1794,11 @@ runDevModeChaincode() {
 
   if [ "$chaincodeName" = "chaincode1" ]; then
     local version="0.0.1"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" ""
-    printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" ""
-    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
+    # chaincodePackage   #   "cli.org1.example.com"   #   "peer0.org1.example.com:7041"   #   "chaincode1"   #   "$version"   #   "node"   #   #   printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    #   chaincodeInstall   #     "cli.org1.example.com"   #     "peer0.org1.example.com:7041"   #     "chaincode1"   #     "$version"   #     ""
+    #   #   printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    #   chaincodeInstall   #     "cli.org1.example.com"   #     "peer1.org1.example.com:7042"   #     "chaincode1"   #     "$version"   #     ""
+    #   printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "" "" ""
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "" "peer0.org1.example.com:7041" "" ""

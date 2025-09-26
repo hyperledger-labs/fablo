@@ -111,15 +111,9 @@ Application: &ApplicationDefaults
 #   SECTION: Orderer
 ################################################################################
 Orderer: &Group1Defaults
-    OrdererType: etcdraft
+    OrdererType: solo
     Addresses:
         - orderer0.group1.orderer.example.com:7030
-    EtcdRaft:
-        Consenters:
-            - Host: orderer0.group1.orderer.example.com
-              Port: 7030
-              ClientTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
-              ServerTLSCert: crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/server.crt
 
     BatchTimeout: 2s
     BatchSize:
@@ -1744,14 +1738,14 @@ installChannels() {
 installChaincodes() {
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
     local version="0.0.1"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
+    # chaincodePackage   #   "cli.org1.example.com"   #   "peer0.org1.example.com:7041"   #   "chaincode1"   #   "$version"   #   "node"   #   #   printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    #   chaincodeInstall   #     "cli.org1.example.com"   #     "peer0.org1.example.com:7041"   #     "chaincode1"   #     "$version"   #     "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    #   printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "" ""
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
     printHeadline "Generating TLS certs to be used by 'chaincode1'" "U1F680"
-    certsGenerateCCaaS "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" "devmode-chaincode1" "org1.example.com" "chaincode1" "peer0.org1.example.com"
+    certsGenerateCCaaS "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" "devmode-peer0.org1.example.com-chaincode1" "org1.example.com" "chaincode1" "peer0.org1.example.com"
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
@@ -1798,14 +1792,14 @@ runDevModeChaincode() {
 
   if [ "$chaincodeName" = "chaincode1" ]; then
     local version="0.0.1"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-    printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
+    # chaincodePackage   #   "cli.org1.example.com"   #   "peer0.org1.example.com:7041"   #   "chaincode1"   #   "$version"   #   "node"   #   #   printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
+    #   chaincodeInstall   #     "cli.org1.example.com"   #     "peer0.org1.example.com:7041"   #     "chaincode1"   #     "$version"   #     "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    #   printHeadline "Approving 'chaincode1' for Org1 (dev mode)" "U1F60E"
     chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "" ""
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "0.0.1" "orderer0.group1.orderer.example.com:7030" "" "false" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
     printHeadline "Generating TLS certs to be used by 'chaincode1'" "U1F680"
-    certsGenerateCCaaS "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" "devmode-chaincode1" "org1.example.com" "chaincode1" "peer0.org1.example.com"
+    certsGenerateCCaaS "$FABLO_NETWORK_ROOT/fabric-config/crypto-config/" "devmode-peer0.org1.example.com-chaincode1" "org1.example.com" "chaincode1" "peer0.org1.example.com"
 
   fi
 }
@@ -2125,7 +2119,7 @@ services:
       # ccaas builder configuration
       - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
-    command: peer node start
+    command: peer node start --peer-chaincodedev=true
     ports:
       - 8041:9440
       - 7041:7041
