@@ -4038,6 +4038,11 @@ installChannels() {
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer0.org2.example.com:7081' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
   printItalics "Joining 'my-channel3' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer1.org2.example.com:7082' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
+
+  # Restart Explorer
+  printItalics "Restarting Explorer" "U1F504"
+  echo "Restarting global Explorer: explorer.example.com"
+  docker restart explorer.example.com || true
 }
 
 installChaincodes() {
