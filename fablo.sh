@@ -28,6 +28,73 @@ getDefaultFabloConfig() {
   fi
 }
 
+snapshotFabloConfigToTarget() {
+  local fablo_config="$1"
+  local fablo_target="$2"
+
+  if [ -z "$fablo_config" ] || [ ! -f "$fablo_config" ]; then
+    return
+  fi
+
+  mkdir -p "$fablo_target"
+
+  local ext="${fablo_config##*.}"
+  local preserved_name="fablo-config.$ext"
+  cp -f "$fablo_config" "$fablo_target/$preserved_name"
+
+}
+
+getStoredConfigSnapshotPath() {
+  if [ -f "$FABLO_TARGET/fablo-config.json" ]; then
+    echo "$FABLO_TARGET/fablo-config.json"
+  elif [ -f "$FABLO_TARGET/fablo-config.yaml" ]; then
+    echo "$FABLO_TARGET/fablo-config.yaml"
+  else
+    echo ""
+  fi
+}
+
+verifyConfigMatchesOrFail() {
+  local current_config=${1:-$(getDefaultFabloConfig)}
+
+  if [ -z "$current_config" ] || [ ! -f "$current_config" ]; then
+    return
+  fi
+
+  local stored_config
+  stored_config="$(getStoredConfigSnapshotPath)"
+
+  if [ -z "$stored_config" ]; then
+    echo "No stored config snapshot found in '$FABLO_TARGET'. Storing current config snapshot for future comparisons."
+
+    local ext="${current_config##*.}"
+    if [ "$ext" = "json" ] || [ "$ext" = "yaml" ] ; then
+      snapshotFabloConfigToTarget "$current_config" "$FABLO_TARGET"
+    else
+      echo "Error: Unsupported config file extension '.$ext'. Supported extensions are: .json, .yaml"
+      exit 1
+    fi
+    return
+  fi
+
+  if cmp -s "$stored_config" "$current_config"; then
+    return
+  fi
+
+  echo "Error: Fablo configuration has changed since the network at '$FABLO_TARGET' was generated."
+  echo "Stored config:  $stored_config"
+  echo "Current config: $current_config"
+  echo ""
+  echo "--- Diff (stored vs current) ---"
+  # Show unified diff
+  diff -u "$stored_config" "$current_config" || true
+  echo "--------------------------------"
+  echo ""
+  echo "Please run 'fablo prune' to remove the existing network before applying configuration changes,"
+  echo "or run 'fablo recreate [path/to/fablo-config]' to prune and start with the new configuration."
+  exit 1
+}
+
 getSnapshotPath() {
   path="${1:-'snapshot'}"
   if echo "$path" | grep -q "tar.gz$"; then
@@ -204,6 +271,7 @@ generateNetworkConfig() {
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
     ("$fablo_target/hooks/post-generate.sh")
   fi
+  snapshotFabloConfigToTarget "$fablo_config" "$fablo_target"
 }
 
 networkPrune() {
@@ -220,9 +288,12 @@ networkPrune() {
 }
 
 networkUp() {
+  local fablo_config=${1:-$(getDefaultFabloConfig)}
   if [ ! -d "$FABLO_TARGET" ] || [ -z "$(ls -A "$FABLO_TARGET")" ]; then
     echo "Network target directory is empty"
-    generateNetworkConfig "$1"
+    generateNetworkConfig "$fablo_config"
+  else
+    verifyConfigMatchesOrFail "$fablo_config"
   fi
   executeFabloCommand up
 }

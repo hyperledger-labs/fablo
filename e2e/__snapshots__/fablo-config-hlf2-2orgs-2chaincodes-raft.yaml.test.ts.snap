@@ -1,5 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.yaml from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"---
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json
+global:
+  fabricVersion: 2.5.12
+  tls: true
+  tools:
+    explorer: true
+  monitoring:
+    loglevel: debug
+orgs:
+  - organization:
+      name: Orderer1
+      domain: orderer1.com
+    orderers:
+      - groupName: group1
+        type: raft
+        instances: 3
+  - organization:
+      name: Orderer2
+      domain: orderer2.com
+    orderers:
+      - groupName: group2
+        type: solo
+        instances: 1
+  - organization:
+      name: Org1
+      domain: org1.example.com
+    # this is the default configuration for peers that may be used in other orgs
+    peer: &defaultPeerConfig
+      prefix: peer
+      instances: 2
+      anchorPeerInstances: 2
+      db: LevelDb
+    tools:
+      fabloRest: true
+  - organization:
+      name: Org2
+      domain: org2.example.com
+    peer: *defaultPeerConfig
+channels:
+  - name: my-channel1
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+      - name: Org2
+        peers:
+          - peer0
+  - name: my-channel2
+    orgs:
+      - name: Org1
+        peers:
+          - peer1
+      - name: Org2
+        peers:
+          - peer1
+  - name: my-channel3
+    ordererGroup: group2
+    orgs:
+      - name: Org1
+        peers:
+          - peer0
+      - name: Org2
+        peers:
+          - peer1
+chaincodes:
+  - name: chaincode1
+    version: 0.0.1
+    lang: node
+    channel: my-channel1
+    endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-kv-node"
+  - name: chaincode2
+    version: 0.0.1
+    lang: java
+    channel: my-channel2
+    endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
+    directory: "./chaincodes/chaincode-java-simple"
+hooks:
+  # changes MaxMessageCount to 1
+  postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
+"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "/config
 /crypto-config
@@ -6431,6 +6516,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper files from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer1.json",
