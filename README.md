@@ -551,11 +551,13 @@ The `privateData` parameter is optional. You don't need to define the private da
 
 ### hooks
 
-Hooks in Fablo are Bash commands to be executed after a specific event.
-Right now Fablo supports only one kind of hook: `postGenerate`.
-It will be executed each time after the network config is generated -- after `./fablo generate` command (executed separately or automatically by `./fablo up`).
+Hooks in Fablo are Bash commands to be executed after specific events.
+Supported hooks:
 
-The following hook example will change `MaxMessageCount` to 1 in generated Hyperledger Fabric config:
+- `postGenerate` — executed after the network config is generated (after `./fablo generate`, executed separately or automatically by `./fablo up`).
+- `postStart` — executed after the network is started (after `./fablo up` or `./fablo start`).
+
+Example `postGenerate` hook that changes `MaxMessageCount` to 1 in generated Hyperledger Fabric config:
 
 ```json
   "hooks": {
@@ -563,7 +565,15 @@ The following hook example will change `MaxMessageCount` to 1 in generated Hyper
   }
 ```
 
-Genrated Hooks are saved in `fablo-target/hooks`.
+Example `postStart` hook that waits for peers to be ready or performs any additional bootstrap actions:
+
+```json
+  "hooks": {
+    "postStart": "echo 'Network started' && ./fablo-target/fabric-docker.sh channel list org1 peer0"
+  }
+```
+
+Generated hooks are saved in `fablo-target/hooks`.
 
 
 ### Sample YAML config file

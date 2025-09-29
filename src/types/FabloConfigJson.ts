@@ -67,6 +67,7 @@ export interface ChaincodeJson {
 
 export interface HooksJson {
   postGenerate?: string;
+  postStart?: string;
 }
 
 export interface FabloConfigJson {

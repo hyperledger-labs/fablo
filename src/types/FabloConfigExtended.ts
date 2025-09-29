@@ -180,6 +180,7 @@ export interface OrdererGroup {
 
 export interface HooksConfig {
   postGenerate: string;
+  postStart: string;
 }
 
 export interface FabloConfigExtended {

@@ -553,6 +553,12 @@
           "title": "Post generate hook",
           "description": "Operation to run run after a network config is generated",
           "type": "string"
+        },
+        "postStart": {
+          "$id": "#/properties/hooks/postStart",
+          "title": "Post start hook",
+          "description": "Operation to run after the network is started (after 'up' or 'start')",
+          "type": "string"
         }
       }
     }
