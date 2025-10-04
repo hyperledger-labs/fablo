@@ -18,7 +18,8 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= chaincode.image %>" <% -%>
       "<%= instance.port %>" <% -%>
       "<%= instance.containerName %>" <% -%>
-      "<%= global.tls %>"
+      "<%= global.tls %>" <% -%>
+      "<%= chaincode.channel.name %>"
   <% }) -%>
 <% } else { -%>
   chaincodeBuild <% -%>
@@ -32,6 +33,7 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "<%= chaincode.name %>" <% -%>
     "$version" <% -%>
     "<%= chaincode.lang %>" <% -%>
+    "<%= chaincode.channel.name %>"
 <% } -%>
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
@@ -41,16 +43,18 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
+      "<%= chaincode.channel.name %>" <% -%>
       "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
     <% if (chaincode.lang === "ccaas") { -%>
       startCCaaSContainer <% -%>
         "<%= peer.fullAddress %>" <% -%>
         "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.name %>_$version" <% -%>
+        "<%= chaincode.channel.name %>_<%= chaincode.name %>_$version" <% -%>
         "<%= chaincode.image %>" <% -%>
         "<%= chaincode.peerChaincodeInstances[i].port %>" <% -%>
         "<%= org.cli.address %>" <% -%>
-        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
+        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+        "<%= chaincode.peerChaincodeInstances[i].containerName %>"
     <% } -%>
   <% }) -%>
   chaincodeApprove <% -%>
