@@ -107,8 +107,6 @@ installChannels() {
     <% }) -%>
   <% } -%>
   
-  # Restart Explorer 
-  printItalics "Restarting Explorer" "U1F504"
   <% if (global.tools.explorer) { -%>
     echo "Restarting global Explorer: <%= global.tools.explorer.address %>"
     docker restart <%= global.tools.explorer.address %> || true
