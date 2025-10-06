@@ -2471,7 +2471,6 @@ installChannels() {
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'orderer0.group1.orderer.example.com:7030';"
   printItalics "Joining 'my-channel1' on Org2/peer0" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoin 'my-channel1' 'Org2MSP' 'peer0.org2.example.com:7061' 'crypto/users/Admin@org2.example.com/msp' 'orderer0.group1.orderer.example.com:7030';"
-
 }
 
 installChaincodes() {
@@ -4466,6 +4465,14 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
+echo "Executing post-start hook"
+"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "graph TD
 
@@ -4531,6 +4538,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;
