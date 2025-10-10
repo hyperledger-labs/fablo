@@ -2467,7 +2467,7 @@ Validation warnings count: 0
   ],
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
-    "postStart": ""
+    "postStart": "echo 'Network started' && docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}' > ./fablo-target/container-list-$(date +%Y%m%d_%H%M%S).log 2>&1 && echo 'Container list saved into fablo-target directory'"
   }
 }
 

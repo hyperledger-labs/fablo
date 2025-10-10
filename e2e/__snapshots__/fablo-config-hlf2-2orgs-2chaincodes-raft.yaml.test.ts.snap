@@ -6372,6 +6372,8 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 
 # The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
 echo "Executing post-start hook"
+
+echo 'Network started' && docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' >./fablo-target/container-list-$(date +%Y%m%d_%H%M%S).log 2>&1 && echo 'Container list saved into fablo-target directory'
 "
 `;
 
