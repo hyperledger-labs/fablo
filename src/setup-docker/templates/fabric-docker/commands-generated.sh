@@ -106,6 +106,17 @@ installChannels() {
       <% }) -%>
     <% }) -%>
   <% } -%>
+  
+  <% if (global.tools.explorer) { -%>
+    echo "Restarting global Explorer: <%= global.tools.explorer.address %>"
+    docker restart <%= global.tools.explorer.address %> || true
+  <% } -%>
+  <% orgs.forEach((org) => { -%>
+    <% if (org.tools.explorer && !global.tools.explorer) { -%>
+      echo "Restarting org Explorer: <%= org.tools.explorer.address %>"
+      docker restart <%= org.tools.explorer.address %> || true
+    <% } -%>
+  <% }) -%>
 }
 
 installChaincodes() {
