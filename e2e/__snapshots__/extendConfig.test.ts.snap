@@ -5884,12 +5884,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "fabloConfig": "<absolute path>",
     },
     "tls": true,
-    "tools": {
-      "explorer": {
-        "address": "explorer.example.com",
-        "port": 7010,
-      },
-    },
+    "tools": {},
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",

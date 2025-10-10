@@ -322,57 +322,50 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
   "certificateAuthorities": {
     "ca.orderer1.example.com": {
       "url": "https://localhost:7020",
-<<<<<<< HEAD
       "caName": "ca.orderer1.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.example.com/ca/ca.orderer1.example.com-cert.pem"
-      },
-=======
-      "caName": "ca.orderer.example.com",
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
       "httpOptions": {
         "verify": false
       },
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.example.com/ca/ca.orderer1.example.com-cert.pem"
       }
     }
   },
   "orderers": {
-    "orderer0.group1.orderer.example.com": {
+    "orderer0.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer0.group1.orderer1.example.com"
       }
     },
-    "orderer1.group1.orderer.example.com": {
+    "orderer1.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer1.group1.orderer1.example.com"
       }
     },
-    "orderer2.group1.orderer.example.com": {
+    "orderer2.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer2.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer2.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer2.group1.orderer1.example.com"
       }
     },
-    "orderer3.group1.orderer.example.com": {
-      "url": "grpcs://localhost:7033",
+    "orderer0.group2.orderer2.example.com": {
+      "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer3.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer3.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer0.group2.orderer2.example.com"
       }
     }
   }
@@ -412,13 +405,41 @@ peers:
 certificateAuthorities:
   ca.orderer1.example.com:
     url: https://localhost:7020
-<<<<<<< HEAD
     caName: ca.orderer1.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.example.com/ca/ca.orderer1.example.com-cert.pem
-    httpOptions:
-      verify: false
+orderers:
+  orderer0.group1.orderer1.example.com:
+    url: grpcs://localhost:7030
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group1.orderer1.example.com
+  orderer1.group1.orderer1.example.com:
+    url: grpcs://localhost:7031
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer1.group1.orderer1.example.com
+  orderer2.group1.orderer1.example.com:
+    url: grpcs://localhost:7032
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer2.group1.orderer1.example.com
+  orderer0.group2.orderer2.example.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: >-
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt
+    grpcOptions:
+      ssl-target-name-override: orderer0.group2.orderer2.example.com
 "
 `;
 
@@ -466,11 +487,49 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
     "ca.orderer2.example.com": {
       "url": "https://localhost:7040",
       "caName": "ca.orderer2.example.com",
-      "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.example.com/ca/ca.orderer2.example.com-cert.pem"
-      },
       "httpOptions": {
         "verify": false
+      },
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.example.com/ca/ca.orderer2.example.com-cert.pem"
+      }
+    }
+  },
+  "orderers": {
+    "orderer0.group1.orderer1.example.com": {
+      "url": "grpcs://localhost:7030",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group1.orderer1.example.com"
+      }
+    },
+    "orderer1.group1.orderer1.example.com": {
+      "url": "grpcs://localhost:7031",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer1.group1.orderer1.example.com"
+      }
+    },
+    "orderer2.group1.orderer1.example.com": {
+      "url": "grpcs://localhost:7032",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer2.group1.orderer1.example.com"
+      }
+    },
+    "orderer0.group2.orderer2.example.com": {
+      "url": "grpcs://localhost:7050",
+      "tlsCACerts": {
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt"
+      },
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer0.group2.orderer2.example.com"
       }
     }
   }
@@ -511,48 +570,40 @@ certificateAuthorities:
   ca.orderer2.example.com:
     url: https://localhost:7040
     caName: ca.orderer2.example.com
+    httpOptions:
+      verify: false
     tlsCACerts:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.example.com/ca/ca.orderer2.example.com-cert.pem
-    httpOptions:
-      verify: false
-=======
-    caName: ca.orderer.example.com
-    httpOptions:
-      verify: false
-    tlsCACerts:
-      path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/ca/ca.orderer.example.com-cert.pem
 orderers:
-  orderer0.group1.orderer.example.com:
+  orderer0.group1.orderer1.example.com:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer0.group1.orderer.example.com
-  orderer1.group1.orderer.example.com:
+      ssl-target-name-override: orderer0.group1.orderer1.example.com
+  orderer1.group1.orderer1.example.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer1.group1.orderer.example.com
-  orderer2.group1.orderer.example.com:
+      ssl-target-name-override: orderer1.group1.orderer1.example.com
+  orderer2.group1.orderer1.example.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer2.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer2.group1.orderer.example.com
-  orderer3.group1.orderer.example.com:
-    url: grpcs://localhost:7033
+      ssl-target-name-override: orderer2.group1.orderer1.example.com
+  orderer0.group2.orderer2.example.com:
+    url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer3.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer3.group1.orderer.example.com
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
+      ssl-target-name-override: orderer0.group2.orderer2.example.com
 "
 `;
 
@@ -609,45 +660,48 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
     }
   },
   "orderers": {
-    "orderer0.group1.orderer.example.com": {
+    "orderer0.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer0.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer0.group1.orderer1.example.com"
       }
     },
-    "orderer1.group1.orderer.example.com": {
+    "orderer1.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer1.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer1.group1.orderer1.example.com"
       }
     },
-    "orderer2.group1.orderer.example.com": {
+    "orderer2.group1.orderer1.example.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer2.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer2.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer2.group1.orderer1.example.com"
       }
     },
-    "orderer3.group1.orderer.example.com": {
-      "url": "grpcs://localhost:7033",
+    "orderer0.group2.orderer2.example.com": {
+      "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer3.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt"
       },
       "grpcOptions": {
-        "ssl-target-name-override": "orderer3.group1.orderer.example.com"
+        "ssl-target-name-override": "orderer0.group2.orderer2.example.com"
       }
     }
   },
   "channels": {
     "my-channel1": {
+      "peers": {}
+    },
+    "my-channel2": {
       "peers": {}
     }
   }
@@ -694,36 +748,38 @@ certificateAuthorities:
       path: >-
         <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
 orderers:
-  orderer0.group1.orderer.example.com:
+  orderer0.group1.orderer1.example.com:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer0.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer0.group1.orderer.example.com
-  orderer1.group1.orderer.example.com:
+      ssl-target-name-override: orderer0.group1.orderer1.example.com
+  orderer1.group1.orderer1.example.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer1.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer1.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer1.group1.orderer.example.com
-  orderer2.group1.orderer.example.com:
+      ssl-target-name-override: orderer1.group1.orderer1.example.com
+  orderer2.group1.orderer1.example.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer2.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.example.com/orderers/orderer2.group1.orderer1.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer2.group1.orderer.example.com
-  orderer3.group1.orderer.example.com:
-    url: grpcs://localhost:7033
+      ssl-target-name-override: orderer2.group1.orderer1.example.com
+  orderer0.group2.orderer2.example.com:
+    url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer3.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.example.com/orderers/orderer0.group2.orderer2.example.com/tls/ca.crt
     grpcOptions:
-      ssl-target-name-override: orderer3.group1.orderer.example.com
+      ssl-target-name-override: orderer0.group2.orderer2.example.com
 channels:
   my-channel1:
+    peers: {}
+  my-channel2:
     peers: {}
 "
 `;
@@ -2467,59 +2523,6 @@ chaincodeInvoke() {
 
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
-
-# Function to perform chaincode query for single peer
-# Accepts 4-5 parameters:
-#   1. single peer domain
-#   2. channel name
-#   3. chaincode name
-#   4. chaincode command
-#   5. transient data (optional)
-chaincodeQuery() {
-  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
-    echo "Expected 4 or 5 parameters for chaincode query, but got: $*"
-    echo "Usage: fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]"
-    exit 1
-  fi
-
-  peer_domain="$1"
-  channel_name="$2"
-  chaincode_name="$3"
-  command="$4"
-  transient="$5"
-
-  cli=""
-  peer_address=""
-
-  peer_cert=""
-
-  if [ "$peer_domain" = "peer0.org1.example.com" ]; then
-    cli="cli.org1.example.com"
-    peer_address="peer0.org1.example.com:7041"
-
-    peer_cert="crypto/peers/peer0.org1.example.com/tls/ca.crt"
-
-  fi
-  if [ "$peer_domain" = "peer1.org1.example.com" ]; then
-    cli="cli.org1.example.com"
-    peer_address="peer1.org1.example.com:7042"
-
-    peer_cert="crypto/peers/peer1.org1.example.com/tls/ca.crt"
-
-  fi
-
-  if [ -z "$peer_address" ]; then
-    echo "Unknown peer: $peer_domain"
-    exit 1
-  fi
-
-  if [ "$channel_name" = "my-channel1" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
-  fi
-
-  peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
-
-}
 "
 `;
 
@@ -2693,15 +2696,11 @@ installChannels() {
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer0.org1.example.com:7061' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.example.com-cert.pem' 'orderer0.group1.orderer1.example.com:7030';"
 
   printItalics "Joining 'my-channel1' on Org1/peer1" "U1F638"
-<<<<<<< HEAD
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7062' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer1.example.com-cert.pem' 'orderer0.group1.orderer1.example.com:7030';"
   docker exec -i cli.orderer2.example.com bash -c "source scripts/channel_fns.sh; createChannelAndJoinTls 'my-channel2' 'Orderer2MSP' 'orderer0.group2.orderer2.example.com:7053' 'crypto/users/Admin@orderer2.example.com/tls/client.crt' 'crypto/users/Admin@orderer2.example.com/tls/client.key' 'crypto-orderer/tlsca.orderer2.example.com-cert.pem';"
   sleep 4 # Wait for Raft cluster to establish consensus
   printHeadline "Creating 'my-channel2' on Org1/peer1" "U1F63B"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel2' 'Org1MSP' 'peer1.org1.example.com:7062' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer2.example.com-cert.pem' 'orderer0.group2.orderer2.example.com:7050';"
-=======
-  docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
->>>>>>> 76a4c8c66a0582473fa51ac5f7036719c5bd1a86
 
 }
 
@@ -2710,22 +2709,13 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
     chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-<<<<<<< HEAD
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" ""
-    printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
-=======
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "my-channel1"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
     printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "" "node" ""
     printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
@@ -2750,22 +2740,13 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-<<<<<<< HEAD
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" ""
-      printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
-=======
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "my-channel1"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
@@ -2796,22 +2777,13 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
       chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-<<<<<<< HEAD
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" ""
-      printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "undefined" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
-=======
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "node" "my-channel1"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "node" ""
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "" "node" ""
       printItalics "Committing chaincode 'chaincode1' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer1.example.com-cert.pem" "peer0.org1.example.com:7061" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."

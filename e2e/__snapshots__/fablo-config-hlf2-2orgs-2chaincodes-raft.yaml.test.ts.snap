@@ -1249,164 +1249,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
 "
 `;
 
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org1.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"{
-  "network-configs": {
-    "network-org1": {
-      "name": "Network of Org1",
-      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org1.json"
-    }
-  },
-  "license": "Apache-2.0"
-}
-"
-`;
-
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org2.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"{
-  "network-configs": {
-    "network-org2": {
-      "name": "Network of Org2",
-      "profile": "/opt/explorer/app/platform/fabric/connection-profile/connection-profile-org2.json"
-    }
-  },
-  "license": "Apache-2.0"
-}
-"
-`;
-
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"{
-  "name": "fablo-test-network-org1",
-  "description": "Connection profile for Hyperledger Explorer in Fablo network",
-  "version": "1.0.0",
-  "client": {
-    "organization": "Org1",
-    "tlsEnable": true,
-    "enableAuthentication": true,
-    "adminCredential": {
-      "id": "admin",
-      "password": "adminpw"
-    },
-    "connection": {
-      "timeout": {
-        "peer": {
-          "endorser": "300"
-        },
-        "orderer": "300"
-      }
-    }
-  },
-  "organizations": {
-    "Org1": {
-      "mspid": "Org1MSP",
-      "adminPrivateKey": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv-key.pem"
-      },
-      "peers": [
-        "peer0.org1.example.com",
-        "peer1.org1.example.com"
-      ],
-      "signedCert": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
-      }
-    }
-  },
-  "peers": {
-    "peer0.org1.example.com": {
-      "url": "grpcs://peer0.org1.example.com:7061",
-      "tlsCACerts": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
-      }
-    },
-    "peer1.org1.example.com": {
-      "url": "grpcs://peer1.org1.example.com:7062",
-      "tlsCACerts": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem"
-      }
-    }
-  },
-  "channels": {
-    "my-channel1": {
-      "peers": {}
-    },
-    "my-channel2": {
-      "peers": {}
-    },
-    "my-channel3": {
-      "peers": {}
-    }
-  }
-}
-"
-`;
-
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org2.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"{
-  "name": "fablo-test-network-org2",
-  "description": "Connection profile for Hyperledger Explorer in Fablo network",
-  "version": "1.0.0",
-  "client": {
-    "organization": "Org2",
-    "tlsEnable": true,
-    "enableAuthentication": true,
-    "adminCredential": {
-      "id": "admin",
-      "password": "adminpw"
-    },
-    "connection": {
-      "timeout": {
-        "peer": {
-          "endorser": "300"
-        },
-        "orderer": "300"
-      }
-    }
-  },
-  "organizations": {
-    "Org2": {
-      "mspid": "Org2MSP",
-      "adminPrivateKey": {
-        "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/priv-key.pem"
-      },
-      "peers": [
-        "peer0.org2.example.com",
-        "peer1.org2.example.com"
-      ],
-      "signedCert": {
-        "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
-      }
-    }
-  },
-  "peers": {
-    "peer0.org2.example.com": {
-      "url": "grpcs://peer0.org2.example.com:7081",
-      "tlsCACerts": {
-        "path": "/tmp/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
-      }
-    },
-    "peer1.org2.example.com": {
-      "url": "grpcs://peer1.org2.example.com:7082",
-      "tlsCACerts": {
-        "path": "/tmp/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem"
-      }
-    }
-  },
-  "channels": {
-    "my-channel1": {
-      "peers": {}
-    },
-    "my-channel2": {
-      "peers": {}
-    },
-    "my-channel3": {
-      "peers": {}
-    }
-  }
-}
-"
-`;
-
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer1.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "#############################################################################
 #   This is a configuration file for the fabric-ca-server command.
@@ -3622,81 +3464,6 @@ chaincodeInvoke() {
 
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
-
-# Function to perform chaincode query for single peer
-# Accepts 4-5 parameters:
-#   1. single peer domain
-#   2. channel name
-#   3. chaincode name
-#   4. chaincode command
-#   5. transient data (optional)
-chaincodeQuery() {
-  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
-    echo "Expected 4 or 5 parameters for chaincode query, but got: $*"
-    echo "Usage: fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]"
-    exit 1
-  fi
-
-  peer_domain="$1"
-  channel_name="$2"
-  chaincode_name="$3"
-  command="$4"
-  transient="$5"
-
-  cli=""
-  peer_address=""
-
-  peer_cert=""
-
-  if [ "$peer_domain" = "peer0.org1.example.com" ]; then
-    cli="cli.org1.example.com"
-    peer_address="peer0.org1.example.com:7061"
-
-    peer_cert="crypto/peers/peer0.org1.example.com/tls/ca.crt"
-
-  fi
-  if [ "$peer_domain" = "peer1.org1.example.com" ]; then
-    cli="cli.org1.example.com"
-    peer_address="peer1.org1.example.com:7062"
-
-    peer_cert="crypto/peers/peer1.org1.example.com/tls/ca.crt"
-
-  fi
-  if [ "$peer_domain" = "peer0.org2.example.com" ]; then
-    cli="cli.org2.example.com"
-    peer_address="peer0.org2.example.com:7081"
-
-    peer_cert="crypto/peers/peer0.org2.example.com/tls/ca.crt"
-
-  fi
-  if [ "$peer_domain" = "peer1.org2.example.com" ]; then
-    cli="cli.org2.example.com"
-    peer_address="peer1.org2.example.com:7082"
-
-    peer_cert="crypto/peers/peer1.org2.example.com/tls/ca.crt"
-
-  fi
-
-  if [ -z "$peer_address" ]; then
-    echo "Unknown peer: $peer_domain"
-    exit 1
-  fi
-
-  if [ "$channel_name" = "my-channel1" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
-  fi
-
-  if [ "$channel_name" = "my-channel2" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
-  fi
-
-  if [ "$channel_name" = "my-channel3" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer1.com-cert.pem"
-  fi
-
-  peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
-
-}
 "
 `;
 
@@ -4048,8 +3815,6 @@ installChannels() {
   printItalics "Joining 'my-channel3' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer1.org2.example.com:7082' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer2.com-cert.pem' 'orderer0.group2.orderer2.com:7050';"
 
-  echo "Restarting global Explorer: explorer.example.com"
-  docker restart explorer.example.com || true
 }
 
 installChaincodes() {
@@ -4074,28 +3839,17 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
     chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
-<<<<<<< HEAD
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
+    printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
     printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-    chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+    chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
     printItalics "Committing chaincode 'chaincode2' on channel 'my-channel3' as 'Org1'" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
-=======
-    chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" "my-channel2"
-    printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-    printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-    chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-    printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
   else
     echo "Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'"
@@ -4139,28 +3893,17 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
       printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
       chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
-<<<<<<< HEAD
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
+      printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
       printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
       printItalics "Committing chaincode 'chaincode2' on channel 'my-channel3' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
-=======
-      chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" "my-channel2"
-      printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-      printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-      printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' install. Chaincode directory is empty."
@@ -4189,19 +3932,11 @@ runDevModeChaincode() {
   if [ "$chaincodeName" = "chaincode2" ]; then
     local version="0.0.1"
     printHeadline "Approving 'chaincode2' for Org1 (dev mode)" "U1F60E"
-<<<<<<< HEAD
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "0.0.1" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "0.0.1" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
     printHeadline "Approving 'chaincode2' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "0.0.1" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" ""
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "0.0.1" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
     printItalics "Committing chaincode 'chaincode2' on channel 'my-channel3' as 'Org1' (dev mode)" "U1F618"
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "0.0.1" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "" ""
-=======
-    chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printHeadline "Approving 'chaincode2' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "" "" ""
-    printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "0.0.1" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
 
   fi
 }
@@ -4242,28 +3977,17 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
       printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
       chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
-<<<<<<< HEAD
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
+      printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
       printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "crypto-orderer/tlsca.orderer2.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" ""
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7081" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7081" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "" "java" ""
       printItalics "Committing chaincode 'chaincode2' on channel 'my-channel3' as 'Org1'" "U1F618"
       chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
-=======
-      chaincodePackage "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "java" "my-channel2"
-      printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7062" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-      printHeadline "Installing 'chaincode2' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer1.org2.example.com:7082" "chaincode2" "$version" "my-channel2" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-      chaincodeApprove "cli.org2.example.com" "peer1.org2.example.com:7082" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "" "java" ""
-      printItalics "Committing chaincode 'chaincode2' on channel 'my-channel2' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer1.org1.example.com:7062" "my-channel2" "chaincode2" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer1.org1.example.com:7062,peer1.org2.example.com:7082" "crypto-peer/peer1.org1.example.com/tls/ca.crt,crypto-peer/peer1.org2.example.com/tls/ca.crt" ""
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty."
@@ -4328,11 +4052,27 @@ networkDown() {
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
+  for container in $(docker ps -a | grep "peer0.org1.example.com-chaincode2" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org1.example.com-chaincode2*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
   for container in $(docker ps -a | grep "peer1.org1.example.com-chaincode2" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
   for image in $(docker images "peer1.org1.example.com-chaincode2*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer0.org2.example.com-chaincode2" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org2.example.com-chaincode2*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
@@ -4348,59 +4088,6 @@ networkDown() {
   printHeadline "Destroying network" "U1F916"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
 
-<<<<<<< HEAD
-  printf "Removing chaincode containers & images... \\U1F5D1 \\n"
-  for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org1.example.com-chaincode1*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org2.example.com-chaincode1" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org2.example.com-chaincode1*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org1.example.com-chaincode2" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org1.example.com-chaincode2*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer1.org1.example.com-chaincode2" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer1.org1.example.com-chaincode2*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org2.example.com-chaincode2" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org2.example.com-chaincode2*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer1.org2.example.com-chaincode2" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer1.org2.example.com-chaincode2*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-
-=======
->>>>>>> f55628b4d8d4eab339832c3d22bd1085f7c59329
   printf "Removing generated configs... \\U1F5D1 \\n"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/crypto-config"
@@ -5019,49 +4706,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/fabric/peer/tls
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/users:/etc/hyperledger/fabric/peer/msp/users
       - ../fabric-config/config:/etc/hyperledger/fabric/config
-    networks:
-      - basic
-
-  db.explorer.example.com:
-    image: ghcr.io/hyperledger-labs/explorer-db:\${HYPERLEDGER_EXPLORER_VERSION}
-    container_name: db.explorer.example.com
-    environment:
-      - DATABASE_DATABASE=fabricexplorer
-      - DATABASE_USERNAME=hppoc
-      - DATABASE_PASSWORD=password
-    healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U hppoc -d fabricexplorer"
-      interval: 5s
-      timeout: 10s
-      retries: 7
-    volumes:
-      - /var/lib/postgresql/data
-    networks:
-      - basic
-
-  explorer.example.com:
-    image: ghcr.io/hyperledger-labs/explorer:\${HYPERLEDGER_EXPLORER_VERSION}
-    restart: on-failure:8
-    container_name: explorer.example.com
-    environment:
-      - DATABASE_HOST=db.explorer.example.com
-      - DATABASE_DATABASE=fabricexplorer
-      - DATABASE_USERNAME=hppoc
-      - DATABASE_PASSWD=password
-      - LOG_LEVEL_APP=debug
-      - LOG_LEVEL_DB=debug
-      - LOG_LEVEL_CONSOLE=info
-      - LOG_CONSOLE_STDOUT=true
-      - DISCOVERY_AS_LOCALHOST=false
-    volumes:
-      - ../fabric-config/explorer/config-global.json:/opt/explorer/app/platform/fabric/config.json
-      - ../fabric-config/explorer:/opt/explorer/app/platform/fabric/connection-profile
-      - ../fabric-config/crypto-config:/tmp/crypto
-    ports:
-      - "7010:8080"
-    depends_on:
-      db.explorer.example.com:
-        condition: service_healthy
     networks:
       - basic
 "
@@ -6558,10 +6202,6 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/crypto-config-org2.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org1.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/config-org2.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org1.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/explorer/connection-profile-org2.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer1.com/fabric-ca-server-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer2.com/fabric-ca-server-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml",
