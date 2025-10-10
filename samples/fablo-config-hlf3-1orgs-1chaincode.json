@@ -10,27 +10,14 @@
     "orgs": [
       {
         "organization": {
-          "name": "Orderer1",
-          "domain": "orderer1.example.com"
+          "name": "Orderer",
+          "domain": "orderer.example.com"
         },
         "orderers": [
           {
             "groupName": "group1",
             "type": "raft",
-            "instances": 3
-          }
-        ]
-      },
-      {
-        "organization": {
-          "name": "Orderer2",
-          "domain": "orderer2.example.com"
-        },
-        "orderers": [
-          {
-            "groupName": "group2",
-            "type": "raft",
-            "instances": 1
+            "instances": 4
           }
         ]
       },
@@ -48,24 +35,11 @@
     "channels": [
       {
         "name": "my-channel1",
-        "ordererGroup": "group1",
         "orgs": [
           {
             "name": "Org1",
             "peers": [
               "peer0",
-              "peer1"
-            ]
-          }
-        ]
-      },
-      {
-        "name": "my-channel2",
-        "ordererGroup": "group2",
-        "orgs": [
-          {
-            "name": "Org1",
-            "peers": [
               "peer1"
             ]
           }

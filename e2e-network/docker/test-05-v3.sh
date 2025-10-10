@@ -55,15 +55,15 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-waitForContainer "orderer0.group1.orderer1.example.com" "Starting raft node as part of a new channel channel=my-channel1"
-waitForContainer "orderer0.group2.orderer2.example.com" "Starting raft node as part of a new channel channel=my-channel2"
+waitForContainer "orderer0.group1.orderer.example.com" "Starting raft node as part of a new channel channel=my-channel1"
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
-waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel2 with 1 organizations"
+waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer0.org1.example.com" "Anchor peer.*with same endpoint, skipping connecting to myself"
-waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
-waitForContainer "peer1.org1.example.com" "Anchor peer.*with same endpoint, skipping connecting to myself"
+waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7042"
+waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
+waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
 
 # Gateway client test
 GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
