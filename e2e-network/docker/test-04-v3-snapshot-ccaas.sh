@@ -8,7 +8,7 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json"
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
@@ -55,8 +55,6 @@ waitForContainer "db.ca.org1.example.com" "database system is ready to accept co
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
-waitForContainer "db.explorer.example.com" "database system is ready to accept connections" "200"
-waitForContainer "explorer.example.com" "Successfully created channel event hub for \[my-channel1\]" "200"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 fablo_rest_org1="localhost:8801"
@@ -112,7 +110,9 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
     "$FABLO_HOME/fablo.sh" prune &&
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
     "$FABLO_HOME/fablo.sh" start
+    "$FABLO_HOME/fablo.sh" chaincodes install
 )
+
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
 sleep 5
@@ -128,3 +128,5 @@ expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
+
+echo "✅ Test passed!"

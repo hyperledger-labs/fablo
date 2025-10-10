@@ -16,7 +16,9 @@
     "<%- chaincode.endorsement || '' %>" <% -%>
     "false" <% -%>
     "" <% -%>
-    "<%= chaincode.privateDataConfigFile || '' %>"
+    "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
+    "" <% -%>
+    ""
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>' (dev mode)" "U1F618"
 chaincodeCommit <% -%>

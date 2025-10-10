@@ -9,29 +9,27 @@ dockerPullIfMissing() {
   fi
 }
 
-node_version_check(){
-    
-    local fabric_shim_version="$1"
-    local nodejs_version
+node_version_check() {
+  local fabric_shim_version="$1"
+  local nodejs_version
 
-    if [[ "$fabric_shim_version" == *"1.4."* ]]; then
-        nodejs_version=8.9
+  if [[ "$fabric_shim_version" == *"1.4."* ]]; then
+    nodejs_version=8.9
 
-    elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
-        nodejs_version=12.13
+  elif [[ "$fabric_shim_version" == *"2.2."* || "$fabric_shim_version" == *"2.3."* ]]; then
+    nodejs_version=12.13
 
-    elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
-        nodejs_version=16.16
+  elif [[ "$fabric_shim_version" == *"2.4."* ]]; then
+    nodejs_version=16.16
 
-    elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
-        nodejs_version=18.12
+  elif [[ "$fabric_shim_version" == *"2.5."* ]]; then
+    nodejs_version=18.12
 
-    else
-        nodejs_version=18.12
-    fi
+  else
+    nodejs_version=18.12
+  fi
 
-    echo $nodejs_version
-
+  echo $nodejs_version
 }
 
 chaincodeBuild() {
@@ -73,10 +71,9 @@ chaincodeBuild() {
     inputLog "CHAINCODE_LANG: $CHAINCODE_LANG"
     inputLog "CHAINCODE_DIR_PATH: $CHAINCODE_DIR_PATH"
     inputLog "NODE_VERSION: $NODE_VERSION (recommended: $RECOMMENDED_NODE_VERSION)"
-    
+
     # Default to using npm for installation and build
     (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
-    
   fi
 }
 
@@ -85,8 +82,9 @@ chaincodePackage() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
+  local CHANNEL_NAME=$6
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -104,17 +102,88 @@ chaincodePackage() {
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
+chaincodePackageCCaaS() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_IMAGE=$5
+  local CONTAINER_PORT=$6
+  local CONTAINER_NAME=$7
+  local TLS_ENABLED=$8
+  local CHANNEL_NAME=$9
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+
+  echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
+  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+
+  
+  local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
+  ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
+
+  mkdir -p "$PACKAGE_DIR"
+  echo "{\"type\":\"ccaas\",\"label\":\"$CHAINCODE_LABEL\"}" >"$PACKAGE_DIR/metadata.json"
+
+  mkdir -p "$PACKAGE_DIR/code"
+
+  if [ "$TLS_ENABLED" = true ]; then
+    # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local ROOT_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/ca.crt")
+    local SERVER_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.crt")
+    local SERVER_KEY=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.key")
+
+    echo "{ 
+      \"address\": \"${ACTUAL_CONTAINER_NAME}:7052\",
+      \"domain\": \"${ACTUAL_CONTAINER_NAME}\",
+      \"dial_timeout\": \"10s\",
+      \"tls_required\": $TLS_ENABLED,
+      \"client_auth_required\": true,
+      \"client_cert\": \"$SERVER_CERT\",
+      \"client_key\": \"$SERVER_KEY\",
+      \"root_cert\": \"$ROOT_CERT\"
+    }" >"$PACKAGE_DIR/code/connection.json"
+  else
+    echo "{ 
+      \"address\": \"${ACTUAL_CONTAINER_NAME}:7052\",
+      \"dial_timeout\": \"10s\",
+      \"tls_required\": $TLS_ENABLED
+    }" >"$PACKAGE_DIR/code/connection.json"
+  fi
+
+  tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
+  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+
+  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+
+  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm -rf "$PACKAGE_DIR"
+
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+}
+
 chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local CA_CERT=$5
+  local CHANNEL_NAME=$5
+  local CA_CERT=${6:-}
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
   inputLog "CA_CERT: $CA_CERT"
 
   local CA_CERT_PARAMS=()
@@ -127,13 +196,105 @@ chaincodeInstall() {
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
+startCCaaSContainer() {
+  local PEER_ADDRESS="$1"
+  local CHAINCODE_NAME="$2"
+  local CHAINCODE_LABEL="$3"
+  local CHAINCODE_IMAGE="$4"
+  local EXTERNAL_PORT="$5"
+  local CLI_NAME="$6"
+  local CA_CERT="$7"
+  local CONTAINER_NAME="$8"
+  CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+
+  # Query installed chaincodes to get the package ID
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  local QUERYINSTALLED_RESPONSE
+  local PACKAGE_ID
+
+  QUERYINSTALLED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \
+      --output json \
+      "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
+  )"
+  PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
+
+  if [ -z "$PACKAGE_ID" ]; then
+    echo "ERROR: Package ID not found for chaincode $CHAINCODE_LABEL"
+    echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
+    exit 1
+  fi
+
+  echo "PACKAGE_ID: $PACKAGE_ID"
+
+  local PACKAGE_HASH="${PACKAGE_ID#*:}"
+
+  echo "Starting CCaaS container: $CONTAINER_NAME with ID: ${CHAINCODE_LABEL}:${PACKAGE_HASH}"
+
+  # Extract peer name and organization domain from peer address
+  local PEER_NAME="${PEER_ADDRESS%%:*}"
+
+  local ORG_DOMAIN=$(echo "$PEER_NAME" | sed 's/^[^.]*\.//')
+  local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+  local PORT_MAP="${EXTERNAL_PORT}:7052"
+
+  local NETWORK=$(docker inspect "${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
+
+  # Generate CCAAS-specific certificates with correct CN
+  echo "Generating CCAAS certificates for $CONTAINER_NAME..."
+  certsGenerateCCaaS "$CONFIG_PATH" "$CONTAINER_NAME" "$ORG_DOMAIN" "$CHAINCODE_NAME" "$PEER_ADDRESS"
+
+  # Use generated CCAAS certificates
+  local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
+    local STATE
+    STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo "unknown")
+    local DESIRED_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}"
+    local CURRENT_ID
+    CURRENT_ID=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$CONTAINER_NAME" 2>/dev/null | grep '^CORE_CHAINCODE_ID_NAME=' | sed 's/CORE_CHAINCODE_ID_NAME=//')
+    if [ "$STATE" = "running" ] && [ "$CURRENT_ID" = "$DESIRED_ID" ]; then
+      echo "CCaaS container '$CONTAINER_NAME' already running with desired ID '$DESIRED_ID'. Skipping start."
+      return 0
+    else
+      echo "CCaaS container '$CONTAINER_NAME' exists (state='$STATE', id='$CURRENT_ID'), expected '$DESIRED_ID'. Recreating..."
+      docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    fi
+  fi
+
+
+  docker run -d \
+    --name "$CONTAINER_NAME" \
+    -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \
+    -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:7052 \
+    -e CORE_CHAINCODE_ID_NAME="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
+    -e CHAINCODE_ID="${CHAINCODE_LABEL}:${PACKAGE_HASH}" \
+    -e CORE_CHAINCODE_LOGGING_LEVEL=info \
+    -e CORE_CHAINCODE_LOGGING_SHIM=info \
+    -e CORE_PEER_TLS_ENABLED=true \
+    -e CORE_CHAINCODE_TLS_CERT_FILE=/etc/hyperledger/fabric/client.crt \
+    -e CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \
+    -e CORE_PEER_LOCALMSPID=Org1MSP \
+    -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
+    -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
+    -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
+    -p "$PORT_MAP" \
+    --network "$NETWORK" \
+    "$CHAINCODE_IMAGE"
+}
+
 chaincodeApprove() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -182,6 +343,7 @@ chaincodeApprove() {
   )"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\"$CHAINCODE_LABEL\") ][0].package_id // \"\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
   if [ -z "$CC_PACKAGE_ID" ]; then
+    echo "CC_PACKAGE_ID not found, using default: $CHAINCODE_NAME:$CHAINCODE_VERSION"
     CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
   fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
@@ -218,6 +380,7 @@ chaincodeCommit() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -395,6 +558,70 @@ peerChaincodeInvokeTls() {
     --transient "$TRANSIENT" \
     --waitForEvent \
     --waitForEventTimeout 90s \
+    --tls \
+    --cafile "/var/hyperledger/cli/$CA_CERT" \
+    2>&1
+}
+
+peerChaincodeQuery() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \
+    $PEER_ADDRESS \
+    -C "$CHANNEL" \
+    -n "$CHAINCODE" \
+    -c "$COMMAND" \
+    --transient "$TRANSIENT" \
+    2>&1
+}
+
+peerChaincodeQueryTls() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERT="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERT"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$PEER_CERT"
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \
+    $PEER_ADDRESS \
+    $TLS_ROOT_CERT_FILES \
+    -C "$CHANNEL" \
+    -n "$CHAINCODE" \
+    -c "$COMMAND" \
+    --transient "$TRANSIENT" \
     --tls \
     --cafile "/var/hyperledger/cli/$CA_CERT" \
     2>&1

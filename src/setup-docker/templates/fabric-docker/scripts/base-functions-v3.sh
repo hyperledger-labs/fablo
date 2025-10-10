@@ -38,6 +38,70 @@ certsGenerate() {
   done
 }
 
+certsGenerateCCaaS() {
+  local CONFIG_PATH=$1
+  local CONTAINER_NAME=$2
+  local ORG_DOMAIN=$3
+  local CHAINCODE_NAME=$4
+  local PEER_ADDRESS=$5
+
+  local OUTPUT_PATH="${CONFIG_PATH}ccaas/${CONTAINER_NAME}/tls"
+  mkdir -p "$OUTPUT_PATH"
+
+  local CA_CERT="${CONFIG_PATH}peerOrganizations/${ORG_DOMAIN}/tlsca/tlsca.${ORG_DOMAIN}-cert.pem"
+  local CA_KEY="${CONFIG_PATH}peerOrganizations/${ORG_DOMAIN}/tlsca/priv-key.pem"
+
+  echo "Generating TLS certs for ${CONTAINER_NAME}..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CA cert: $CA_CERT"
+  inputLog "CA key : $CA_KEY"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+
+  docker run --rm \
+    -v "$OUTPUT_PATH:/certs" \
+    -v "$CA_CERT:/ca/ca.crt:ro" \
+    -v "$CA_KEY:/ca/ca.key:ro" \
+    alpine:latest sh -c '
+      apk add --no-cache openssl >/dev/null &&
+      openssl genrsa -out /certs/client.key 2048 &&
+      
+      # Create openssl config with SANs
+      cat > /certs/openssl.cnf << EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = '"$CONTAINER_NAME"'
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = '"$CONTAINER_NAME"'
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+EOF
+      
+      openssl req -new -key /certs/client.key -out /certs/client.csr -config /certs/openssl.cnf &&
+      openssl x509 -req -in /certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial \
+        -out /certs/client.crt -days 365 -sha256 -extensions v3_req -extfile /certs/openssl.cnf &&
+      base64 /certs/client.crt > /certs/client_pem.crt &&
+      base64 /certs/client.key > /certs/client_pem.key &&
+      chown -R '"$(id -u):$(id -g)"' /certs
+    '
+
+  cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
+  echo "TLS certs generated for ${CONTAINER_NAME} at ${OUTPUT_PATH}"
+}
+
 genesisBlockCreate() {
   local CONTAINER_NAME=genesisBlockCreate
 
@@ -96,8 +160,8 @@ createChannelTx() {
     -v "$CONFIG_PATH":/fabric-config \
     -v "$OUTPUT_PATH":/output \
     ghcr.io/fablo-io/fabric-tools:"${FABRIC_TOOLS_VERSION}" \
-    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile ${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID ${CHANNEL_NAME}"
-  
+    bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile ${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID ${CHANNEL_NAME} && chown -R $(id -u):$(id -g) /output"
+
   # shellcheck disable=SC2181
   if [ $? -ne 0 ]; then
     echo "Failed to create channel configuration transaction."

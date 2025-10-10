@@ -88,7 +88,7 @@ describe("validate", () => {
 
   it("should validate custom config", () => {
     // Given
-    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json`;
+    const fabloConfig = `${commands.relativeRoot}/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json`;
 
     // When
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
@@ -111,8 +111,8 @@ describe("validate", () => {
 
   it("should print validation errors", () => {
     // Given
-    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf2-1org-1chaincode-raft-explorer.json");
-    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf2-1org-1chaincode-raft-explorer.json", "");
+    const sourceConfigPath = require.resolve("../samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json");
+    const samplesDir = sourceConfigPath.replace("/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json", "");
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const sourceConfig = require(sourceConfigPath) as FabloConfigJson;
 
@@ -181,6 +181,48 @@ describe("extend config", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.failure());
     expect(commandResult.output).toContain("commands-tests/fablo-config.json does not exist\n");
+  });
+
+  it("should allow chaincodes with the same name in different channels", () => {
+    // Given
+    commands.fabloExec("init");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    // Add a second channel
+    config.channels.push({
+      name: "my-channel2",
+      orgs: [{ name: "Org1", peers: ["peer0"] }],
+    });
+
+    config.chaincodes.push(
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+      {
+        name: "chaincode1",
+        version: "1.0",
+        channel: "my-channel2",
+        lang: "node",
+        directory: "./samples/chaincodes/chaincode-kv-node",
+        privateData: [],
+      },
+    );
+
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const commandResult = commands.fabloExec("validate", true);
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation errors count: 0");
+    expect(commandResult.output).toContain("Validation warnings count: 0");
   });
 });
 

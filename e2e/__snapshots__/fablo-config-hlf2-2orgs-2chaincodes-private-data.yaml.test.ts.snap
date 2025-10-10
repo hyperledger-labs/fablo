@@ -6,7 +6,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 "
 `;
 
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-and-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
     "name": "both-orgs-collection",
@@ -20,7 +20,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 ]"
 `;
 
-exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-or-policy-chaincode.json from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "[
   {
     "name": "org1-collection",
@@ -281,6 +281,11 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpc://localhost:7030"
+    }
   }
 }
 "
@@ -314,6 +319,9 @@ certificateAuthorities:
     caName: ca.orderer.example.com
     httpOptions:
       verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpc://localhost:7030
 "
 `;
 
@@ -357,6 +365,16 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpc://localhost:7030"
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    }
   }
 }
 "
@@ -390,6 +408,12 @@ certificateAuthorities:
     caName: ca.org1.example.com
     httpOptions:
       verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpc://localhost:7030
+channels:
+  my-channel1:
+    peers: {}
 "
 `;
 
@@ -433,6 +457,16 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
         "verify": false
       }
     }
+  },
+  "orderers": {
+    "orderer0.group1.orderer.example.com": {
+      "url": "grpc://localhost:7030"
+    }
+  },
+  "channels": {
+    "my-channel1": {
+      "peers": {}
+    }
   }
 }
 "
@@ -466,6 +500,12 @@ certificateAuthorities:
     caName: ca.org2.example.com
     httpOptions:
       verify: false
+orderers:
+  orderer0.group1.orderer.example.com:
+    url: grpc://localhost:7030
+channels:
+  my-channel1:
+    peers: {}
 "
 `;
 
@@ -2073,6 +2113,8 @@ elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
   runDevModeChaincode "$3" "$4"
 elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
   chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+elif [ "$1" = "chaincode" ] && [ "$2" = "query" ]; then
+  chaincodeQuery "$3" "$4" "$5" "$6" "$7"
 elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
   chaincodeList "$3" "$4"
 elif [ "$1" = "channel" ]; then
@@ -2096,10 +2138,10 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
-"FABLO_VERSION=2.2.0
+"FABLO_VERSION=2.3.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
-HYPERLEDGER_EXPLORER_VERSION=1.1.8
+HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
 FABRIC_COUCHDB_VERSION=0.4.18
@@ -2197,6 +2239,54 @@ chaincodeInvoke() {
   peer_addresses="\${peer_addresses//peer0.org2.example.com/peer0.org2.example.com:7061}"
 
   peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
+}
+
+# Function to perform chaincode query for single peer
+# Accepts 4-5 parameters:
+#   1. single peer domain
+#   2. channel name
+#   3. chaincode name
+#   4. chaincode command
+#   5. transient data (optional)
+chaincodeQuery() {
+  if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
+    echo "Expected 4 or 5 parameters for chaincode query, but got: $*"
+    echo "Usage: fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]"
+    exit 1
+  fi
+
+  peer_domain="$1"
+  channel_name="$2"
+  chaincode_name="$3"
+  command="$4"
+  transient="$5"
+
+  cli=""
+  peer_address=""
+
+  if [ "$peer_domain" = "peer0.org1.example.com" ]; then
+    cli="cli.org1.example.com"
+    peer_address="peer0.org1.example.com:7041"
+
+  fi
+  if [ "$peer_domain" = "peer1.org1.example.com" ]; then
+    cli="cli.org1.example.com"
+    peer_address="peer1.org1.example.com:7042"
+
+  fi
+  if [ "$peer_domain" = "peer0.org2.example.com" ]; then
+    cli="cli.org2.example.com"
+    peer_address="peer0.org2.example.com:7061"
+
+  fi
+
+  if [ -z "$peer_address" ]; then
+    echo "Unknown peer: $peer_domain"
+    exit 1
+  fi
+
+  peerChaincodeQuery "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient"
+
 }
 "
 `;
@@ -2388,15 +2478,16 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
     chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+    printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
     printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
     printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/or-policy-chaincode.json"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
   else
     echo "Warning! Skipping chaincode 'or-policy-chaincode' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
@@ -2405,15 +2496,16 @@ installChaincodes() {
     local version="0.0.1"
     printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
     chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+    printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
     printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+    chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
     printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/and-policy-chaincode.json"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
   else
     echo "Warning! Skipping chaincode 'and-policy-chaincode' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
@@ -2438,15 +2530,16 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
       chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+      printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/or-policy-chaincode.json"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
 
     else
       echo "Warning! Skipping chaincode 'or-policy-chaincode' install. Chaincode directory is empty."
@@ -2457,15 +2550,16 @@ installChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
       chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/and-policy-chaincode.json"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
 
     else
       echo "Warning! Skipping chaincode 'and-policy-chaincode' install. Chaincode directory is empty."
@@ -2484,21 +2578,21 @@ runDevModeChaincode() {
   if [ "$chaincodeName" = "or-policy-chaincode" ]; then
     local version="0.0.1"
     printHeadline "Approving 'or-policy-chaincode' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "" ""
     printHeadline "Approving 'or-policy-chaincode' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "" ""
     printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/or-policy-chaincode.json"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
 
   fi
   if [ "$chaincodeName" = "and-policy-chaincode" ]; then
     local version="0.0.1"
     printHeadline "Approving 'and-policy-chaincode' for Org1 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "" ""
     printHeadline "Approving 'and-policy-chaincode' for Org2 (dev mode)" "U1F60E"
-    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+    chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "" ""
     printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1' (dev mode)" "U1F618"
-    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/and-policy-chaincode.json"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "0.0.1" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
 
   fi
 }
@@ -2520,15 +2614,16 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'or-policy-chaincode'" "U1F60E"
       chaincodeBuild "or-policy-chaincode" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "node" "my-channel1"
+      printHeadline "Installing 'or-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printHeadline "Installing 'or-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/or-policy-chaincode.json"
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "or-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-or-policy-chaincode.json" "node" ""
       printItalics "Committing chaincode 'or-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/or-policy-chaincode.json"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "or-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "OR('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-or-policy-chaincode.json"
 
     else
       echo "Warning! Skipping chaincode 'or-policy-chaincode' upgrade. Chaincode directory is empty."
@@ -2539,15 +2634,16 @@ upgradeChaincode() {
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
       printHeadline "Packaging chaincode 'and-policy-chaincode'" "U1F60E"
       chaincodeBuild "and-policy-chaincode" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
-      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
-      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" ""
-      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'and-policy-chaincode' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printHeadline "Installing 'and-policy-chaincode' for Org2" "U1F60E"
-      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" ""
-      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/and-policy-chaincode.json"
+      chaincodeInstall "cli.org2.example.com" "peer0.org2.example.com:7061" "and-policy-chaincode" "$version" "my-channel1" ""
+      chaincodeApprove "cli.org2.example.com" "peer0.org2.example.com:7061" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "collections/my-channel1-and-policy-chaincode.json" "golang" ""
       printItalics "Committing chaincode 'and-policy-chaincode' on channel 'my-channel1' as 'Org1'" "U1F618"
-      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/and-policy-chaincode.json"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "and-policy-chaincode" "$version" "orderer0.group1.orderer.example.com:7030" "AND('Org1MSP.member', 'Org2MSP.member')" "false" "" "peer0.org1.example.com:7041,peer0.org2.example.com:7061" "" "collections/my-channel1-and-policy-chaincode.json"
 
     else
       echo "Warning! Skipping chaincode 'and-policy-chaincode' upgrade. Chaincode directory is empty."
@@ -2583,58 +2679,58 @@ stopNetwork() {
 }
 
 networkDown() {
+  printf "Removing chaincode containers & images... \\U1F5D1 \\n"
+  for container in $(docker ps -a | grep "peer0.org1.example.com-or-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org1.example.com-or-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer1.org1.example.com-or-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer1.org1.example.com-or-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer0.org2.example.com-or-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org2.example.com-or-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer0.org1.example.com-and-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org1.example.com-and-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer1.org1.example.com-and-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer1.org1.example.com-and-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer0.org2.example.com-and-policy-chaincode" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org2.example.com-and-policy-chaincode*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+
   printHeadline "Destroying network" "U1F916"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
-
-  printf "Removing chaincode containers & images... \\U1F5D1 \\n"
-  for container in $(docker ps -a | grep "dev-peer0.org1.example.com-or-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org1.example.com-or-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer1.org1.example.com-or-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer1.org1.example.com-or-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org2.example.com-or-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org2.example.com-or-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org1.example.com-and-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org1.example.com-and-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer1.org1.example.com-and-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer1.org1.example.com-and-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
-  for container in $(docker ps -a | grep "dev-peer0.org2.example.com-and-policy-chaincode" | awk '{print $1}'); do
-    echo "Removing container $container..."
-    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
-  done
-  for image in $(docker images "dev-peer0.org2.example.com-and-policy-chaincode*" -q); do
-    echo "Removing image $image..."
-    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
-  done
 
   printf "Removing generated configs... \\U1F5D1 \\n"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"
@@ -2693,9 +2789,9 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
-      - "../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
-      - "../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
 
@@ -2768,9 +2864,9 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
-      - "../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
-      - "../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
 
@@ -2805,6 +2901,8 @@ services:
       - GODEBUG=netdns=go
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2849,6 +2947,8 @@ services:
       - GODEBUG=netdns=go
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer1Org1"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2905,9 +3005,9 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
-      - "../fabric-config/collections/or-policy-chaincode.json:/var/hyperledger/cli/collections/or-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
-      - "../fabric-config/collections/and-policy-chaincode.json:/var/hyperledger/cli/collections/and-policy-chaincode.json"
+      - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
 
@@ -2942,6 +3042,8 @@ services:
       - GODEBUG=netdns=go
       # enabled gateway
       - CORE_PEER_GATEWAY_ENABLED=true
+      # ccaas builder configuration
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0Org2"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start
     ports:
@@ -2997,6 +3099,70 @@ certsGenerate() {
     dir=$(dirname "$file")
     mv "\${dir}"/*_sk "\${dir}"/priv-key.pem
   done
+}
+
+certsGenerateCCaaS() {
+  local CONFIG_PATH=$1
+  local CONTAINER_NAME=$2
+  local ORG_DOMAIN=$3
+  local CHAINCODE_NAME=$4
+  local PEER_ADDRESS=$5
+
+  local OUTPUT_PATH="\${CONFIG_PATH}ccaas/\${CONTAINER_NAME}/tls"
+  mkdir -p "$OUTPUT_PATH"
+
+  local CA_CERT="\${CONFIG_PATH}peerOrganizations/\${ORG_DOMAIN}/tlsca/tlsca.\${ORG_DOMAIN}-cert.pem"
+  local CA_KEY="\${CONFIG_PATH}peerOrganizations/\${ORG_DOMAIN}/tlsca/priv-key.pem"
+
+  echo "Generating TLS certs for \${CONTAINER_NAME}..."
+  inputLog "CONFIG_PATH: $CONFIG_PATH"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
+  inputLog "CHAINCODE_NAME: $CHAINCODE_NAME"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CA cert: $CA_CERT"
+  inputLog "CA key : $CA_KEY"
+  inputLog "OUTPUT_PATH: $OUTPUT_PATH"
+
+  docker run --rm \\
+    -v "$OUTPUT_PATH:/certs" \\
+    -v "$CA_CERT:/ca/ca.crt:ro" \\
+    -v "$CA_KEY:/ca/ca.key:ro" \\
+    alpine:latest sh -c '
+      apk add --no-cache openssl >/dev/null &&
+      openssl genrsa -out /certs/client.key 2048 &&
+      
+      # Create openssl config with SANs
+      cat > /certs/openssl.cnf << EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = '"$CONTAINER_NAME"'
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = '"$CONTAINER_NAME"'
+DNS.2 = localhost
+IP.1 = 127.0.0.1
+EOF
+      
+      openssl req -new -key /certs/client.key -out /certs/client.csr -config /certs/openssl.cnf &&
+      openssl x509 -req -in /certs/client.csr -CA /ca/ca.crt -CAkey /ca/ca.key -CAcreateserial \\
+        -out /certs/client.crt -days 365 -sha256 -extensions v3_req -extfile /certs/openssl.cnf &&
+      base64 /certs/client.crt > /certs/client_pem.crt &&
+      base64 /certs/client.key > /certs/client_pem.key &&
+      chown -R '"$(id -u):$(id -g)"' /certs
+    '
+
+  cp "$CA_CERT" "$OUTPUT_PATH/peer.crt"
+  echo "TLS certs generated for \${CONTAINER_NAME} at \${OUTPUT_PATH}"
 }
 
 genesisBlockCreate() {
@@ -3269,7 +3435,6 @@ dockerPullIfMissing() {
 }
 
 node_version_check() {
-
   local fabric_shim_version="$1"
   local nodejs_version
 
@@ -3290,7 +3455,6 @@ node_version_check() {
   fi
 
   echo $nodejs_version
-
 }
 
 chaincodeBuild() {
@@ -3335,7 +3499,6 @@ chaincodeBuild() {
 
     # Default to using npm for installation and build
     (cd "$CHAINCODE_DIR_PATH" && npm install && npm run build)
-
   fi
 }
 
@@ -3344,8 +3507,9 @@ chaincodePackage() {
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local CHAINCODE_LANG=$5
+  local CHANNEL_NAME=$6
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -3363,17 +3527,87 @@ chaincodePackage() {
   docker exec "$CLI_NAME" chown "$(id -u):$(id -g)" "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
 }
 
+chaincodePackageCCaaS() {
+  local CLI_NAME=$1
+  local PEER_ADDRESS=$2
+  local CHAINCODE_NAME=$3
+  local CHAINCODE_VERSION=$4
+  local CHAINCODE_IMAGE=$5
+  local CONTAINER_PORT=$6
+  local CONTAINER_NAME=$7
+  local TLS_ENABLED=$8
+  local CHANNEL_NAME=$9
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+
+  echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
+  inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
+  inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CLI_NAME: $CLI_NAME"
+  inputLog "CHAINCODE_IMAGE: $CHAINCODE_IMAGE"
+  inputLog "CONTAINER_PORT: $CONTAINER_PORT"
+  inputLog "TLS_ENABLED: $TLS_ENABLED"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+
+  local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
+  ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local PACKAGE_DIR="./chaincode-packages/ccaas_$ACTUAL_CONTAINER_NAME"
+
+  mkdir -p "$PACKAGE_DIR"
+  echo "{\\"type\\":\\"ccaas\\",\\"label\\":\\"$CHAINCODE_LABEL\\"}" >"$PACKAGE_DIR/metadata.json"
+
+  mkdir -p "$PACKAGE_DIR/code"
+
+  if [ "$TLS_ENABLED" = true ]; then
+    # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local ROOT_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/ca.crt")
+    local SERVER_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.crt")
+    local SERVER_KEY=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.key")
+
+    echo "{ 
+      \\"address\\": \\"\${ACTUAL_CONTAINER_NAME}:7052\\",
+      \\"domain\\": \\"\${ACTUAL_CONTAINER_NAME}\\",
+      \\"dial_timeout\\": \\"10s\\",
+      \\"tls_required\\": $TLS_ENABLED,
+      \\"client_auth_required\\": true,
+      \\"client_cert\\": \\"$SERVER_CERT\\",
+      \\"client_key\\": \\"$SERVER_KEY\\",
+      \\"root_cert\\": \\"$ROOT_CERT\\"
+    }" >"$PACKAGE_DIR/code/connection.json"
+  else
+    echo "{ 
+      \\"address\\": \\"\${ACTUAL_CONTAINER_NAME}:7052\\",
+      \\"dial_timeout\\": \\"10s\\",
+      \\"tls_required\\": $TLS_ENABLED
+    }" >"$PACKAGE_DIR/code/connection.json"
+  fi
+
+  tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
+  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+
+  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+
+  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm -rf "$PACKAGE_DIR"
+
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+}
+
 chaincodeInstall() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHAINCODE_NAME=$3
   local CHAINCODE_VERSION=$4
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
-  local CA_CERT=$5
+  local CHANNEL_NAME=$5
+  local CA_CERT=\${6:-}
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
+  inputLog "CHANNEL_NAME: $CHANNEL_NAME"
+  inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
   inputLog "CA_CERT: $CA_CERT"
 
   local CA_CERT_PARAMS=()
@@ -3386,13 +3620,104 @@ chaincodeInstall() {
     "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
 }
 
+startCCaaSContainer() {
+  local PEER_ADDRESS="$1"
+  local CHAINCODE_NAME="$2"
+  local CHAINCODE_LABEL="$3"
+  local CHAINCODE_IMAGE="$4"
+  local EXTERNAL_PORT="$5"
+  local CLI_NAME="$6"
+  local CA_CERT="$7"
+  local CONTAINER_NAME="$8"
+  CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+
+  # Query installed chaincodes to get the package ID
+  local CA_CERT_PARAMS=()
+  if [ -n "$CA_CERT" ]; then
+    CA_CERT_PARAMS=(--tls --cafile "/var/hyperledger/cli/$CA_CERT")
+  fi
+
+  local QUERYINSTALLED_RESPONSE
+  local PACKAGE_ID
+
+  QUERYINSTALLED_RESPONSE="$(
+    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \\
+      --output json \\
+      "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+  )"
+  PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\\"$CHAINCODE_LABEL\\") ][0].package_id // \\"\\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
+
+  if [ -z "$PACKAGE_ID" ]; then
+    echo "ERROR: Package ID not found for chaincode $CHAINCODE_LABEL"
+    echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
+    exit 1
+  fi
+
+  echo "PACKAGE_ID: $PACKAGE_ID"
+
+  local PACKAGE_HASH="\${PACKAGE_ID#*:}"
+
+  echo "Starting CCaaS container: $CONTAINER_NAME with ID: \${CHAINCODE_LABEL}:\${PACKAGE_HASH}"
+
+  # Extract peer name and organization domain from peer address
+  local PEER_NAME="\${PEER_ADDRESS%%:*}"
+
+  local ORG_DOMAIN=$(echo "$PEER_NAME" | sed 's/^[^.]*\\.//')
+  local CONFIG_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/"
+  local PORT_MAP="\${EXTERNAL_PORT}:7052"
+
+  local NETWORK=$(docker inspect "\${PEER_ADDRESS%%:*}" | jq -r '.[0].NetworkSettings.Networks | keys[]')
+
+  # Generate CCAAS-specific certificates with correct CN
+  echo "Generating CCAAS certificates for $CONTAINER_NAME..."
+  certsGenerateCCaaS "$CONFIG_PATH" "$CONTAINER_NAME" "$ORG_DOMAIN" "$CHAINCODE_NAME" "$PEER_ADDRESS"
+
+  # Use generated CCAAS certificates
+  local CCAAS_TLS_PATH="$CONFIG_PATH/ccaas/$CONTAINER_NAME/tls"
+
+  if docker ps -a --format '{{.Names}}' | grep -q "^\${CONTAINER_NAME}$"; then
+    local STATE
+    STATE=$(docker inspect -f '{{.State.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo "unknown")
+    local DESIRED_ID="\${CHAINCODE_LABEL}:\${PACKAGE_HASH}"
+    local CURRENT_ID
+    CURRENT_ID=$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$CONTAINER_NAME" 2>/dev/null | grep '^CORE_CHAINCODE_ID_NAME=' | sed 's/CORE_CHAINCODE_ID_NAME=//')
+    if [ "$STATE" = "running" ] && [ "$CURRENT_ID" = "$DESIRED_ID" ]; then
+      echo "CCaaS container '$CONTAINER_NAME' already running with desired ID '$DESIRED_ID'. Skipping start."
+      return 0
+    else
+      echo "CCaaS container '$CONTAINER_NAME' exists (state='$STATE', id='$CURRENT_ID'), expected '$DESIRED_ID'. Recreating..."
+      docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    fi
+  fi
+
+  docker run -d \\
+    --name "$CONTAINER_NAME" \\
+    -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \\
+    -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:7052 \\
+    -e CORE_CHAINCODE_ID_NAME="\${CHAINCODE_LABEL}:\${PACKAGE_HASH}" \\
+    -e CHAINCODE_ID="\${CHAINCODE_LABEL}:\${PACKAGE_HASH}" \\
+    -e CORE_CHAINCODE_LOGGING_LEVEL=info \\
+    -e CORE_CHAINCODE_LOGGING_SHIM=info \\
+    -e CORE_PEER_TLS_ENABLED=true \\
+    -e CORE_CHAINCODE_TLS_CERT_FILE=/etc/hyperledger/fabric/client.crt \\
+    -e CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key \\
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt \\
+    -e CORE_PEER_LOCALMSPID=Org1MSP \\
+    -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \\
+    -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \\
+    -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \\
+    -p "$PORT_MAP" \\
+    --network "$NETWORK" \\
+    "$CHAINCODE_IMAGE"
+}
+
 chaincodeApprove() {
   local CLI_NAME=$1
   local PEER_ADDRESS=$2
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
-  local CHAINCODE_LABEL="\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -3441,6 +3766,7 @@ chaincodeApprove() {
   )"
   CC_PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\\"$CHAINCODE_LABEL\\") ][0].package_id // \\"\\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
   if [ -z "$CC_PACKAGE_ID" ]; then
+    echo "CC_PACKAGE_ID not found, using default: $CHAINCODE_NAME:$CHAINCODE_VERSION"
     CC_PACKAGE_ID="$CHAINCODE_NAME:$CHAINCODE_VERSION"
   fi
   inputLog "CC_PACKAGE_ID: $CC_PACKAGE_ID"
@@ -3477,6 +3803,7 @@ chaincodeCommit() {
   local CHANNEL_NAME="$3"
   local CHAINCODE_NAME=$4
   local CHAINCODE_VERSION=$5
+  local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local ORDERER_URL=$6
   local ENDORSEMENT=$7
   local INIT_REQUIRED=$8
@@ -3654,6 +3981,70 @@ peerChaincodeInvokeTls() {
     --transient "$TRANSIENT" \\
     --waitForEvent \\
     --waitForEventTimeout 90s \\
+    --tls \\
+    --cafile "/var/hyperledger/cli/$CA_CERT" \\
+    2>&1
+}
+
+peerChaincodeQuery() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESS \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
+    2>&1
+}
+
+peerChaincodeQueryTls() {
+  local CLI="$1"
+  local PEER="$2"
+  local CHANNEL="$3"
+  local CHAINCODE="$4"
+  local COMMAND="$5"
+  local TRANSIENT="$6"
+  local PEER_CERT="$7"
+  local CA_CERT="$8"
+
+  echo "Chaincode query:"
+  inputLog "CLI: $CLI"
+  inputLog "PEER: $PEER"
+  inputLog "CHANNEL: $CHANNEL"
+  inputLog "CHAINCODE: $CHAINCODE"
+  inputLog "COMMAND: $COMMAND"
+  inputLog "TRANSIENT: $TRANSIENT"
+  inputLog "PEER_CERTS: $PEER_CERT"
+  inputLog "CA_CERT: $CA_CERT"
+
+  PEER_ADDRESS="--peerAddresses $PEER"
+
+  TLS_ROOT_CERT_FILES="--tlsRootCertFiles /var/hyperledger/cli/$PEER_CERT"
+  # shellcheck disable=SC2086
+  docker exec "$CLI" peer chaincode query \\
+    $PEER_ADDRESS \\
+    $TLS_ROOT_CERT_FILES \\
+    -C "$CHANNEL" \\
+    -n "$CHAINCODE" \\
+    -c "$COMMAND" \\
+    --transient "$TRANSIENT" \\
     --tls \\
     --cafile "/var/hyperledger/cli/$CA_CERT" \\
     2>&1
@@ -4110,8 +4501,8 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should cr
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper files from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 [
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/.gitignore",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/and-policy-chaincode.json",
-  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/or-policy-chaincode.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-and-policy-chaincode.json",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/collections/my-channel1-or-policy-chaincode.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",

@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION=2.2.0
+FABLO_VERSION=2.3.0
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -62,7 +62,7 @@ printSplash() {
 printHelp() {
   printSplash
   echo "Usage:
-  fablo init [node] [rest] [dev]
+  fablo init [node] [rest] [dev] [gateway]
     Creates simple Fablo config in current directory with optional Node.js, chaincode and REST API and dev mode.
 
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
@@ -97,6 +97,9 @@ printHelp() {
 
   fablo chaincodes list <peer> <channel>
     Lists chaincodes installed on specified peer and channel.
+    
+  fablo chaincode query <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
+    Queries chaincode with specified parameters.
 
   fablo channel --help
     To list available channel query options which can be executed on running network.

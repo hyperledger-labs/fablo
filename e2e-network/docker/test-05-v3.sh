@@ -41,6 +41,10 @@ expectInvoke() {
   (cd "$TEST_TMP" && sh ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "")
 }
 
+expectQuery() {
+  (cd "$TEST_TMP" && sh ../expect-query-cli.sh "$1" "$2" "$3" "$4" "$5")
+}
+
 expectCommand() {
   sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
 }
@@ -61,20 +65,55 @@ waitForContainer "peer0.org1.example.com" "Anchor peer.*with same endpoint, skip
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel2"
 waitForContainer "peer1.org1.example.com" "Anchor peer.*with same endpoint, skipping connecting to myself"
 
+# Gateway client test
+GATEWAY_CLIENT_DIR="$FABLO_HOME/samples/gateway/node"
+GATEWAY_CLIENT_OUTPUT_FILE="$TEST_LOGS/gateway_client.log"
+echo "Testing Node.js Gateway client..."
+
+echo "Installing gateway client dependencies..."
+(cd "$GATEWAY_CLIENT_DIR" && npm install --silent --no-progress)
+
+echo "Running Node.js Gateway client and checking output..."
+(
+  cd "$GATEWAY_CLIENT_DIR" &&
+    export \
+      CHANNEL_NAME="my-channel1" \
+      CONTRACT_NAME="chaincode1" \
+      MSP_ID="Org1MSP" \
+      PEER_ORG_NAME="peer0.org1.example.com" \
+      PEER_GATEWAY_URL="localhost:7041" \
+      TLS_ROOT_CERT="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
+      CREDENTIALS="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem" \
+      PRIVATE_KEY_PEM="$TEST_TMP/fablo-target/fabric-config/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv-key.pem" &&
+  node server.js > "$GATEWAY_CLIENT_OUTPUT_FILE" 2>&1
+)
+GATEWAY_EXIT_CODE=$?
+
+if [ $GATEWAY_EXIT_CODE -ne 0 ]; then
+  echo "❌ failed: Node.js Gateway client script failed with exit code $GATEWAY_EXIT_CODE."
+  cat "$GATEWAY_CLIENT_OUTPUT_FILE"
+  exit 1
+fi
+
+expectCommand "cat \"$GATEWAY_CLIENT_OUTPUT_FILE\"" "\"success\":\"OK\""
+
+echo "🎉 Node.js Gateway client test complete 🎉"
+
+
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
   '{\"success\":\"OK\"}'
-expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{\"success\":\"Willy Wonka\"}'
+  '{"success":"Willy Wonka"}'
 
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
-expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:get"
+expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
-expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
+expectCommand "cat \"$TEST_TMP/another.block\"" "put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","

@@ -6,9 +6,11 @@ buildAndInstallChaincode() {
   local CHAINCODE_LANG="$3"
   local CHAINCODE_DIR_PATH="$4"
   local CHAINCODE_VERSION="$5"
-  local CHAINCODE_LABEL="${CHAINCODE_NAME}_$CHAINCODE_VERSION"
   local USER="$6"
   local CONFIG="$7"
+  local CHANNEL_NAME="$8"
+  
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   if [ -z "$CHAINCODE_NAME" ]; then
     echo "Error: chaincode name is not provided"
@@ -44,6 +46,8 @@ approveChaincode() {
   local MSP="$7"
   local SEQUENCE
 
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+
   SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p' )"
   SEQUENCE=$((SEQUENCE +1))
 
@@ -77,15 +81,16 @@ approveChaincode() {
 }
 
 commitChaincode() {
-
   local CHAINCODE_NAME="$1"
-  local PEER=$2
+  local PEER="$2"
   local CHAINCODE_VERSION="$3"
   local CHANNEL_NAME="$4"
   local USER="$5"
   local CONFIG="$6"
   local MSP="$7"
   local SEQUENCE
+
+  local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   SEQUENCE="$(kubectl hlf chaincode querycommitted --channel="$CHANNEL_NAME" --config="$CONFIG" --user="$USER" --peer="$PEER" 2>/dev/null | awk '{print $3}' | sed -n '2p' )"
   SEQUENCE=$((SEQUENCE +1))

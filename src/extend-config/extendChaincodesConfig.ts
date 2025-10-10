@@ -37,12 +37,25 @@ const createPrivateCollectionConfig = (
   };
 };
 
+const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
+  const chaincodeKeys = new Set<string>();
+
+  chaincodes.forEach((chaincode) => {
+    const chaincodeKey = `${chaincode.channel}.${chaincode.name}`;
+    if (chaincodeKeys.has(chaincodeKey)) {
+      throw new Error(`Duplicate chaincode '${chaincode.name}' found in channel '${chaincode.channel}'. Chaincode names must be unique within a channel.`);
+    }
+    chaincodeKeys.add(chaincodeKey);
+  });
+};
+
 const extendChaincodesConfig = (
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
-  return chaincodes.map((chaincode) => {
+  checkUniqueChaincodeNames(chaincodes);
+  return chaincodes.map((chaincode, index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
@@ -55,21 +68,48 @@ const extendChaincodesConfig = (
     const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(network.fabricVersion, channel, d.name, d.orgNames),
     );
-    const privateDataConfigFile = privateData.length > 0 ? `collections/${chaincode.name}.json` : undefined;
+   
+    const privateDataConfigFile = privateData.length > 0 
+      ? `collections/${chaincode.channel}-${chaincode.name}.json` 
+      : undefined;
 
+    const peerChaincodeInstances = !chaincode.image
+      ? []
+      : channel.orgs.flatMap((org) =>
+          org.peers.map((peer) => {
+            const versionSuffix = `${chaincode.version}`.replace(/[^a-zA-Z0-9_.-]/g, "_");
+            const containerName = `ccaas_${peer.address.replace(/[^a-zA-Z0-9_.-]/g, "_")}_${channel.name}_${chaincode.name}_${versionSuffix}`.toLowerCase();
+            return {
+              containerName,
+              peerAddress: peer.address,
+              port: 10000 * (index + 1) + peer.port,
+              orgDomain: org.domain,
+            };
+          }),
+        );
+
+    if (chaincode.lang === "ccaas") {
+      if (!chaincode.image) {
+        throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify an image field`);
+      }
+    }
     return {
       directory: chaincode.directory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
       channel,
+      image: chaincode.image,
       ...initParams,
       endorsement,
       instantiatingOrg: channel.instantiatingOrg,
       privateDataConfigFile,
+      peerChaincodeInstances,
       privateData,
     };
   });
 };
+
+export { checkUniqueChaincodeNames };
 
 export default extendChaincodesConfig;

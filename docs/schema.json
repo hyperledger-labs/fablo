@@ -12,7 +12,7 @@
   ],
   "properties": {
     "$schema": {
-      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json"
+      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json"
     },
     "global": {
       "$id": "#/properties/global",
@@ -416,8 +416,20 @@
           "name",
           "version",
           "lang",
-          "channel",
-          "directory"
+          "channel"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": { "lang": { "const": "ccaas"}}
+            },
+            "then": {
+              "required": [ "image"]
+            },
+            "else": {
+              "required": [ "directory" ]
+            }
+          }
         ],
         "properties": {
           "name": {
@@ -439,7 +451,8 @@
             "enum": [
               "golang",
               "java",
-              "node"
+              "node",
+              "ccaas"
             ]
           },
           "channel": {
@@ -476,6 +489,11 @@
           "directory": {
             "$id": "#/properties/chaincodes/items/properties/directory",
             "title": "Chaincode directory",
+            "type": "string"
+          },
+          "image": {
+            "$id": "#/properties/chaincodes/items/properties/image",
+            "title": "Chaincode image URI",
             "type": "string"
           },
           "privateData": {

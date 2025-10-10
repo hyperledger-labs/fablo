@@ -1,11 +1,8 @@
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
   "global": {
-    "fabricVersion": "2.5.12",
-    "tls": true,
-    "tools": {
-      "explorer": true
-    }
+    "fabricVersion": "3.0.0",
+    "tls": true
   },
   "orgs": [
     {
@@ -49,15 +46,33 @@
           ]
         }
       ]
+    },
+    {
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
     }
   ],
   "chaincodes": [
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "node",
+      "lang": "ccaas",
       "channel": "my-channel1",
-      "directory": "./chaincodes/chaincode-kv-node"
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    },
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel2",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
     }
   ],
   "hooks": {
