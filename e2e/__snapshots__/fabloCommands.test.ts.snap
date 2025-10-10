@@ -8,6 +8,12 @@ Validation warnings count: 0
   "global": {
     "fabricVersion": "2.5.12",
     "tls": true,
+    "tools": {
+      "explorer": {
+        "address": "explorer.example.com",
+        "port": 7010
+      }
+    },
     "fabricToolsVersion": "2.5.12",
     "fabricCaVersion": "1.5.5",
     "fabricCcenvVersion": "2.5.12",
@@ -29,8 +35,7 @@ Validation warnings count: 0
       "application": "V2_5",
       "isV2": true,
       "isV3": false
-    },
-    "tools": {}
+    }
   },
   "ordererGroups": [
     {
