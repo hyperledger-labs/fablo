@@ -4474,6 +4474,9 @@ installChannels() {
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer0.org2.example.com:7061' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
   printItalics "Joining 'my-channel3' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer1.org2.example.com:7062' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
+
+  echo "Restarting global Explorer: explorer.example.com"
+  docker restart explorer.example.com || true
 }
 
 installChaincodes() {
@@ -6939,14 +6942,6 @@ echo "Executing post-generate hook"
 "
 `;
 
-exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
-"#!/usr/bin/env bash
-
-# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
-echo "Executing post-start hook"
-"
-`;
-
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
 "graph TD
 
@@ -7039,7 +7034,6 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-generate.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

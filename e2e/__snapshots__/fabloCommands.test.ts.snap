@@ -4,7 +4,6 @@ exports[`extend config should extend custom config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
-Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.5.12",
@@ -2467,8 +2466,7 @@ Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs
     }
   ],
   "hooks": {
-    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\"",
-    "postStart": ""
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
   }
 }
 
@@ -2480,7 +2478,6 @@ exports[`extend config should extend default config 1`] = `
 "Validation errors count: 0
 Validation warnings count: 0
 ===========================================================
-Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs/fablo/releases' not available
 {
   "global": {
     "fabricVersion": "2.5.12",
@@ -2965,8 +2962,7 @@ Could not check for updates. Url: 'https://api.github.com/repos/hyperledger-labs
   ],
   "chaincodes": [],
   "hooks": {
-    "postGenerate": "",
-    "postStart": ""
+    "postGenerate": ""
   }
 }
 
