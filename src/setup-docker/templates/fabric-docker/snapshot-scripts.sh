@@ -29,6 +29,14 @@ __getCAPostgresNodes() {
   "
 }
 
+__getCAMySQLNodes() {
+  echo "
+  <%_ orgs.filter((org) => org.ca.db === 'mysql').forEach((org) => { _%>
+      db.<%= org.ca.address %>
+  <%_ }) _%>
+  "
+}
+
 __createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   backup_dir="${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
@@ -48,9 +56,15 @@ __createSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Saving state of $node..."
+    echo "Saving state of $node (PostgreSQL)..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Saving state of $node (MySQL)..."
+    mkdir -p "$backup_dir/$node/mysql-data"
+    docker exec "$node" mysqldump -u root -p "$MYSQL_ROOT_PASSWORD" --add-drop-database --databases fabriccaserver > "$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
@@ -88,7 +102,16 @@ __cloneSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Restoring $node..."
+    echo "Restoring $node (PostgreSQL)..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Restoring $node (MySQL)..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
     else
