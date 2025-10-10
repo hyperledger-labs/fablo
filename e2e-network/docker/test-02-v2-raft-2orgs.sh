@@ -97,8 +97,8 @@ waitForContainer "peer1.org2.example.com" "Membership view has changed. peers we
 # check if chaincodes are instantiated on peers
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "peer1.org1.example.com" "my-channel2" "chaincode2" "0.0.1"
-waitForChaincode "peer1.org2.example.com" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "peer0.org1.example.com" "my-channel3" "chaincode2" "0.0.1"
+waitForChaincode "peer1.org2.example.com" "my-channel3" "chaincode2" "0.0.1"
 
 fablo_rest_org1="localhost:8802"
 
@@ -111,10 +111,10 @@ expectInvokeCli "peer0.org2.example.com" "my-channel1" "chaincode1" \
   '{\"success\":\"Jack Sparrow\"}'
 
 # invoke Java chaincode
-expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
+expectInvokeRest "$fablo_rest_org1" "my-channel3" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
+expectInvokeCli "peer1.org2.example.com" "my-channel3" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 

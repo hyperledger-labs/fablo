@@ -1,10 +1,10 @@
 ---
 "$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.2.0/schema.json
 global:
-  fabricVersion: 2.4.3
+  fabricVersion: 2.5.12
   tls: true
-  monitoring:
-    loglevel: debug
+  # monitoring:
+  #   loglevel: debug
 orgs:
   - organization:
       name: Orderer1
@@ -73,7 +73,7 @@ chaincodes:
   - name: chaincode2
     version: 0.0.1
     lang: java
-    channel: my-channel2
+    channel: my-channel3
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-java-simple"
 hooks:

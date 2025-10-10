@@ -60,11 +60,20 @@ chaincodeInvoke() {
   <% if(!global.tls) { -%>
     peerChaincodeInvoke "$cli" "$peer_addresses" "$2" "$3" "$4" "$5"
   <% } else { -%>
+    # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+    local ca_cert=""
+
     <% channels.forEach((channel) => { -%>
       if [ "$2" = "<%= channel.name %>" ]; then
-        ca_cert="crypto-orderer/tlsca.<%= ordererGroups[0].ordererHeads[0].domain %>-cert.pem"
+        ca_cert="crypto-orderer/tlsca.<%= channel.ordererGroup.ordererHeads[0].domain %>-cert.pem"
       fi
     <% }) -%>
+
+    if [ -z "$ca_cert" ]; then
+      echo "Error: Channel '$2' not found or is not associated with an orderer group."
+      exit 1
+    fi
+
     peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
   <% } -%>
 }
