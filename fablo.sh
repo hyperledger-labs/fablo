@@ -49,6 +49,8 @@ getStoredConfigSnapshotPath() {
     echo "$FABLO_TARGET/fablo-config.json"
   elif [ -f "$FABLO_TARGET/fablo-config.yaml" ]; then
     echo "$FABLO_TARGET/fablo-config.yaml"
+  elif [ -f "$FABLO_TARGET/fablo-config.yml" ]; then
+    echo "$FABLO_TARGET/fablo-config.yml"
   else
     echo ""
   fi
@@ -68,7 +70,7 @@ verifyConfigMatchesOrFail() {
     echo "No stored config snapshot found in '$FABLO_TARGET'. Storing current config snapshot for future comparisons."
 
     local ext="${current_config##*.}"
-    if [ "$ext" = "json" ] || [ "$ext" = "yaml" ] ; then
+    if [ "$ext" = "json" ] || [ "$ext" = "yaml" ] || [ "$ext" = "yml" ] ; then
       snapshotFabloConfigToTarget "$current_config" "$FABLO_TARGET"
     else
       echo "Error: Unsupported config file extension '.$ext'. Supported extensions are: .json, .yaml"
