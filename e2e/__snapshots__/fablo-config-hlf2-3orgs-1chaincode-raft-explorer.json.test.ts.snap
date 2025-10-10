@@ -3455,6 +3455,9 @@ chaincodeInvoke() {
   peer_certs="\${peer_certs//peer0.org3.example.com/crypto/peers/peer0.org3.example.com/tls/ca.crt}"
   peer_certs="\${peer_certs//peer1.org3.example.com/crypto/peers/peer1.org3.example.com/tls/ca.crt}"
 
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
@@ -3464,6 +3467,12 @@ chaincodeInvoke() {
   if [ "$2" = "my-channel3" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
+
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
+  fi
+
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 "
