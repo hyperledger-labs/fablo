@@ -1,5 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
+"{
+    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+    "global": {
+      "fabricVersion": "3.0.0",
+      "tls": true,
+      "monitoring": {
+        "loglevel": "debug"
+      }
+    },
+    "orgs": [
+      {
+        "organization": {
+          "name": "Orderer",
+          "domain": "orderer.example.com"
+        },
+        "orderers": [
+          {
+            "groupName": "group1",
+            "type": "BFT",
+            "instances": 4
+          }
+
+        ]
+      },
+      {
+        "organization": {
+          "name": "Org1",
+          "domain": "org1.example.com"
+        },
+        "peer": {
+          "instances": 2,
+          "db": "LevelDb"
+        }
+      }
+    ],
+    "channels": [
+      {
+        "name": "my-channel1",
+        "orgs": [
+          {
+            "name": "Org1",
+            "peers": [
+              "peer0",
+              "peer1"
+            ]
+          }
+        ]
+      }
+    ],
+    "chaincodes": [
+      {
+        "name": "chaincode1",
+        "version": "0.0.1",
+        "lang": "node",
+        "channel": "my-channel1",
+        "directory": "./chaincodes/chaincode-kv-node"
+      }
+    ]
+  }
+  "
+`;
+
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
 "/config
 /crypto-config
@@ -1971,6 +2034,7 @@ installChannels() {
 
   printItalics "Joining 'my-channel1' on Org1/peer1" "U1F638"
   docker exec -i cli.org1.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel1' 'Org1MSP' 'peer1.org1.example.com:7042' 'crypto/users/Admin@org1.example.com/msp' 'crypto/users/Admin@org1.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
+
 }
 
 installChaincodes() {
@@ -3940,6 +4004,7 @@ exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create prope
 
 exports[`samples/fablo-config-hlf3-bft-1orgs-1chaincode.json should create proper files from samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf3-bft-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",

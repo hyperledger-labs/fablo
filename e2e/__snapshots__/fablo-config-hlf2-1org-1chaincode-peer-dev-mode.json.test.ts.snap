@@ -1,5 +1,74 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+  "global": {
+    "fabricVersion": "2.5.12",
+    "tls": false,
+    "peerDevMode": true,
+    "engine": "docker"
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com",
+        "mspName": "OrdererMSP"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com",
+        "mspName": "Org1MSP"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
+    }
+  ],
+  "hooks": {}
+}"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
 "/config
 /crypto-config
@@ -3466,6 +3535,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should cre
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
