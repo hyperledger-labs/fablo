@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+  "global": {
+    "fabricVersion": "2.4.7",
+    "tls": false,
+    "engine": "kubernetes"
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node"
+    }
+  ]
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
 "/config
 /crypto-config
@@ -514,6 +574,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/.env",
