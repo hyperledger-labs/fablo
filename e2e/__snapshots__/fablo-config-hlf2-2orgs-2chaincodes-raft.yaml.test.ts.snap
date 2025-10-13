@@ -8,8 +8,6 @@ global:
   tls: true
   tools:
     explorer: true
-  monitoring:
-    loglevel: debug
 orgs:
   - organization:
       name: Orderer1
@@ -42,6 +40,7 @@ orgs:
     peer: *defaultPeerConfig
 channels:
   - name: my-channel1
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:
@@ -50,6 +49,7 @@ channels:
         peers:
           - peer0
   - name: my-channel2
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:
@@ -76,7 +76,7 @@ chaincodes:
   - name: chaincode2
     version: 0.0.1
     lang: java
-    channel: my-channel2
+    channel: my-channel3
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-java-simple"
 hooks:
