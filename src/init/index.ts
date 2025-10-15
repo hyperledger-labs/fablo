@@ -8,8 +8,11 @@ function getDefaultFabloConfig(): FabloConfigJson {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
       fabricVersion: "2.5.12",
-      tls: false,
-      peerDevMode: false,
+      tls: true,
+      peerDevMode: true,
+      monitoring: {
+        loglevel: "debug",
+      },
     },
     orgs: [
       {
@@ -77,6 +80,10 @@ function getDefaultFabloConfig(): FabloConfigJson {
 export default class InitGenerator extends Generator {
   constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
     super(args, opts);
+  }
+
+  async writing(): Promise<void> {
+    await this.copySampleConfig();
   }
 
   async copySampleConfig(): Promise<void> {

@@ -10,7 +10,7 @@ export FABLO_HOME
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node dev)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
@@ -21,6 +21,8 @@ dumpLogs() {
 }
 
 networkDown() {
+  echo "type anything to continue"
+  read -r
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
@@ -53,7 +55,7 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 networkUp
 
 waitForContainer "orderer0.group1.orderer.example.com" "Created and started new.*my-channel1"
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
@@ -61,6 +63,13 @@ waitForContainer "peer0.org1.example.com" "Anchor peer.*with same endpoint, skip
 waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7042"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
+
+# Start chaincode in development mode
+cp "$FABLO_HOME/start-dev-tls.sh" "$TEST_TMP/chaincodes/chaincode-kv-node/start-dev-tls.sh"
+(cd "$TEST_TMP/chaincodes/chaincode-kv-node" && npm i && npm run start:dev:tls)
+
+echo "Chaincode failed to start"
+exit 1
 
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
