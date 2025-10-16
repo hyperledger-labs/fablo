@@ -112,6 +112,7 @@ chaincodePackageCCaaS() {
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
   local CHANNEL_NAME=$9
+  local ORG_DOMAIN=${10}
   local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
@@ -123,6 +124,7 @@ chaincodePackageCCaaS() {
   inputLog "TLS_ENABLED: $TLS_ENABLED"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
 
   
   local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
@@ -136,7 +138,7 @@ chaincodePackageCCaaS() {
 
   if [ "$TLS_ENABLED" = true ]; then
     # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
-    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/$ORG_DOMAIN/peers/$PEER_ADDRESS/tls"
     local ROOT_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/ca.crt")
     local SERVER_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.crt")
     local SERVER_KEY=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.key")
