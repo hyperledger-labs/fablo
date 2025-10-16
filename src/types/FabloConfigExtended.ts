@@ -158,6 +158,8 @@ export interface ChaincodeConfig {
   channel: ChannelConfig;
   image?: string;
   port?: number;
+  chaincodeMountPath?: string;
+  chaincodeStartCommand?: string;
   peerChaincodeInstances?: peerChaincodeInstances[];
   init?: string;
   initRequired?: boolean;
