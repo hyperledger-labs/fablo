@@ -1,5 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+  "global": {
+    "fabricVersion": "3.0.0",
+    "tls": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel1",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    },
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel2",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    }
+  ],
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
+  }
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
 "/config
 /crypto-config
@@ -1593,12 +1678,21 @@ chaincodeInvoke() {
   peer_certs="$1"
   peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
 
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
   if [ "$2" = "my-channel2" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
+
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
+  fi
+
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 
@@ -1640,14 +1734,20 @@ chaincodeQuery() {
     exit 1
   fi
 
-  if [ "$channel_name" = "my-channel1" ]; then
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
+  if [ "$2" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+  if [ "$2" = "my-channel2" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
 
-  if [ "$channel_name" = "my-channel2" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
   fi
-
   peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
 
 }
@@ -3688,6 +3788,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
 
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper files from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",

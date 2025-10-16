@@ -1,5 +1,139 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+  "global": {
+    "fabricVersion": "2.3.2",
+    "tls": true,
+    "tools": {
+      "explorer": true
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 2
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 2
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org2",
+        "domain": "org2.example.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 2
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org3",
+        "domain": "org3.example.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 2
+        }
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "name": "Org2",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my-channel3",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        },
+        {
+          "name": "Org2",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node"
+    }
+  ]
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
 "/config
 /crypto-config
@@ -4007,6 +4141,9 @@ chaincodeInvoke() {
   peer_certs="\${peer_certs//peer0.org3.example.com/crypto/peers/peer0.org3.example.com/tls/ca.crt}"
   peer_certs="\${peer_certs//peer1.org3.example.com/crypto/peers/peer1.org3.example.com/tls/ca.crt}"
 
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
@@ -4016,6 +4153,12 @@ chaincodeInvoke() {
   if [ "$2" = "my-channel3" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
+
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
+  fi
+
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 
@@ -4092,18 +4235,23 @@ chaincodeQuery() {
     exit 1
   fi
 
-  if [ "$channel_name" = "my-channel1" ]; then
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
+  if [ "$2" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+  if [ "$2" = "my-channel2" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+  if [ "$2" = "my-channel3" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
 
-  if [ "$channel_name" = "my-channel2" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
   fi
-
-  if [ "$channel_name" = "my-channel3" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
-  fi
-
   peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
 
 }
@@ -4474,6 +4622,9 @@ installChannels() {
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer0.org2.example.com:7061' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
   printItalics "Joining 'my-channel3' on Org2/peer1" "U1F638"
   docker exec -i cli.org2.example.com bash -c "source scripts/channel_fns.sh; fetchChannelAndJoinTls 'my-channel3' 'Org2MSP' 'peer1.org2.example.com:7062' 'crypto/users/Admin@org2.example.com/msp' 'crypto/users/Admin@org2.example.com/tls' 'crypto-orderer/tlsca.orderer.example.com-cert.pem' 'orderer0.group1.orderer.example.com:7030';"
+
+  echo "Restarting global Explorer: explorer.example.com"
+  docker restart explorer.example.com || true
 }
 
 installChaincodes() {
@@ -6995,6 +7146,7 @@ exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should cr
 
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
