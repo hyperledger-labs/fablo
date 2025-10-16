@@ -206,6 +206,8 @@ startCCaaSContainer() {
   local CA_CERT="$7"
   local CONTAINER_NAME="$8"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local CHAINCODE_MOUNT_PATH="$9"
+  local CHAINCODE_START_COMMAND="${10}"
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -265,7 +267,18 @@ startCCaaSContainer() {
       docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
     fi
   fi
+  
+  MOUNT_PATH_PARAMS=()
+  if [ -n "$CHAINCODE_MOUNT_PATH" ]; then
+    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app" --workdir /usr/src/app)
+  fi
 
+  ENTRYPOINT_PARAMS=()
+  START_COMMAND_PARAMS=()
+  if [ -n "$CHAINCODE_START_COMMAND" ]; then
+    ENTRYPOINT_PARAMS=(--entrypoint sh)
+    START_COMMAND_PARAMS=(-c "$CHAINCODE_START_COMMAND")
+  fi
 
   docker run -d \
     --name "$CONTAINER_NAME" \
@@ -283,9 +296,11 @@ startCCaaSContainer() {
     -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
     -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
     -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
+    "${MOUNT_PATH_PARAMS[@]+"${MOUNT_PATH_PARAMS[@]}"}" \
     -p "$PORT_MAP" \
     --network "$NETWORK" \
-    "$CHAINCODE_IMAGE"
+    "${ENTRYPOINT_PARAMS[@]+"${ENTRYPOINT_PARAMS[@]}"}" \
+    "$CHAINCODE_IMAGE" "${START_COMMAND_PARAMS[@]+"${START_COMMAND_PARAMS[@]}"}"
 }
 
 chaincodeApprove() {
