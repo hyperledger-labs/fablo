@@ -146,7 +146,7 @@ class ValidateGenerator extends Generator {
     this._validateChaincodes(capabilities, networkConfig.chaincodes);
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
-    this._validateDevMode(networkConfig.global);
+    // this._validateDevMode(networkConfig.global);
     this._verifyFabricVersion(networkConfig.global);
   }
 
