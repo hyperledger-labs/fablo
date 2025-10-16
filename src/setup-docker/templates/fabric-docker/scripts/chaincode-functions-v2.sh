@@ -270,7 +270,7 @@ startCCaaSContainer() {
   
   MOUNT_PATH_PARAMS=()
   if [ -n "$CHAINCODE_MOUNT_PATH" ]; then
-    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app" --workdir /usr/src/app)
+    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app:ro" --workdir /usr/src/app)
   fi
 
   ENTRYPOINT_PARAMS=()

@@ -539,15 +539,59 @@ Example:
   ]
 ```
 
+The property `lang` may be `golang`, `java`, `node`, or `ccaas`.
+
+The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none (just the implicit private data collection which is default in Fabric).
+
 The other available parameters for entries in `chaincodes` array are:
 
 * `init` - initialization arguments (for Hyperledger Fabric below 2.0; default: `{"Args":[]}`)
 * `initRequired` - whether the chaincode requires initialization transaction (for Hyperledger Fabric 2.0 and greater; default: `false`)
-* `endorsement` - the endorsement policy for the chaincode (in case of missing value for Hyperledger Fabric 2.0 and greater there is no default value - Hyperledger by default will take the majority of organizations; for Hyperledger Fabric below 2.0 Fablo generates an endorsement policy where all organizations need to endorse)
+* `endorsement` - the endorsement policy for the chaincode (in case of missing value for Hyperledger Fabric 2.0 and greater there is no default value - Hyperledger by default will take the majority of organizations
+* `chaincodeMountPath` (`ccaas` only) - chaincode mount path. If it is provided, then the given directory is mounted inside the Docker container, and it becomes the container working directory.
+* `chaincodeStartCommand` (`ccaas` only) - chaincode start command. If it is provided, then this command is used as a Docker container command.
 
-The property `lang` may be `golang`, `java` or `node`.
+#### Peer dev mode and chaincode hot reload
 
-The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default there is none (just the implicit private data collection in Fabric 2.x).
+Fablo supports peer dev mode for non-TLS setup only, which is a way to achieve chaincode hot code reload.
+In this case you need to start chaincode processes manually on your local machine.
+
+The way to achieve hot reload for both TLS and non-TLS setups it to use CCaaS feature in combination with `chaincodeMountPath` and `chaincodeStartCommand` parameters.
+This way you can start chaincode processes in a CCaaS containers while having chaincode source code mounted, and reloading when the code changes.
+
+This approach has several benefits:
+* It works both for TLS and non-TLS
+* You may have only some of the chaincode running in hot reload mode while the other ones in a regular containers
+* Fablo manages starting chaincode processes
+
+You may init a network with sample setup by executing the `fablo init` command:
+
+```
+fablo init dev node
+```
+
+It produces the following chaincode configuration:
+
+```json
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "channel": "my-channel1",
+      "lang": "ccaas",
+      "image": "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+      "chaincodeMountPath": "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+      "chaincodeStartCommand": "npm run start:watch:ccaas",
+      "privateData": []
+    }
+  ],
+  "hooks": {
+    "postGenerate": "npm i --prefix ./chaincodes/chaincode-kv-node"
+  }
+```
+
+You may find a full end to end example in one of our test scripts [test-01-v2-simple.sh](e2e-network/docker/test-01-v2-simple.sh).
+
 
 ### hooks
 
