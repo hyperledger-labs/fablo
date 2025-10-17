@@ -7,7 +7,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
-      fabricVersion: "2.5.12",
+      fabricVersion: "3.1.0",
       tls: true,
       peerDevMode: false,
     },
@@ -25,8 +25,8 @@ function getDefaultFabloConfig(): FabloConfigJson {
         orderers: [
           {
             groupName: "group1",
-            type: "solo",
-            instances: 1,
+            type: "BFT",
+            instances: 2,
             prefix: "orderer",
           },
         ],
