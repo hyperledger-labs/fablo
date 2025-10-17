@@ -22,16 +22,16 @@ Visit [SUPPORTED_FEATURES.mb](SUPPORTED_FEATURES.md) to see a list of features s
 Fablo is distributed as a single shell script which uses Docker image to generate the network config.
 You may keep the script in the root directory of your project or install it globally in your file system.
 
-To install it globally:
-
-```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
-```
-
 To get a copy of Fablo for a single project, execute in the project root:
 
 ```bash
 curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo.sh -o ./fablo && chmod +x ./fablo
+```
+
+To install it globally:
+
+```bash
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 ## Getting started
@@ -39,14 +39,14 @@ curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/fablo
 To create a local Hyperledger Fabric network with Node.js chaincode and REST API client, install Fablo and execute:
 
 ```bash
-fablo init node rest    # if installed globally
-# or
-./fablo init node rest  # if using local script 
-./fablo up
+fablo init node rest
+fablo up
 ```
 
+Note: For local setup use `./fablo` instead of `fablo`.
+
 After a few minutes, the whole network will be set up and running.
-You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (via `cli.org1.example.com` container) or REST API client (via [Fablo REST](https://github.com/fablo-io/fablo-rest)).
+You can check the running nodes via `docker ps` or `docker stats`, and you can query the network with command line (`fablo chaincode invoke|query`) or REST API client (via [Fablo REST](https://github.com/fablo-io/fablo-rest)).
 
 ## Basic usage
 
@@ -77,13 +77,16 @@ In this case, however, you should use generated `fablo-docker.sh` instead of `fa
 fablo init [node] [rest] [dev] [gateway]
 ```
 
-Creates simple network config file in current dir.
+Creates simple network config file (`fablo-config.json`) in the current directory.
 Good step to start your adventure with Fablo or set up a fast prototype. 
 
-Fablo `init` command takes three parameters (the order does not matter):
+The generated network configuration has an orderer organization with two BFT orderer nodes, and peer organization with two peers.
+It uses Fabric in version `3.1.0`. 
+
+Fablo `init` command takes a couple of optional parameters (the order does not matter):
 * Option `node` makes Fablo to generate a sample Node.js chaincode as well.
 * Option `rest` enables simple REST API with [Fablo REST](https://github.com/fablo-io/fablo-rest) as standalone Docker container.
-* Option `dev` enables running peers in dev mode (so the hot reload for chaincode is possible).
+* Option `dev` enables chaincode hot reload mode.
 * Option `gateway` makes Fablo generate a sample Node.js server that connects to the gateway.
 
 Sample command:
@@ -91,9 +94,6 @@ Sample command:
 ```bash
 fablo init node dev
 ```
-
-Generated `fablo-config.json` file uses single node Solo consensus and no TLS support.
-This is the simplest way to start with Hyperledger Fabric, since Raft consensus requires TLS and TLS itself adds a lot of complexity to the blockchain network and integration with it.
 
 ### generate
 
@@ -162,7 +162,7 @@ fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
 ```
 - `outputFile.mmd`: (optional) Path to the output Mermaid file. Defaults to `network-topology.mmd`.
 
-#### Example
+Sample command:
 
 ```bash
 fablo export-network-topology fablo-config.json network-topology.mmd
@@ -258,26 +258,37 @@ Gets the instantiated or installed chaincodes in the specified channel or peer.
 fablo chaincodes list <peer> <channel>
 ```
 
-### Running chaincodes in dev mode
+### Achieving chaincode hot reload
 
-Hyperledger Fabric allows to run peers in [dev mode](https://hyperledger-fabric.readthedocs.io/en/release-2.4/peer-chaincode-devmode.html) in order to allow simple develop of chaincodes.
+Hot reload of chaincode code is a way to speed up the development.
 In this case chaincodes do not need to be upgraded each time, but they are run locally.
-This feature allows hot reload of chaincode code and speeds up the development a lot.
 
-Fablo will run peers in dev mode when `global.peerDevMode` is set to `true`.
-Note: in this case TLS has to be disabled, otherwise config validation fails.
+Fablo supports two options for achieving hot code reload in chaincodes:
+1. Using Hyperledger Fabric [peer dev mode](https://hyperledger-fabric.readthedocs.io/en/release-2.4/peer-chaincode-devmode.html).
+2. Using CCaaS chaincode type with chaincode process running inside the container.
 
-#### For Node.js Chaincode:
+The peer dev mode approach is simpler but there are some trade-offs.
+
+| Peer dev mode | CCaaS |
+|---------------|-------|
+| You run the chaincode process on your local  (simpler setup) | Fablo runs the process in CCaaS container with chaincode volume mounted |
+| non-TLS only  | supports TLS |
+| global per network | set for individual chaincodes |
+
+#### Peer dev mode
 
 The simplest way of trying Fablo with dev mode is as follows:
 
-1. Execute `fablo init node dev`.
-   It will initialize Fablo config file with sample node chaincode and dev mode enabled.
-   In this case Fablo config file has `global.peerDevMode` set to `true`, and the `package.json` file for sample Node.js chaincode has a script for running chaincode in dev mode (`start:dev`).
+1. Ensure you have `global.peerDevMode` in `fablo-config.json` to `true`, and `global.tls` to false.
 2. Start the network with `fablo up`.
    Because dev mode is enabled, chaincode containers don't start.
    Instead, Fablo approves and commits chaincode definitions from Fablo config file.
-3. Npm install and start the sample chaincode with:
+3. Start the chaincode process locally.
+   Note: If you have multiple peers you want to use, you need to start a separate chaincode process for each peer.
+
+**For Node.js chaincode:**
+
+Npm install and start the sample chaincode with:
    ```bash
    (cd chaincodes/chaincode-kv-node && nvm use && npm i && npm run start:watch)
    ```
@@ -293,32 +304,21 @@ The relevant scripts in `package.json` look like:
     ...
   },
 ```
-**Worth considering for Node.js chaincode:**
-* If you want chaincode to be running on multiple peers, you need to start it multiple times, specifying different `--peer.address`
-* In case of errors ensure you have the same `--chaincode-id-name` as `CC_PACKAGE_ID` in Fablo output.
 
-Feel free to update this scripts to adjust it to your chaincode definition.
+**For Java Chaincode:**
 
+Build and run the Java chaincode locally. As a sample you may use the chaincode from the Fablo source code from the `samples/chaincodes/java-chaincode` directory. Ensure a proper relative path is provided in Fablo config.
 
-#### For Java Chaincode:
+```bash
+cd samples/chaincodes/java-chaincode
+./run-dev.sh
+```
 
-To run Java chaincode in dev mode:
-
-1. Make sure your Fablo config has `global.peerDevMode` set to `true` and TLS disabled.
-
-2. Start the network with `fablo up`.
-
-3. Build and run the Java chaincode locally. As a sample you may use the chaincode from the Fablo source code from the `samples/chaincodes/java-chaincode` directory. Ensure a proper relative path is provided in Fablo config.
-   ```bash
-   cd samples/chaincodes/java-chaincode
-   ./run-dev.sh
-   ```
-
-   The `run-dev.sh` script will:
-   - Build the chaincode using Gradle's shadowJar task
-   - Automatically detect the peer's IP address from the Docker container
-   - Start the chaincode with debug logging enabled
-   - Connect to the peer at port 7051
+The `run-dev.sh` script will:
+- Build the chaincode using Gradle's shadowJar task
+- Automatically detect the peer's IP address from the Docker container
+- Start the chaincode with debug logging enabled
+- Connect to the peer at port 7051
 
 For local development and review:
 - The chaincode will run with the name `simple-asset:1.0`
@@ -326,10 +326,44 @@ For local development and review:
 - You can modify the Java code and rebuild/restart to see changes
 - The peer connection is automatically configured using the Docker container's IP
 
-**Worth considering for Java chaincode:**
-- If you want the chaincode running on multiple peers, start multiple instances with different `CORE_PEER_ADDRESS` values
-- Ensure `CORE_CHAINCODE_ID_NAME` matches the chaincode name and version in your Fablo config (for instance `chaincode1:0.0.1`)
-- The Java chaincode uses Gradle's ShadowJar plugin to package all dependencies into a single JAR file
+### CCaaS to achieve chaincode hot reload
+
+The way to achieve hot reload for both TLS and non-TLS setups it to use CCaaS feature in combination with `chaincodeMountPath` and `chaincodeStartCommand` parameters.
+This way you can start chaincode processes in a CCaaS containers while having chaincode source code mounted, and reloading when the code changes.
+
+This approach has several benefits:
+* It works both for TLS and non-TLS
+* You may have only some of the chaincode running in hot reload mode while the other ones in a regular containers
+* Fablo manages starting chaincode processes
+
+You may init a network with sample setup by executing the `fablo init` command:
+
+```
+fablo init dev node
+```
+
+It produces the following chaincode configuration:
+
+```json
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "channel": "my-channel1",
+      "lang": "ccaas",
+      "image": "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+      "chaincodeMountPath": "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+      "chaincodeStartCommand": "npm run start:watch:ccaas",
+      "privateData": []
+    }
+  ],
+  "hooks": {
+    "postGenerate": "npm i --prefix ./chaincodes/chaincode-kv-node"
+  }
+```
+
+You may find a full end to end example in one of our test scripts [test-01-v2-simple.sh](e2e-network/docker/test-01-v2-simple.sh).
+
 
 ## Channel scripts
 
@@ -551,46 +585,6 @@ The other available parameters for entries in `chaincodes` array are:
 * `chaincodeMountPath` (`ccaas` only) - chaincode mount path. If it is provided, then the given directory is mounted inside the Docker container, and it becomes the container working directory.
 * `chaincodeStartCommand` (`ccaas` only) - chaincode start command. If it is provided, then this command is used as a Docker container command.
 
-#### Peer dev mode and chaincode hot reload
-
-Fablo supports peer dev mode for non-TLS setup only, which is a way to achieve chaincode hot code reload.
-In this case you need to start chaincode processes manually on your local machine.
-
-The way to achieve hot reload for both TLS and non-TLS setups it to use CCaaS feature in combination with `chaincodeMountPath` and `chaincodeStartCommand` parameters.
-This way you can start chaincode processes in a CCaaS containers while having chaincode source code mounted, and reloading when the code changes.
-
-This approach has several benefits:
-* It works both for TLS and non-TLS
-* You may have only some of the chaincode running in hot reload mode while the other ones in a regular containers
-* Fablo manages starting chaincode processes
-
-You may init a network with sample setup by executing the `fablo init` command:
-
-```
-fablo init dev node
-```
-
-It produces the following chaincode configuration:
-
-```json
-  "chaincodes": [
-    {
-      "name": "chaincode1",
-      "version": "0.0.1",
-      "channel": "my-channel1",
-      "lang": "ccaas",
-      "image": "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-      "chaincodeMountPath": "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
-      "chaincodeStartCommand": "npm run start:watch:ccaas",
-      "privateData": []
-    }
-  ],
-  "hooks": {
-    "postGenerate": "npm i --prefix ./chaincodes/chaincode-kv-node"
-  }
-```
-
-You may find a full end to end example in one of our test scripts [test-01-v2-simple.sh](e2e-network/docker/test-01-v2-simple.sh).
 
 
 ### hooks
@@ -689,7 +683,6 @@ Provide for your organization `"tools": { "explorer": true }`, if you want to us
 ## Contributing
 
 We'd love to have you contribute! Please refer to our [contribution guidelines](https://github.com/hyperledger-labs/fablo/blob/main/CONTRIBUTING.md) for details.
-
 
 ## Testimonials
 
