@@ -362,7 +362,7 @@ This produces the following chaincode configuration:
   }
 ```
 
-You can find a full end-to-end example in one of our test scripts [test-01-v2-simple.sh](e2e-network/docker/test-01-v2-simple.sh).
+You can find a full end-to-end example in one of our test scripts [test-01-v3-simple.sh](e2e-network/docker/test-01-v3-simple.sh).
 
 
 ## Channel scripts
