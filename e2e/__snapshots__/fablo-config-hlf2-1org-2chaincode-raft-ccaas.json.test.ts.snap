@@ -1,5 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+  "global": {
+    "fabricVersion": "3.0.0",
+    "tls": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "my-channel2",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel1",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    },
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel2",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    }
+  ],
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
+  }
+}
+"
+`;
+
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
 "/config
 /crypto-config
@@ -1593,12 +1678,21 @@ chaincodeInvoke() {
   peer_certs="$1"
   peer_certs="\${peer_certs//peer0.org1.example.com/crypto/peers/peer0.org1.example.com/tls/ca.crt}"
 
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
   if [ "$2" = "my-channel1" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
   if [ "$2" = "my-channel2" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
+
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
+  fi
+
   peerChaincodeInvokeTls "$cli" "$peer_addresses" "$2" "$3" "$4" "$5" "$peer_certs" "$ca_cert"
 }
 
@@ -1640,14 +1734,20 @@ chaincodeQuery() {
     exit 1
   fi
 
-  if [ "$channel_name" = "my-channel1" ]; then
+  # Initialize ca_cert to prevent using an uninitialized variable if the channel isn't found
+  local ca_cert=""
+
+  if [ "$2" = "my-channel1" ]; then
+    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  fi
+  if [ "$2" = "my-channel2" ]; then
     ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
   fi
 
-  if [ "$channel_name" = "my-channel2" ]; then
-    ca_cert="crypto-orderer/tlsca.orderer.example.com-cert.pem"
+  if [ -z "$ca_cert" ]; then
+    echo "Error: Channel '$2' not found or is not associated with an orderer group."
+    exit 1
   fi
-
   peerChaincodeQueryTls "$cli" "$peer_address" "$channel_name" "$chaincode_name" "$command" "$transient" "$peer_cert" "$ca_cert"
 
 }
@@ -1792,7 +1892,7 @@ installChaincodes() {
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1"
+    chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1" "org1.example.com"
     printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel1_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1"
@@ -1806,7 +1906,7 @@ installChaincodes() {
   if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2"
+    chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2" "org1.example.com"
     printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel2" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
     startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel2_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1"
@@ -1836,7 +1936,7 @@ installChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1" "org1.example.com"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel1_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1"
@@ -1852,7 +1952,7 @@ installChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2" "org1.example.com"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel2" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel2_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1"
@@ -1888,7 +1988,7 @@ upgradeChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "my-channel1" "org1.example.com"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel1_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "17041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1"
@@ -1904,7 +2004,7 @@ upgradeChaincode() {
   if [ "$chaincodeName" = "chaincode1" ]; then
     if [ -n "$(ls "$CHAINCODES_BASE_DIR/")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2"
+      chaincodePackageCCaaS "cli.org1.example.com" "peer0.org1.example.com" "chaincode1" "$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "my-channel2" "org1.example.com"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode1" "$version" "my-channel2" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
       startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "my-channel2_chaincode1_$version" "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0" "27041" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1"
@@ -2729,6 +2829,7 @@ chaincodePackageCCaaS() {
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
   local CHANNEL_NAME=$9
+  local ORG_DOMAIN=\${10}
   local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
@@ -2740,6 +2841,7 @@ chaincodePackageCCaaS() {
   inputLog "TLS_ENABLED: $TLS_ENABLED"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
 
   local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
@@ -2752,7 +2854,7 @@ chaincodePackageCCaaS() {
 
   if [ "$TLS_ENABLED" = true ]; then
     # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
-    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/$ORG_DOMAIN/peers/$PEER_ADDRESS/tls"
     local ROOT_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/ca.crt")
     local SERVER_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.crt")
     local SERVER_KEY=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.key")
@@ -3696,6 +3798,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
 
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper files from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",

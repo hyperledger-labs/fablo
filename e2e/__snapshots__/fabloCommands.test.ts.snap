@@ -14,9 +14,6 @@ Validation warnings count: 0
         "port": 7010
       }
     },
-    "monitoring": {
-      "loglevel": "debug"
-    },
     "fabricToolsVersion": "2.5.12",
     "fabricCaVersion": "1.5.5",
     "fabricCcenvVersion": "2.5.12",
@@ -28,6 +25,9 @@ Validation warnings count: 0
     "paths": {
       "fabloConfig": "<absolute path>",
       "chaincodesBaseDir": "<absolute path>"
+    },
+    "monitoring": {
+      "loglevel": "info"
     },
     "capabilities": {
       "channel": "V2_0",
@@ -424,8 +424,7 @@ Validation warnings count: 0
           "logging": {
             "error": "console",
             "warn": "console",
-            "info": "console",
-            "debug": "console"
+            "info": "console"
           }
         }
       }
@@ -609,8 +608,7 @@ Validation warnings count: 0
               "logging": {
                 "error": "console",
                 "warn": "console",
-                "info": "console",
-                "debug": "console"
+                "info": "console"
               }
             }
           }
@@ -857,8 +855,7 @@ Validation warnings count: 0
             "logging": {
               "error": "console",
               "warn": "console",
-              "info": "console",
-              "debug": "console"
+              "info": "console"
             }
           }
         }
@@ -954,8 +951,7 @@ Validation warnings count: 0
               "logging": {
                 "error": "console",
                 "warn": "console",
-                "info": "console",
-                "debug": "console"
+                "info": "console"
               }
             }
           }
@@ -1202,8 +1198,7 @@ Validation warnings count: 0
             "logging": {
               "error": "console",
               "warn": "console",
-              "info": "console",
-              "debug": "console"
+              "info": "console"
             }
           }
         }
@@ -1311,8 +1306,7 @@ Validation warnings count: 0
               "logging": {
                 "error": "console",
                 "warn": "console",
-                "info": "console",
-                "debug": "console"
+                "info": "console"
               }
             }
           }
@@ -1561,8 +1555,7 @@ Validation warnings count: 0
             "logging": {
               "error": "console",
               "warn": "console",
-              "info": "console",
-              "debug": "console"
+              "info": "console"
             }
           }
         }
@@ -1665,8 +1658,7 @@ Validation warnings count: 0
                 "logging": {
                   "error": "console",
                   "warn": "console",
-                  "info": "console",
-                  "debug": "console"
+                  "info": "console"
                 }
               }
             }
@@ -1913,8 +1905,7 @@ Validation warnings count: 0
               "logging": {
                 "error": "console",
                 "warn": "console",
-                "info": "console",
-                "debug": "console"
+                "info": "console"
               }
             }
           }
@@ -2008,8 +1999,7 @@ Validation warnings count: 0
             "logging": {
               "error": "console",
               "warn": "console",
-              "info": "console",
-              "debug": "console"
+              "info": "console"
             }
           }
         }
@@ -2023,8 +2013,8 @@ Validation warnings count: 0
       "version": "0.0.1",
       "lang": "java",
       "channel": {
-        "name": "my-channel2",
-        "profileName": "MyChannel2",
+        "name": "my-channel3",
+        "profileName": "MyChannel3",
         "orgs": [
           {
             "name": "Org1",
@@ -2033,6 +2023,18 @@ Validation warnings count: 0
             "cryptoConfigFileName": "crypto-config-org1",
             "peersCount": 2,
             "peers": [
+              {
+                "name": "peer0",
+                "address": "peer0.org1.example.com",
+                "db": {
+                  "type": "LevelDb"
+                },
+                "isAnchorPeer": true,
+                "port": 7061,
+                "fullAddress": "peer0.org1.example.com:7061",
+                "couchDbExposePort": 5120,
+                "gatewayEnabled": true
+              },
               {
                 "name": "peer1",
                 "address": "peer1.org1.example.com",
@@ -2087,15 +2089,15 @@ Validation warnings count: 0
               "address": "cli.org1.example.com"
             },
             "headPeer": {
-              "name": "peer1",
-              "address": "peer1.org1.example.com",
+              "name": "peer0",
+              "address": "peer0.org1.example.com",
               "db": {
                 "type": "LevelDb"
               },
               "isAnchorPeer": true,
-              "port": 7062,
-              "fullAddress": "peer1.org1.example.com:7062",
-              "couchDbExposePort": 5121,
+              "port": 7061,
+              "fullAddress": "peer0.org1.example.com:7061",
+              "couchDbExposePort": 5120,
               "gatewayEnabled": true
             },
             "ordererGroups": [],
@@ -2112,8 +2114,7 @@ Validation warnings count: 0
                 "logging": {
                   "error": "console",
                   "warn": "console",
-                  "info": "console",
-                  "debug": "console"
+                  "info": "console"
                 }
               }
             }
@@ -2125,6 +2126,18 @@ Validation warnings count: 0
             "cryptoConfigFileName": "crypto-config-org2",
             "peersCount": 2,
             "peers": [
+              {
+                "name": "peer0",
+                "address": "peer0.org2.example.com",
+                "db": {
+                  "type": "LevelDb"
+                },
+                "isAnchorPeer": true,
+                "port": 7081,
+                "fullAddress": "peer0.org2.example.com:7081",
+                "couchDbExposePort": 5140,
+                "gatewayEnabled": true
+              },
               {
                 "name": "peer1",
                 "address": "peer1.org2.example.com",
@@ -2179,15 +2192,15 @@ Validation warnings count: 0
               "address": "cli.org2.example.com"
             },
             "headPeer": {
-              "name": "peer1",
-              "address": "peer1.org2.example.com",
+              "name": "peer0",
+              "address": "peer0.org2.example.com",
               "db": {
                 "type": "LevelDb"
               },
               "isAnchorPeer": true,
-              "port": 7082,
-              "fullAddress": "peer1.org2.example.com:7082",
-              "couchDbExposePort": 5141,
+              "port": 7081,
+              "fullAddress": "peer0.org2.example.com:7081",
+              "couchDbExposePort": 5140,
               "gatewayEnabled": true
             },
             "ordererGroups": [],
@@ -2195,84 +2208,62 @@ Validation warnings count: 0
           }
         ],
         "ordererGroup": {
-          "name": "group1",
-          "consensus": "etcdraft",
-          "configtxOrdererDefaults": "Group1Defaults",
-          "profileName": "Group1Genesis",
-          "genesisBlockName": "Group1Genesis.block",
+          "name": "group2",
+          "consensus": "solo",
+          "configtxOrdererDefaults": "Group2Defaults",
+          "profileName": "Group2Genesis",
+          "genesisBlockName": "Group2Genesis.block",
           "hostingOrgs": [
-            "Orderer1"
+            "Orderer2"
           ],
           "orderers": [
             {
-              "name": "orderer0.group1",
-              "address": "orderer0.group1.orderer1.com",
-              "orgName": "Orderer1",
-              "orgMspName": "Orderer1MSP",
-              "domain": "orderer1.com",
-              "consensus": "etcdraft",
+              "name": "orderer0.group2",
+              "address": "orderer0.group2.orderer2.com",
+              "orgName": "Orderer2",
+              "orgMspName": "Orderer2MSP",
+              "domain": "orderer2.com",
+              "consensus": "solo",
               "adminPort": 7053,
-              "port": 7030,
-              "fullAddress": "orderer0.group1.orderer1.com:7030"
-            },
-            {
-              "name": "orderer1.group1",
-              "address": "orderer1.group1.orderer1.com",
-              "orgName": "Orderer1",
-              "orgMspName": "Orderer1MSP",
-              "domain": "orderer1.com",
-              "consensus": "etcdraft",
-              "adminPort": 7053,
-              "port": 7031,
-              "fullAddress": "orderer1.group1.orderer1.com:7031"
-            },
-            {
-              "name": "orderer2.group1",
-              "address": "orderer2.group1.orderer1.com",
-              "orgName": "Orderer1",
-              "orgMspName": "Orderer1MSP",
-              "domain": "orderer1.com",
-              "consensus": "etcdraft",
-              "adminPort": 7053,
-              "port": 7032,
-              "fullAddress": "orderer2.group1.orderer1.com:7032"
+              "port": 7050,
+              "fullAddress": "orderer0.group2.orderer2.com:7050"
             }
           ],
           "ordererHeads": [
             {
-              "name": "orderer0.group1",
-              "address": "orderer0.group1.orderer1.com",
-              "orgName": "Orderer1",
-              "orgMspName": "Orderer1MSP",
-              "domain": "orderer1.com",
-              "consensus": "etcdraft",
+              "name": "orderer0.group2",
+              "address": "orderer0.group2.orderer2.com",
+              "orgName": "Orderer2",
+              "orgMspName": "Orderer2MSP",
+              "domain": "orderer2.com",
+              "consensus": "solo",
               "adminPort": 7053,
-              "port": 7030,
-              "fullAddress": "orderer0.group1.orderer1.com:7030"
+              "port": 7050,
+              "fullAddress": "orderer0.group2.orderer2.com:7050"
             }
           ],
           "ordererHead": {
-            "name": "orderer0.group1",
-            "address": "orderer0.group1.orderer1.com",
-            "orgName": "Orderer1",
-            "orgMspName": "Orderer1MSP",
-            "domain": "orderer1.com",
-            "consensus": "etcdraft",
+            "name": "orderer0.group2",
+            "address": "orderer0.group2.orderer2.com",
+            "orgName": "Orderer2",
+            "orgMspName": "Orderer2MSP",
+            "domain": "orderer2.com",
+            "consensus": "solo",
             "adminPort": 7053,
-            "port": 7030,
-            "fullAddress": "orderer0.group1.orderer1.com:7030"
+            "port": 7050,
+            "fullAddress": "orderer0.group2.orderer2.com:7050"
           }
         },
         "ordererHead": {
-          "name": "orderer0.group1",
-          "address": "orderer0.group1.orderer1.com",
-          "orgName": "Orderer1",
-          "orgMspName": "Orderer1MSP",
-          "domain": "orderer1.com",
-          "consensus": "etcdraft",
+          "name": "orderer0.group2",
+          "address": "orderer0.group2.orderer2.com",
+          "orgName": "Orderer2",
+          "orgMspName": "Orderer2MSP",
+          "domain": "orderer2.com",
+          "consensus": "solo",
           "adminPort": 7053,
-          "port": 7030,
-          "fullAddress": "orderer0.group1.orderer1.com:7030"
+          "port": 7050,
+          "fullAddress": "orderer0.group2.orderer2.com:7050"
         },
         "instantiatingOrg": {
           "name": "Org1",
@@ -2281,6 +2272,18 @@ Validation warnings count: 0
           "cryptoConfigFileName": "crypto-config-org1",
           "peersCount": 2,
           "peers": [
+            {
+              "name": "peer0",
+              "address": "peer0.org1.example.com",
+              "db": {
+                "type": "LevelDb"
+              },
+              "isAnchorPeer": true,
+              "port": 7061,
+              "fullAddress": "peer0.org1.example.com:7061",
+              "couchDbExposePort": 5120,
+              "gatewayEnabled": true
+            },
             {
               "name": "peer1",
               "address": "peer1.org1.example.com",
@@ -2335,15 +2338,15 @@ Validation warnings count: 0
             "address": "cli.org1.example.com"
           },
           "headPeer": {
-            "name": "peer1",
-            "address": "peer1.org1.example.com",
+            "name": "peer0",
+            "address": "peer0.org1.example.com",
             "db": {
               "type": "LevelDb"
             },
             "isAnchorPeer": true,
-            "port": 7062,
-            "fullAddress": "peer1.org1.example.com:7062",
-            "couchDbExposePort": 5121,
+            "port": 7061,
+            "fullAddress": "peer0.org1.example.com:7061",
+            "couchDbExposePort": 5120,
             "gatewayEnabled": true
           },
           "ordererGroups": [],
@@ -2360,8 +2363,7 @@ Validation warnings count: 0
               "logging": {
                 "error": "console",
                 "warn": "console",
-                "info": "console",
-                "debug": "console"
+                "info": "console"
               }
             }
           }
@@ -2376,6 +2378,18 @@ Validation warnings count: 0
         "cryptoConfigFileName": "crypto-config-org1",
         "peersCount": 2,
         "peers": [
+          {
+            "name": "peer0",
+            "address": "peer0.org1.example.com",
+            "db": {
+              "type": "LevelDb"
+            },
+            "isAnchorPeer": true,
+            "port": 7061,
+            "fullAddress": "peer0.org1.example.com:7061",
+            "couchDbExposePort": 5120,
+            "gatewayEnabled": true
+          },
           {
             "name": "peer1",
             "address": "peer1.org1.example.com",
@@ -2430,15 +2444,15 @@ Validation warnings count: 0
           "address": "cli.org1.example.com"
         },
         "headPeer": {
-          "name": "peer1",
-          "address": "peer1.org1.example.com",
+          "name": "peer0",
+          "address": "peer0.org1.example.com",
           "db": {
             "type": "LevelDb"
           },
           "isAnchorPeer": true,
-          "port": 7062,
-          "fullAddress": "peer1.org1.example.com:7062",
-          "couchDbExposePort": 5121,
+          "port": 7061,
+          "fullAddress": "peer0.org1.example.com:7061",
+          "couchDbExposePort": 5120,
           "gatewayEnabled": true
         },
         "ordererGroups": [],
@@ -2455,8 +2469,7 @@ Validation warnings count: 0
             "logging": {
               "error": "console",
               "warn": "console",
-              "info": "console",
-              "debug": "console"
+              "info": "console"
             }
           }
         }

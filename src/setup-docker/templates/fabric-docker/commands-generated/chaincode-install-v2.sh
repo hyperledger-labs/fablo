@@ -19,7 +19,8 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= instance.port %>" <% -%>
       "<%= instance.containerName %>" <% -%>
       "<%= global.tls %>" <% -%>
-      "<%= chaincode.channel.name %>"
+      "<%= chaincode.channel.name %>" <% -%>
+      "<%= instance.orgDomain %>"
   <% }) -%>
 <% } else { -%>
   chaincodeBuild <% -%>
