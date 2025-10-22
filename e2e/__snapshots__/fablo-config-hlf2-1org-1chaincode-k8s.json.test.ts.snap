@@ -547,6 +547,14 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
+echo "Executing post-start hook"
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = `
 "graph TD
 
@@ -583,6 +591,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-k8s.json should create proper
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/scripts/chaincode-functions.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/fabric-k8s/scripts/util.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-k8s.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

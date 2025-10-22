@@ -589,15 +589,25 @@ Other available parameters for entries in the `chaincodes` array are:
 
 ### hooks
 
-Hooks in Fablo are Bash commands to be executed after a specific event.
-Currently, Fablo supports only one kind of hook: `postGenerate`.
-It will be executed each time after the network config is generated -- after the `./fablo generate` command (executed separately or automatically by `./fablo up`).
+Hooks in Fablo are Bash commands to be executed after specific events.
+Supported hooks:
 
-The following hook example will change `MaxMessageCount` to 1 in the generated Hyperledger Fabric config:
+- `postGenerate` — executed after the network config is generated (after `./fablo generate`, executed separately or automatically by `./fablo up`).
+- `postStart` — executed after the network is started (after `./fablo up` or `./fablo start`).
+
+Example `postGenerate` hook that changes `MaxMessageCount` to 1 in generated Hyperledger Fabric config:
 
 ```json
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  }
+```
+
+Example `postStart` hook that waits for peers to be ready or performs any additional bootstrap actions:
+
+```json
+  "hooks": {
+    "postStart": "echo 'Network started' && ./fablo-target/fabric-docker.sh channel list org1 peer0"
   }
 ```
 

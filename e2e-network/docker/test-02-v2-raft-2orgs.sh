@@ -24,6 +24,10 @@ networkUp() {
   expectCommand "cat \"$TEST_TMP/fablo-target/fabric-config/configtx.yaml\"" "MaxMessageCount: 1$"
 
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
+  
+# verify if post start hook was called
+  expectCommand "cat \"$TEST_TMP/fablo-target/container-list.txt\"" "peer0.org1.example.com"
+  echo "✅ All expected containers found in the log"
 }
 
 dumpLogs() {

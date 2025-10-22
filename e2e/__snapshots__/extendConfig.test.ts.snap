@@ -610,6 +610,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -1438,6 +1439,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -2242,6 +2244,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -3611,6 +3614,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -5893,6 +5897,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'",
   },
   "orderedHeadsDistinct": [
     {
@@ -8489,6 +8494,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -10335,6 +10341,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -11224,6 +11231,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -12184,6 +12192,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -13621,6 +13630,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -14325,6 +14335,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {

@@ -82,6 +82,7 @@ chaincodes:
 hooks:
   # changes MaxMessageCount to 1
   postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
+  postStart: "docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'"
 "
 `;
 
@@ -6509,6 +6510,16 @@ perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-
 "
 `;
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
+echo "Executing post-start hook"
+
+docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' >./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'
+"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "graph TD
 
@@ -6610,6 +6621,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

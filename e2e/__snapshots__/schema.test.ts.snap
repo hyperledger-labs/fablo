@@ -344,6 +344,12 @@ exports[`schema should match snapshot 1`] = `
           "title": "Post generate hook",
           "type": "string",
         },
+        "postStart": {
+          "$id": "#/properties/hooks/postStart",
+          "description": "Operation to run after the network is started (after 'up' or 'start')",
+          "title": "Post start hook",
+          "type": "string",
+        },
       },
       "title": "Hooks",
       "type": "object",

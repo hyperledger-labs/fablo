@@ -79,3 +79,4 @@ chaincodes:
 hooks:
   # changes MaxMessageCount to 1
   postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  postStart: "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'"
