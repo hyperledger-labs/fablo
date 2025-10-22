@@ -62,6 +62,8 @@ export interface ChaincodeJson {
   directory?: string;
   image?: string;
   port?: number;
+  chaincodeMountPath?: string;
+  chaincodeStartCommand?: string;
   privateData: PrivateDataJson[];
 }
 

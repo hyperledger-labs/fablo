@@ -2494,14 +2494,14 @@ Validation warnings count: 0
 ===========================================================
 {
   "global": {
-    "fabricVersion": "2.5.12",
-    "tls": false,
+    "fabricVersion": "3.1.0",
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker",
-    "fabricToolsVersion": "2.5.12",
+    "fabricToolsVersion": "3.0.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "2.5.12",
-    "fabricBaseosVersion": "2.5.12",
+    "fabricCcenvVersion": "3.1.0",
+    "fabricBaseosVersion": "3.1.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
@@ -2513,18 +2513,18 @@ Validation warnings count: 0
       "loglevel": "info"
     },
     "capabilities": {
-      "channel": "V2_0",
+      "channel": "V3_0",
       "orderer": "V2_0",
       "application": "V2_5",
-      "isV2": true,
-      "isV3": false
+      "isV2": false,
+      "isV3": true
     },
     "tools": {}
   },
   "ordererGroups": [
     {
       "name": "group1",
-      "consensus": "solo",
+      "consensus": "BFT",
       "configtxOrdererDefaults": "Group1Defaults",
       "profileName": "Group1Genesis",
       "genesisBlockName": "Group1Genesis.block",
@@ -2538,10 +2538,21 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "BFT",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
+        },
+        {
+          "name": "orderer1.group1",
+          "address": "orderer1.group1.orderer.example.com",
+          "orgName": "Orderer",
+          "orgMspName": "OrdererMSP",
+          "domain": "orderer.example.com",
+          "consensus": "BFT",
+          "adminPort": 7053,
+          "port": 7031,
+          "fullAddress": "orderer1.group1.orderer.example.com:7031"
         }
       ],
       "ordererHeads": [
@@ -2551,7 +2562,7 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "BFT",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2563,7 +2574,7 @@ Validation warnings count: 0
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
-        "consensus": "solo",
+        "consensus": "BFT",
         "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2577,7 +2588,7 @@ Validation warnings count: 0
       "orgName": "Orderer",
       "orgMspName": "OrdererMSP",
       "domain": "orderer.example.com",
-      "consensus": "solo",
+      "consensus": "BFT",
       "adminPort": 7053,
       "port": 7030,
       "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2609,7 +2620,7 @@ Validation warnings count: 0
       "ordererGroups": [
         {
           "name": "group1",
-          "consensus": "solo",
+          "consensus": "BFT",
           "configtxOrdererDefaults": "Group1Defaults",
           "profileName": "Group1Genesis",
           "genesisBlockName": "Group1Genesis.block",
@@ -2623,10 +2634,21 @@ Validation warnings count: 0
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
-              "consensus": "solo",
+              "consensus": "BFT",
               "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
+            },
+            {
+              "name": "orderer1.group1",
+              "address": "orderer1.group1.orderer.example.com",
+              "orgName": "Orderer",
+              "orgMspName": "OrdererMSP",
+              "domain": "orderer.example.com",
+              "consensus": "BFT",
+              "adminPort": 7053,
+              "port": 7031,
+              "fullAddress": "orderer1.group1.orderer.example.com:7031"
             }
           ],
           "ordererHeads": [
@@ -2636,7 +2658,7 @@ Validation warnings count: 0
               "orgName": "Orderer",
               "orgMspName": "OrdererMSP",
               "domain": "orderer.example.com",
-              "consensus": "solo",
+              "consensus": "BFT",
               "adminPort": 7053,
               "port": 7030,
               "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2829,7 +2851,7 @@ Validation warnings count: 0
       ],
       "ordererGroup": {
         "name": "group1",
-        "consensus": "solo",
+        "consensus": "BFT",
         "configtxOrdererDefaults": "Group1Defaults",
         "profileName": "Group1Genesis",
         "genesisBlockName": "Group1Genesis.block",
@@ -2843,10 +2865,21 @@ Validation warnings count: 0
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
-            "consensus": "solo",
+            "consensus": "BFT",
             "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
+          },
+          {
+            "name": "orderer1.group1",
+            "address": "orderer1.group1.orderer.example.com",
+            "orgName": "Orderer",
+            "orgMspName": "OrdererMSP",
+            "domain": "orderer.example.com",
+            "consensus": "BFT",
+            "adminPort": 7053,
+            "port": 7031,
+            "fullAddress": "orderer1.group1.orderer.example.com:7031"
           }
         ],
         "ordererHeads": [
@@ -2856,7 +2889,7 @@ Validation warnings count: 0
             "orgName": "Orderer",
             "orgMspName": "OrdererMSP",
             "domain": "orderer.example.com",
-            "consensus": "solo",
+            "consensus": "BFT",
             "adminPort": 7053,
             "port": 7030,
             "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2868,7 +2901,7 @@ Validation warnings count: 0
           "orgName": "Orderer",
           "orgMspName": "OrdererMSP",
           "domain": "orderer.example.com",
-          "consensus": "solo",
+          "consensus": "BFT",
           "adminPort": 7053,
           "port": 7030,
           "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2880,7 +2913,7 @@ Validation warnings count: 0
         "orgName": "Orderer",
         "orgMspName": "OrdererMSP",
         "domain": "orderer.example.com",
-        "consensus": "solo",
+        "consensus": "BFT",
         "adminPort": 7053,
         "port": 7030,
         "fullAddress": "orderer0.group1.orderer.example.com:7030"
@@ -2989,8 +3022,8 @@ exports[`init should init simple fablo config 1`] = `
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
   "global": {
-    "fabricVersion": "2.5.12",
-    "tls": false,
+    "fabricVersion": "3.1.0",
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -3008,12 +3041,11 @@ exports[`init should init simple fablo config 1`] = `
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
-          "instances": 1,
+          "type": "BFT",
+          "instances": 2,
           "prefix": "orderer"
         }
-      ],
-      "tools": {}
+      ]
     },
     {
       "organization": {
@@ -3030,8 +3062,7 @@ exports[`init should init simple fablo config 1`] = `
         "instances": 2,
         "db": "LevelDb",
         "prefix": "peer"
-      },
-      "tools": {}
+      }
     }
   ],
   "channels": [
@@ -3057,8 +3088,8 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
   "global": {
-    "fabricVersion": "2.5.12",
-    "tls": false,
+    "fabricVersion": "3.1.0",
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -3076,12 +3107,11 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
-          "instances": 1,
+          "type": "BFT",
+          "instances": 2,
           "prefix": "orderer"
         }
-      ],
-      "tools": {}
+      ]
     },
     {
       "organization": {
@@ -3098,8 +3128,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
         "instances": 2,
         "db": "LevelDb",
         "prefix": "peer"
-      },
-      "tools": {}
+      }
     }
   ],
   "channels": [
@@ -3120,8 +3149,8 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "node",
       "channel": "my-channel1",
+      "lang": "node",
       "directory": "./chaincodes/chaincode-kv-node",
       "privateData": []
     }
@@ -3134,8 +3163,8 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
   "global": {
-    "fabricVersion": "2.5.12",
-    "tls": false,
+    "fabricVersion": "3.1.0",
+    "tls": true,
     "peerDevMode": false,
     "engine": "docker"
   },
@@ -3153,8 +3182,8 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
       "orderers": [
         {
           "groupName": "group1",
-          "type": "solo",
-          "instances": 1,
+          "type": "BFT",
+          "instances": 2,
           "prefix": "orderer"
         }
       ],
@@ -3201,8 +3230,8 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
     {
       "name": "chaincode1",
       "version": "0.0.1",
-      "lang": "node",
       "channel": "my-channel1",
+      "lang": "node",
       "directory": "./chaincodes/chaincode-kv-node",
       "privateData": []
     }
