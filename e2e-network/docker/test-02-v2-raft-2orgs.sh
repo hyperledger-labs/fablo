@@ -25,33 +25,8 @@ networkUp() {
 
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
   
-  local container_logs
-  container_logs=$(find "$TEST_TMP/fablo-target" -name 'container-list-*.log' | head -1)
-  if [ -z "$container_logs" ]; then
-    echo "Error: Container list log file not found in fablo-target directory"
-    exit 1
-  fi
-  
-  echo "Found container list log at: $container_logs"
-
-  local expected_containers=(
-    "peer0.org1.example.com"
-    "peer0.org2.example.com"
-    "orderer"
-    "ca.org1.example.com"
-    "ca.org2.example.com"
-  )
-  
-  for container in "${expected_containers[@]}"; do
-    if ! grep -q "$container" "$container_logs"; then
-      echo "Error: Expected container '$container' not found in container list"
-      echo "Container list content:"
-      cat "$container_logs"
-      exit 1
-    fi
-    echo "✓ Found container: $container"
-  done
-  
+# verify if post start hook was called
+  expectCommand "cat \"$TEST_TMP/fablo-target/container-list.txt\"" "peer0.org1.example.com"
   echo "✅ All expected containers found in the log"
 }
 

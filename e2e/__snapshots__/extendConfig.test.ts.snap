@@ -5897,7 +5897,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
-    "postStart": "echo 'Network started' && docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' > ./fablo-target/container-list-$(date +%Y%m%d_%H%M%S).log 2>&1 && echo 'Container list saved into fablo-target directory'",
+    "postStart": "docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'",
   },
   "orderedHeadsDistinct": [
     {
