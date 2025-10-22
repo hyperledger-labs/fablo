@@ -43,7 +43,8 @@ const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
   chaincodes.forEach((chaincode) => {
     const chaincodeKey = `${chaincode.channel}.${chaincode.name}`;
     if (chaincodeKeys.has(chaincodeKey)) {
-      throw new Error(`Duplicate chaincode '${chaincode.name}' found in channel '${chaincode.channel}'. Chaincode names must be unique within a channel.`);
+      const msg = `Duplicate chaincode '${chaincode.name}' found in channel '${chaincode.channel}'. Chaincode names must be unique within a channel.`;
+      throw new Error(msg);
     }
     chaincodeKeys.add(chaincodeKey);
   });
@@ -63,22 +64,28 @@ const extendChaincodesConfig = (
       ? { initRequired: chaincode.initRequired || defaults.chaincode.initRequired }
       : { init: chaincode.init || defaults.chaincode.init };
 
+    const ccaasParams =
+      chaincode.lang === "ccaas"
+        ? { chaincodeMountPath: chaincode.chaincodeMountPath, chaincodeStartCommand: chaincode.chaincodeStartCommand }
+        : {};
+
     const endorsement = chaincode.endorsement ?? defaults.chaincode.endorsement(channel.orgs, network.capabilities);
 
     const privateData = (chaincode.privateData ?? []).map((d) =>
       createPrivateCollectionConfig(network.fabricVersion, channel, d.name, d.orgNames),
     );
-   
-    const privateDataConfigFile = privateData.length > 0 
-      ? `collections/${chaincode.channel}-${chaincode.name}.json` 
-      : undefined;
+
+    const privateDataConfigFile =
+      privateData.length > 0 ? `collections/${chaincode.channel}-${chaincode.name}.json` : undefined;
 
     const peerChaincodeInstances = !chaincode.image
       ? []
       : channel.orgs.flatMap((org) =>
           org.peers.map((peer) => {
             const versionSuffix = `${chaincode.version}`.replace(/[^a-zA-Z0-9_.-]/g, "_");
-            const containerName = `ccaas_${peer.address.replace(/[^a-zA-Z0-9_.-]/g, "_")}_${channel.name}_${chaincode.name}_${versionSuffix}`.toLowerCase();
+            const containerName = `ccaas_${peer.address.replace(/[^a-zA-Z0-9_.-]/g, "_")}_${channel.name}_${
+              chaincode.name
+            }_${versionSuffix}`.toLowerCase();
             return {
               containerName,
               peerAddress: peer.address,
@@ -93,6 +100,19 @@ const extendChaincodesConfig = (
         throw new Error(`Chaincode '${chaincode.name}' of type 'ccaas' must specify an image field`);
       }
     }
+
+    if (chaincode.lang !== "ccaas") {
+      if (!chaincode.directory) {
+        throw new Error(`Chaincode '${chaincode.name}' of type '${chaincode.lang}' must specify a directory field`);
+      }
+      if (chaincode.chaincodeMountPath) {
+        throw new Error(`chaincodeMountPath is not supported for chaincode type '${chaincode.lang}'`);
+      }
+      if (chaincode.chaincodeStartCommand) {
+        throw new Error(`chaincodeStartCommand is not supported for chaincode type '${chaincode.lang}'`);
+      }
+    }
+
     return {
       directory: chaincode.directory,
       name: chaincode.name,
@@ -101,6 +121,7 @@ const extendChaincodesConfig = (
       channel,
       image: chaincode.image,
       ...initParams,
+      ...ccaasParams,
       endorsement,
       instantiatingOrg: channel.instantiatingOrg,
       privateDataConfigFile,
