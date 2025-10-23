@@ -1,3 +1,26 @@
+## 2.4.0
+
+### Features
+* CCaaS dev mode
+  [#622](https://github.com/hyperledger-labs/fablo/pull/622)
+* Support chaincodes with the same name but on different channels
+  [#607](https://github.com/hyperledger-labs/fablo/pull/607)
+* Add post-start hook executed after up/start
+  [#616](https://github.com/hyperledger-labs/fablo/pull/616)
+* Detect changes in `fablo-config.json` to prevent reusing old network by accident
+  [#614](https://github.com/hyperledger-labs/fablo/pull/614)
+
+### Bug Fixes
+* Hardcoded CCaaS cert
+  [#621](https://github.com/hyperledger-labs/fablo/pull/621)
+* Use proper certificates in multiple orderer groups setup
+  [be5e462](https://github.com/hyperledger-labs/fablo/commit/be5e4629550fc74b74a64d472956c9b4dd372363)
+* Restart Explorer once channels are created
+  [#615](https://github.com/hyperledger-labs/fablo/pull/615)
+
+## Documentation
+* Update supported features [#617](https://github.com/hyperledger-labs/fablo/pull/617)
+
 ## 2.3.0
 
 ### Features
