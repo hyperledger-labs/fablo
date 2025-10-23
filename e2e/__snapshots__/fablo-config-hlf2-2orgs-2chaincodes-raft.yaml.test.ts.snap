@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.yaml from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.0/schema.json
 global:
   fabricVersion: 2.5.12
   tls: true
@@ -82,6 +82,7 @@ chaincodes:
 hooks:
   # changes MaxMessageCount to 1
   postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \\"./fablo-target/fabric-config/configtx.yaml\\""
+  postStart: "docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'"
 "
 `;
 
@@ -3568,7 +3569,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"FABLO_VERSION=2.3.0
+"FABLO_VERSION=2.4.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -4361,51 +4362,51 @@ stopNetwork() {
 
 networkDown() {
   printf "Removing chaincode containers & images... \\U1F5D1 \\n"
-  for container in $(docker ps -a | grep "peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer0.org1.example.com.*chaincode1" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer0.org1.example.com-chaincode1*" -q); do
+  for image in $(docker images "peer0.org1.example.com.*chaincode1*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
-  for container in $(docker ps -a | grep "peer0.org2.example.com-chaincode1" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer0.org2.example.com.*chaincode1" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer0.org2.example.com-chaincode1*" -q); do
+  for image in $(docker images "peer0.org2.example.com.*chaincode1*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
-  for container in $(docker ps -a | grep "peer0.org1.example.com-chaincode2" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer0.org1.example.com.*chaincode2" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer0.org1.example.com-chaincode2*" -q); do
+  for image in $(docker images "peer0.org1.example.com.*chaincode2*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
-  for container in $(docker ps -a | grep "peer1.org1.example.com-chaincode2" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer1.org1.example.com.*chaincode2" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer1.org1.example.com-chaincode2*" -q); do
+  for image in $(docker images "peer1.org1.example.com.*chaincode2*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
-  for container in $(docker ps -a | grep "peer0.org2.example.com-chaincode2" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer0.org2.example.com.*chaincode2" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer0.org2.example.com-chaincode2*" -q); do
+  for image in $(docker images "peer0.org2.example.com.*chaincode2*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
-  for container in $(docker ps -a | grep "peer1.org2.example.com-chaincode2" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer1.org2.example.com.*chaincode2" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer1.org2.example.com-chaincode2*" -q); do
+  for image in $(docker images "peer1.org2.example.com.*chaincode2*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
@@ -5651,6 +5652,8 @@ startCCaaSContainer() {
   local CA_CERT="$7"
   local CONTAINER_NAME="$8"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local CHAINCODE_MOUNT_PATH="$9"
+  local CHAINCODE_START_COMMAND="\${10}"
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -5711,6 +5714,18 @@ startCCaaSContainer() {
     fi
   fi
 
+  MOUNT_PATH_PARAMS=()
+  if [ -n "$CHAINCODE_MOUNT_PATH" ]; then
+    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app:ro" --workdir /usr/src/app)
+  fi
+
+  ENTRYPOINT_PARAMS=()
+  START_COMMAND_PARAMS=()
+  if [ -n "$CHAINCODE_START_COMMAND" ]; then
+    ENTRYPOINT_PARAMS=(--entrypoint sh)
+    START_COMMAND_PARAMS=(-c "$CHAINCODE_START_COMMAND")
+  fi
+
   docker run -d \\
     --name "$CONTAINER_NAME" \\
     -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \\
@@ -5727,9 +5742,11 @@ startCCaaSContainer() {
     -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \\
     -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \\
     -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \\
+    "\${MOUNT_PATH_PARAMS[@]+"\${MOUNT_PATH_PARAMS[@]}"}" \\
     -p "$PORT_MAP" \\
     --network "$NETWORK" \\
-    "$CHAINCODE_IMAGE"
+    "\${ENTRYPOINT_PARAMS[@]+"\${ENTRYPOINT_PARAMS[@]}"}" \\
+    "$CHAINCODE_IMAGE" "\${START_COMMAND_PARAMS[@]+"\${START_COMMAND_PARAMS[@]}"}"
 }
 
 chaincodeApprove() {
@@ -6493,6 +6510,16 @@ perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-
 "
 `;
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
+echo "Executing post-start hook"
+
+docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' >./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'
+"
+`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "graph TD
 
@@ -6594,6 +6621,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

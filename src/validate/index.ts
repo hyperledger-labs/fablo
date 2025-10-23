@@ -27,8 +27,8 @@ const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
 
   seenCounts.forEach((count, item) => {
     if (count > 1) {
-      const sepIndex = item.indexOf('_');
-      const channel = sepIndex >= 0 ? item.slice(0, sepIndex) : '';
+      const sepIndex = item.indexOf("_");
+      const channel = sepIndex >= 0 ? item.slice(0, sepIndex) : "";
       const name = sepIndex >= 0 ? item.slice(sepIndex + 1) : item;
       if (!duplicates[channel]) {
         duplicates[channel] = [];
@@ -264,12 +264,12 @@ class ValidateGenerator extends Generator {
 
   _validateOrdererGroupNameUniqueForOrg(org: OrgJson) {
     if (!org.orderers?.length) return;
-    
+
     const groupNames = org.orderers.flatMap((o) => o.groupName);
-    const duplicatedGroupNames = findDuplicatedItems(groupNames.map(name => `_${name}`));
-    
+    const duplicatedGroupNames = findDuplicatedItems(groupNames.map((name) => `_${name}`));
+
     Object.entries(duplicatedGroupNames).forEach(([_, names]) => {
-      names.forEach(name => {
+      names.forEach((name) => {
         const objectToEmit = {
           category: validationCategories.ORDERER,
           message: `Orderer group name '${name}' is not unique in organization '${org.organization.name}'.`,
@@ -411,10 +411,10 @@ class ValidateGenerator extends Generator {
 
   _validateChannelNames(channels: ChannelJson[]) {
     const channelNames = channels.map((ch) => ch.name);
-    const duplicatedChannels = findDuplicatedItems(channelNames.map(name => `_${name}`));
+    const duplicatedChannels = findDuplicatedItems(channelNames.map((name) => `_${name}`));
 
     Object.entries(duplicatedChannels).forEach(([_, names]) => {
-      names.forEach(name => {
+      names.forEach((name) => {
         const objectToEmit = {
           category: validationCategories.CHANNEL,
           message: `Channel name '${name}' is not unique.`,
@@ -429,7 +429,7 @@ class ValidateGenerator extends Generator {
     const duplicatedChaincodes = findDuplicatedItems(chaincodeKeys);
 
     Object.entries(duplicatedChaincodes).forEach(([channel, names]) => {
-      names.forEach(name => {
+      names.forEach((name) => {
         const objectToEmit = {
           category: validationCategories.CHAINCODE,
           message: `Chaincode name '${name}' is not unique in channel '${channel}'.`,
@@ -534,7 +534,10 @@ class ValidateGenerator extends Generator {
 
   _validateDevMode(global: GlobalJson): void {
     if (global.peerDevMode && global.tls) {
-      const message = `TLS needs to be disabled when running peers in dev mode`;
+      const message =
+        "TLS needs to be disabled when running peers in dev mode. " +
+        "If you want to use chaincode watch mode with TLS, use the CCaaS " +
+        "chaincode type and provide 'chaincodeMountPath' and 'chaincodeStartCommand' parameters.";
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }

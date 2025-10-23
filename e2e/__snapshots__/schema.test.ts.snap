@@ -7,7 +7,7 @@ exports[`schema should match snapshot 1`] = `
   "default": {},
   "properties": {
     "$schema": {
-      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json",
+      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.0/schema.json",
     },
     "chaincodes": {
       "$id": "#/properties/chaincodes",
@@ -342,6 +342,12 @@ exports[`schema should match snapshot 1`] = `
           "$id": "#/properties/hooks/postGenerate",
           "description": "Operation to run run after a network config is generated",
           "title": "Post generate hook",
+          "type": "string",
+        },
+        "postStart": {
+          "$id": "#/properties/hooks/postStart",
+          "description": "Operation to run after the network is started (after 'up' or 'start')",
+          "title": "Post start hook",
           "type": "string",
         },
       },
