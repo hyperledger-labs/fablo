@@ -4,7 +4,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.0/schema.json",
   "global": {
-    "fabricVersion": "3.0.0",
+    "fabricVersion": "3.1.0",
     "tls": true
   },
   "orgs": [
@@ -1612,12 +1612,12 @@ CHAINCODES_BASE_DIR=<absolute path>
 COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=info
 
-FABRIC_VERSION=3.0.0
+FABRIC_VERSION=3.1.0
 FABRIC_TOOLS_VERSION=3.0.0
 FABRIC_CA_VERSION=1.5.5
 FABRIC_CA_POSTGRES_VERSION=14
-FABRIC_CCENV_VERSION=3.0.0
-FABRIC_BASEOS_VERSION=3.0.0
+FABRIC_CCENV_VERSION=3.1.0
+FABRIC_BASEOS_VERSION=3.1.0
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
 RECOMMENDED_NODE_VERSION=16
