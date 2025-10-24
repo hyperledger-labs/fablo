@@ -48,12 +48,12 @@ This document provides an overview of Fablo features. The table below tracks fea
 | <br>**SNAPSHOT**                       |           |           |            |          |                 |
 | Create snapshot                        | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
 | Restore snapshot                       | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
-| Post-start hook                        |           |           |            |          | [#111](https://github.com/hyperledger-labs/fablo/issues/111) |
 | <br>**OTHER FEATURES**                 |           |           |            |          |                 |
 | Peer dev mode                          | ✓         | ✕         | ✓          | [07_v2](/e2e-network/docker/test-07-v2-peer-dev-mode.sh)         | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
 | Connection profiles                    | ✓         | ✓         | ✓          | [e2e_snap](/e2e/__snapshots__/fablo-config-hlf2-1org-1chaincode.json.test.ts.snap)         |        |
 | Gateway client                         |           |           |            | [05__v3](/e2e-network/docker/test-05-v3.sh)         | [#544](https://github.com/hyperledger-labs/fablo/pull/544) |
 | Hooks: post-generate                   | ✓         | ✓         | ✓          |          | [#580](https://github.com/hyperledger-labs/fablo/pull/580) |
+| Hooks: post-start                        | ✓          | ✓          | ✓           | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh)        | [#111](https://github.com/hyperledger-labs/fablo/issues/111) |
 | JSON/YAML support                      | ✓         | ✓         | ✓          |          |                 |
 
 ---
