@@ -61,7 +61,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 **Supported Fabric versions:**
 
 Fabric v2 = 2.5.12<br>
-Fabric v3 = 3.0.0
+Fabric v3 = 3.1.0
 
 **Legend:**
 
