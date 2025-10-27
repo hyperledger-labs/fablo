@@ -79,6 +79,10 @@ export default class InitGenerator extends Generator {
     }, {} as Record<string, true>);
 
     if (flags.ccaas) {
+      if (flags.dev || flags.node){
+        this.log(chalk.red("Error: --ccaas flag cannot be used together with --dev or --node flags"));
+        process.exit(1);
+      }
       console.log("Creating sample CCAAS chaincode");
 
       const chaincodeConfig: ChaincodeJson = {
