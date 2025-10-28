@@ -610,6 +610,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -1438,6 +1439,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -2242,6 +2244,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -3611,6 +3614,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -3979,7 +3983,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
               "fabricCaName": "ca.org1.example.com",
               "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
-                "debug": "console",
                 "error": "console",
                 "info": "console",
                 "warn": "console",
@@ -4153,7 +4156,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
                 "fabricCaName": "ca.org1.example.com",
                 "fabricCaUrl": "https://ca.org1.example.com:7054",
                 "logging": {
-                  "debug": "console",
                   "error": "console",
                   "info": "console",
                   "warn": "console",
@@ -4327,7 +4329,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "fabricCaName": "ca.org1.example.com",
             "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
-              "debug": "console",
               "error": "console",
               "info": "console",
               "warn": "console",
@@ -4390,21 +4391,33 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
           "cryptoConfigFileName": "crypto-config-org1",
           "domain": "org1.example.com",
           "headPeer": {
-            "address": "peer1.org1.example.com",
-            "couchDbExposePort": 5121,
+            "address": "peer0.org1.example.com",
+            "couchDbExposePort": 5120,
             "db": {
               "type": "LevelDb",
             },
-            "fullAddress": "peer1.org1.example.com:7062",
+            "fullAddress": "peer0.org1.example.com:7061",
             "gatewayEnabled": true,
             "isAnchorPeer": true,
-            "name": "peer1",
-            "port": 7062,
+            "name": "peer0",
+            "port": 7061,
           },
           "mspName": "Org1MSP",
           "name": "Org1",
           "ordererGroups": [],
           "peers": [
+            {
+              "address": "peer0.org1.example.com",
+              "couchDbExposePort": 5120,
+              "db": {
+                "type": "LevelDb",
+              },
+              "fullAddress": "peer0.org1.example.com:7061",
+              "gatewayEnabled": true,
+              "isAnchorPeer": true,
+              "name": "peer0",
+              "port": 7061,
+            },
             {
               "address": "peer1.org1.example.com",
               "couchDbExposePort": 5121,
@@ -4428,7 +4441,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
               "fabricCaName": "ca.org1.example.com",
               "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
-                "debug": "console",
                 "error": "console",
                 "info": "console",
                 "warn": "console",
@@ -4438,86 +4450,64 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             },
           },
         },
-        "name": "my-channel2",
+        "name": "my-channel3",
         "ordererGroup": {
-          "configtxOrdererDefaults": "Group1Defaults",
-          "consensus": "etcdraft",
-          "genesisBlockName": "Group1Genesis.block",
+          "configtxOrdererDefaults": "Group2Defaults",
+          "consensus": "solo",
+          "genesisBlockName": "Group2Genesis.block",
           "hostingOrgs": [
-            "Orderer1",
+            "Orderer2",
           ],
-          "name": "group1",
+          "name": "group2",
           "ordererHead": {
-            "address": "orderer0.group1.orderer1.com",
+            "address": "orderer0.group2.orderer2.com",
             "adminPort": 7053,
-            "consensus": "etcdraft",
-            "domain": "orderer1.com",
-            "fullAddress": "orderer0.group1.orderer1.com:7030",
-            "name": "orderer0.group1",
-            "orgMspName": "Orderer1MSP",
-            "orgName": "Orderer1",
-            "port": 7030,
+            "consensus": "solo",
+            "domain": "orderer2.com",
+            "fullAddress": "orderer0.group2.orderer2.com:7050",
+            "name": "orderer0.group2",
+            "orgMspName": "Orderer2MSP",
+            "orgName": "Orderer2",
+            "port": 7050,
           },
           "ordererHeads": [
             {
-              "address": "orderer0.group1.orderer1.com",
+              "address": "orderer0.group2.orderer2.com",
               "adminPort": 7053,
-              "consensus": "etcdraft",
-              "domain": "orderer1.com",
-              "fullAddress": "orderer0.group1.orderer1.com:7030",
-              "name": "orderer0.group1",
-              "orgMspName": "Orderer1MSP",
-              "orgName": "Orderer1",
-              "port": 7030,
+              "consensus": "solo",
+              "domain": "orderer2.com",
+              "fullAddress": "orderer0.group2.orderer2.com:7050",
+              "name": "orderer0.group2",
+              "orgMspName": "Orderer2MSP",
+              "orgName": "Orderer2",
+              "port": 7050,
             },
           ],
           "orderers": [
             {
-              "address": "orderer0.group1.orderer1.com",
+              "address": "orderer0.group2.orderer2.com",
               "adminPort": 7053,
-              "consensus": "etcdraft",
-              "domain": "orderer1.com",
-              "fullAddress": "orderer0.group1.orderer1.com:7030",
-              "name": "orderer0.group1",
-              "orgMspName": "Orderer1MSP",
-              "orgName": "Orderer1",
-              "port": 7030,
-            },
-            {
-              "address": "orderer1.group1.orderer1.com",
-              "adminPort": 7053,
-              "consensus": "etcdraft",
-              "domain": "orderer1.com",
-              "fullAddress": "orderer1.group1.orderer1.com:7031",
-              "name": "orderer1.group1",
-              "orgMspName": "Orderer1MSP",
-              "orgName": "Orderer1",
-              "port": 7031,
-            },
-            {
-              "address": "orderer2.group1.orderer1.com",
-              "adminPort": 7053,
-              "consensus": "etcdraft",
-              "domain": "orderer1.com",
-              "fullAddress": "orderer2.group1.orderer1.com:7032",
-              "name": "orderer2.group1",
-              "orgMspName": "Orderer1MSP",
-              "orgName": "Orderer1",
-              "port": 7032,
+              "consensus": "solo",
+              "domain": "orderer2.com",
+              "fullAddress": "orderer0.group2.orderer2.com:7050",
+              "name": "orderer0.group2",
+              "orgMspName": "Orderer2MSP",
+              "orgName": "Orderer2",
+              "port": 7050,
             },
           ],
-          "profileName": "Group1Genesis",
+          "profileName": "Group2Genesis",
         },
         "ordererHead": {
-          "address": "orderer0.group1.orderer1.com",
+          "address": "orderer0.group2.orderer2.com",
           "adminPort": 7053,
-          "consensus": "etcdraft",
-          "domain": "orderer1.com",
-          "fullAddress": "orderer0.group1.orderer1.com:7030",
-          "name": "orderer0.group1",
-          "orgMspName": "Orderer1MSP",
-          "orgName": "Orderer1",
-          "port": 7030,
+          "consensus": "solo",
+          "domain": "orderer2.com",
+          "fullAddress": "orderer0.group2.orderer2.com:7050",
+          "name": "orderer0.group2",
+          "orgMspName": "Orderer2MSP",
+          "orgName": "Orderer2",
+          "port": 7050,
         },
         "orgs": [
           {
@@ -4564,21 +4554,33 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "cryptoConfigFileName": "crypto-config-org1",
             "domain": "org1.example.com",
             "headPeer": {
-              "address": "peer1.org1.example.com",
-              "couchDbExposePort": 5121,
+              "address": "peer0.org1.example.com",
+              "couchDbExposePort": 5120,
               "db": {
                 "type": "LevelDb",
               },
-              "fullAddress": "peer1.org1.example.com:7062",
+              "fullAddress": "peer0.org1.example.com:7061",
               "gatewayEnabled": true,
               "isAnchorPeer": true,
-              "name": "peer1",
-              "port": 7062,
+              "name": "peer0",
+              "port": 7061,
             },
             "mspName": "Org1MSP",
             "name": "Org1",
             "ordererGroups": [],
             "peers": [
+              {
+                "address": "peer0.org1.example.com",
+                "couchDbExposePort": 5120,
+                "db": {
+                  "type": "LevelDb",
+                },
+                "fullAddress": "peer0.org1.example.com:7061",
+                "gatewayEnabled": true,
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7061,
+              },
               {
                 "address": "peer1.org1.example.com",
                 "couchDbExposePort": 5121,
@@ -4602,7 +4604,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
                 "fabricCaName": "ca.org1.example.com",
                 "fabricCaUrl": "https://ca.org1.example.com:7054",
                 "logging": {
-                  "debug": "console",
                   "error": "console",
                   "info": "console",
                   "warn": "console",
@@ -4656,21 +4657,33 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "cryptoConfigFileName": "crypto-config-org2",
             "domain": "org2.example.com",
             "headPeer": {
-              "address": "peer1.org2.example.com",
-              "couchDbExposePort": 5141,
+              "address": "peer0.org2.example.com",
+              "couchDbExposePort": 5140,
               "db": {
                 "type": "LevelDb",
               },
-              "fullAddress": "peer1.org2.example.com:7082",
+              "fullAddress": "peer0.org2.example.com:7081",
               "gatewayEnabled": true,
               "isAnchorPeer": true,
-              "name": "peer1",
-              "port": 7082,
+              "name": "peer0",
+              "port": 7081,
             },
             "mspName": "Org2MSP",
             "name": "Org2",
             "ordererGroups": [],
             "peers": [
+              {
+                "address": "peer0.org2.example.com",
+                "couchDbExposePort": 5140,
+                "db": {
+                  "type": "LevelDb",
+                },
+                "fullAddress": "peer0.org2.example.com:7081",
+                "gatewayEnabled": true,
+                "isAnchorPeer": true,
+                "name": "peer0",
+                "port": 7081,
+              },
               {
                 "address": "peer1.org2.example.com",
                 "couchDbExposePort": 5141,
@@ -4688,7 +4701,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "tools": {},
           },
         ],
-        "profileName": "MyChannel2",
+        "profileName": "MyChannel3",
       },
       "directory": "./chaincodes/chaincode-java-simple",
       "endorsement": "OR ('Org1MSP.member', 'Org2MSP.member')",
@@ -4738,21 +4751,33 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         "cryptoConfigFileName": "crypto-config-org1",
         "domain": "org1.example.com",
         "headPeer": {
-          "address": "peer1.org1.example.com",
-          "couchDbExposePort": 5121,
+          "address": "peer0.org1.example.com",
+          "couchDbExposePort": 5120,
           "db": {
             "type": "LevelDb",
           },
-          "fullAddress": "peer1.org1.example.com:7062",
+          "fullAddress": "peer0.org1.example.com:7061",
           "gatewayEnabled": true,
           "isAnchorPeer": true,
-          "name": "peer1",
-          "port": 7062,
+          "name": "peer0",
+          "port": 7061,
         },
         "mspName": "Org1MSP",
         "name": "Org1",
         "ordererGroups": [],
         "peers": [
+          {
+            "address": "peer0.org1.example.com",
+            "couchDbExposePort": 5120,
+            "db": {
+              "type": "LevelDb",
+            },
+            "fullAddress": "peer0.org1.example.com:7061",
+            "gatewayEnabled": true,
+            "isAnchorPeer": true,
+            "name": "peer0",
+            "port": 7061,
+          },
           {
             "address": "peer1.org1.example.com",
             "couchDbExposePort": 5121,
@@ -4776,7 +4801,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "fabricCaName": "ca.org1.example.com",
             "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
-              "debug": "console",
               "error": "console",
               "info": "console",
               "warn": "console",
@@ -4878,7 +4902,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "fabricCaName": "ca.org1.example.com",
             "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
-              "debug": "console",
               "error": "console",
               "info": "console",
               "warn": "console",
@@ -5052,7 +5075,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
               "fabricCaName": "ca.org1.example.com",
               "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
-                "debug": "console",
                 "error": "console",
                 "info": "console",
                 "warn": "console",
@@ -5223,7 +5245,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "fabricCaName": "ca.org1.example.com",
             "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
-              "debug": "console",
               "error": "console",
               "info": "console",
               "warn": "console",
@@ -5397,7 +5418,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
               "fabricCaName": "ca.org1.example.com",
               "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
-                "debug": "console",
                 "error": "console",
                 "info": "console",
                 "warn": "console",
@@ -5580,7 +5600,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
             "fabricCaName": "ca.org1.example.com",
             "fabricCaUrl": "https://ca.org1.example.com:7054",
             "logging": {
-              "debug": "console",
               "error": "console",
               "info": "console",
               "warn": "console",
@@ -5744,7 +5763,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
               "fabricCaName": "ca.org1.example.com",
               "fabricCaUrl": "https://ca.org1.example.com:7054",
               "logging": {
-                "debug": "console",
                 "error": "console",
                 "info": "console",
                 "warn": "console",
@@ -5863,7 +5881,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     "fabricToolsVersion": "2.5.12",
     "fabricVersion": "2.5.12",
     "monitoring": {
-      "loglevel": "debug",
+      "loglevel": "info",
     },
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
@@ -5879,6 +5897,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'",
   },
   "orderedHeadsDistinct": [
     {
@@ -6265,7 +6284,6 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
           "fabricCaName": "ca.org1.example.com",
           "fabricCaUrl": "https://ca.org1.example.com:7054",
           "logging": {
-            "debug": "console",
             "error": "console",
             "info": "console",
             "warn": "console",
@@ -8476,6 +8494,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -9173,6 +9192,8 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
 {
   "chaincodes": [
     {
+      "chaincodeMountPath": undefined,
+      "chaincodeStartCommand": undefined,
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -9502,6 +9523,8 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
       "version": "0.0.1",
     },
     {
+      "chaincodeMountPath": undefined,
+      "chaincodeStartCommand": undefined,
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -10298,14 +10321,14 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "3.0.0",
+    "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "3.0.0",
+    "fabricCcenvVersion": "3.1.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
-    "fabricVersion": "3.0.0",
+    "fabricVersion": "3.1.0",
     "monitoring": {
       "loglevel": "info",
     },
@@ -10318,6 +10341,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -11187,14 +11211,14 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "3.0.0",
+    "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "3.0.0",
+    "fabricCcenvVersion": "3.1.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
-    "fabricVersion": "3.0.0",
+    "fabricVersion": "3.1.0",
     "monitoring": {
       "loglevel": "debug",
     },
@@ -11207,6 +11231,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -12147,14 +12172,14 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "3.0.0",
+    "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "3.0.0",
+    "fabricCcenvVersion": "3.1.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
-    "fabricVersion": "3.0.0",
+    "fabricVersion": "3.1.0",
     "monitoring": {
       "loglevel": "debug",
     },
@@ -12167,6 +12192,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -12455,6 +12481,8 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
 {
   "chaincodes": [
     {
+      "chaincodeMountPath": undefined,
+      "chaincodeStartCommand": undefined,
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -12784,6 +12812,8 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
       "version": "0.0.1",
     },
     {
+      "chaincodeMountPath": undefined,
+      "chaincodeStartCommand": undefined,
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -13580,14 +13610,14 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
       "orderer": "V2_0",
     },
     "engine": "docker",
-    "fabricBaseosVersion": "3.0.0",
+    "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.5",
-    "fabricCcenvVersion": "3.0.0",
+    "fabricCcenvVersion": "3.1.0",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
-    "fabricVersion": "3.0.0",
+    "fabricVersion": "3.1.0",
     "monitoring": {
       "loglevel": "info",
     },
@@ -13600,6 +13630,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {
@@ -14304,6 +14335,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
   },
   "hooks": {
     "postGenerate": "",
+    "postStart": "",
   },
   "orderedHeadsDistinct": [
     {

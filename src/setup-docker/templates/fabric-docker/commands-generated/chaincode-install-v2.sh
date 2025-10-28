@@ -19,7 +19,8 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= instance.port %>" <% -%>
       "<%= instance.containerName %>" <% -%>
       "<%= global.tls %>" <% -%>
-      "<%= chaincode.channel.name %>"
+      "<%= chaincode.channel.name %>" <% -%>
+      "<%= instance.orgDomain %>"
   <% }) -%>
 <% } else { -%>
   chaincodeBuild <% -%>
@@ -54,7 +55,9 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
         "<%= chaincode.peerChaincodeInstances[i].port %>" <% -%>
         "<%= org.cli.address %>" <% -%>
         "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
-        "<%= chaincode.peerChaincodeInstances[i].containerName %>"
+        "<%= chaincode.peerChaincodeInstances[i].containerName %>" <% -%>
+        "<%= chaincode.chaincodeMountPath ?? "" %>" <% -%>
+        "<%- chaincode.chaincodeStartCommand ?? "" %>"
     <% } -%>
   <% }) -%>
   chaincodeApprove <% -%>

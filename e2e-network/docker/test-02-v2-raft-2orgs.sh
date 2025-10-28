@@ -24,6 +24,10 @@ networkUp() {
   expectCommand "cat \"$TEST_TMP/fablo-target/fabric-config/configtx.yaml\"" "MaxMessageCount: 1$"
 
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
+  
+# verify if post start hook was called
+  expectCommand "cat \"$TEST_TMP/fablo-target/container-list.txt\"" "peer0.org1.example.com"
+  echo "✅ All expected containers found in the log"
 }
 
 dumpLogs() {
@@ -69,6 +73,8 @@ waitForContainer "orderer1.group1.orderer1.com" "Starting Raft node channel=my-c
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel1"
 waitForContainer "orderer2.group1.orderer1.com" "Starting Raft node channel=my-channel2"
 
+waitForContainer "orderer0.group1.orderer1.com" "Created and started new channel my-channel1"
+waitForContainer "orderer0.group1.orderer1.com" "Created and started new channel my-channel2"
 waitForContainer "orderer0.group2.orderer2.com" "Created and started new channel my-channel3"
 
 # check if org1 is ready
@@ -99,8 +105,8 @@ waitForContainer "peer1.org2.example.com" "Membership view has changed. peers we
 # check if chaincodes are instantiated on peers
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer0.org2.example.com" "my-channel1" "chaincode1" "0.0.1"
-waitForChaincode "peer1.org1.example.com" "my-channel2" "chaincode2" "0.0.1"
-waitForChaincode "peer1.org2.example.com" "my-channel2" "chaincode2" "0.0.1"
+waitForChaincode "peer0.org1.example.com" "my-channel3" "chaincode2" "0.0.1"
+waitForChaincode "peer1.org2.example.com" "my-channel3" "chaincode2" "0.0.1"
 
 fablo_rest_org1="localhost:8802"
 
@@ -113,10 +119,10 @@ expectInvokeCli "peer0.org2.example.com" "my-channel1" "chaincode1" \
   '{\"success\":\"Jack Sparrow\"}'
 
 # invoke Java chaincode
-expectInvokeRest "$fablo_rest_org1" "my-channel2" "chaincode2" \
+expectInvokeRest "$fablo_rest_org1" "my-channel3" "chaincode2" \
   "PokeballContract:createPokeball" '["id1", "Pokeball 1"]' \
   '{"response":""}'
-expectInvokeCli "peer1.org2.example.com" "my-channel2" "chaincode2" \
+expectInvokeCli "peer1.org2.example.com" "my-channel3" "chaincode2" \
   '{"Args":["PokeballContract:readPokeball", "id1"]}' \
   '{\"value\":\"Pokeball 1\"}'
 

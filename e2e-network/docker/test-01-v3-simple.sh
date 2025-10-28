@@ -10,7 +10,7 @@ export FABLO_HOME
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node dev)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
@@ -21,7 +21,6 @@ dumpLogs() {
 }
 
 networkDown() {
-  rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
@@ -46,14 +45,30 @@ expectQuery() {
   (cd "$TEST_TMP" && sh ../expect-query-cli.sh "$1" "$2" "$3" "$4" "$5")
 }
 
+expectQueryWithRetry() {
+  local output=""
+  for i in {1..20}; do
+    output="$(expectQuery "$1" "$2" "$3" "$4" "$5" 2>&1 || true)"
+    if ! echo "$output" | grep -q 'failed (cli)'; then
+      echo "$output"
+      return 0
+    fi
+    echo "Query failed, retrying... ($i)"
+    sleep 1
+  done
+  echo "$output"
+  exit 1
+}
+
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
 # start the network
 networkUp
 
-waitForContainer "orderer0.group1.orderer.example.com" "Created and started new.*my-channel1"
-waitForContainer "ca.org1.example.com" "Listening on http://0.0.0.0:7054"
+waitForContainer "orderer0.group1.orderer.example.com" "Channel created"
+waitForContainer "orderer1.group1.orderer.example.com" "Channel created"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
@@ -61,6 +76,8 @@ waitForContainer "peer0.org1.example.com" "Anchor peer.*with same endpoint, skip
 waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7042"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "ccaas_peer1.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
 
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
@@ -70,25 +87,34 @@ expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{"success":"Willy Wonka"}'
 
+# Test code reload (ccaas dev mode)
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:get", "unknown"]}' \
+  '{"error":"NOT_FOUND"}'
+perl -i -pe 's/NOT_FOUND/SORRY_NOT_FOUND/g' "$TEST_TMP/chaincodes/chaincode-kv-node/index.js"
+expectQueryWithRetry "peer1.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:get", "unknown"]}' \
+  '{"error":"SORRY_NOT_FOUND"}'
+
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
 expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 4 my-channel1 org1 peer1 "another.block")
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
 expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":5"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":4"
 
 # Reset and ensure the state is lost after reset
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
-expectQuery "peer0.org1.example.com" "my-channel1" "chaincode1" \
+expectQueryWithRetry "peer0.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
-  '{"error":"NOT_FOUND"}'
+  '{"error":"SORRY_NOT_FOUND"}'
 
 # Put some data again
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \

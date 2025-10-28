@@ -62,11 +62,14 @@ export interface ChaincodeJson {
   directory?: string;
   image?: string;
   port?: number;
+  chaincodeMountPath?: string;
+  chaincodeStartCommand?: string;
   privateData: PrivateDataJson[];
 }
 
 export interface HooksJson {
   postGenerate?: string;
+  postStart?: string;
 }
 
 export interface FabloConfigJson {

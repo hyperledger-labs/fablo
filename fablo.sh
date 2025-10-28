@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION=2.3.0
+FABLO_VERSION=2.4.1
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -271,6 +271,7 @@ generateNetworkConfig() {
   mkdir -p "$fablo_target"
   executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
+    chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")
   fi
   snapshotFabloConfigToTarget "$fablo_config" "$fablo_target"
@@ -316,6 +317,14 @@ executeFabloCommand() {
     echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
     echo "Cannot execute command $1"
     exit 1
+  fi
+
+  # Execute post-start hook after network is started
+  if [ "$1" = "up" ] || [ "$1" = "start" ]; then
+    if [ -f "$FABLO_TARGET/hooks/post-start.sh" ]; then
+      chmod +x "$FABLO_TARGET/hooks/post-start.sh" || true
+      ("$FABLO_TARGET/hooks/post-start.sh")
+    fi
   fi
 }
 
