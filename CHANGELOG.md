@@ -1,3 +1,20 @@
+## 2.4.1
+
+### Features
+* `fablo init ccaas` command  
+  [#630](https://github.com/hyperledger-labs/fablo/pull/630)
+
+## Documentation
+* Update supported features hooks documentation  
+  [#629](https://github.com/hyperledger-labs/fablo/pull/629)
+
+### Chore & Maintenance
+* Set Fabric 3.1.0 as the default one for tests  
+  [#626](https://github.com/hyperledger-labs/fablo/pull/626)
+* Fix wrong script file name in release GH action  
+  [#631](https://github.com/hyperledger-labs/fablo/pull/631)
+
+
 ## 2.4.0
 
 ### Features
@@ -19,7 +36,8 @@
   [#615](https://github.com/hyperledger-labs/fablo/pull/615)
 
 ## Documentation
-* Update supported features [#617](https://github.com/hyperledger-labs/fablo/pull/617)
+* Update supported features
+  [#617](https://github.com/hyperledger-labs/fablo/pull/617)
 
 ## 2.3.0
 
