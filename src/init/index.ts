@@ -78,6 +78,27 @@ export default class InitGenerator extends Generator {
       return acc;
     }, {} as Record<string, true>);
 
+    if (flags.ccaas) {
+      if (flags.dev || flags.node){
+        this.log(chalk.red("Error: --ccaas flag cannot be used together with --dev or --node flags"));
+        process.exit(1);
+      }
+      console.log("Creating sample CCAAS chaincode");
+
+      const chaincodeConfig: ChaincodeJson = {
+        name: "chaincode1",
+        version: "0.0.1",
+        channel: "my-channel1",
+        lang: "ccaas",
+        image: "hyperledger/fabric-ccaasenv:${FABRIC_CCAASENV_VERSION:-2.5}",
+        privateData: [],
+      };
+      fabloConfigJson = {
+        ...fabloConfigJson,
+        chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
+      };
+    }
+
     if (flags.node) {
       console.log("Creating sample Node.js chaincode");
       this.fs.copy(this.templatePath("chaincodes"), this.destinationPath("chaincodes"));
