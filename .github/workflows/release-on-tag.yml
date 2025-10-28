@@ -51,7 +51,7 @@ jobs:
 
       - name: Create next development version PR
         run: |
-          sh ./bump_version.sh unstable
+          sh ./bump-version.sh unstable
           NEW_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
           BRANCH_NAME="bump-version-to-$NEW_VERSION"
           git checkout -b $BRANCH_NAME
