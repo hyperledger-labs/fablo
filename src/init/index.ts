@@ -90,7 +90,7 @@ export default class InitGenerator extends Generator {
         version: "0.0.1",
         channel: "my-channel1",
         lang: "ccaas",
-        image: "hyperledger/fabric-ccaasenv:${FABRIC_CCAASENV_VERSION:-2.5}",
+        image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
         privateData: [],
       };
       fabloConfigJson = {
