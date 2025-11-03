@@ -2,6 +2,7 @@
 
 ### Bug Fixes
 * Update chaincode image for init CCaaS command [#634](https://github.com/hyperledger-labs/fablo/pull/634)
+* Add missing orderers and improve style in Mermaid diagrams [#635](https://github.com/hyperledger-labs/fablo/pull/635)
 
 ## 2.4.1
 
