@@ -3601,25 +3601,29 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper e2e
 "graph TD
 
   subgraph Org_Orderer [Org: Orderer]
-    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+    direction RL
+    subgraph OrdererGroup_group1 [Orderer Group: group1 solo]
+      direction RL
+      Orderer_orderer0_group1[Orderer: orderer0.group1 - solo]
+    end
+    CA_ca_Orderer{CA: ca_Orderer - sqlite}
   end
 
   subgraph Org_Org1 [Org: Org1]
-    CA_ca_Org1[CA: ca_Org1 - sqlite]
+    direction RL
+    CA_ca_Org1{CA: ca_Org1 - sqlite}
     Org1_peer0[Peer: peer0]
     Org1_peer1[Peer: peer1]
   end
 
   subgraph Channel_my_channel1 [Channel: my-channel1]
-    Chaincode_chaincode1[Chaincode: chaincode1]
+    Chaincode_chaincode1[[Chaincode: chaincode1]]
   end
 
   %% Connections
-  Org_Orderer --> Channel_my_channel1
-  Org_Org1 -.-> Channel_my_channel1
   Org1_peer0 --> Channel_my_channel1
   Org1_peer1 --> Channel_my_channel1
-"
+  Channel_my_channel1 --> OrdererGroup_group1"
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
