@@ -87,11 +87,7 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
     const channelIdStr = channelId(channel.name);
 
     channel.orgs?.forEach((orgOnChannel) => {
-      const org = config.orgs?.find((o) => o.name === orgOnChannel.name);
-      if (!org) return;
-
-      // Connect peers to channel
-      org.peers?.forEach((peer) => {
+      orgOnChannel.peers?.forEach((peer) => {
         lines.push(`  ${safeId(peer.address)} --> ${channelIdStr}`);
       });
     });
