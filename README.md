@@ -15,7 +15,9 @@ Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see a list of features s
 
 ## See it in action
 
-[![How to use](https://img.youtube.com/vi/JqPNozCtHkQ/0.jpg)](https://www.youtube.com/watch?v=JqPNozCtHkQ)
+[![Watch the demo](hover.png)](https://www.youtube.com/watch?v=5yn3_g6Cybw)
+
+[&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)
 
 ## Installation
 
@@ -698,4 +700,8 @@ We'd love to have you contribute! Please refer to our [contribution guidelines](
 
 Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
 In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
+
+## Talks
+* [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
+* [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
 
