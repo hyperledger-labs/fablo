@@ -149,6 +149,7 @@ export interface peerChaincodeInstances {
   containerName: string;
   peerAddress: string;
   port: number;
+  orgDomain: string;
 }
 export interface ChaincodeConfig {
   directory?: string;
@@ -158,6 +159,8 @@ export interface ChaincodeConfig {
   channel: ChannelConfig;
   image?: string;
   port?: number;
+  chaincodeMountPath?: string;
+  chaincodeStartCommand?: string;
   peerChaincodeInstances?: peerChaincodeInstances[];
   init?: string;
   initRequired?: boolean;
@@ -180,6 +183,7 @@ export interface OrdererGroup {
 
 export interface HooksConfig {
   postGenerate: string;
+  postStart: string;
 }
 
 export interface FabloConfigExtended {

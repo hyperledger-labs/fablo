@@ -1,14 +1,14 @@
 import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
-import { GlobalJson, FabloConfigJson } from "../types/FabloConfigJson";
+import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../types/FabloConfigJson";
 import { version } from "../../package.json";
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
-      fabricVersion: "2.5.12",
-      tls: false,
+      fabricVersion: "3.1.0",
+      tls: true,
       peerDevMode: false,
     },
     orgs: [
@@ -25,8 +25,8 @@ function getDefaultFabloConfig(): FabloConfigJson {
         orderers: [
           {
             groupName: "group1",
-            type: "solo",
-            instances: 1,
+            type: "BFT",
+            instances: 2,
             prefix: "orderer",
           },
         ],
@@ -60,16 +60,7 @@ function getDefaultFabloConfig(): FabloConfigJson {
         ],
       },
     ],
-    chaincodes: [
-      {
-        name: "chaincode1",
-        version: "0.0.1",
-        lang: "node",
-        channel: "my-channel1",
-        directory: "./chaincodes/chaincode-kv-node",
-        privateData: [],
-      },
-    ],
+    chaincodes: [],
     hooks: {},
   };
 }
@@ -82,37 +73,82 @@ export default class InitGenerator extends Generator {
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
 
-    const shouldInitWithNodeChaincode = this.args.length && this.args.find((v) => v === "node");
-    if (shouldInitWithNodeChaincode) {
+    const flags: Record<string, true> = (this.args ?? []).reduce((acc, v) => {
+      acc[v] = true;
+      return acc;
+    }, {} as Record<string, true>);
+
+    if (flags.ccaas) {
+      if (flags.dev || flags.node){
+        this.log(chalk.red("Error: --ccaas flag cannot be used together with --dev or --node flags"));
+        process.exit(1);
+      }
+      console.log("Creating sample CCAAS chaincode");
+
+      const chaincodeConfig: ChaincodeJson = {
+        name: "chaincode1",
+        version: "0.0.1",
+        channel: "my-channel1",
+        lang: "ccaas",
+        image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+        privateData: [],
+      };
+      fabloConfigJson = {
+        ...fabloConfigJson,
+        chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
+      };
+    }
+
+    if (flags.node) {
       console.log("Creating sample Node.js chaincode");
       this.fs.copy(this.templatePath("chaincodes"), this.destinationPath("chaincodes"));
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
       this.fs.write(this.destinationPath("chaincodes/chaincode-kv-node/.nvmrc"), "12");
-    } else {
-      fabloConfigJson = { ...fabloConfigJson, chaincodes: [] };
+
+      const chaincodeConfig: ChaincodeJson = flags.dev
+        ? {
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "ccaas",
+            image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+            chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+            chaincodeStartCommand: "npm run start:watch:ccaas",
+            privateData: [],
+          }
+        : {
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "node",
+            directory: "./chaincodes/chaincode-kv-node",
+            privateData: [],
+          };
+
+      const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
+
+      fabloConfigJson = {
+        ...fabloConfigJson,
+        chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
+        hooks: { ...fabloConfigJson.hooks, ...postGenerateHook },
+      };
     }
 
-    const shouldInitWithNodeSampleGateway = this.args.length && this.args.find((v) => v === "gateway");
-    if (shouldInitWithNodeSampleGateway) {
+    if (flags.gateway) {
       console.log("Creating sample Node.js gateway");
       this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
     }
 
-    const shouldAddFabloRest = this.args.length && this.args.find((v) => v === "rest");
-    if (shouldAddFabloRest) {
+    if (flags.rest) {
       const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
-      fabloConfigJson = { ...fabloConfigJson, orgs };
-    } else {
-      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: {} }));
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
-    const shouldUseKubernetes = this.args.length && this.args.find((v) => v === "kubernetes" || v === "k8s");
-    const shouldRunInDevMode = this.args.length && this.args.find((v) => v === "dev");
+    const engine = flags.kubernetes || flags.k8s ? "kubernetes" : "docker";
+
     const global: GlobalJson = {
       ...fabloConfigJson.global,
-      engine: shouldUseKubernetes ? "kubernetes" : "docker",
-      peerDevMode: !!shouldRunInDevMode,
+      engine,
     };
     fabloConfigJson = { ...fabloConfigJson, global };
 

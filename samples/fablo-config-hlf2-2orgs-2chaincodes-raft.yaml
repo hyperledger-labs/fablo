@@ -1,12 +1,10 @@
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.3.0/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
 global:
   fabricVersion: 2.5.12
   tls: true
   tools:
     explorer: true
-  monitoring:
-    loglevel: debug
 orgs:
   - organization:
       name: Orderer1
@@ -39,6 +37,7 @@ orgs:
     peer: *defaultPeerConfig
 channels:
   - name: my-channel1
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:
@@ -47,6 +46,7 @@ channels:
         peers:
           - peer0
   - name: my-channel2
+    ordererGroup: group1
     orgs:
       - name: Org1
         peers:
@@ -73,9 +73,10 @@ chaincodes:
   - name: chaincode2
     version: 0.0.1
     lang: java
-    channel: my-channel2
+    channel: my-channel3
     endorsement: OR ('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-java-simple"
 hooks:
   # changes MaxMessageCount to 1
   postGenerate: "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  postStart: "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'"

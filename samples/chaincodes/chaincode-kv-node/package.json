@@ -11,11 +11,15 @@
     "start:ccaas": "fabric-chaincode-node server --chaincode-address 0.0.0.0:7052 --chaincode-id \"$CHAINCODE_ID\"",
     "start:dev": "fabric-chaincode-node start --peer.address \"127.0.0.1:8541\" --chaincode-id-name \"chaincode1:0.0.1\" --tls.enabled false",
     "start:watch": "nodemon --exec \"npm run start:dev\"",
+    "start:watch:ccaas": "nodemon --exec \"npm run start:ccaas\"",
     "build": "echo \"No need to build the chaincode\"",
     "lint": "eslint . --fix --ext .js"
   },
   "dependencies": {
     "fabric-contract-api": "2.4.2",
     "fabric-shim": "2.4.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION=2.3.0
+FABLO_VERSION=2.4.2
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -26,6 +26,75 @@ getDefaultFabloConfig() {
   else
     echo "$fablo_config_json"
   fi
+}
+
+snapshotFabloConfigToTarget() {
+  local fablo_config="$1"
+  local fablo_target="$2"
+
+  if [ -z "$fablo_config" ] || [ ! -f "$fablo_config" ]; then
+    return
+  fi
+
+  mkdir -p "$fablo_target"
+
+  local ext="${fablo_config##*.}"
+  local preserved_name="fablo-config.$ext"
+  cp -f "$fablo_config" "$fablo_target/$preserved_name"
+
+}
+
+getStoredConfigSnapshotPath() {
+  if [ -f "$FABLO_TARGET/fablo-config.json" ]; then
+    echo "$FABLO_TARGET/fablo-config.json"
+  elif [ -f "$FABLO_TARGET/fablo-config.yaml" ]; then
+    echo "$FABLO_TARGET/fablo-config.yaml"
+  elif [ -f "$FABLO_TARGET/fablo-config.yml" ]; then
+    echo "$FABLO_TARGET/fablo-config.yml"
+  else
+    echo ""
+  fi
+}
+
+verifyConfigMatchesOrFail() {
+  local current_config=${1:-$(getDefaultFabloConfig)}
+
+  if [ -z "$current_config" ] || [ ! -f "$current_config" ]; then
+    return
+  fi
+
+  local stored_config
+  stored_config="$(getStoredConfigSnapshotPath)"
+
+  if [ -z "$stored_config" ]; then
+    echo "No stored config snapshot found in '$FABLO_TARGET'. Storing current config snapshot for future comparisons."
+
+    local ext="${current_config##*.}"
+    if [ "$ext" = "json" ] || [ "$ext" = "yaml" ] || [ "$ext" = "yml" ] ; then
+      snapshotFabloConfigToTarget "$current_config" "$FABLO_TARGET"
+    else
+      echo "Error: Unsupported config file extension '.$ext'. Supported extensions are: .json, .yaml"
+      exit 1
+    fi
+    return
+  fi
+
+  if cmp -s "$stored_config" "$current_config"; then
+    return
+  fi
+
+  echo "Error: Fablo configuration has changed since the network at '$FABLO_TARGET' was generated."
+  echo "Stored config:  $stored_config"
+  echo "Current config: $current_config"
+  echo ""
+  echo "--- Diff (stored vs current) ---"
+  # Show unified diff
+  diff -u "$stored_config" "$current_config" || true
+  echo "--------------------------------"
+  echo ""
+  echo "Please run 'fablo prune' to remove the existing network before applying configuration changes,"
+  echo "or run 'fablo recreate [path/to/fablo-config]' to prune and start with the new configuration."
+  exit 1
 }
 
 getSnapshotPath() {
@@ -202,8 +271,10 @@ generateNetworkConfig() {
   mkdir -p "$fablo_target"
   executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
+    chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")
   fi
+  snapshotFabloConfigToTarget "$fablo_config" "$fablo_target"
 }
 
 networkPrune() {
@@ -220,9 +291,12 @@ networkPrune() {
 }
 
 networkUp() {
+  local fablo_config=${1:-$(getDefaultFabloConfig)}
   if [ ! -d "$FABLO_TARGET" ] || [ -z "$(ls -A "$FABLO_TARGET")" ]; then
     echo "Network target directory is empty"
-    generateNetworkConfig "$1"
+    generateNetworkConfig "$fablo_config"
+  else
+    verifyConfigMatchesOrFail "$fablo_config"
   fi
   executeFabloCommand up
 }
@@ -243,6 +317,14 @@ executeFabloCommand() {
     echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
     echo "Cannot execute command $1"
     exit 1
+  fi
+
+  # Execute post-start hook after network is started
+  if [ "$1" = "up" ] || [ "$1" = "start" ]; then
+    if [ -f "$FABLO_TARGET/hooks/post-start.sh" ]; then
+      chmod +x "$FABLO_TARGET/hooks/post-start.sh" || true
+      ("$FABLO_TARGET/hooks/post-start.sh")
+    fi
   fi
 }
 

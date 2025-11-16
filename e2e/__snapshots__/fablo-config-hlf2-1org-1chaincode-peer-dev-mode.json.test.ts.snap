@@ -1,5 +1,74 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+  "global": {
+    "fabricVersion": "2.5.12",
+    "tls": false,
+    "peerDevMode": true,
+    "engine": "docker"
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com",
+        "mspName": "OrdererMSP"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "solo",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com",
+        "mspName": "Org1MSP"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node",
+      "privateData": []
+    }
+  ],
+  "hooks": {}
+}"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
 "/config
 /crypto-config
@@ -1444,7 +1513,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
-"FABLO_VERSION=2.3.0
+"FABLO_VERSION=2.4.2
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -1783,11 +1852,11 @@ stopNetwork() {
 
 networkDown() {
   printf "Removing chaincode containers & images... \\U1F5D1 \\n"
-  for container in $(docker ps -a | grep "peer0.org1.example.com-chaincode1" | awk '{print $1}'); do
+  for container in $(docker ps -a | grep "peer0.org1.example.com.*chaincode1" | awk '{print $1}'); do
     echo "Removing container $container..."
     docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
   done
-  for image in $(docker images "peer0.org1.example.com-chaincode1*" -q); do
+  for image in $(docker images "peer0.org1.example.com.*chaincode1*" -q); do
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
@@ -2516,6 +2585,7 @@ chaincodePackageCCaaS() {
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
   local CHANNEL_NAME=$9
+  local ORG_DOMAIN=\${10}
   local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
@@ -2527,6 +2597,7 @@ chaincodePackageCCaaS() {
   inputLog "TLS_ENABLED: $TLS_ENABLED"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
 
   local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
   ACTUAL_CONTAINER_NAME=$(echo "$ACTUAL_CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
@@ -2539,7 +2610,7 @@ chaincodePackageCCaaS() {
 
   if [ "$TLS_ENABLED" = true ]; then
     # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
-    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/$ORG_DOMAIN/peers/$PEER_ADDRESS/tls"
     local ROOT_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/ca.crt")
     local SERVER_CERT=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.crt")
     local SERVER_KEY=$(awk '{printf "%s\\\\n", $0}' "$PEER_TLS_PATH/server.key")
@@ -2609,6 +2680,8 @@ startCCaaSContainer() {
   local CA_CERT="$7"
   local CONTAINER_NAME="$8"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local CHAINCODE_MOUNT_PATH="$9"
+  local CHAINCODE_START_COMMAND="\${10}"
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -2669,6 +2742,18 @@ startCCaaSContainer() {
     fi
   fi
 
+  MOUNT_PATH_PARAMS=()
+  if [ -n "$CHAINCODE_MOUNT_PATH" ]; then
+    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app:ro" --workdir /usr/src/app)
+  fi
+
+  ENTRYPOINT_PARAMS=()
+  START_COMMAND_PARAMS=()
+  if [ -n "$CHAINCODE_START_COMMAND" ]; then
+    ENTRYPOINT_PARAMS=(--entrypoint sh)
+    START_COMMAND_PARAMS=(-c "$CHAINCODE_START_COMMAND")
+  fi
+
   docker run -d \\
     --name "$CONTAINER_NAME" \\
     -e CORE_CHAINCODE_ADDRESS="0.0.0.0:7052" \\
@@ -2685,9 +2770,11 @@ startCCaaSContainer() {
     -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \\
     -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \\
     -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \\
+    "\${MOUNT_PATH_PARAMS[@]+"\${MOUNT_PATH_PARAMS[@]}"}" \\
     -p "$PORT_MAP" \\
     --network "$NETWORK" \\
-    "$CHAINCODE_IMAGE"
+    "\${ENTRYPOINT_PARAMS[@]+"\${ENTRYPOINT_PARAMS[@]}"}" \\
+    "$CHAINCODE_IMAGE" "\${START_COMMAND_PARAMS[@]+"\${START_COMMAND_PARAMS[@]}"}"
 }
 
 chaincodeApprove() {
@@ -3461,31 +3548,58 @@ echo "Executing post-generate hook"
 "
 `;
 
+exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
+"#!/usr/bin/env bash
+
+# The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
+echo "Executing post-start hook"
+"
+`;
+
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
-"graph TD
+"graph LR
 
-  subgraph Org_Orderer [Org: Orderer]
-    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+classDef subgraph_padding fill:none,stroke:none
+
+  subgraph orderer_example_com [Organization: Orderer<br>orderer.example.com]
+    subgraph orderer_example_com_padding [ ]
+      direction RL
+      subgraph ord_group_group1_orderer0_group1_orderer_example_com [Orderer Group: group1<br>solo]
+        subgraph ord_group_group1_orderer0_group1_orderer_example_com_padding [ ]
+          direction RL
+          orderer0_group1_orderer_example_com[orderer0.group1.orderer.example.com]
+        end
+        class ord_group_group1_orderer0_group1_orderer_example_com_padding subgraph_padding
+      end
+      ca_orderer_example_com([ca.orderer.example.com<br>sqlite])
+    end
+    class orderer_example_com_padding subgraph_padding
   end
 
-  subgraph Org_Org1 [Org: Org1]
-    CA_ca_Org1[CA: ca_Org1 - postgres]
-    Org1_peer0[Peer: peer0]
+  subgraph org1_example_com [Organization: Org1<br>org1.example.com]
+    subgraph org1_example_com_padding [ ]
+      direction RL
+      ca_org1_example_com([ca.org1.example.com<br>postgres])
+      peer0_org1_example_com[peer0.org1.example.com<br>CouchDb]
+    end
+    class org1_example_com_padding subgraph_padding
   end
 
-  subgraph Channel_my_channel1 [Channel: my-channel1]
-    Chaincode_chaincode1[Chaincode: chaincode1]
+  subgraph channel_my_channel1 [Channel: my-channel1]
+    subgraph channel_my_channel1_padding [ ]
+      chaincode_chaincode1[[Chaincode: chaincode1]]
+    end
+    class channel_my_channel1_padding subgraph_padding
   end
 
   %% Connections
-  Org_Orderer --> Channel_my_channel1
-  Org_Org1 -.-> Channel_my_channel1
-  Org1_peer0 --> Channel_my_channel1
-"
+  peer0_org1_example_com --> channel_my_channel1
+  channel_my_channel1 --> ord_group_group1_orderer0_group1_orderer_example_com"
 `;
 
 exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should create proper files from samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
@@ -3510,6 +3624,7 @@ exports[`samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json should cre
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/hooks/post-start.sh",
   "e2e/__tmp__/samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

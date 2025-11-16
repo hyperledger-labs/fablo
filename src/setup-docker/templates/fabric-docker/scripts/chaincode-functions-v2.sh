@@ -112,6 +112,7 @@ chaincodePackageCCaaS() {
   local CONTAINER_NAME=$7
   local TLS_ENABLED=$8
   local CHANNEL_NAME=$9
+  local ORG_DOMAIN=${10}
   local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
@@ -123,6 +124,7 @@ chaincodePackageCCaaS() {
   inputLog "TLS_ENABLED: $TLS_ENABLED"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CONTAINER_NAME: $CONTAINER_NAME"
+  inputLog "ORG_DOMAIN: $ORG_DOMAIN"
 
   
   local ACTUAL_CONTAINER_NAME="$CONTAINER_NAME"
@@ -136,7 +138,7 @@ chaincodePackageCCaaS() {
 
   if [ "$TLS_ENABLED" = true ]; then
     # Use peer0.org1.example.com TLS certificates instead of CCaaS certificates
-    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls"
+    local PEER_TLS_PATH="$FABLO_NETWORK_ROOT/fabric-config/crypto-config/peerOrganizations/$ORG_DOMAIN/peers/$PEER_ADDRESS/tls"
     local ROOT_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/ca.crt")
     local SERVER_CERT=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.crt")
     local SERVER_KEY=$(awk '{printf "%s\\n", $0}' "$PEER_TLS_PATH/server.key")
@@ -206,6 +208,8 @@ startCCaaSContainer() {
   local CA_CERT="$7"
   local CONTAINER_NAME="$8"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
+  local CHAINCODE_MOUNT_PATH="$9"
+  local CHAINCODE_START_COMMAND="${10}"
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -265,7 +269,18 @@ startCCaaSContainer() {
       docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
     fi
   fi
+  
+  MOUNT_PATH_PARAMS=()
+  if [ -n "$CHAINCODE_MOUNT_PATH" ]; then
+    MOUNT_PATH_PARAMS=(-v "$CHAINCODE_MOUNT_PATH:/usr/src/app:ro" --workdir /usr/src/app)
+  fi
 
+  ENTRYPOINT_PARAMS=()
+  START_COMMAND_PARAMS=()
+  if [ -n "$CHAINCODE_START_COMMAND" ]; then
+    ENTRYPOINT_PARAMS=(--entrypoint sh)
+    START_COMMAND_PARAMS=(-c "$CHAINCODE_START_COMMAND")
+  fi
 
   docker run -d \
     --name "$CONTAINER_NAME" \
@@ -283,9 +298,11 @@ startCCaaSContainer() {
     -v "$CCAAS_TLS_PATH/client.key:/etc/hyperledger/fabric/client.key" \
     -v "$CCAAS_TLS_PATH/client.crt:/etc/hyperledger/fabric/client.crt" \
     -v "$CCAAS_TLS_PATH/peer.crt:/etc/hyperledger/fabric/peer.crt" \
+    "${MOUNT_PATH_PARAMS[@]+"${MOUNT_PATH_PARAMS[@]}"}" \
     -p "$PORT_MAP" \
     --network "$NETWORK" \
-    "$CHAINCODE_IMAGE"
+    "${ENTRYPOINT_PARAMS[@]+"${ENTRYPOINT_PARAMS[@]}"}" \
+    "$CHAINCODE_IMAGE" "${START_COMMAND_PARAMS[@]+"${START_COMMAND_PARAMS[@]}"}"
 }
 
 chaincodeApprove() {
