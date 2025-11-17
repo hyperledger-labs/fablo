@@ -3465,7 +3465,7 @@ __createSnapshot() {
   for node in $(__getCAMySQLNodes); do
     echo "Saving state of $node (MySQL)..."
     mkdir -p "$backup_dir/$node/mysql-data"
-    docker exec "$node" mysqldump -u root -p "$MYSQL_ROOT_PASSWORD" --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+    docker exec -e MYSQL_PWD=caDbPass12345 "$node" mysqldump -u root --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
