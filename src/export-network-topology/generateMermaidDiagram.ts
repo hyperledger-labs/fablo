@@ -1,141 +1,104 @@
-import { FabloConfigExtended } from "../types/FabloConfigExtended";
+import { FabloConfigExtended, OrdererGroup } from "../types/FabloConfigExtended";
 
-function safeId(id: string): string {
-  return id.replace(/[^a-zA-Z0-9_]/g, "_");
-}
+const safeId = (id: string): string => id.replace(/[^a-zA-Z0-9_]/g, "_");
+const ordererGroupId = (g: OrdererGroup): string => safeId(`ord_group_${g.name}_${g.orderers?.[0].address}`);
+const channelId = (channelName: string): string => safeId(`channel_${channelName}`);
+const chaincodeId = (ccName: string): string => safeId(`chaincode_${ccName}`);
 
 export function generateMermaidDiagram(config: FabloConfigExtended): string {
-  let diagram = "graph TD\n";
+  const lines: string[] = ["graph LR"];
+  lines.push("");
+  lines.push("classDef subgraph_padding fill:none,stroke:none");
 
-  if (Array.isArray(config.orgs)) {
-    config.orgs.forEach((org: any) => {
-      const orgName = org.name || org?.organization?.name || "undefined";
-      const orgId = safeId(`Org_${orgName}`);
-      diagram += `\n  subgraph ${orgId} [Org: ${orgName}]\n`;
+  // Add organization subgraphs with orderer groups, CA, and peers
+  config.orgs?.forEach((org) => {
+    const orgId = safeId(org.domain);
+    lines.push(`\n  subgraph ${orgId} [Organization: ${org.name}<br>${org.domain}]`);
+    const orgPaddingId = `${orgId}_padding`;
+    lines.push(`    subgraph ${orgPaddingId} [ ]`);
+    lines.push("      direction RL");
 
-      if (org.ca) {
-        const caName = org.ca.prefix ? `${org.ca.prefix}_${orgName}` : `ca_${orgName}`;
-        const caId = safeId(`CA_${caName}`);
-        const caLabel = org.ca.db ? `CA: ${caName} - ${org.ca.db}` : `CA: ${caName}`;
-        diagram += `    ${caId}[${caLabel}]\n`;
-      }
-
-      if (Array.isArray(org.peers)) {
-        org.peers.forEach((peer: any) => {
-          const peerName = peer.name || peer || "undefined";
-          const peerId = safeId(`${orgName}_${peerName}`);
-          diagram += `    ${peerId}[Peer: ${peerName}]\n`;
+    // Orderer groups (nested inside org)
+    org.ordererGroups?.forEach((group) => {
+      if (group.orderers && group.orderers.length > 0) {
+        const consensusLabel = group.consensus ? group.consensus : "";
+        const groupId = ordererGroupId(group);
+        lines.push(`      subgraph ${groupId} [Orderer Group: ${group.name}<br>${consensusLabel}]`);
+        const groupPaddingId = `${groupId}_padding`;
+        lines.push(`        subgraph ${groupPaddingId} [ ]`);
+        lines.push("          direction RL");
+        group.orderers.forEach((orderer) => {
+          lines.push(`          ${safeId(orderer.address)}[${orderer.address}]`);
         });
-      } else if (org?.peer && typeof org.peer.instances === "number") {
-        for (let i = 0; i < org.peer.instances; i++) {
-          const peerName = org.peer.prefix ? `${org.peer.prefix}${i}` : `peer${i}`;
-          const peerId = safeId(`${orgName}_${peerName}`);
-          diagram += `    ${peerId}[Peer: ${peerName}]\n`;
-        }
-      }
-
-      if (Array.isArray(org.orderers)) {
-        org.orderers.forEach((orderer: any) => {
-          const prefix = orderer.prefix || "orderer";
-          const instances = orderer.instances || 1;
-          for (let i = 0; i < instances; i++) {
-            const ordererName = `${prefix}${i}`;
-            const ordererId = safeId(`${orgName}_${ordererName}`);
-            const label = `Orderer: ${ordererName}${orderer.type ? ` - ${orderer.type}` : ""}`;
-            diagram += `    ${ordererId}[${label}]\n`;
-          }
-        });
-      } else if (org.orderer && typeof org.orderer.instances === "number") {
-        const prefix = org.orderer.prefix || "orderer";
-        const instances = org.orderer.instances;
-        for (let i = 0; i < instances; i++) {
-          const ordererName = `${prefix}${i}`;
-          const ordererId = safeId(`${orgName}_${ordererName}`);
-          const label = `Orderer: ${ordererName}${org.orderer.type ? ` - ${org.orderer.type}` : ""}`;
-          diagram += `    ${ordererId}[${label}]\n`;
-        }
-      }
-
-      diagram += "  end\n";
-    });
-  }
-
-  if (Array.isArray(config.channels)) {
-    config.channels.forEach((channel) => {
-      const channelId = safeId(`Channel_${channel.name}`);
-      diagram += `\n  subgraph ${channelId} [Channel: ${channel.name}]\n`;
-      // Add chaincodes belonging to this channel
-      if (Array.isArray(config.chaincodes)) {
-        config.chaincodes.forEach((cc) => {
-          if (
-            cc.channel &&
-            ((typeof cc.channel === "string" && cc.channel === channel.name) ||
-              (cc.channel.name && cc.channel.name === channel.name))
-          ) {
-            const ccId = safeId(`Chaincode_${cc.name}`);
-            diagram += `    ${ccId}[Chaincode: ${cc.name}]\n`;
-          }
-        });
-      }
-      diagram += `  end\n`;
-    });
-  }
-
-  diagram += "\n  %% Connections\n";
-
-  if (Array.isArray(config.orgs)) {
-    config.orgs.forEach((org: any) => {
-      const orgName = org.name || org?.organization?.name || "undefined";
-      if (orgName.includes("Orderer")) {
-        if (Array.isArray(config.channels)) {
-          const orgId = safeId(`Org_${orgName}`);
-          config.channels.forEach((channel) => {
-            const channelId = safeId(`Channel_${channel.name}`);
-            diagram += `  ${orgId} --> ${channelId}\n`;
-          });
-        }
+        lines.push(`        end`);
+        lines.push(`        class ${groupPaddingId} subgraph_padding`);
+        lines.push("      end");
       }
     });
-  }
 
-  if (Array.isArray(config.channels)) {
-    config.channels.forEach((channel) => {
-      const channelId = safeId(`Channel_${channel.name}`);
-      if (Array.isArray(channel.orgs)) {
-        channel.orgs.forEach((orgOnChannel) => {
-          const orgName = orgOnChannel.name || ((orgOnChannel as any)?.organization?.name as string) || "undefined";
-          const fullOrgDef = config.orgs.find((o: any) => (o.name || o?.organization?.name) === orgName);
+    // CA (at same level as orderer groups)
+    if (org.ca) {
+      const caAddress = org.ca.address;
+      const caLabel = org.ca.db ? `${caAddress}<br>${org.ca.db}` : `${caAddress}`;
+      lines.push(`      ${safeId(caAddress)}([${caLabel}])`);
+    }
 
-          if (fullOrgDef) {
-            const hasPeers =
-              (Array.isArray(fullOrgDef.peers) && fullOrgDef.peers.length > 0) ||
-              (fullOrgDef as any)?.peer?.instances > 0;
-
-            if (hasPeers) {
-              const orgId = safeId(`Org_${orgName}`);
-              diagram += `  ${orgId} -.-> ${channelId}\n`;
-            }
-
-            if (Array.isArray(fullOrgDef.peers)) {
-              fullOrgDef.peers.forEach((peer: any) => {
-                const peerName = typeof peer === "string" ? peer : peer.name;
-                const peerId = safeId(`${orgName}_${peerName}`);
-                diagram += `  ${peerId} --> ${channelId}\n`;
-              });
-            } else if ((fullOrgDef as any)?.peer?.instances) {
-              for (let i = 0; i < (fullOrgDef as any).peer.instances; i++) {
-                const peerName = (fullOrgDef as any).peer.prefix
-                  ? `${(fullOrgDef as any).peer.prefix}${i}`
-                  : `peer${i}`;
-                const peerId = safeId(`${orgName}_${peerName}`);
-                diagram += `  ${peerId} --> ${channelId}\n`;
-              }
-            }
-          }
-        });
-      }
+    // Peers (at same level as orderer groups)
+    org.peers?.forEach((peer) => {
+      const peerLabel = `${peer.address}<br>${peer.db.type}`;
+      lines.push(`      ${safeId(peer.address)}[${peerLabel}]`);
     });
-  }
 
-  return diagram;
+    lines.push("    end");
+    lines.push(`    class ${orgPaddingId} subgraph_padding`);
+    lines.push("  end");
+  });
+
+  // Add channel subgraphs with chaincodes
+  config.channels?.forEach((channel) => {
+    const chId = channelId(channel.name);
+    lines.push(`\n  subgraph ${chId} [Channel: ${channel.name}]`);
+    const chPaddingId = `${chId}_padding`;
+    lines.push(`    subgraph ${chPaddingId} [ ]`);
+
+    // Add chaincodes for this channel (using cylinder shape)
+    const channelChaincodes = config.chaincodes?.filter((cc) => cc.channel?.name === channel.name) ?? [];
+    channelChaincodes.forEach((cc) => {
+      lines.push(`      ${chaincodeId(cc.name)}[[Chaincode: ${cc.name}]]`);
+    });
+
+    // Add dummy invisible node for empty channels to ensure visibility
+    if (channelChaincodes.length === 0) {
+      const emptyNodeId = `${chId}_empty`;
+      lines.push(`      ${emptyNodeId}[" "]`);
+      lines.push(`      style ${emptyNodeId} fill:#ffffff00,stroke:#ffffff00`);
+    }
+
+    lines.push("    end");
+    lines.push(`    class ${chPaddingId} subgraph_padding`);
+    lines.push("  end");
+  });
+
+  // Add connections
+  lines.push("\n  %% Connections");
+
+  // Connect peers to channels
+  config.channels?.forEach((channel) => {
+    const channelIdStr = channelId(channel.name);
+
+    channel.orgs?.forEach((orgOnChannel) => {
+      orgOnChannel.peers?.forEach((peer) => {
+        lines.push(`  ${safeId(peer.address)} --> ${channelIdStr}`);
+      });
+    });
+  });
+
+  // Connect channels to orderer groups (reversed direction)
+  config.channels?.forEach((channel) => {
+    const channelIdStr = channelId(channel.name);
+    const ogId = ordererGroupId(channel.ordererGroup);
+    lines.push(`  ${channelIdStr} --> ${ogId}`);
+  });
+
+  return lines.join("\n");
 }

@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.1/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
   "global": {
     "fabricVersion": "2.3.2",
     "tls": true,
@@ -4000,7 +4000,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
-"FABLO_VERSION=2.4.1
+"FABLO_VERSION=2.4.2
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.2.0
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -7117,57 +7117,115 @@ echo "Executing post-start hook"
 `;
 
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper e2e/__tmp__/samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
-"graph TD
+"graph LR
 
-  subgraph Org_Orderer [Org: Orderer]
-    CA_ca_Orderer[CA: ca_Orderer - sqlite]
+classDef subgraph_padding fill:none,stroke:none
+
+  subgraph orderer_example_com [Organization: Orderer<br>orderer.example.com]
+    subgraph orderer_example_com_padding [ ]
+      direction RL
+      subgraph ord_group_group1_orderer0_group1_orderer_example_com [Orderer Group: group1<br>etcdraft]
+        subgraph ord_group_group1_orderer0_group1_orderer_example_com_padding [ ]
+          direction RL
+          orderer0_group1_orderer_example_com[orderer0.group1.orderer.example.com]
+          orderer1_group1_orderer_example_com[orderer1.group1.orderer.example.com]
+        end
+        class ord_group_group1_orderer0_group1_orderer_example_com_padding subgraph_padding
+      end
+      ca_orderer_example_com([ca.orderer.example.com<br>sqlite])
+    end
+    class orderer_example_com_padding subgraph_padding
   end
 
-  subgraph Org_Org1 [Org: Org1]
-    CA_ca_Org1[CA: ca_Org1 - sqlite]
-    Org1_peer0[Peer: peer0]
-    Org1_peer1[Peer: peer1]
+  subgraph org1_example_com [Organization: Org1<br>org1.example.com]
+    subgraph org1_example_com_padding [ ]
+      direction RL
+      subgraph ord_group_group1_orderer0_group1_org1_example_com [Orderer Group: group1<br>etcdraft]
+        subgraph ord_group_group1_orderer0_group1_org1_example_com_padding [ ]
+          direction RL
+          orderer0_group1_org1_example_com[orderer0.group1.org1.example.com]
+          orderer1_group1_org1_example_com[orderer1.group1.org1.example.com]
+        end
+        class ord_group_group1_orderer0_group1_org1_example_com_padding subgraph_padding
+      end
+      ca_org1_example_com([ca.org1.example.com<br>sqlite])
+      peer0_org1_example_com[peer0.org1.example.com<br>LevelDb]
+      peer1_org1_example_com[peer1.org1.example.com<br>LevelDb]
+    end
+    class org1_example_com_padding subgraph_padding
   end
 
-  subgraph Org_Org2 [Org: Org2]
-    CA_ca_Org2[CA: ca_Org2 - sqlite]
-    Org2_peer0[Peer: peer0]
-    Org2_peer1[Peer: peer1]
+  subgraph org2_example_com [Organization: Org2<br>org2.example.com]
+    subgraph org2_example_com_padding [ ]
+      direction RL
+      subgraph ord_group_group1_orderer0_group1_org2_example_com [Orderer Group: group1<br>etcdraft]
+        subgraph ord_group_group1_orderer0_group1_org2_example_com_padding [ ]
+          direction RL
+          orderer0_group1_org2_example_com[orderer0.group1.org2.example.com]
+          orderer1_group1_org2_example_com[orderer1.group1.org2.example.com]
+        end
+        class ord_group_group1_orderer0_group1_org2_example_com_padding subgraph_padding
+      end
+      ca_org2_example_com([ca.org2.example.com<br>sqlite])
+      peer0_org2_example_com[peer0.org2.example.com<br>LevelDb]
+      peer1_org2_example_com[peer1.org2.example.com<br>LevelDb]
+    end
+    class org2_example_com_padding subgraph_padding
   end
 
-  subgraph Org_Org3 [Org: Org3]
-    CA_ca_Org3[CA: ca_Org3 - sqlite]
-    Org3_peer0[Peer: peer0]
-    Org3_peer1[Peer: peer1]
+  subgraph org3_example_com [Organization: Org3<br>org3.example.com]
+    subgraph org3_example_com_padding [ ]
+      direction RL
+      subgraph ord_group_group1_orderer0_group1_org3_example_com [Orderer Group: group1<br>etcdraft]
+        subgraph ord_group_group1_orderer0_group1_org3_example_com_padding [ ]
+          direction RL
+          orderer0_group1_org3_example_com[orderer0.group1.org3.example.com]
+          orderer1_group1_org3_example_com[orderer1.group1.org3.example.com]
+        end
+        class ord_group_group1_orderer0_group1_org3_example_com_padding subgraph_padding
+      end
+      ca_org3_example_com([ca.org3.example.com<br>sqlite])
+      peer0_org3_example_com[peer0.org3.example.com<br>LevelDb]
+      peer1_org3_example_com[peer1.org3.example.com<br>LevelDb]
+    end
+    class org3_example_com_padding subgraph_padding
   end
 
-  subgraph Channel_my_channel1 [Channel: my-channel1]
-    Chaincode_chaincode1[Chaincode: chaincode1]
+  subgraph channel_my_channel1 [Channel: my-channel1]
+    subgraph channel_my_channel1_padding [ ]
+      chaincode_chaincode1[[Chaincode: chaincode1]]
+    end
+    class channel_my_channel1_padding subgraph_padding
   end
 
-  subgraph Channel_my_channel2 [Channel: my-channel2]
+  subgraph channel_my_channel2 [Channel: my-channel2]
+    subgraph channel_my_channel2_padding [ ]
+      channel_my_channel2_empty[" "]
+      style channel_my_channel2_empty fill:#ffffff00,stroke:#ffffff00
+    end
+    class channel_my_channel2_padding subgraph_padding
   end
 
-  subgraph Channel_my_channel3 [Channel: my-channel3]
+  subgraph channel_my_channel3 [Channel: my-channel3]
+    subgraph channel_my_channel3_padding [ ]
+      channel_my_channel3_empty[" "]
+      style channel_my_channel3_empty fill:#ffffff00,stroke:#ffffff00
+    end
+    class channel_my_channel3_padding subgraph_padding
   end
 
   %% Connections
-  Org_Orderer --> Channel_my_channel1
-  Org_Orderer --> Channel_my_channel2
-  Org_Orderer --> Channel_my_channel3
-  Org_Org1 -.-> Channel_my_channel1
-  Org1_peer0 --> Channel_my_channel1
-  Org1_peer1 --> Channel_my_channel1
-  Org_Org2 -.-> Channel_my_channel2
-  Org2_peer0 --> Channel_my_channel2
-  Org2_peer1 --> Channel_my_channel2
-  Org_Org1 -.-> Channel_my_channel3
-  Org1_peer0 --> Channel_my_channel3
-  Org1_peer1 --> Channel_my_channel3
-  Org_Org2 -.-> Channel_my_channel3
-  Org2_peer0 --> Channel_my_channel3
-  Org2_peer1 --> Channel_my_channel3
-"
+  peer0_org1_example_com --> channel_my_channel1
+  peer1_org1_example_com --> channel_my_channel1
+  peer0_org2_example_com --> channel_my_channel2
+  peer1_org2_example_com --> channel_my_channel2
+  peer0_org1_example_com --> channel_my_channel3
+  peer1_org1_example_com --> channel_my_channel3
+  peer0_org2_example_com --> channel_my_channel3
+  peer1_org2_example_com --> channel_my_channel3
+  channel_my_channel1 --> ord_group_group1_orderer0_group1_orderer_example_com
+  channel_my_channel2 --> ord_group_group1_orderer0_group1_orderer_example_com
+  channel_my_channel3 --> ord_group_group1_orderer0_group1_orderer_example_com"
 `;
 
 exports[`samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json should create proper files from samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.json 1`] = `
