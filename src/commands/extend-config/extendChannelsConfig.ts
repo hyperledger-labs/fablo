@@ -1,5 +1,5 @@
-import { ChannelConfig, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
-import { ChannelJson } from "../types/FabloConfigJson";
+import { ChannelConfig, OrdererGroup, OrgConfig } from "../../types/FabloConfigExtended";
+import { ChannelJson } from "../../types/FabloConfigJson";
 import * as _ from "lodash";
 import defaults from "./defaults";
 

@@ -1,4 +1,4 @@
-import { Capabilities, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
+import { Capabilities, OrdererGroup, OrgConfig } from "../../types/FabloConfigExtended";
 
 export default {
   global: {
