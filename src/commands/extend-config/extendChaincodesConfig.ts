@@ -1,7 +1,7 @@
-import { ChaincodeJson } from "../types/FabloConfigJson";
-import { ChaincodeConfig, ChannelConfig, Global, PrivateCollectionConfig } from "../types/FabloConfigExtended";
+import { ChaincodeJson } from "../../types/FabloConfigJson";
+import { ChaincodeConfig, ChannelConfig, Global, PrivateCollectionConfig } from "../../types/FabloConfigExtended";
 import defaults from "./defaults";
-import { version } from "../repositoryUtils";
+import { version } from "../../repositoryUtils";
 
 const createPrivateCollectionConfig = (
   fabricVersion: string,

@@ -1,5 +1,5 @@
-import { FabloConfigJson } from "../types/FabloConfigJson";
-import { FabloConfigExtended } from "../types/FabloConfigExtended";
+import { FabloConfigJson } from "../../types/FabloConfigJson";
+import { FabloConfigExtended } from "../../types/FabloConfigExtended";
 import { extendOrgsConfig } from "./extendOrgsConfig";
 import extendGlobal from "./extendGlobal";
 import extendChannelsConfig from "./extendChannelsConfig";
