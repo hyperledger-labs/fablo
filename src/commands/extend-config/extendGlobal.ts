@@ -1,7 +1,7 @@
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-import { Capabilities, FabricVersions, Global } from "../types/FabloConfigExtended";
-import { version } from "../repositoryUtils";
-import { GlobalJson } from "../types/FabloConfigJson";
+import { Capabilities, FabricVersions, Global } from "../../types/FabloConfigExtended";
+import { version } from "../../repositoryUtils";
+import { GlobalJson } from "../../types/FabloConfigJson";
 import defaults from "./defaults";
 
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
@@ -38,16 +38,16 @@ const getVersions = (fabricVersion: string): FabricVersions => {
   };
 };
 
-const getEnvVarOrThrow = (name: string): string => {
-  const value = process.env[name];
-  if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
-  return value;
-};
+// const getEnvVarOrThrow = (name: string): string => {
+//   const value = process.env[name];
+//   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
+//   return value;
+// };
 
-const getPathsFromEnv = () => ({
-  fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
-  chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
-});
+// const getPathsFromEnv = () => ({
+//   fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
+//   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
+// });
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
   const engine = globalJson.engine ?? "docker";
@@ -66,7 +66,10 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
     ...globalJson,
     ...getVersions(globalJson.fabricVersion),
     engine,
-    paths: getPathsFromEnv(),
+    paths: {
+      fabloConfig:"fablo-config.json",
+      chaincodesBaseDir:"./chaincodes",
+    },
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),
     tools: { ...explorer },
