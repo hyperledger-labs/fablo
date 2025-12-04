@@ -1,8 +1,8 @@
-import * as Generator from "yeoman-generator";
+
 import * as config from "../config";
 import * as repositoryUtils from "../repositoryUtils";
 
-export default class ListVersionsGenerator extends Generator {
+export default class ListVersions {
   async printAllVersions(): Promise<void> {
     const allVersions = await repositoryUtils.getAvailableTags();
     const versionsSortedAndMarked = allVersions
