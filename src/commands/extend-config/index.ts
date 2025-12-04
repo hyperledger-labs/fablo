@@ -3,8 +3,8 @@ import * as fs from "fs-extra";
 import * as path from "path";
 
 import parseFabloConfig from "../../utils/parseFabloConfig";
-import extendConfig from "./extendConfig";
-import { getNetworkCapabilities } from "./extendGlobal";
+import extendConfig from "../../extend-config/extendConfig";
+import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
 
 
 

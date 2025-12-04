@@ -1,4 +1,4 @@
-import { OrdererConfig, OrdererGroup, OrgConfig } from "../../types/FabloConfigExtended";
+import { OrdererConfig, OrdererGroup, OrgConfig } from "../types/FabloConfigExtended";
 import * as _ from "lodash";
 
 export const mergeOrdererGroups = (orgs: OrgConfig[]): OrdererGroup[] => {

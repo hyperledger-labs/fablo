@@ -1,12 +1,12 @@
 import { Args, Command } from '@oclif/core'
 import parseFabloConfig from "../../utils/parseFabloConfig";
-import extendConfig from "../extend-config/extendConfig";
-import { generateMermaidDiagram } from "./generateMermaidDiagram";
+import extendConfig from "../../extend-config/extendConfig";
+import { generateMermaidDiagram } from "../../export-network-topology/generateMermaidDiagram";
 import { FabloConfigExtended } from "../../types/FabloConfigExtended";
 import * as fs from "fs";
 import * as path from "path";
 
-export default class ExportTopology extends Command {
+export default class ExportNetworkTopology extends Command {
   static override description = 'export-network-topology '
   private fabloConfigPath: string = "";
   private outputFile: string = "";
@@ -51,7 +51,7 @@ export default class ExportTopology extends Command {
    }
 
   public async run(): Promise<void> {
-    const { args } = await this.parse(ExportTopology)
+    const { args } = await this.parse(ExportNetworkTopology)
     const arg0 = args.config!;
     const arg1 = args.output!;
 

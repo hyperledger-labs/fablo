@@ -1,5 +1,5 @@
 import defaults from "./defaults";
-import { CAJson, OrdererJson, OrgJson, PeerJson } from "../../types/FabloConfigJson";
+import { CAJson, OrdererJson, OrgJson, PeerJson } from "../types/FabloConfigJson";
 import {
   CAConfig,
   ExplorerConfig,
@@ -11,8 +11,8 @@ import {
   OrgConfig,
   PeerConfig,
   PeerDbConfig,
-} from "../../types/FabloConfigExtended";
-import { version } from "../../repositoryUtils";
+} from "../types/FabloConfigExtended";
+import { version } from "../repositoryUtils";
 import _ = require("lodash");
 
 const extendCaConfig = (

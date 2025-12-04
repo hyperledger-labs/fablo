@@ -1,7 +1,7 @@
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-import { Capabilities, FabricVersions, Global } from "../../types/FabloConfigExtended";
-import { version } from "../../repositoryUtils";
-import { GlobalJson } from "../../types/FabloConfigJson";
+import { Capabilities, FabricVersions, Global } from "../types/FabloConfigExtended";
+import { version } from "../repositoryUtils";
+import { GlobalJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
