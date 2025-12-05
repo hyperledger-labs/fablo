@@ -1,10 +1,9 @@
 FROM node:18-alpine3.16
 
 RUN apk add --no-cache sudo shfmt
-RUN npm install --global --silent yo
 
 # copy fablo files
-COPY generators /fablo/generators
+COPY dist /fablo/dist
 COPY package.json /fablo/package.json
 COPY package-lock.json /fablo/package-lock.json
 
@@ -29,6 +28,8 @@ RUN adduser -D -u 501 yeoman && \
 ENV HOME /network/workspace
 
 COPY docker-entrypoint.sh /fablo/docker-entrypoint.sh
+COPY bin /fablo/bin
+COPY bin/run.js /fablo/bin/run.mjs
 COPY docs /fablo/docs
 COPY README.md /fablo/README.md
 COPY samples /fablo/samples/
