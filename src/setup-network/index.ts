@@ -1,28 +1,40 @@
-import * as Generator from "yeoman-generator";
+import { Args, Command } from "@oclif/core";
 import parseFabloConfig from "../utils/parseFabloConfig";
+import * as fs from "fs";
+import * as path from "path";
+import SetupDocker from "../setup-docker/index";
+import SetupK8s from "../setup-k8s/index";
 
-const DockerGeneratorPath = require.resolve("../setup-docker");
-const KubernetesGeneratorPath = require.resolve("../setup-k8s");
+export default class SetupNetwork extends Command {
+  static override description = "Setup network files based on config (routes to docker or k8s)";
 
-export default class SetupDockerGenerator extends Generator {
-  constructor(args: string[], opts: Generator.GeneratorOptions) {
-    super(args, opts);
-    this.argument("fabloConfig", {
-      type: String,
-      optional: true,
+  static override args = {
+    fabloConfig: Args.string({
       description: "Fablo config file path",
+      required: false,
       default: "../../network/fablo-config.json",
-    });
-  }
+    }),
+  };
 
-  redirectToProperGenerator(): void {
-    const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
-    const json = parseFabloConfig(this.fs.read(fabloConfigPath));
+  public async run(): Promise<void> {
+    const { args } = await this.parse(SetupNetwork);
+    const configPath = args.fabloConfig ?? "../../network/fablo-config.json";
+    const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
+
+    if (!fs.existsSync(fabloConfigPath)) {
+      this.error(`Config file not found: ${fabloConfigPath}`);
+    }
+
+    const configContent = fs.readFileSync(fabloConfigPath, "utf-8");
+    const json = parseFabloConfig(configContent);
 
     if (json?.global?.engine === "kubernetes") {
-      this.composeWith(KubernetesGeneratorPath);
+      const k8sCommand = new SetupK8s(["--fabloConfig", fabloConfigPath], this.config);
+      await k8sCommand.run();
     } else {
-      this.composeWith(DockerGeneratorPath);
+      const dockerCommand = new SetupDocker(["--fabloConfig", fabloConfigPath], this.config);
+      await dockerCommand.run();
     }
   }
 }
+

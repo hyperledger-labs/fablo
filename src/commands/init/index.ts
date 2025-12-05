@@ -1,7 +1,10 @@
-import * as Generator from "yeoman-generator";
+import { Args, Command } from '@oclif/core'
 import * as chalk from "chalk";
-import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../types/FabloConfigJson";
-import { version } from "../../package.json";
+import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
+import * as path from 'path';
+import * as fs from 'fs-extra';
+import { version } from "../../../package.json";
+import { printSplash } from '../../fablolog';
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
@@ -65,25 +68,35 @@ function getDefaultFabloConfig(): FabloConfigJson {
   };
 }
 
-export default class InitGenerator extends Generator {
-  constructor(readonly args: string[], opts: Generator.GeneratorOptions) {
-    super(args, opts);
-  }
+export default class Init extends Command {
+  static override description =
+    "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
 
+  static args = {
+    feat: Args.string({
+      description: 'feature node,dev,ccass,gateway,rest',
+      multiple: true
+    })
+  }
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
+    const { args } = await this.parse(Init);
 
-    const flags: Record<string, true> = (this.args ?? []).reduce((acc, v) => {
+
+    const features: string[] = Array.isArray(args.feat) ? args.feat : args.feat ? [args.feat] : [];
+
+    const flags: Record<string, true> = features.reduce<Record<string, true>>((acc, v) => {
       acc[v] = true;
       return acc;
-    }, {} as Record<string, true>);
+    }, {});
 
     if (flags.ccaas) {
-      if (flags.dev || flags.node){
+      if (flags.dev || flags.node) {
         this.log(chalk.red("Error: --ccaas flag cannot be used together with --dev or --node flags"));
         process.exit(1);
       }
-      console.log("Creating sample CCAAS chaincode");
+      this.log("Creating sample CCAAS chaincode");
+      printSplash();
 
       const chaincodeConfig: ChaincodeJson = {
         name: "chaincode1",
@@ -98,32 +111,38 @@ export default class InitGenerator extends Generator {
         chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
       };
     }
-
     if (flags.node) {
       console.log("Creating sample Node.js chaincode");
-      this.fs.copy(this.templatePath("chaincodes"), this.destinationPath("chaincodes"));
+      printSplash();
+      const source = path.join(__dirname, '../../../../samples/chaincodes/chaincode-kv-node');
+      const destination = path.join(process.cwd(), 'chaincodes');
+      fs.copySync(source, destination);
+
+      // fs.copySync(source, path.join(process.cwd(), 'chaincodes'));
+      fs.writeFileSync(path.join(process.cwd(), 'samples/chaincodes/chaincode-kv-node/.nvmrc'), '12');
+
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
-      this.fs.write(this.destinationPath("chaincodes/chaincode-kv-node/.nvmrc"), "12");
+      // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
 
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
-            name: "chaincode1",
-            version: "0.0.1",
-            channel: "my-channel1",
-            lang: "ccaas",
-            image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-            chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
-            chaincodeStartCommand: "npm run start:watch:ccaas",
-            privateData: [],
-          }
+          name: "chaincode1",
+          version: "0.0.1",
+          channel: "my-channel1",
+          lang: "ccaas",
+          image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+          chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+          chaincodeStartCommand: "npm run start:watch:ccaas",
+          privateData: [],
+        }
         : {
-            name: "chaincode1",
-            version: "0.0.1",
-            channel: "my-channel1",
-            lang: "node",
-            directory: "./chaincodes/chaincode-kv-node",
-            privateData: [],
-          };
+          name: "chaincode1",
+          version: "0.0.1",
+          channel: "my-channel1",
+          lang: "node",
+          directory: "./chaincodes/chaincode-kv-node",
+          privateData: [],
+        };
 
       const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
 
@@ -136,7 +155,11 @@ export default class InitGenerator extends Generator {
 
     if (flags.gateway) {
       console.log("Creating sample Node.js gateway");
-      this.fs.copy(this.templatePath("gateway"), this.destinationPath("gateway"));
+      printSplash();
+      const src = path.join(__dirname, '../../../../samples/gateway');
+      const dest = path.join(process.cwd(), 'gateway');
+      fs.copySync(src, dest);
+      this.log('✔ Gateway generated successfully!');
     }
 
     if (flags.rest) {
@@ -151,14 +174,20 @@ export default class InitGenerator extends Generator {
       engine,
     };
     fabloConfigJson = { ...fabloConfigJson, global };
+    const rootPath = process.cwd();
+    const outputFile = path.join(rootPath, 'fablo-config.json');
+    // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
+    fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
-    this.fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
+    this.log("===========================================================");
+    this.log(chalk.bold("Sample config file created! :)"));
+    this.log("You can start your network with 'fablo up' command");
+    this.log("===========================================================");
 
-    this.on("end", () => {
-      console.log("===========================================================");
-      console.log(chalk.bold("Sample config file created! :)"));
-      console.log("You can start your network with 'fablo up' command");
-      console.log("===========================================================");
-    });
+  }
+
+  public async run(): Promise<void> {
+
+    await this.copySampleConfig();
   }
 }

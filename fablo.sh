@@ -231,31 +231,31 @@ useVersion() {
     set +e
     curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
   else
-    executeOnFabloDocker "fablo:list-versions"
+    executeOnFabloDocker "list-versions"
   fi
 }
 
 initConfig() {
   printSplash
-  executeOnFabloDocker "fablo:init $1 $2"
+  executeOnFabloDocker "init $1 $2"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker "fablo:validate" "" "$fablo_config"
+  executeOnFabloDocker "validate" "" "$fablo_config"
 }
 
 extendConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker "fablo:extend-config" "" "$fablo_config"
+  executeOnFabloDocker "extend-config" "" "$fablo_config"
 }
 
 exportNetworkTopology() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   local output_file=${2:-network-topology.mmd}
 
-  executeOnFabloDocker "fablo:export-network-topology /network/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
+  executeOnFabloDocker "export-network-topology /network/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
 }
 
 generateNetworkConfig() {
@@ -269,7 +269,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
     chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")
@@ -366,7 +366,7 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "version" ]; then
-  executeOnFabloDocker "fablo:version $2"
+  executeOnFabloDocker "version $2"
 
 elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"

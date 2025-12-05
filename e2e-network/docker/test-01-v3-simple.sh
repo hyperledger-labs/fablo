@@ -10,7 +10,7 @@ export FABLO_HOME
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node dev)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
 }
 
