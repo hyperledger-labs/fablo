@@ -16,8 +16,6 @@ jobs:
         run: |
           shellcheck --version && \
           yamllint -v && \
-          npm install && \
-          npm run build && \
           ./fablo-build.sh
 
       - name: Test simple network
