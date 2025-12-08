@@ -2,20 +2,22 @@
 
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
+Fablo allows you to start Hyperledger Fabric network from a single config file. It's best for local development, CI processes and experimenting with various network configurations.
+
 Fablo supports:
 
 * Environment: Docker
 * RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
-* Chaincode installation and upgrade
+* Chaincode installation and upgrade (Node, Go, Java, CCaaS)
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
-Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
+Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
 ## See it in action
 
-[![How to use](https://img.youtube.com/vi/JqPNozCtHkQ/0.jpg)](https://www.youtube.com/watch?v=JqPNozCtHkQ)
+[&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)
 
 ## Installation
 
@@ -698,4 +700,8 @@ We'd love to have you contribute! Please refer to our [contribution guidelines](
 
 Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
 In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
+
+## Talks
+* [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
+* [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
 
