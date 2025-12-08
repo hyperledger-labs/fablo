@@ -2,20 +2,20 @@
 
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
+Fablo allows you to start Hyperledger Fabric network from a single config file. It's best for local development, CI processes and experimenting with various network configurations.
+
 Fablo supports:
 
 * Environment: Docker
 * RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
-* Chaincode installation and upgrade
+* Chaincode installation and upgrade (Node, Go, Java, CCaaS)
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
-Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
+Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
 ## See it in action
-
-[![Watch the demo](hover.png)](https://www.youtube.com/watch?v=5yn3_g6Cybw)
 
 [&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)
 
