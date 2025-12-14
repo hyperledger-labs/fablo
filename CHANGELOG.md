@@ -1,3 +1,12 @@
+## Unstable
+
+### Chore & Maintenance
+* Update Node.js to 20 [#641](https://github.com/hyperledger-labs/fablo/pull/641)
+
+## Documentation
+* Update `README.md` to provide talk links [#637](https://github.com/hyperledger-labs/fablo/pull/637)
+
+
 ## 2.4.2
 
 ### Bug Fixes

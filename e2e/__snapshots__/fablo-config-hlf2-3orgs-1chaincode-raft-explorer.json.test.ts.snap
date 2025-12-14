@@ -4054,38 +4054,27 @@ chaincodeList() {
 
     peerChaincodeListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org1.example.com" ]
-  then
+  elif [ "$1" = "peer1.org1.example.com" ]; then
 
     peerChaincodeListTls "cli.org1.example.com" "peer1.org1.example.com:7042" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer0.org2.example.com" ]
-  then
+  elif [ "$1" = "peer0.org2.example.com" ]; then
 
     peerChaincodeListTls "cli.org2.example.com" "peer0.org2.example.com:7061" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org2.example.com" ]
-  then
+  elif [ "$1" = "peer1.org2.example.com" ]; then
 
     peerChaincodeListTls "cli.org2.example.com" "peer1.org2.example.com:7062" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer0.org3.example.com" ]
-  then
+  elif [ "$1" = "peer0.org3.example.com" ]; then
 
     peerChaincodeListTls "cli.org3.example.com" "peer0.org3.example.com:7081" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org3.example.com" ]
-  then
+  elif [ "$1" = "peer1.org3.example.com" ]; then
 
     peerChaincodeListTls "cli.org3.example.com" "peer1.org3.example.com:7082" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -4273,40 +4262,27 @@ channelQuery() {
 
     peerChannelListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]; then
 
     peerChannelListTls "cli.org2.example.com" "peer0.org2.example.com:7061" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org2.example.com" "peer1.org2.example.com:7062" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org3" ] && [ "$3" = "peer0" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org3" ] && [ "$3" = "peer0" ]; then
 
     peerChannelListTls "cli.org3.example.com" "peer0.org3.example.com:7081" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org3" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org3" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org3.example.com" "peer1.org3.example.com:7082" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4321,9 +4297,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4338,9 +4312,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel2" "cli.org2.example.com" "peer0.org2.example.com:7061" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4355,9 +4327,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel2" "cli.org2.example.com" "\${BLOCK_NAME}" "peer0.org2.example.com:7061" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel2" "cli.org2.example.com" "peer1.org2.example.com:7062" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4372,9 +4342,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel2" "cli.org2.example.com" "\${BLOCK_NAME}" "peer1.org2.example.com:7062" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4389,9 +4357,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4406,9 +4372,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org2.example.com" "peer0.org2.example.com:7061" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4423,9 +4387,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org2.example.com" "\${BLOCK_NAME}" "peer0.org2.example.com:7061" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org2.example.com" "peer1.org2.example.com:7062" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -4441,7 +4403,6 @@ channelQuery() {
     peerChannelFetchBlockTls "my-channel3" "cli.org2.example.com" "\${BLOCK_NAME}" "peer1.org2.example.com:7062" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp

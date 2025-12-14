@@ -1568,14 +1568,11 @@ chaincodeList() {
 
     peerChaincodeList "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" # $2 is channel name
 
-  elif
-    [ "$1" = "peer1.org1.example.com" ]
-  then
+  elif [ "$1" = "peer1.org1.example.com" ]; then
 
     peerChaincodeList "cli.org1.example.com" "peer1.org1.example.com:7042" "$2" # $2 is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -1670,16 +1667,11 @@ channelQuery() {
 
     peerChannelList "cli.org1.example.com" "peer0.org1.example.com:7041"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]; then
 
     peerChannelList "cli.org1.example.com" "peer1.org1.example.com:7042"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041"
 
@@ -1694,9 +1686,7 @@ channelQuery() {
 
     peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer1.org1.example.com:7042"
 
@@ -1712,7 +1702,6 @@ channelQuery() {
     peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp
