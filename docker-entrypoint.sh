@@ -57,8 +57,18 @@ case "$oclif_command" in
     ;;
 esac
 
+# Build command with all arguments (mapped command + remaining args)
+# Replace first argument with mapped command, then pass all args
+if [ $# -gt 0 ]; then
+  shift
+  set -- "$oclif_command" "$@"
+else
+  set -- "$oclif_command"
+fi
+command_with_args="$*"
+
 # Execute the command
-executeOclifCommand "$oclif_command"
+executeOclifCommand "$command_with_args"
 
 if echo "$oclif_command" | grep -q "setup-network"; then
   formatGeneratedFiles

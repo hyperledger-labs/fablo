@@ -1,4 +1,4 @@
-import { Args, Command } from '@oclif/core'
+import { Command, Flags } from '@oclif/core'
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
 import * as path from 'path';
@@ -72,23 +72,19 @@ export default class Init extends Command {
   static override description =
     "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
 
-  static args = {
-    feat: Args.string({
-      description: 'feature node,dev,ccass,gateway,rest',
-      multiple: true
-    })
-  }
+  static flags = {
+    node: Flags.boolean({ description: 'Include Node.js chaincode sample' }),
+    dev: Flags.boolean({ description: 'Enable dev mode (dev chaincodes)' }),
+    ccaas: Flags.boolean({ description: 'Include CCAAS chaincode sample' }),
+    gateway: Flags.boolean({ description: 'Include Gateway app sample' }),
+    rest: Flags.boolean({ description: 'Include REST API sample' }),
+  };
+
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
-    const { args } = await this.parse(Init);
+    const { flags } = await this.parse(Init);
 
-
-    const features: string[] = Array.isArray(args.feat) ? args.feat : args.feat ? [args.feat] : [];
-
-    const flags: Record<string, true> = features.reduce<Record<string, true>>((acc, v) => {
-      acc[v] = true;
-      return acc;
-    }, {});
+    console.log("init flags: ", JSON.stringify(flags, null, 2));
 
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
@@ -167,7 +163,7 @@ export default class Init extends Command {
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
-    const engine = flags.kubernetes || flags.k8s ? "kubernetes" : "docker";
+    const engine = "docker";
 
     const global: GlobalJson = {
       ...fabloConfigJson.global,

@@ -190,6 +190,7 @@ printHelp() {
 }
 
 executeOnFabloDocker() {
+  set -x
   local command_with_params="$1"
   local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
   local fablo_config="$3"
@@ -218,7 +219,7 @@ executeOnFabloDocker() {
     "${fablo_workspace_params[@]}" \
     "${fablo_config_params[@]}" \
     -u "$(id -u):$(id -g)" \
-    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh \"$command_with_params\"" \
+    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh $command_with_params" \
     2>&1
 }
 
@@ -237,7 +238,7 @@ useVersion() {
 
 initConfig() {
   printSplash
-  executeOnFabloDocker "init $1 $2"
+  executeOnFabloDocker "init \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
