@@ -1,0 +1,46 @@
+FROM hyperledger/fabric-peer:2.4
+
+# Install Node.js 18 and supervisor for process management
+RUN apt-get update && \
+    apt-get install -y curl supervisor && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Create supervisor configuration
+RUN mkdir -p /etc/supervisor/conf.d && \
+    cat > /etc/supervisor/conf.d/peer.conf << 'EOF'
+[supervisord]
+nodaemon=true
+logfile=/var/log/supervisor/supervisord.log
+pidfile=/var/run/supervisord.pid
+
+[program:peer]
+command=/usr/local/bin/peer node start
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/peer.err.log
+stdout_logfile=/var/log/supervisor/peer.out.log
+user=root
+
+[program:ccaas]
+command=npm run start:ccaas
+directory=/usr/src/app
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/ccaas.err.log
+stdout_logfile=/var/log/supervisor/ccaas.out.log
+user=root
+EOF
+
+EXPOSE 7052
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

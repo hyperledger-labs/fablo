@@ -27,13 +27,13 @@ You can keep the script in the root directory of your project or install it glob
 To get a copy of Fablo for a single project, run this command in your project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 To install it globally, run:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 ## Getting started
@@ -443,7 +443,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -620,7 +620,7 @@ Generated hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false
