@@ -1,4 +1,4 @@
-## Unstable
+## 2.4.3
 
 ### Chore & Maintenance
 * Update Node.js to 20 [#641](https://github.com/hyperledger-labs/fablo/pull/641)
