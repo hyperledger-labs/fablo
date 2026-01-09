@@ -3,7 +3,7 @@ import { FabloConfigExtended, OrdererGroup } from "../types/FabloConfigExtended"
 const safeId = (id: string): string => id.replace(/[^a-zA-Z0-9_]/g, "_");
 const ordererGroupId = (g: OrdererGroup): string => safeId(`ord_group_${g.name}_${g.orderers?.[0].address}`);
 const channelId = (channelName: string): string => safeId(`channel_${channelName}`);
-const chaincodeId = (ccName: string): string => safeId(`chaincode_${ccName}`);
+const chaincodeId = (ccName: string, channelName: string): string => safeId(`chaincode_${ccName}_${channelName}`);
 
 export function generateMermaidDiagram(config: FabloConfigExtended): string {
   const lines: string[] = ["graph LR"];
@@ -64,7 +64,7 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
     // Add chaincodes for this channel (using cylinder shape)
     const channelChaincodes = config.chaincodes?.filter((cc) => cc.channel?.name === channel.name) ?? [];
     channelChaincodes.forEach((cc) => {
-      lines.push(`      ${chaincodeId(cc.name)}[[Chaincode: ${cc.name}]]`);
+      lines.push(`      ${chaincodeId(cc.name, channel.name)}[[Chaincode: ${cc.name}]]`);
     });
 
     // Add dummy invisible node for empty channels to ensure visibility
