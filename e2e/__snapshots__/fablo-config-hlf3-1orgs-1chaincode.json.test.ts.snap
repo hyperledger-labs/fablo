@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
 "{
-    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
     "global": {
       "fabricVersion": "3.1.0",
       "tls": true,
@@ -1717,7 +1717,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
-"FABLO_VERSION=2.4.2
+"FABLO_VERSION=2.4.3
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -1765,14 +1765,11 @@ chaincodeList() {
 
     peerChaincodeListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org1.example.com" ]
-  then
+  elif [ "$1" = "peer1.org1.example.com" ]; then
 
     peerChaincodeListTls "cli.org1.example.com" "peer1.org1.example.com:7042" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -1900,16 +1897,11 @@ channelQuery() {
 
     peerChannelListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -1924,9 +1916,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -1942,7 +1932,6 @@ channelQuery() {
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp
