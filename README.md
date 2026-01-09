@@ -2,20 +2,22 @@
 
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
+Fablo allows you to start Hyperledger Fabric network from a single config file. It's best for local development, CI processes and experimenting with various network configurations.
+
 Fablo supports:
 
 * Environment: Docker
 * RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
-* Chaincode installation and upgrade
+* Chaincode installation and upgrade (Node, Go, Java, CCaaS)
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
-Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
+Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
 ## See it in action
 
-[![How to use](https://img.youtube.com/vi/JqPNozCtHkQ/0.jpg)](https://www.youtube.com/watch?v=JqPNozCtHkQ)
+[&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)
 
 ## Installation
 
@@ -25,13 +27,13 @@ You can keep the script in the root directory of your project or install it glob
 To get a copy of Fablo for a single project, run this command in your project root:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o ./fablo && chmod +x ./fablo
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/fablo.sh -o ./fablo && chmod +x ./fablo
 ```
 
 To install it globally, run:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
 ## Getting started
@@ -441,7 +443,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -618,7 +620,7 @@ Generated hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false
@@ -698,4 +700,8 @@ We'd love to have you contribute! Please refer to our [contribution guidelines](
 
 Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
 In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
+
+## Talks
+* [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
+* [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
 

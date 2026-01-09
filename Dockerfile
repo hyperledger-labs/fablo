@@ -1,4 +1,4 @@
-FROM node:18-alpine3.16
+FROM node:20-alpine
 
 RUN apk add --no-cache sudo shfmt
 RUN npm install --global --silent yo
