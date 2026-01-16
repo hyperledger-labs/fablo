@@ -22,7 +22,7 @@ Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of fea
 ## Quick start
 
 ```bash
-curl fablo.io/fablo.sh > fablo && chmod +x fablo
+curl fablo.io/install.sh | bash
 ./fablo init node rest
 ./fablo up
 ```
@@ -38,6 +38,8 @@ Fablo is distributed as a single shell script that uses a Docker image to genera
 To install it locally in your project directory:
 
 ```bash
+curl fablo.io/install.sh | bash
+# OR
 curl fablo.io/fablo.sh > fablo && chmod +x fablo
 ```
 
