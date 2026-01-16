@@ -23,7 +23,7 @@ INSTALL_PATH="$INSTALL_DIR/fablo"
 
 # Download fablo.sh
 echo "Downloading script..."
-if curl -f -sSL http://fablo.io/fablo.sh -o "$INSTALL_PATH"; then
+if curl -f -sSL https://fablo.io/fablo.sh -o "$INSTALL_PATH"; then
   chmod +x "$INSTALL_PATH"
   echo ""
   echo -e "${GREEN}✓ Fablo installed successfully!${NC}"
