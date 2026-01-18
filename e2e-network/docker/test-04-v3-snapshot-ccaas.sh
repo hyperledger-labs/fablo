@@ -127,7 +127,7 @@ for i in {1..10}; do
   expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
     "KVContract:get" '["name"]' \
     '{"response":{"success":"Mr Freeze"}}' && break
-  sleep 3
+  sleep 5
 done
 
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
