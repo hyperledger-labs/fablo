@@ -123,13 +123,10 @@ user_token="$(echo "$user_token_response" | jq -r '.token')"
 
 # check if state is kept after restoration
 sleep 10
-for i in {1..10}; do
-  echo "Checking restored data, attempt #$i"
-  expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
-    "KVContract:get" '["name"]' \
-    '{"response":{"success":"Mr Freeze"}}' && break
-  sleep 5
-done
+
+expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
+  "KVContract:get" '["name"]' \
+  '{"response":{"success":"Mr Freeze"}}'
 
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
