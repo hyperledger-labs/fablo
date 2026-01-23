@@ -2834,9 +2834,9 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/my-channel1-or-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/my-channel1-and-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
@@ -2909,9 +2909,9 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/my-channel1-or-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/my-channel1-and-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
@@ -3050,9 +3050,9 @@ services:
       - ../fabric-config/config:/var/hyperledger/cli/config/ # genesis.block and channel.tx's
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com:/var/hyperledger/cli/crypto/
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/my-channel1-or-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/or-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-or-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-or-policy-chaincode.json"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/my-channel1-and-policy-chaincode/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/and-policy-chaincode/"
       - "../fabric-config/collections/my-channel1-and-policy-chaincode.json:/var/hyperledger/cli/collections/my-channel1-and-policy-chaincode.json"
     networks:
       - basic
