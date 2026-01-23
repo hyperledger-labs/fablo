@@ -11,7 +11,7 @@ args_json_array="$5"
 expected="$6"
 transient_default="{}"
 transient="${7:-$transient_default}"
-retries_left="${8:-5}"
+retries_left="${8:-20}"
 
 if [ -z "$expected" ]; then
   echo "Usage: ./expect-invoke.sh <rest_api_url> <channel> <chaincode> <contract:method> <args_json_array> <expected_substring> <transient_data>"
