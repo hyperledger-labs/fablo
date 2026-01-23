@@ -121,14 +121,8 @@ waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
 
-docker ps
-echo "--------------------------------"
-docker ps -a
-echo "--------------------------------"
-docker logs ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1
-echo "--------------------------------"
-docker logs ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1
-echo "--------------------------------"
+# sleep one second to ensure the CCAAS container is ready
+sleep 1
 
 # check if state is kept after restoration
 user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "gordon", "secret": "gordonpw"}' 'token')"
