@@ -130,7 +130,9 @@ services:
       <%_ } _%>
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       <%_ chaincodes.forEach(function(chaincode) { _%>
+      <%_ if(chaincode.lang !== 'ccaas' && chaincode.directory) { _%>
       - "$CHAINCODES_BASE_DIR/<%= chaincode.directory %>/:/var/hyperledger/cli/<%= chaincode.name %>/"
+      <%_ } _%>
       <%_ if(chaincode.privateDataConfigFile) { _%>
       - "../fabric-config/<%= chaincode.privateDataConfigFile %>:/var/hyperledger/cli/<%= chaincode.privateDataConfigFile %>"
       <%_ } _%>
