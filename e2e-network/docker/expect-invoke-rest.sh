@@ -52,7 +52,7 @@ if echo "$response" | grep -F "$expected"; then
 elif [ "$retries_left" -gt 0 ]; then
   echo "Retrying... ($retries_left)"
   sleep 1
-  expectInvokeRest "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$((retries_left - 1))"
+  exec "$0" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$((retries_left - 1))"
 else
   echo "❌ failed (rest): $label | expected: $expected"
   exit 1
