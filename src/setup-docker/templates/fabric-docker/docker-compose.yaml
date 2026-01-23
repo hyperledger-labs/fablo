@@ -20,6 +20,11 @@ services:
       - FABRIC_CA_SERVER_DB_TYPE=postgres
       - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.<%= org.ca.address %> port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
       <%_ } _%>
+      <%_ if (org.ca.db === "mysql") { _%>
+      - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_DB_TYPE=mysql
+      - FABRIC_CA_SERVER_DB_DATASOURCE=root:caDbPass12345@tcp(db.<%= org.ca.address %>:3306)/fabriccaserver?parseTime=true
+      <%_ } _%>
     ports:
       - <%= org.ca.exposePort %>:<%= org.ca.port %>
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -28,6 +33,11 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/<%= org.domain %>/ca/:/etc/hyperledger/fabric-ca-server/crypto
       - ../fabric-config/fabric-ca-server-config/<%= org.domain %>/fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
     <%_ if (org.ca.db === "postgres") { _%>
+    depends_on:
+      db.<%= org.ca.address %>:
+        condition: service_healthy
+    <%_ } _%>
+    <%_ if (org.ca.db === "mysql") { _%>
     depends_on:
       db.<%= org.ca.address %>:
         condition: service_healthy
@@ -50,6 +60,25 @@ services:
       retries: 7
     volumes:
       - /var/lib/postgresql/data
+    networks:
+      - basic
+  <%_ } _%>
+  <%_ if (org.ca.db === "mysql") { _%>
+  db.<%= org.ca.address %>:
+    container_name: db.<%= org.ca.address %>
+    image: mysql:${FABRIC_CA_MYSQL_VERSION:-5.7}
+    command: --sql_mode=""
+    environment:
+      - MYSQL_ROOT_PASSWORD=caDbPass12345
+      - MYSQL_DATABASE=fabriccaserver
+    healthcheck:
+      test: ["CMD", "sh", "-c", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysql -h localhost -u root -e 'SELECT 1' fabriccaserver"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - /var/lib/mysql
     networks:
       - basic
   <%_ } _%>

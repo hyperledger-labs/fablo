@@ -27,7 +27,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
         "domain": "org1.example.com"
       },
       "ca": {
-        "db": "postgres"
+        "db": "mysql"
       },
       "peer": {
         "instances": 1,
@@ -2172,8 +2172,8 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
-      - FABRIC_CA_SERVER_DB_TYPE=postgres
-      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
+      - FABRIC_CA_SERVER_DB_TYPE=mysql
+      - FABRIC_CA_SERVER_DB_DATASOURCE=root:caDbPass12345@tcp(db.ca.org1.example.com:3306)/fabriccaserver?parseTime=true
     ports:
       - 7040:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -2189,18 +2189,19 @@ services:
 
   db.ca.org1.example.com:
     container_name: db.ca.org1.example.com
-    image: postgres:\${FABRIC_CA_POSTGRES_VERSION}
+    image: mysql:\${FABRIC_CA_MYSQL_VERSION:-5.7}
+    command: --sql_mode=""
     environment:
-      - POSTGRES_PASSWORD=caDbPass12345
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=fabriccaserver
+      - MYSQL_ROOT_PASSWORD=caDbPass12345
+      - MYSQL_DATABASE=fabriccaserver
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: ["CMD", "sh", "-c", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysql -h localhost -u root -e 'SELECT 1' fabriccaserver"]
       interval: 5s
       timeout: 10s
-      retries: 7
+      retries: 10
+      start_period: 10s
     volumes:
-      - /var/lib/postgresql/data
+      - /var/lib/mysql
     networks:
       - basic
 
@@ -3662,6 +3663,11 @@ __getCASQLiteNodes() {
 
 __getCAPostgresNodes() {
   echo "
+  "
+}
+
+__getCAMySQLNodes() {
+  echo "
       db.ca.org1.example.com
   "
 }
@@ -3685,9 +3691,15 @@ __createSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Saving state of $node..."
+    echo "Saving state of $node (PostgreSQL)..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Saving state of $node (MySQL)..."
+    mkdir -p "$backup_dir/$node/mysql-data"
+    docker exec -e MYSQL_PWD=caDbPass12345 "$node" mysqldump -u root --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
@@ -3725,7 +3737,16 @@ __cloneSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Restoring $node..."
+    echo "Restoring $node (PostgreSQL)..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Restoring $node (MySQL)..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
     else
@@ -3794,7 +3815,7 @@ classDef subgraph_padding fill:none,stroke:none
   subgraph org1_example_com [Organization: Org1<br>org1.example.com]
     subgraph org1_example_com_padding [ ]
       direction RL
-      ca_org1_example_com([ca.org1.example.com<br>postgres])
+      ca_org1_example_com([ca.org1.example.com<br>mysql])
       peer0_org1_example_com[peer0.org1.example.com<br>CouchDb]
     end
     class org1_example_com_padding subgraph_padding
