@@ -122,9 +122,12 @@ echo "$user_token_response"
 user_token="$(echo "$user_token_response" | jq -r '.token')"
 
 # check if state is kept after restoration
+sleep 2
+
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Mr Freeze"}}'
+
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'
