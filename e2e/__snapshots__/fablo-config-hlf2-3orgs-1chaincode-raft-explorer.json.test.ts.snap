@@ -7174,7 +7174,7 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
-      chaincode_chaincode1[[Chaincode: chaincode1]]
+      chaincode_chaincode1_my_channel1[[Chaincode: chaincode1]]
     end
     class channel_my_channel1_padding subgraph_padding
   end

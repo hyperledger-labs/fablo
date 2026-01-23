@@ -4598,8 +4598,8 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
-      chaincode_or_policy_chaincode[[Chaincode: or-policy-chaincode]]
-      chaincode_and_policy_chaincode[[Chaincode: and-policy-chaincode]]
+      chaincode_or_policy_chaincode_my_channel1[[Chaincode: or-policy-chaincode]]
+      chaincode_and_policy_chaincode_my_channel1[[Chaincode: and-policy-chaincode]]
     end
     class channel_my_channel1_padding subgraph_padding
   end
