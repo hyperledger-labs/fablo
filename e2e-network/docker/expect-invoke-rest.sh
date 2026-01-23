@@ -11,7 +11,6 @@ args_json_array="$5"
 expected="$6"
 transient_default="{}"
 transient="${7:-$transient_default}"
-retries_left="${8:-20}"
 
 if [ -z "$expected" ]; then
   echo "Usage: ./expect-invoke.sh <rest_api_url> <channel> <chaincode> <contract:method> <args_json_array> <expected_substring> <transient_data>"
@@ -49,10 +48,6 @@ echo "$response"
 
 if echo "$response" | grep -F "$expected"; then
   echo "✅ ok (rest): $label"
-elif [ "$retries_left" -gt 0 ]; then
-  echo "Retrying... ($retries_left)"
-  sleep 1
-  exec "$0" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$((retries_left - 1))"
 else
   echo "❌ failed (rest): $label | expected: $expected"
   exit 1
