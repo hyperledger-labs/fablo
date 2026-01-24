@@ -1,8 +1,10 @@
-import * as Generator from "yeoman-generator";
+import { Args, Command } from "@oclif/core";
 import { Validator as SchemaValidator } from "jsonschema";
 import * as chalk from "chalk";
-import * as config from "../config";
-import parseFabloConfig from "../utils/parseFabloConfig";
+import * as config from "../../config";
+import parseFabloConfig from "../../utils/parseFabloConfig";
+import * as fs from "fs";
+import * as path from "path";
 import {
   ChaincodeJson,
   ChannelJson,
@@ -10,13 +12,13 @@ import {
   GlobalJson,
   OrdererJson,
   OrgJson,
-} from "../types/FabloConfigJson";
+} from "../../types/FabloConfigJson";
 import * as _ from "lodash";
-import { getNetworkCapabilities } from "../extend-config/";
-import { Capabilities } from "../types/FabloConfigExtended";
-import { version } from "../repositoryUtils";
+import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
+import { Capabilities } from "../../types/FabloConfigExtended";
+import { version } from "../../repositoryUtils";
+import ListCompatibleUpdates from "../../list-compatible-updates";
 
-const ListCompatibleUpdatesGeneratorType = require.resolve("../list-compatible-updates");
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
   const duplicates: Record<string, string[]> = {};
   const seenCounts = new Map<string, number>();
@@ -80,41 +82,39 @@ class Listener {
   }
 }
 
-const getFullPathOf = (configFile: string, currentPath: string): string => `${currentPath}/${configFile}`;
+export default class Validate extends Command {
+  static override description = "Validates Fablo config file";
 
-class ValidateGenerator extends Generator {
+  static override args = {
+    fabloConfig: Args.string({
+      description: "Fablo config file path",
+      required: false,
+      default: "fablo-config.json",
+    }),
+  };
+
   private readonly errors = new Listener();
   private readonly warnings = new Listener();
+  private fabloConfigPath: string = "";
 
-  constructor(args: string[], opts: Generator.GeneratorOptions) {
-    super(args, opts);
-
-    this.argument("fabloConfig", {
-      type: String,
-      optional: true,
-      description: "Fablo config file path",
-      default: "../../network/fablo-config.json",
-    });
-
-    this.addListener(validationErrorType.CRITICAL, (event) => {
-      console.log(chalk.bold.bgRed("Critical error occured:"));
-      console.log(chalk.bold(`- ${event.message}`));
-      console.log(chalk.bold.bgRed("Critical error occured:"));
-      console.log(chalk.bold(`- ${event.message}`));
+  private emit(type: string, event: Message) {
+    if (type === validationErrorType.CRITICAL) {
+      this.log(chalk.bold.bgRed("Critical error occured:"));
+      this.log(chalk.bold(`- ${event.message}`));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
       process.exit(1);
-    });
-
-    this.addListener(validationErrorType.ERROR, (e) => this.errors.onEvent(e));
-    this.addListener(validationErrorType.WARN, (e) => this.warnings.onEvent(e));
-
-    this.composeWith(ListCompatibleUpdatesGeneratorType);
+    } else if (type === validationErrorType.ERROR) {
+      this.errors.onEvent(event);
+    } else if (type === validationErrorType.WARN) {
+      this.warnings.onEvent(event);
+    }
   }
 
   async validate() {
-    this._validateIfConfigFileExists(this.options.fabloConfig);
+    this._validateIfConfigFileExists(this.fabloConfigPath);
 
-    const networkConfig = parseFabloConfig(this.fs.read(this.options.fabloConfigPath));
+    const configContent = fs.readFileSync(this.fabloConfigPath, "utf-8");
+    const networkConfig = parseFabloConfig(configContent);
     this._validateFabricVersion(networkConfig.global);
     networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateJsonSchema(networkConfig);
@@ -124,7 +124,6 @@ class ValidateGenerator extends Generator {
 
     // === Validate Orderers =============
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
-    networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
@@ -172,19 +171,19 @@ class ValidateGenerator extends Generator {
   }
 
   async shortSummary() {
-    console.log(`Validation errors count: ${this.errors.count()}`);
-    console.log(`Validation warnings count: ${this.warnings.count()}`);
-    console.log(chalk.bold("==========================================================="));
+    this.log(`Validation errors count: ${this.errors.count()}`);
+    this.log(`Validation warnings count: ${this.warnings.count()}`);
+    this.log(chalk.bold("==========================================================="));
   }
 
   async detailedSummary() {
     const allValidationMessagesCount = this.errors.count() + this.warnings.count();
 
     if (allValidationMessagesCount > 0) {
-      console.log(chalk.bold("=================== Validation summary ===================="));
+      this.log(chalk.bold("=================== Validation summary ===================="));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
       this._printIfNotEmpty(this.warnings.getAllMessages(), chalk.yellow("Warnings found:"));
-      console.log(chalk.bold("==========================================================="));
+      this.log(chalk.bold("==========================================================="));
     }
 
     if (this.errors.count() > 0) {
@@ -193,8 +192,10 @@ class ValidateGenerator extends Generator {
   }
 
   _validateIfConfigFileExists(configFilePath: string) {
-    const configFilePathAbsolute = getFullPathOf(configFilePath, this.env.cwd);
-    const fileExists = this.fs.exists(configFilePathAbsolute);
+    const configFilePathAbsolute = path.isAbsolute(configFilePath)
+      ? configFilePath
+      : path.join(process.cwd(), configFilePath);
+    const fileExists = fs.existsSync(configFilePathAbsolute);
     if (!fileExists) {
       const objectToEmit: Message = {
         category: validationCategories.CRITICAL,
@@ -202,7 +203,7 @@ class ValidateGenerator extends Generator {
       };
       this.emit(validationErrorType.CRITICAL, objectToEmit);
     } else {
-      this.options.fabloConfigPath = configFilePathAbsolute;
+      this.fabloConfigPath = configFilePathAbsolute;
     }
   }
 
@@ -228,13 +229,13 @@ class ValidateGenerator extends Generator {
 
   _printIfNotEmpty(messages: Message[], caption: string) {
     if (messages.length > 0) {
-      console.log(caption);
+      this.log(caption);
 
       const grouped: Record<string, Message[]> = _.groupBy(messages, (msg) => msg.category);
 
       Object.keys(grouped).forEach((key) => {
-        console.log(chalk.bold(`  ${key}:`));
-        grouped[key].forEach((msg) => console.log(`   - ${msg.message}`));
+        this.log(chalk.bold(`  ${key}:`));
+        grouped[key].forEach((msg) => this.log(`   - ${msg.message}`));
       });
     }
   }
@@ -548,6 +549,19 @@ class ValidateGenerator extends Generator {
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }
+
+  public async run(): Promise<void> {
+    const { args } = await this.parse(Validate);
+    const configPath = args.fabloConfig ?? "fablo-config.json";
+    
+    this._validateIfConfigFileExists(configPath);
+    await this.validate();
+
+    // Check for compatible updates
+    const listCompatibleUpdates = new ListCompatibleUpdates();
+    await listCompatibleUpdates.checkForCompatibleUpdates();
+
+    await this.detailedSummary();
+  }
 }
 
-module.exports = ValidateGenerator;

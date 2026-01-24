@@ -2,40 +2,35 @@
 
 set -e
 
-executeYeomanCommand() {
+executeOclifCommand() {
   command_with_params=$1
-
-  # cleanup yeoman files after execution
-  # shellcheck disable=SC2064
-  trap "rm -rf \"$yeoman_target_dir/.cache\" \"$yeoman_target_dir/.config\" \"$yeoman_target_dir/.npm\"" EXIT
-
   if [ "$(id -u)" = 0 ]; then
-    # root user detected, running as yeoman user
-    sudo chown -R yeoman:yeoman "$yeoman_target_dir"
+    # root user detected, running as yeoman user (keeping for compatibility)
+    sudo chown -R yeoman:yeoman "$target_dir"
     # shellcheck disable=SC2086
-    (cd "$yeoman_target_dir" && sudo -E -u yeoman yo --no-insight $command_with_params)
-    sudo chown -R root:root "$yeoman_target_dir"
+    (cd "$target_dir" && sudo -E -u yeoman node --no-warnings /fablo/bin/run.mjs $command_with_params)
+    sudo chown -R root:root "$target_dir"
   else
     # shellcheck disable=SC2086
-    (cd "$yeoman_target_dir" && yo --no-insight $command_with_params)
+    (cd "$target_dir" && node --no-warnings /fablo/bin/run.mjs $command_with_params)
   fi
 }
 
 formatGeneratedFiles() {
   # Additional script and yaml formatting
   #
-  # Why? Yeoman output may contain some additional whitespaces or the formatting
+  # Why? Generated output may contain some additional whitespaces or the formatting
   # might not be ideal. Keeping those whitespaces, however, might be useful
   # in templates to improve the brevity. That's why we need additional formatting.
   # Since the templates should obey good practices, we don't use linters here
   # (i.e. shellcheck and yamllint).
   echo "Formatting generated files"
-  shfmt -i=2 -l -w "$yeoman_target_dir" >/dev/null
+  shfmt -i=2 -l -w "$target_dir" >/dev/null
 
-  for yaml in "$yeoman_target_dir"/**/*.yaml; do
+  for yaml in "$target_dir"/**/*.yaml; do
 
     # the expansion failed, no yaml files found
-    if [ "$yaml" = "$yeoman_target_dir/**/*.yaml" ]; then
+    if [ "$yaml" = "$target_dir/**/*.yaml" ]; then
       break
     fi
 
@@ -48,16 +43,29 @@ formatGeneratedFiles() {
   done
 }
 
-yeoman_target_dir="/network/workspace"
-yeoman_command=${1:-Fablo:setup-network}
+target_dir="/network/workspace"
+oclif_command=${1:-setup-network}
 
-# This part of output will be replaces with empty line. It breaks parsing of yeoman generator output.
-# See also: https://github.com/yeoman/generator/issues/1294
-annoying_yeoman_info="No change to package.json was detected. No package manager install will be executed."
+# Map old yeoman command format to oclif format
+case "$oclif_command" in
+  "Fablo:setup-network"|"fablo:setup-network")
+    oclif_command="setup-network"
+    ;;
+esac
+
+# Build command with all arguments (mapped command + remaining args)
+# Replace first argument with mapped command, then pass all args
+if [ $# -gt 0 ]; then
+  shift
+  set -- "$oclif_command" "$@"
+else
+  set -- "$oclif_command"
+fi
+command_with_args="$*"
 
 # Execute the command
-executeYeomanCommand "$yeoman_command" 2>&1 | sed "s/$annoying_yeoman_info//g"
+executeOclifCommand "$command_with_args"
 
-if echo "$yeoman_command" | grep "setup-network"; then
+if echo "$oclif_command" | grep -q "setup-network"; then
   formatGeneratedFiles
 fi
