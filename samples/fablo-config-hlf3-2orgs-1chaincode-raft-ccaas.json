@@ -1,0 +1,85 @@
+{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
+  "global": {
+    "fabricVersion": "3.1.0",
+    "tls": true
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 1
+        }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    },
+    {
+      "organization": {
+        "name": "Org2",
+        "domain": "org2.example.com"
+      },
+      "ca": {
+        "db": "postgres"
+      },
+      "peer": {
+        "instances": 1,
+        "db": "CouchDb"
+      },
+      "tools": {
+        "fabloRest": true
+      }
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0"
+          ]
+        },
+        {
+          "name": "Org2",
+          "peers": [
+            "peer0"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "ccaas",
+      "channel": "my-channel1",
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+    }
+  ],
+  "hooks": {
+    "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' \"./fablo-target/fabric-config/configtx.yaml\""
+  }
+}
