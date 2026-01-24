@@ -38,16 +38,16 @@ const getVersions = (fabricVersion: string): FabricVersions => {
   };
 };
 
-// const getEnvVarOrThrow = (name: string): string => {
-//   const value = process.env[name];
-//   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
-//   return value;
-// };
+const getEnvVarOrThrow = (name: string): string => {
+  const value = process.env[name];
+  if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
+  return value;
+};
 
-// const getPathsFromEnv = () => ({
-//   fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
-//   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
-// });
+const getPathsFromEnv = () => ({
+  fabloConfig: getEnvVarOrThrow("FABLO_CONFIG"),
+  chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
+});
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
   const engine = globalJson.engine ?? "docker";
@@ -59,17 +59,19 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
   const explorer = !globalJson?.tools?.explorer
     ? {}
     : {
-        explorer: { address: "explorer.example.com", port: 7010 },
-      };
+      explorer: { address: "explorer.example.com", port: 7010 },
+    };
+
+  const paths = process.env.FABLO_CONFIG ? getPathsFromEnv() : {
+    fabloConfig: "fablo-config.json",
+    chaincodesBaseDir: ".",
+  };
 
   return {
     ...globalJson,
     ...getVersions(globalJson.fabricVersion),
     engine,
-    paths: {
-      fabloConfig:"fablo-config.json",
-      chaincodesBaseDir:"./chaincodes",
-    },
+    paths,
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),
     tools: { ...explorer },

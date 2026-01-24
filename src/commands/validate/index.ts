@@ -89,7 +89,7 @@ export default class Validate extends Command {
     fabloConfig: Args.string({
       description: "Fablo config file path",
       required: false,
-      default: "../../network/fablo-config.json",
+      default: "fablo-config.json",
     }),
   };
 
@@ -552,7 +552,7 @@ export default class Validate extends Command {
 
   public async run(): Promise<void> {
     const { args } = await this.parse(Validate);
-    const configPath = args.fabloConfig ?? "../../network/fablo-config.json";
+    const configPath = args.fabloConfig ?? "fablo-config.json";
     
     this._validateIfConfigFileExists(configPath);
     await this.validate();

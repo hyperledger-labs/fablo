@@ -110,12 +110,15 @@ export default class Init extends Command {
     if (flags.node) {
       console.log("Creating sample Node.js chaincode");
       printSplash();
-      const source = path.join(__dirname, '../../../../samples/chaincodes/chaincode-kv-node');
-      const destination = path.join(process.cwd(), 'chaincodes');
+      const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
+      const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
       fs.copySync(source, destination);
 
-      // fs.copySync(source, path.join(process.cwd(), 'chaincodes'));
-      fs.writeFileSync(path.join(process.cwd(), 'samples/chaincodes/chaincode-kv-node/.nvmrc'), '12');
+      fs.writeFileSync(
+        path.join(destination, '.nvmrc'),
+        '12'
+      );
+
 
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
       // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
@@ -152,7 +155,7 @@ export default class Init extends Command {
     if (flags.gateway) {
       console.log("Creating sample Node.js gateway");
       printSplash();
-      const src = path.join(__dirname, '../../../../samples/gateway');
+      const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
       fs.copySync(src, dest);
       this.log('✔ Gateway generated successfully!');

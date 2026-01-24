@@ -13,13 +13,13 @@ export default class ExtendConfig extends Command {
 
   static override args = {
     config: Args.string({
-      default: "../../network/fablo-config.json",
+      default: "fablo-config.json",
       description: "Fablo config file path",
       required: false,
     }),
   };
   async writing (args: { config?: string }): Promise<void> {
-    const configPath = args?.config ?? "../../network/fablo-config.json";
+    const configPath = args?.config ?? "fablo-config.json";
     const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
     const json = parseFabloConfig(fs.readFileSync(fabloConfigPath).toString());
     const configExtended = extendConfig(json);

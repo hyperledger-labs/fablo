@@ -15,7 +15,7 @@ export default class SetupK8s extends Command {
     fabloConfig: Args.string({
       description: "Fablo config file path",
       required: false,
-      default: "../../network/fablo-config.json",
+      default: "fablo-config.json",
     }),
   };
 
@@ -24,7 +24,7 @@ export default class SetupK8s extends Command {
 
   public async run(): Promise<void> {
     const { args } = await this.parse(SetupK8s);
-    const configPath = args.fabloConfig ?? "../../network/fablo-config.json";
+    const configPath = args.fabloConfig ?? "fablo-config.json";
     const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
 
     // Validate config first - we'll validate in the writing method
