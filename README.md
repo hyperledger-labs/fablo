@@ -2,51 +2,69 @@
 
 <h1><img src="./logo.svg" alt="Fablo"/></h1>
 
+Fablo allows you to start Hyperledger Fabric network from a single config file. It's best for local development, CI processes and experimenting with various network configurations.
+
 Fablo supports:
 
 * Environment: Docker
 * RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
-* Chaincode installation and upgrade
+* Chaincode installation and upgrade (Node, Go, Java, CCaaS)
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
-Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see a list of features supported by Fablo.
+Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
 ## See it in action
 
-[![How to use](https://img.youtube.com/vi/JqPNozCtHkQ/0.jpg)](https://www.youtube.com/watch?v=JqPNozCtHkQ)
+[&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)
+
+## Quick start
+
+```bash
+curl fablo.io/install.sh | bash
+./fablo init node rest
+./fablo up
+```
+
+This will create a local Hyperledger Fabric network with a sample Node.js chaincode (using the `node` parameter) and a REST API client (using the `rest` parameter).
+After a few minutes, the entire network will be set up and running.
+
+You can check the running nodes using `docker ps` or `docker stats`. You can also query the network via the command line (`fablo chaincode invoke` or `fablo chaincode query`), use the REST API client (see [Fablo REST](https://github.com/fablo-io/fablo-rest)), or view the network topology in the `fablo-target/network-topology.mmd` Mermaid diagram.
 
 ## Installation
 
 Fablo is distributed as a single shell script that uses a Docker image to generate the network configuration.
-You can keep the script in the root directory of your project or install it globally on your system.
-
-To get a copy of Fablo for a single project, run this command in your project root:
+To install it locally in your project directory:
 
 ```bash
-curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o ./fablo && chmod +x ./fablo
+curl fablo.io/install.sh | bash
+# OR
+curl fablo.io/fablo.sh > fablo && chmod +x fablo
 ```
 
-To install it globally, run:
+To install it globally on your system:
 
 ```bash
-sudo curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
+sudo curl fablo.io/fablo.sh -o /usr/local/bin/fablo && sudo chmod +x /usr/local/bin/fablo
 ```
 
-## Getting started
-
-To create a local Hyperledger Fabric network with Node.js chaincode and REST API client, install Fablo and run:
+To install a given version use:
 
 ```bash
-fablo init node rest
-fablo up
+curl https://github.com/hyperledger-labs/fablo/releases/download/<version>/fablo.sh
 ```
 
-Note: For local setup use `./fablo` instead of `fablo`.
+To change version of current installation:
 
-After a few minutes, the entire network will be set up and running.
-You can check the running nodes using `docker ps` or `docker stats`, and query the network via command line (`fablo chaincode invoke|query`) or REST API client (via [Fablo REST](https://github.com/fablo-io/fablo-rest)).
+```bash
+fablo use <version>
+```
+
+Note: If you install Fablo as a local script, you call it as `./fablo <command>`.
+If you install it globally, you call `fablo <command>`.
+For the simplicity we will refer to it as `fablo`.
+
 
 ## Basic usage
 
@@ -441,7 +459,7 @@ The basic structure of Fablo config file is as follows:
 
 ```json
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
@@ -618,7 +636,7 @@ Generated hooks are saved in `fablo-target/hooks`.
 
 ```yaml
 ---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json
 global:
   fabricVersion: 2.4.2
   tls: false
@@ -698,4 +716,8 @@ We'd love to have you contribute! Please refer to our [contribution guidelines](
 
 Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@Hejwo](https://github.com/Hejwo/) and [@dzikowski](https://github.com/dzikowski/).
 In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
+
+## Talks
+* [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
+* [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
 

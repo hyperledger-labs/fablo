@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fablo-config.yaml from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
 "---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json
 global:
   fabricVersion: 2.5.12
   tls: false
@@ -2200,7 +2200,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.yaml 1`] = `
-"FABLO_VERSION=2.4.2
+"FABLO_VERSION=2.4.3
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -2251,20 +2251,15 @@ chaincodeList() {
 
     peerChaincodeList "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" # $2 is channel name
 
-  elif
-    [ "$1" = "peer1.org1.example.com" ]
-  then
+  elif [ "$1" = "peer1.org1.example.com" ]; then
 
     peerChaincodeList "cli.org1.example.com" "peer1.org1.example.com:7042" "$2" # $2 is channel name
 
-  elif
-    [ "$1" = "peer0.org2.example.com" ]
-  then
+  elif [ "$1" = "peer0.org2.example.com" ]; then
 
     peerChaincodeList "cli.org2.example.com" "peer0.org2.example.com:7061" "$2" # $2 is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -2368,22 +2363,15 @@ channelQuery() {
 
     peerChannelList "cli.org1.example.com" "peer0.org1.example.com:7041"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]; then
 
     peerChannelList "cli.org1.example.com" "peer1.org1.example.com:7042"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]; then
 
     peerChannelList "cli.org2.example.com" "peer0.org2.example.com:7061"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041"
 
@@ -2398,9 +2386,7 @@ channelQuery() {
 
     peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfo "my-channel1" "cli.org1.example.com" "peer1.org1.example.com:7042"
 
@@ -2415,9 +2401,7 @@ channelQuery() {
 
     peerChannelFetchBlock "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7042" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfo "my-channel1" "cli.org2.example.com" "peer0.org2.example.com:7061"
 
@@ -2433,7 +2417,6 @@ channelQuery() {
     peerChannelFetchBlock "my-channel1" "cli.org2.example.com" "\${BLOCK_NAME}" "peer0.org2.example.com:7061" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp
@@ -4451,6 +4434,11 @@ __getCAPostgresNodes() {
   "
 }
 
+__getCAMySQLNodes() {
+  echo "
+  "
+}
+
 __createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   backup_dir="\${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
@@ -4470,9 +4458,15 @@ __createSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Saving state of $node..."
+    echo "Saving state of $node (PostgreSQL)..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Saving state of $node (MySQL)..."
+    mkdir -p "$backup_dir/$node/mysql-data"
+    docker exec -e MYSQL_PWD=caDbPass12345 "$node" mysqldump -u root --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
@@ -4510,7 +4504,16 @@ __cloneSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Restoring $node..."
+    echo "Restoring $node (PostgreSQL)..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Restoring $node (MySQL)..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
     else
@@ -4595,8 +4598,8 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
-      chaincode_or_policy_chaincode[[Chaincode: or-policy-chaincode]]
-      chaincode_and_policy_chaincode[[Chaincode: and-policy-chaincode]]
+      chaincode_or_policy_chaincode_my_channel1[[Chaincode: or-policy-chaincode]]
+      chaincode_and_policy_chaincode_my_channel1[[Chaincode: and-policy-chaincode]]
     end
     class channel_my_channel1_padding subgraph_padding
   end

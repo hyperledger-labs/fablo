@@ -29,7 +29,7 @@ if [ "$(command -v nvm)" = "nvm" ]; then
   set -u
 fi
 
-npm install
+npm ci
 npm run build:dist
 
 # if --push is passed, then build for all platforms and push the image to the registry

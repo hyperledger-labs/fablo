@@ -51,11 +51,13 @@ networkUp
 
 # check if all nodes are ready
 waitForContainer "orderer0.group1.orderer.example.com" "Starting Raft node channel=my-channel1"
-waitForContainer "db.ca.org1.example.com" "database system is ready to accept connections"
+waitForContainer "db.ca.org1.example.com" "ready for connections"
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "couchdb.peer0.org1.example.com" "Apache CouchDB has started. Time to relax."
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
 
 fablo_rest_org1="localhost:8801"
 snapshot_name="fablo-snapshot-$(date -u +"%Y%m%d%H%M%S")"
@@ -109,22 +111,28 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
   cd "$TEST_TMP" &&
     "$FABLO_HOME/fablo.sh" prune &&
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
-    "$FABLO_HOME/fablo.sh" start
+    "$FABLO_HOME/fablo.sh" start &&
     "$FABLO_HOME/fablo.sh" chaincodes install
 )
 
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 
-sleep 10
+# wait for CCAAS container to finish bootstrapping
+waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
 
+# sleep one second to ensure the CCAAS container is ready
+sleep 1
+
+# check if state is kept after restoration
 user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "gordon", "secret": "gordonpw"}' 'token')"
 echo "$user_token_response"
 user_token="$(echo "$user_token_response" | jq -r '.token')"
 
-# check if state is kept after restoration
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Mr Freeze"}}'
+
 expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:getPrivateMessage" '["_implicit_org_Org1MSP"]' \
   '{"success":"RHIgVmljdG9yIEZyaWVz"}'

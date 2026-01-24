@@ -1,3 +1,20 @@
+## 2.4.4
+
+### Bug Fixes
+* Get chaincode container name by peer address instead of index [#649](https://github.com/hyperledger-labs/fablo/pull/649)
+
+### Documentation
+* Quick start  [#645](https://github.com/hyperledger-labs/fablo/pull/645) [#646](https://github.com/hyperledger-labs/fablo/pull/646)
+
+## 2.4.3
+
+### Chore & Maintenance
+* Update Node.js to 20 [#641](https://github.com/hyperledger-labs/fablo/pull/641)
+
+### Documentation
+* Update `README.md` to provide talk links [#637](https://github.com/hyperledger-labs/fablo/pull/637)
+
+
 ## 2.4.2
 
 ### Bug Fixes

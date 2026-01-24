@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true
@@ -27,7 +27,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
         "domain": "org1.example.com"
       },
       "ca": {
-        "db": "postgres"
+        "db": "mysql"
       },
       "peer": {
         "instances": 1,
@@ -1598,7 +1598,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json 1`] = `
-"FABLO_VERSION=2.4.2
+"FABLO_VERSION=2.4.3
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -1647,7 +1647,6 @@ chaincodeList() {
     peerChaincodeListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "$2" "crypto-orderer/tlsca.orderer.example.com-cert.pem" # Third argument is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -1769,10 +1768,7 @@ channelQuery() {
 
     peerChannelListTls "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -1787,9 +1783,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel2" "cli.org1.example.com" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
 
@@ -1805,7 +1799,6 @@ channelQuery() {
     peerChannelFetchBlockTls "my-channel2" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7041" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp
@@ -2122,8 +2115,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
     networks:
       - basic
 
@@ -2181,8 +2172,8 @@ services:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_DB_TLS_ENABLED=false
-      - FABRIC_CA_SERVER_DB_TYPE=postgres
-      - FABRIC_CA_SERVER_DB_DATASOURCE=host=db.ca.org1.example.com port=5432 user=postgres password=caDbPass12345 dbname=fabriccaserver sslmode=disable
+      - FABRIC_CA_SERVER_DB_TYPE=mysql
+      - FABRIC_CA_SERVER_DB_DATASOURCE=root:caDbPass12345@tcp(db.ca.org1.example.com:3306)/fabriccaserver?parseTime=true
     ports:
       - 7040:7054
     working_dir: /etc/hyperledger/fabric-ca-server
@@ -2198,18 +2189,19 @@ services:
 
   db.ca.org1.example.com:
     container_name: db.ca.org1.example.com
-    image: postgres:\${FABRIC_CA_POSTGRES_VERSION}
+    image: mysql:\${FABRIC_CA_MYSQL_VERSION:-5.7}
+    command: --sql_mode=""
     environment:
-      - POSTGRES_PASSWORD=caDbPass12345
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=fabriccaserver
+      - MYSQL_ROOT_PASSWORD=caDbPass12345
+      - MYSQL_DATABASE=fabriccaserver
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      test: ["CMD", "sh", "-c", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysql -h localhost -u root -e 'SELECT 1' fabriccaserver"]
       interval: 5s
       timeout: 10s
-      retries: 7
+      retries: 10
+      start_period: 10s
     volumes:
-      - /var/lib/postgresql/data
+      - /var/lib/mysql
     networks:
       - basic
 
@@ -2243,8 +2235,6 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/var/hyperledger/cli/crypto-orderer/tlsca.orderer.example.com-cert.pem:ro
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR//:/var/hyperledger/cli/chaincode1/"
     networks:
       - basic
 
@@ -3673,6 +3663,11 @@ __getCASQLiteNodes() {
 
 __getCAPostgresNodes() {
   echo "
+  "
+}
+
+__getCAMySQLNodes() {
+  echo "
       db.ca.org1.example.com
   "
 }
@@ -3696,9 +3691,15 @@ __createSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Saving state of $node..."
+    echo "Saving state of $node (PostgreSQL)..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Saving state of $node (MySQL)..."
+    mkdir -p "$backup_dir/$node/mysql-data"
+    docker exec -e MYSQL_PWD=caDbPass12345 "$node" mysqldump -u root --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
@@ -3736,7 +3737,16 @@ __cloneSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Restoring $node..."
+    echo "Restoring $node (PostgreSQL)..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Restoring $node (MySQL)..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
     else
@@ -3805,7 +3815,7 @@ classDef subgraph_padding fill:none,stroke:none
   subgraph org1_example_com [Organization: Org1<br>org1.example.com]
     subgraph org1_example_com_padding [ ]
       direction RL
-      ca_org1_example_com([ca.org1.example.com<br>postgres])
+      ca_org1_example_com([ca.org1.example.com<br>mysql])
       peer0_org1_example_com[peer0.org1.example.com<br>CouchDb]
     end
     class org1_example_com_padding subgraph_padding
@@ -3813,14 +3823,14 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
-      chaincode_chaincode1[[Chaincode: chaincode1]]
+      chaincode_chaincode1_my_channel1[[Chaincode: chaincode1]]
     end
     class channel_my_channel1_padding subgraph_padding
   end
 
   subgraph channel_my_channel2 [Channel: my-channel2]
     subgraph channel_my_channel2_padding [ ]
-      chaincode_chaincode1[[Chaincode: chaincode1]]
+      chaincode_chaincode1_my_channel2[[Chaincode: chaincode1]]
     end
     class channel_my_channel2_padding subgraph_padding
   end
