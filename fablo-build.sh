@@ -30,7 +30,7 @@ if [ "$(command -v nvm)" = "nvm" ]; then
 fi
 
 npm install
-npm run build
+npm run build:dist
 
 # if --push is passed, then build for all platforms and push the image to the registry
 if [ "${1:-''}" = "--push" ]; then

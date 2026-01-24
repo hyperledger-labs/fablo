@@ -209,7 +209,7 @@ executeOnFabloDocker() {
     fablo_config="$(cd "$(dirname "$fablo_config")" && pwd)/$(basename "$fablo_config")"
     local chaincodes_base_dir="$(dirname "$fablo_config")"
     fablo_config_params=(
-      -v "$fablo_config":/network/fablo-config.json
+      -v "$fablo_config":/network/workspace/fablo-config.json
       --env "FABLO_CONFIG=$fablo_config"
       --env "CHAINCODES_BASE_DIR=$chaincodes_base_dir"
     )
@@ -310,6 +310,7 @@ executeFabloCommand() {
 
   if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
     echo "Executing Fablo Docker command: $1"
+    chmod +x "$FABLO_TARGET/fabric-docker.sh" || true
     "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"

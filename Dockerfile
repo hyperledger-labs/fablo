@@ -3,7 +3,7 @@ FROM node:18-alpine3.16
 RUN apk add --no-cache sudo shfmt
 
 # copy fablo files
-COPY dist /fablo/dist
+COPY generators /fablo/generators
 COPY package.json /fablo/package.json
 COPY package-lock.json /fablo/package-lock.json
 
