@@ -41,6 +41,7 @@ tasks.register('shadowJar', Jar) {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
 
     manifest {
         attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
