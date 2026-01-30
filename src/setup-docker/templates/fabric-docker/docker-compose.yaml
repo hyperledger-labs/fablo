@@ -67,6 +67,7 @@ services:
   db.<%= org.ca.address %>:
     container_name: db.<%= org.ca.address %>
     image: mysql:${FABRIC_CA_MYSQL_VERSION:-5.7}
+    platform: ${FABRIC_CA_MYSQL_PLATFORM:-linux/amd64}
     command: --sql_mode=""
     environment:
       - MYSQL_ROOT_PASSWORD=caDbPass12345
