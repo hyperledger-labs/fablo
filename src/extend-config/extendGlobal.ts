@@ -29,7 +29,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
   return {
     fabricVersion,
     fabricToolsVersion: is_or_above3_0_0(fabricVersion),
-    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.5" : fabricVersion,
+    fabricCaVersion: version(fabricVersion).isGreaterOrEqual("1.4.10") ? "1.5.16" : fabricVersion,
     fabricCcenvVersion: fabricVersion,
     fabricBaseosVersion: version(fabricVersion).isGreaterOrEqual("2.0") ? fabricVersion : "0.4.9",
     fabricJavaenvVersion: below3_0_0(majorMinor),
@@ -59,8 +59,8 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
   const explorer = !globalJson?.tools?.explorer
     ? {}
     : {
-        explorer: { address: "explorer.example.com", port: 7010 },
-      };
+      explorer: { address: "explorer.example.com", port: 7010 },
+    };
 
   return {
     ...globalJson,
