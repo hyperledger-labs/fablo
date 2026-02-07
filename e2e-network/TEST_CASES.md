@@ -17,6 +17,6 @@
 | Node chaincode endorsement|       OR        |     OR      |  OR, AND   |         default          |         OR         |          OR           |
 | Private data              |       no        |     no      |    yes     |           yes            |         no         |          no           |
 | Java chaincode            |       no        |     yes     |     no     |            no            |         no         |          no           |
-| Go chaincode              |       no        |     no      |     yes     |            no            |         no         |          no           |
+| Go chaincode              |       no        |     no      |     yes     |            no            |        yes         |          no           |
 | Tools                     | channel scripts | Fablo REST  |     -      |  Fablo REST, Explorer    |         -          |          -            |
 | Other Fablo commands      |   init, reset   | stop, start |     -      | snapshot, prune, restore |         -          |          -            |
