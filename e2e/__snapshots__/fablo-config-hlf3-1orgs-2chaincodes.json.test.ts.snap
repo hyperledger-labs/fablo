@@ -1,74 +1,81 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "{
-    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
-    "global": {
-      "fabricVersion": "3.1.0",
-      "tls": true,
-      "monitoring": {
-        "loglevel": "debug"
-      }
-    },
-    "orgs": [
-      {
-        "organization": {
-          "name": "Orderer",
-          "domain": "orderer.example.com"
-        },
-        "orderers": [
-          {
-            "groupName": "group1",
-            "type": "raft",
-            "instances": 4
-          }
-        ]
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
+  "global": {
+    "fabricVersion": "3.1.0",
+    "fabricToolsVersion": "3.1.3",
+    "tls": true,
+    "monitoring": {
+      "loglevel": "debug"
+    }
+  },
+  "orgs": [
+    {
+      "organization": {
+        "name": "Orderer",
+        "domain": "orderer.example.com"
       },
-      {
-        "organization": {
-          "name": "Org1",
-          "domain": "org1.example.com"
-        },
-        "peer": {
-          "instances": 2,
-          "db": "LevelDb"
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "raft",
+          "instances": 4
         }
+      ]
+    },
+    {
+      "organization": {
+        "name": "Org1",
+        "domain": "org1.example.com"
+      },
+      "peer": {
+        "instances": 2,
+        "db": "LevelDb"
       }
-    ],
-    "channels": [
-      {
-        "name": "my-channel1",
-        "orgs": [
-          {
-            "name": "Org1",
-            "peers": [
-              "peer0",
-              "peer1"
-            ]
-          }
-        ]
-      }
-    ],
-    "chaincodes": [
-      {
-        "name": "chaincode1",
-        "version": "0.0.1",
-        "lang": "node",
-        "channel": "my-channel1",
-        "directory": "./chaincodes/chaincode-kv-node"
-      }
-    ]
-  }
-  "
+    }
+  ],
+  "channels": [
+    {
+      "name": "my-channel1",
+      "orgs": [
+        {
+          "name": "Org1",
+          "peers": [
+            "peer0",
+            "peer1"
+          ]
+        }
+      ]
+    }
+  ],
+  "chaincodes": [
+    {
+      "name": "chaincode1",
+      "version": "0.0.1",
+      "lang": "node",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-node"
+    },
+    {
+      "name": "chaincode-go",
+      "version": "0.0.1",
+      "lang": "golang",
+      "channel": "my-channel1",
+      "directory": "./chaincodes/chaincode-kv-go"
+    }
+  ]
+}"
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/.gitignore from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "/config
 /crypto-config
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/configtx.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/configtx.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "################################################################################
 #   SECTION: Capabilities
 ################################################################################
@@ -266,7 +273,7 @@ Profiles:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "{
   "name": "fablo-test-network-orderer",
   "description": "Connection profile for Orderer in Fablo network",
@@ -360,7 +367,7 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "name: fablo-test-network-orderer
 description: Connection profile for Orderer in Fablo network
 version: 1.0.0
@@ -430,7 +437,7 @@ orderers:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "{
   "name": "fablo-test-network-org1",
   "description": "Connection profile for Org1 in Fablo network",
@@ -529,7 +536,7 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "name: fablo-test-network-org1
 description: Connection profile for Org1 in Fablo network
 version: 1.0.0
@@ -602,7 +609,7 @@ channels:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "PeerOrgs:
   - Name: Orderer
     Domain: orderer.example.com
@@ -618,7 +625,7 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "PeerOrgs:
   - Name: Org1
     Domain: org1.example.com
@@ -630,7 +637,7 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "{
   "network-configs": {
     "network-org1": {
@@ -643,7 +650,7 @@ exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#############################################################################
 #   This is a configuration file for the fabric-ca-server command.
 #
@@ -1144,7 +1151,7 @@ metrics:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#############################################################################
 #   This is a configuration file for the fabric-ca-server command.
 #
@@ -1645,7 +1652,7 @@ metrics:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -1716,7 +1723,7 @@ fi
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "FABLO_VERSION=2.5.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
@@ -1732,7 +1739,7 @@ COMPOSE_PROJECT_NAME=<name with timestamp>
 LOGGING_LEVEL=debug
 
 FABRIC_VERSION=3.1.0
-FABRIC_TOOLS_VERSION=3.0.0
+FABRIC_TOOLS_VERSION=3.1.3
 FABRIC_CA_VERSION=1.5.16
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=3.1.0
@@ -1753,7 +1760,7 @@ ORG1_CA_ADMIN_PASSWORD=adminpw
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 chaincodeList() {
@@ -1882,7 +1889,7 @@ chaincodeQuery() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 source "$FABLO_NETWORK_ROOT/fabric-docker/scripts/channel-query-functions.sh"
@@ -1975,7 +1982,7 @@ printChannelsHelp() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 generateArtifacts() {
@@ -2033,6 +2040,21 @@ installChaincodes() {
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
   fi
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
+    local version="0.0.1"
+    printHeadline "Packaging chaincode 'chaincode-go'" "U1F60E"
+    chaincodeBuild "chaincode-go" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+    chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "golang" "my-channel1"
+    printHeadline "Installing 'chaincode-go' for Org1" "U1F60E"
+    chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+    chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "golang" ""
+    printItalics "Committing chaincode 'chaincode-go' on channel 'my-channel1' as 'Org1'" "U1F618"
+    chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
+  else
+    echo "Warning! Skipping chaincode 'chaincode-go' installation. Chaincode directory is empty."
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
+  fi
 
 }
 
@@ -2064,6 +2086,23 @@ installChaincode() {
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
       echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    fi
+  fi
+  if [ "$chaincodeName" = "chaincode-go" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
+      printHeadline "Packaging chaincode 'chaincode-go'" "U1F60E"
+      chaincodeBuild "chaincode-go" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'chaincode-go' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "golang" ""
+      printItalics "Committing chaincode 'chaincode-go' on channel 'my-channel1' as 'Org1'" "U1F618"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
+
+    else
+      echo "Warning! Skipping chaincode 'chaincode-go' install. Chaincode directory is empty."
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
     fi
   fi
 }
@@ -2103,6 +2142,23 @@ upgradeChaincode() {
       echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
     fi
   fi
+  if [ "$chaincodeName" = "chaincode-go" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go")" ]; then
+      printHeadline "Packaging chaincode 'chaincode-go'" "U1F60E"
+      chaincodeBuild "chaincode-go" "golang" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go" "16"
+      chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "golang" "my-channel1"
+      printHeadline "Installing 'chaincode-go' for Org1" "U1F60E"
+      chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7041" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeInstall "cli.org1.example.com" "peer1.org1.example.com:7042" "chaincode-go" "$version" "my-channel1" "crypto-orderer/tlsca.orderer.example.com-cert.pem"
+      chaincodeApprove "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "" "golang" ""
+      printItalics "Committing chaincode 'chaincode-go' on channel 'my-channel1' as 'Org1'" "U1F618"
+      chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7041" "my-channel1" "chaincode-go" "$version" "orderer0.group1.orderer.example.com:7030" "AND ('Org1MSP.member')" "" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "peer0.org1.example.com:7041" "crypto-peer/peer0.org1.example.com/tls/ca.crt" ""
+
+    else
+      echo "Warning! Skipping chaincode 'chaincode-go' upgrade. Chaincode directory is empty."
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go'"
+    fi
+  fi
 }
 
 notifyOrgsAboutChannels() {
@@ -2139,6 +2195,22 @@ networkDown() {
     echo "Removing image $image..."
     docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
   done
+  for container in $(docker ps -a | grep "peer0.org1.example.com.*chaincode-go" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer0.org1.example.com.*chaincode-go*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
+  for container in $(docker ps -a | grep "peer1.org1.example.com.*chaincode-go" | awk '{print $1}'); do
+    echo "Removing container $container..."
+    docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"
+  done
+  for image in $(docker images "peer1.org1.example.com.*chaincode-go*" -q); do
+    echo "Removing image $image..."
+    docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"
+  done
 
   printHeadline "Destroying network" "U1F916"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
@@ -2153,7 +2225,7 @@ networkDown() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "networks:
   basic:
 
@@ -2210,6 +2282,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode-go/"
     networks:
       - basic
 
@@ -2437,6 +2510,7 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org1.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
       - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-go/:/var/hyperledger/cli/chaincode-go/"
     networks:
       - basic
 
@@ -2545,7 +2619,7 @@ services:
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 certsGenerate() {
@@ -2878,7 +2952,7 @@ removeContainer() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 printHelp() {
@@ -2913,7 +2987,7 @@ printHelp() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 # phrase "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}" is needed in older bash versions ( <4 ) for array expansion.
 # see: https://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
@@ -3561,7 +3635,7 @@ peerChaincodeQueryTls() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 peerChannelList() {
@@ -3732,7 +3806,7 @@ peerChannelFetchBlockTls() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 set -eu
@@ -3854,7 +3928,7 @@ fetchChannelAndJoinTls() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 __getOrdererAndPeerNodes() {
@@ -3987,7 +4061,7 @@ cloneSnapshot() {
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/hooks/post-generate.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/hooks/post-generate.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 # The code from this file was called after Fablo generated Hyperledger Fabric configuration
@@ -3995,7 +4069,7 @@ echo "Executing post-generate hook"
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/hooks/post-start.sh from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "#!/usr/bin/env bash
 
 # The code from this file is called after Fablo starts the Hyperledger Fabric network (after 'up' or 'start')
@@ -4003,7 +4077,7 @@ echo "Executing post-start hook"
 "
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/network-topology.mmd from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 "graph LR
 
 classDef subgraph_padding fill:none,stroke:none
@@ -4039,6 +4113,7 @@ classDef subgraph_padding fill:none,stroke:none
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
       chaincode_chaincode1_my_channel1[[Chaincode: chaincode1]]
+      chaincode_chaincode_go_my_channel1[[Chaincode: chaincode-go]]
     end
     class channel_my_channel1_padding subgraph_padding
   end
@@ -4049,34 +4124,34 @@ classDef subgraph_padding fill:none,stroke:none
   channel_my_channel1 --> ord_group_group1_orderer0_group1_orderer_example_com"
 `;
 
-exports[`samples/fablo-config-hlf3-1orgs-1chaincode.json should create proper files from samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
+exports[`samples/fablo-config-hlf3-1orgs-2chaincodes.json should create proper files from samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
 [
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fablo-config.json",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/.gitignore",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/.env",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/hooks/post-generate.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/hooks/post-start.sh",
-  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-1chaincode.json.tmpdir/fablo-target/network-topology.mmd",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fablo-config.json",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/.gitignore",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/configtx.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.json",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.json",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/connection-profiles/connection-profile-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/crypto-config-orderer.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/crypto-config-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/explorer/config-global.json",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/orderer.example.com/fabric-ca-server-config.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-config/fabric-ca-server-config/org1.example.com/fabric-ca-server-config.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/.env",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/chaincode-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/channel-query-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/commands-generated.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/docker-compose.yaml",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/base-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/base-help.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/chaincode-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/channel-query-functions.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/scripts/cli/channel_fns.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/fabric-docker/snapshot-scripts.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/hooks/post-generate.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/hooks/post-start.sh",
+  "e2e/__tmp__/samples/fablo-config-hlf3-1orgs-2chaincodes.json.tmpdir/fablo-target/network-topology.mmd",
 ]
 `;

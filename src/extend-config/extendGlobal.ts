@@ -24,7 +24,7 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
   const below3_0_0 = (v: string) => (v.startsWith("3.") ? "2.5" : v);
 
-  const is_or_above3_0_0 = (v: string) => (v.startsWith("3.") ? "3.0.0" : v);
+  const is_or_above3_0_0 = (v: string) => (v.startsWith("3.") ? "3.1.3" : v);
 
   return {
     fabricVersion,
