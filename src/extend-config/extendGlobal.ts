@@ -1,7 +1,7 @@
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-import { Capabilities, FabricVersions, Global } from "../types/FabloConfigExtended";
+import { Capabilities, FabricImages, FabricVersions, Global } from "../types/FabloConfigExtended";
 import { version } from "../repositoryUtils";
-import { GlobalJson } from "../types/FabloConfigJson";
+import { FabricImagesJson, GlobalJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
 const getNetworkCapabilities = (fabricVersion: string): Capabilities => {
@@ -38,6 +38,46 @@ const getVersions = (fabricVersion: string): FabricVersions => {
   };
 };
 
+const hasTagOrDigest = (image: string): boolean => {
+  if (image.includes("@")) return true;
+
+  const lastSlash = image.lastIndexOf("/");
+  const lastColon = image.lastIndexOf(":");
+
+  return lastColon > lastSlash;
+};
+
+const toImage = (image: string, defaultTag: string): string =>
+  hasTagOrDigest(image) ? image : `${image}:${defaultTag}`;
+
+const getImages = (fabricVersion: string, fabricImages?: FabricImagesJson): FabricImages => {
+  const defaultToolsImage = version(fabricVersion).isGreaterOrEqual("3.0.0")
+    ? "ghcr.io/fablo-io/fabric-tools"
+    : "hyperledger/fabric-tools";
+
+  const baseImages = {
+    peerImage: fabricImages?.peer ?? "hyperledger/fabric-peer",
+    ordererImage: fabricImages?.orderer ?? "hyperledger/fabric-orderer",
+    caImage: fabricImages?.ca ?? "hyperledger/fabric-ca",
+    toolsImage: fabricImages?.tools ?? defaultToolsImage,
+    ccenvImage: fabricImages?.ccenv ?? "hyperledger/fabric-ccenv",
+    baseosImage: fabricImages?.baseos ?? "hyperledger/fabric-baseos",
+    javaenvImage: fabricImages?.javaenv ?? "hyperledger/fabric-javaenv",
+    nodeenvImage: fabricImages?.nodeenv ?? "hyperledger/fabric-nodeenv",
+  };
+
+  return {
+    peerImage: toImage(baseImages.peerImage, "${FABRIC_VERSION}"),
+    ordererImage: toImage(baseImages.ordererImage, "${FABRIC_VERSION}"),
+    caImage: toImage(baseImages.caImage, "${FABRIC_CA_VERSION}"),
+    toolsImage: toImage(baseImages.toolsImage, "${FABRIC_TOOLS_VERSION}"),
+    ccenvImage: toImage(baseImages.ccenvImage, "${FABRIC_CCENV_VERSION}"),
+    baseosImage: toImage(baseImages.baseosImage, "${FABRIC_BASEOS_VERSION}"),
+    javaenvImage: toImage(baseImages.javaenvImage, "${FABRIC_JAVAENV_VERSION}"),
+    nodeenvImage: toImage(baseImages.nodeenvImage, "${FABRIC_NODEENV_VERSION}"),
+  };
+};
+
 const getEnvVarOrThrow = (name: string): string => {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -50,6 +90,8 @@ const getPathsFromEnv = () => ({
 });
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
+  const { fabricImages, ...globalJsonRest } = globalJson;
+  const images = getImages(globalJson.fabricVersion, fabricImages);
   const engine = globalJson.engine ?? "docker";
 
   const monitoring = {
@@ -59,12 +101,13 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
   const explorer = !globalJson?.tools?.explorer
     ? {}
     : {
-      explorer: { address: "explorer.example.com", port: 7010 },
-    };
+        explorer: { address: "explorer.example.com", port: 7010 },
+      };
 
   return {
-    ...globalJson,
+    ...globalJsonRest,
     ...getVersions(globalJson.fabricVersion),
+    ...images,
     engine,
     paths: getPathsFromEnv(),
     monitoring,

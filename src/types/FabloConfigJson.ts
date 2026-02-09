@@ -2,9 +2,21 @@ export interface GlobalJson {
   fabricVersion: string;
   tls: boolean;
   peerDevMode: boolean;
+  fabricImages?: FabricImagesJson;
   engine?: "kubernetes" | "docker";
   monitoring?: { loglevel: string };
   tools?: { explorer?: boolean };
+}
+
+export interface FabricImagesJson {
+  peer?: string;
+  orderer?: string;
+  ca?: string;
+  tools?: string;
+  ccenv?: string;
+  baseos?: string;
+  javaenv?: string;
+  nodeenv?: string;
 }
 
 export interface OrganizationDetailsJson {

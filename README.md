@@ -485,6 +485,21 @@ Example:
   },
 ```
 
+### global.fabricImages
+
+`global.fabricImages` is optional
+Example:
+
+```json
+"fabricImages": {
+  "peer": "ghcr.io/fabric-dev/fabric-peer:3.1.0",
+  "orderer": "ghcr.io/fabric-dev/fabric-orderer:3.1.0",
+  "tools": "ghcr.io/fablo-io/fabric-tools:3.0.0"
+}
+```
+
+For Fabric `3.x`, the default `tools` image repository is `ghcr.io/fablo-io/fabric-tools`; for older versions it is `hyperledger/fabric-tools`.
+
 ### orgs
 
 Example:
@@ -720,4 +735,3 @@ In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/)
 ## Talks
 * [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
 * [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
-
