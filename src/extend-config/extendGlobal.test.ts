@@ -18,14 +18,14 @@ describe("extendGlobal fabricImages", () => {
       peerDevMode: false,
     });
 
-    expect(global.peerImage).toBe("hyperledger/fabric-peer:${FABRIC_VERSION}");
-    expect(global.ordererImage).toBe("hyperledger/fabric-orderer:${FABRIC_VERSION}");
-    expect(global.caImage).toBe("hyperledger/fabric-ca:${FABRIC_CA_VERSION}");
-    expect(global.toolsImage).toBe("hyperledger/fabric-tools:${FABRIC_TOOLS_VERSION}");
-    expect(global.ccenvImage).toBe("hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}");
-    expect(global.baseosImage).toBe("hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}");
-    expect(global.javaenvImage).toBe("hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}");
-    expect(global.nodeenvImage).toBe("hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION}");
+    expect(global.peerImage).toBe("hyperledger/fabric-peer:2.5.12");
+    expect(global.ordererImage).toBe("hyperledger/fabric-orderer:2.5.12");
+    expect(global.caImage).toBe("hyperledger/fabric-ca:1.5.16");
+    expect(global.toolsImage).toBe("hyperledger/fabric-tools:2.5.12");
+    expect(global.ccenvImage).toBe("hyperledger/fabric-ccenv:2.5.12");
+    expect(global.baseosImage).toBe("hyperledger/fabric-baseos:2.5.12");
+    expect(global.javaenvImage).toBe("hyperledger/fabric-javaenv:2.5");
+    expect(global.nodeenvImage).toBe("hyperledger/fabric-nodeenv:2.5");
   });
 
   it("should use ghcr tools image by default for Fabric 3.x", () => {
@@ -35,7 +35,7 @@ describe("extendGlobal fabricImages", () => {
       peerDevMode: false,
     });
 
-    expect(global.toolsImage).toBe("ghcr.io/fablo-io/fabric-tools:${FABRIC_TOOLS_VERSION}");
+    expect(global.toolsImage).toBe("ghcr.io/fablo-io/fabric-tools:3.0.0");
   });
 
   it("should append default tags when overriding image repositories without tags", () => {
@@ -50,10 +50,10 @@ describe("extendGlobal fabricImages", () => {
       },
     });
 
-    expect(global.peerImage).toBe("fablo.io/peer/fabric-peer:${FABRIC_VERSION}");
-    expect(global.toolsImage).toBe("fablo.io/tools/fabric-tools:${FABRIC_TOOLS_VERSION}");
-    expect(global.nodeenvImage).toBe("fablo.io/nodeenv/fabric-nodeenv:${FABRIC_NODEENV_VERSION}");
-    expect(global.ordererImage).toBe("hyperledger/fabric-orderer:${FABRIC_VERSION}");
+    expect(global.peerImage).toBe("fablo.io/peer/fabric-peer:3.1.0");
+    expect(global.toolsImage).toBe("fablo.io/tools/fabric-tools:3.0.0");
+    expect(global.nodeenvImage).toBe("fablo.io/nodeenv/fabric-nodeenv:2.5");
+    expect(global.ordererImage).toBe("hyperledger/fabric-orderer:3.1.0");
   });
 
   it("should keep full image references with tag or digest as is", () => {

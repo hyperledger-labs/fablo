@@ -40,17 +40,15 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
 const hasTagOrDigest = (image: string): boolean => {
   if (image.includes("@")) return true;
-
   const lastSlash = image.lastIndexOf("/");
   const lastColon = image.lastIndexOf(":");
-
   return lastColon > lastSlash;
 };
 
 const toImage = (image: string, defaultTag: string): string =>
   hasTagOrDigest(image) ? image : `${image}:${defaultTag}`;
 
-const getImages = (fabricVersion: string, fabricImages?: FabricImagesJson): FabricImages => {
+const getImages = (fabricVersion: string, versions: FabricVersions, fabricImages?: FabricImagesJson): FabricImages => {
   const defaultToolsImage = version(fabricVersion).isGreaterOrEqual("3.0.0")
     ? "ghcr.io/fablo-io/fabric-tools"
     : "hyperledger/fabric-tools";
@@ -67,14 +65,14 @@ const getImages = (fabricVersion: string, fabricImages?: FabricImagesJson): Fabr
   };
 
   return {
-    peerImage: toImage(baseImages.peerImage, "${FABRIC_VERSION}"),
-    ordererImage: toImage(baseImages.ordererImage, "${FABRIC_VERSION}"),
-    caImage: toImage(baseImages.caImage, "${FABRIC_CA_VERSION}"),
-    toolsImage: toImage(baseImages.toolsImage, "${FABRIC_TOOLS_VERSION}"),
-    ccenvImage: toImage(baseImages.ccenvImage, "${FABRIC_CCENV_VERSION}"),
-    baseosImage: toImage(baseImages.baseosImage, "${FABRIC_BASEOS_VERSION}"),
-    javaenvImage: toImage(baseImages.javaenvImage, "${FABRIC_JAVAENV_VERSION}"),
-    nodeenvImage: toImage(baseImages.nodeenvImage, "${FABRIC_NODEENV_VERSION}"),
+    peerImage: toImage(baseImages.peerImage, versions.fabricVersion),
+    ordererImage: toImage(baseImages.ordererImage, versions.fabricVersion),
+    caImage: toImage(baseImages.caImage, versions.fabricCaVersion),
+    toolsImage: toImage(baseImages.toolsImage, versions.fabricToolsVersion),
+    ccenvImage: toImage(baseImages.ccenvImage, versions.fabricCcenvVersion),
+    baseosImage: toImage(baseImages.baseosImage, versions.fabricBaseosVersion),
+    javaenvImage: toImage(baseImages.javaenvImage, versions.fabricJavaenvVersion),
+    nodeenvImage: toImage(baseImages.nodeenvImage, versions.fabricNodeenvVersion),
   };
 };
 
@@ -91,7 +89,8 @@ const getPathsFromEnv = () => ({
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
   const { fabricImages, ...globalJsonRest } = globalJson;
-  const images = getImages(globalJson.fabricVersion, fabricImages);
+  const versions = getVersions(globalJson.fabricVersion);
+  const images = getImages(globalJson.fabricVersion, versions, fabricImages);
   const engine = globalJson.engine ?? "docker";
 
   const monitoring = {
@@ -106,7 +105,7 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
 
   return {
     ...globalJsonRest,
-    ...getVersions(globalJson.fabricVersion),
+    ...versions,
     ...images,
     engine,
     paths: getPathsFromEnv(),

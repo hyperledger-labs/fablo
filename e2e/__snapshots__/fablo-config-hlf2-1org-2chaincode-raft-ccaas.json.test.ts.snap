@@ -1620,6 +1620,14 @@ FABRIC_CCENV_VERSION=3.1.0
 FABRIC_BASEOS_VERSION=3.1.0
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
+FABRIC_PEER_IMAGE=hyperledger/fabric-peer:3.1.0
+FABRIC_ORDERER_IMAGE=hyperledger/fabric-orderer:3.1.0
+FABRIC_CA_IMAGE=hyperledger/fabric-ca:1.5.16
+FABRIC_TOOLS_IMAGE=ghcr.io/fablo-io/fabric-tools:3.0.0
+FABRIC_CCENV_IMAGE=hyperledger/fabric-ccenv:3.1.0
+FABRIC_BASEOS_IMAGE=hyperledger/fabric-baseos:3.1.0
+FABRIC_JAVAENV_IMAGE=hyperledger/fabric-javaenv:2.5
+FABRIC_NODEENV_IMAGE=hyperledger/fabric-nodeenv:2.5
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
@@ -2068,7 +2076,7 @@ services:
 
   ca.orderer.example.com:
     container_name: ca.orderer.example.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.orderer.example.com
@@ -2088,7 +2096,7 @@ services:
 
   cli.orderer.example.com:
     container_name: cli.orderer.example.com
-    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2120,7 +2128,7 @@ services:
 
   orderer0.group1.orderer.example.com:
     container_name: orderer0.group1.orderer.example.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    image: \${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -2163,7 +2171,7 @@ services:
 
   ca.org1.example.com:
     container_name: ca.org1.example.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
@@ -2208,7 +2216,7 @@ services:
 
   cli.org1.example.com:
     container_name: cli.org1.example.com
-    image: ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -2262,7 +2270,7 @@ services:
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
-    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    image: \${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ID=peer0.org1.example.com
@@ -2273,10 +2281,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7041
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=\${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=\${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=\${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=\${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -2362,7 +2370,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME "ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -2462,7 +2470,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME "ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -2499,7 +2507,7 @@ createChannelTx() {
     --name $CONTAINER_NAME \\
     -v "$CONFIG_PATH":/fabric-config \\
     -v "$OUTPUT_PATH":/output \\
-    "ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}" \\
+    "\${FABRIC_TOOLS_IMAGE}" \\
     bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile \${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID \${CHANNEL_NAME} && chown -R $(id -u):$(id -g) /output"
 
   # shellcheck disable=SC2181
@@ -2538,7 +2546,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME "ghcr.io/fablo-io/fabric-tools:\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -2754,13 +2762,13 @@ chaincodeBuild() {
   # and we use \`sort -V\` to compare versions, because \`sort\` handles versions like \`2.4\` and \`2.10\` correctly
   if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
     if [ "$CHAINCODE_LANG" = "node" ]; then
-      dockerPullIfMissing "hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}"
+      dockerPullIfMissing "\${FABRIC_NODEENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "java" ]; then
-      dockerPullIfMissing "hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}"
+      dockerPullIfMissing "\${FABRIC_JAVAENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "golang" ]; then
-      dockerPullIfMissing "hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}"
+      dockerPullIfMissing "\${FABRIC_BASEOS_IMAGE}"
     fi
   fi
 
