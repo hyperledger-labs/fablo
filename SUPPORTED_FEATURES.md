@@ -16,8 +16,8 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Peer DB - LevelDB                      | ✓         | ✓         | ✓          | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | Peer DB - CouchDB                      | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
 | CA DB - SQLite                         | ✓         | ✓         | ✓          | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
-| CA DB - Postgres                       | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
-| CA DB - MySQL                          | ✕         | ✕         | ✓          |          | [#561](https://github.com/hyperledger-labs/fablo/issues/561) |
+| CA DB - Postgres                       | ✓         | ✓         | ✓          |  |                 |
+| CA DB - MySQL                          | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |  |
 | <br>**CHANNELS**                       |           |           |            |          |                 |
 | Channel query scripts                  | ✓         | ✓         |            | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | <br>**CHAINCODES**                     |           |           |            |          |                 |

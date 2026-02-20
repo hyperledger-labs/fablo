@@ -2,14 +2,15 @@
  * SPDX-License-Identifier: Apache2.0
  */
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'java'
 }
 
 version = '0.0.1'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 repositories {
     mavenLocal()
@@ -30,14 +31,25 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.+'
 }
 
-shadowJar {
+tasks.register('shadowJar', Jar) {
     archiveBaseName.set('chaincode')
     archiveVersion.set('')
     archiveClassifier.set('')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from sourceSets.main.output
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
 
     manifest {
         attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
     }
+}
+
+tasks.named('build') {
+    dependsOn 'shadowJar'
 }
 
 test {

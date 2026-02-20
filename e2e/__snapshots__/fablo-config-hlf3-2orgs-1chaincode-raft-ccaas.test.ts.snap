@@ -2,7 +2,7 @@
 
 exports[`samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true
@@ -2286,7 +2286,7 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json should create proper e2e/__tmp__/samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.json 1`] = `
-"FABLO_VERSION=2.4.3
+"FABLO_VERSION=2.5.0
 FABLO_BUILD=<date with git hash>
 FABLO_REST_VERSION=0.1.2
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
@@ -2302,7 +2302,7 @@ LOGGING_LEVEL=info
 
 FABRIC_VERSION=3.1.0
 FABRIC_TOOLS_VERSION=3.0.0
-FABRIC_CA_VERSION=1.5.5
+FABRIC_CA_VERSION=1.5.16
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=3.1.0
 FABRIC_BASEOS_VERSION=3.1.0
