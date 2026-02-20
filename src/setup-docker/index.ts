@@ -4,7 +4,6 @@ import * as yaml from "js-yaml";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import {
-  Capabilities,
   ChaincodeConfig,
   ChannelConfig,
   FabloConfigExtended,
@@ -68,7 +67,7 @@ export default class SetupDockerGenerator extends Generator {
 
     // ======= scripts ==================================================================
     this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.global.capabilities);
+    this._copyUtilityScripts(config.global);
 
     // ======= hooks ====================================================================
     this._copyHooks(config.hooks);
@@ -225,7 +224,8 @@ export default class SetupDockerGenerator extends Generator {
     });
   }
 
-  _copyUtilityScripts(capabilities: Capabilities): void {
+  _copyUtilityScripts(global: Global): void {
+    const { capabilities } = global;
     this.fs.copyTpl(this.templatePath("fabric-docker.sh"), this.destinationPath("fabric-docker.sh"));
 
     this.fs.copyTpl(
@@ -236,6 +236,7 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(
       this.templatePath(`fabric-docker/scripts/base-functions-${capabilities.isV3 ? "v3" : "v2"}.sh`),
       this.destinationPath("fabric-docker/scripts/base-functions.sh"),
+      { global },
     );
 
     this.fs.copyTpl(
@@ -251,6 +252,7 @@ export default class SetupDockerGenerator extends Generator {
     this.fs.copyTpl(
       this.templatePath(`fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v2"}.sh`),
       this.destinationPath("fabric-docker/scripts/chaincode-functions.sh"),
+      { global },
     );
   }
 

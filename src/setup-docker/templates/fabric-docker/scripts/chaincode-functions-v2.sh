@@ -46,13 +46,13 @@ chaincodeBuild() {
   # and we use `sort -V` to compare versions, because `sort` handles versions like `2.4` and `2.10` correctly
   if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
     if [ "$CHAINCODE_LANG" = "node" ]; then
-      dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
+      dockerPullIfMissing "${FABRIC_NODEENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "java" ]; then
-      dockerPullIfMissing "hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION"
+      dockerPullIfMissing "${FABRIC_JAVAENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "golang" ]; then
-      dockerPullIfMissing "hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION"
+      dockerPullIfMissing "${FABRIC_BASEOS_IMAGE}"
     fi
   fi
 

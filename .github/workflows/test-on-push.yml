@@ -11,7 +11,13 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v2
-
+        
+      # We need to downgrade Docker to v28 because ubuntu-latest has Docker v29, which is
+      # not compatible with Fabric spanning chaincode images.
+      # See https://github.com/actions/runner-images/issues/13474#issuecomment-3902397284
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+          
       - name: Build Fablo
         run: |
           shellcheck --version && \
@@ -100,6 +106,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
       - name: Build Fablo
         run: |
           shellcheck --version && \
@@ -125,6 +134,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
       - name: Build Fablo
         run: |
           shellcheck --version && \
@@ -149,6 +161,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+        
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
 
       - name: Build Fablo
         run: |
@@ -174,6 +189,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
         
       - name: Build Fablo
         run: |
@@ -200,6 +218,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
       - name: Build Fablo
         run: |
           shellcheck --version && \
@@ -224,6 +245,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+        
       - name: Build Fablo
         run: |
           shellcheck --version && \

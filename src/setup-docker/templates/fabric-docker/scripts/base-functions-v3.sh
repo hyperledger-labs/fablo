@@ -22,7 +22,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -122,7 +122,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -159,7 +159,7 @@ createChannelTx() {
     --name $CONTAINER_NAME \
     -v "$CONFIG_PATH":/fabric-config \
     -v "$OUTPUT_PATH":/output \
-    ghcr.io/fablo-io/fabric-tools:"${FABRIC_TOOLS_VERSION}" \
+    "${FABRIC_TOOLS_IMAGE}" \
     bash -c "mkdir -p /output && configtxgen --configPath /fabric-config -profile ${CONFIG_PROFILE} -outputBlock /output/$CHANNEL_NAME.pb -channelID ${CHANNEL_NAME} && chown -R $(id -u):$(id -g) /output"
 
   # shellcheck disable=SC2181
@@ -200,7 +200,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME ghcr.io/fablo-io/fabric-tools:"${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
