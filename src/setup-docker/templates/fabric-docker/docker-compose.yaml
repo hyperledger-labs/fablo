@@ -5,7 +5,7 @@ services:
 <% orgs.forEach(function(org){ %>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
-    image: hyperledger/fabric-ca:${FABRIC_CA_VERSION}
+    image: ${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=<%= org.ca.address %>
@@ -86,11 +86,7 @@ services:
 
   <%= org.cli.address %>:
     container_name: <%= org.cli.address %>
-    <%_ if(global.capabilities.isV3) { _%>
-    image: ghcr.io/fablo-io/fabric-tools:${FABRIC_TOOLS_VERSION}
-    <%_ } else { _%>
-    image: hyperledger/fabric-tools:${FABRIC_TOOLS_VERSION}
-    <%_ } _%>
+    image: ${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -217,7 +213,7 @@ services:
   <%_ ordererGroup.orderers.forEach(function(orderer){ _%>
   <%= orderer.address %>:
     container_name: <%= orderer.address %>
-    image: hyperledger/fabric-orderer:${FABRIC_VERSION}
+    image: ${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -273,7 +269,7 @@ services:
   <%_ org.peers.forEach(function(peer){ _%>
   <%= peer.address %>:
     container_name: <%= peer.address %>
-    image: hyperledger/fabric-peer:${FABRIC_VERSION}
+    image: ${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=<%= org.mspName %>
       - CORE_PEER_ID=<%= peer.address %>
@@ -284,10 +280,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP=<%- org.bootstrapPeers %>
       - CORE_PEER_CHAINCODELISTENADDRESS=<%= peer.address %>:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=${LOGGING_LEVEL}

@@ -582,6 +582,8 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.5.9",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V2_0",
@@ -589,6 +591,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.5.9",
     "engine": "docker",
     "fabricBaseosVersion": "2.5.9",
     "fabricCaVersion": "1.5.16",
@@ -598,15 +601,20 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.5.9",
     "fabricVersion": "2.5.9",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:2.5.9",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:2.5.9",
     "tls": false,
     "tools": {},
+    "toolsImage": "hyperledger/fabric-tools:2.5.9",
   },
   "hooks": {
     "postGenerate": "",
@@ -1411,6 +1419,8 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.4.7",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_0",
       "channel": "V2_0",
@@ -1418,6 +1428,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.4.7",
     "engine": "kubernetes",
     "fabricBaseosVersion": "2.4.7",
     "fabricCaVersion": "1.5.16",
@@ -1427,15 +1438,20 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.4.7",
     "fabricVersion": "2.4.7",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.4",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.4",
+    "ordererImage": "hyperledger/fabric-orderer:2.4.7",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:2.4.7",
     "tls": false,
     "tools": {},
+    "toolsImage": "hyperledger/fabric-tools:2.4.7",
   },
   "hooks": {
     "postGenerate": "",
@@ -2215,6 +2231,8 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.5.12",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V2_0",
@@ -2222,6 +2240,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.5.12",
     "engine": "docker",
     "fabricBaseosVersion": "2.5.12",
     "fabricCaVersion": "1.5.16",
@@ -2231,16 +2250,21 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.5.12",
     "fabricVersion": "2.5.12",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:2.5.12",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
     "peerDevMode": true,
+    "peerImage": "hyperledger/fabric-peer:2.5.12",
     "tls": false,
     "tools": {},
+    "toolsImage": "hyperledger/fabric-tools:2.5.12",
   },
   "hooks": {
     "postGenerate": "",
@@ -3586,6 +3610,8 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.5.12",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V2_0",
@@ -3593,6 +3619,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.5.12",
     "engine": "docker",
     "fabricBaseosVersion": "2.5.12",
     "fabricCaVersion": "1.5.16",
@@ -3602,15 +3629,20 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.5.12",
     "fabricVersion": "2.5.12",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:2.5.12",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:2.5.12",
     "tls": false,
     "tools": {},
+    "toolsImage": "hyperledger/fabric-tools:2.5.12",
   },
   "hooks": {
     "postGenerate": "",
@@ -5864,6 +5896,8 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.5.12",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V2_0",
@@ -5871,6 +5905,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.5.12",
     "engine": "docker",
     "fabricBaseosVersion": "2.5.12",
     "fabricCaVersion": "1.5.16",
@@ -5880,13 +5915,17 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.5.12",
     "fabricVersion": "2.5.12",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:2.5.12",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:2.5.12",
     "tls": true,
     "tools": {
       "explorer": {
@@ -5894,6 +5933,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
         "port": 7010,
       },
     },
+    "toolsImage": "hyperledger/fabric-tools:2.5.12",
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
@@ -8461,6 +8501,8 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.3.2",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_0",
       "channel": "V2_0",
@@ -8468,6 +8510,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.3.2",
     "engine": "docker",
     "fabricBaseosVersion": "2.3.2",
     "fabricCaVersion": "1.5.16",
@@ -8477,13 +8520,17 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
     "fabricRecommendedNodeVersion": "12",
     "fabricToolsVersion": "2.3.2",
     "fabricVersion": "2.3.2",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.3",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.3",
+    "ordererImage": "hyperledger/fabric-orderer:2.3.2",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:2.3.2",
     "tls": true,
     "tools": {
       "explorer": {
@@ -8491,6 +8538,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
         "port": 7010,
       },
     },
+    "toolsImage": "hyperledger/fabric-tools:2.3.2",
   },
   "hooks": {
     "postGenerate": "",
@@ -10313,6 +10361,8 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V3_0",
@@ -10320,6 +10370,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
       "isV3": true,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
     "engine": "docker",
     "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.16",
@@ -10329,15 +10380,20 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
     "fabricVersion": "3.1.0",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:3.1.0",
     "tls": true,
     "tools": {},
+    "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.0.0",
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
@@ -11203,6 +11259,8 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V3_0",
@@ -11210,6 +11268,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
       "isV3": true,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
     "engine": "docker",
     "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.16",
@@ -11219,15 +11278,20 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-1chaincode.json 1`] = `
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
     "fabricVersion": "3.1.0",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "debug",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:3.1.0",
     "tls": true,
     "tools": {},
+    "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.0.0",
   },
   "hooks": {
     "postGenerate": "",
@@ -12252,6 +12316,8 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V3_0",
@@ -12259,6 +12325,7 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
       "isV3": true,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
     "engine": "docker",
     "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.16",
@@ -12268,15 +12335,20 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
     "fabricVersion": "3.1.0",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:3.1.0",
     "tls": true,
     "tools": {},
+    "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.0.0",
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
@@ -13224,6 +13296,8 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V3_0",
@@ -13231,6 +13305,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
       "isV3": true,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
     "engine": "docker",
     "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.16",
@@ -13240,15 +13315,20 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
     "fabricVersion": "3.1.0",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "debug",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:3.1.0",
     "tls": true,
     "tools": {},
+    "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.0.0",
   },
   "hooks": {
     "postGenerate": "",
@@ -14662,6 +14742,8 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_5",
       "channel": "V3_0",
@@ -14669,6 +14751,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
       "isV3": true,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
     "engine": "docker",
     "fabricBaseosVersion": "3.1.0",
     "fabricCaVersion": "1.5.16",
@@ -14678,15 +14761,20 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "3.0.0",
     "fabricVersion": "3.1.0",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
+    "peerImage": "hyperledger/fabric-peer:3.1.0",
     "tls": true,
     "tools": {},
+    "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.0.0",
   },
   "hooks": {
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
@@ -15366,6 +15454,8 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
     },
   ],
   "global": {
+    "baseosImage": "hyperledger/fabric-baseos:2.4.3",
+    "caImage": "hyperledger/fabric-ca:1.5.16",
     "capabilities": {
       "application": "V2_0",
       "channel": "V2_0",
@@ -15373,6 +15463,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
       "isV3": false,
       "orderer": "V2_0",
     },
+    "ccenvImage": "hyperledger/fabric-ccenv:2.4.3",
     "engine": "docker",
     "fabricBaseosVersion": "2.4.3",
     "fabricCaVersion": "1.5.16",
@@ -15382,16 +15473,21 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
     "fabricRecommendedNodeVersion": "16",
     "fabricToolsVersion": "2.4.3",
     "fabricVersion": "2.4.3",
+    "javaenvImage": "hyperledger/fabric-javaenv:2.4",
     "monitoring": {
       "loglevel": "info",
     },
+    "nodeenvImage": "hyperledger/fabric-nodeenv:2.4",
+    "ordererImage": "hyperledger/fabric-orderer:2.4.3",
     "paths": {
       "chaincodesBaseDir": "<absolute path>",
       "fabloConfig": "<absolute path>",
     },
     "peerDevMode": true,
+    "peerImage": "hyperledger/fabric-peer:2.4.3",
     "tls": false,
     "tools": {},
+    "toolsImage": "hyperledger/fabric-tools:2.4.3",
   },
   "hooks": {
     "postGenerate": "",

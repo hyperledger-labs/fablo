@@ -275,6 +275,63 @@ exports[`schema should match snapshot 1`] = `
           "title": "Engine on which the network will be deployed",
           "type": "string",
         },
+        "fabricImages": {
+          "$id": "#/properties/global/properties/fabricImages",
+          "description": "Optional Docker images for Hyperledger Fabric components",
+          "properties": {
+            "baseos": {
+              "$id": "#/properties/global/properties/fabricImages/properties/baseos",
+              "default": "hyperledger/fabric-baseos",
+              "title": "BaseOS image",
+              "type": "string",
+            },
+            "ca": {
+              "$id": "#/properties/global/properties/fabricImages/properties/ca",
+              "default": "hyperledger/fabric-ca",
+              "title": "CA image",
+              "type": "string",
+            },
+            "ccenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/ccenv",
+              "default": "hyperledger/fabric-ccenv",
+              "title": "CCENV image",
+              "type": "string",
+            },
+            "javaenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/javaenv",
+              "default": "hyperledger/fabric-javaenv",
+              "title": "Javaenv image",
+              "type": "string",
+            },
+            "nodeenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/nodeenv",
+              "default": "hyperledger/fabric-nodeenv",
+              "title": "Nodeenv image",
+              "type": "string",
+            },
+            "orderer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/orderer",
+              "default": "hyperledger/fabric-orderer",
+              "title": "Orderer image",
+              "type": "string",
+            },
+            "peer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/peer",
+              "default": "hyperledger/fabric-peer",
+              "title": "Peer image",
+              "type": "string",
+            },
+            "tools": {
+              "$id": "#/properties/global/properties/fabricImages/properties/tools",
+              "default": "hyperledger/fabric-tools",
+              "title": "Tools image",
+              "type": "string",
+            },
+          },
+          "required": [],
+          "title": "Fabric image repositories",
+          "type": "object",
+        },
         "fabricVersion": {
           "$id": "#/properties/global/properties/fabricVersion",
           "default": "2.4.2",
