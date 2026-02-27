@@ -12,7 +12,7 @@
   ],
   "properties": {
     "$schema": {
-      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.4.3/schema.json"
+      "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json"
     },
     "global": {
       "$id": "#/properties/global",
@@ -41,6 +41,63 @@
           "title": "Start all peers in dev mode",
           "type": "boolean",
           "default": false
+        },
+        "fabricImages": {
+          "$id": "#/properties/global/properties/fabricImages",
+          "title": "Fabric image repositories",
+          "description": "Optional Docker images for Hyperledger Fabric components",
+          "type": "object",
+          "required": [],
+          "properties": {
+            "peer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/peer",
+              "title": "Peer image",
+              "type": "string",
+              "default": "hyperledger/fabric-peer"
+            },
+            "orderer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/orderer",
+              "title": "Orderer image",
+              "type": "string",
+              "default": "hyperledger/fabric-orderer"
+            },
+            "ca": {
+              "$id": "#/properties/global/properties/fabricImages/properties/ca",
+              "title": "CA image",
+              "type": "string",
+              "default": "hyperledger/fabric-ca"
+            },
+            "tools": {
+              "$id": "#/properties/global/properties/fabricImages/properties/tools",
+              "title": "Tools image",
+              "type": "string",
+              "default": "hyperledger/fabric-tools"
+            },
+            "ccenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/ccenv",
+              "title": "CCENV image",
+              "type": "string",
+              "default": "hyperledger/fabric-ccenv"
+            },
+            "baseos": {
+              "$id": "#/properties/global/properties/fabricImages/properties/baseos",
+              "title": "BaseOS image",
+              "type": "string",
+              "default": "hyperledger/fabric-baseos"
+            },
+            "javaenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/javaenv",
+              "title": "Javaenv image",
+              "type": "string",
+              "default": "hyperledger/fabric-javaenv"
+            },
+            "nodeenv": {
+              "$id": "#/properties/global/properties/fabricImages/properties/nodeenv",
+              "title": "Nodeenv image",
+              "type": "string",
+              "default": "hyperledger/fabric-nodeenv"
+            }
+          }
         },
         "engine": {
           "$id": "#/properties/global/properties/engine",

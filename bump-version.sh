@@ -27,8 +27,12 @@ npm version "$new_version" --no-git-tag-version > /dev/null
 echo "done"
 
 echo -n " - FABLO_VERSION...   "
-perl -i -pe "s/FABLO_VERSION=.*\\n/FABLO_VERSION=${new_version}\\n/g" fablo.sh
 perl -i -pe "s/FABLO_VERSION=.*\\n/FABLO_VERSION=${new_version}\\n/g" e2e/__snapshots__/*
+echo "done"
+
+echo -n " - fablo.sh...        "
+perl -i -pe "s/FABLO_VERSION=.*\\n/FABLO_VERSION=${new_version}\\n/g" fablo.sh
+cp fablo.sh docs/fablo.sh
 echo "done"
 
 echo -n " - JSON schema URL... "

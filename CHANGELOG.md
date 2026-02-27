@@ -1,10 +1,20 @@
-## 2.4.4
+## 2.5.0
+
+### Features
+* Add MySQL database support for CA [#618](https://github.com/hyperledger-labs/fablo/pull/618)
+* Quick start [#645](https://github.com/hyperledger-labs/fablo/pull/645)
 
 ### Bug Fixes
 * Get chaincode container name by peer address instead of index [#649](https://github.com/hyperledger-labs/fablo/pull/649)
+* Empty chaincode directory mount [#651](https://github.com/hyperledger-labs/fablo/pull/651)
+* Show duplicated chaincodes in mermaid [#639](https://github.com/hyperledger-labs/fablo/pull/639)
+* Quick installation URL fix [#646](https://github.com/hyperledger-labs/fablo/pull/646)
 
-### Documentation
-* Quick start  [#645](https://github.com/hyperledger-labs/fablo/pull/645) [#646](https://github.com/hyperledger-labs/fablo/pull/646)
+### Testing
+* Fix flaky snapshot ccaas test [#648](https://github.com/hyperledger-labs/fablo/pull/648)
+
+### Chore & Maintenance
+* Bump lodash from 4.17.21 to 4.17.23 [#650](https://github.com/hyperledger-labs/fablo/pull/650)
 
 ## 2.4.3
 

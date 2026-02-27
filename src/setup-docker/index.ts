@@ -4,7 +4,6 @@ import * as yaml from "js-yaml";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import {
-  Capabilities,
   ChaincodeConfig,
   ChannelConfig,
   FabloConfigExtended,
@@ -239,7 +238,7 @@ export default class SetupDocker extends Command {
       paths: global.paths,
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
-      fabloRestVersion: "0.1.2",
+      fabloRestVersion: "0.2.0",
       hyperledgerExplorerVersion: "2.0.0",
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
@@ -283,6 +282,7 @@ export default class SetupDocker extends Command {
 
   async _copyUtilityScripts(capabilities: Capabilities): Promise<void> {
     // Copy fabric-docker.sh
+    // const { capabilities } = global;
     const fabricDockerShTemplate = getTemplatePath(this.templatesDir, "fabric-docker.sh");
     const fabricDockerShDest = getDestinationPath(this.outputDir, "fabric-docker.sh");
     await renderTemplate(fabricDockerShTemplate, fabricDockerShDest, {});

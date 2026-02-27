@@ -9,6 +9,17 @@ export interface FabricVersions {
   fabricRecommendedNodeVersion: string;
 }
 
+export interface FabricImages {
+  peerImage: string;
+  ordererImage: string;
+  caImage: string;
+  toolsImage: string;
+  ccenvImage: string;
+  baseosImage: string;
+  javaenvImage: string;
+  nodeenvImage: string;
+}
+
 interface CapabilitiesV2 {
   application: "V2_0";
   channel: "V2_0";
@@ -35,7 +46,7 @@ interface CapabilitiesV3_0 {
 
 export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5 | CapabilitiesV3_0;
 
-export interface Global extends FabricVersions {
+export interface Global extends FabricVersions, FabricImages {
   tls: boolean;
   engine: "kubernetes" | "docker";
   monitoring: { loglevel: string };
