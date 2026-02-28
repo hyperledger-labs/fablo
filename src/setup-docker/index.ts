@@ -11,6 +11,7 @@ import {
   Global,
   OrgConfig,
   OrdererGroup,
+  Capabilities,
 } from "../types/FabloConfigExtended";
 import { extendConfig } from "../commands/extend-config";
 import {

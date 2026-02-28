@@ -12,17 +12,17 @@ export default class ExportNetworkTopology extends Command {
   private outputFile: string = "";
 
   static override args = {
-    config: Args.string({ description: "Fablo config file path", 
-      required: false, 
-      default: 'fablo-config.json'
+    config: Args.string({
+      description: "Fablo config file path. Defaults to fablo-config.json",
+      required: false,
     }),
-    output: Args.string({ description: "Output Mermaid file path", 
-      required: false, 
-      default: 'network-topology.mmd' 
+    output: Args.string({
+      description: "(optional) Path to the output Mermaid file. Defaults to network-topology.mmd",
+      required: false,
     }),
 
   }
-   async writing(): Promise<void> {
+  async writing(): Promise<void> {
     try {
       if (!fs.existsSync(this.fabloConfigPath)) {
         throw new Error(`Configuration file not found: ${this.fabloConfigPath}`);
@@ -48,15 +48,26 @@ export default class ExportNetworkTopology extends Command {
       this.log(`❌ Error: ${errorMessage}`);
       throw error;
     }
-   }
+  }
 
   public async run(): Promise<void> {
     const { args } = await this.parse(ExportNetworkTopology)
-    const arg0 = args.config!;
-    const arg1 = args.output!;
 
-    this.fabloConfigPath = path.isAbsolute(arg0) ? arg0 : path.resolve(process.cwd(), arg0);
-    this.outputFile = path.isAbsolute(arg1) ? arg1 : path.resolve(process.cwd(), arg1);
+    let configArg = args.config;
+    let outputArg = args.output;
+
+    if (configArg && !outputArg) {
+      if (configArg.endsWith('.mmd')) {
+        outputArg = configArg;
+        configArg = undefined;
+      }
+    }
+
+    const finalConfig = configArg || 'fablo-config.json';
+    const finalOutput = outputArg || 'network-topology.mmd';
+
+    this.fabloConfigPath = path.isAbsolute(finalConfig) ? finalConfig : path.resolve(process.cwd(), finalConfig);
+    this.outputFile = path.isAbsolute(finalOutput) ? finalOutput : path.resolve(process.cwd(), finalOutput);
 
     await this.writing();
   }
