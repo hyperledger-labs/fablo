@@ -219,11 +219,9 @@ export default class Validate extends Command {
       this.emit(validationErrorType.ERROR, objectToEmit);
     });
     if (results.errors.length > 0) {
-      const objectToEmit = {
-        category: validationCategories.CRITICAL,
-        message: "Json schema validation failed!",
-      };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
+      this.log(chalk.bold.bgRed("Critical error occured:"));
+      this.log(chalk.bold("- Json schema validation failed!"));
+      this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
     }
   }
 
@@ -248,7 +246,10 @@ export default class Validate extends Command {
         category: validationCategories.CRITICAL,
         message: msg,
       };
-      this.emit(validationErrorType.CRITICAL, objectToEmit);
+      this.emit(validationErrorType.ERROR, objectToEmit);
+      this.log(chalk.bold.bgRed("Critical error occured:"));
+      this.log(chalk.bold(`- ${msg}`));
+      this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
     }
   }
 
@@ -553,15 +554,15 @@ export default class Validate extends Command {
   public async run(): Promise<void> {
     const { args } = await this.parse(Validate);
     const configPath = args.fabloConfig ?? "fablo-config.json";
-    
+
     this._validateIfConfigFileExists(configPath);
     await this.validate();
+    await this.shortSummary();
 
     // Check for compatible updates
     const listCompatibleUpdates = new ListCompatibleUpdates();
     await listCompatibleUpdates.checkForCompatibleUpdates();
 
-    await this.detailedSummary();
   }
 }
 
