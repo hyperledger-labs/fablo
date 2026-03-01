@@ -29,7 +29,7 @@ ENV HOME /network/workspace
 
 COPY docker-entrypoint.sh /fablo/docker-entrypoint.sh
 COPY bin /fablo/bin
-COPY bin/run.js /fablo/bin/run.mjs
+COPY bin/run.mjs /fablo/bin/run.mjs
 COPY docs /fablo/docs
 COPY README.md /fablo/README.md
 COPY samples /fablo/samples/
