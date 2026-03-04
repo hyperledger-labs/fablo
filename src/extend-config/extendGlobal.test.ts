@@ -35,7 +35,7 @@ describe("extendGlobal fabricImages", () => {
       peerDevMode: false,
     });
 
-    expect(global.toolsImage).toBe("ghcr.io/fablo-io/fabric-tools:3.0.0");
+    expect(global.toolsImage).toBe("ghcr.io/fablo-io/fabric-tools:3.1.3");
   });
 
   it("should append default tags when overriding image repositories without tags", () => {
@@ -51,7 +51,7 @@ describe("extendGlobal fabricImages", () => {
     });
 
     expect(global.peerImage).toBe("fablo.io/peer/fabric-peer:3.1.0");
-    expect(global.toolsImage).toBe("fablo.io/tools/fabric-tools:3.0.0");
+    expect(global.toolsImage).toBe("fablo.io/tools/fabric-tools:3.1.3");
     expect(global.nodeenvImage).toBe("fablo.io/nodeenv/fabric-nodeenv:2.5");
     expect(global.ordererImage).toBe("hyperledger/fabric-orderer:3.1.0");
   });
