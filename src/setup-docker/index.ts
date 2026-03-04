@@ -156,38 +156,6 @@ export default class SetupDocker extends Command {
     }
   }
 
-  // async _createExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): Promise<void> {
-  //   try{
-  //   const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
-  //   const orgWithChannels = pairOrgWithChannels(orgs, channels);
-
-  //   for (const p of orgWithChannels) {
-  //     if (global.tools.explorer !== undefined || p.org.tools.explorer !== undefined) {
-  //       const connectionProfile = createExplorerConnectionProfile(global, p, orgsTransformed);
-  //       const orgName = p.org.name.toLowerCase();
-  //       const connectionProfilePath = getDestinationPath(
-  //         this.outputDir,
-  //         `fabric-config/explorer/connection-profile-${orgName}.json`,
-  //       );
-  //       this.log("connection profile path is: ", connectionProfilePath);
-  //       this.log("Output dir: ",this.outputDir)
-  //       const configPath = getDestinationPath(this.outputDir, `fabric-config/explorer/config-${orgName}.json`);
-  //       await fs.ensureDir(path.dirname(connectionProfilePath));
-  //       await fs.writeJSON(connectionProfilePath, connectionProfile, { spaces: 2 });
-  //       await fs.writeJSON(configPath, createExplorerConfig([p.org]), { spaces: 2 });
-  //     }
-  //   }
-
-  //   const globalConfigPath = getDestinationPath(this.outputDir, "fabric-config/explorer/config-global.json");
-  //   if( !globalConfigPath){
-  //     this.error("Error: Global config path is undefined");
-  //   }
-  //   await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
-  // }catch(error: any){
-  //   this.log("Error creating explorer material: ", error.message);
-  //   this.error("Error creating explorer material: " + error.message);
-  // }
-  // }
 
   async _createExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): Promise<void> {
   try {
@@ -211,8 +179,7 @@ export default class SetupDocker extends Command {
           this.outputDir,
           `fabric-config/explorer/connection-profile-${orgName}.json`,
         );
-        this.log("connection profile path is: ", connectionProfilePath);
-        this.log("Output dir: ", this.outputDir);
+
         const configPath = getDestinationPath(this.outputDir, `fabric-config/explorer/config-${orgName}.json`);
         await fs.ensureDir(path.dirname(connectionProfilePath));
         await fs.writeJSON(connectionProfilePath, connectionProfile, { spaces: 2 });
@@ -226,7 +193,6 @@ export default class SetupDocker extends Command {
     }
     await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
   } catch (error: any) {
-    this.log("Error creating explorer material: ", error.message);
     this.error("Error creating explorer material: " + error.message);
   }
 }
