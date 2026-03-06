@@ -204,6 +204,18 @@ executeOnFabloDocker() {
     -v "$fablo_workspace":/network/workspace
   )
 
+  if [ -f /etc/passwd ]; then
+    fablo_workspace_params+=(
+      -v /etc/passwd:/etc/passwd:ro
+    )
+  fi
+
+  if [ -f /etc/group ]; then
+    fablo_workspace_params+=(
+      -v /etc/group:/etc/group:ro
+    )
+  fi
+
   local fablo_config_params=()
   if [ -n "$fablo_config" ]; then
     if [ ! -f "$fablo_config" ]; then
