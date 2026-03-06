@@ -204,17 +204,16 @@ executeOnFabloDocker() {
     -v "$fablo_workspace":/network/workspace
   )
 
-  if [ -f /etc/passwd ]; then
-    fablo_workspace_params+=(
-      -v /etc/passwd:/etc/passwd:ro
-    )
-  fi
+  # Generate minimal passwd and group files to satisfy Node.js lookup
+  # Avoiding mounting host files directly for security reasons.
+  echo "$(id -un || echo fablo):x:$(id -u):$(id -g):$(id -un || echo fablo):/network/workspace:/bin/sh" >"$FABLO_TEMP_DIR/passwd"
+  echo "$(id -gn || echo fablo):x:$(id -g):" >"$FABLO_TEMP_DIR/group"
 
-  if [ -f /etc/group ]; then
-    fablo_workspace_params+=(
-      -v /etc/group:/etc/group:ro
-    )
-  fi
+  fablo_workspace_params+=(
+    -v "$FABLO_TEMP_DIR/passwd":/etc/passwd:ro
+    -v "$FABLO_TEMP_DIR/group":/etc/group:ro
+  )
+
 
   local fablo_config_params=()
   if [ -n "$fablo_config" ]; then
