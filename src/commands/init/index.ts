@@ -4,7 +4,6 @@ import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloCon
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { version } from "../../../package.json";
-import { printSplash } from '../../fablolog';
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
@@ -110,7 +109,6 @@ export default class Init extends Command {
         process.exit(1);
       }
       this.log("Creating sample CCAAS chaincode");
-      printSplash();
 
       const chaincodeConfig: ChaincodeJson = {
         name: "chaincode1",
@@ -127,7 +125,7 @@ export default class Init extends Command {
     }
     if (flags.node) {
       console.log("Creating sample Node.js chaincode");
-      printSplash();
+
       const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
       const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
       fs.copySync(source, destination);
@@ -172,7 +170,7 @@ export default class Init extends Command {
 
     if (flags.gateway) {
       console.log("Creating sample Node.js gateway");
-      printSplash();
+
       const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
       fs.copySync(src, dest);
