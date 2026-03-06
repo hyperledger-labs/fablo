@@ -195,21 +195,14 @@ executeOnFabloDocker() {
   local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
   local fablo_config="$3"
 
+  # Docker requires volume paths to be at least 2 chars; resolve . to absolute path
+  if [ -d "$fablo_workspace" ]; then
+    fablo_workspace="$(cd "$fablo_workspace" && pwd)"
+  fi
+
   local fablo_workspace_params=(
     -v "$fablo_workspace":/network/workspace
   )
-
-  if [ -f /etc/passwd ]; then
-    fablo_workspace_params+=(
-      -v /etc/passwd:/etc/passwd:ro
-    )
-  fi
-
-  if [ -f /etc/group ]; then
-    fablo_workspace_params+=(
-      -v /etc/group:/etc/group:ro
-    )
-  fi
 
   local fablo_config_params=()
   if [ -n "$fablo_config" ]; then

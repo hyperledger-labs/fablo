@@ -1,4 +1,4 @@
-import { Command, Flags } from '@oclif/core'
+import { Args, Command } from '@oclif/core'
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
 import * as path from 'path';
@@ -72,23 +72,41 @@ export default class Init extends Command {
   static override description =
     "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
 
-  static flags = {
-    node: Flags.boolean({ description: 'Include Node.js chaincode sample' }),
-    dev: Flags.boolean({ description: 'Enable dev mode (dev chaincodes)' }),
-    ccaas: Flags.boolean({ description: 'Include CCAAS chaincode sample' }),
-    gateway: Flags.boolean({ description: 'Include Gateway app sample' }),
-    rest: Flags.boolean({ description: 'Include REST API sample' }),
+  static args = {
+    options: Args.string({
+      multiple: true,
+      required: false,
+      description: 'Options: node, dev, ccaas, gateway, rest (order does not matter)',
+    }),
   };
+
+  static strict = false;
+
+  private getEffectiveFlags(args: { options?: string[] | string }): { node: boolean; dev: boolean; ccaas: boolean; gateway: boolean; rest: boolean } {
+    const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest'] as const;
+    const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
+    const raw = optionsArr.map((s) => s.toLowerCase());
+    const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
+    if (invalid.length > 0) {
+      this.error(`Unknown options: ${invalid.join(', ')}. Valid: ${validOptions.join(', ')}`);
+    }
+    return {
+      node: raw.includes('node'),
+      dev: raw.includes('dev'),
+      ccaas: raw.includes('ccaas'),
+      gateway: raw.includes('gateway'),
+      rest: raw.includes('rest'),
+    };
+  }
 
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
-    const { flags } = await this.parse(Init);
-
-    console.log("init flags: ", JSON.stringify(flags, null, 2));
+    const parsed = await this.parse(Init);
+    const flags = this.getEffectiveFlags({ options: (parsed.argv ?? []) as string[] });
 
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
-        this.log(chalk.red("Error: --ccaas flag cannot be used together with --dev or --node flags"));
+        this.log(chalk.red("Error: ccaas cannot be used together with dev or node"));
         process.exit(1);
       }
       this.log("Creating sample CCAAS chaincode");

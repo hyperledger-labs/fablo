@@ -21,7 +21,7 @@ describe("init", () => {
 
   it("should init simple fablo config with node chaincode", () => {
     // When
-    const commandResult = commands.fabloExec("init --node");
+    const commandResult = commands.fabloExec("init node");
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
@@ -39,7 +39,7 @@ describe("init", () => {
 
   it("should init simple fablo config with node chaincode and rest api", () => {
     // When
-    const commandResult = commands.fabloExec("init --node --rest");
+    const commandResult = commands.fabloExec("init node rest");
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
