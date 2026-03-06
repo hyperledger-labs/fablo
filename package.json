@@ -20,14 +20,11 @@
   },
   "homepage": "https://github.com/hyperledger-labs/fablo#readme",
   "scripts": {
-    "clean": "rimraf generators dist",
-    "build": "shx rm -rf dist generators && tsc",
-    "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "npm run lint",
-    "prepack": "oclif manifest && oclif readme",
+    "clean": "rimraf dist",
+    "build": "shx rm -rf dist && tsc",
     "build:dist": "npm run clean && tsc -p tsconfig-dist.json && npm run copydeps",
     "version": "oclif readme && git add README.md",
-    "copydeps": "copyfiles --all --up 1 'src/*/templates/**' generators",
+    "copydeps": "copyfiles --all --up 1 'src/*/templates/**' dist",
     "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
     "test:unit": "jest src",
     "test:e2e": "jest e2e --runInBand e2e/fabloCommands.test.ts",
@@ -79,9 +76,9 @@
     "fablo": "./bin/run.js"
   },
   "oclif": {
-    "bin": "ffablo",
-    "commands": "./generators/commands",
-    "dirname": "ffablo",
+    "bin": "fablo",
+    "commands": "./dist/commands",
+    "dirname": "fablo",
     "topicSeparator": " "
   }
 }

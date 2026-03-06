@@ -7,7 +7,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 export default class ExportNetworkTopology extends Command {
-  static override description = 'export-network-topology '
+  static override description = 'exports the network topology to a Mermaid file'
   private fabloConfigPath: string = "";
   private outputFile: string = "";
 

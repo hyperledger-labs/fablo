@@ -4,16 +4,8 @@ set -e
 
 executeOclifCommand() {
   command_with_params=$1
-  if [ "$(id -u)" = 0 ]; then
-    # root user detected, running as yeoman user (keeping for compatibility)
-    sudo chown -R yeoman:yeoman "$target_dir"
-    # shellcheck disable=SC2086
-    (cd "$target_dir" && sudo -E -u yeoman node --no-warnings /fablo/bin/run.mjs $command_with_params)
-    sudo chown -R root:root "$target_dir"
-  else
-    # shellcheck disable=SC2086
-    (cd "$target_dir" && node --no-warnings /fablo/bin/run.mjs $command_with_params)
-  fi
+  # shellcheck disable=SC2086
+  (cd "$target_dir" && node --no-warnings /fablo/bin/run.mjs $command_with_params)
 }
 
 formatGeneratedFiles() {

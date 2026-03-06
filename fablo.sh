@@ -190,7 +190,7 @@ printHelp() {
 }
 
 executeOnFabloDocker() {
-  # set -x
+
   local command_with_params="$1"
   local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
   local fablo_config="$3"

@@ -43,9 +43,6 @@ export default class SetupDocker extends Command {
     this.log("fablo config is: ", args.fabloConfig);
     const configPath = args.fabloConfig ?? "fablo-config.json";
     const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
-    this.log("Resolved fablo config path:", fabloConfigPath);
-    this.log(`pritn templates dir: ${this.templatesDir}`);
-    this.log(`pritn output dir: ${this.outputDir}`);
 
     if (!fs.existsSync(fabloConfigPath)) {
       this.error(`Config file not found: ${fabloConfigPath}`);
@@ -69,9 +66,8 @@ export default class SetupDocker extends Command {
     const composeNetworkName = `fablo_network_${dateString}`;
 
     this.log(`Used network config: ${fabloConfigPath}`);
-    this.log(`Fablo version: 2.4.2`);
     this.log(`Fabric version is: ${global.fabricVersion}`);
-    this.log(`Generating docker-compose network  pla pla pla '${composeNetworkName}'...`);
+    this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= fabric-config ============================================================
     await this._copyOrgCryptoConfig(orgs);
