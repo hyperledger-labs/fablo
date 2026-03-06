@@ -269,7 +269,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
     chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")

@@ -4,15 +4,12 @@ set -e
 
 executeOclifCommand() {
   command_with_params=$1
-  if [ "$(id -u)" = 0 ]; then
-    # root user detected, running as yeoman user (keeping for compatibility)
-    sudo chown -R yeoman:yeoman "$target_dir"
-    # shellcheck disable=SC2086
-    (cd "$target_dir" && sudo -E -u yeoman node --no-warnings /fablo/bin/run.mjs $command_with_params)
-    sudo chown -R root:root "$target_dir"
-  else
-    # shellcheck disable=SC2086
-    (cd "$target_dir" && node --no-warnings /fablo/bin/run.mjs $command_with_params)
+  # shellcheck disable=SC2086
+  (cd "$target_dir" && node --no-warnings /fablo/bin/run.mjs $command_with_params)
+
+  # Keep generated files owned by the invoking host user on bind mounts.
+  if [ -n "${HOST_UID:-}" ] && [ -n "${HOST_GID:-}" ]; then
+    chown -R "$HOST_UID:$HOST_GID" "$target_dir"
   fi
 }
 
@@ -45,13 +42,6 @@ formatGeneratedFiles() {
 
 target_dir="/network/workspace"
 oclif_command=${1:-setup-network}
-
-# Map old yeoman command format to oclif format
-case "$oclif_command" in
-  "Fablo:setup-network"|"fablo:setup-network")
-    oclif_command="setup-network"
-    ;;
-esac
 
 # Build command with all arguments (mapped command + remaining args)
 # Replace first argument with mapped command, then pass all args

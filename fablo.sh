@@ -223,7 +223,8 @@ executeOnFabloDocker() {
   docker run -i --rm \
     "${fablo_workspace_params[@]}" \
     "${fablo_config_params[@]}" \
-    -u "$(id -u):$(id -g)" \
+    --env "HOST_UID=$(id -u)" \
+    --env "HOST_GID=$(id -g)" \
     $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh $command_with_params" \
     2>&1
 }
