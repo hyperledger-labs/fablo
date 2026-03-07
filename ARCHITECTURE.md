@@ -11,7 +11,7 @@ sequenceDiagram
     fablo.sh ->> fablo-target: Verify if network files<br/>are generated
     alt no network files
       fablo.sh ->> Fablo Docker: Generate network files
-      Fablo Docker ->> fablo-target: Generate network files<br>from `fablo-config.json`<br>and templates (Yeoman)
+      Fablo Docker ->> fablo-target: Generate network files from `fablo-config.json`<br>using EJS templates and oclif
     end
     fablo.sh ->> fablo-target: Call `up` command
 
@@ -20,12 +20,12 @@ sequenceDiagram
 There are three important layers in this flow:
 
 1. `fablo.sh` - this is our CLI. It accepts user commands, does some validation, and forwards them either to Fablo Docker container or generated network scripts in `fablo-target` directory.
-2. Fablo Docker - is a Docker image that contains templates for generating the network files and Yeoman. When Fablo Docker is running, it has mounted `fablo-config.json` file from host and `fablo-target` directory.
+2. Fablo Docker - is a Docker image that contains the oclif CLI framework and EJS templates used to generate the network files. When Fablo Docker is running, it has mounted the `fablo-config.json` file from the host and the `fablo-target` directory.
 3. `fablo-target` is a directory which contains generated Hyperledger Fabric network files (config files, helper scripts, temporary network files).
 
 Notable files and directories:
 
-* `./src` - source code for Yeoman generators, containing subdirectories for given commands and EJS template files.
+* `./src` - source code for oclif commands and the EJS templates they use.
 * `./fablo.sh` - Fablo CLI script.
 * `./Dockerfile`, `./docker-entrypoint.sh`, `fablo-build.sh` - files that define and are used to build the Fablo Docker image.
 * `e2e-network` - directory that contains integration tests written in Bash scripts. Their goal is to setup sample networks with Fablo and verify them.
