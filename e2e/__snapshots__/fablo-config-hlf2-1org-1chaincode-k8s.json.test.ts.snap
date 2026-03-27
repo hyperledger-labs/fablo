@@ -269,7 +269,7 @@ installChaincodes() {
   printItalics "Installing chaincodes...." "U1F618"
 
   printItalics "Building chaincode chaincode1" "U1F618"
-  buildAndInstallChaincode "chaincode1" "peer0.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
+  buildAndInstallChaincode "chaincode1" "peer0.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
 
   printItalics "Approving chaincode...." "U1F618"
   approveChaincode "chaincode1" "peer0.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
@@ -279,7 +279,7 @@ installChaincodes() {
   commitChaincode "chaincode1" "peer0.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"
 
   printItalics "Building chaincode chaincode1" "U1F618"
-  buildAndInstallChaincode "chaincode1" "peer1.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
+  buildAndInstallChaincode "chaincode1" "peer1.$NAMESPACE" "node" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node" "0.0.1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml"
 
   printItalics "Approving chaincode...." "U1F618"
   approveChaincode "chaincode1" "peer1.$NAMESPACE" "0.0.1" "my-channel1" "$ORG1_CA_ADMIN_NAME" "$CONFIG_DIR/Org1.yaml" "Org1MSP"

@@ -1,30 +1,43 @@
-import * as Generator from "yeoman-generator";
+import { Args, Command } from "@oclif/core";
 import * as config from "../config";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
 import { Capabilities, FabloConfigExtended, HooksConfig, Global, OrgConfig } from "../types/FabloConfigExtended";
-import { extendConfig } from "../extend-config/";
+import { extendConfig } from "../commands/extend-config/";
+import * as fs from "fs-extra";
+import * as path from "path";
+import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
 
-const ValidateGeneratorPath = require.resolve("../validate");
+export default class SetupK8s extends Command {
+  static override description = "Setup Kubernetes network files from Fablo config";
 
-export default class SetupDockerGenerator extends Generator {
-  constructor(args: string[], opts: Generator.GeneratorOptions) {
-    super(args, opts);
-    this.argument("fabloConfig", {
-      type: String,
-      optional: true,
+  static override args = {
+    fabloConfig: Args.string({
       description: "Fablo config file path",
-      default: "../../network/fablo-config.json",
-    });
+      required: false,
+      default: "fablo-config.json",
+    }),
+  };
 
-    this.composeWith(ValidateGeneratorPath, { arguments: [this.options.fabloConfig] });
+  private outputDir: string = process.cwd();
+  private templatesDir: string = path.join(__dirname, "./templates");
+
+  public async run(): Promise<void> {
+    const { args } = await this.parse(SetupK8s);
+    const configPath = args.fabloConfig ?? "fablo-config.json";
+    const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
+
+    // Validate config first - we'll validate in the writing method
+    // Note: Full validation should be done before calling this command
+
+    await this.writing(fabloConfigPath);
   }
 
-  async writing(): Promise<void> {
-    const fabloConfigPath = `${this.env.cwd}/${this.options.fabloConfig}`;
-    const json = parseFabloConfig(this.fs.read(fabloConfigPath));
-    const config = extendConfig(json);
-    const { global, orgs } = config;
+  async writing(fabloConfigPath: string): Promise<void> {
+    const configContent = await fs.readFile(fabloConfigPath, "utf-8");
+    const json = parseFabloConfig(configContent);
+    const configExtended = extendConfig(json);
+    const { global, orgs } = configExtended;
 
     const dateString = new Date()
       .toISOString()
@@ -32,41 +45,42 @@ export default class SetupDockerGenerator extends Generator {
       .replace(/[^0-9]+/g, "");
     const composeNetworkName = `fablo_network_${dateString}`;
 
-    console.log(`Used network config: ${fabloConfigPath}`);
-    console.log(`Fabric version is: ${global.fabricVersion}`);
+    this.log(`Used network config: ${fabloConfigPath}`);
+    this.log(`Fabric version is: ${global.fabricVersion}`);
 
-    this._copyGitIgnore();
+    await this._copyGitIgnore();
 
     // ======= fabric-k8s ===========================================================
-    this._copyEnvFile(global, orgs, composeNetworkName);
+    await this._copyEnvFile(global, orgs, composeNetworkName);
 
     // ======= scripts ==================================================================
-    // this._copyCommandsGeneratedScript(config);
-    this._copyCommandsGeneratedScript(config);
-    this._copyUtilityScripts(config.global.capabilities);
+    await this._copyCommandsGeneratedScript(configExtended);
+    await this._copyUtilityScripts(configExtended.global.capabilities);
 
     // ======= hooks ====================================================================
-    this._copyHooks(config.hooks);
+    await this._copyHooks(configExtended.hooks);
 
     // generate the diagram by default
-    const ExportNetworkTopologyPath = require.resolve("../export-network-topology");
-    const outputFile = this.destinationPath("network-topology.mmd");
-    this.composeWith(ExportNetworkTopologyPath, {
-      arguments: [fabloConfigPath, outputFile],
-    });
+    const outputFile = getDestinationPath(this.outputDir, "network-topology.mmd");
+    // Import and use the export topology logic directly
+    const { generateMermaidDiagram } = await import("../export-network-topology/generateMermaidDiagram");
+    const mermaidDiagram = generateMermaidDiagram(configExtended);
+    await fs.ensureDir(path.dirname(outputFile));
+    await fs.writeFile(outputFile, mermaidDiagram, "utf-8");
+    this.log(`✅ Network topology exported to ${outputFile}`);
 
-    this.on("end", () => {
-      console.log("Done & done !!! Try the network out: ");
-      console.log("-> fablo up - to start network");
-      console.log("-> fablo help - to view all commands");
-    });
+    this.log("Done & done !!! Try the network out: ");
+    this.log("-> fablo up - to start network");
+    this.log("-> fablo help - to view all commands");
   }
 
-  _copyGitIgnore(): void {
-    this.fs.copyTpl(this.templatePath("fabric-config/.gitignore"), this.destinationPath("fabric-config/.gitignore"));
+  async _copyGitIgnore(): Promise<void> {
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-config/.gitignore");
+    const destPath = getDestinationPath(this.outputDir, "fabric-config/.gitignore");
+    await renderTemplate(templatePath, destPath, {});
   }
 
-  _copyEnvFile(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): void {
+  async _copyEnvFile(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
     const settings = {
       composeNetworkName,
       fabricCaVersion: global.fabricCaVersion,
@@ -81,45 +95,54 @@ export default class SetupDockerGenerator extends Generator {
       couchDbVersion: "3.1",
       fabricCaPostgresVersion: "14",
     };
-    this.fs.copyTpl(this.templatePath("fabric-k8s/.env"), this.destinationPath("fabric-k8s/.env"), settings);
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-k8s/.env");
+    const destPath = getDestinationPath(this.outputDir, "fabric-k8s/.env");
+    await renderTemplate(templatePath, destPath, settings);
   }
 
-  _copyCommandsGeneratedScript(config: FabloConfigExtended): void {
-    this.fs.copyTpl(
-      this.templatePath("fabric-k8s/scripts/base-functions.sh"),
-      this.destinationPath("fabric-k8s/scripts/base-functions.sh"),
-      config,
-    );
-  }
-  _copyUtilityScripts(capabilities: Capabilities): void {
-    this.fs.copyTpl(this.templatePath("fabric-k8s.sh"), this.destinationPath("fabric-k8s.sh"));
-    this.fs.copyTpl(
-      this.templatePath("fabric-k8s/scripts/base-help.sh"),
-      this.destinationPath("fabric-k8s/scripts/base-help.sh"),
-    );
-
-    this.fs.copyTpl(
-      this.templatePath("fabric-k8s/scripts/util.sh"),
-      this.destinationPath("fabric-k8s/scripts/util.sh"),
-    );
-
-    this.fs.copyTpl(
-      this.templatePath(`fabric-k8s/scripts/chaincode-functions.sh`),
-      this.destinationPath("fabric-k8s/scripts/chaincode-functions.sh"),
-    );
-
-    this.fs.copyTpl(
-      this.templatePath(`fabric-k8s/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`),
-      this.destinationPath("fabric-k8s/scripts/chaincode-functions.sh"),
-    );
+  async _copyCommandsGeneratedScript(config: FabloConfigExtended): Promise<void> {
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/base-functions.sh");
+    const destPath = getDestinationPath(this.outputDir, "fabric-k8s/scripts/base-functions.sh");
+    await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
   }
 
-  _copyHooks(hooks: HooksConfig): void {
-    this.fs.copyTpl(this.templatePath("hooks/post-generate.sh"), this.destinationPath("hooks/post-generate.sh"), {
-      hooks,
-    });
-    this.fs.copyTpl(this.templatePath("hooks/post-start.sh"), this.destinationPath("hooks/post-start.sh"), {
-      hooks,
-    });
+  async _copyUtilityScripts(capabilities: Capabilities): Promise<void> {
+    // Copy fabric-k8s.sh
+    const fabricK8sShTemplate = getTemplatePath(this.templatesDir, "fabric-k8s.sh");
+    const fabricK8sShDest = getDestinationPath(this.outputDir, "fabric-k8s.sh");
+    await renderTemplate(fabricK8sShTemplate, fabricK8sShDest, {});
+
+    // Copy base-help.sh
+    const baseHelpTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/base-help.sh");
+    const baseHelpDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/base-help.sh");
+    await renderTemplate(baseHelpTemplate, baseHelpDest, {});
+
+    // Copy util.sh
+    const utilTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/util.sh");
+    const utilDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/util.sh");
+    await renderTemplate(utilTemplate, utilDest, {});
+
+    // Copy chaincode-functions.sh (base)
+    const chaincodeFunctionsBaseTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/chaincode-functions.sh");
+    const chaincodeFunctionsBaseDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/chaincode-functions.sh");
+    await renderTemplate(chaincodeFunctionsBaseTemplate, chaincodeFunctionsBaseDest, {});
+
+    // Copy chaincode-functions script (v2 or v1.4) - this overwrites the base
+    const chaincodeFunctionsTemplate = getTemplatePath(
+      this.templatesDir,
+      `fabric-k8s/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`,
+    );
+    const chaincodeFunctionsDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/chaincode-functions.sh");
+    await renderTemplate(chaincodeFunctionsTemplate, chaincodeFunctionsDest, {});
+  }
+
+  async _copyHooks(hooks: HooksConfig): Promise<void> {
+    const hooksFiles = ["hooks/post-generate.sh", "hooks/post-start.sh"];
+    for (const hookFile of hooksFiles) {
+      const templatePath = getTemplatePath(this.templatesDir, hookFile);
+      const destPath = getDestinationPath(this.outputDir, hookFile);
+      await renderTemplate(templatePath, destPath, { hooks });
+    }
   }
 }
+

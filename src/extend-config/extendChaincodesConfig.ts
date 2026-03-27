@@ -113,8 +113,11 @@ const extendChaincodesConfig = (
       }
     }
 
+    // Normalize directory to support leading './'
+    const normalizedDirectory = chaincode.directory?.replace(/^\.\//, "");
+
     return {
-      directory: chaincode.directory,
+      directory: normalizedDirectory,
       name: chaincode.name,
       version: chaincode.version,
       lang: chaincode.lang,
