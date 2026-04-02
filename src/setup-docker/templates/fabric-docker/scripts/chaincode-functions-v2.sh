@@ -114,6 +114,9 @@ chaincodePackageCCaaS() {
   local CHANNEL_NAME=$9
   local ORG_DOMAIN=${10}
   local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local PEER_PACKAGE_SUFFIX="${PEER_ADDRESS%%:*}"
+  PEER_PACKAGE_SUFFIX=$(echo "$PEER_PACKAGE_SUFFIX" | tr -c '[:alnum:]._-' '_')
+  local CHAINCODE_PACKAGE_FILE="${CHAINCODE_LABEL}_${PEER_PACKAGE_SUFFIX}.tar.gz"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -162,14 +165,14 @@ chaincodePackageCCaaS() {
   fi
 
   tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
-  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+  tar -czf "./chaincode-packages/$CHAINCODE_PACKAGE_FILE" -C "$PACKAGE_DIR" metadata.json code.tar.gz
 
-  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  docker cp "./chaincode-packages/$CHAINCODE_PACKAGE_FILE" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_PACKAGE_FILE"
 
-  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm "./chaincode-packages/$CHAINCODE_PACKAGE_FILE"
   rm -rf "$PACKAGE_DIR"
 
-  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_PACKAGE_FILE"
 }
 
 chaincodeInstall() {
@@ -180,6 +183,9 @@ chaincodeInstall() {
   local CHANNEL_NAME=$5
   local CA_CERT=${6:-}
   local CHAINCODE_LABEL="${CHANNEL_NAME}_${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local PEER_PACKAGE_SUFFIX="${PEER_ADDRESS%%:*}"
+  PEER_PACKAGE_SUFFIX=$(echo "$PEER_PACKAGE_SUFFIX" | tr -c '[:alnum:]._-' '_')
+  local CHAINCODE_PACKAGE_FILE="${CHAINCODE_LABEL}.tar.gz"
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -193,8 +199,13 @@ chaincodeInstall() {
     CA_CERT_PARAMS=(--tlsRootCertFiles "/var/hyperledger/cli/$CA_CERT")
   fi
 
+  # Prefer peer-specific package name for CCAAS; fall back to shared naming for compatibility.
+  if docker exec "$CLI_NAME" test -f "/var/hyperledger/cli/chaincode-packages/${CHAINCODE_LABEL}_${PEER_PACKAGE_SUFFIX}.tar.gz"; then
+    CHAINCODE_PACKAGE_FILE="${CHAINCODE_LABEL}_${PEER_PACKAGE_SUFFIX}.tar.gz"
+  fi
+
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \
-    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \
+    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_PACKAGE_FILE" \
     "${CA_CERT_PARAMS[@]+"${CA_CERT_PARAMS[@]}"}"
 }
 
