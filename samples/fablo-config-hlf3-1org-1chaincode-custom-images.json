@@ -1,0 +1,67 @@
+{
+    "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
+    "global": {
+        "fabricVersion": "3.1.0",
+        "tls": true,
+        "monitoring": {
+            "loglevel": "debug"
+        },
+        "fabricImages": {
+            "peer": "customorg/fabric-peer",
+            "orderer": "customorg/fabric-orderer",
+            "ca": "customorg/fabric-ca",
+            "tools": "customorg/fabric-tools",
+            "ccenv": "customorg/fabric-ccenv",
+            "baseos": "customorg/fabric-baseos",
+            "javaenv": "customorg/fabric-javaenv",
+            "nodeenv": "customorg/fabric-nodeenv"
+        }
+    },
+    "orgs": [
+        {
+            "organization": {
+                "name": "Orderer",
+                "domain": "orderer.example.com"
+            },
+            "orderers": [
+                {
+                    "groupName": "group1",
+                    "type": "raft",
+                    "instances": 1
+                }
+            ]
+        },
+        {
+            "organization": {
+                "name": "Org1",
+                "domain": "org1.example.com"
+            },
+            "peer": {
+                "instances": 1,
+                "db": "LevelDb"
+            }
+        }
+    ],
+    "channels": [
+        {
+            "name": "my-channel1",
+            "orgs": [
+                {
+                    "name": "Org1",
+                    "peers": [
+                        "peer0"
+                    ]
+                }
+            ]
+        }
+    ],
+    "chaincodes": [
+        {
+            "name": "chaincode1",
+            "version": "0.0.1",
+            "lang": "node",
+            "channel": "my-channel1",
+            "directory": "./chaincodes/chaincode-kv-node"
+        }
+    ]
+}

@@ -265,3 +265,31 @@ jobs:
           path: |
             e2e-network/docker/test-07-v2-peer-dev-mode.sh.logs/*
             e2e-network/docker/test-07-v2-peer-dev-mode.sh.tmpdir/fablo-target/**/*
+
+  test-08-v3-custom-images:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+
+      - name: Test custom Fabric images
+        run: e2e-network/docker/test-08-v3-custom-images.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-08-custom-images-logs
+          path: |
+            e2e-network/docker/test-08-v3-custom-images.sh.logs/*
+            e2e-network/docker/test-08-v3-custom-images.sh.tmpdir/fablo-target/**/*
