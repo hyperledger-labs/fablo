@@ -279,7 +279,7 @@ export default class SetupDocker extends Command {
     // Copy chaincode-functions script
     const chaincodeFunctionsTemplate = getTemplatePath(
       this.templatesDir,
-      `fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v2"}.sh`,
+      `fabric-docker/scripts/chaincode-functions-${capabilities.isV3 ? "v3" : "v2"}.sh`,
     );
     const chaincodeFunctionsDest = getDestinationPath(this.outputDir, "fabric-docker/scripts/chaincode-functions.sh");
     await renderTemplate(chaincodeFunctionsTemplate, chaincodeFunctionsDest, {});
