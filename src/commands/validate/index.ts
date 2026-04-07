@@ -517,6 +517,30 @@ export default class Validate extends Command {
 
   _validateExplorerWithFabricVersion(global: GlobalJson, orgs: OrgJson[]): void {
     const fabricVersion = global.fabricVersion;
+    const explorerEnabled =
+      global.tools?.explorer === true || orgs.some((o) => o.tools?.explorer === true);
+
+    if (!explorerEnabled) return;
+
+    // Fabric v3+ is definitively unsupported by Hyperledger Explorer
+    if (version(fabricVersion).isGreaterOrEqual("3.0.0")) {
+      const errorMessage = `Hyperledger Explorer does not support Fabric v3. Disable Explorer or use Fabric 2.5.x.`;
+      if (global.tools?.explorer === true) {
+        this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message: errorMessage });
+      } else {
+        orgs
+          .filter((o) => o.tools?.explorer === true)
+          .forEach(() => {
+            this.emit(validationErrorType.ERROR, {
+              category: validationCategories.ORGS,
+              message: errorMessage,
+            });
+          });
+      }
+      return;
+    }
+
+    // Fabric below 1.4 or above 2.5.12 — soft advisory
     if (!version(fabricVersion).isGreaterOrEqual("1.4.0") || version(fabricVersion).isGreaterOrEqual("2.5.13")) {
       const warnMessage = `You are using fabric version '${global.fabricVersion}' which may not be supported by the Hyperledger Explorer`;
       if (global.tools?.explorer === true) {
