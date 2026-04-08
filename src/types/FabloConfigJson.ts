@@ -84,6 +84,19 @@ export interface HooksJson {
   postStart?: string;
 }
 
+export interface ExternalNetworkCAJson {
+  url: string;
+  tlsCACertPath: string;
+}
+
+export interface ExternalNetworkJson {
+  ordererEndpoint: string;
+  channel: string;
+  dockerNetwork?: string;
+  tls: boolean;
+  ca: ExternalNetworkCAJson;
+}
+
 export interface FabloConfigJson {
   $schema: string;
   global: GlobalJson;
@@ -91,4 +104,5 @@ export interface FabloConfigJson {
   channels: ChannelJson[];
   chaincodes: ChaincodeJson[];
   hooks: HooksJson;
+  externalNetwork?: ExternalNetworkJson;
 }
