@@ -8,7 +8,13 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1orgs-2chaincodes.json"
+if [ -n "${TEST_CUSTOM_IMAGES:-}" ]; then
+    echo "Testing with custom Fabric images..."
+    CONFIG="$FABLO_HOME/samples/fablo-config-custom-images.json"
+else
+    echo "Testing with default Fabric images..."
+    CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1orgs-2chaincodes.json"
+fi
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
