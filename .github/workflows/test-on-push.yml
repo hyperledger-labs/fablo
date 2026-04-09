@@ -203,6 +203,11 @@ jobs:
       - name: Test version 3
         run: e2e-network/docker/test-05-v3.sh
 
+      - name: Test with custom images
+        run: |
+          export TEST_CUSTOM_IMAGES=1
+          e2e-network/docker/test-05-v3.sh
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
