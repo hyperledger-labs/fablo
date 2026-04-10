@@ -733,5 +733,6 @@ Fablo was originally created at [SoftwareMill](https://softwaremill.com) by [@He
 In December 2021, Fablo joined [Hyperledger Labs](https://labs.hyperledger.org/).
 
 ## Talks
+* [Inside the LFDT Mentorship Program: Real Stories, Real Impact](https://www.youtube.com/live/gWiO5gcssX0) - [umegbewe](https://github.com/umegbewe), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) among others are talking about their experiences in as mentors and mentees in 2025 LF Decentralized Trust Mentorship Program (March 2026).
 * [Simplifying Fabric Dev: New Features in Fablo](https://www.youtube.com/watch?v=5yn3_g6Cybw) by [@dzikowski](https://github.com/dzikowski), [dpereowei](https://github.com/dpereowei), and [@OsamaRab3](https://github.com/OsamaRab3) (November 2025)
 * [Kick-off your Hyperledger Fabric network](https://www.youtube.com/watch?v=JqPNozCtHkQ) by [@Hejwo](https://github.com/Hejwo) (Feburary 2021; Fablo was called "Fabrica" at that time)
