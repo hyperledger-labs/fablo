@@ -22,7 +22,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Channel query scripts                  | ✓         | ✓         |            | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | <br>**CHAINCODES**                     |           |           |            |          |                 |
 | Node                                   | ✓         | ✓         |            | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
-| Go                                     | ✓         | ✓         |            |          |                 |
+| Go                                     | ✓         | ✓         |            | [05_v3](/e2e-network/docker/test-05-v3.sh) |                 |
 | Java                                   | ✓         | ✓         |            | [02_v2](/e2e-network/docker/test-02-v2-raft-2orgs.sh) |                 |
 | Chaincode-as-a-Service (CCaaS)         | ✓         | ✓         |            | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh)         |                 |
 | CCaaS hot reload                       | ✓         | ✓         |            | [01_v3](/e2e-network/docker/test-01-v3-simple.sh) |                 |
@@ -49,6 +49,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | Create snapshot                        | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
 | Restore snapshot                       | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |                 |
 | <br>**OTHER FEATURES**                 |           |           |            |          |                 |
+| Custom Fabric images (`fabricImages`)  | ✓         | ✓         | ✓          | [extendGlobal.test.ts](/src/extend-config/extendGlobal.test.ts) | |
 | Peer dev mode                          | ✓         | ✕         | ✓          | [07_v2](/e2e-network/docker/test-07-v2-peer-dev-mode.sh)         | [#472](https://github.com/hyperledger-labs/fablo/issues/472) |
 | Connection profiles                    | ✓         | ✓         | ✓          | [e2e_snap](/e2e/__snapshots__/fablo-config-hlf2-1org-1chaincode.json.test.ts.snap)         |        |
 | Gateway client                         |           |           |            | [05__v3](/e2e-network/docker/test-05-v3.sh)         | [#544](https://github.com/hyperledger-labs/fablo/pull/544) |
