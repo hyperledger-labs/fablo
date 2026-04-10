@@ -1,0 +1,99 @@
+#!/usr/bin/env jaiph
+
+#
+# Fetches a Fablo PR patch from GitHub and runs an agent review.
+#
+# Usage: .jaiph/pr-review.jh <pr-number>
+#
+
+config {
+   agent.backend = "cursor"
+}
+
+const context = """
+  You are reviewing a pull request for **Fablo**
+  (https://github.com/hyperledger-labs/fablo).
+
+  ## What Fablo is
+
+  Fablo generates and runs Hyperledger Fabric networks from a single JSON or
+  YAML config (`fablo-config`). It targets Docker-based local dev, CI, and
+  experiments. The CLI is distributed primarily as `fablo.sh`; generation runs
+  in a Docker image (oclif + EJS templates) and writes artifacts under
+  `fablo-target/`.
+
+  ## Architecture (see ARCHITECTURE.md in the repo)
+
+  1. **`fablo.sh`** — CLI: validates input, forwards commands to the Fablo
+     Docker container or to generated scripts in `fablo-target/`.
+  2. **Fablo Docker** — Contains the generator (oclif, EJS templates). Mounts
+     `fablo-config` and `fablo-target` from the host.
+  3. **`fablo-target/`** — Generated Fabric network files (configs,
+     helper scripts, crypto, etc.).
+
+  Notable layout: `src/` (commands + templates), `fablo.sh`, `Dockerfile` /
+  `docker-entrypoint.sh` / `fablo-build.sh`, `e2e-network/` (bash integration
+  tests against real networks), `e2e/` (Jest snapshot tests for generated
+  output), `samples/` (example configs).
+
+  ## Review priorities
+
+  The most important and non-negotiable thing is backward compatibility. You may
+  expect the PR was created by an AI agent, and it may not be aware of the 
+  existing codebase and its contracts. Call out any risk to existing users or CI.
+
+  Be thorough in analyzing the PR changes against the existing codebase in the
+  current directory.
+
+  ## Output format
+
+  Give a concise review in bullet points. If there are multiple issues, provide
+  only the most important ones, to keep the review concise. Mark their severity.
+  If you expect something breaks the current Fablo features, suggest tests to
+  ensure changes are working as expected.
+
+  Assume you may talk to a junior developer, so explain the review in a way that
+  is easy to understand.
+
+  Keep the review short, preferrably <250 words. Rspond with the review content
+  only, no other text.
+"""
+
+script fetch_patch = ```
+  set -euo pipefail
+  PR="$1"
+  OUT=".jaiph/tmp/fablo-pr-${PR}.patch"
+  mkdir -p ".jaiph/tmp"
+  curl -fsSL \
+    "https://github.com/hyperledger-labs/fablo/pull/${PR}.patch" \
+    -o "$OUT"
+  printf '%s' "$OUT"
+```
+
+script remove_patch = ```
+  rm -f "$1"
+```
+
+workflow default(pr_num) {
+   if pr_num == "" {
+      fail "Please provide a PR number"
+   }
+
+   const patch_path = run fetch_patch(pr_num)
+   log "Fablo PR ${pr_num} patch saved to ${patch_path}"
+
+   const review = prompt """
+    ${context}
+
+    ---
+    
+    ## Pull request
+    
+    - **Repo:** https://github.com/hyperledger-labs/fablo
+    - **PR:** ${pr_num}
+    - **Patch file:** ${patch_path}
+   """
+
+   log "${review}"
+   run remove_patch(patch_path)
+}
