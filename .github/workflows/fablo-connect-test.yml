@@ -1,0 +1,127 @@
+name: Fablo Connect Integration Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/fablo-connect
+    paths:
+      - 'src/**'
+      - 'e2e-network/docker/test_fablo_connect.sh'
+      - '.github/workflows/fablo-connect-test.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/**'
+      - 'e2e-network/docker/test_fablo_connect.sh'
+      - '.github/workflows/fablo-connect-test.yml'
+
+jobs:
+  fablo-connect-test:
+    name: Fablo Connect Integration Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Verify Docker
+        run: |
+          docker --version
+          docker ps
+          echo "Docker setup verified"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+          echo "Dependencies installed"
+
+      - name: Make test script executable
+        run: |
+          chmod +x fablo/e2e-network/docker/test_fablo_connect.sh
+          ls -la fablo/e2e-network/docker/test_fablo_connect.sh
+
+      - name: Run Fablo Connect Integration Test
+        id: test
+        run: |
+          cd fablo
+          ./e2e-network/docker/test_fablo_connect.sh
+        timeout-minutes: 35
+        continue-on-error: true
+
+      - name: Check test result
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "Test failed with exit code: ${{ steps.test.outcome }}"
+          exit 1
+
+      - name: Collect test logs on failure
+        if: failure()
+        run: |
+          echo "=== Test Logs ===" 
+          if [ -d "fablo/e2e-network/docker/test_fablo_connect.logs" ]; then
+            find fablo/e2e-network/docker/test_fablo_connect.logs -type f -exec echo "File: {}" \; -exec head -50 {} \;
+          fi
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fablo-connect-test-logs-failure
+          path: fablo/e2e-network/docker/test_fablo_connect.logs/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Upload test logs on success
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fablo-connect-test-logs-success
+          path: fablo/e2e-network/docker/test_fablo_connect.logs/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## Fablo Connect Integration Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "fablo/e2e-network/docker/test_fablo_connect.logs/test.log" ]; then
+            echo "### Test Output" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -100 fablo/e2e-network/docker/test_fablo_connect.logs/test.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -d "fablo/e2e-network/docker/test_fablo_connect.logs" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Collected Logs" >> $GITHUB_STEP_SUMMARY
+            ls -lh fablo/e2e-network/docker/test_fablo_connect.logs/ >> $GITHUB_STEP_SUMMARY || true
+          fi
+          
+          if [ "${{ steps.test.outcome }}" == "success" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Result: ✅ PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Result: ❌ FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Cleanup Docker resources
+        if: always()
+        run: |
+          echo "Cleaning up Docker resources..."
+          docker ps -a
+          docker system prune -f --volumes || true
+          echo "Cleanup completed"
