@@ -87,194 +87,42 @@ Fablo will manage it locally.
 On the other hand you can use Fablo to generate initial network configuration, keep it in version control and tweak for specific requirements.
 In this case, however, you should use generated `fablo-docker.sh` instead of `fablo` script.
 
-## Managing the network
+## Command guides
 
-### init
+Fablo command documentation has been split into focused pages for easier onboarding and maintenance.
 
-```bash
-fablo init [node] [rest] [dev] [gateway]
-```
+### Start here
 
-Creates a simple network configuration file (`fablo-config.json`) in the current directory.
-This is a good starting point for your Fablo journey or to set up a quick prototype. 
+- [docs/commands/README.md](docs/commands/README.md)
 
-The generated network configuration includes an orderer organization with two BFT orderer nodes and a peer organization with two peers.
-It uses Fabric version `3.1.0`. 
+### Network setup and lifecycle
 
-The `fablo init` command accepts several optional parameters (order doesn't matter):
-* `node` - generates a sample Node.js chaincode
-* `rest` - enables a simple REST API with [Fablo REST](https://github.com/fablo-io/fablo-rest) as a standalone Docker container
-* `dev` - enables chaincode hot reload mode
-* `gateway` - generates a sample Node.js server that connects to the gateway
+- [init](docs/commands/init.md)
+- [generate](docs/commands/generate.md)
+- [up](docs/commands/up.md)
+- [down, start, stop](docs/commands/down-start-stop.md)
+- [prune, reset, recreate](docs/commands/prune-reset-recreate.md)
+- [snapshot and restore](docs/commands/snapshot-restore.md)
 
-Sample command:
+### Config and diagnostics
 
-```bash
-fablo init node dev
-```
+- [validate](docs/commands/validate.md)
+- [extend-config](docs/commands/extend-config.md)
+- [export-network-topology](docs/commands/export-network-topology.md)
 
-### generate
+### Chaincode and channel operations
 
-```bash
-fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
-```
+- [chaincode commands](docs/commands/chaincode.md)
+- [channel commands](docs/commands/channel.md)
 
-Generates network configuration files in the specified directory.
-Default config file path is `$(pwd)/fablo-config.json` or `$(pwd)/fablo-config.yaml`, default directory is `$(pwd)/fablo-target`.
-If you specify a different directory, you lose Fablo support for other commands.
+### Utility commands
 
-If you want to use Fablo only to generate the Hyperledger Fabric network configuration, you can provide a target directory parameter or copy the generated `fablo-target` directory content to your desired directory and add it to version control.
-Note that generated files may contain variables with paths on your disk and generated crypto material for Hyperledger Fabric.
-Review the files before committing to version control.
-
-### up
-
-```bash
-fablo up [/path/to/fablo-config.json|yaml]
-```
-
-Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and instantiates chaincodes.
-If no configuration exists, it will call the `generate` command for the given config file.
-
-### down, start, stop
-
-```bash
-fablo [down | start | stop]
-```
-
-Stops, starts, or stops the Hyperledger Fabric network for the configuration in the current directory.
-This is similar to the down, start, and stop commands for Docker Compose.
-
-### prune
-
-```bash
-fablo prune
-```
-
-Stops the network and removes the `fablo-target` directory.
-
-### reset and recreate
-
-```bash
-fablo reset
-fablo recreate [/path/to/fablo-config.json|yaml]
-```
-
-* `reset` - combines down and up steps. Network state is lost, but the configuration is kept intact. Useful when you want a fresh network instance without any state.
-* `recreate` - prunes the network, generates new config files, and starts the network. Useful when you've edited the `fablo-config` file and want to start a newer network version in one command.    
-
-### validate
-
-```bash
-fablo validate [/path/to/fablo-config.json|yaml]
-```
-
-Validates the network configuration. This command will validate your network config and suggest necessary changes or additional tweaks.
-Note that this step is also executed automatically before each `generate` to ensure that at least critical errors are fixed. 
-
-### export-network-topology
-
-```bash
-fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
-
-```
-- `outputFile.mmd`: (optional) Path to the output Mermaid file. Defaults to `network-topology.mmd`.
-
-Sample command:
-
-```bash
-fablo export-network-topology fablo-config.json network-topology.mmd
-```
-
-You can visualize the output using any Mermaid-compatible tool or online editor.
-
-### extend-config 
-
-```bash
-fablo extend-config [/path/to/fablo-config.json|yaml]
-```
-
-Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file and making some config parts more verbos. 
-
-### snapshot and restore
-
-Fablo supports saving state snapshots (backups) of the network and restoring them.
-It saves all network artifacts, certificates, and data from CA, orderer, and peer nodes.
-Note that the snapshot does not contain the Fablo config file and chaincode source code, as both can be located outside the Fablo working directory.
-
-Snapshotting is useful if you want to preserve the current state of a network for future use (testing, sharing the network state, courses, etc.).
-
-```bash
-fablo snapshot <target-snapshot-path>
-```
-
-To restore a snapshot into the current directory, run:
-
-```bash
-fablo restore <source-snapshot-path>
-```
-
-Example:
-
-1. Assume you have a working network with some state.
-2. Run `./fablo snapshot /tmp/my-snapshot`. This creates a file `/tmp/my-snapshot.fablo.tar.gz` with the network state. You don't need to stop the network before making a snapshot.
-3. Run `./fablo prune` to destroy the current network. If the network is present, Fablo won't be able to restore the new one from backup.
-4. Run `./fablo restore /tmp/my-snapshot` to restore the network.
-5. Run `./fablo start` to start the restored network.
-6. When running external chaincodes (CCAAS), run `./fablo chaincodes install` to start the CCAAS container
-
-Typically, a snapshot of a network with little data will be less than 1 MB, making it easy to share.
+- [version and use](docs/commands/version-use.md)
 
 ### fabric-docker.sh
 
-The `fabric-docker.sh` script is generated alongside the Docker network configuration.
-It doesn't support the `generate` command, but other commands work the same way as in `fablo`.
-Essentially, `fablo` forwards some commands to this script.
-
-If you want to use Fablo for network configuration setup only, the `fabric-docker.sh` file allows you to manage the network.
-
-## Managing chaincodes
-
-### chaincode(s) install
-
-```bash
-fablo chaincodes install
-```
-Installs all chaincodes. This might be useful if Fablo fails to install them automatically.
-
-To install a single chaincode defined in the Fablo config file, run:
-
-```bash
-fablo chaincode install <chaincode-name> <version>
-```
-
-### chaincode upgrade
-
-```bash
-fablo chaincode upgrade <chaincode-name> <version>
-```
-
-Upgrades the chaincode with the given name on all relevant peers.
-The chaincode directory is specified in the Fablo config file.
-
-### chaincode invoke
-Invokes a chaincode with the specified parameters.
-
-```
-fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient] 
-```
-Sample command:
-
-```
-fablo chaincode invoke "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
-```
-
-### chaincodes list
-Lists the instantiated or installed chaincodes in the specified channel or peer. 
-
-```
-fablo chaincodes list <peer> <channel>
-```
+The `fabric-docker.sh` script is generated alongside Docker network configuration.
+It does not support `generate`, but other lifecycle commands mirror `fablo` behavior.
 
 ### Achieving chaincode hot reload
 
@@ -383,70 +231,7 @@ This produces the following chaincode configuration:
 You can find a full end-to-end example in one of our test scripts [test-01-v3-simple.sh](e2e-network/docker/test-01-v3-simple.sh).
 
 
-## Channel scripts
-
-### channel help
-
-```bash
-fablo channel --help
-```
-Use it to list all available channel commands.
-Commands are generated using fablo-config.json to cover all cases (queries for each channel, organization, and peer).
-
-### channel list
- 
-```bash
-fablo channel list org1 peer0
-```
-Lists all channels for the given peer.
-
-### channel getinfo
-
-```bash
-fablo channel getinfo channel_name org1 peer0
-```
-Prints channel info, such as current block height for the given peer
-
-### channel fetch config
-
-```bash
-fablo channel fetch config channel_name org1 peer0 [file_name.json]
-```
-
-Fetches the latest config block, decodes it, and writes it to a JSON file.
-
-### channel fetch raw block
-
-```bash
-fablo channel fetch <oldest|newest|block-number> channel_name org1 peer0 [file_name.json]
-```
-Fetches the oldest, newest, or a block with the given number, and writes it to a file.
-
-## Utility commands
-
-### version
-
-```bash
-fablo version [--verbose | -v]
-```
-Prints the current Fablo version.
-With the optional `-v` or `--verbose` flag, it also prints supported Fablo and Hyperledger Fabric versions.
-
-### use
-
-```bash
-fablo use
-```   
-
-Lists all available Fablo versions.
-
-### use <version-number>
-
-```bash
-fablo use <version-number>
-```   
-
-Switches the current script to the selected version.
+For detailed channel and utility command references, use the command guides in [docs/commands/README.md](docs/commands/README.md).
 
 ## Fablo config
 
