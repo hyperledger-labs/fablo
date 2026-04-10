@@ -1,0 +1,72 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+plugins {
+    id 'java'
+}
+
+version = '0.0.1'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
+    maven {
+        url 'https://nexus.hyperledger.org/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    // Hyperledger Fabric Java chaincode shim
+    implementation group: 'org.hyperledger.fabric-chaincode-java', name: 'fabric-chaincode-shim', version: '2.5.0'
+
+    // Hypernate: entity framework for JVM-based Hyperledger Fabric chaincode
+    // See: https://github.com/LF-Decentralized-Trust-labs/hypernate
+    implementation 'com.github.LF-Decentralized-Trust-labs:hypernate:main-SNAPSHOT'
+
+    // JSON serialization
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+
+    // Test dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.mockito:mockito-core:5.3.1'
+}
+
+tasks.register('shadowJar', Jar) {
+    archiveBaseName.set('chaincode')
+    archiveVersion.set('')
+    archiveClassifier.set('')
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from sourceSets.main.output
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+
+    manifest {
+        attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
+    }
+}
+
+tasks.named('build') {
+    dependsOn 'shadowJar'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-Xlint:unchecked', '-Xlint:deprecation', '-parameters']
+}
