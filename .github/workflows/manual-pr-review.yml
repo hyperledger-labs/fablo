@@ -1,0 +1,72 @@
+# Runs a Jaiph PR review workflow and posts the result as a comment on the PR.
+#
+# Requires in this repository:
+#   - `.jaiph/pr-review.jh`
+#   - That workflow writes the review to `.jaiph/tmp/<pr-number>-review.md`
+#
+# Repository secrets (required for Cursor agent):
+#   - CURSOR_API_KEY — required; Jaiph runs the Cursor agent for `prompt` steps.
+#   - CURSOR_TOKEN — set if your Cursor setup expects it (optional in some configs).
+
+name: Manual PR review (Jaiph)
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Pull request number to review"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: jaiph-pr-review-${{ inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      JAIPH_AGENT_BACKEND: cursor
+      CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+      CURSOR_TOKEN: ${{ secrets.CURSOR_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Require Cursor API key
+        run: |
+          set -euo pipefail
+          if [ -z "${CURSOR_API_KEY:-}" ]; then
+            echo "Missing repository secret CURSOR_API_KEY (required for Jaiph Cursor agent)." >&2
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Jaiph
+        run: |
+          curl -fsSL https://jaiph.org/install | bash && jaiph use nightly
+
+      - name: Run Jaiph PR review
+        run: .jaiph/pr-review.jh "${{ inputs.pr_number }}"
+
+      - name: Comment on pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          pr="${{ inputs.pr_number }}"
+          review_file=".jaiph/tmp/${pr}-review.md"
+          test -f "${review_file}"
+          # temporary: print the review file to the console
+          # gh pr comment "${pr}" --body-file "${review_file}"
+          cat "${review_file}"
+          rm "${review_file}"
