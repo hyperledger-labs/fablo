@@ -496,9 +496,31 @@ export default class Validate extends Command {
           message: `Kubernetes is not supported by Fablo for Fabric below version 2.0.0`,
         });
       }
-    }
 
-    // TODO engine-specific validation rules
+      if (networkConfig.global.peerDevMode) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Peer dev mode is not supported by the Kubernetes engine.`,
+        });
+      }
+
+      const hasGlobalExplorer = networkConfig.global.tools?.explorer;
+      const hasOrgExplorer = networkConfig.orgs?.some((org) => org.tools?.explorer);
+      if (hasGlobalExplorer || hasOrgExplorer) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Hyperledger Explorer is not supported by the Kubernetes engine.`,
+        });
+      }
+
+      const hasFabloRest = networkConfig.orgs?.some((org) => org.tools?.fabloRest);
+      if (hasFabloRest) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Fablo REST is not supported by the Kubernetes engine.`,
+        });
+      }
+    }
   }
 
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
