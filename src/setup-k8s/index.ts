@@ -90,7 +90,7 @@ export default class SetupK8s extends Command {
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.2.0",
-      hyperledgerExplorerVersion: "1.1.8",
+      hyperledgerExplorerVersion: config.hyperledgerExplorerVersion,
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
       fabricCaPostgresVersion: "14",

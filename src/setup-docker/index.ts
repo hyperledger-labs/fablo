@@ -202,7 +202,7 @@ export default class SetupDocker extends Command {
       fabloVersion: config.fabloVersion,
       fabloBuild: getBuildInfo(),
       fabloRestVersion: "0.2.0",
-      hyperledgerExplorerVersion: "2.0.0",
+      hyperledgerExplorerVersion: config.hyperledgerExplorerVersion,
       fabricCouchDbVersion: "0.4.18",
       couchDbVersion: "3.1",
       fabricCaPostgresVersion: "14",

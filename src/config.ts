@@ -20,9 +20,12 @@ const isFabloVersionSupported = (versionName: string): boolean => versionName.st
 
 const versionsSupportingRaft = (v: string): boolean => version(v).isGreaterOrEqual("1.4.3");
 
+const hyperledgerExplorerVersion = "2.0.0";
+
 export {
   schema,
   fabloVersion,
+  hyperledgerExplorerVersion,
   versionsSupportingRaft,
   getVersionFromSchemaUrl,
   isFabloVersionSupported,
