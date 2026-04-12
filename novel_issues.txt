@@ -1,0 +1,270 @@
+================================================================================
+NOVEL ISSUES DISCOVERED VIA DIFFERENTIAL CODE AUDIT
+================================================================================
+Generated on: 2026-04-12
+Auditor: Senior Software Engineer (automated static analysis)
+Scope: Full codebase of hyperledger-labs/fablo (branch: issues)
+Cross-checked against: missing_issues.txt (16 known GitHub issues)
+================================================================================
+
+
+--------------------------------------------------------------------------------
+Issue 1
+--------------------------------------------------------------------------------
+Title: chaincode-functions script always selects v2 template, never v3
+File: src/setup-docker/index.ts
+Line: 282
+Impact: CRITICAL - Fabric v3 networks get incorrect chaincode lifecycle scripts, causing chaincode operations to fail or behave unexpectedly.
+Root Cause: The ternary expression on line 282 is:
+  `chaincode-functions-${capabilities.isV2 ? "v2" : "v2"}.sh`
+Both branches of the ternary return "v2", so the v3 template is never selected regardless of the Fabric version. This is effectively dead code for v3 support.
+Suggested Fix: Change the expression to:
+  `chaincode-functions-${capabilities.isV2 ? "v2" : "v3"}.sh`
+or use the same pattern as channel_fns which correctly uses:
+  `${capabilities.isV3 ? "v3" : "v2"}`
+
+
+--------------------------------------------------------------------------------
+Issue 2
+--------------------------------------------------------------------------------
+Title: Port collision when multiple orgs have many orderer instances
+File: src/extend-config/extendOrgsConfig.ts
+Line: 264-271
+Impact: HIGH - Docker containers fail to start due to port binding conflicts when the network has more than a few organizations.
+Root Cause: The function getPortsForOrg allocates ports using a fixed stride of 20 per org index (e.g. caPort = 7020 + 20*orgIndex). With multiple orderers and peers, the port ranges can overlap between adjacent orgs. For example, if org 0 has 10 orderer instances (ports 7030-7039), org 1's CA port starts at 7040, but org 0's peer ports start at 7021 and could reach 7030+ with enough peer instances, colliding with orderer ports.
+Suggested Fix: Calculate total port consumption per org dynamically and assign non-overlapping ranges, or validate for port collisions during the extend phase and emit an error.
+
+
+--------------------------------------------------------------------------------
+Issue 3
+--------------------------------------------------------------------------------
+Title: Hardcoded explorer version mismatch between Docker and K8s setups
+File: src/setup-docker/index.ts
+Line: 205
+File: src/setup-k8s/index.ts
+Line: 93
+Impact: MEDIUM - K8s deployments use an outdated Explorer version (1.1.8) while Docker uses 2.0.0, causing inconsistent behavior or missing features/security patches across deployment modes.
+Root Cause: The hyperledgerExplorerVersion is hardcoded in two places independently. The Docker setup uses "2.0.0" while the K8s setup uses "1.1.8". There is no shared constant or config for these versions.
+Suggested Fix: Extract hardcoded version strings into a shared constants file (e.g. src/defaults or src/config.ts) so both engines always use the same versions. Alternatively, make the explorer version configurable via the Fablo config JSON.
+
+
+--------------------------------------------------------------------------------
+Issue 4
+--------------------------------------------------------------------------------
+Title: Unsafe YAML deserialization allows arbitrary code execution
+File: src/utils/parseFabloConfig.ts
+Line: 9
+Impact: HIGH (Security) - If a malicious YAML config file is provided, yaml.load() with default options can instantiate arbitrary JavaScript objects, potentially leading to remote code execution.
+Root Cause: The js-yaml library's load() function, while safer in v4+ than v3, still accepts potentially dangerous content. The code does not use yaml.load(str, { schema: yaml.JSON_SCHEMA }) or yaml.load(str, { schema: yaml.CORE_SCHEMA }) to restrict parsing to safe types only.
+Suggested Fix: Use yaml.load(str, { schema: yaml.JSON_SCHEMA }) to restrict the YAML parser to only safe JSON-compatible types, preventing any custom type instantiation.
+
+
+--------------------------------------------------------------------------------
+Issue 5
+--------------------------------------------------------------------------------
+Title: validate command calls _validateIfConfigFileExists twice
+File: src/commands/validate/index.ts
+Line: 554-559
+Impact: LOW - Redundant file existence check is performed twice: once in run() (line 558) and once inside validate() (line 114). If the file does not exist, both checks call process.exit(1), but the duplicate logic is unnecessary and confusing.
+Root Cause: The run() method calls _validateIfConfigFileExists(configPath) on line 558, then calls this.validate() on line 559, which internally calls _validateIfConfigFileExists(this.fabloConfigPath) again on line 114. The state management between fabloConfigPath assignment is fragile.
+Suggested Fix: Remove the duplicate call in run() and let validate() handle it, or remove the call inside validate() and rely on run() to set the path.
+
+
+--------------------------------------------------------------------------------
+Issue 6
+--------------------------------------------------------------------------------
+Title: initConfig in fablo.sh passes wrong number of arguments to Docker
+File: fablo.sh
+Line: 257
+Impact: MEDIUM - The init command forwards arguments $2-$5 (positions for node, rest, dev, gateway) but the Init command now accepts free-form variadic options. Passing exactly 5 args with empty strings for unused positions causes the Oclif parser to see them as empty args, which may silently be ignored or cause unexpected validation issues.
+Root Cause: The shell script uses positional parameter forwarding (\"$2\" \"$3\" \"$4\" \"$5\") instead of forwarding all remaining arguments like "$@". The Init command expects zero or more option keywords but receives up to 5 (potentially empty) quoted strings.
+Suggested Fix: Change the initConfig call to forward all remaining arguments:
+  executeOnFabloDocker "init $*" or shift and forward "$@" properly.
+
+
+--------------------------------------------------------------------------------
+Issue 7
+--------------------------------------------------------------------------------
+Title: Explorer global config always written even when no explorer is enabled
+File: src/setup-docker/index.ts
+Line: 186-190
+Impact: LOW - The global explorer config file (config-global.json) is always written to disk inside _createExplorerMaterial, even when no organization or global config has explorer enabled. This creates unnecessary files in the output directory.
+Root Cause: The guard on line 171 only conditionally creates per-org explorer connection profiles, but the global config on lines 186-190 is written unconditionally.
+Suggested Fix: Wrap lines 186-190 in a check that verifies at least one org or the global config has explorer enabled before writing the global config file.
+
+
+--------------------------------------------------------------------------------
+Issue 8
+--------------------------------------------------------------------------------
+Title: restoreSnapshot always assumes Docker engine, ignores K8s
+File: fablo.sh
+Line: 374-375
+Impact: MEDIUM - The restoreSnapshot function hardcodes the path to fabric-docker.sh. If the network was generated with the Kubernetes engine, there is no fabric-docker.sh and the restore will fail with a confusing "file not found" error.
+Root Cause: Line 375 directly references: "$FABLO_TEMP_DIR/fablo-target/fabric-docker.sh" without checking whether the engine is Docker or Kubernetes.
+Suggested Fix: Add engine detection (check for fabric-k8s.sh vs fabric-docker.sh) similar to how executeFabloCommand() handles both engines on lines 327-338.
+
+
+--------------------------------------------------------------------------------
+Issue 9
+--------------------------------------------------------------------------------
+Title: peerChaincodeInstances port calculation may overflow or collide
+File: src/extend-config/extendChaincodesConfig.ts
+Line: 92
+Impact: HIGH - For CCaaS chaincodes, the port is calculated as 10000 * (index + 1) + peer.port. With multiple chaincodes (index >= 6) and peer ports around 7021, ports exceed 65535 (e.g., 70000 + 7021 = 77021), which is not a valid port number and will cause container startup failures.
+Root Cause: The port formula uses a multiplier of 10000 per chaincode index with no upper bound check. With enough chaincodes on a network, ports exceed the valid range.
+Suggested Fix: Validate the computed port is <= 65535 and throw a descriptive error if it exceeds. Consider using a smaller stride or a port allocation strategy that avoids overflow.
+
+
+--------------------------------------------------------------------------------
+Issue 10
+--------------------------------------------------------------------------------
+Title: Validate command does not call detailedSummary, hides errors
+File: src/commands/validate/index.ts
+Line: 554-565
+Impact: MEDIUM - The run() method calls shortSummary() but never calls detailedSummary(). This means validation errors and warnings are counted but their details (messages, categories) are never printed to the user unless a CRITICAL error occurs. The detailedSummary() method also contains the process.exit(1) call for non-zero errors, so the validate command may exit with code 0 even when validation errors exist.
+Root Cause: Line 560 calls this.shortSummary() which only prints counts, but detailedSummary() (lines 179-192) is never invoked, so individual error messages are suppressed and the exit code is always 0 for non-critical errors.
+Suggested Fix: Replace this.shortSummary() with this.detailedSummary() in run(), or call both to show counts plus details.
+
+
+--------------------------------------------------------------------------------
+Issue 11
+--------------------------------------------------------------------------------
+Title: fablo-build.sh uses incomplete set -euo (missing pipefail)
+File: fablo-build.sh
+Line: 3
+Impact: LOW - The script uses "set -euo" which enables errexit, nounset, but not pipefail. The "o" in "euo" is not a valid standalone option in the same way as "set -euo pipefail". In bash, "set -euo" silently sets -e, -u, and -o which is actually invalid without a following option name. This could lead to unexpected behavior or the script not properly catching pipeline failures.
+Root Cause: The intent was likely "set -euo pipefail" but "pipefail" is missing. Without pipefail, a failure in a piped command (e.g., cat package.json | jq on line 7) would be masked.
+Suggested Fix: Change to: set -euo pipefail
+
+
+--------------------------------------------------------------------------------
+Issue 12
+--------------------------------------------------------------------------------
+Title: Release workflow uses invalid git command to create PR
+File: .github/workflows/release-on-tag.yml
+Line: 60
+Impact: HIGH (CI/CD) - The release workflow uses "git gh pr create" which is not a valid command. The correct command is "gh pr create" (GitHub CLI). This means the automated version bump PR is never created after a release, breaking the release cycle automation.
+Root Cause: Line 60 has "git gh pr create" instead of "gh pr create". The "git" prefix is erroneous and will cause the step to fail.
+Suggested Fix: Change "git gh pr create" to "gh pr create" on line 60.
+
+
+--------------------------------------------------------------------------------
+Issue 13
+--------------------------------------------------------------------------------
+Title: Release workflow does not configure git user for commit
+File: .github/workflows/release-on-tag.yml
+Line: 53-60
+Impact: MEDIUM (CI/CD) - The release workflow attempts to commit (line 58) without first configuring git user.name and user.email. This will cause the git commit to fail in GitHub Actions environments where no global git identity is set.
+Root Cause: Lines 54-59 run bump-version, checkout a branch, and commit, but never set git config user.name/user.email.
+Suggested Fix: Add before the commit step:
+  git config user.name "github-actions[bot]"
+  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+
+--------------------------------------------------------------------------------
+Issue 14
+--------------------------------------------------------------------------------
+Title: distinctOrdererHeads deduplicates by domain instead of address
+File: src/extend-config/mergeOrdererGroups.ts
+Line: 26
+Impact: MEDIUM - The distinctOrdererHeads function deduplicates orderer heads using _.unionBy keyed on o.domain. This means if two orderer groups are hosted on the same domain (which is common), only one orderer head is kept, potentially omitting orderer heads that should be distinct.
+Root Cause: The unique key should likely be o.address or o.fullAddress (which is unique per orderer instance), not o.domain (which is shared across all orderers in the same org).
+Suggested Fix: Change _.unionBy(allOrdererHeads, (o) => o.domain) to _.unionBy(allOrdererHeads, (o) => o.address).
+
+
+--------------------------------------------------------------------------------
+Issue 15
+--------------------------------------------------------------------------------
+Title: Validate chaincode warnings have inverted logic for isV2/isV3
+File: src/commands/validate/index.ts
+Line: 358-372
+Impact: MEDIUM - The validation messages for chaincode init/initRequired parameters have incorrect descriptions. Line 361 says "init parameters are only supported in Fabric prior to 2.0" but the condition checks for capabilities.isV2 being true (which means Fabric >= 2.0). Line 368 says "initRequired is supported only in Fabric prior to 2.0" but the condition checks !capabilities.isV2. The messages are correct for the old pre-2.0 lifecycle but are confusingly worded for the current v2+ lifecycle model.
+Root Cause: The warning messages describe the wrong Fabric version context. "init" was used in v1.x lifecycle, "initRequired" was added in v2.x lifecycle. The messages are swapped.
+Suggested Fix: Line 361: Change message to "Chaincode 'init' parameters are only supported in Fabric prior to 2.0. Use 'initRequired' instead."
+Line 368: Change message to "Chaincode 'initRequired' parameter is only supported in Fabric 2.0+ and will be ignored for older versions."
+
+
+--------------------------------------------------------------------------------
+Issue 16
+--------------------------------------------------------------------------------
+Title: BFT orderer type not validated for minimum instance count
+File: src/commands/validate/index.ts
+Line: 284-337
+Impact: MEDIUM - The validate command checks solo orderers (must be 1 instance) and raft orderers (warns if 1 instance, error if TLS off), but there is no validation for the BFT orderer type. BFT consensus requires a minimum of 4 nodes (3f+1 where f>=1), but a user can set instances: 1 or 2 for BFT without any warning or error.
+Root Cause: The validation functions _validateOrdererCountForSoloType and _validateOrdererForRaftType have no counterpart for BFT. The BFT type was added for Fabric v3 but the validation rules were not extended to cover it.
+Suggested Fix: Add a _validateOrdererForBFTType function that checks:
+  - BFT requires Fabric v3+
+  - BFT requires at least 4 instances for fault tolerance
+  - BFT requires TLS enabled
+
+
+--------------------------------------------------------------------------------
+Issue 17
+--------------------------------------------------------------------------------
+Title: Unreachable explorer directory check after ensureDir
+File: src/setup-docker/index.ts
+Line: 162-165
+Impact: LOW - The check "if(!explorerDir)" on line 162 is unreachable dead code. The variable explorerDir is always a non-empty string because it is set via getDestinationPath() which always returns a string (path.join result). The ensureDir call on line 160 would have already thrown if there was a filesystem error.
+Root Cause: The developer likely intended to check if the directory creation succeeded, but getDestinationPath never returns undefined/empty. The check should either be removed or changed to verify the directory actually exists after creation.
+Suggested Fix: Remove the dead code block on lines 162-165.
+
+
+--------------------------------------------------------------------------------
+Issue 18
+--------------------------------------------------------------------------------
+Title: K8s setup does not generate crypto-config, configtx, or docker-compose
+File: src/setup-k8s/index.ts
+Line: 36-75
+Impact: HIGH - The K8s setup command generates only .env, utility scripts, hooks, and a network topology diagram. Unlike the Docker setup, it does not generate crypto-config YAML files, connection profiles, CA server configs, configtx.yaml, docker-compose, or chaincode scripts. This means a K8s-based network is missing critical configuration files needed to bootstrap the Fabric network.
+Root Cause: The K8s setup is functionally incomplete - it was likely scaffolded but never fully implemented. The writing() method only calls _copyEnvFile, _copyGitIgnore, _copyCommandsGeneratedScript, _copyUtilityScripts, and _copyHooks, omitting all Fabric-specific config generation.
+Suggested Fix: Either complete the K8s setup to generate all required Fabric configuration files, or add clear documentation/warnings that K8s mode is experimental/incomplete.
+
+
+--------------------------------------------------------------------------------
+Issue 19
+--------------------------------------------------------------------------------
+Title: createSnapshot uses tar wildcard (*) which may miss hidden files
+File: fablo.sh
+Line: 359
+Impact: LOW - The snapshot creation command uses "tar czf tmp.tar.gz *" which excludes hidden files/directories (those starting with a dot). If the snapshot target contains .env files or other dotfiles needed for the network, they will be silently omitted from the snapshot, causing restore to produce an incomplete network.
+Root Cause: Shell globbing with * does not match hidden files by default. The snapshot may miss .env, .gitignore, or other critical dotfiles.
+Suggested Fix: Use "tar czf tmp.tar.gz ." instead of "tar czf tmp.tar.gz *" to include hidden files, or use "shopt -s dotglob" before the tar command.
+
+
+--------------------------------------------------------------------------------
+Issue 20
+--------------------------------------------------------------------------------
+Title: parseFabloConfig returns unvalidated data cast to FabloConfigJson
+File: src/utils/parseFabloConfig.ts
+Line: 4-15
+Impact: MEDIUM (Security/Reliability) - The function casts the parsed JSON/YAML directly to FabloConfigJson without any runtime type validation. If the input file has missing required fields (e.g. no "global" key, no "orgs" array), the code downstream will crash with unclear TypeError messages instead of a descriptive validation error.
+Root Cause: The function uses "return JSON.parse(str)" which returns "any" and the TypeScript type assertion provides no runtime safety. The schema validation in the validate command is separate and may not be called before extendConfig is invoked.
+Suggested Fix: Add minimal runtime checks (e.g., verify that result.global, result.orgs, result.channels, and result.chaincodes exist) and throw descriptive errors, or always run schema validation before processing.
+
+
+--------------------------------------------------------------------------------
+Issue 21
+--------------------------------------------------------------------------------
+Title: check-if-fablo-version-matches.sh sources fablo.sh which executes commands
+File: check-if-fablo-version-matches.sh
+Line: 5
+Impact: LOW - The script sources fablo.sh with "help" argument. Sourcing fablo.sh imports all its functions and variables into the current shell context. If fablo.sh is modified to have side effects at the top level, they will execute during version checking. Additionally, "source ./fablo.sh help" will print the help text to stdout, polluting the version check output.
+Root Cause: The script uses "source" to import FABLO_VERSION but this also executes the entire fablo.sh script flow including printHelp().
+Suggested Fix: Extract the version from fablo.sh using grep instead:
+  FABLO_SCRIPT_VERSION=$(grep "^FABLO_VERSION=" fablo.sh | cut -d= -f2)
+
+
+--------------------------------------------------------------------------------
+Issue 22
+--------------------------------------------------------------------------------
+Title: Version comparison treats pre-release tags as equal to stable
+File: src/repositoryUtils.ts
+Line: 43-46
+Impact: MEDIUM - The isGreaterOrEqual method strips pre-release suffixes before comparing (split("-")[0]). This means "3.0.0-beta" is considered equal to "3.0.0" for comparison purposes. While this is intentional per the test suite, it can cause issues when a network is running a beta/RC version and the code treats it as fully stable, potentially enabling features or configurations not yet ready in that pre-release.
+Root Cause: Line 44-45 strips the pre-release suffix via split("-")[0], making "3.0.0-beta" and "3.0.0" sort identically.
+Suggested Fix: Document this behavior clearly, and consider adding a separate method isStableRelease() that can be used when strict version matching is needed (e.g., for capability decisions).
+
+
+================================================================================
+END OF NOVEL ISSUES (22 total)
+================================================================================
