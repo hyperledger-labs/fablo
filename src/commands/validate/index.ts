@@ -138,6 +138,7 @@ export default class Validate extends Command {
     this._validateChaincodeNames(networkConfig.chaincodes);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
+    networkConfig.orgs.forEach((org) => this._validatePeerCountForOrg(org));
     this._validateChannelOrdererGroup(networkConfig.orgs, networkConfig.channels);
     this._validateIfSameOrdererTypeAcrossOrdererGroup(networkConfig.orgs);
 
@@ -259,6 +260,17 @@ export default class Validate extends Command {
       const objectToEmit = {
         category: validationCategories.ORDERER,
         message: `You've reached Fablo limits! :/ Single org may have only 9 Orderers in total, but '${org.organization.name}' has ${numerOfOrderersInOrg} Orderers in total.`,
+      };
+      this.emit(validationErrorType.ERROR, objectToEmit);
+    }
+  }
+
+  _validatePeerCountForOrg(org: OrgJson) {
+    const numberOfPeersInOrg = org.peer?.instances;
+    if (numberOfPeersInOrg !== undefined && numberOfPeersInOrg > 9) {
+      const objectToEmit = {
+        category: validationCategories.PEER,
+        message: `You've reached Fablo limits! :/ Single org may have only 9 Peers in total, but '${org.organization.name}' has ${numberOfPeersInOrg} Peers in total.`,
       };
       this.emit(validationErrorType.ERROR, objectToEmit);
     }
