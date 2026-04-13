@@ -86,10 +86,17 @@ const extendChaincodesConfig = (
             const containerName = `ccaas_${peer.address.replace(/[^a-zA-Z0-9_.-]/g, "_")}_${channel.name}_${
               chaincode.name
             }_${versionSuffix}`.toLowerCase();
+            const port = 10000 * (index + 1) + peer.port;
+            if (port > 65535) {
+              throw new Error(
+                `Calculated port ${port} for chaincode '${chaincode.name}' on peer '${peer.address}' exceeds the valid port limit of 65535. Consider reducing the number of chaincodes.`
+              );
+            }
+
             return {
               containerName,
               peerAddress: peer.address,
-              port: 10000 * (index + 1) + peer.port,
+              port,
               orgDomain: org.domain,
             };
           }),
