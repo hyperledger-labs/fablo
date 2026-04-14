@@ -1,0 +1,66 @@
+name: Create Bump Version PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version bump (patch, minor, major, unstable, or set 1.2.3)'
+        required: true
+        default: 'patch'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g semver 
+          npm install -g oclif
+
+      - name: Run bump-version.sh
+        run: |
+          set -e
+          BUMP_ARG="${{ github.event.inputs.version }}"
+
+          if [[ "$BUMP_ARG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            ./bump-version.sh set "$BUMP_ARG"
+          elif [[ "$BUMP_ARG" =~ ^set[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            ./bump-version.sh $BUMP_ARG
+          else
+            ./bump-version.sh "$BUMP_ARG"
+          fi
+
+      - name: Get version
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Bump version to ${{ steps.package-version.outputs.version }}"
+          title: "Bump version to ${{ steps.package-version.outputs.version }}"
+          body: "This PR bumps the version of Fablo to ${{ steps.package-version.outputs.version }} using the manual workflow."
+          branch: "bump-version-${{ steps.package-version.outputs.version }}-${{ github.run_id }}"
+          base: main
+          labels: bump-version-pr
+          delete-branch: true
