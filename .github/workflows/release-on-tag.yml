@@ -50,11 +50,15 @@ jobs:
             fablo.sh
 
       - name: Create next development version PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sh ./bump-version.sh unstable
           NEW_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
           BRANCH_NAME="bump-version-to-$NEW_VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b $BRANCH_NAME
           git commit -a -m "Set new development version: $NEW_VERSION"
-          git push --set-upstream origin bump-version-to-$NEW_VERSION
-          git gh pr create --title "Bump Version to $NEW_VERSION" --body "Bump Version to $NEW_VERSION" --label "bump-version-pr" --head "bump-version-to-$NEW_VERSION" --base main
+          git push --set-upstream origin $BRANCH_NAME
+          gh pr create --title "Bump Version to $NEW_VERSION" --body "Automated PR to set new development version: $NEW_VERSION." --label "bump-version-pr" --head "$BRANCH_NAME" --base main
