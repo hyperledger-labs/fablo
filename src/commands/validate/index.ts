@@ -126,6 +126,7 @@ export default class Validate extends Command {
     this._validateIfOrdererDefinitionExists(networkConfig.orgs);
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForSoloType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererForRaftType(org.orderers, networkConfig.global));
+    networkConfig.orgs.forEach((org) => this._validateOrdererForBFTType(org.orderers, networkConfig.global));
     networkConfig.orgs.forEach((org) => this._validateOrdererCountForOrg(org));
     networkConfig.orgs.forEach((org) => this._validateOrdererGroupNameUniqueForOrg(org));
     // ===================================
@@ -288,7 +289,7 @@ export default class Validate extends Command {
           if (version(global.fabricVersion).isGreaterOrEqual("3.0.0")) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Solo consensus type is not supported in Fabric version ${global.fabricVersion}. Please use 'raft' or 'bft' instead.`,
+              message: `Solo consensus type is not supported in Fabric version ${global.fabricVersion}. Please use 'raft' or 'BFT' instead.`,
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }
@@ -329,6 +330,38 @@ export default class Validate extends Command {
             const objectToEmit = {
               category: validationCategories.ORDERER,
               message: "Raft consensus type must use network in TLS mode. Try setting 'global.tls' to true",
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+          }
+        });
+    }
+  }
+
+  _validateOrdererForBFTType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
+    if (orderers !== undefined) {
+      orderers
+        .filter((o) => o.type === "BFT")
+        .forEach((orderer) => {
+          if (orderer.instances < 4) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `BFT consensus type requires at least 4 orderer instances (3f+1 where f>=1), but got ${orderer.instances}. Network will fail to start.`,
+            };
+            this.emit(validationErrorType.ERROR, objectToEmit);
+          }
+
+          if (orderer.instances === 4) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: `BFT consensus with ${orderer.instances} instances can tolerate only 1 faulty node. Consider using 7 or more instances for higher fault tolerance.`,
+            };
+            this.emit(validationErrorType.WARN, objectToEmit);
+          }
+
+          if (!global.tls) {
+            const objectToEmit = {
+              category: validationCategories.ORDERER,
+              message: "BFT consensus type requires TLS to be enabled. Try setting 'global.tls' to true",
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }
