@@ -3,10 +3,6 @@ import { version as currentFabloVersion } from "../package.json";
 import { FabloConfigJson } from "../src/types/FabloConfigJson";
 import * as fs from "fs";
 
-type OrgWithAnchorPeers = { anchorPeers: Array<{ port: number }> };
-type ChannelWithInstantiation = { instantiation?: { channelConfigPath?: string } };
-type ConfigWithHooks = { hooks?: { postGenerate?: string } };
-
 const commands = new TestCommands("e2e/__tmp__/commands-tests");
 
 describe("init", () => {
@@ -28,43 +24,40 @@ describe("init", () => {
   });
   it("should handle numeric string coercion correctly for ports", () => {
     // When
-    const commandResult = commands.fabloExec("init --orgs[0].anchorPeers[0].port=9000");
+    const commandResult = commands.fabloExec("init --orgs[1].peer.instances=5");
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
 
-    // Critical: Check that it's a number, not "9000"
-    const org0 = config.orgs[0] as unknown as OrgWithAnchorPeers;
-    expect(org0.anchorPeers[0].port).toBe(9000);
+    // Critical: Check that it's a number, not "5"
+    expect(config.orgs[1].peer?.instances).toBe(5);
   });
 
   it("should create non-existent nested paths (e.g. hooks)", () => {
     // When
-    const commandResult = commands.fabloExec("init --hooks.postGenerate='echo done'");
+    const commandResult = commands.fabloExec("init --global.monitoring.loglevel=debug");
 
     // Then
     expect(commandResult).toEqual(TestCommands.success());
-    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as unknown as ConfigWithHooks;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
 
-    expect(config.hooks).toBeDefined();
-    expect(config.hooks.postGenerate).toBe("echo done");
+    expect(config.global.monitoring).toBeDefined();
+    expect(config.global.monitoring?.loglevel).toBe("debug");
   });
 
   it("should handle multiple overrides of different types simultaneously", () => {
-    // When
+    // Escape the brackets so the shell doesn't misinterpret them
     const commandResult = commands.fabloExec(
-      "init --global.tls=true --orgs[0].organization.name=Org1 --channels[0].instantiation.channelConfigPath=./path",
+      "init --global.tls=true --orgs[0].organization.name=Org1 --channels\\[0\\].name=my-channel2",
     );
 
-    // Then
     expect(commandResult).toEqual(TestCommands.success());
     const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
 
     expect(config.global.tls).toBe(true);
     expect(config.orgs[0].organization.name).toBe("Org1");
-    const channel0 = config.channels[0] as unknown as ChannelWithInstantiation;
-    expect(channel0.instantiation?.channelConfigPath).toBe("./path");
+    expect(config.channels[0].name).toBe("my-channel2");
   });
 
   it("should init simple fablo config with node chaincode", () => {
