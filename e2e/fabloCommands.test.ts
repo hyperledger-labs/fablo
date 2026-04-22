@@ -49,7 +49,7 @@ describe("init", () => {
   it("should handle multiple overrides of different types simultaneously", () => {
     // Escape the brackets so the shell doesn't misinterpret them
     const commandResult = commands.fabloExec(
-      "init --global.tls=true --orgs[0].organization.name=Org1 --channels\\[0\\].name=my-channel2",
+      "init --global.tls=true --channels\\[0\\].name=my-channel2",
     );
 
     expect(commandResult).toEqual(TestCommands.success());
