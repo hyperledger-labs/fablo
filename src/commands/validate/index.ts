@@ -534,14 +534,8 @@ export default class Validate extends Command {
     }
   }
 
-  _validateDevMode(global: GlobalJson): void {
-    if (global.peerDevMode && global.tls) {
-      const message =
-        "TLS needs to be disabled when running peers in dev mode. " +
-        "If you want to use chaincode watch mode with TLS, use the CCaaS " +
-        "chaincode type and provide 'chaincodeMountPath' and 'chaincodeStartCommand' parameters.";
-      this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
-    }
+  private _validateDevMode(_global: GlobalJson): void {
+    // peerDevMode with TLS is now supported via chaincode TLS env vars
   }
 
   _verifyFabricVersion(global: GlobalJson) {
