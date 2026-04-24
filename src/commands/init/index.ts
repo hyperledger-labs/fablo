@@ -1,4 +1,4 @@
-import { Args, Command } from "@oclif/core";
+import { Args, Command, Flags } from "@oclif/core";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
 import * as _ from "lodash";
@@ -81,6 +81,13 @@ export default class Init extends Command {
     }),
   };
 
+  static flags = {
+    set: Flags.string({
+      multiple: true,
+      summary: 'Override config values',
+    }),
+  };
+
   static strict = false;
 
   private getEffectiveFlags(args: { options?: string[] | string }): {
@@ -109,9 +116,41 @@ export default class Init extends Command {
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
-    this.log(JSON.stringify(parsed, null, 2));
-    const argv = (parsed.argv ?? []) as string[];
+    // Process --set flags
+    if (parsed.flags.set) {
+      for (const setValue of parsed.flags.set) {
+        const eqIndex = setValue.indexOf("=");
+        if (eqIndex === -1) {
+          this.error(`Invalid --set format: ${setValue}. Expected key=value`);
+        }
+        
+        const configPath = setValue.slice(0, eqIndex).replace(/\[(\d+)\]/g, '.$1');
+        const rawValue = setValue.slice(eqIndex + 1);
+        
+        let value: unknown = rawValue;
+        const rawValueTrimmed = rawValue.trim();
+        const rawValueLower = rawValueTrimmed.toLowerCase();
 
+        if (rawValueLower === "true") value = true;
+        else if (rawValueLower === "false") value = false;
+        else if (rawValueLower === "null") value = null;
+        else if (rawValueTrimmed.startsWith("{") || rawValueTrimmed.startsWith("[")) {
+          try {
+            value = JSON.parse(rawValueTrimmed);
+          } catch (e) {
+            value = rawValue;
+          }
+        } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
+          value = Number(rawValueTrimmed);
+        }
+
+        _.set(fabloConfigJson, configPath, value);
+        const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
+        this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
+      }
+    }
+
+    const argv = (parsed.argv ?? []) as string[];
     const keywordOptions = ["node", "dev", "ccaas", "gateway", "rest"];
     argv.forEach((arg) => {
       if (!arg.startsWith("--")) return;
