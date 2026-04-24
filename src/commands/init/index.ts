@@ -73,12 +73,11 @@ export default class Init extends Command {
     "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
 
   static ["--"] = false;
-
   static args = {
     options: Args.string({
       multiple: true,
       required: false,
-      description: "Options: node, dev, ccaas, gateway, rest (order does not matter)",
+      description: 'Options: node, dev, ccaas, gateway, rest (order does not matter)',
     }),
   };
 
@@ -91,43 +90,38 @@ export default class Init extends Command {
     gateway: boolean;
     rest: boolean;
   } {
-    const validOptions = ["node", "dev", "ccaas", "gateway", "rest"] as const;
+    const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest'] as const;
     const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
     const raw = optionsArr.filter((s) => !s.startsWith("-")).map((s) => s.toLowerCase());
     const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
     if (invalid.length > 0) {
-      this.error(`Unknown options: ${invalid.join(", ")}. Valid: ${validOptions.join(", ")}`);
+      this.error(`Unknown options: ${invalid.join(', ')}. Valid: ${validOptions.join(', ')}`);
     }
     return {
-      node: raw.includes("node"),
-      dev: raw.includes("dev"),
-      ccaas: raw.includes("ccaas"),
-      gateway: raw.includes("gateway"),
-      rest: raw.includes("rest"),
+      node: raw.includes('node'),
+      dev: raw.includes('dev'),
+      ccaas: raw.includes('ccaas'),
+      gateway: raw.includes('gateway'),
+      rest: raw.includes('rest'),
     };
   }
 
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
+    this.log(JSON.stringify(parsed, null, 2));
     const argv = (parsed.argv ?? []) as string[];
 
     const keywordOptions = ["node", "dev", "ccaas", "gateway", "rest"];
-
-    // --- START DYNAMIC OVERRIDES ---
     argv.forEach((arg) => {
       if (!arg.startsWith("--")) return;
 
       const eqIndex = arg.indexOf("=");
       if (eqIndex === -1) return;
 
-      const configPath = arg.slice(2, eqIndex);
+      const configPath = arg.slice(2, eqIndex).replace(/\[(\d+)\]/g, '.$1');
       const rawValue = arg.slice(eqIndex + 1);
-
-      // Avoid overriding our main keyword flags
       if (keywordOptions.includes(configPath)) return;
-
-      // Smart Type Casting
       let value: unknown = rawValue;
       const rawValueTrimmed = rawValue.trim();
       const rawValueLower = rawValueTrimmed.toLowerCase();
@@ -139,7 +133,6 @@ export default class Init extends Command {
         try {
           value = JSON.parse(rawValueTrimmed);
         } catch (e) {
-          // keep string value if parsing fails
           value = rawValue;
         }
       } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
@@ -150,7 +143,6 @@ export default class Init extends Command {
       const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
       this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
     });
-    // --- END DYNAMIC OVERRIDES ---
 
     const flags = this.getEffectiveFlags({ options: argv });
 
@@ -175,13 +167,17 @@ export default class Init extends Command {
       };
     }
     if (flags.node) {
-      this.log("Creating sample Node.js chaincode");
+      this.log('Creating sample Node.js chaincode');
 
-      const source = path.join(__dirname, "../../../samples/chaincodes/chaincode-kv-node");
-      const destination = path.join(process.cwd(), "chaincodes/chaincode-kv-node");
+      const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
+      const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
       fs.copySync(source, destination);
 
-      fs.writeFileSync(path.join(destination, ".nvmrc"), "12");
+      fs.writeFileSync(
+        path.join(destination, '.nvmrc'),
+        '12'
+      );
+
 
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
       // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
@@ -218,10 +214,10 @@ export default class Init extends Command {
     if (flags.gateway) {
       this.log("Creating sample Node.js gateway");
 
-      const src = path.join(__dirname, "../../../samples/gateway");
-      const dest = path.join(process.cwd(), "gateway");
+      const src = path.join(__dirname, '../../../samples/gateway');
+      const dest = path.join(process.cwd(), 'gateway');
       fs.copySync(src, dest);
-      this.log("✔ Gateway generated successfully!");
+      this.log('✔ Gateway generated successfully!');
     }
 
     if (flags.rest) {
@@ -237,7 +233,7 @@ export default class Init extends Command {
     };
     fabloConfigJson = { ...fabloConfigJson, global };
     const rootPath = process.cwd();
-    const outputFile = path.join(rootPath, "fablo-config.json");
+    const outputFile = path.join(rootPath, 'fablo-config.json');
     // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
@@ -245,9 +241,11 @@ export default class Init extends Command {
     this.log(chalk.bold("Sample config file created! :)"));
     this.log("You can start your network with 'fablo up' command");
     this.log("===========================================================");
+
   }
 
   public async run(): Promise<void> {
+
     await this.copySampleConfig();
   }
 }
