@@ -43,6 +43,22 @@ expectCARest() {
   sh "$TEST_TMP/../expect-ca-rest.sh" "$1" "$2" "$3" "$4"
 }
 
+expectInvokeRestWithRetry() {
+  local output=""
+  for i in $(seq 1 10); do
+    output="$(expectInvokeRest "$@" 2>&1 || true)"
+    if echo "$output" | grep -qF "ok (rest)"; then
+      echo "$output"
+      return 0
+    fi
+    echo "Invoke failed after restore, retrying... ($i/10)"
+    sleep 3
+  done
+  echo "$output"
+  echo "All retries exhausted"
+  exit 1
+}
+
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
@@ -129,7 +145,7 @@ user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "g
 echo "$user_token_response"
 user_token="$(echo "$user_token_response" | jq -r '.token')"
 
-expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
+expectInvokeRestWithRetry "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Mr Freeze"}}'
 
