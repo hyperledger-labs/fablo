@@ -71,7 +71,7 @@ If you are running Fablo on **Windows Subsystem for Linux (WSL2)**, you may enco
 * **Docker V2 Syntax:** Ensure you use `docker compose` (with a space) instead of `docker-compose`.
 * **Socket Permissions: **If you get a "permission denied" error, run:
    `sudo chmod 666 /var/run/docker.sock`
-* **command Stability:** In WSL2, use the full flag `--detach` instead of `-d` when intializing the network to ensure the containers start correctly.
+
 * **WSL2 Integration:** Confirm that "WSL2 Integration" is enabled in Docker Desktop settings for your specific Ubuntu distribution. 
 
 ## Basic usage
