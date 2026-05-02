@@ -3,9 +3,28 @@ export interface GlobalJson {
   tls: boolean;
   peerDevMode: boolean;
   fabricImages?: FabricImagesJson;
-  engine?: "kubernetes" | "docker";
+  engine?: "kubernetes" | "docker" | "fabric-x";
   monitoring?: { loglevel: string };
   tools?: { explorer?: boolean };
+  fabricX?: FabricXConfigJson;
+}
+
+export interface FabricXOrdererConfigJson {
+  routerInstances: number;
+  batcherShards: number;
+  batchersPerShard: number;
+  consenterInstances: number;
+  assemblerInstances: number;
+}
+
+export interface FabricXCommitterConfigJson {
+  instances: number;
+}
+
+export interface FabricXConfigJson {
+  version: string;
+  orderer: FabricXOrdererConfigJson;
+  committer: FabricXCommitterConfigJson;
 }
 
 export interface FabricImagesJson {

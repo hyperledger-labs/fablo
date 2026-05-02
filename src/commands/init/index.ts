@@ -1,6 +1,6 @@
 import { Args, Command } from '@oclif/core'
 import * as chalk from "chalk";
-import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
+import { GlobalJson, FabloConfigJson, ChaincodeJson, FabricXConfigJson } from "../../types/FabloConfigJson";
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { version } from "../../../package.json";
@@ -81,8 +81,8 @@ export default class Init extends Command {
 
   static strict = false;
 
-  private getEffectiveFlags(args: { options?: string[] | string }): { node: boolean; dev: boolean; ccaas: boolean; gateway: boolean; rest: boolean } {
-    const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest'] as const;
+  private getEffectiveFlags(args: { options?: string[] | string }): { node: boolean; dev: boolean; ccaas: boolean; gateway: boolean; rest: boolean; fabricX: boolean } {
+    const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest', 'fabric-x'] as const;
     const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
     const raw = optionsArr.map((s) => s.toLowerCase());
     const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
@@ -95,6 +95,7 @@ export default class Init extends Command {
       ccaas: raw.includes('ccaas'),
       gateway: raw.includes('gateway'),
       rest: raw.includes('rest'),
+      fabricX: raw.includes('fabric-x'),
     };
   }
 
@@ -102,6 +103,16 @@ export default class Init extends Command {
     let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
     const flags = this.getEffectiveFlags({ options: (parsed.argv ?? []) as string[] });
+
+    // Fabric-X mode: generate a completely different config
+    if (flags.fabricX) {
+      if (flags.node || flags.dev || flags.ccaas || flags.gateway || flags.rest) {
+        this.log(chalk.red("Error: fabric-x cannot be combined with node, dev, ccaas, gateway, or rest"));
+        process.exit(1);
+      }
+      this.log("Creating Fabric-X network configuration");
+      fabloConfigJson = this._getFabricXConfig();
+    }
 
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
@@ -196,9 +207,57 @@ export default class Init extends Command {
 
     this.log("===========================================================");
     this.log(chalk.bold("Sample config file created! :)"));
-    this.log("You can start your network with 'fablo up' command");
+    if (flags.fabricX) {
+      this.log("You can generate your Fabric-X network with 'fablo generate' command");
+    } else {
+      this.log("You can start your network with 'fablo up' command");
+    }
     this.log("===========================================================");
 
+  }
+
+  private _getFabricXConfig(): FabloConfigJson {
+    const fabricXDefaults: FabricXConfigJson = {
+      version: "0.0.15",
+      orderer: {
+        routerInstances: 1,
+        batcherShards: 1,
+        batchersPerShard: 1,
+        consenterInstances: 1,
+        assemblerInstances: 1,
+      },
+      committer: {
+        instances: 1,
+      },
+    };
+
+    return {
+      $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
+      global: {
+        fabricVersion: "3.1.0",
+        tls: false,
+        peerDevMode: false,
+        engine: "fabric-x",
+        fabricX: fabricXDefaults,
+      },
+      orgs: [
+        {
+          organization: {
+            name: "Org1",
+            domain: "org1.example.com",
+            mspName: "Org1MSP",
+          },
+          ca: {
+            prefix: "ca",
+            db: "sqlite",
+          },
+          orderers: [],
+        },
+      ],
+      channels: [],
+      chaincodes: [],
+      hooks: {},
+    };
   }
 
   public async run(): Promise<void> {

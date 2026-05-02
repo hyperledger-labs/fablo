@@ -147,6 +147,11 @@ export default class Validate extends Command {
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
     this._verifyFabricVersion(networkConfig.global);
+
+    // === Validate Fabric-X =============
+    this._validateFabricXConfig(networkConfig);
+    this._validateFabricXIncompatibilities(networkConfig);
+    // ===================================
   }
 
   private _validateFabricVersion(global: GlobalJson) {
@@ -548,6 +553,100 @@ export default class Validate extends Command {
     if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
       const message = `Fablo supports Fabric in version 2.0.0 and higher`;
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
+    }
+  }
+
+  _validateFabricXConfig(networkConfig: FabloConfigJson): void {
+    if (networkConfig.global.engine !== "fabric-x") return;
+
+    if (!networkConfig.global.fabricX) {
+      this.emit(validationErrorType.CRITICAL, {
+        category: validationCategories.GENERAL,
+        message: "Engine is set to 'fabric-x' but 'global.fabricX' configuration section is missing.",
+      });
+      return;
+    }
+
+    const { orderer, committer } = networkConfig.global.fabricX;
+
+    if (orderer.routerInstances < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X requires at least 1 router instance.",
+      });
+    }
+    if (orderer.batcherShards < 1 || orderer.batchersPerShard < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X requires at least 1 batcher shard with at least 1 batcher per shard.",
+      });
+    }
+    if (orderer.consenterInstances < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X requires at least 1 consenter instance.",
+      });
+    }
+    if (orderer.assemblerInstances < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X requires at least 1 assembler instance.",
+      });
+    }
+    if (committer.instances < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X requires at least 1 committer instance.",
+      });
+    }
+  }
+
+  _validateFabricXIncompatibilities(networkConfig: FabloConfigJson): void {
+    if (networkConfig.global.engine !== "fabric-x") return;
+
+    if (networkConfig.global.peerDevMode) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X does not support 'peerDevMode'. Fabric-X uses decomposed microservices instead of monolithic peers.",
+      });
+    }
+
+    if (networkConfig.global.tls) {
+      this.emit(validationErrorType.WARN, {
+        category: validationCategories.GENERAL,
+        message: "TLS for Fabric-X is not yet supported in this POC. TLS will be ignored.",
+      });
+    }
+
+    const hasRest = networkConfig.orgs.some((org) => org.tools?.fabloRest === true);
+    if (hasRest) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fabric-X does not support 'fabloRest'. Fabric-X uses a different programming model (fabric-smart-client).",
+      });
+    }
+
+    if (networkConfig.chaincodes.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHAINCODE,
+        message: "Fabric-X does not use traditional chaincodes. Remove chaincode definitions when using engine 'fabric-x'.",
+      });
+    }
+
+    if (networkConfig.channels.length > 0) {
+      this.emit(validationErrorType.WARN, {
+        category: validationCategories.CHANNEL,
+        message: "Fabric-X uses a single-channel architecture with namespaces. Channel definitions will be ignored.",
+      });
+    }
+
+    const hasExplorer = networkConfig.global.tools?.explorer === true ||
+      networkConfig.orgs.some((org) => org.tools?.explorer === true);
+    if (hasExplorer) {
+      this.emit(validationErrorType.WARN, {
+        category: validationCategories.GENERAL,
+        message: "Hyperledger Explorer is not compatible with Fabric-X and will be ignored.",
+      });
     }
   }
 

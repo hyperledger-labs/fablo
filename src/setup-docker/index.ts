@@ -69,6 +69,20 @@ export default class SetupDocker extends Command {
     this.log(`Fabric version is: ${global.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
+    // ======= Fabric-X Engine ==========================================================
+    if (global.engine === "fabric-x") {
+      this.log("🚀 Fabric-X engine detected — generating Fabric-X network files...");
+      await this._copyDockerComposeFabricX(configExtended);
+      await this._copyDockerComposeEnvFabricX(configExtended);
+      await this._copyGitIgnore();
+
+      this.log("Done & done !!! Your Fabric-X network files are ready:");
+      this.log("-> cd fablo-target/fabric-docker && docker-compose up -d");
+      this.log("-> fablo help - to view all commands");
+      return;
+    }
+
+    // ======= Classic Fabric Engine ====================================================
     // ======= fabric-config ============================================================
     await this._copyOrgCryptoConfig(orgs);
     await this._createConnectionProfiles(global, orgs, channels, configExtended.ordererGroups);
@@ -292,6 +306,20 @@ export default class SetupDocker extends Command {
       const destPath = getDestinationPath(this.outputDir, hookFile);
       await renderTemplate(templatePath, destPath, { hooks });
     }
+  }
+
+  // ======= Fabric-X Generation Methods ================================================
+
+  async _copyDockerComposeFabricX(config: FabloConfigExtended): Promise<void> {
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-docker/docker-compose-fabric-x.yaml");
+    const destPath = getDestinationPath(this.outputDir, "fabric-docker/docker-compose.yaml");
+    await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
+  }
+
+  async _copyDockerComposeEnvFabricX(config: FabloConfigExtended): Promise<void> {
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-docker/.env-fabric-x");
+    const destPath = getDestinationPath(this.outputDir, "fabric-docker/.env");
+    await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
   }
 }
 

@@ -48,11 +48,12 @@ export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5 | CapabilitiesV3_0
 
 export interface Global extends FabricVersions, FabricImages {
   tls: boolean;
-  engine: "kubernetes" | "docker";
+  engine: "kubernetes" | "docker" | "fabric-x";
   monitoring: { loglevel: string };
   paths: { fabloConfig: string; chaincodesBaseDir: string };
   capabilities: Capabilities;
   tools: { explorer?: ExplorerConfig };
+  fabricX?: FabricXExtended;
 }
 
 export interface OrdererConfig {
@@ -205,4 +206,35 @@ export interface FabloConfigExtended {
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
   hooks: HooksConfig;
+}
+
+// =============================================
+// Fabric-X Extended Types
+// =============================================
+
+export interface FabricXServiceComponent {
+  name: string;
+  address: string;
+  port: number;
+  containerName: string;
+}
+
+export interface FabricXCommitterComponent {
+  name: string;
+  orgName: string;
+  orgDomain: string;
+  sidecar: FabricXServiceComponent;
+  coordinator: FabricXServiceComponent;
+  validatorCommitter: FabricXServiceComponent;
+  verificationService: FabricXServiceComponent;
+  queryService: FabricXServiceComponent;
+}
+
+export interface FabricXExtended {
+  version: string;
+  routers: FabricXServiceComponent[];
+  batchers: FabricXServiceComponent[];
+  consenters: FabricXServiceComponent[];
+  assemblers: FabricXServiceComponent[];
+  committers: FabricXCommitterComponent[];
 }
