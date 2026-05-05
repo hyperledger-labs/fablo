@@ -84,6 +84,10 @@ export default class SetupDocker extends Command {
 
     // ======= scripts ==================================================================
     await this._copyCommandsGeneratedScript(configExtended);
+    // NOTE: "v2"/"v3" suffix in _copyUtilityScripts refers to HLF version (isV3 flag).
+    // This is different from setup-k8s where the same suffix distinguishes
+    // old Fabric 1.4-style install flow vs newer — not HLF version.
+    // See src/setup-k8s/index.ts _copyUtilityScripts for comparison.
     await this._copyUtilityScripts(configExtended.global.capabilities);
 
     // ======= hooks ====================================================================
