@@ -107,10 +107,7 @@ async copySampleConfig(): Promise<void> {
 
   if (flags.ccaas) {
     if (flags.dev || flags.node) {
-      this.log(chalk.red(
-        "Error: ccaas cannot be used together with dev or node"
-      ));
-      process.exit(1);
+      this.error("ccaas cannot be used together with dev or node");
     }
     this.log("Creating sample CCAAS chaincode");
 
@@ -129,7 +126,7 @@ async copySampleConfig(): Promise<void> {
   }
 
   if (flags.node) {
-    console.log("Creating sample Node.js chaincode");
+    this.log("Creating sample Node.js chaincode");
 
     const source = path.join(
       __dirname, 
@@ -144,7 +141,7 @@ async copySampleConfig(): Promise<void> {
       fs.copySync(source, destination);
     } catch (err) {
       this.error(
-        `Failed to copy Node.js chaincode sample: ${(err as Error).message}`
+        `Failed to copy Node.js chaincode sample from '${source}' to '${destination}': ${(err as Error).message}`
       );
     }
 
@@ -189,7 +186,7 @@ async copySampleConfig(): Promise<void> {
   }
 
   if (flags.gateway) {
-    console.log("Creating sample Node.js gateway");
+    this.log("Creating sample Node.js gateway");
 
     const src = path.join(__dirname, '../../../samples/gateway');
     const dest = path.join(process.cwd(), 'gateway');
