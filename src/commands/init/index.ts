@@ -98,59 +98,77 @@ export default class Init extends Command {
     };
   }
 
-  async copySampleConfig(): Promise<void> {
-    let fabloConfigJson = getDefaultFabloConfig();
-    const parsed = await this.parse(Init);
-    const flags = this.getEffectiveFlags({ options: (parsed.argv ?? []) as string[] });
+async copySampleConfig(): Promise<void> {
+  let fabloConfigJson = getDefaultFabloConfig();
+  const parsed = await this.parse(Init);
+  const flags = this.getEffectiveFlags({ 
+    options: (parsed.argv ?? []) as string[] 
+  });
 
-    if (flags.ccaas) {
-      if (flags.dev || flags.node) {
-        this.log(chalk.red("Error: ccaas cannot be used together with dev or node"));
-        process.exit(1);
-      }
-      this.log("Creating sample CCAAS chaincode");
-
-      const chaincodeConfig: ChaincodeJson = {
-        name: "chaincode1",
-        version: "0.0.1",
-        channel: "my-channel1",
-        lang: "ccaas",
-        image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
-        privateData: [],
-      };
-      fabloConfigJson = {
-        ...fabloConfigJson,
-        chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
-      };
+  if (flags.ccaas) {
+    if (flags.dev || flags.node) {
+      this.log(chalk.red(
+        "Error: ccaas cannot be used together with dev or node"
+      ));
+      process.exit(1);
     }
-    if (flags.node) {
-      console.log("Creating sample Node.js chaincode");
+    this.log("Creating sample CCAAS chaincode");
 
-      const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
-      const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
+    const chaincodeConfig: ChaincodeJson = {
+      name: "chaincode1",
+      version: "0.0.1",
+      channel: "my-channel1",
+      lang: "ccaas",
+      image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+      privateData: [],
+    };
+    fabloConfigJson = {
+      ...fabloConfigJson,
+      chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
+    };
+  }
+
+  if (flags.node) {
+    console.log("Creating sample Node.js chaincode");
+
+    const source = path.join(
+      __dirname, 
+      '../../../samples/chaincodes/chaincode-kv-node'
+    );
+    const destination = path.join(
+      process.cwd(), 
+      'chaincodes/chaincode-kv-node'
+    );
+
+    try {
       fs.copySync(source, destination);
-
-      fs.writeFileSync(
-        path.join(destination, '.nvmrc'),
-        '12'
+    } catch (err) {
+      this.error(
+        `Failed to copy Node.js chaincode sample: ${(err as Error).message}`
       );
+    }
 
+    try {
+      fs.writeFileSync(path.join(destination, '.nvmrc'), '12');
+    } catch (err) {
+      this.error(
+        `Failed to write .nvmrc file: ${(err as Error).message}`
+      );
+    }
 
-      // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
-      // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
-
-      const chaincodeConfig: ChaincodeJson = flags.dev
-        ? {
+    const chaincodeConfig: ChaincodeJson = flags.dev
+      ? {
           name: "chaincode1",
           version: "0.0.1",
           channel: "my-channel1",
           lang: "ccaas",
           image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-          chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+          chaincodeMountPath: 
+            "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
           chaincodeStartCommand: "npm run start:watch:ccaas",
           privateData: [],
         }
-        : {
+      : {
           name: "chaincode1",
           version: "0.0.1",
           channel: "my-channel1",
@@ -159,47 +177,62 @@ export default class Init extends Command {
           privateData: [],
         };
 
-      const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
+    const postGenerateHook = flags.dev 
+      ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } 
+      : {};
 
-      fabloConfigJson = {
-        ...fabloConfigJson,
-        chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
-        hooks: { ...fabloConfigJson.hooks, ...postGenerateHook },
-      };
-    }
-
-    if (flags.gateway) {
-      console.log("Creating sample Node.js gateway");
-
-      const src = path.join(__dirname, '../../../samples/gateway');
-      const dest = path.join(process.cwd(), 'gateway');
-      fs.copySync(src, dest);
-      this.log('✔ Gateway generated successfully!');
-    }
-
-    if (flags.rest) {
-      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
-      fabloConfigJson = { ...fabloConfigJson, orgs };
-    }
-
-    const engine = "docker";
-
-    const global: GlobalJson = {
-      ...fabloConfigJson.global,
-      engine,
+    fabloConfigJson = {
+      ...fabloConfigJson,
+      chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
+      hooks: { ...fabloConfigJson.hooks, ...postGenerateHook },
     };
-    fabloConfigJson = { ...fabloConfigJson, global };
-    const rootPath = process.cwd();
-    const outputFile = path.join(rootPath, 'fablo-config.json');
-    // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
-    fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
-
-    this.log("===========================================================");
-    this.log(chalk.bold("Sample config file created! :)"));
-    this.log("You can start your network with 'fablo up' command");
-    this.log("===========================================================");
-
   }
+
+  if (flags.gateway) {
+    console.log("Creating sample Node.js gateway");
+
+    const src = path.join(__dirname, '../../../samples/gateway');
+    const dest = path.join(process.cwd(), 'gateway');
+
+    try {
+      fs.copySync(src, dest);
+    } catch (err) {
+      this.error(
+        `Failed to copy gateway sample: ${(err as Error).message}`
+      );
+    }
+
+    this.log('✔ Gateway generated successfully!');
+  }
+
+  if (flags.rest) {
+    const orgs = fabloConfigJson.orgs.map((org) => ({ 
+      ...org, 
+      tools: { fabloRest: true } 
+    }));
+    fabloConfigJson = { ...fabloConfigJson, orgs };
+  }
+
+  const engine = "docker";
+  const global: GlobalJson = { ...fabloConfigJson.global, engine };
+  fabloConfigJson = { ...fabloConfigJson, global };
+
+  const rootPath = process.cwd();
+  const outputFile = path.join(rootPath, 'fablo-config.json');
+
+  try {
+    fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
+  } catch (err) {
+    this.error(
+      `Failed to write fablo-config.json: ${(err as Error).message}`
+    );
+  }
+
+  this.log("===========================================================");
+  this.log(chalk.bold("Sample config file created! :)"));
+  this.log("You can start your network with 'fablo up' command");
+  this.log("===========================================================");
+}
 
   public async run(): Promise<void> {
 
