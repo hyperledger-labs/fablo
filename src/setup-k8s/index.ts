@@ -106,6 +106,11 @@ export default class SetupK8s extends Command {
     await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
   }
 
+  // NOTE: "v2"/"v1.4" suffixes below refer to the chaincode install flow style
+  // (Fabric 2.x lifecycle vs old 1.4-style), driven by capabilities.isV2.
+  // This is DIFFERENT from setup-docker where "v2"/"v3" means HLF major version.
+  // Same filename pattern, different meaning — don't assume the suffixes line up.
+  // See: src/setup-docker/index.ts _copyUtilityScripts
   async _copyUtilityScripts(capabilities: Capabilities): Promise<void> {
     // Copy fabric-k8s.sh
     const fabricK8sShTemplate = getTemplatePath(this.templatesDir, "fabric-k8s.sh");
