@@ -51,6 +51,8 @@ jobs:
 
       - name: Create next development version PR
         run: |
+          git config user.name "github-actions[bot]" 
+          git config user.email "41898282+github-actions[bot]@user.noreply.github.com" 
           sh ./bump-version.sh unstable
           NEW_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
           BRANCH_NAME="bump-version-to-$NEW_VERSION"
