@@ -1,3 +1,19 @@
+## 2.6.0
+
+### Features
+* Support user-defined Fabric Docker images via `global.fabricImages` [#662](https://github.com/hyperledger-labs/fablo/pull/662)
+
+### Bug Fixes
+* Upgrade default Fabric CA image to **1.5.16** (ARM64 compatibility) [#659](https://github.com/hyperledger-labs/fablo/pull/659)
+* Force `linux/amd64` for MySQL CA database containers [#656](https://github.com/hyperledger-labs/fablo/pull/656)
+
+### Testing
+* Run Go chaincode against Fabric v3 in CI; bump default `fabric-tools` image to **3.1.3** [#661](https://github.com/hyperledger-labs/fablo/pull/661)
+
+### Chore & Maintenance
+* Remove Yeoman; refactor the CLI on **oclif** [#640](https://github.com/hyperledger-labs/fablo/pull/640)
+* Set default Fablo REST Docker image version to **0.2.0** [#613](https://github.com/hyperledger-labs/fablo/pull/613)
+
 ## 2.5.0
 
 ### Features

@@ -15,7 +15,11 @@ describe("init", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
     expect(commandResult.output).toContain("Sample config file created! :)");
-    expect(commands.getFiles()).toEqual(["e2e/__tmp__/commands-tests/fablo-config.json"]);
+    expect(commands.getFiles()).toEqual([
+      "e2e/__tmp__/commands-tests/fablo-config.json",
+      "e2e/__tmp__/commands-tests/group",
+      "e2e/__tmp__/commands-tests/passwd"
+    ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
   });
 
@@ -33,6 +37,8 @@ describe("init", () => {
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
       "e2e/__tmp__/commands-tests/fablo-config.json",
+      "e2e/__tmp__/commands-tests/group",
+      "e2e/__tmp__/commands-tests/passwd",
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
   });
@@ -51,6 +57,8 @@ describe("init", () => {
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package-lock.json",
       "e2e/__tmp__/commands-tests/chaincodes/chaincode-kv-node/package.json",
       "e2e/__tmp__/commands-tests/fablo-config.json",
+      "e2e/__tmp__/commands-tests/group",
+      "e2e/__tmp__/commands-tests/passwd",
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
   });

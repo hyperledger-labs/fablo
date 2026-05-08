@@ -2,7 +2,7 @@
 
 set -e
 
-FABLO_VERSION=2.5.0
+FABLO_VERSION=2.6.0
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
 FABLO_IMAGE="$FABLO_IMAGE_NAME:$FABLO_VERSION"
 
@@ -190,13 +190,30 @@ printHelp() {
 }
 
 executeOnFabloDocker() {
+
   local command_with_params="$1"
   local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
   local fablo_config="$3"
 
+  # Docker requires volume paths to be at least 2 chars; resolve . to absolute path
+  if [ -d "$fablo_workspace" ]; then
+    fablo_workspace="$(cd "$fablo_workspace" && pwd)"
+  fi
+
   local fablo_workspace_params=(
     -v "$fablo_workspace":/network/workspace
   )
+
+  # Generate minimal passwd and group files to satisfy Node.js lookup
+  # Avoiding mounting host files directly for security reasons.
+  echo "$(id -un || echo fablo):x:$(id -u):$(id -g):$(id -un || echo fablo):/network/workspace:/bin/sh" >"$FABLO_TEMP_DIR/passwd"
+  echo "$(id -gn || echo fablo):x:$(id -g):" >"$FABLO_TEMP_DIR/group"
+
+  fablo_workspace_params+=(
+    -v "$FABLO_TEMP_DIR/passwd":/etc/passwd:ro
+    -v "$FABLO_TEMP_DIR/group":/etc/group:ro
+  )
+
 
   local fablo_config_params=()
   if [ -n "$fablo_config" ]; then
@@ -208,7 +225,7 @@ executeOnFabloDocker() {
     fablo_config="$(cd "$(dirname "$fablo_config")" && pwd)/$(basename "$fablo_config")"
     local chaincodes_base_dir="$(dirname "$fablo_config")"
     fablo_config_params=(
-      -v "$fablo_config":/network/fablo-config.json
+      -v "$fablo_config":/network/workspace/fablo-config.json
       --env "FABLO_CONFIG=$fablo_config"
       --env "CHAINCODES_BASE_DIR=$chaincodes_base_dir"
     )
@@ -218,7 +235,7 @@ executeOnFabloDocker() {
     "${fablo_workspace_params[@]}" \
     "${fablo_config_params[@]}" \
     -u "$(id -u):$(id -g)" \
-    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh \"$command_with_params\"" \
+    $FABLO_IMAGE sh -c "/fablo/docker-entrypoint.sh $command_with_params" \
     2>&1
 }
 
@@ -231,31 +248,31 @@ useVersion() {
     set +e
     curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
   else
-    executeOnFabloDocker "fablo:list-versions"
+    executeOnFabloDocker "list-versions"
   fi
 }
 
 initConfig() {
   printSplash
-  executeOnFabloDocker "fablo:init $1 $2"
+  executeOnFabloDocker "init \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker "fablo:validate" "" "$fablo_config"
+  executeOnFabloDocker "validate" "" "$fablo_config"
 }
 
 extendConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeOnFabloDocker "fablo:extend-config" "" "$fablo_config"
+  executeOnFabloDocker "extend-config" "" "$fablo_config"
 }
 
 exportNetworkTopology() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   local output_file=${2:-network-topology.mmd}
 
-  executeOnFabloDocker "fablo:export-network-topology /network/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
+  executeOnFabloDocker "export-network-topology /network/workspace/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
 }
 
 generateNetworkConfig() {
@@ -269,7 +286,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeOnFabloDocker "fablo:setup-network" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
     chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")
@@ -309,6 +326,7 @@ executeFabloCommand() {
 
   if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
     echo "Executing Fablo Docker command: $1"
+    chmod +x "$FABLO_TARGET/fabric-docker.sh" || true
     "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"
@@ -366,7 +384,7 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "version" ]; then
-  executeOnFabloDocker "fablo:version $2"
+  executeOnFabloDocker "version $2"
 
 elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"

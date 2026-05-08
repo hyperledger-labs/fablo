@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`extend config should extend custom config 1`] = `
-"Validation errors count: 0
-Validation warnings count: 0
-===========================================================
-{
+"{
   "global": {
     "fabricVersion": "2.5.12",
     "tls": true,
@@ -1572,7 +1569,7 @@ Validation warnings count: 0
   ],
   "chaincodes": [
     {
-      "directory": "./chaincodes/chaincode-kv-node",
+      "directory": "chaincodes/chaincode-kv-node",
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "node",
@@ -2016,7 +2013,7 @@ Validation warnings count: 0
       "privateData": []
     },
     {
-      "directory": "./chaincodes/chaincode-java-simple",
+      "directory": "chaincodes/chaincode-java-simple",
       "name": "chaincode2",
       "version": "0.0.1",
       "lang": "java",
@@ -2491,16 +2488,11 @@ Validation warnings count: 0
     "postStart": "docker ps --format 'table {{.Names}}\\t{{.Status}}\\t{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'"
   }
 }
-
-
 "
 `;
 
 exports[`extend config should extend default config 1`] = `
-"Validation errors count: 0
-Validation warnings count: 0
-===========================================================
-{
+"{
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true,
@@ -3029,14 +3021,12 @@ Validation warnings count: 0
     "postStart": ""
   }
 }
-
-
 "
 `;
 
 exports[`init should init simple fablo config 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true,
@@ -3102,7 +3092,7 @@ exports[`init should init simple fablo config 1`] = `
 
 exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true,
@@ -3177,7 +3167,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 
 exports[`init should init simple fablo config with node chaincode and rest api 1`] = `
 "{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.5.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
     "fabricVersion": "3.1.0",
     "tls": true,
