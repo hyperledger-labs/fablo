@@ -242,7 +242,11 @@ export default class SetupDocker extends Command {
       }
     }
   }
-
+  // NOTE: "v2"/"v3" suffixes below refer to Hyperledger Fabric major version (HLF2 vs HLF3),
+  // driven by capabilities.isV3.
+  // This is DIFFERENT from setup-k8s where "v2"/"v1.4" refers to the chaincode install
+  // flow style (Fabric 2.x lifecycle vs old 1.4-style). Same filename pattern, different meaning.
+  // See: src/setup-k8s/index.ts _copyUtilityScripts
   async _copyUtilityScripts(capabilities: Capabilities): Promise<void> {
     // Copy fabric-docker.sh
     // const { capabilities } = global;
@@ -279,7 +283,7 @@ export default class SetupDocker extends Command {
     // Copy chaincode-functions script
     const chaincodeFunctionsTemplate = getTemplatePath(
       this.templatesDir,
-      `fabric-docker/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v2"}.sh`,
+      `fabric-docker/scripts/chaincode-functions-${capabilities.isV3 ? "v3" : "v2"}.sh`,
     );
     const chaincodeFunctionsDest = getDestinationPath(this.outputDir, "fabric-docker/scripts/chaincode-functions.sh");
     await renderTemplate(chaincodeFunctionsTemplate, chaincodeFunctionsDest, {});
