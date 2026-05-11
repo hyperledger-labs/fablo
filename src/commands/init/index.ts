@@ -154,6 +154,7 @@ export default class Init extends Command {
     const keywordOptions = ["node", "dev", "ccaas", "gateway", "rest"];
     argv.forEach((arg) => {
       if (!arg.startsWith("--")) return;
+      if (arg.startsWith("--set")) return;
 
       const eqIndex = arg.indexOf("=");
       if (eqIndex === -1) return;
