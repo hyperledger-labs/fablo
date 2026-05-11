@@ -35,16 +35,19 @@ jobs:
           npm install -g oclif
 
       - name: Run bump-version.sh
+        env:
+          BUMP_ARG_ENV: ${{ github.event.inputs.version }}
         run: |
           set -e
-          BUMP_ARG="${{ github.event.inputs.version }}"
-
+          BUMP_ARG="$BUMP_ARG_ENV"
           if [[ "$BUMP_ARG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
             ./bump-version.sh set "$BUMP_ARG"
-          elif [[ "$BUMP_ARG" =~ ^set[[:space:]]+[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
-            ./bump-version.sh $BUMP_ARG
-          else
+          elif [[ "$BUMP_ARG" =~ ^(patch|minor|major|unstable)$ ]]; then
             ./bump-version.sh "$BUMP_ARG"
+          else
+            echo "::error::Invalid version input"
+            echo "Allowed values: patch, minor, major, unstable, or a valid semver (e.g. 1.2.3)."
+            exit 1
           fi
 
       - name: Get version
