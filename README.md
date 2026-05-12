@@ -65,6 +65,14 @@ Note: If you install Fablo as a local script, you call it as `./fablo <command>`
 If you install it globally, you call `fablo <command>`.
 For the simplicity we will refer to it as `fablo`.
 
+###Troubleshooting for WSL2 & Ubuntu Users 
+If you are running Fablo on **Windows Subsystem for Linux (WSL2)**, you may encounter environment-specific issues. Here are the recommended fixes:
+
+* **Docker V2 Syntax:** Ensure you use `docker compose` (with a space) instead of `docker-compose`.
+* **Socket Permissions: **If you get a "permission denied" error, run:
+   `sudo chmod 666 /var/run/docker.sock`
+
+* **WSL2 Integration:** Confirm that "WSL2 Integration" is enabled in Docker Desktop settings for your specific Ubuntu distribution. 
 
 ## Basic usage
 
