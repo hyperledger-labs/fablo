@@ -43,6 +43,22 @@ expectCARest() {
   sh "$TEST_TMP/../expect-ca-rest.sh" "$1" "$2" "$3" "$4"
 }
 
+expectInvokeRestWithRetry() {
+  local output=""
+  for i in $(seq 1 10); do
+    output="$(expectInvokeRest "$@" 2>&1 || true)"
+    if echo "$output" | grep -qF "ok (rest)"; then
+      echo "$output"
+      return 0
+    fi
+    echo "Invoke failed after restore, retrying... ($i/10)"
+    sleep 3
+  done
+  echo "$output"
+  echo "All retries exhausted"
+  exit 1
+}
+
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
@@ -121,6 +137,14 @@ waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
 
+# Restart CCaaS containers to force fresh gRPC connections to the peer
+docker restart ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1
+docker restart ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1
+
+# Wait for CCaaS containers to re-bootstrap after restart
+waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
+
 # sleep to ensure the CCAAS container is ready
 sleep 3
 
@@ -129,7 +153,7 @@ user_token_response="$(expectCARest "$fablo_rest_org1/user/enroll" '' '{"id": "g
 echo "$user_token_response"
 user_token="$(echo "$user_token_response" | jq -r '.token')"
 
-expectInvokeRest "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
+expectInvokeRestWithRetry "$fablo_rest_org1 $user_token" "my-channel1" "chaincode1" \
   "KVContract:get" '["name"]' \
   '{"response":{"success":"Mr Freeze"}}'
 
