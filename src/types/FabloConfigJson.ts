@@ -27,7 +27,7 @@ export interface OrganizationDetailsJson {
 
 export interface CAJson {
   prefix: string;
-  db: "sqlite" | "postgres";
+  db: "sqlite" | "postgres" | "mysql";
 }
 
 export interface OrdererJson {
