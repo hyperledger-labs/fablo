@@ -137,6 +137,14 @@ waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
 
+# Restart CCaaS containers to force fresh gRPC connections to the peer
+docker restart ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1
+docker restart ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1
+
+# Wait for CCaaS containers to re-bootstrap after restart
+waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
+
 # sleep to ensure the CCAAS container is ready
 sleep 3
 
