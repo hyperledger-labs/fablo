@@ -18,9 +18,47 @@ describe("init", () => {
     expect(commands.getFiles()).toEqual([
       "e2e/__tmp__/commands-tests/fablo-config.json",
       "e2e/__tmp__/commands-tests/group",
-      "e2e/__tmp__/commands-tests/passwd"
+      "e2e/__tmp__/commands-tests/passwd",
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
+  });
+  it("should handle numeric string coercion correctly for ports", () => {
+  // When
+  const commandResult = commands.fabloExec("init --set orgs[1].peer.instances=5");
+
+  // Then
+  expect(commandResult).toEqual(TestCommands.success());
+  const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+  // Critical: Check that it's a number, not "5"
+  expect(config.orgs[1].peer?.instances).toBe(5);
+});
+
+  it("should create non-existent nested paths (e.g. hooks)", () => {
+  // When
+  const commandResult = commands.fabloExec("init --set global.monitoring.loglevel=debug");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    expect(config.global.monitoring).toBeDefined();
+    expect(config.global.monitoring?.loglevel).toBe("debug");
+  });
+
+  it("should handle multiple overrides of different types simultaneously", () => {
+    const commandResult = commands.fabloExec(
+      "init --set global.tls=true --set orgs[1].organization.name=NewOrg1Name --set channels[0].name=my-channel2",
+    );
+
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    expect(config.global.tls).toBe(true);
+
+    expect(config.orgs[1].organization.name).toBe("NewOrg1Name");
+
+    expect(config.channels[0].name).toBe("my-channel2");
   });
 
   it("should init simple fablo config with node chaincode", () => {

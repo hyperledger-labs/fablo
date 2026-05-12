@@ -1,8 +1,9 @@
-import { Args, Command } from '@oclif/core'
+import { Args, Command, Flags } from "@oclif/core";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as _ from "lodash";
+import * as path from "path";
+import * as fs from "fs-extra";
 import { version } from "../../../package.json";
 
 function getDefaultFabloConfig(): FabloConfigJson {
@@ -71,6 +72,7 @@ export default class Init extends Command {
   static override description =
     "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
 
+  static ["--"] = false;
   static args = {
     options: Args.string({
       multiple: true,
@@ -79,12 +81,25 @@ export default class Init extends Command {
     }),
   };
 
+  static flags = {
+    set: Flags.string({
+      multiple: true,
+      summary: 'Override config values',
+    }),
+  };
+
   static strict = false;
 
-  private getEffectiveFlags(args: { options?: string[] | string }): { node: boolean; dev: boolean; ccaas: boolean; gateway: boolean; rest: boolean } {
+  private getEffectiveFlags(args: { options?: string[] | string }): {
+    node: boolean;
+    dev: boolean;
+    ccaas: boolean;
+    gateway: boolean;
+    rest: boolean;
+  } {
     const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest'] as const;
     const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
-    const raw = optionsArr.map((s) => s.toLowerCase());
+    const raw = optionsArr.filter((s) => !s.startsWith("-")).map((s) => s.toLowerCase());
     const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
     if (invalid.length > 0) {
       this.error(`Unknown options: ${invalid.join(', ')}. Valid: ${validOptions.join(', ')}`);
@@ -101,7 +116,75 @@ export default class Init extends Command {
   async copySampleConfig(): Promise<void> {
     let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
-    const flags = this.getEffectiveFlags({ options: (parsed.argv ?? []) as string[] });
+    // Process --set flags
+    if (parsed.flags.set) {
+      for (const setValue of parsed.flags.set) {
+        const eqIndex = setValue.indexOf("=");
+        if (eqIndex === -1) {
+          this.error(`Invalid --set format: ${setValue}. Expected key=value`);
+        }
+        
+        const configPath = setValue.slice(0, eqIndex).replace(/\[(\d+)\]/g, '.$1');
+        const rawValue = setValue.slice(eqIndex + 1);
+        
+        let value: unknown = rawValue;
+        const rawValueTrimmed = rawValue.trim();
+        const rawValueLower = rawValueTrimmed.toLowerCase();
+
+        if (rawValueLower === "true") value = true;
+        else if (rawValueLower === "false") value = false;
+        else if (rawValueLower === "null") value = null;
+        else if (rawValueTrimmed.startsWith("{") || rawValueTrimmed.startsWith("[")) {
+          try {
+            value = JSON.parse(rawValueTrimmed);
+          } catch (e) {
+            value = rawValue;
+          }
+        } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
+          value = Number(rawValueTrimmed);
+        }
+
+        _.set(fabloConfigJson, configPath, value);
+        const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
+        this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
+      }
+    }
+
+    const argv = (parsed.argv ?? []) as string[];
+    const keywordOptions = ["node", "dev", "ccaas", "gateway", "rest"];
+    argv.forEach((arg) => {
+      if (!arg.startsWith("--")) return;
+      if (arg.startsWith("--set")) return;
+
+      const eqIndex = arg.indexOf("=");
+      if (eqIndex === -1) return;
+
+      const configPath = arg.slice(2, eqIndex).replace(/\[(\d+)\]/g, '.$1');
+      const rawValue = arg.slice(eqIndex + 1);
+      if (keywordOptions.includes(configPath)) return;
+      let value: unknown = rawValue;
+      const rawValueTrimmed = rawValue.trim();
+      const rawValueLower = rawValueTrimmed.toLowerCase();
+
+      if (rawValueLower === "true") value = true;
+      else if (rawValueLower === "false") value = false;
+      else if (rawValueLower === "null") value = null;
+      else if (rawValueTrimmed.startsWith("{") || rawValueTrimmed.startsWith("[")) {
+        try {
+          value = JSON.parse(rawValueTrimmed);
+        } catch (e) {
+          value = rawValue;
+        }
+      } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
+        value = Number(rawValueTrimmed);
+      }
+
+      _.set(fabloConfigJson, configPath, value);
+      const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
+      this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
+    });
+
+    const flags = this.getEffectiveFlags({ options: argv });
 
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
@@ -124,7 +207,7 @@ export default class Init extends Command {
       };
     }
     if (flags.node) {
-      console.log("Creating sample Node.js chaincode");
+      this.log('Creating sample Node.js chaincode');
 
       const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
       const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
@@ -141,23 +224,23 @@ export default class Init extends Command {
 
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
-          name: "chaincode1",
-          version: "0.0.1",
-          channel: "my-channel1",
-          lang: "ccaas",
-          image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-          chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
-          chaincodeStartCommand: "npm run start:watch:ccaas",
-          privateData: [],
-        }
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "ccaas",
+            image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+            chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+            chaincodeStartCommand: "npm run start:watch:ccaas",
+            privateData: [],
+          }
         : {
-          name: "chaincode1",
-          version: "0.0.1",
-          channel: "my-channel1",
-          lang: "node",
-          directory: "./chaincodes/chaincode-kv-node",
-          privateData: [],
-        };
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "node",
+            directory: "./chaincodes/chaincode-kv-node",
+            privateData: [],
+          };
 
       const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
 
@@ -169,7 +252,7 @@ export default class Init extends Command {
     }
 
     if (flags.gateway) {
-      console.log("Creating sample Node.js gateway");
+      this.log("Creating sample Node.js gateway");
 
       const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
