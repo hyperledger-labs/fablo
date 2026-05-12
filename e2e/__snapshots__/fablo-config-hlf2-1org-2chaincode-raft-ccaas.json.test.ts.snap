@@ -323,7 +323,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
     "orderer0.group1.orderer.example.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer.example.com"
@@ -369,7 +369,7 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer.example.com
 "
@@ -421,7 +421,7 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
     "orderer0.group1.orderer.example.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer.example.com"
@@ -475,7 +475,7 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer.example.com/orderers/orderer0.group1.orderer.example.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer.example.com/peers/orderer0.group1.orderer.example.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer.example.com
 channels:
