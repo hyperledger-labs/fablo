@@ -95,7 +95,7 @@ export default class Validate extends Command {
 
   private readonly errors = new Listener();
   private readonly warnings = new Listener();
-  private fabloConfigPath: string = "";
+  private fabloConfigPath = "";
 
   private emit(type: string, event: Message) {
     if (type === validationErrorType.CRITICAL) {
@@ -146,6 +146,7 @@ export default class Validate extends Command {
     this._validateExplorer(networkConfig.global, networkConfig.orgs);
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
+    this._validateFabloRestAndDevMode(networkConfig.global, networkConfig.orgs);
     this._verifyFabricVersion(networkConfig.global);
   }
 
@@ -544,6 +545,20 @@ export default class Validate extends Command {
     }
   }
 
+  _validateFabloRestAndDevMode(global: GlobalJson, orgs: OrgJson[]): void {
+    if (global.peerDevMode) {
+      orgs
+        .filter((o) => o.tools?.fabloRest === true)
+        .forEach((o) => {
+          const objectToEmit = {
+            category: validationCategories.GENERAL,
+            message: `Fablo REST is enabled for organization '${o.organization.name}', but global peerDevMode is also enabled. Using dev mode peers does not expose connected chaincodes through the discovery service, which makes Fablo REST unusable.`,
+          };
+          this.emit(validationErrorType.ERROR, objectToEmit);
+        });
+    }
+  }
+
   _verifyFabricVersion(global: GlobalJson) {
     if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
       const message = `Fablo supports Fabric in version 2.0.0 and higher`;
@@ -563,7 +578,5 @@ export default class Validate extends Command {
     // Check for compatible updates
     const listCompatibleUpdates = new ListCompatibleUpdates();
     await listCompatibleUpdates.checkForCompatibleUpdates();
-
   }
 }
-
