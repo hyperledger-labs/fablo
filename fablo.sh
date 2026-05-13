@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -o pipefail
 
 FABLO_VERSION=2.6.0
 FABLO_IMAGE_NAME="ghcr.io/fablo-io/fablo"
