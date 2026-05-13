@@ -4314,8 +4314,8 @@ notifyOrgsAboutChannels() {
   printHeadline "Notyfing orgs about channels" "U1F4E2"
   notifyOrgAboutNewChannelTls "my-channel1" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
   notifyOrgAboutNewChannelTls "my-channel1" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel2" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
-  notifyOrgAboutNewChannelTls "my-channel2" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
+  notifyOrgAboutNewChannelTls "my-channel2" "Org1MSP" "cli.org1.example.com" "peer1.org1.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
+  notifyOrgAboutNewChannelTls "my-channel2" "Org2MSP" "cli.org2.example.com" "peer1.org2.example.com" "orderer0.group1.orderer1.com:7030" "crypto-orderer/tlsca.orderer1.com-cert.pem"
   notifyOrgAboutNewChannelTls "my-channel3" "Org1MSP" "cli.org1.example.com" "peer0.org1.example.com" "orderer0.group2.orderer2.com:7050" "crypto-orderer/tlsca.orderer2.com-cert.pem"
   notifyOrgAboutNewChannelTls "my-channel3" "Org2MSP" "cli.org2.example.com" "peer0.org2.example.com" "orderer0.group2.orderer2.com:7050" "crypto-orderer/tlsca.orderer2.com-cert.pem"
 
