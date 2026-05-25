@@ -36,7 +36,7 @@ See `git help commit`:
 2. **Test your changes**: Ensure that your changes work as expected and don't introduce any new issues. Depending on the scope of your changes you may rely on our CI pipelines or run the following tests:
    - **Unit tests**: Execute unit tests using the provided scripts. Use: `npm run test:unit`.
    - **End-to-End (E2E) tests**: Execute E2E tests using the provided scripts. Use: `npm run test:e2e`.
-   - **Ent-to-End network tests**: Execute relevant shell scripts from `e2e-network` directory with E2E network tests.
+   - **End-to-End network tests**: Execute relevant shell scripts from `e2e-network` directory with E2E network tests.
 3. **Update snapshots**: If you've made changes that affect snapshots (esp. any template changes), update them using `npm run test:e2e-update`.
 
 ## Running Fablo locally
