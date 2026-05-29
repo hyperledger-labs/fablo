@@ -147,7 +147,6 @@ export default class Validate extends Command {
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
     this._validateFabloRestAndDevMode(networkConfig.global, networkConfig.orgs);
-    this._verifyFabricVersion(networkConfig.global);
   }
 
   private _validateFabricVersion(global: GlobalJson) {
@@ -556,13 +555,6 @@ export default class Validate extends Command {
           };
           this.emit(validationErrorType.ERROR, objectToEmit);
         });
-    }
-  }
-
-  _verifyFabricVersion(global: GlobalJson) {
-    if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
-      const message = `Fablo supports Fabric in version 2.0.0 and higher`;
-      this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
     }
   }
 
