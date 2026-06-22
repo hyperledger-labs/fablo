@@ -1,10 +1,47 @@
 import { Args, Command, Flags } from "@oclif/core";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson } from "../../types/FabloConfigJson";
+import { Validator as SchemaValidator } from "jsonschema";
 import * as _ from "lodash";
 import * as path from "path";
 import * as fs from "fs-extra";
 import { version } from "../../../package.json";
+import { schema } from "../../config";
+
+const SENSITIVE_PATH_PARTS = new Set([
+  "password",
+  "secret",
+  "token",
+  "apikey",
+  "api_key",
+  "private",
+  "credential",
+  "cert",
+  "certificate",
+  "key",
+]);
+
+function splitPathTokens(pathValue: string): string[] {
+  return pathValue
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .split(/[^a-zA-Z0-9]+/g)
+    .filter(Boolean)
+    .map((part) => part.toLowerCase());
+}
+
+function isSensitiveOverridePath(pathValue: string): boolean {
+  return splitPathTokens(pathValue).some((part) => SENSITIVE_PATH_PARTS.has(part));
+}
+
+function formatOverrideValue(pathValue: string, value: unknown): string {
+  if (isSensitiveOverridePath(pathValue)) {
+    return "********";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return JSON.stringify(value);
+}
 
 function getDefaultFabloConfig(): FabloConfigJson {
   return {
@@ -68,6 +105,60 @@ function getDefaultFabloConfig(): FabloConfigJson {
   };
 }
 
+// Parse override string value to boolean, null, number, JSON, or fallback to string.
+export function parseOverrideValue(raw: string): unknown {
+  const trimmed = raw.trim();
+  // quoted strings – strip quotes and treat content as string
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1);
+  }
+
+  const lower = trimmed.toLowerCase();
+
+  if (lower === "true") return true;
+  if (lower === "false") return false;
+  if (lower === "null") return null;
+
+  // JSON object / array
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      return trimmed;
+    }
+  }
+
+  // number – only plain decimal integers / floats (no leading zeros except for "0")
+  if (/^-?(0|[1-9]\d*)(\.\d+)?$/.test(trimmed) && trimmed !== "") {
+    return Number(trimmed);
+  }
+
+  // fallback: keep as string
+  return trimmed;
+}
+
+// Apply a single override to config, normalising bracket notation to dots.
+export function applyOverride(
+  config: FabloConfigJson,
+  rawPath: string,
+  rawValue: string,
+  log: (msg: string) => void,
+): void {
+  const dottedPath = rawPath.replace(/\[(\d+)\]/g, ".$1");
+  const value = parseOverrideValue(rawValue);
+  _.set(config, dottedPath, value);
+
+  log(chalk.blue(`ℹ Dynamic override: ${dottedPath} = ${formatOverrideValue(dottedPath, value)}`));
+}
+
+// Validate the config object against the Fablo schema.
+function validateFabloConfig(configToValidate: FabloConfigJson): string[] {
+  const validator = new SchemaValidator();
+  const results = validator.validate(configToValidate, schema);
+  return results.errors.map((error) => `${error.property}: ${error.message}`);
+}
+
+
 export default class Init extends Command {
   static override description =
     "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
@@ -114,82 +205,24 @@ export default class Init extends Command {
   }
 
   async copySampleConfig(): Promise<void> {
+    // 1. generate base config
     let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
-    // Process --set flags
-    if (parsed.flags.set) {
-      for (const setValue of parsed.flags.set) {
-        const eqIndex = setValue.indexOf("=");
-        if (eqIndex === -1) {
-          this.error(`Invalid --set format: ${setValue}. Expected key=value`);
-        }
-        
-        const configPath = setValue.slice(0, eqIndex).replace(/\[(\d+)\]/g, '.$1');
-        const rawValue = setValue.slice(eqIndex + 1);
-        
-        let value: unknown = rawValue;
-        const rawValueTrimmed = rawValue.trim();
-        const rawValueLower = rawValueTrimmed.toLowerCase();
+    const argv = (parsed.argv ?? []) as string[];
 
-        if (rawValueLower === "true") value = true;
-        else if (rawValueLower === "false") value = false;
-        else if (rawValueLower === "null") value = null;
-        else if (rawValueTrimmed.startsWith("{") || rawValueTrimmed.startsWith("[")) {
-          try {
-            value = JSON.parse(rawValueTrimmed);
-          } catch (e) {
-            value = rawValue;
-          }
-        } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
-          value = Number(rawValueTrimmed);
-        }
-
-        _.set(fabloConfigJson, configPath, value);
-        const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
-        this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
-      }
+    // 2. check for raw overrides (which are unsupported)
+    const unsupportedArgs = argv.filter((arg) => arg.startsWith("--"));
+    if (unsupportedArgs.length > 0) {
+      this.error("Unsupported override syntax. Use --set <path>=<value>.");
     }
 
-    const argv = (parsed.argv ?? []) as string[];
-    const keywordOptions = ["node", "dev", "ccaas", "gateway", "rest"];
-    argv.forEach((arg) => {
-      if (!arg.startsWith("--")) return;
-      if (arg.startsWith("--set")) return;
-
-      const eqIndex = arg.indexOf("=");
-      if (eqIndex === -1) return;
-
-      const configPath = arg.slice(2, eqIndex).replace(/\[(\d+)\]/g, '.$1');
-      const rawValue = arg.slice(eqIndex + 1);
-      if (keywordOptions.includes(configPath)) return;
-      let value: unknown = rawValue;
-      const rawValueTrimmed = rawValue.trim();
-      const rawValueLower = rawValueTrimmed.toLowerCase();
-
-      if (rawValueLower === "true") value = true;
-      else if (rawValueLower === "false") value = false;
-      else if (rawValueLower === "null") value = null;
-      else if (rawValueTrimmed.startsWith("{") || rawValueTrimmed.startsWith("[")) {
-        try {
-          value = JSON.parse(rawValueTrimmed);
-        } catch (e) {
-          value = rawValue;
-        }
-      } else if (rawValueTrimmed !== "" && !Number.isNaN(Number(rawValueTrimmed))) {
-        value = Number(rawValueTrimmed);
-      }
-
-      _.set(fabloConfigJson, configPath, value);
-      const valueForLog = typeof value === "string" ? value : JSON.stringify(value);
-      this.log(chalk.blue(`ℹ Dynamic override: ${configPath} = ${valueForLog}`));
-    });
-
+    // 3. extract flags (node, dev, ccaas, gateway, rest) from positional arguments
     const flags = this.getEffectiveFlags({ options: argv });
 
+    // 4. apply built-in modifications first
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
-        this.log(chalk.red("Error: ccaas cannot be used together with dev or node"));
-        process.exit(1);
+        this.error(chalk.red("Error: ccaas cannot be used together with dev or node"));
       }
       this.log("Creating sample CCAAS chaincode");
 
@@ -206,41 +239,35 @@ export default class Init extends Command {
         chaincodes: [...fabloConfigJson.chaincodes, chaincodeConfig],
       };
     }
-    if (flags.node) {
-      this.log('Creating sample Node.js chaincode');
 
-      const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
-      const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
+    if (flags.node) {
+      this.log("Creating sample Node.js chaincode");
+
+      const source = path.join(__dirname, "../../../samples/chaincodes/chaincode-kv-node");
+      const destination = path.join(process.cwd(), "chaincodes/chaincode-kv-node");
       fs.copySync(source, destination);
 
-      fs.writeFileSync(
-        path.join(destination, '.nvmrc'),
-        '12'
-      );
-
-
-      // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
-      // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
+      fs.writeFileSync(path.join(destination, ".nvmrc"), "12");
 
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
-            name: "chaincode1",
-            version: "0.0.1",
-            channel: "my-channel1",
-            lang: "ccaas",
-            image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-            chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
-            chaincodeStartCommand: "npm run start:watch:ccaas",
-            privateData: [],
-          }
+          name: "chaincode1",
+          version: "0.0.1",
+          channel: "my-channel1",
+          lang: "ccaas",
+          image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+          chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+          chaincodeStartCommand: "npm run start:watch:ccaas",
+          privateData: [],
+        }
         : {
-            name: "chaincode1",
-            version: "0.0.1",
-            channel: "my-channel1",
-            lang: "node",
-            directory: "./chaincodes/chaincode-kv-node",
-            privateData: [],
-          };
+          name: "chaincode1",
+          version: "0.0.1",
+          channel: "my-channel1",
+          lang: "node",
+          directory: "./chaincodes/chaincode-kv-node",
+          privateData: [],
+        };
 
       const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
 
@@ -252,7 +279,7 @@ export default class Init extends Command {
     }
 
     if (flags.gateway) {
-      this.log("Creating sample Node.js gateway");
+      this.log('Creating sample Node.js gateway');
 
       const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
@@ -261,20 +288,41 @@ export default class Init extends Command {
     }
 
     if (flags.rest) {
-      const orgs = fabloConfigJson.orgs.map((org) => ({ ...org, tools: { fabloRest: true } }));
+      const orgs = fabloConfigJson.orgs.map((org: any) => ({ ...org, tools: { fabloRest: true } }));
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
-    const engine = "docker";
 
     const global: GlobalJson = {
       ...fabloConfigJson.global,
-      engine,
+      engine: fabloConfigJson.global.engine ?? "docker",
     };
     fabloConfigJson = { ...fabloConfigJson, global };
+
+    // apply all `--set` overrides AFTER all built-in modifications
+    if (parsed.flags.set) {
+      for (const setValue of parsed.flags.set) {
+        const eqIndex = setValue.indexOf("=");
+        if (eqIndex === -1) {
+          this.error(`Invalid --set format: ${setValue}. Expected key=value`);
+        }
+        const configPath = setValue.slice(0, eqIndex);
+        const rawValue = setValue.slice(eqIndex + 1);
+        applyOverride(fabloConfigJson, configPath, rawValue, (msg) => this.log(msg));
+      }
+    }
+
+    // validate final config – if invalid, report errors and stop
+    const validationErrors = validateFabloConfig(fabloConfigJson);
+    if (validationErrors.length > 0) {
+      const message =
+        "Validation of final configuration failed:\n" + validationErrors.map((e) => `  - ${e}`).join("\n");
+      this.error(message);
+    }
+
+    // write config file
     const rootPath = process.cwd();
-    const outputFile = path.join(rootPath, 'fablo-config.json');
-    // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
+    const outputFile = path.join(rootPath, "fablo-config.json");
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
     this.log("===========================================================");
