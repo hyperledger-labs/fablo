@@ -169,7 +169,7 @@ Profiles:
                 <<: *ApplicationCapabilities
         <%_ } _%>
         <%_ if (!global.capabilities.isV3) { _%>
-            Consortium: SampleConsortium
+        Consortium: SampleConsortium
         <%_ } _%>
         <%_ if (!global.capabilities.isV3) { _%>
         Consortiums:
