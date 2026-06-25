@@ -13,7 +13,7 @@
     "<%= chaincode.name %>" <% -%>
     "<%= chaincode.version %>" <% -%>
     "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-    "<%- chaincode.endorsement || '' %>" <% -%>
+    "<%= chaincode.endorsement || '' %>" <% -%>
     "false" <% -%>
     "" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
@@ -28,7 +28,7 @@ chaincodeCommit <% -%>
   "<%= chaincode.name %>" <% -%>
   "<%= chaincode.version %>" <% -%>
   "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-  "<%- chaincode.endorsement || '' %>" <% -%>
+  "<%= chaincode.endorsement || '' %>" <% -%>
   "false" <% -%>
   "" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
