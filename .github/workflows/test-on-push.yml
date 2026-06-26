@@ -109,6 +109,12 @@ jobs:
       - name: Downgrade Docker to v28
         uses: ./.github/actions/setup-docker-v28
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Build Fablo
         run: |
           shellcheck --version && \
