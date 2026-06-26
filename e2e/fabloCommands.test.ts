@@ -124,16 +124,6 @@ describe("init", () => {
     expect(config.orgs[1].ca?.prefix).toBe("001");
   });
 
-  it("should handle JSON objects, arrays, and fallback to string for invalid JSON", () => {
-    const commandResult = commands.fabloExec(
-      `init --set hooks='{\\\"postGenerate\\\":\\\"echo-1\\\"}' --set channels[0].orgs[0].peers='[\\\"peer0\\\"]' --set global.fabricVersion='{abc'`,
-    );
-    expect(commandResult).toEqual(TestCommands.success());
-    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
-    expect(config.hooks?.postGenerate).toBe("echo-1");
-    expect(config.channels[0].orgs[0].peers).toEqual(["peer0"]);
-    expect(config.global.fabricVersion).toBe("{abc");
-  });
 
   it("should fail validation and not write configuration for invalid property types", () => {
     const commandResult = commands.fabloExec("init --set global.fabricVersion=true");

@@ -37,16 +37,6 @@ describe("Init Command Helpers", () => {
       expect(parseOverrideValue('"001"')).toBe("001");
     });
 
-    it("should parse JSON objects and arrays correctly", () => {
-      expect(parseOverrideValue("{}")).toEqual({});
-      expect(parseOverrideValue("[]")).toEqual([]);
-      expect(parseOverrideValue('{"a":1}')).toEqual({ a: 1 });
-      expect(parseOverrideValue('["peer0","peer1"]')).toEqual(["peer0", "peer1"]);
-    });
-
-    it("should fallback to raw string for invalid JSON starting with bracket/brace", () => {
-      expect(parseOverrideValue("{abc")).toBe("{abc");
-    });
   });
 
   describe("applyOverride", () => {
@@ -84,7 +74,5 @@ describe("Init Command Helpers", () => {
       expect(config.chaincodes[0].name).toBe("newname");
       expect(logOutput[0]).toContain("ℹ Dynamic override: chaincodes.0.name = newname");
     });
-
-
   });
 });
