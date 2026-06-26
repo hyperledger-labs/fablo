@@ -1,10 +1,10 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Args, Command, Flags } from "@oclif/core";
 import * as chalk from "chalk";
 import { GlobalJson, FabloConfigJson, ChaincodeJson, OrgJson } from "../../types/FabloConfigJson";
 import { Validator as SchemaValidator } from "jsonschema";
-import * as _ from 'lodash';
-import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as _ from "lodash";
+import * as path from "path";
+import * as fs from "fs-extra";
 import { version } from "../../../package.json";
 import { schema } from "../../config";
 
@@ -123,21 +123,27 @@ export default class Init extends Command {
     options: Args.string({
       multiple: true,
       required: false,
-      description: 'Options: node, dev, ccaas, gateway, rest (order does not matter)',
+      description: "Options: node, dev, ccaas, gateway, rest (order does not matter)",
     }),
   };
 
   static flags = {
     set: Flags.string({
       multiple: true,
-      summary: 'Override config values',
+      summary: "Override config values",
     }),
   };
 
   static strict = false;
 
-  private getEffectiveFlags(args: { options?: string[] | string }): { node: boolean; dev: boolean; ccaas: boolean; gateway: boolean; rest: boolean; } {
-    const validOptions = ['node', 'dev', 'ccaas', 'gateway', 'rest'] as const;
+  private getEffectiveFlags(args: { options?: string[] | string }): {
+    node: boolean;
+    dev: boolean;
+    ccaas: boolean;
+    gateway: boolean;
+    rest: boolean;
+  } {
+    const validOptions = ["node", "dev", "ccaas", "gateway", "rest"] as const;
     const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
     const raw = optionsArr.filter((s) => !s.startsWith("-")).map((s) => s.toLowerCase());
     const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
@@ -145,11 +151,11 @@ export default class Init extends Command {
       this.error(`Unknown options: ${invalid.join(", ")}. Valid: ${validOptions.join(", ")}`);
     }
     return {
-      node: raw.includes('node'),
-      dev: raw.includes('dev'),
-      ccaas: raw.includes('ccaas'),
-      gateway: raw.includes('gateway'),
-      rest: raw.includes('rest'),
+      node: raw.includes("node"),
+      dev: raw.includes("dev"),
+      ccaas: raw.includes("ccaas"),
+      gateway: raw.includes("gateway"),
+      rest: raw.includes("rest"),
     };
   }
 
@@ -186,38 +192,34 @@ export default class Init extends Command {
     if (flags.node) {
       console.log("Creating sample Node.js chaincode");
 
-      const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
-      const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
+      const source = path.join(__dirname, "../../../samples/chaincodes/chaincode-kv-node");
+      const destination = path.join(process.cwd(), "chaincodes/chaincode-kv-node");
       fs.copySync(source, destination);
 
-      fs.writeFileSync(
-        path.join(destination, '.nvmrc'),
-        '12'
-      );
-
+      fs.writeFileSync(path.join(destination, ".nvmrc"), "12");
 
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
       // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
 
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
-          name: "chaincode1",
-          version: "0.0.1",
-          channel: "my-channel1",
-          lang: "ccaas",
-          image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
-          chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
-          chaincodeStartCommand: "npm run start:watch:ccaas",
-          privateData: [],
-        }
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "ccaas",
+            image: "hyperledger/fabric-nodeenv:${FABRIC_NODEENV_VERSION:-2.5}",
+            chaincodeMountPath: "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node",
+            chaincodeStartCommand: "npm run start:watch:ccaas",
+            privateData: [],
+          }
         : {
-          name: "chaincode1",
-          version: "0.0.1",
-          channel: "my-channel1",
-          lang: "node",
-          directory: "./chaincodes/chaincode-kv-node",
-          privateData: [],
-        };
+            name: "chaincode1",
+            version: "0.0.1",
+            channel: "my-channel1",
+            lang: "node",
+            directory: "./chaincodes/chaincode-kv-node",
+            privateData: [],
+          };
 
       const postGenerateHook = flags.dev ? { postGenerate: "npm i --prefix ./chaincodes/chaincode-kv-node" } : {};
 
@@ -231,10 +233,10 @@ export default class Init extends Command {
     if (flags.gateway) {
       console.log("Creating sample Node.js gateway");
 
-      const src = path.join(__dirname, '../../../samples/gateway');
-      const dest = path.join(process.cwd(), 'gateway');
+      const src = path.join(__dirname, "../../../samples/gateway");
+      const dest = path.join(process.cwd(), "gateway");
       fs.copySync(src, dest);
-      this.log('✔ Gateway generated successfully!');
+      this.log("✔ Gateway generated successfully!");
     }
 
     if (flags.rest) {
@@ -271,7 +273,7 @@ export default class Init extends Command {
 
     // write config file
     const rootPath = process.cwd();
-    const outputFile = path.join(rootPath, 'fablo-config.json');
+    const outputFile = path.join(rootPath, "fablo-config.json");
     // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
@@ -279,11 +281,9 @@ export default class Init extends Command {
     this.log(chalk.bold("Sample config file created! :)"));
     this.log("You can start your network with 'fablo up' command");
     this.log("===========================================================");
-
   }
 
   public async run(): Promise<void> {
-
     await this.copySampleConfig();
   }
 }

@@ -124,14 +124,11 @@ describe("init", () => {
     expect(config.orgs[1].ca?.prefix).toBe("001");
   });
 
-
   it("should fail validation and not write configuration for invalid property types", () => {
     const commandResult = commands.fabloExec("init --set global.fabricVersion=true");
     expect(commandResult.status).not.toBe(0);
     expect(commandResult.output).toContain("Validation of final configuration failed");
   });
-
-
 
   it("should enforce override precedence over built-in modifications", () => {
     const commandResult = commands.fabloExec("init node --set chaincodes[0].directory=/tmp/test");
