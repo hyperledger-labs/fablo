@@ -573,6 +573,7 @@ export default class Validate extends Command {
     this._validateIfConfigFileExists(configPath);
     await this.validate();
     await this.shortSummary();
+    await this.detailedSummary();
 
     // Check for compatible updates
     const listCompatibleUpdates = new ListCompatibleUpdates();
