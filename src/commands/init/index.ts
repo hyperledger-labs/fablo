@@ -8,35 +8,7 @@ import * as fs from "fs-extra";
 import { version } from "../../../package.json";
 import { schema } from "../../config";
 
-const SENSITIVE_PATH_PARTS = new Set([
-  "password",
-  "secret",
-  "token",
-  "apikey",
-  "api_key",
-  "private",
-  "credential",
-  "cert",
-  "certificate",
-  "key",
-]);
-
-function splitPathTokens(pathValue: string): string[] {
-  return pathValue
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .split(/[^a-zA-Z0-9]+/g)
-    .filter(Boolean)
-    .map((part) => part.toLowerCase());
-}
-
-function isSensitiveOverridePath(pathValue: string): boolean {
-  return splitPathTokens(pathValue).some((part) => SENSITIVE_PATH_PARTS.has(part));
-}
-
-function formatOverrideValue(pathValue: string, value: unknown): string {
-  if (isSensitiveOverridePath(pathValue)) {
-    return "********";
-  }
+function formatOverrideValue(value: unknown): string {
   if (typeof value === "string") {
     return value;
   }
@@ -129,7 +101,7 @@ export function parseOverrideValue(raw: string): unknown {
   }
 
   // number – only plain decimal integers / floats (no leading zeros except for "0")
-  if (/^-?(0|[1-9]\d*)(\.\d+)?$/.test(trimmed) && trimmed !== "") {
+  if (/^-?(0|[1-9]\d*)(\.\d+)?$/.test(trimmed)) {
     return Number(trimmed);
   }
 
@@ -148,7 +120,7 @@ export function applyOverride(
   const value = parseOverrideValue(rawValue);
   _.set(config, dottedPath, value);
 
-  log(chalk.blue(`ℹ Dynamic override: ${dottedPath} = ${formatOverrideValue(dottedPath, value)}`));
+  log(chalk.blue(`ℹ Dynamic override: ${dottedPath} = ${formatOverrideValue(value)}`));
 }
 
 // Validate the config object against the Fablo schema.

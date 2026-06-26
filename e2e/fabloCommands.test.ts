@@ -141,12 +141,7 @@ describe("init", () => {
     expect(commandResult.output).toContain("Validation of final configuration failed");
   });
 
-  it("should redact sensitive keys in logs", () => {
-    const commandResult = commands.fabloExec("init --set global.token=mytoken");
-    expect(commandResult).toEqual(TestCommands.success());
-    expect(commandResult.output).toContain("ℹ Dynamic override: global.token = ********");
-    expect(commandResult.output).not.toContain("mytoken");
-  });
+
 
   it("should enforce override precedence over built-in modifications", () => {
     const commandResult = commands.fabloExec("init node --set chaincodes[0].directory=/tmp/test");

@@ -85,11 +85,6 @@ describe("Init Command Helpers", () => {
       expect(logOutput[0]).toContain("ℹ Dynamic override: chaincodes.0.name = newname");
     });
 
-    it("should redact sensitive overrides in logs", () => {
-      applyOverride(config, "global.token", "my-secret-token", logger);
-      expect((config.global as any).token).toBe("my-secret-token");
-      expect(logOutput[0]).toContain("ℹ Dynamic override: global.token = ********");
-      expect(logOutput[0]).not.toContain("my-secret-token");
-    });
+
   });
 });
