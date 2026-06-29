@@ -257,19 +257,8 @@ stopNetwork() {
 }
 
 networkDown() {
-  printf "Removing chaincode containers & images... \U1F5D1 \n"
-  <% chaincodes.forEach((chaincode) => { -%>
-    <% chaincode.channel.orgs.forEach((org) => { -%>
-      <% org.peers.forEach((peer) => { -%>
-        <% const chaincodeContainerName=`${peer.address}.*${chaincode.name}` -%>
-        for container in $(docker ps -a | grep "<%= chaincodeContainerName %>" | awk '{print $1}'); do echo "Removing container $container..."; docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"; done
-        for image in $(docker images "<%= chaincodeContainerName %>*" -q); do echo "Removing image $image..."; docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"; done
-      <% }) -%>
-    <% }) -%>
-  <% }) -%>
-
   printHeadline "Destroying network" "U1F916"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose --profile chaincodes down)
 
   printf "Removing generated configs... \U1F5D1 \n"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"

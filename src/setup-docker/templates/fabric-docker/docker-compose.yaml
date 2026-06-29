@@ -315,7 +315,7 @@ services:
       - CORE_PEER_GATEWAY_ENABLED=true
       <%_ } _%>
       # ccaas builder configuration
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"<%= peer.name %><%= org.name %>"}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peer_hostname":"<%= peer.address %>","peername":"<%= peer.name %><%= org.name %>"}
     working_dir: /etc/hyperledger/fabric/peer/
     command: peer node start <%= global.peerDevMode ? '--peer-chaincodedev=true' : '' %>
     ports:
@@ -353,6 +353,56 @@ services:
       - <%= peer.couchDbExposePort %>:5984
     networks:
       - basic
+  <%_ } _%>
+  <%_ }) _%>
+  <%_ chaincodes.filter((chaincode) => chaincode.lang === "ccaas").forEach(function(chaincode) { _%>
+  <%_ const channelOrg = chaincode.channel.orgs.find((channelOrg) => channelOrg.name === org.name); _%>
+  <%_ if (channelOrg) { _%>
+  <%_ channelOrg.peers.forEach(function(peer) { _%>
+  <%_ const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); _%>
+  <%= instance.containerName %>:
+    container_name: <%= instance.containerName %>
+    image: <%= chaincode.image %>
+    profiles:
+      - chaincodes
+    environment:
+      - CORE_CHAINCODE_ADDRESS=0.0.0.0:7052
+      - CHAINCODE_SERVER_ADDRESS=0.0.0.0:7052
+      - CORE_CHAINCODE_ID_NAME=${CORE_CHAINCODE_ID_NAME:-}
+      - CHAINCODE_ID=${CHAINCODE_ID:-}
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_CHAINCODE_LOGGING_SHIM=info
+      <%_ if(global.tls) { _%>
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_CHAINCODE_TLS_CERT_FILE=/etc/hyperledger/fabric/client.crt
+      - CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt
+      - CORE_PEER_LOCALMSPID=<%= org.mspName %>
+      <%_ } _%>
+    <%_ if(chaincode.chaincodeMountPath) { _%>
+    working_dir: /usr/src/app
+    <%_ } _%>
+    <%_ if(chaincode.chaincodeStartCommand) { _%>
+    entrypoint: ["sh", "-c"]
+    command: <%- JSON.stringify(chaincode.chaincodeStartCommand) %>
+    <%_ } _%>
+    ports:
+      - <%= instance.port %>:7052
+    <%_ if(global.tls || chaincode.chaincodeMountPath) { _%>
+    volumes:
+      <%_ if(global.tls) { _%>
+      - ../fabric-config/crypto-config/ccaas/<%= instance.containerName %>/tls/client.key:/etc/hyperledger/fabric/client.key
+      - ../fabric-config/crypto-config/ccaas/<%= instance.containerName %>/tls/client.crt:/etc/hyperledger/fabric/client.crt
+      - ../fabric-config/crypto-config/ccaas/<%= instance.containerName %>/tls/peer.crt:/etc/hyperledger/fabric/peer.crt
+      <%_ } _%>
+      <%_ if(chaincode.chaincodeMountPath) { _%>
+      - "<%= chaincode.chaincodeMountPath %>:/usr/src/app:ro"
+      <%_ } _%>
+    <%_ } _%>
+    networks:
+      - basic
+
+  <%_ }) _%>
   <%_ } _%>
   <%_ }) _%>
 <%_ }) _%>

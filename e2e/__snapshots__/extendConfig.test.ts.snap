@@ -9562,6 +9562,8 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
         {
           "containerName": "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1",
           "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel1_chaincode1_0.0.1",
           "peerAddress": "peer0.org1.example.com",
           "port": 17041,
         },
@@ -9893,6 +9895,8 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
         {
           "containerName": "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1",
           "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel2_chaincode1_0.0.1",
           "peerAddress": "peer0.org1.example.com",
           "port": 27041,
         },
@@ -12358,12 +12362,16 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
         {
           "containerName": "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1",
           "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel1_chaincode1_0.0.1",
           "peerAddress": "peer0.org1.example.com",
           "port": 17041,
         },
         {
           "containerName": "ccaas_peer0.org2.example.com_my-channel1_chaincode1_0.0.1",
           "orgDomain": "org2.example.com",
+          "orgName": "Org2",
+          "packageLabel": "Org2_my-channel1_chaincode1_0.0.1",
           "peerAddress": "peer0.org2.example.com",
           "port": 17061,
         },
@@ -14313,6 +14321,8 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
         {
           "containerName": "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1",
           "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel1_chaincode1_0.0.1",
           "peerAddress": "peer0.org1.example.com",
           "port": 17041,
         },
@@ -14644,6 +14654,8 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
         {
           "containerName": "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1",
           "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel2_chaincode1_0.0.1",
           "peerAddress": "peer0.org1.example.com",
           "port": 27041,
         },
