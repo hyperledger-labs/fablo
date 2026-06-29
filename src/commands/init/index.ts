@@ -128,12 +128,21 @@ export default class Init extends Command {
 
       const source = path.join(__dirname, '../../../samples/chaincodes/chaincode-kv-node');
       const destination = path.join(process.cwd(), 'chaincodes/chaincode-kv-node');
-      fs.copySync(source, destination);
+      try {
+        fs.copySync(source, destination);
+      } catch (e: any) {
+        this.error(`Failed to copy Node.js chaincode samples to '${destination}': ${e.message}`);
+      }
 
+       try{
       fs.writeFileSync(
         path.join(destination, '.nvmrc'),
         '12'
       );
+      }
+      catch (e: any) {
+        this.error(`Failed to write .nvmrc file to '${destination}': ${e.message}`);
+      }
 
 
       // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
@@ -173,7 +182,12 @@ export default class Init extends Command {
 
       const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
+      try{
       fs.copySync(src, dest);
+      }
+      catch(e:any){
+        this.error(`Failed to copy gateway samples to '${dest}': ${e.message}`);
+      }
       this.log('✔ Gateway generated successfully!');
     }
 
@@ -192,8 +206,12 @@ export default class Init extends Command {
     const rootPath = process.cwd();
     const outputFile = path.join(rootPath, 'fablo-config.json');
     // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
+    try{
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
-
+    }
+    catch(e:any){
+      this.error(`Failed to write fablo-config.json to '${outputFile}': ${e.message}`);
+    }
     this.log("===========================================================");
     this.log(chalk.bold("Sample config file created! :)"));
     this.log("You can start your network with 'fablo up' command");
