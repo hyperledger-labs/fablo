@@ -1,8 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "noEmit": true,
+    // "noEmit": true,
     "rootDir": "./",
+    "outDir": "./dist",
     "target": "es2019",
     "module": "commonjs",
     "sourceMap": true,
@@ -16,11 +17,14 @@
     "skipLibCheck": true
   },
   "include": [
-    "src",
+    "src/**/*",
     "e2e"
   ],
+  "ts-node": {
+    "esm": true
+  },
   "exclude": [
     "node_modules",
-    "generators"
+    "dist"
   ]
 }

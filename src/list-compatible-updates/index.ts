@@ -1,9 +1,8 @@
-import * as Generator from "yeoman-generator";
 import * as chalk from "chalk";
 import * as config from "../config";
 import * as repositoryUtils from "../repositoryUtils";
 
-export default class ListCompatibleUpdatesGenerator extends Generator {
+export default class ListCompatibleUpdates {
   async checkForCompatibleUpdates(): Promise<void> {
     const allNewerVersions = (await repositoryUtils.getAvailableTags()).filter(
       (name) => config.isFabloVersionSupported(name) && name > config.fabloVersion,

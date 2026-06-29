@@ -123,5 +123,8 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 
 # Test export-network-topology to Mermaid
 cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/simple-config.json"
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" export-network-topology simple-config.json simple-network-topology.mmd)
-expectCommand "cat \"$TEST_TMP/simple-network-topology.mmd\"" "graph LR"
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" export-network-topology simple-config.json network-topology.mmd)
+expectCommand "cat \"$TEST_TMP/network-topology.mmd\"" "graph LR"
+
+
+echo "Test passed ✅"

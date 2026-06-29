@@ -8,7 +8,7 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1orgs-1chaincode.json"
+CONFIG="$FABLO_HOME/samples/fablo-config-hlf3-1orgs-2chaincodes.json"
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
@@ -108,16 +108,24 @@ expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"Args":["KVContract:get", "name"]}' \
   '{"success":"Willy Wonka"}'
 
+# Test Go chaincode
+expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode-go" \
+  '{"Args":["KVContract:put", "language", "golang"]}' \
+  '{\"success\":\"OK\"}'
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode-go" \
+  '{"Args":["KVContract:get", "language"]}' \
+  '{"success":"golang"}'
+
 # Verify channel query scripts
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
 expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
+(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 5 my-channel1 org1 peer1 "another.block")
 expectCommand "cat \"$TEST_TMP/another.block\"" "put"
 
 (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":5"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":8"
 
 echo "🎉 Test passed! 🎉"

@@ -47,15 +47,16 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
       "<%= chaincode.channel.name %>" <% -%>
       "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
     <% if (chaincode.lang === "ccaas") { -%>
+      <% const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); -%>
       startCCaaSContainer <% -%>
         "<%= peer.fullAddress %>" <% -%>
         "<%= chaincode.name %>" <% -%>
         "<%= chaincode.channel.name %>_<%= chaincode.name %>_$version" <% -%>
         "<%= chaincode.image %>" <% -%>
-        "<%= chaincode.peerChaincodeInstances[i].port %>" <% -%>
+        "<%= instance.port %>" <% -%>
         "<%= org.cli.address %>" <% -%>
         "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
-        "<%= chaincode.peerChaincodeInstances[i].containerName %>" <% -%>
+        "<%= instance.containerName %>" <% -%>
         "<%= chaincode.chaincodeMountPath ?? "" %>" <% -%>
         "<%- chaincode.chaincodeStartCommand ?? "" %>"
     <% } -%>

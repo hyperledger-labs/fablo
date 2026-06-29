@@ -4,14 +4,14 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": "./src",
-    "outDir": "./generators"
+    "outDir": "./dist"
   },
   "include": [
     "src"
   ],
   "exclude": [
     "node_modules",
-    "generators",
+    "dist",
     "src/*/templates",
     "**/*.test.ts",
     "**/*.spec.ts",

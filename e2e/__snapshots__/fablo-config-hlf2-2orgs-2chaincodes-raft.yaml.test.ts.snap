@@ -1,8 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.json from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `""`;
+
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.yaml from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 "---
-"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.4.2/schema.json
+"$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json
 global:
   fabricVersion: 2.5.12
   tls: true
@@ -506,7 +508,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group1.orderer1.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer1.com"
@@ -515,7 +517,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer1.group1.orderer1.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer1.group1.orderer1.com"
@@ -524,7 +526,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer2.group1.orderer1.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer2.group1.orderer1.com"
@@ -533,7 +535,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group2.orderer2.com": {
       "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group2.orderer2.com"
@@ -603,28 +605,28 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer1.com
   orderer1.group1.orderer1.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer1.group1.orderer1.com
   orderer2.group1.orderer1.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer2.group1.orderer1.com
   orderer0.group2.orderer2.com:
     url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group2.orderer2.com
 "
@@ -706,7 +708,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group1.orderer1.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer1.com"
@@ -715,7 +717,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer1.group1.orderer1.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer1.group1.orderer1.com"
@@ -724,7 +726,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer2.group1.orderer1.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer2.group1.orderer1.com"
@@ -733,7 +735,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group2.orderer2.com": {
       "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group2.orderer2.com"
@@ -803,28 +805,28 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer1.com
   orderer1.group1.orderer1.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer1.group1.orderer1.com
   orderer2.group1.orderer1.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer2.group1.orderer1.com
   orderer0.group2.orderer2.com:
     url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group2.orderer2.com
 "
@@ -906,7 +908,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group1.orderer1.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer1.com"
@@ -915,7 +917,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer1.group1.orderer1.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer1.group1.orderer1.com"
@@ -924,7 +926,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer2.group1.orderer1.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer2.group1.orderer1.com"
@@ -933,7 +935,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group2.orderer2.com": {
       "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group2.orderer2.com"
@@ -1014,28 +1016,28 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer1.com
   orderer1.group1.orderer1.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer1.group1.orderer1.com
   orderer2.group1.orderer1.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer2.group1.orderer1.com
   orderer0.group2.orderer2.com:
     url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group2.orderer2.com
 channels:
@@ -1124,7 +1126,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group1.orderer1.com": {
       "url": "grpcs://localhost:7030",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group1.orderer1.com"
@@ -1133,7 +1135,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer1.group1.orderer1.com": {
       "url": "grpcs://localhost:7031",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer1.group1.orderer1.com"
@@ -1142,7 +1144,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer2.group1.orderer1.com": {
       "url": "grpcs://localhost:7032",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer2.group1.orderer1.com"
@@ -1151,7 +1153,7 @@ exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create pro
     "orderer0.group2.orderer2.com": {
       "url": "grpcs://localhost:7050",
       "tlsCACerts": {
-        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt"
+        "path": "<absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt"
       },
       "grpcOptions": {
         "ssl-target-name-override": "orderer0.group2.orderer2.com"
@@ -1232,28 +1234,28 @@ orderers:
     url: grpcs://localhost:7030
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer0.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer0.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group1.orderer1.com
   orderer1.group1.orderer1.com:
     url: grpcs://localhost:7031
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer1.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer1.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer1.group1.orderer1.com
   orderer2.group1.orderer1.com:
     url: grpcs://localhost:7032
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer1.com/orderers/orderer2.group1.orderer1.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer1.com/peers/orderer2.group1.orderer1.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer2.group1.orderer1.com
   orderer0.group2.orderer2.com:
     url: grpcs://localhost:7050
     tlsCACerts:
       path: >-
-        <absolute path>/samples/fablo-target/fabric-config/crypto-config/ordererOrganizations/orderer2.com/orderers/orderer0.group2.orderer2.com/tls/ca.crt
+        <absolute path>/samples/fablo-target/fabric-config/crypto-config/peerOrganizations/orderer2.com/peers/orderer0.group2.orderer2.com/tls/ca.crt
     grpcOptions:
       ssl-target-name-override: orderer0.group2.orderer2.com
 channels:
@@ -3569,9 +3571,9 @@ fi
 `;
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-docker/.env from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
-"FABLO_VERSION=2.4.2
+"FABLO_VERSION=2.6.0
 FABLO_BUILD=<date with git hash>
-FABLO_REST_VERSION=0.1.2
+FABLO_REST_VERSION=0.2.0
 HYPERLEDGER_EXPLORER_VERSION=2.0.0
 
 COUCHDB_VERSION=3.1
@@ -3585,12 +3587,20 @@ LOGGING_LEVEL=info
 
 FABRIC_VERSION=2.5.12
 FABRIC_TOOLS_VERSION=2.5.12
-FABRIC_CA_VERSION=1.5.5
+FABRIC_CA_VERSION=1.5.16
 FABRIC_CA_POSTGRES_VERSION=14
 FABRIC_CCENV_VERSION=2.5.12
 FABRIC_BASEOS_VERSION=2.5.12
 FABRIC_JAVAENV_VERSION=2.5
 FABRIC_NODEENV_VERSION=2.5
+FABRIC_PEER_IMAGE=hyperledger/fabric-peer:2.5.12
+FABRIC_ORDERER_IMAGE=hyperledger/fabric-orderer:2.5.12
+FABRIC_CA_IMAGE=hyperledger/fabric-ca:1.5.16
+FABRIC_TOOLS_IMAGE=hyperledger/fabric-tools:2.5.12
+FABRIC_CCENV_IMAGE=hyperledger/fabric-ccenv:2.5.12
+FABRIC_BASEOS_IMAGE=hyperledger/fabric-baseos:2.5.12
+FABRIC_JAVAENV_IMAGE=hyperledger/fabric-javaenv:2.5
+FABRIC_NODEENV_IMAGE=hyperledger/fabric-nodeenv:2.5
 RECOMMENDED_NODE_VERSION=16
 
 ROOT_CA_ADMIN_NAME=admin
@@ -3623,26 +3633,19 @@ chaincodeList() {
 
     peerChaincodeListTls "cli.org1.example.com" "peer0.org1.example.com:7061" "$2" "crypto-orderer/tlsca.orderer1.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org1.example.com" ]
-  then
+  elif [ "$1" = "peer1.org1.example.com" ]; then
 
     peerChaincodeListTls "cli.org1.example.com" "peer1.org1.example.com:7062" "$2" "crypto-orderer/tlsca.orderer1.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer0.org2.example.com" ]
-  then
+  elif [ "$1" = "peer0.org2.example.com" ]; then
 
     peerChaincodeListTls "cli.org2.example.com" "peer0.org2.example.com:7081" "$2" "crypto-orderer/tlsca.orderer1.com-cert.pem" # Third argument is channel name
 
-  elif
-    [ "$1" = "peer1.org2.example.com" ]
-  then
+  elif [ "$1" = "peer1.org2.example.com" ]; then
 
     peerChaincodeListTls "cli.org2.example.com" "peer1.org2.example.com:7082" "$2" "crypto-orderer/tlsca.orderer1.com-cert.pem" # Third argument is channel name
 
   else
-
     echo "Fail to call listChaincodes. No peer or channel found. Provided peer: $1, channel: $2"
     exit 1
 
@@ -3806,28 +3809,19 @@ channelQuery() {
 
     peerChannelListTls "cli.org1.example.com" "peer0.org1.example.com:7061" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org1" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org1.example.com" "peer1.org1.example.com:7062" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer0" ]; then
 
     peerChannelListTls "cli.org2.example.com" "peer0.org2.example.com:7081" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
-  elif
-    [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer1" ]
-  then
+  elif [ "$1" = "list" ] && [ "$2" = "org2" ] && [ "$3" = "peer1" ]; then
 
     peerChannelListTls "cli.org2.example.com" "peer1.org2.example.com:7082" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
-  elif
-
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org1.example.com" "peer0.org1.example.com:7061" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
@@ -3842,9 +3836,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7061" "crypto-orderer/tlsca.orderer1.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel1" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel1" "cli.org2.example.com" "peer0.org2.example.com:7081" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
@@ -3859,9 +3851,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel1" "cli.org2.example.com" "\${BLOCK_NAME}" "peer0.org2.example.com:7081" "crypto-orderer/tlsca.orderer1.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel2" "cli.org1.example.com" "peer1.org1.example.com:7062" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
@@ -3876,9 +3866,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel2" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7062" "crypto-orderer/tlsca.orderer1.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel2" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel2" "cli.org2.example.com" "peer1.org2.example.com:7082" "crypto-orderer/tlsca.orderer1.com-cert.pem"
 
@@ -3893,9 +3881,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel2" "cli.org2.example.com" "\${BLOCK_NAME}" "peer1.org2.example.com:7082" "crypto-orderer/tlsca.orderer1.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org1.example.com" "peer0.org1.example.com:7061" "crypto-orderer/tlsca.orderer2.com-cert.pem"
 
@@ -3910,9 +3896,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org1.example.com" "\${BLOCK_NAME}" "peer0.org1.example.com:7061" "crypto-orderer/tlsca.orderer2.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org1" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org1.example.com" "peer1.org1.example.com:7062" "crypto-orderer/tlsca.orderer2.com-cert.pem"
 
@@ -3927,9 +3911,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org1.example.com" "\${BLOCK_NAME}" "peer1.org1.example.com:7062" "crypto-orderer/tlsca.orderer2.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer0" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org2.example.com" "peer0.org2.example.com:7081" "crypto-orderer/tlsca.orderer2.com-cert.pem"
 
@@ -3944,9 +3926,7 @@ channelQuery() {
 
     peerChannelFetchBlockTls "my-channel3" "cli.org2.example.com" "\${BLOCK_NAME}" "peer0.org2.example.com:7081" "crypto-orderer/tlsca.orderer2.com-cert.pem" "$TARGET_FILE"
 
-  elif
-    [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]
-  then
+  elif [ "$1" = "getinfo" ] && [ "$2" = "my-channel3" ] && [ "$3" = "org2" ] && [ "$4" = "peer1" ]; then
 
     peerChannelGetInfoTls "my-channel3" "cli.org2.example.com" "peer1.org2.example.com:7082" "crypto-orderer/tlsca.orderer2.com-cert.pem"
 
@@ -3962,7 +3942,6 @@ channelQuery() {
     peerChannelFetchBlockTls "my-channel3" "cli.org2.example.com" "\${BLOCK_NAME}" "peer1.org2.example.com:7082" "crypto-orderer/tlsca.orderer2.com-cert.pem" "$TARGET_FILE"
 
   else
-
     echo "$@"
     echo "$1, $2, $3, $4, $5, $6, $7, $#"
     printChannelsHelp
@@ -4144,10 +4123,10 @@ installChannels() {
 }
 
 installChaincodes() {
-  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
+    chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node" "16"
     chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
     printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.com-cert.pem"
@@ -4159,12 +4138,12 @@ installChaincodes() {
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel1" "chaincode1" "$version" "orderer0.group1.orderer1.com:7030" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer1.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode1' installation. Chaincode directory is empty."
-    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node'"
   fi
-  if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
+  if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple")" ]; then
     local version="0.0.1"
     printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
-    chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
+    chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple" "16"
     chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
     printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
     chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
@@ -4178,7 +4157,7 @@ installChaincodes() {
     chaincodeCommit "cli.org1.example.com" "peer0.org1.example.com:7061" "my-channel3" "chaincode2" "$version" "orderer0.group2.orderer2.com:7050" "OR ('Org1MSP.member', 'Org2MSP.member')" "false" "crypto-orderer/tlsca.orderer2.com-cert.pem" "peer0.org1.example.com:7061,peer0.org2.example.com:7081" "crypto-peer/peer0.org1.example.com/tls/ca.crt,crypto-peer/peer0.org2.example.com/tls/ca.crt" ""
   else
     echo "Warning! Skipping chaincode 'chaincode2' installation. Chaincode directory is empty."
-    echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'"
+    echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple'"
   fi
 
 }
@@ -4197,9 +4176,9 @@ installChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.com-cert.pem"
@@ -4212,13 +4191,13 @@ installChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' install. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node'"
     fi
   fi
   if [ "$chaincodeName" = "chaincode2" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple")" ]; then
       printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
-      chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
+      chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
       printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
@@ -4233,7 +4212,7 @@ installChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' install. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple'"
     fi
   fi
 }
@@ -4281,9 +4260,9 @@ upgradeChaincode() {
   fi
 
   if [ "$chaincodeName" = "chaincode1" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node")" ]; then
       printHeadline "Packaging chaincode 'chaincode1'" "U1F60E"
-      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node" "16"
+      chaincodeBuild "chaincode1" "node" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "node" "my-channel1"
       printHeadline "Installing 'chaincode1' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode1" "$version" "my-channel1" "crypto-orderer/tlsca.orderer1.com-cert.pem"
@@ -4296,13 +4275,13 @@ upgradeChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode1' upgrade. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node'"
     fi
   fi
   if [ "$chaincodeName" = "chaincode2" ]; then
-    if [ -n "$(ls "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple")" ]; then
+    if [ -n "$(ls "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple")" ]; then
       printHeadline "Packaging chaincode 'chaincode2'" "U1F60E"
-      chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple" "16"
+      chaincodeBuild "chaincode2" "java" "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple" "16"
       chaincodePackage "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "java" "my-channel3"
       printHeadline "Installing 'chaincode2' for Org1" "U1F60E"
       chaincodeInstall "cli.org1.example.com" "peer0.org1.example.com:7061" "chaincode2" "$version" "my-channel3" "crypto-orderer/tlsca.orderer2.com-cert.pem"
@@ -4317,7 +4296,7 @@ upgradeChaincode() {
 
     else
       echo "Warning! Skipping chaincode 'chaincode2' upgrade. Chaincode directory is empty."
-      echo "Looked in dir: '$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple'"
+      echo "Looked in dir: '$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple'"
     fi
   fi
 }
@@ -4432,7 +4411,7 @@ services:
 
   ca.orderer1.com:
     container_name: ca.orderer1.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.orderer1.com
@@ -4452,7 +4431,7 @@ services:
 
   cli.orderer1.com:
     container_name: cli.orderer1.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4483,14 +4462,14 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
 
   orderer0.group1.orderer1.com:
     container_name: orderer0.group1.orderer1.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    image: \${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -4526,7 +4505,7 @@ services:
 
   orderer1.group1.orderer1.com:
     container_name: orderer1.group1.orderer1.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    image: \${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -4562,7 +4541,7 @@ services:
 
   orderer2.group1.orderer1.com:
     container_name: orderer2.group1.orderer1.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    image: \${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -4598,7 +4577,7 @@ services:
 
   ca.orderer2.com:
     container_name: ca.orderer2.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.orderer2.com
@@ -4618,7 +4597,7 @@ services:
 
   cli.orderer2.com:
     container_name: cli.orderer2.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4649,14 +4628,14 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
 
   orderer0.group2.orderer2.com:
     container_name: orderer0.group2.orderer2.com
-    image: hyperledger/fabric-orderer:\${FABRIC_VERSION}
+    image: \${FABRIC_ORDERER_IMAGE}
     environment:
       - FABRIC_LOGGING_SPEC=\${LOGGING_LEVEL}
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -4692,7 +4671,7 @@ services:
 
   ca.org1.example.com:
     container_name: ca.org1.example.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
@@ -4712,7 +4691,7 @@ services:
 
   cli.org1.example.com:
     container_name: cli.org1.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4744,8 +4723,8 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
 
@@ -4772,7 +4751,7 @@ services:
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
-    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    image: \${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ID=peer0.org1.example.com
@@ -4783,10 +4762,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7061 peer1.org1.example.com:7062"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=\${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=\${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=\${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=\${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4823,7 +4802,7 @@ services:
       - basic
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
-    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    image: \${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_ID=peer1.org1.example.com
@@ -4834,10 +4813,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org1.example.com:7061 peer1.org1.example.com:7062"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.example.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=\${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=\${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=\${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=\${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4875,7 +4854,7 @@ services:
 
   ca.org2.example.com:
     container_name: ca.org2.example.com
-    image: hyperledger/fabric-ca:\${FABRIC_CA_VERSION}
+    image: \${FABRIC_CA_IMAGE}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
@@ -4895,7 +4874,7 @@ services:
 
   cli.org2.example.com:
     container_name: cli.org2.example.com
-    image: hyperledger/fabric-tools:\${FABRIC_TOOLS_VERSION}
+    image: \${FABRIC_TOOLS_IMAGE}
     tty: true
     environment:
       - GOPATH=/opt/gopath
@@ -4927,14 +4906,14 @@ services:
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer0.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt:/var/hyperledger/cli/crypto-peer/peer1.org2.example.com/tls/ca.crt:ro
       - ../fabric-config/chaincode-packages:/var/hyperledger/cli/chaincode-packages/
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
-      - "$CHAINCODES_BASE_DIR/./chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-kv-node/:/var/hyperledger/cli/chaincode1/"
+      - "$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple/:/var/hyperledger/cli/chaincode2/"
     networks:
       - basic
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
-    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    image: \${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ID=peer0.org2.example.com
@@ -4945,10 +4924,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org2.example.com:7081 peer1.org2.example.com:7082"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=\${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=\${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=\${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=\${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -4985,7 +4964,7 @@ services:
       - basic
   peer1.org2.example.com:
     container_name: peer1.org2.example.com
-    image: hyperledger/fabric-peer:\${FABRIC_VERSION}
+    image: \${FABRIC_PEER_IMAGE}
     environment:
       - CORE_PEER_LOCALMSPID=Org2MSP
       - CORE_PEER_ID=peer1.org2.example.com
@@ -4996,10 +4975,10 @@ services:
       - CORE_PEER_GOSSIP_BOOTSTRAP="peer0.org2.example.com:7081 peer1.org2.example.com:7082"
       - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:7050
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_CHAINCODE_BUILDER=hyperledger/fabric-ccenv:\${FABRIC_CCENV_VERSION}
-      - CORE_CHAINCODE_GOLANG_RUNTIME=hyperledger/fabric-baseos:\${FABRIC_BASEOS_VERSION}
-      - CORE_CHAINCODE_JAVA_RUNTIME=hyperledger/fabric-javaenv:\${FABRIC_JAVAENV_VERSION}
-      - CORE_CHAINCODE_NODE_RUNTIME=hyperledger/fabric-nodeenv:\${FABRIC_NODEENV_VERSION}
+      - CORE_CHAINCODE_BUILDER=\${FABRIC_CCENV_IMAGE}
+      - CORE_CHAINCODE_GOLANG_RUNTIME=\${FABRIC_BASEOS_IMAGE}
+      - CORE_CHAINCODE_JAVA_RUNTIME=\${FABRIC_JAVAENV_IMAGE}
+      - CORE_CHAINCODE_NODE_RUNTIME=\${FABRIC_NODEENV_IMAGE}
       #
       - CORE_CHAINCODE_LOGGING_LEVEL=\${LOGGING_LEVEL}
       - CORE_CHAINCODE_LOGGING_SHIM=\${LOGGING_LEVEL}
@@ -5105,7 +5084,7 @@ certsGenerate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME cryptogen generate --config=./fabric-config/"$CRYPTO_CONFIG_FILE_NAME" || removeContainer $CONTAINER_NAME
@@ -5205,7 +5184,7 @@ genesisBlockCreate() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -5238,7 +5217,7 @@ createChannelTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -5275,7 +5254,7 @@ createNewChannelUpdateTx() {
     exit 1
   fi
 
-  docker run -i -d -w="/" --name $CONTAINER_NAME hyperledger/fabric-tools:"\${FABRIC_TOOLS_VERSION}" bash || removeContainer $CONTAINER_NAME
+  docker run -i -d -w="/" --name $CONTAINER_NAME "\${FABRIC_TOOLS_IMAGE}" bash || removeContainer $CONTAINER_NAME
   docker cp "$CONFIG_PATH" $CONTAINER_NAME:/fabric-config || removeContainer $CONTAINER_NAME
 
   docker exec -i $CONTAINER_NAME mkdir /config || removeContainer $CONTAINER_NAME
@@ -5491,13 +5470,13 @@ chaincodeBuild() {
   # and we use \`sort -V\` to compare versions, because \`sort\` handles versions like \`2.4\` and \`2.10\` correctly
   if [ "$(uname -m)" = "arm64" ] && [ "$(printf '%s\\n' "$FABRIC_VERSION" "2.5" | sort -V | head -n1)" = "$FABRIC_VERSION" ]; then
     if [ "$CHAINCODE_LANG" = "node" ]; then
-      dockerPullIfMissing "hyperledger/fabric-nodeenv:$FABRIC_NODEENV_VERSION"
+      dockerPullIfMissing "\${FABRIC_NODEENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "java" ]; then
-      dockerPullIfMissing "hyperledger/fabric-javaenv:$FABRIC_JAVAENV_VERSION"
+      dockerPullIfMissing "\${FABRIC_JAVAENV_IMAGE}"
     fi
     if [ "$CHAINCODE_LANG" = "golang" ]; then
-      dockerPullIfMissing "hyperledger/fabric-baseos:$FABRIC_BASEOS_VERSION"
+      dockerPullIfMissing "\${FABRIC_BASEOS_IMAGE}"
     fi
   fi
 
@@ -6413,6 +6392,11 @@ __getCAPostgresNodes() {
   "
 }
 
+__getCAMySQLNodes() {
+  echo "
+  "
+}
+
 __createSnapshot() {
   cd "$FABLO_NETWORK_ROOT/.."
   backup_dir="\${1:-"snapshot-$(date -u +"%Y%m%d%H%M%S")"}"
@@ -6432,9 +6416,15 @@ __createSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Saving state of $node..."
+    echo "Saving state of $node (PostgreSQL)..."
     mkdir -p "$backup_dir/$node/pg-data"
     docker exec "$node" pg_dump -c --if-exists -U postgres fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Saving state of $node (MySQL)..."
+    mkdir -p "$backup_dir/$node/mysql-data"
+    docker exec -e MYSQL_PWD=caDbPass12345 "$node" mysqldump -u root --add-drop-database --databases fabriccaserver >"$backup_dir/$node/fabriccaserver.sql"
   done
 
   for node in $(__getOrdererAndPeerNodes); do
@@ -6472,7 +6462,16 @@ __cloneSnapshot() {
   done
 
   for node in $(__getCAPostgresNodes); do
-    echo "Restoring $node..."
+    echo "Restoring $node (PostgreSQL)..."
+    if [ ! -d "$node" ]; then
+      echo "Warning: Cannot restore '$node', directory does not exist!"
+    else
+      docker cp "./$node/fabriccaserver.sql" "$node:/docker-entrypoint-initdb.d/fabriccaserver.sql"
+    fi
+  done
+
+  for node in $(__getCAMySQLNodes); do
+    echo "Restoring $node (MySQL)..."
     if [ ! -d "$node" ]; then
       echo "Warning: Cannot restore '$node', directory does not exist!"
     else
@@ -6579,7 +6578,7 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel1 [Channel: my-channel1]
     subgraph channel_my_channel1_padding [ ]
-      chaincode_chaincode1[[Chaincode: chaincode1]]
+      chaincode_chaincode1_my_channel1[[Chaincode: chaincode1]]
     end
     class channel_my_channel1_padding subgraph_padding
   end
@@ -6594,7 +6593,7 @@ classDef subgraph_padding fill:none,stroke:none
 
   subgraph channel_my_channel3 [Channel: my-channel3]
     subgraph channel_my_channel3_padding [ ]
-      chaincode_chaincode2[[Chaincode: chaincode2]]
+      chaincode_chaincode2_my_channel3[[Chaincode: chaincode2]]
     end
     class channel_my_channel3_padding subgraph_padding
   end
@@ -6615,6 +6614,7 @@ classDef subgraph_padding fill:none,stroke:none
 
 exports[`samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml should create proper files from samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`] = `
 [
+  "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fablo-config.yaml",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/.gitignore",
   "e2e/__tmp__/samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml.tmpdir/fablo-target/fabric-config/configtx.yaml",

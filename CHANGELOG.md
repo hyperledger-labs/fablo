@@ -1,3 +1,46 @@
+## 2.6.0
+
+### Features
+* Support user-defined Fabric Docker images via `global.fabricImages` [#662](https://github.com/hyperledger-labs/fablo/pull/662)
+
+### Bug Fixes
+* Upgrade default Fabric CA image to **1.5.16** (ARM64 compatibility) [#659](https://github.com/hyperledger-labs/fablo/pull/659)
+* Force `linux/amd64` for MySQL CA database containers [#656](https://github.com/hyperledger-labs/fablo/pull/656)
+
+### Testing
+* Run Go chaincode against Fabric v3 in CI; bump default `fabric-tools` image to **3.1.3** [#661](https://github.com/hyperledger-labs/fablo/pull/661)
+
+### Chore & Maintenance
+* Remove Yeoman; refactor the CLI on **oclif** [#640](https://github.com/hyperledger-labs/fablo/pull/640)
+* Set default Fablo REST Docker image version to **0.2.0** [#613](https://github.com/hyperledger-labs/fablo/pull/613)
+
+## 2.5.0
+
+### Features
+* Add MySQL database support for CA [#618](https://github.com/hyperledger-labs/fablo/pull/618)
+* Quick start [#645](https://github.com/hyperledger-labs/fablo/pull/645)
+
+### Bug Fixes
+* Get chaincode container name by peer address instead of index [#649](https://github.com/hyperledger-labs/fablo/pull/649)
+* Empty chaincode directory mount [#651](https://github.com/hyperledger-labs/fablo/pull/651)
+* Show duplicated chaincodes in mermaid [#639](https://github.com/hyperledger-labs/fablo/pull/639)
+* Quick installation URL fix [#646](https://github.com/hyperledger-labs/fablo/pull/646)
+
+### Testing
+* Fix flaky snapshot ccaas test [#648](https://github.com/hyperledger-labs/fablo/pull/648)
+
+### Chore & Maintenance
+* Bump lodash from 4.17.21 to 4.17.23 [#650](https://github.com/hyperledger-labs/fablo/pull/650)
+
+## 2.4.3
+
+### Chore & Maintenance
+* Update Node.js to 20 [#641](https://github.com/hyperledger-labs/fablo/pull/641)
+
+### Documentation
+* Update `README.md` to provide talk links [#637](https://github.com/hyperledger-labs/fablo/pull/637)
+
+
 ## 2.4.2
 
 ### Bug Fixes
