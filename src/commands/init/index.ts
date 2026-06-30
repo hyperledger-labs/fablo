@@ -134,11 +134,11 @@ export default class Init extends Command {
         this.error(`Failed to copy Node.js chaincode samples to '${destination}': ${e.message}`);
       }
 
-       try{
-      fs.writeFileSync(
-        path.join(destination, '.nvmrc'),
-        '12'
-      );
+      try {
+        fs.writeFileSync(
+          path.join(destination, '.nvmrc'),
+          '12'
+        );
       }
       catch (e: any) {
         this.error(`Failed to write .nvmrc file to '${destination}': ${e.message}`);
@@ -182,10 +182,10 @@ export default class Init extends Command {
 
       const src = path.join(__dirname, '../../../samples/gateway');
       const dest = path.join(process.cwd(), 'gateway');
-      try{
-      fs.copySync(src, dest);
+      try {
+        fs.copySync(src, dest);
       }
-      catch(e:any){
+      catch (e: any) {
         this.error(`Failed to copy gateway samples to '${dest}': ${e.message}`);
       }
       this.log('✔ Gateway generated successfully!');
@@ -206,10 +206,10 @@ export default class Init extends Command {
     const rootPath = process.cwd();
     const outputFile = path.join(rootPath, 'fablo-config.json');
     // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
-    try{
-    fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
+    try {
+      fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
     }
-    catch(e:any){
+    catch (e: any) {
       this.error(`Failed to write fablo-config.json to '${outputFile}': ${e.message}`);
     }
     this.log("===========================================================");
