@@ -9241,7 +9241,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
   "chaincodes": [
     {
       "chaincodeMountPath": undefined,
-      "chaincodeStartCommand": undefined,
+      "chaincodeStartCommand": "npm run start:ccaas",
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -9574,7 +9574,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
     },
     {
       "chaincodeMountPath": undefined,
-      "chaincodeStartCommand": undefined,
+      "chaincodeStartCommand": "npm run start:ccaas",
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -11959,7 +11959,7 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
   "chaincodes": [
     {
       "chaincodeMountPath": undefined,
-      "chaincodeStartCommand": undefined,
+      "chaincodeStartCommand": "npm run start:ccaas",
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -14000,7 +14000,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
   "chaincodes": [
     {
       "chaincodeMountPath": undefined,
-      "chaincodeStartCommand": undefined,
+      "chaincodeStartCommand": "npm run start:ccaas",
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -14333,7 +14333,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
     },
     {
       "chaincodeMountPath": undefined,
-      "chaincodeStartCommand": undefined,
+      "chaincodeStartCommand": "npm run start:ccaas",
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [

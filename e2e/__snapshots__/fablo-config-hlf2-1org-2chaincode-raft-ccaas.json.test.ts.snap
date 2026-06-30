@@ -68,14 +68,16 @@ exports[`samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json should create
       "version": "0.0.1",
       "lang": "ccaas",
       "channel": "my-channel1",
-      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+      "chaincodeStartCommand": "npm run start:ccaas"
     },
     {
       "name": "chaincode1",
       "version": "0.0.1",
       "lang": "ccaas",
       "channel": "my-channel2",
-      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+      "chaincodeStartCommand": "npm run start:ccaas"
     }
   ],
   "hooks": {
@@ -1865,6 +1867,9 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
+  if [ -n "$(find "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages" -type f -name '*.tar.gz' -print -quit 2>/dev/null)" ]; then
+    startCCaaSContainers false
+  fi
 }
 
 generateChannelsArtifacts() {
@@ -1919,6 +1924,13 @@ installChaincodes() {
     echo "Looked in dir: '$CHAINCODES_BASE_DIR/'"
   fi
 
+}
+
+startCCaaSContainers() {
+  local skip_if_missing="\${1:-false}"
+  printHeadline "Starting CCaaS containers" "U1F680"
+  startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "Org1_my-channel1_chaincode1_0.0.1" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "$skip_if_missing"
+  startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "Org1_my-channel2_chaincode1_0.0.1" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "$skip_if_missing"
 }
 
 installChaincode() {
@@ -2345,6 +2357,7 @@ services:
       - CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt
       - CORE_PEER_LOCALMSPID=Org1MSP
+    entrypoint: ["sh", "-c", "npm run start:ccaas"]
     ports:
       - 17041:7052
     volumes:
@@ -2371,6 +2384,7 @@ services:
       - CORE_CHAINCODE_TLS_KEY_FILE=/etc/hyperledger/fabric/client.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer.crt
       - CORE_PEER_LOCALMSPID=Org1MSP
+    entrypoint: ["sh", "-c", "npm run start:ccaas"]
     ports:
       - 27041:7052
     volumes:
@@ -2982,6 +2996,7 @@ startCCaaSContainer() {
   local CONTAINER_NAME="$6"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local TLS_ENABLED="$7"
+  local SKIP_IF_MISSING="\${8:-false}"
 
   # Query installed chaincodes to get the package ID
   local CA_CERT_PARAMS=()
@@ -2992,14 +3007,44 @@ startCCaaSContainer() {
   local QUERYINSTALLED_RESPONSE
   local PACKAGE_ID
 
-  QUERYINSTALLED_RESPONSE="$(
-    docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \\
-      --output json \\
-      "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
-  )"
+  local QUERYINSTALLED_STATUS=1
+  local QUERYINSTALLED_ATTEMPT=1
+  while [ "$QUERYINSTALLED_ATTEMPT" -le 10 ]; do
+    QUERYINSTALLED_STATUS=0
+    QUERYINSTALLED_RESPONSE="$(
+      docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode queryinstalled \\
+        --output json \\
+        "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
+    )" || QUERYINSTALLED_STATUS=$?
+
+    if [ "$QUERYINSTALLED_STATUS" -eq 0 ]; then
+      break
+    fi
+
+    if [ "$SKIP_IF_MISSING" = true ]; then
+      echo "Skipping CCaaS container '$CONTAINER_NAME'; installed chaincodes are not queryable yet."
+      return 0
+    fi
+
+    if [ "$QUERYINSTALLED_ATTEMPT" -lt 10 ]; then
+      echo "Waiting for installed chaincodes to become queryable before starting '$CONTAINER_NAME'..."
+      sleep 2
+    fi
+    QUERYINSTALLED_ATTEMPT=$((QUERYINSTALLED_ATTEMPT + 1))
+  done
+
+  if [ "$QUERYINSTALLED_STATUS" -ne 0 ]; then
+    echo "$QUERYINSTALLED_RESPONSE"
+    exit "$QUERYINSTALLED_STATUS"
+  fi
+
   PACKAGE_ID="$(jq ".installed_chaincodes | [.[]? | select(.label==\\"$PACKAGE_LABEL\\") ][0].package_id // \\"\\"" -r <<<"$QUERYINSTALLED_RESPONSE")"
 
   if [ -z "$PACKAGE_ID" ]; then
+    if [ "$SKIP_IF_MISSING" = true ]; then
+      echo "Skipping CCaaS container '$CONTAINER_NAME'; package label '$PACKAGE_LABEL' is not installed yet."
+      return 0
+    fi
     echo "ERROR: Package ID not found for package label $PACKAGE_LABEL"
     echo "QUERYINSTALLED_RESPONSE: $QUERYINSTALLED_RESPONSE"
     exit 1

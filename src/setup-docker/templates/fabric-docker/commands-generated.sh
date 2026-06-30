@@ -29,6 +29,9 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
+  if [ -n "$(find "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages" -type f -name '*.tar.gz' -print -quit 2>/dev/null)" ]; then
+    startCCaaSContainers false
+  fi
 }
 
 generateChannelsArtifacts() {
@@ -136,6 +139,32 @@ installChaincodes() {
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
       fi
     <% }) %>
+  <% } -%>
+}
+
+startCCaaSContainers() {
+  local skip_if_missing="${1:-false}"
+  <% const ccaasChaincodes = (chaincodes || []).filter((chaincode) => chaincode.lang === "ccaas"); -%>
+  <% if (!ccaasChaincodes.length) { -%>
+    return 0
+  <% } else { -%>
+    printHeadline "Starting CCaaS containers" "U1F680"
+    <% ccaasChaincodes.forEach((chaincode) => { -%>
+      <% chaincode.channel.orgs.forEach((org) => { -%>
+        <% org.peers.forEach((peer) => { -%>
+          <% const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); -%>
+          startCCaaSContainer <% -%>
+            "<%= peer.fullAddress %>" <% -%>
+            "<%= chaincode.name %>" <% -%>
+            "<%= instance.packageLabel %>" <% -%>
+            "<%= org.cli.address %>" <% -%>
+            "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+            "<%= instance.containerName %>" <% -%>
+            "<%= global.tls %>" <% -%>
+            "$skip_if_missing"
+        <% }) -%>
+      <% }) -%>
+    <% }) -%>
   <% } -%>
 }
 

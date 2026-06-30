@@ -383,8 +383,7 @@ services:
     working_dir: /usr/src/app
     <%_ } _%>
     <%_ if(chaincode.chaincodeStartCommand) { _%>
-    entrypoint: ["sh", "-c"]
-    command: <%- JSON.stringify(chaincode.chaincodeStartCommand) %>
+    entrypoint: ["sh", "-c", <%- JSON.stringify(chaincode.chaincodeStartCommand) %>]
     <%_ } _%>
     ports:
       - <%= instance.port %>:7052
