@@ -38,17 +38,17 @@ elif [ "$1" = "stop" ]; then
 elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
 elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
-  installChaincode "$3" "$4"
+  installChaincode "${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
-  upgradeChaincode "$3" "$4"
+  upgradeChaincode "${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
-  runDevModeChaincode "$3" "$4"
+  runDevModeChaincode "${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
-  chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+  chaincodeInvoke "${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "query" ]; then
-  chaincodeQuery "$3" "$4" "$5" "$6" "$7"
+  chaincodeQuery "${@:3}"
 elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
-  chaincodeList "$3" "$4"  
+  chaincodeList "${@:3}"  
 elif [ "$1" = "channel" ]; then
   channelQuery "${@:2}"
 elif [ "$1" = "snapshot" ]; then
@@ -65,4 +65,5 @@ else
   echo "To list channel query helper commands type: 'fablo channel --help'"
   echo "Also check: 'chaincode install'"
   echo "Use 'help' or '--help' for more information"
+  exit 1
 fi

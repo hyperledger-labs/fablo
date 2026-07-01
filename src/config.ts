@@ -12,19 +12,21 @@ const schema: Schema = schemaJson as Schema;
 const supportedVersionPrefix = `${fabloVersion.split(".").slice(0, 2).join(".")}.`;
 
 const getVersionFromSchemaUrl = (url?: string): string => {
-  const matches = (url || "").match(/\d+\.\d+\.\d+/g);
-  return matches?.length ? matches[0] : fabloVersion;
+    const matches = (url || "").match(/\d+\.\d+\.\d+/g);
+    return matches?.length ? matches[0] : fabloVersion;
 };
 
 const isFabloVersionSupported = (versionName: string): boolean => versionName.startsWith(supportedVersionPrefix);
 
-const versionsSupportingRaft = (v: string): boolean => version(v).isGreaterOrEqual("1.4.3");
+const minFabricVersionRaft = "1.4.3";
+const versionsSupportingRaft = (v: string): boolean => version(v).isGreaterOrEqual(minFabricVersionRaft);
 
 export {
-  schema,
-  fabloVersion,
-  versionsSupportingRaft,
-  getVersionFromSchemaUrl,
-  isFabloVersionSupported,
-  supportedVersionPrefix,
+    schema,
+    fabloVersion,
+    minFabricVersionRaft,
+    versionsSupportingRaft,
+    getVersionFromSchemaUrl,
+    isFabloVersionSupported,
+    supportedVersionPrefix,
 };

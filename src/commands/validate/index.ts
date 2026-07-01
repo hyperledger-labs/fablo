@@ -322,7 +322,7 @@ export default class Validate extends Command {
           if (!config.versionsSupportingRaft(global.fabricVersion)) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
+              message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Raft is supported from Fabric ${config.minFabricVersionRaft} and above.`,
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }
