@@ -14,11 +14,30 @@ expectCommand() {
   sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
 }
 
+prepareJavaChaincodeJarPackage() {
+  local source_dir="$FABLO_HOME/samples/chaincodes/chaincode-java-simple"
+  local build_dir="$TEST_TMP/chaincodes/chaincode-java-simple-build"
+  local package_dir="$TEST_TMP/chaincodes/chaincode-java-simple-jar"
+  local gradle_home="$TEST_TMP/gradle-home"
+
+  rm -rf "$build_dir" "$package_dir"
+  mkdir -p "$build_dir" "$package_dir" "$gradle_home"
+  cp -R "$source_dir/." "$build_dir/"
+
+  (cd "$build_dir" && chmod +x ./gradlew && GRADLE_USER_HOME="$gradle_home" ./gradlew build shadowJar -x test)
+  cp "$build_dir/build/libs/chaincode.jar" "$package_dir/chaincode.jar"
+
+  # Mount only the jar so Fabric's Java runtime skips its broken Gradle builder.
+  perl -i -pe "s#\\\$CHAINCODES_BASE_DIR/chaincodes/chaincode-java-simple/#$package_dir/#g" \
+    "$TEST_TMP/fablo-target/fabric-docker/docker-compose.yaml"
+}
+
 networkUp() {
   # separate generate and up is intentional just to check if it works
   "$FABLO_HOME/fablo-build.sh"
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" generate "$CONFIG")
 
+  prepareJavaChaincodeJarPackage
 
   # Check if the hook was executed (MaxMessageCount should be 1)
   expectCommand "cat \"$TEST_TMP/fablo-target/fabric-config/configtx.yaml\"" "MaxMessageCount: 1$"
