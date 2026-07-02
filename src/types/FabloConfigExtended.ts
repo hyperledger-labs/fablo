@@ -74,7 +74,7 @@ export interface CAConfig {
   fullAddress: string;
   port: number;
   prefix: string;
-  db: "sqlite" | "postgres";
+  db: "sqlite" | "postgres" | "mysql";
 }
 
 export interface PeerConfig {
