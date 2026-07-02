@@ -168,7 +168,9 @@ Profiles:
             Capabilities:
                 <<: *ApplicationCapabilities
         <%_ } _%>
+        <%_ if (!global.capabilities.isV3) { _%>
         Consortium: SampleConsortium
+        <%_ } _%>
         <%_ if (!global.capabilities.isV3) { _%>
         Consortiums:
             SampleConsortium:
