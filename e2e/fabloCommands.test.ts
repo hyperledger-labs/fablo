@@ -139,7 +139,7 @@ describe("validate", () => {
     const commandResult = commands.fabloExec(`validate ${fabloConfig}`);
 
     // Then
-    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult).toEqual(TestCommands.failure());
     expect(commandResult.output).toContain("Critical error occured");
     expect(commandResult.output).toContain("Json schema validation failed!");
     expect(commandResult.output).toContain("instance.$schema : does not exactly match expected constant");

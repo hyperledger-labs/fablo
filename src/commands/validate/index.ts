@@ -359,14 +359,14 @@ export default class Validate extends Command {
       if (!!chaincode.init && capabilities.isV2) {
         const objectToEmit = {
           category: validationCategories.CHAINCODE,
-          message: `Chaincode 'init' parameters are only supported in Fabric prior to 2.0 (${chaincode.name})`,
+          message: `Chaincode 'init' parameter is not used in Fabric 2.x and will be ignored; use 'initRequired' instead (${chaincode.name})`,
         };
         this.emit(validationErrorType.WARN, objectToEmit);
       }
       if (!!chaincode.initRequired && !capabilities.isV2) {
         const objectToEmit = {
           category: validationCategories.CHAINCODE,
-          message: `Chaincode 'initRequired' parameter is supported only in Fabric prior to 2.0 and will be ignored (${chaincode.name})`,
+          message: `Chaincode 'initRequired' parameter is only used in Fabric 2.x and will be ignored; use 'init' instead (${chaincode.name})`,
         };
         this.emit(validationErrorType.WARN, objectToEmit);
       }
@@ -573,6 +573,7 @@ export default class Validate extends Command {
     this._validateIfConfigFileExists(configPath);
     await this.validate();
     await this.shortSummary();
+    await this.detailedSummary();
 
     // Check for compatible updates
     const listCompatibleUpdates = new ListCompatibleUpdates();
