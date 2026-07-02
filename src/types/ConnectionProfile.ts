@@ -189,7 +189,7 @@ function createOrderers(isTls: boolean, rootPath: string, ordererGroups: Orderer
         orderers[orderer.address] = {
           url: `grpcs://localhost:${orderer.port}`,
           tlsCACerts: {
-            path: `${rootPath}/ordererOrganizations/${orderer.domain}/orderers/${orderer.address}/tls/ca.crt`,
+            path: `${rootPath}/peerOrganizations/${orderer.domain}/peers/${orderer.address}/tls/ca.crt`,
           },
           grpcOptions: {
             "ssl-target-name-override": orderer.address,
