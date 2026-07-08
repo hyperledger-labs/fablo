@@ -327,10 +327,10 @@ executeFabloCommand() {
   if [ -f "$FABLO_TARGET/fabric-docker.sh" ]; then
     echo "Executing Fablo Docker command: $1"
     chmod +x "$FABLO_TARGET/fabric-docker.sh" || true
-    "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+    "$FABLO_TARGET/fabric-docker.sh" "$@"
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"
-    "$FABLO_TARGET/fabric-k8s.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+    "$FABLO_TARGET/fabric-k8s.sh" "$@"
   else
     echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
     echo "Cannot execute command $1"
@@ -421,5 +421,5 @@ elif [ "$COMMAND" = "restore" ]; then
   restoreSnapshot "$2" "${3:-""}"
 
 else
-  executeFabloCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  executeFabloCommand "$COMMAND" "${@:2}"
 fi
