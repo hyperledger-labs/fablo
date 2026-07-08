@@ -70,10 +70,8 @@ function getDefaultFabloConfig(): FabloConfigJson {
   };
 }
 
-// Parse override string value to boolean, null, number, JSON, or fallback to string.
 export function parseOverrideValue(raw: string): unknown {
   const trimmed = raw.trim();
-  // quoted strings – strip quotes and treat content as string
   if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
     return trimmed.slice(1, -1);
   }
@@ -84,16 +82,13 @@ export function parseOverrideValue(raw: string): unknown {
   if (lower === "false") return false;
   if (lower === "null") return null;
 
-  // number – only plain decimal integers / floats (no leading zeros except for "0")
   if (/^-?(0|[1-9]\d*)(\.\d+)?$/.test(trimmed)) {
     return Number(trimmed);
   }
 
-  // fallback: keep as string
   return trimmed;
 }
 
-// Apply a single override to config, normalising bracket notation to dots.
 export function applyOverride(
   config: FabloConfigJson,
   rawPath: string,
@@ -108,7 +103,6 @@ export function applyOverride(
   log(chalk.blue(`ℹ Dynamic override: ${dottedPath} = ${displayValue}`));
 }
 
-// Validate the config object against the Fablo schema.
 function validateFabloConfig(configToValidate: FabloConfigJson): string[] {
   const validator = new SchemaValidator();
   const results = validator.validate(configToValidate, schema);
@@ -198,9 +192,6 @@ export default class Init extends Command {
 
       fs.writeFileSync(path.join(destination, ".nvmrc"), "12");
 
-      // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
-      // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
-
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
             name: "chaincode1",
@@ -250,7 +241,6 @@ export default class Init extends Command {
     };
     fabloConfigJson = { ...fabloConfigJson, global };
 
-    // apply all `--set` overrides AFTER all built-in modifications
     if (parsed.flags.set) {
       for (const setValue of parsed.flags.set) {
         const eqIndex = setValue.indexOf("=");
@@ -263,7 +253,6 @@ export default class Init extends Command {
       }
     }
 
-    // validate final config – if invalid, report errors and stop
     const validationErrors = validateFabloConfig(fabloConfigJson);
     if (validationErrors.length > 0) {
       const message =
@@ -271,10 +260,8 @@ export default class Init extends Command {
       this.error(message);
     }
 
-    // write config file
     const rootPath = process.cwd();
     const outputFile = path.join(rootPath, "fablo-config.json");
-    // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
     this.log("===========================================================");
