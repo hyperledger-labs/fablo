@@ -216,14 +216,14 @@ notifyOrgsAboutChannels() {
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
-         "peer0.<%= org.domain %>" <% -%>
+         "<%= org.headPeer.address %>" <% -%>
          "<%= channel.ordererHead.fullAddress %>"
       <% } else { -%>
         notifyOrgAboutNewChannelTls <% -%>
          "<%= channel.name %>" <% -%>
          "<%= org.mspName %>" <% -%>
          "<%= org.cli.address %>" <% -%>
-         "peer0.<%= org.domain %>" <% -%>
+         "<%= org.headPeer.address %>" <% -%>
          "<%= channel.ordererHead.fullAddress %>" <% -%>
          "crypto-orderer/tlsca.<%= channel.ordererHead.domain %>-cert.pem"
       <% } -%>
