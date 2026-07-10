@@ -5538,6 +5538,7 @@ chaincodePackageCCaaS() {
   local CHANNEL_NAME=$9
   local ORG_DOMAIN=\${10}
   local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local PEER_NAME="\${PEER_ADDRESS%:*}"
 
   echo "Packaging CCaaS chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
@@ -5585,14 +5586,14 @@ chaincodePackageCCaaS() {
   fi
 
   tar -czf "$PACKAGE_DIR/code.tar.gz" -C "$PACKAGE_DIR/code" connection.json
-  tar -czf "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
+  tar -czf "./chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz" -C "$PACKAGE_DIR" metadata.json code.tar.gz
 
-  docker cp "./chaincode-packages/$CHAINCODE_LABEL.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  docker cp "./chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz" "$CLI_NAME:/var/hyperledger/cli/chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz"
 
-  rm "./chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  rm "./chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz"
   rm -rf "$PACKAGE_DIR"
 
-  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz"
+  echo "CCaaS package created at /var/hyperledger/cli/chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz"
 }
 
 chaincodeInstall() {
@@ -5603,12 +5604,20 @@ chaincodeInstall() {
   local CHANNEL_NAME=$5
   local CA_CERT=\${6:-}
   local CHAINCODE_LABEL="\${CHANNEL_NAME}_\${CHAINCODE_NAME}_$CHAINCODE_VERSION"
+  local PEER_NAME="\${PEER_ADDRESS%:*}"
+
+  # Use peer-specific package if available (CCaaS), otherwise fall back to shared package
+  local PACKAGE_FILE="$CHAINCODE_LABEL.tar.gz"
+  if docker exec "$CLI_NAME" test -f "/var/hyperledger/cli/chaincode-packages/\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz" 2>/dev/null; then
+    PACKAGE_FILE="\${CHAINCODE_LABEL}_\${PEER_NAME}.tar.gz"
+  fi
 
   echo "Installing chaincode $CHAINCODE_NAME..."
   inputLog "CHAINCODE_VERSION: $CHAINCODE_VERSION"
   inputLog "PEER_ADDRESS: $PEER_ADDRESS"
   inputLog "CHANNEL_NAME: $CHANNEL_NAME"
   inputLog "CHAINCODE_LABEL: $CHAINCODE_LABEL"
+  inputLog "PACKAGE_FILE: $PACKAGE_FILE"
   inputLog "CA_CERT: $CA_CERT"
 
   local CA_CERT_PARAMS=()
@@ -5617,7 +5626,7 @@ chaincodeInstall() {
   fi
 
   docker exec -e CORE_PEER_ADDRESS="$PEER_ADDRESS" "$CLI_NAME" peer lifecycle chaincode install \\
-    "/var/hyperledger/cli/chaincode-packages/$CHAINCODE_LABEL.tar.gz" \\
+    "/var/hyperledger/cli/chaincode-packages/$PACKAGE_FILE" \\
     "\${CA_CERT_PARAMS[@]+"\${CA_CERT_PARAMS[@]}"}"
 }
 
