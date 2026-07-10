@@ -9,19 +9,11 @@
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 <% if (chaincode.lang === "ccaas") { -%>
-  <% chaincode.peerChaincodeInstances.forEach((instance) => { -%>
-    chaincodePackageCCaaS <% -%>
-      "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
-      "<%= instance.peerAddress %>" <% -%>
-      "<%= chaincode.name %>" <% -%>
-      "$version" <% -%>
-      "<%= chaincode.image %>" <% -%>
-      "<%= instance.port %>" <% -%>
-      "<%= instance.containerName %>" <% -%>
-      "<%= global.tls %>" <% -%>
-      "<%= chaincode.channel.name %>" <% -%>
-      "<%= instance.orgDomain %>"
-  <% }) -%>
+  chaincodePackageCCaaS <% -%>
+    "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
+    "<%= chaincode.name %>" <% -%>
+    "$version" <% -%>
+    "<%= chaincode.channel.name %>"
 <% } else { -%>
   chaincodeBuild <% -%>
     "<%= chaincode.name %>" <% -%>
