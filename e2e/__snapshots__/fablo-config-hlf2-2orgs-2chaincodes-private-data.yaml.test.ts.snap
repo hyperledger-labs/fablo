@@ -2511,7 +2511,7 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
-  startCCaaSContainers
+  startCCaaSContainers true
 }
 
 generateChannelsArtifacts() {
