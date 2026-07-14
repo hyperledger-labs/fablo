@@ -29,9 +29,7 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
-  if [ -n "$(find "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages" -type f -name '*.tar.gz' -print -quit 2>/dev/null)" ]; then
-    startCCaaSContainers false
-  fi
+  startCCaaSContainers
 }
 
 generateChannelsArtifacts() {
@@ -143,7 +141,7 @@ installChaincodes() {
 }
 
 startCCaaSContainers() {
-  local skip_if_missing="${1:-false}"
+  local skip_if_missing="${1:-true}"
   <% const ccaasChaincodes = (chaincodes || []).filter((chaincode) => chaincode.lang === "ccaas"); -%>
   <% if (!ccaasChaincodes.length) { -%>
     return 0

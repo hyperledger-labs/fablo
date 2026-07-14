@@ -229,6 +229,9 @@ startCCaaSContainer() {
   local CONTAINER_NAME="$6"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local TLS_ENABLED="$7"
+  # During network start/snapshot restore, callers pass true because CCaaS
+  # packages may not exist yet on networks that have not installed chaincode.
+  # Explicit install/upgrade paths omit this argument so missing packages fail loudly.
   local SKIP_IF_MISSING="${8:-false}"
 
   # Query installed chaincodes to get the package ID

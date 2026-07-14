@@ -1867,9 +1867,7 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
-  if [ -n "$(find "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages" -type f -name '*.tar.gz' -print -quit 2>/dev/null)" ]; then
-    startCCaaSContainers false
-  fi
+  startCCaaSContainers
 }
 
 generateChannelsArtifacts() {
@@ -1927,7 +1925,7 @@ installChaincodes() {
 }
 
 startCCaaSContainers() {
-  local skip_if_missing="\${1:-false}"
+  local skip_if_missing="\${1:-true}"
   printHeadline "Starting CCaaS containers" "U1F680"
   startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "Org1_my-channel1_chaincode1_0.0.1" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "true" "$skip_if_missing"
   startCCaaSContainer "peer0.org1.example.com:7041" "chaincode1" "Org1_my-channel2_chaincode1_0.0.1" "cli.org1.example.com" "crypto-orderer/tlsca.orderer.example.com-cert.pem" "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "true" "$skip_if_missing"
@@ -2996,6 +2994,9 @@ startCCaaSContainer() {
   local CONTAINER_NAME="$6"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local TLS_ENABLED="$7"
+  # During network start/snapshot restore, callers pass true because CCaaS
+  # packages may not exist yet on networks that have not installed chaincode.
+  # Explicit install/upgrade paths omit this argument so missing packages fail loudly.
   local SKIP_IF_MISSING="\${8:-false}"
 
   # Query installed chaincodes to get the package ID

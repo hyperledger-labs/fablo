@@ -4560,9 +4560,7 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
-  if [ -n "$(find "$FABLO_NETWORK_ROOT/fabric-config/chaincode-packages" -type f -name '*.tar.gz' -print -quit 2>/dev/null)" ]; then
-    startCCaaSContainers false
-  fi
+  startCCaaSContainers
 }
 
 generateChannelsArtifacts() {
@@ -4619,7 +4617,7 @@ installChaincodes() {
 }
 
 startCCaaSContainers() {
-  local skip_if_missing="\${1:-false}"
+  local skip_if_missing="\${1:-true}"
   return 0
 }
 
@@ -6227,6 +6225,9 @@ startCCaaSContainer() {
   local CONTAINER_NAME="$6"
   CONTAINER_NAME=$(echo "$CONTAINER_NAME" | tr '[:upper:]' '[:lower:]')
   local TLS_ENABLED="$7"
+  # During network start/snapshot restore, callers pass true because CCaaS
+  # packages may not exist yet on networks that have not installed chaincode.
+  # Explicit install/upgrade paths omit this argument so missing packages fail loudly.
   local SKIP_IF_MISSING="\${8:-false}"
 
   # Query installed chaincodes to get the package ID
