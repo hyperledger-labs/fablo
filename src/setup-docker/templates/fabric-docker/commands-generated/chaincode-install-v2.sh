@@ -9,18 +9,17 @@
 */-%>
 printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 <% if (chaincode.lang === "ccaas") { -%>
-  <% chaincode.peerChaincodeInstances.forEach((instance) => { -%>
+  <% chaincode.channel.orgs.forEach((org) => { -%>
+    <% const packageInstance = chaincode.peerChaincodeInstances.find((ci) => ci.orgName === org.name); -%>
     chaincodePackageCCaaS <% -%>
-      "<%= chaincode.instantiatingOrg.cli.address %>" <% -%>
-      "<%= instance.peerAddress %>" <% -%>
+      "<%= org.cli.address %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
-      "<%= chaincode.image %>" <% -%>
-      "<%= instance.port %>" <% -%>
-      "<%= instance.containerName %>" <% -%>
-      "<%= global.tls %>" <% -%>
       "<%= chaincode.channel.name %>" <% -%>
-      "<%= instance.orgDomain %>"
+      "<%= packageInstance.packageLabel %>" <% -%>
+      "<%= org.peers.map((peer) => peer.address).join(',') %>" <% -%>
+      "<%= org.domain %>" <% -%>
+      "<%= global.tls %>"
   <% }) -%>
 <% } else { -%>
   chaincodeBuild <% -%>
@@ -39,28 +38,17 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
 <% chaincode.channel.orgs.forEach((org) => { -%>
   printHeadline "Installing '<%= chaincode.name %>' for <%= org.name %>" "U1F60E"
   <% org.peers.forEach((peer, i) => { -%>
+    <% const instance = chaincode.lang === "ccaas" ? chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address) : undefined; -%>
     chaincodeInstall <% -%>
       "<%= org.cli.address %>" <% -%>
       "<%= peer.fullAddress %>" <% -%>
       "<%= chaincode.name %>" <% -%>
       "$version" <% -%>
       "<%= chaincode.channel.name %>" <% -%>
-      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>"
-    <% if (chaincode.lang === "ccaas") { -%>
-      <% const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); -%>
-      startCCaaSContainer <% -%>
-        "<%= peer.fullAddress %>" <% -%>
-        "<%= chaincode.name %>" <% -%>
-        "<%= chaincode.channel.name %>_<%= chaincode.name %>_$version" <% -%>
-        "<%= chaincode.image %>" <% -%>
-        "<%= instance.port %>" <% -%>
-        "<%= org.cli.address %>" <% -%>
-        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
-        "<%= instance.containerName %>" <% -%>
-        "<%= chaincode.chaincodeMountPath ?? "" %>" <% -%>
-         <%- shellQuote(chaincode.chaincodeStartCommand ?? '') %> 
-    <% } -%>
+      "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+      "<%= instance ? instance.packageLabel : '' %>"
   <% }) -%>
+  <% const packageInstance = chaincode.lang === "ccaas" ? chaincode.peerChaincodeInstances.find((ci) => ci.orgName === org.name) : undefined; -%>
   chaincodeApprove <% -%>
     "<%= org.cli.address %>" <% -%>
     "<%= org.headPeer.fullAddress %>" <% -%>
@@ -72,8 +60,7 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "<%= chaincode.initRequired %>" <% -%>
     "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
-    "<%= chaincode.lang %>" <% -%>
-    "<%= chaincode.lang === 'ccaas' ? chaincode.image : '' %>"
+    "<%= packageInstance ? packageInstance.packageLabel : '' %>"
 <% }) -%>
 printItalics "Committing chaincode '<%= chaincode.name %>' on channel '<%= chaincode.channel.name %>' as '<%= chaincode.instantiatingOrg.name %>'" "U1F618"
 chaincodeCommit <% -%>
@@ -89,3 +76,19 @@ chaincodeCommit <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
   "<%= !global.tls ? '' : chaincode.channel.orgs.map(o => `crypto-peer/${o.headPeer.address}/tls/ca.crt`).join(',') %>" <% -%>
   "<%= chaincode.privateDataConfigFile || '' %>"
+<% if (chaincode.lang === "ccaas") { -%>
+  printHeadline "Starting CCaaS containers for '<%= chaincode.name %>'" "U1F680"
+  <% chaincode.channel.orgs.forEach((org) => { -%>
+    <% org.peers.forEach((peer) => { -%>
+      <% const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); -%>
+      startCCaaSContainer <% -%>
+        "<%= peer.fullAddress %>" <% -%>
+        "<%= chaincode.name %>" <% -%>
+        "<%= instance.packageLabel %>" <% -%>
+        "<%= org.cli.address %>" <% -%>
+        "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+        "<%= instance.containerName %>" <% -%>
+        "<%= global.tls %>"
+    <% }) -%>
+  <% }) -%>
+<% } -%>

@@ -15,6 +15,7 @@ import {
 } from "../../types/FabloConfigJson";
 import * as _ from "lodash";
 import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
+import { createPackageLabel } from "../../extend-config/extendChaincodesConfig";
 import { Capabilities } from "../../types/FabloConfigExtended";
 import { version } from "../../repositoryUtils";
 import ListCompatibleUpdates from "../../list-compatible-updates";
@@ -136,6 +137,7 @@ export default class Validate extends Command {
     // ===================================
 
     this._validateChaincodeNames(networkConfig.chaincodes);
+    this._validateChaincodePackageLabels(networkConfig.chaincodes, networkConfig.channels);
 
     this._validateOrgsAnchorPeerInstancesCount(networkConfig.orgs);
     this._validateChannelOrdererGroup(networkConfig.orgs, networkConfig.channels);
@@ -370,6 +372,28 @@ export default class Validate extends Command {
         };
         this.emit(validationErrorType.WARN, objectToEmit);
       }
+    });
+  }
+
+  _validateChaincodePackageLabels(chaincodes: ChaincodeJson[], channels: ChannelJson[]) {
+    const packageLabels = chaincodes.flatMap((chaincode) => {
+      if (chaincode.lang !== "ccaas") return [];
+
+      const channel = channels.find((ch) => ch.name === chaincode.channel);
+      if (!channel) return [];
+
+      return channel.orgs.map((org) => createPackageLabel(org.name, chaincode.channel, chaincode.name, chaincode.version));
+    });
+    const duplicatedPackageLabels = findDuplicatedItems(packageLabels.map((label) => `_${label}`));
+
+    Object.entries(duplicatedPackageLabels).forEach(([_, labels]) => {
+      labels.forEach((label) => {
+        const objectToEmit = {
+          category: validationCategories.CHAINCODE,
+          message: `Chaincode package label '${label}' is not unique.`,
+        };
+        this.emit(validationErrorType.ERROR, objectToEmit);
+      });
     });
   }
 
