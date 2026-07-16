@@ -4,6 +4,7 @@
 * Support user-defined Fabric Docker images via `global.fabricImages` [#662](https://github.com/hyperledger-labs/fablo/pull/662)
 
 ### Bug Fixes
+* Define CCaaS chaincode containers in Docker Compose, auto-start them after snapshot restore, and use shared per-org package labels so `fablo down` removes them cleanly [#653](https://github.com/hyperledger-labs/fablo/issues/653) [#623](https://github.com/hyperledger-labs/fablo/issues/623)
 * Upgrade default Fabric CA image to **1.5.16** (ARM64 compatibility) [#659](https://github.com/hyperledger-labs/fablo/pull/659)
 * Force `linux/amd64` for MySQL CA database containers [#656](https://github.com/hyperledger-labs/fablo/pull/656)
 
@@ -282,4 +283,3 @@
 * Test generators with simple snapshot tests ([#5](https://github.com/hyperledger-labs/fablo/issues/5))
 * Lint JS files ([#1](https://github.com/hyperledger-labs/fablo/issues/1))
 * Run Yeoman generators inside Docker container
-
