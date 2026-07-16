@@ -29,6 +29,7 @@ startNetwork() {
   printHeadline "Starting network" "U1F680"
   (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose up -d)
   sleep 4
+  startCCaaSContainers true
 }
 
 generateChannelsArtifacts() {
@@ -136,6 +137,32 @@ installChaincodes() {
         echo "Looked in dir: '$CHAINCODES_BASE_DIR/<%= chaincode.directory %>'"
       fi
     <% }) %>
+  <% } -%>
+}
+
+startCCaaSContainers() {
+  local skip_if_missing="${1:-true}"
+  <% const ccaasChaincodes = (chaincodes || []).filter((chaincode) => chaincode.lang === "ccaas"); -%>
+  <% if (!ccaasChaincodes.length) { -%>
+    return 0
+  <% } else { -%>
+    printHeadline "Starting CCaaS containers" "U1F680"
+    <% ccaasChaincodes.forEach((chaincode) => { -%>
+      <% chaincode.channel.orgs.forEach((org) => { -%>
+        <% org.peers.forEach((peer) => { -%>
+          <% const instance = chaincode.peerChaincodeInstances.find((ci) => ci.peerAddress === peer.address); -%>
+          startCCaaSContainer <% -%>
+            "<%= peer.fullAddress %>" <% -%>
+            "<%= chaincode.name %>" <% -%>
+            "<%= instance.packageLabel %>" <% -%>
+            "<%= org.cli.address %>" <% -%>
+            "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
+            "<%= instance.containerName %>" <% -%>
+            "<%= global.tls %>" <% -%>
+            "$skip_if_missing"
+        <% }) -%>
+      <% }) -%>
+    <% }) -%>
   <% } -%>
 }
 
@@ -257,19 +284,8 @@ stopNetwork() {
 }
 
 networkDown() {
-  printf "Removing chaincode containers & images... \U1F5D1 \n"
-  <% chaincodes.forEach((chaincode) => { -%>
-    <% chaincode.channel.orgs.forEach((org) => { -%>
-      <% org.peers.forEach((peer) => { -%>
-        <% const chaincodeContainerName=`${peer.address}.*${chaincode.name}` -%>
-        for container in $(docker ps -a | grep "<%= chaincodeContainerName %>" | awk '{print $1}'); do echo "Removing container $container..."; docker rm -f "$container" || echo "docker rm of $container failed. Check if all fabric dockers properly was deleted"; done
-        for image in $(docker images "<%= chaincodeContainerName %>*" -q); do echo "Removing image $image..."; docker rmi "$image" || echo "docker rmi of $image failed. Check if all fabric dockers properly was deleted"; done
-      <% }) -%>
-    <% }) -%>
-  <% }) -%>
-
   printHeadline "Destroying network" "U1F916"
-  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose down)
+  (cd "$FABLO_NETWORK_ROOT"/fabric-docker && docker compose --profile chaincodes down)
 
   printf "Removing generated configs... \U1F5D1 \n"
   rm -rf "$FABLO_NETWORK_ROOT/fabric-config/config"

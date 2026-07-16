@@ -3,6 +3,7 @@ import * as config from "../config";
 import * as yaml from "js-yaml";
 import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
+import { shellQuote } from "../utils/shellQuote";
 import {
   ChaincodeConfig,
   ChannelConfig,
@@ -229,7 +230,10 @@ export default class SetupDocker extends Command {
     for (const script of scripts) {
       const templatePath = getTemplatePath(this.templatesDir, script);
       const destPath = getDestinationPath(this.outputDir, script);
-      await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
+      await renderTemplate(templatePath, destPath, {
+        ...(config as unknown as Record<string, unknown>),
+        shellQuote,
+      })
     }
   }
 

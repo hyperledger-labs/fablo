@@ -159,8 +159,10 @@ export interface OrgConfig {
 export interface peerChaincodeInstances {
   containerName: string;
   peerAddress: string;
+  orgName: string;
   port: number;
   orgDomain: string;
+  packageLabel: string;
 }
 export interface ChaincodeConfig {
   directory?: string;
