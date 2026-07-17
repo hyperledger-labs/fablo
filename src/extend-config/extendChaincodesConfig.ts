@@ -50,13 +50,30 @@ const checkUniqueChaincodeNames = (chaincodes: ChaincodeJson[]): void => {
   });
 };
 
+const createPackageLabel = (orgName: string, channelName: string, chaincodeName: string, versionName: string): string =>
+  `${orgName}_${channelName}_${chaincodeName}_${versionName}`.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+const checkUniquePackageLabels = (chaincodes: ChaincodeConfig[]): void => {
+  const packageLabels = chaincodes.flatMap((chaincode) =>
+    Array.from(new Set((chaincode.peerChaincodeInstances ?? []).map((instance) => instance.packageLabel))),
+  );
+  const seen = new Set<string>();
+
+  packageLabels.forEach((packageLabel) => {
+    if (seen.has(packageLabel)) {
+      throw new Error(`Duplicate chaincode package label '${packageLabel}' found. Chaincode package labels must be unique.`);
+    }
+    seen.add(packageLabel);
+  });
+};
+
 const extendChaincodesConfig = (
   chaincodes: ChaincodeJson[],
   transformedChannels: ChannelConfig[],
   network: Global,
 ): ChaincodeConfig[] => {
   checkUniqueChaincodeNames(chaincodes);
-  return chaincodes.map((chaincode, index) => {
+  const transformedChaincodes = chaincodes.map((chaincode, index) => {
     const channel = transformedChannels.find((c) => c.name === chaincode.channel);
     if (!channel) throw new Error(`No matching channel with name '${chaincode.channel}'`);
 
@@ -89,8 +106,10 @@ const extendChaincodesConfig = (
             return {
               containerName,
               peerAddress: peer.address,
+              orgName: org.name,
               port: 10000 * (index + 1) + peer.port,
               orgDomain: org.domain,
+              packageLabel: createPackageLabel(org.name, channel.name, chaincode.name, `${chaincode.version}`),
             };
           }),
         );
@@ -132,8 +151,12 @@ const extendChaincodesConfig = (
       privateData,
     };
   });
+
+  checkUniquePackageLabels(transformedChaincodes);
+  return transformedChaincodes;
 };
 
 export { checkUniqueChaincodeNames };
+export { createPackageLabel };
 
 export default extendChaincodesConfig;
