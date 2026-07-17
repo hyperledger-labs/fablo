@@ -60,6 +60,8 @@ requireFabricOpsctl() {
   if ! command -v fabricopsctl >/dev/null 2>&1; then
     echo "Error: fabricopsctl is required for Fablo Kubernetes chaincode operations"
     echo "Install it with: go install github.com/dpereowei/fabricops/cmd/fabricopsctl@latest"
+    echo 'If go install succeeds but fabricopsctl is still not found, add Go binaries to PATH:'
+    echo '  export PATH="$(go env GOPATH)/bin:$PATH"'
     echo "Then rerun the command."
     exit 1
   fi

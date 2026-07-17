@@ -44,60 +44,65 @@ jobs:
       - name: Lint
         run: npm run lint && ./lint.sh
 
-  #  test-k8:
-  #    needs: test-main
-  #    runs-on: ubuntu-latest
-  #    timeout-minutes: 30
-  #    steps:
-  #
-  #      - name: Check out repository code
-  #        uses: actions/checkout@v2
-  #
-  #      - name: install k8, hlf plugin and helm
-  #        run: |
-  #          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
-  #          chmod +x ./kind
-  #          sudo mv ./kind /usr/local/bin/kind
-  #          kind create cluster --wait 5m
-  #          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-  #          chmod 700 get_helm.sh
-  #          ./get_helm.sh
-  #          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  #          chmod +x kubectl
-  #          sudo mv ./kubectl /usr/local/bin/kubectl
-  #          set -x; cd "$(mktemp -d)" &&
-  #          OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-  #          ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
-  #          KREW="krew-${OS}_${ARCH}" &&
-  #          curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-  #          tar zxvf "${KREW}.tar.gz" &&
-  #          ./"${KREW}" install krew
-  #          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-  #          kubectl krew install hlf
-  #
-  #          if [ -f "~/.bashrc" ]; then
-  #            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
-  #          fi
-  #
-  #          if [ -f "~/.zshrc" ]; then
-  #            echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
-  #          fi
-  #
-  #          helm repo add kfs "https://kfsoftware.github.io/hlf-helm-charts" --force-update
-  #          helm install hlf-operator --version=1.8.0 kfs/hlf-operator
-  #
-  #      - name: Build Fablo
-  #        run: |
-  #          shellcheck --version && \
-  #          yamllint -v && \
-  #          npm install && \
-  #          npm run build && \
-  #          ./fablo-build.sh
-  #
-  #      - name: fablo k8 tests
-  #        run: |
-  #          export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-  #          e2e-network/k8s/test-01-simple-k8s.sh
+  test-k8s:
+    needs: test-main
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      KIND_CLUSTER: fablo-k8s-e2e
+      KIND_VERSION: v0.31.0
+      FABRICOPS_VERSION: v0.1.2
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.26.0"
+
+      - name: Install kind
+        run: |
+          curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+          kind create cluster --name "${KIND_CLUSTER}" --wait 5m
+          kubectl cluster-info
+
+      - name: Install FabricOps
+        run: |
+          kubectl apply -f "https://github.com/dpereowei/FabricOps/releases/download/${FABRICOPS_VERSION}/install.yaml"
+          kubectl rollout status deployment/fabricops-controller-manager -n fabricops-system --timeout=180s
+
+      - name: Install fabricopsctl
+        run: |
+          go install "github.com/dpereowei/fabricops/cmd/fabricopsctl@${FABRICOPS_VERSION}"
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+
+      - name: Test Kubernetes network
+        run: e2e-network/k8s/test-01-simple-k8s.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-k8s
+          path: |
+            e2e-network/k8s/test-01-simple-k8s.sh.logs/*
+            e2e-network/k8s/test-01-simple-k8s.sh.tmpdir/fablo-target/**/*
+
+      - name: Cleanup kind cluster
+        if: always()
+        run: kind delete cluster --name "${KIND_CLUSTER}" || true
 
   test-02-raft:
     needs: test-main

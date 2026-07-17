@@ -733,7 +733,11 @@ For chaincode operations, install the FabricOps CLI:
 
 ```bash
 go install github.com/dpereowei/fabricops/cmd/fabricopsctl@latest
+export PATH="$(go env GOPATH)/bin:$PATH"
 ```
+
+If `go install` succeeds but `fabricopsctl` is still not found, make the PATH
+export permanent in your shell profile, for example `~/.zshrc`.
 
 ## Other features
 
