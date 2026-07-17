@@ -56,7 +56,7 @@ printHeadline "Packaging chaincode '<%= chaincode.name %>'" "U1F60E"
     "<%= chaincode.name %>" <% -%>
     "$version" <% -%>
     "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-    "<%- chaincode.endorsement || '' %>" <% -%>
+     <%- shellQuote(chaincode.endorsement || '') %> <% -%>
     "<%= chaincode.initRequired %>" <% -%>
     "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
     "<%= chaincode.privateDataConfigFile || '' %>" <% -%>
@@ -70,7 +70,7 @@ chaincodeCommit <% -%>
   "<%= chaincode.name %>" <% -%>
   "$version" <% -%>
   "<%= chaincode.channel.ordererHead.fullAddress %>" <% -%>
-  "<%- chaincode.endorsement || '' %>" <% -%>
+   <%- shellQuote(chaincode.endorsement || '') %> <% -%>
   "<%= chaincode.initRequired %>" <% -%>
   "<%= !global.tls ? '' : `crypto-orderer/tlsca.${chaincode.channel.ordererHead.domain}-cert.pem` %>" <% -%>
   "<%= chaincode.channel.orgs.map((o) => o.headPeer.fullAddress).join(',') %>" <% -%>
