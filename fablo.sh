@@ -330,6 +330,7 @@ executeFabloCommand() {
     "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"
+    chmod +x "$FABLO_TARGET/fabric-k8s.sh" || true
     "$FABLO_TARGET/fabric-k8s.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   else
     echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
