@@ -76,7 +76,8 @@
       "version": "0.0.1",
       "lang": "ccaas",
       "channel": "my-channel1",
-      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0"
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+      "chaincodeStartCommand": "npm run start:ccaas"
     }
   ],
   "hooks": {
