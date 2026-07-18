@@ -176,6 +176,7 @@ export default class Init extends Command {
         channel: "my-channel1",
         lang: "ccaas",
         image: "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
+        chaincodeStartCommand: "npm run start:ccaas",
         privateData: [],
       };
       fabloConfigJson = {
@@ -191,6 +192,9 @@ export default class Init extends Command {
       fs.copySync(source, destination);
 
       fs.writeFileSync(path.join(destination, ".nvmrc"), "12");
+
+      // force build on Node 12, since dev deps (@theledger/fabric-mock-stub) may not work on 16
+      // fs.write(destination("chaincodes/chaincode-kv-node/.nvmrc"), "12");
 
       const chaincodeConfig: ChaincodeJson = flags.dev
         ? {
@@ -262,6 +266,7 @@ export default class Init extends Command {
 
     const rootPath = process.cwd();
     const outputFile = path.join(rootPath, "fablo-config.json");
+    // fs.write(this.destinationPath("fablo-config.json"), JSON.stringify(fabloConfigJson, undefined, 2));
     fs.writeFileSync(outputFile, JSON.stringify(fabloConfigJson, null, 2));
 
     this.log("===========================================================");

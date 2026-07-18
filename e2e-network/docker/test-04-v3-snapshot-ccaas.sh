@@ -23,7 +23,7 @@ dumpLogs() {
 
 networkDown() {
   sleep 2
-  (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
+  (for name in $(docker ps -a --format '{{.Names}}'); do dumpLogs "$name"; done)
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
@@ -111,8 +111,7 @@ hook_command="perl -i -pe 's/FABRIC_VERSION=2\.3\.3/FABRIC_VERSION=2\.4\.2/g' ./
   cd "$TEST_TMP" &&
     "$FABLO_HOME/fablo.sh" prune &&
     "$FABLO_HOME/fablo.sh" restore "$snapshot_name" "$hook_command" &&
-    "$FABLO_HOME/fablo.sh" start &&
-    "$FABLO_HOME/fablo.sh" chaincodes install
+    "$FABLO_HOME/fablo.sh" start
 )
 
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
@@ -120,6 +119,9 @@ waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 # wait for CCAAS container to finish bootstrapping
 waitForContainer "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1" "Bootstrap process completed"
 waitForContainer "ccaas_peer0.org1.example.com_my-channel2_chaincode1_0.0.1" "Bootstrap process completed"
+waitForContainer "db.ca.org1.example.com" "ready for connections"
+waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
+waitForContainer "fablo-rest.org1.example.com" "Server is running"
 
 # sleep to ensure the CCAAS container is ready
 sleep 3
