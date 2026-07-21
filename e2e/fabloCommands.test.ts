@@ -135,6 +135,8 @@ describe("init", () => {
     expect(commandResult).toEqual(TestCommands.success());
     const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
     expect(config.chaincodes[0].directory).toBe("/tmp/test");
+  });
+
   it("should init simple fablo config with ccaas chaincode", () => {
     // When
     const commandResult = commands.fabloExec("init ccaas");
