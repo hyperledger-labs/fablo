@@ -299,7 +299,7 @@ export default class Validate extends Command {
           if (orderer.instances > 1) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Orderer consesus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
+              message: `Orderer consensus type is set to 'solo', but number of instances is ${orderer.instances}. Only 1 instance will be created.`,
             };
             this.emit(validationErrorType.WARN, objectToEmit);
           }
@@ -316,7 +316,7 @@ export default class Validate extends Command {
           if (orderer.instances === 1) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Orderer consesus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
+              message: `Orderer consensus type is set to '${orderer.type}', but number of instances is 1. Network won't be fault tolerant! Consider higher value.`,
             };
             this.emit(validationErrorType.WARN, objectToEmit);
           }
@@ -324,7 +324,7 @@ export default class Validate extends Command {
           if (!config.versionsSupportingRaft(global.fabricVersion)) {
             const objectToEmit = {
               category: validationCategories.ORDERER,
-              message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: ${config.versionsSupportingRaft}`,
+              message: `Fabric's ${global.fabricVersion} does not support Raft consensus type. Supporting versions are: 1.4.3 or higher.`,
             };
             this.emit(validationErrorType.ERROR, objectToEmit);
           }
