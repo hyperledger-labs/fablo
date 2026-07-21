@@ -6,8 +6,6 @@ import parseFabloConfig from "../../utils/parseFabloConfig";
 import extendConfig from "../../extend-config/extendConfig";
 import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
 
-
-
 export default class ExtendConfig extends Command {
   static override description = "Reads a Fablo config file, extends it, and prints the result";
 
@@ -18,7 +16,7 @@ export default class ExtendConfig extends Command {
       required: false,
     }),
   };
-  async writing (args: { config?: string }): Promise<void> {
+  async writing(args: { config?: string }): Promise<void> {
     const configPath = args?.config ?? "fablo-config.json";
     const fabloConfigPath = path.isAbsolute(configPath) ? configPath : path.join(process.cwd(), configPath);
     const json = parseFabloConfig(fs.readFileSync(fabloConfigPath).toString());
@@ -28,10 +26,7 @@ export default class ExtendConfig extends Command {
   public async run(): Promise<void> {
     const { args } = await this.parse(ExtendConfig);
     await this.writing(args);
-
   }
-  
 }
 
 export { extendConfig, getNetworkCapabilities };
-

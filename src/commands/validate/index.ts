@@ -382,7 +382,9 @@ export default class Validate extends Command {
       const channel = channels.find((ch) => ch.name === chaincode.channel);
       if (!channel) return [];
 
-      return channel.orgs.map((org) => createPackageLabel(org.name, chaincode.channel, chaincode.name, chaincode.version));
+      return channel.orgs.map((org) =>
+        createPackageLabel(org.name, chaincode.channel, chaincode.name, chaincode.version),
+      );
     });
     const duplicatedPackageLabels = findDuplicatedItems(packageLabels.map((label) => `_${label}`));
 

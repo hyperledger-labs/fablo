@@ -719,7 +719,41 @@ chaincodes:
 
 ## Kubernetes support
 
-TODO
+Fablo can generate a FabricOps `FabricNetwork` manifest and use FabricOps as the
+Kubernetes engine. This path is intended for Kubernetes-backed Fabric networks,
+while the default Docker engine remains the local-development path.
+
+Requirements:
+
+* A Kubernetes cluster selected in your current `kubectl` context
+* FabricOps installed in the target cluster
+* `fabricopsctl` installed in `PATH` for `fablo chaincode invoke` and `fablo chaincode query`
+* `global.engine` set to `kubernetes`
+* CCaaS chaincodes with prebuilt `image` values
+* `global.tls` set to `true` when channels are declared
+
+The TLS requirement is specific to the FabricOps-backed Kubernetes engine.
+Docker-based Fablo networks can still use non-TLS development configurations,
+but FabricOps uses production-shaped channel participation, admin, lifecycle,
+and CCaaS flows that require TLS material once channels are bootstrapped.
+
+Example:
+
+```bash
+fablo up samples/fablo-config-hlf2-1org-1chaincode-k8s.json
+```
+
+If FabricOps is not installed, the generated Kubernetes script stops before
+applying the manifest and points to the FabricOps installation instructions.
+For chaincode operations, install the FabricOps CLI:
+
+```bash
+go install github.com/dpereowei/fabricops/cmd/fabricopsctl@latest
+export PATH="$(go env GOPATH)/bin:$PATH"
+```
+
+If `go install` succeeds but `fabricopsctl` is still not found, make the PATH
+export permanent in your shell profile, for example `~/.zshrc`.
 
 ## Other features
 

@@ -61,7 +61,9 @@ const checkUniquePackageLabels = (chaincodes: ChaincodeConfig[]): void => {
 
   packageLabels.forEach((packageLabel) => {
     if (seen.has(packageLabel)) {
-      throw new Error(`Duplicate chaincode package label '${packageLabel}' found. Chaincode package labels must be unique.`);
+      throw new Error(
+        `Duplicate chaincode package label '${packageLabel}' found. Chaincode package labels must be unique.`,
+      );
     }
     seen.add(packageLabel);
   });

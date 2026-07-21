@@ -21,4 +21,3 @@ export default class Version extends Command {
     }
   }
 }
-
