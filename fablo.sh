@@ -254,10 +254,13 @@ useVersion() {
 
 initConfig() {
   printSplash
-  executeOnFabloDocker "init \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  local args=""
+  for arg in "$@"; do
+    args="$args \"$arg\""
+  done
+  executeOnFabloDocker "init$args"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
-
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   executeOnFabloDocker "validate" "" "$fablo_config"
@@ -390,8 +393,8 @@ elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
 
 elif [ "$COMMAND" = "init" ]; then
-  initConfig "$2" "$3"
-
+  shift
+  initConfig "$@"
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
 

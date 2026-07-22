@@ -22,6 +22,44 @@ describe("init", () => {
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
   });
+  it("should handle numeric string coercion correctly for ports", () => {
+    // When
+    const commandResult = commands.fabloExec("init --set orgs[1].peer.instances=5");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    // Critical: Check that it's a number, not "5"
+    expect(config.orgs[1].peer?.instances).toBe(5);
+  });
+
+  it("should create non-existent nested paths (e.g. hooks)", () => {
+    // When
+    const commandResult = commands.fabloExec("init --set global.monitoring.loglevel=debug");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    expect(config.global.monitoring).toBeDefined();
+    expect(config.global.monitoring?.loglevel).toBe("debug");
+  });
+
+  it("should handle multiple overrides of different types simultaneously", () => {
+    const commandResult = commands.fabloExec(
+      "init --set global.tls=true --set orgs[1].organization.name=NewOrg1Name --set channels[0].name=my-channel2",
+    );
+
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+
+    expect(config.global.tls).toBe(true);
+
+    expect(config.orgs[1].organization.name).toBe("NewOrg1Name");
+
+    expect(config.channels[0].name).toBe("my-channel2");
+  });
 
   it("should init simple fablo config with node chaincode", () => {
     // When
@@ -61,6 +99,42 @@ describe("init", () => {
       "e2e/__tmp__/commands-tests/passwd",
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
+  });
+
+  it("should handle strict number parsing correctly in E2E overrides", () => {
+    const commandResult = commands.fabloExec(
+      `init --set global.fabricVersion="001" --set orgs[1].ca.prefix="09" --set orgs[1].peer.instances=5 --set global.tls=false`,
+    );
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    expect(config.global.fabricVersion).toBe("001");
+    expect(config.orgs[1].ca?.prefix).toBe("09");
+    expect(config.orgs[1].peer?.instances).toBe(5);
+    expect(config.global.tls).toBe(false);
+  });
+
+  it("should handle quoted strings and keep them as strings", () => {
+    const commandResult = commands.fabloExec(
+      `init --set orgs[1].organization.name='\\\"MyOrg\\\"' --set global.fabricVersion='\\\"true\\\"' --set orgs[1].ca.prefix='\\\"001\\\"'`,
+    );
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    expect(config.orgs[1].organization.name).toBe("MyOrg");
+    expect(config.global.fabricVersion).toBe("true");
+    expect(config.orgs[1].ca?.prefix).toBe("001");
+  });
+
+  it("should fail validation and not write configuration for invalid property types", () => {
+    const commandResult = commands.fabloExec("init --set global.fabricVersion=true");
+    expect(commandResult.status).not.toBe(0);
+    expect(commandResult.output).toContain("Validation of final configuration failed");
+  });
+
+  it("should enforce override precedence over built-in modifications", () => {
+    const commandResult = commands.fabloExec("init node --set chaincodes[0].directory=/tmp/test");
+    expect(commandResult).toEqual(TestCommands.success());
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    expect(config.chaincodes[0].directory).toBe("/tmp/test");
   });
 
   it("should init simple fablo config with ccaas chaincode", () => {
