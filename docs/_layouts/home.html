@@ -1,0 +1,50 @@
+---
+layout: base
+---
+<section class="hero">
+  <div class="hero-in">
+    <div class="hero-text">
+      <span class="eyebrow">$ hyperledger fabric, made easy</span>
+      <h1>Spin up a Fabric network with <span class="mono">fablo&nbsp;up</span></h1>
+      <p>Fablo generates a complete Hyperledger Fabric network — orderers, peers, CAs, channels, and chaincodes — from one config file, and runs it locally on Docker. Built for development and CI.</p>
+      <a class="btn btn-primary" href="/getting-started.html">Get started</a>
+      <a class="btn btn-ghost" href="/editor.html">Config editor</a>
+    </div>
+    <div class="term" aria-hidden="true">
+      <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>bash — fablo</span></div>
+      <div class="term-body"><span class="p">$</span> curl fablo.io/install.sh | bash
+<span class="p">$</span> fablo init node
+<span class="ok">✔</span> wrote fablo-config.json
+<span class="p">$</span> fablo up
+<span class="ok">✔</span> generated network config
+<span class="ok">✔</span> started orderer.group1 <span class="dim">(raft)</span>
+<span class="ok">✔</span> started peer0.org1  peer1.org1
+<span class="ok">✔</span> started ca.org1  couchdb
+<span class="ok">✔</span> created channel  my-channel1
+<span class="ok">✔</span> installed chaincode  chaincode1
+<span class="dim">network is up — 6 containers</span> <span class="cur"></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="features">
+  <span class="chip"><b>TLS</b></span>
+  <span class="chip"><b>RAFT</b> &amp; <b>BFT</b></span>
+  <span class="chip"><b>CouchDB</b> / LevelDB</span>
+  <span class="chip">chaincode <b>go · node · java</b></span>
+  <span class="chip"><b>CCaaS</b> + hot reload</span>
+  <span class="chip"><b>private data</b></span>
+  <span class="chip"><b>REST</b> gateway</span>
+  <span class="chip"><b>explorer</b></span>
+  <span class="chip"><b>snapshot</b> / restore</span>
+</div>
+
+<div class="home-body">
+  {{ content }}
+  <div class="cards">
+    <a class="card" href="/getting-started.html"><h3>getting-started →</h3><p>Bring up your first network in three commands.</p></a>
+    <a class="card" href="/reference/configuration.html"><h3>config reference →</h3><p>Every field of the Fablo config file.</p></a>
+    <a class="card" href="/reference/cli-commands.html"><h3>cli reference →</h3><p>Every <code>fablo</code> command and its arguments.</p></a>
+    <a class="card" href="/editor.html"><h3>config editor →</h3><p>Build a valid config visually in the browser.</p></a>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+title: Fablo
+description: Generate a Hyperledger Fabric network from a single config file and run it locally on Docker — built for development and CI.
+url: https://fablo.io
+baseurl: ""
+
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# Every page uses the doc layout unless it sets its own (index.md uses "home").
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: doc
+
+# Keep the raw assets served verbatim at fablo.io (install.sh, fablo.sh,
+# editor.html, schema.json, sample.json, lib/). They have no front matter, so
+# Jekyll copies them untouched — just don't exclude them here.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - .bundle
