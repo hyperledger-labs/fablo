@@ -113,6 +113,22 @@ Sample command:
 fablo init node dev
 ```
 
+#### Custom overrides
+
+```bash
+# Single override
+fablo init --set global.fabricVersion=2.5.0
+
+# Multiple overrides
+fablo init --set global.tls=false --set orgs[0].peer.db=CouchDb
+
+# With positional arguments
+fablo init node --set global.fabricVersion=3.0.0 --set orgs[1].peer.instances=5
+
+# Nested paths
+fablo init --set global.monitoring.loglevel=debug --set channels[0].name=my-channel2
+```
+
 ### generate
 
 ```bash
