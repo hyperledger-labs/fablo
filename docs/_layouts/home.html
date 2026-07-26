@@ -14,15 +14,12 @@ layout: base
       <div class="term-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>bash — fablo</span></div>
       <div class="term-body"><span class="p">$</span> curl fablo.io/install.sh | bash
 <span class="p">$</span> fablo init node
-<span class="ok">✔</span> wrote fablo-config.json
+<span class="dim"># Fabric 3.1.0 · TLS · BFT · LevelDB</span>
+<span class="ok">✔</span> Sample config file created! :)
 <span class="p">$</span> fablo up
-<span class="ok">✔</span> generated network config
-<span class="ok">✔</span> started orderer.group1 <span class="dim">(raft)</span>
-<span class="ok">✔</span> started peer0.org1  peer1.org1
-<span class="ok">✔</span> started ca.org1  couchdb
-<span class="ok">✔</span> created channel  my-channel1
-<span class="ok">✔</span> installed chaincode  chaincode1
-<span class="dim">network is up — 6 containers</span> <span class="cur"></span></div>
+<span class="dim"># generates fablo-target, starts the network,</span>
+<span class="dim"># creates my-channel1, deploys chaincode1</span>
+<span class="cur"></span></div>
     </div>
   </div>
 </section>
@@ -34,8 +31,8 @@ layout: base
   <span class="chip">chaincode <b>go · node · java</b></span>
   <span class="chip"><b>CCaaS</b> + hot reload</span>
   <span class="chip"><b>private data</b></span>
-  <span class="chip"><b>REST</b> gateway</span>
-  <span class="chip"><b>explorer</b></span>
+  <span class="chip"><b>Fablo REST</b></span>
+  <span class="chip"><b>explorer</b> <span class="dim">(v2)</span></span>
   <span class="chip"><b>snapshot</b> / restore</span>
 </div>
 
@@ -43,7 +40,7 @@ layout: base
   {{ content }}
   <div class="cards">
     <a class="card" href="/getting-started.html"><h3>getting-started →</h3><p>Bring up your first network in three commands.</p></a>
-    <a class="card" href="/reference/configuration.html"><h3>config reference →</h3><p>Every field of the Fablo config file.</p></a>
+    <a class="card" href="/reference/configuration.html"><h3>config reference →</h3><p>Main fields of the Fablo config file.</p></a>
     <a class="card" href="/reference/cli-commands.html"><h3>cli reference →</h3><p>Every <code>fablo</code> command and its arguments.</p></a>
     <a class="card" href="/editor.html"><h3>config editor →</h3><p>Build a valid config visually in the browser.</p></a>
   </div>

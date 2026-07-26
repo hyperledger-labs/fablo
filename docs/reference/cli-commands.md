@@ -11,7 +11,7 @@ title: CLI commands
 3. Chaincode Commands — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode invoke`, `chaincodes list`, `chaincode query`
 4. Channel Commands — `channel --help`
 5. Snapshot Commands — `snapshot`, `restore`
-6. Other Implemented Commands (undocumented in source)
+6. Utility Commands — `validate`, `version`, `export-network-topology`, `extend-config`
 
 
 # Fablo CLI Command Reference
@@ -22,20 +22,26 @@ This reference documents the commands exposed by the Fablo CLI (`fablo`). For ea
 
 ### `fablo init`
 
-**Purpose:** Creates a simple Fablo config in the current directory, with optional Node.js, chaincode, REST API, and dev mode support.
+**Purpose:** Creates a simple Fablo config in the current directory, with optional Node.js chaincode, CCaaS sample, REST API, gateway sample, and/or dev mode support.
 
 **Syntax:**
 ```
-fablo init [node] [rest] [dev] [gateway]
+fablo init [node] [rest] [dev] [ccaas] [gateway] [--set <path>=<value> ...]
 ```
+
+Option order does not matter. Valid options: `node`, `dev`, `ccaas`, `gateway`, `rest`.
 
 **Arguments:**
 | Argument | Required | Description |
 |---|---|---|
-| `node` | No | Optional flag enabling Node.js support in the generated config. |
-| `rest` | No | Optional flag enabling REST API support in the generated config. |
-| `dev` | No | Optional flag enabling dev mode in the generated config. |
-| `gateway` | No | Optional flag included in the generated config. |
+| `node` | No | Copies a sample Node.js chaincode into `chaincodes/chaincode-kv-node` and registers it in the config. |
+| `rest` | No | Enables Fablo REST for each organization in the generated config. |
+| `dev` | No | Used with `node`: configures the chaincode for hot-reload / CCaaS-style dev mode. |
+| `ccaas` | No | Adds a sample chaincode-as-a-service definition to the config. Cannot be combined with `node` or `dev`. |
+| `gateway` | No | Copies a sample Node.js gateway app into a `gateway` directory (does not change the config file itself). |
+| `--set <path>=<value>` | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
+
+By default, `fablo init` writes a config with Fabric `3.1.0`, TLS enabled, two BFT orderers, and two LevelDB peers under `Org1`.
 
 
 ### `fablo generate`
@@ -56,7 +62,7 @@ fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
 
 ### `fablo up`
 
-**Purpose:** Starts the Hyperledger Fabric network for the given Fablo configuration file, creating channels and installing and instantiating chaincodes. If no configuration exists yet, it calls the `generate` command for the given config file first.
+**Purpose:** Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and deploys chaincodes (package / install / approve / commit). A source `fablo-config.json` or `fablo-config.yaml` must already exist. If the generated `fablo-target` network files are missing, `fablo up` runs `generate` for that config first.
 
 **Syntax:**
 ```
@@ -177,17 +183,17 @@ fablo chaincode upgrade <chaincode-name> <version>
 
 **Syntax:**
 ```
-fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated> <command> <transient>
+fablo chaincode invoke <peers_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]
 ```
 
 **Arguments:**
 | Argument | Required | Description |
 |---|---|---|
+| `peers_domains_comma_separated` | Yes | Comma-separated list of peer domains to target. |
 | `channel_name` | Yes | Name of the channel to invoke on. |
 | `chaincode_name` | Yes | Name of the chaincode to invoke. |
-| `peers_domains_comma_separated` | Yes | Comma-separated list of peer domains to target. |
 | `command` | Yes | Invoke command to execute. |
-| `transient` | Yes | Transient data for the invocation. |
+| `transient` | No | Optional transient data for the invocation. |
 
 
 ### `fablo chaincodes list`
@@ -208,21 +214,21 @@ fablo chaincodes list <peer> <channel>
 
 ### `fablo chaincode query`
 
-**Purpose:** Queries a chaincode with the specified parameters.
+**Purpose:** Queries a chaincode on a single peer.
 
 **Syntax:**
 ```
-fablo chaincode query <channel_name> <chaincode_name> <peers_domains_comma_separated> <command> <transient>
+fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]
 ```
 
 **Arguments:**
 | Argument | Required | Description |
 |---|---|---|
+| `peer_domain` | Yes | Single peer domain to query. |
 | `channel_name` | Yes | Name of the channel to query on. |
 | `chaincode_name` | Yes | Name of the chaincode to query. |
-| `peers_domains_comma_separated` | Yes | Comma-separated list of peer domains to target. |
 | `command` | Yes | Query command to execute. |
-| `transient` | Yes | Transient data for the query. |
+| `transient` | No | Optional transient data for the query. |
 
 
 ## Channel Commands
@@ -271,12 +277,64 @@ fablo restore <source-snapshot-path>
 | `source-snapshot-path` | Yes | Path to the snapshot to restore from. |
 
 
-## Other Implemented Commands
+## Utility Commands
 
-The following commands are implemented under `src/commands/` but the provided source material does not include usage text, purpose, syntax, or argument details for them:
+### `fablo validate`
 
-- `export-network-topology`
-- `extend-config`
-- `setup-network`
-- `validate`
-- `version`
+**Purpose:** Validates a Fablo configuration file (schema and cross-field checks). Also runs automatically before `generate`.
+
+**Syntax:**
+```
+fablo validate [/path/to/fablo-config.json|yaml]
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|---|---|---|
+| `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |
+
+
+### `fablo version`
+
+**Purpose:** Prints Fablo version information.
+
+**Syntax:**
+```
+fablo version [-v]
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|---|---|---|
+| `-v` / `--verbose` | No | Show verbose version information. |
+
+
+### `fablo export-network-topology`
+
+**Purpose:** Exports the network topology described by a Fablo config to a Mermaid diagram file.
+
+**Syntax:**
+```
+fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|---|---|---|
+| `/path/to/fablo-config.json` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |
+| `outputFile.mmd` | No | Output Mermaid file path. Defaults to `network-topology.mmd`. |
+
+
+### `fablo extend-config`
+
+**Purpose:** Reads a Fablo config, applies Fablo's internal config extension, and prints the extended result as JSON (useful for debugging).
+
+**Syntax:**
+```
+fablo extend-config [/path/to/fablo-config.json|yaml]
+```
+
+**Arguments:**
+| Argument | Required | Description |
+|---|---|---|
+| `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |
