@@ -1,0 +1,140 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Arma Shared Configuration for the 4-party devnet.
+# Cert paths are absolute inside the Docker container (config/crypto/ mounted at /crypto).
+
+Parties:
+  - PartyID: 1
+    CACerts:
+      - /crypto/ordererOrganizations/orderer-org-1/msp/cacerts/ca.orderer-org-1-cert.pem
+    TLSCACerts:
+      - /crypto/ordererOrganizations/orderer-org-1/msp/tlscacerts/tlsca.orderer-org-1-cert.pem
+    RouterConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/router.orderer-org-1/tls/server.crt
+      Host: orderer-party1-router
+      Port: 7050
+    BatchersConfig:
+      - ShardID: 1
+        SignCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/batcher1.orderer-org-1/msp/signcerts/batcher1.orderer-org-1-cert.pem
+        TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/batcher1.orderer-org-1/tls/server.crt
+        Host: orderer-party1-batcher
+        Port: 7051
+    ConsenterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/msp/signcerts/consenter.orderer-org-1-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/tls/server.crt
+      Host: orderer-party1-consenter
+      Port: 7052
+    AssemblerConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/assembler.orderer-org-1/tls/server.crt
+      Host: orderer-party1-assembler
+      Port: 7053
+
+  - PartyID: 2
+    CACerts:
+      - /crypto/ordererOrganizations/orderer-org-2/msp/cacerts/ca.orderer-org-2-cert.pem
+    TLSCACerts:
+      - /crypto/ordererOrganizations/orderer-org-2/msp/tlscacerts/tlsca.orderer-org-2-cert.pem
+    RouterConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/router.orderer-org-2/tls/server.crt
+      Host: orderer-party2-router
+      Port: 7150
+    BatchersConfig:
+      - ShardID: 1
+        SignCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/batcher1.orderer-org-2/msp/signcerts/batcher1.orderer-org-2-cert.pem
+        TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/batcher1.orderer-org-2/tls/server.crt
+        Host: orderer-party2-batcher
+        Port: 7151
+    ConsenterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/msp/signcerts/consenter.orderer-org-2-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/tls/server.crt
+      Host: orderer-party2-consenter
+      Port: 7152
+    AssemblerConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/assembler.orderer-org-2/tls/server.crt
+      Host: orderer-party2-assembler
+      Port: 7153
+
+  - PartyID: 3
+    CACerts:
+      - /crypto/ordererOrganizations/orderer-org-3/msp/cacerts/ca.orderer-org-3-cert.pem
+    TLSCACerts:
+      - /crypto/ordererOrganizations/orderer-org-3/msp/tlscacerts/tlsca.orderer-org-3-cert.pem
+    RouterConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/router.orderer-org-3/tls/server.crt
+      Host: orderer-party3-router
+      Port: 7250
+    BatchersConfig:
+      - ShardID: 1
+        SignCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/batcher1.orderer-org-3/msp/signcerts/batcher1.orderer-org-3-cert.pem
+        TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/batcher1.orderer-org-3/tls/server.crt
+        Host: orderer-party3-batcher
+        Port: 7251
+    ConsenterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/msp/signcerts/consenter.orderer-org-3-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/tls/server.crt
+      Host: orderer-party3-consenter
+      Port: 7252
+    AssemblerConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/assembler.orderer-org-3/tls/server.crt
+      Host: orderer-party3-assembler
+      Port: 7253
+
+  - PartyID: 4
+    CACerts:
+      - /crypto/ordererOrganizations/orderer-org-4/msp/cacerts/ca.orderer-org-4-cert.pem
+    TLSCACerts:
+      - /crypto/ordererOrganizations/orderer-org-4/msp/tlscacerts/tlsca.orderer-org-4-cert.pem
+    RouterConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/router.orderer-org-4/tls/server.crt
+      Host: orderer-party4-router
+      Port: 7350
+    BatchersConfig:
+      - ShardID: 1
+        SignCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/batcher1.orderer-org-4/msp/signcerts/batcher1.orderer-org-4-cert.pem
+        TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/batcher1.orderer-org-4/tls/server.crt
+        Host: orderer-party4-batcher
+        Port: 7351
+    ConsenterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/msp/signcerts/consenter.orderer-org-4-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/tls/server.crt
+      Host: orderer-party4-consenter
+      Port: 7352
+    AssemblerConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/assembler.orderer-org-4/tls/server.crt
+      Host: orderer-party4-assembler
+      Port: 7353
+
+Consensus:
+  SmartBFT:
+    requestbatchmaxcount: 10000
+    requestbatchmaxbytes: 10485760
+    requestbatchmaxinterval: 100ms
+    incomingmessagebuffersize: 200
+    requestpoolsize: 500000
+    requestforwardtimeout: 2s
+    requestcomplaintimeout: 20s
+    requestautoremovetimeout: 3m0s
+    viewchangeresendinterval: 5s
+    viewchangetimeout: 20s
+    leaderheartbeattimeout: 1m0s
+    leaderheartbeatcount: 10
+    numofticksbehindbeforesyncing: 10
+    collecttimeout: 1s
+    requestmaxbytes: 1048576
+    requestpoolsubmittimeout: 5s
+
+Batching:
+  BatchTimeouts:
+    BatchCreationTimeout: 20ms # optimize for low latency
+    FirstStrikeThreshold: 10s
+    SecondStrikeThreshold: 10s
+    AutoRemoveTimeout: 10s
+  BatchSize:
+    MaxMessageCount: 10000
+    AbsoluteMaxBytes: 10485760
+    PreferredMaxBytes: 2097152
+  RequestMaxBytes: 1048576
+
+MaxPartyID: 4
