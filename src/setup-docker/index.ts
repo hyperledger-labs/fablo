@@ -70,6 +70,16 @@ export default class SetupDocker extends Command {
     this.log(`Fabric version is: ${global.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
+    // ======= Fabric-X =================================================================
+    if (configExtended.fabricx) {
+      this.log(`Detected Fabric-X configuration, generating Fabric-X devnet...`);
+      await this._copyFabricXDevnetTemplates(configExtended);
+      
+      this.log("Done & done !!! Try the network out: ");
+      this.log("-> cd fabric-x && docker-compose -f compose.test-committer.yaml up");
+      return;
+    }
+
     // ======= fabric-config ============================================================
     await this._copyOrgCryptoConfig(orgs);
     await this._createConnectionProfiles(global, orgs, channels, configExtended.ordererGroups);
@@ -295,6 +305,30 @@ export default class SetupDocker extends Command {
       const templatePath = getTemplatePath(this.templatesDir, hookFile);
       const destPath = getDestinationPath(this.outputDir, hookFile);
       await renderTemplate(templatePath, destPath, { hooks });
+    }
+  }
+
+  async _copyFabricXDevnetTemplates(config: FabloConfigExtended): Promise<void> {
+    const files = [
+      "compose.test-committer.yaml",
+      "crypto-config.yaml",
+      "configtx.yaml",
+      "shared_config.yaml",
+      "fxconfig.yaml",
+      "Makefile",
+      ".gitignore",
+      "config/mock-orderer.yaml",
+      "config/committer-sidecar-dev.yaml",
+      "config/committer-coordinator.yaml",
+      "config/committer-verifier.yaml",
+      "config/committer-validator.yaml",
+      "config/committer-query-service.yaml",
+    ];
+
+    for (const file of files) {
+      const templatePath = getTemplatePath(this.templatesDir, `fabric-x/${file}.ejs`);
+      const destPath = getDestinationPath(this.outputDir, `fabric-x/${file}`);
+      await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
     }
   }
 }
