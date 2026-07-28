@@ -1,0 +1,44 @@
+# Copyright IBM Corp. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+---
+server:
+  endpoint: :7001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2117
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-db:5432
+  username: "sc_user"
+  password: "sc_secret_pwd"
+  database: "sc_db"
+  tls:
+    mode: none
+  max-connections: 10
+  min-connections: 5
+  load-balance: false
+  retry:
+    initial-interval: 500ms
+    randomization-factor: 0.5
+    multiplier: 1.5
+    max-interval: 60s
+    max-elapsed-time: 15m
+
+min-batch-keys: 1024
+max-batch-wait: 100ms
+view-aggregation-window: 100ms
+max-aggregated-views: 1024
+max-view-timeout: 10s
+max-active-views: 4096
+max-request-keys: 10000
+
+logging:
+  logSpec: info:grpc=error

@@ -1,0 +1,37 @@
+logging:
+  level: info
+
+msp:
+  localMspID: Org1MSP
+  configPath: /msp
+
+orderer:
+  address: orderer-party1-router:7050
+  channel: mychannel
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /orderer-tls-ca.pem  # full stack: orderer CA
+      - /org-tls-ca.pem      # dev: test-committer uses a peer cert
+
+queries:
+  address: committer-query-service:7001
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /org-tls-ca.pem
+
+notifications:
+  address: committer-sidecar:4001
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /org-tls-ca.pem
+  connectionTimeout: 10s
+  waitingTimeout: 20s

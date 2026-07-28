@@ -1,0 +1,53 @@
+# Copyright IBM Corp. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Sidecar config for compose.test-committer.yaml (dev mode).
+# Orderer CA certs are read from the genesis block; no explicit CA cert paths needed.
+---
+server:
+  endpoint: :4001
+  tls: &tlsConfig
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2114
+  tls: *tlsConfig
+
+orderer:
+  fault-tolerance-level: CFT
+  latest-known-config-block-path: /root/artifacts/config-block.pb.bin
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+  identity:
+    msp-id: Org1MSP
+    msp-dir: /msp
+    bccsp:
+      Default: SW
+      SW:
+        Security: 256
+        Hash: SHA2
+
+committer:
+  endpoint: localhost:9001
+  tls: *tlsConfig
+
+ledger:
+  path: /root/sc/ledger
+  sync-interval: 100
+
+notification:
+  max-timeout: 10m
+  max-active-tx-ids: 100_000
+  max-tx-ids-per-request: 1000
+
+last-committed-block-set-interval: 5s
+waiting-txs-limit: 20_000_000
+channel-buffer-size: 100
+
+logging:
+  logSpec: info:grpc=error

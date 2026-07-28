@@ -1,0 +1,41 @@
+# Copyright IBM Corp. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Mock orderer config for compose.test-committer.yaml (dev mode).
+# Serves on two ports to cover both broadcast (router) and deliver (assembler)
+# endpoints from the genesis block.
+---
+servers:
+  - endpoint: :7050
+    tls:
+      mode: mtls
+      cert-path: /orderer-router-tls/server.crt
+      key-path: /orderer-router-tls/server.key
+      ca-cert-paths:
+        - /orderer-org1-tls-ca.pem
+  - endpoint: :7053
+    tls:
+      mode: mtls
+      cert-path: /orderer-assembler-tls/server.crt
+      key-path: /orderer-assembler-tls/server.key
+      ca-cert-paths:
+        - /orderer-org1-tls-ca.pem
+
+block-size: 1
+block-timeout: 30s
+out-block-capacity: 1024
+payload-cache-size: 1024
+send-genesis-block: true
+genesis-block-path: /root/artifacts/config-block.pb.bin
+consenter-msp-identities:
+  - msp-id: OrdererOrg1MSP
+    msp-dir: /orderer-consenter-msp-1
+  - msp-id: OrdererOrg2MSP
+    msp-dir: /orderer-consenter-msp-2
+  - msp-id: OrdererOrg3MSP
+    msp-dir: /orderer-consenter-msp-3
+  - msp-id: OrdererOrg4MSP
+    msp-dir: /orderer-consenter-msp-4
+
+logging:
+  logSpec: info:grpc=error

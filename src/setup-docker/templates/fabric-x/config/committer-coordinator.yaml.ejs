@@ -1,0 +1,47 @@
+# Copyright IBM Corp. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+---
+server:
+  endpoint: :9001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2119
+  tls:
+    mode: none
+
+verifier:
+  endpoints:
+    - committer-verifier:5001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+
+validator-committer:
+  endpoints:
+    - committer-validator:6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+
+dependency-graph:
+  num-of-local-dep-constructors: 1
+  waiting-txs-limit: 100000
+
+per-channel-buffer-size-per-goroutine: 10
+
+min-batch-keys: 1
+max-batch-wait: 1ms
+
+logging:
+  logSpec: info:grpc=error

@@ -1,0 +1,23 @@
+# Copyright IBM Corp. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+---
+server:
+  endpoint: :5001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2115
+  tls:
+    mode: none
+
+batch-size-cutoff: 50
+batch-time-cutoff: 1ms
+channel-buffer-size: 50
+parallelism: 40
+
+logging:
+  logSpec: info:grpc=error
