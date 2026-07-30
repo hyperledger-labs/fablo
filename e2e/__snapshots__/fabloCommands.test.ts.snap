@@ -27,6 +27,7 @@ exports[`extend config should extend custom config 1`] = `
     "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
     "engine": "docker",
+    "provider": "fabric",
     "paths": {
       "fabloConfig": "<absolute path>",
       "chaincodesBaseDir": "<absolute path>"
@@ -2513,6 +2514,7 @@ exports[`extend config should extend default config 1`] = `
     "baseosImage": "hyperledger/fabric-baseos:3.1.0",
     "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
+    "provider": "fabric",
     "paths": {
       "fabloConfig": "<absolute path>",
       "chaincodesBaseDir": "<absolute path>"

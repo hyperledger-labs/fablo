@@ -92,7 +92,7 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
   const versions = getVersions(globalJson.fabricVersion);
   const images = getImages(globalJson.fabricVersion, versions, fabricImages);
   const engine = globalJson.engine ?? "docker";
-
+  const provider = globalJson.provider ?? "fabric";
   const monitoring = {
     loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
@@ -113,6 +113,7 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
     ...versions,
     ...images,
     engine,
+    provider,
     paths,
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),

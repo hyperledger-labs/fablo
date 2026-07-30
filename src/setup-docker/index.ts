@@ -71,7 +71,7 @@ export default class SetupDocker extends Command {
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
     // ======= Fabric-X =================================================================
-    if (configExtended.fabricx) {
+    if (configExtended.global.provider === "fabric-x") {
       this.log(`Detected Fabric-X configuration, generating Fabric-X devnet...`);
       await this._copyFabricXDevnetTemplates(configExtended);
       
