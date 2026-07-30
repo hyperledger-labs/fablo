@@ -364,6 +364,17 @@ exports[`schema should match snapshot 1`] = `
           "title": "Start all peers in dev mode",
           "type": "boolean",
         },
+        "provider": {
+          "$id": "#/properties/global/properties/provider",
+          "default": "fabric",
+          "description": "Selects the network provider. 'fabric' is the default and fully supported. 'fabric-x' is experimental",
+          "enum": [
+            "fabric",
+            "fabric-x",
+          ],
+          "title": "Network provider (EXPERIMENTAL)",
+          "type": "string",
+        },
         "tls": {
           "$id": "#/properties/global/properties/tls",
           "default": true,

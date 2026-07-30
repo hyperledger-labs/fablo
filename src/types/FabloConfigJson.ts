@@ -4,6 +4,7 @@ export interface GlobalJson {
   peerDevMode: boolean;
   fabricImages?: FabricImagesJson;
   engine?: "kubernetes" | "docker";
+  provider?: "fabric" | "fabric-x";
   monitoring?: { loglevel: string };
   tools?: { explorer?: boolean };
 }
