@@ -118,17 +118,15 @@ export default class Validate extends Command {
     const networkConfig = parseFabloConfig(configContent);
     const provider = networkConfig.global.provider ?? "fabric";
 
+    this._validateFabricVersion(networkConfig.global);
+    this._validateJsonSchema(networkConfig);
+    this._validateSupportedFabloVersion(networkConfig.$schema);
+
     if (provider === "fabric-x") {
-      this._validateJsonSchema(networkConfig);
-      this._validateSupportedFabloVersion(networkConfig.$schema);
       this._validateFabricXSettings(networkConfig);
       return;
     }
-
-    this._validateFabricVersion(networkConfig.global);
     networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
-    this._validateJsonSchema(networkConfig);
-    this._validateSupportedFabloVersion(networkConfig.$schema);
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
 
