@@ -68,9 +68,9 @@ start:
 		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-batcher \
 		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-consenter \
 		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-assembler \
-<% }) %><% orgs.filter(o => o.peers && o.peers.length > 0).forEach((org) => { %>		$(FABRICX_DIR)/data/committer-<%= org.name.toLowerCase() %>/db \
+<% }); %><% orgs.filter(o => o.peers && o.peers.length > 0).forEach((org) => { %>		$(FABRICX_DIR)/data/committer-<%= org.name.toLowerCase() %>/db \
 		$(FABRICX_DIR)/data/committer-<%= org.name.toLowerCase() %>/ledger \
-<% }) %>		$(FABRICX_DIR)/data/dummy
+<% }); %>		$(FABRICX_DIR)/data/dummy
 	@$(COMPOSE) -f $(FABRICX_DIR)/compose.test-committer.yaml up -d
 <% if (orgs.filter(o => o.peers && o.peers.length > 0).length > 0) { -%>
 	@echo "Waiting for sidecars to be ready..."

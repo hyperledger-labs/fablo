@@ -111,7 +111,7 @@ export default class Validate extends Command {
     }
   }
 
-  async validate() {
+  async validate(): Promise<void> {
     this._validateIfConfigFileExists(this.fabloConfigPath);
 
     const configContent = fs.readFileSync(this.fabloConfigPath, "utf-8");
@@ -180,13 +180,13 @@ export default class Validate extends Command {
     }
   }
 
-  async shortSummary() {
+  async shortSummary(): Promise<void> {
     this.log(`Validation errors count: ${this.errors.count()}`);
     this.log(`Validation warnings count: ${this.warnings.count()}`);
     this.log(chalk.bold("==========================================================="));
   }
 
-  async detailedSummary() {
+  async detailedSummary(): Promise<void> {
     const allValidationMessagesCount = this.errors.count() + this.warnings.count();
 
     if (allValidationMessagesCount > 0) {
@@ -201,7 +201,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateIfConfigFileExists(configFilePath: string) {
+  _validateIfConfigFileExists(configFilePath: string): void {
     const configFilePathAbsolute = path.isAbsolute(configFilePath)
       ? configFilePath
       : path.join(process.cwd(), configFilePath);
@@ -217,7 +217,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateJsonSchema(configToValidate: FabloConfigJson) {
+  _validateJsonSchema(configToValidate: FabloConfigJson): void {
     const validator = new SchemaValidator();
     const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
@@ -235,7 +235,7 @@ export default class Validate extends Command {
     }
   }
 
-  _printIfNotEmpty(messages: Message[], caption: string) {
+  _printIfNotEmpty(messages: Message[], caption: string): void {
     if (messages.length > 0) {
       this.log(caption);
 
@@ -248,7 +248,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateSupportedFabloVersion(schemaUrl: string) {
+  _validateSupportedFabloVersion(schemaUrl: string): void {
     const version = config.getVersionFromSchemaUrl(schemaUrl);
     if (!config.isFabloVersionSupported(version)) {
       const msg = `Config file points to '${version}' Fablo version which is not supported. Supported versions are: ${config.supportedVersionPrefix}x`;
@@ -263,7 +263,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateOrdererCountForOrg(org: OrgJson) {
+  _validateOrdererCountForOrg(org: OrgJson): void {
     const numerOfOrderersInOrg = org.orderers?.flatMap((o) => o.instances).reduce((a, b) => a + b, 0);
     if (numerOfOrderersInOrg !== undefined && numerOfOrderersInOrg > 9) {
       const objectToEmit = {
@@ -274,13 +274,13 @@ export default class Validate extends Command {
     }
   }
 
-  _validateOrdererGroupNameUniqueForOrg(org: OrgJson) {
+  _validateOrdererGroupNameUniqueForOrg(org: OrgJson): void {
     if (!org.orderers?.length) return;
 
     const groupNames = org.orderers.flatMap((o) => o.groupName);
     const duplicatedGroupNames = findDuplicatedItems(groupNames.map((name) => `_${name}`));
 
-    Object.entries(duplicatedGroupNames).forEach(([_, names]) => {
+    Object.entries(duplicatedGroupNames).forEach(([, names]) => {
       names.forEach((name) => {
         const objectToEmit = {
           category: validationCategories.ORDERER,
@@ -291,7 +291,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
+  _validateOrdererCountForSoloType(orderers: OrdererJson[] | undefined, global: GlobalJson): void {
     if (orderers !== undefined) {
       orderers.forEach((orderer) => {
         if (orderer.type === "solo") {
@@ -315,7 +315,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, global: GlobalJson) {
+  _validateOrdererForRaftType(orderers: OrdererJson[] | undefined, global: GlobalJson): void {
     if (orderers !== undefined) {
       orderers
         .filter((o) => o.type === "raft")
@@ -346,7 +346,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateOrgsAnchorPeerInstancesCount(orgs: OrgJson[]) {
+  _validateOrgsAnchorPeerInstancesCount(orgs: OrgJson[]): void {
     orgs.forEach((org) => {
       const numberOfPeers = org.peer?.instances;
       const numberOfAnchorPeers = org.peer?.anchorPeerInstances;
@@ -363,7 +363,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChaincodes(capabilities: Capabilities, chaincodes: ChaincodeJson[]) {
+  _validateChaincodes(capabilities: Capabilities, chaincodes: ChaincodeJson[]): void {
     chaincodes.forEach((chaincode) => {
       if (!!chaincode.init && capabilities.isV2) {
         const objectToEmit = {
@@ -382,18 +382,20 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChaincodePackageLabels(chaincodes: ChaincodeJson[], channels: ChannelJson[]) {
+  _validateChaincodePackageLabels(chaincodes: ChaincodeJson[], channels: ChannelJson[]): void {
     const packageLabels = chaincodes.flatMap((chaincode) => {
       if (chaincode.lang !== "ccaas") return [];
 
       const channel = channels.find((ch) => ch.name === chaincode.channel);
       if (!channel) return [];
 
-      return channel.orgs.map((org) => createPackageLabel(org.name, chaincode.channel, chaincode.name, chaincode.version));
+      return channel.orgs.map((org) =>
+        createPackageLabel(org.name, chaincode.channel, chaincode.name, chaincode.version),
+      );
     });
     const duplicatedPackageLabels = findDuplicatedItems(packageLabels.map((label) => `_${label}`));
 
-    Object.entries(duplicatedPackageLabels).forEach(([_, labels]) => {
+    Object.entries(duplicatedPackageLabels).forEach(([, labels]) => {
       labels.forEach((label) => {
         const objectToEmit = {
           category: validationCategories.CHAINCODE,
@@ -404,7 +406,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChannelOrdererGroup(orgs: OrgJson[], channels: ChannelJson[]) {
+  _validateChannelOrdererGroup(orgs: OrgJson[], channels: ChannelJson[]): void {
     const groupNamesArr = orgs
       .flatMap((org) => org.orderers?.map((o) => o.groupName))
       .filter((name): name is string => name !== undefined);
@@ -421,7 +423,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChannelOrgPeers(channels: ChannelJson[], orgs: OrgJson[]) {
+  _validateChannelOrgPeers(channels: ChannelJson[], orgs: OrgJson[]): void {
     const isOrgWithoutPeers = (org: OrgJson): boolean => org.peer === undefined;
     const getOrgNames = (channel: ChannelJson): string[] => channel.orgs.map((o) => o.name);
     const isOrgInChannel = (org: OrgJson, orgsInChannel: string[]): boolean =>
@@ -443,11 +445,11 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChannelNames(channels: ChannelJson[]) {
+  _validateChannelNames(channels: ChannelJson[]): void {
     const channelNames = channels.map((ch) => ch.name);
     const duplicatedChannels = findDuplicatedItems(channelNames.map((name) => `_${name}`));
 
-    Object.entries(duplicatedChannels).forEach(([_, names]) => {
+    Object.entries(duplicatedChannels).forEach(([, names]) => {
       names.forEach((name) => {
         const objectToEmit = {
           category: validationCategories.CHANNEL,
@@ -458,7 +460,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateChaincodeNames(chaincodes: ChaincodeJson[]) {
+  _validateChaincodeNames(chaincodes: ChaincodeJson[]): void {
     const chaincodeKeys = chaincodes.map((ch) => `${ch.channel}_${ch.name}`);
     const duplicatedChaincodes = findDuplicatedItems(chaincodeKeys);
 
@@ -473,7 +475,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateIfSameOrdererTypeAcrossOrdererGroup(orgs: OrgJson[]) {
+  _validateIfSameOrdererTypeAcrossOrdererGroup(orgs: OrgJson[]): void {
     const isOrdererDefined = (org: OrgJson): boolean => org.orderers != undefined;
 
     const ordererBlocks = orgs.filter(isOrdererDefined).flatMap((orgs) => orgs.orderers as OrdererJson[]);
@@ -494,7 +496,7 @@ export default class Validate extends Command {
     });
   }
 
-  _validateIfOrdererDefinitionExists(orgs: OrgJson[]) {
+  _validateIfOrdererDefinitionExists(orgs: OrgJson[]): void {
     const numerOfOrdererBlocks = orgs.filter((org) => org.orderers !== undefined).length;
     if (numerOfOrdererBlocks < 1) {
       const objectToEmit = {
@@ -505,7 +507,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateOrgs(orgs: OrgJson[]) {
+  _validateOrgs(orgs: OrgJson[]): void {
     const isOrgWithoutPeers = (org: OrgJson): boolean => org.peer === undefined;
     const isOrgWithoutOrderers = (org: OrgJson): boolean => org.orderers === undefined;
 
@@ -641,7 +643,7 @@ export default class Validate extends Command {
     }
   }
 
-  _verifyFabricVersion(global: GlobalJson) {
+  _verifyFabricVersion(global: GlobalJson): void {
     if (!version(global.fabricVersion).isGreaterOrEqual("2.0.0")) {
       const message = `Fablo supports Fabric in version 2.0.0 and higher`;
       this.emit(validationErrorType.ERROR, { category: validationCategories.GENERAL, message });
