@@ -306,6 +306,10 @@ networkPrune() {
     "$FABLO_TARGET/fabric-k8s.sh" down
   fi
 
+  if [ -f "$FABLO_TARGET/fabric-x-docker.sh" ]; then
+    "$FABLO_TARGET/fabric-x-docker.sh" down
+  fi
+
   echo "Removing $FABLO_TARGET"
   rm -rf "$FABLO_TARGET"
 }
@@ -334,6 +338,11 @@ executeFabloCommand() {
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"
     "$FABLO_TARGET/fabric-k8s.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  elif [ -f "$FABLO_TARGET/fabric-x-docker.sh" ]; then
+    echo "Executing Fablo Fabric-X command: $1"
+    chmod +x "$FABLO_TARGET/fabric-x-docker.sh" || true
+    "$FABLO_TARGET/fabric-x-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+
   else
     echo "Error: Corrupted Fablo target directory ($FABLO_TARGET)"
     echo "Cannot execute command $1"
