@@ -19,21 +19,24 @@ COMPOSE_OVERRIDE ?=
 
 # Namespace init defaults
 NS      ?= mynamespace
-POLICY  ?= AND('Org1MSP.member','Org2MSP.member')
+POLICY  ?= AND(<%- orgs.filter(o => o.peers && o.peers.length > 0).length > 0 ? orgs.filter(o => o.peers && o.peers.length > 0).map(o => `'${o.name}MSP.member'`).join(',') : `'Orderer${orgs.find(o => o.ordererGroups && o.ordererGroups.length > 0).name}MSP.member'` %>)
 NETWORK ?= fabric-x
 
 # Init targets
 .PHONY: init
 init:
-	@rm -rf $(FABRICX_DIR)/crypto
+	@$(DOCKER) run --rm -v "$(FABRICX_DIR):/config" alpine sh -c 'rm -rf /config/crypto'
 	@# Routers and assemblers accept client certs from any peer org — concatenate all peer TLS CAs.
 	@$(DOCKER) run --rm \
 		$(RUN_AS) \
 		-v "$(FABRICX_DIR):/config" \
 		$(TOOLS_IMAGE) \
-		sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \
-			&& cat /config/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem \
-			       > /config/crypto/client-tls-ca.pem 2>/dev/null || true'
+		sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto || true'
+	@$(DOCKER) run --rm \
+		$(RUN_AS) \
+		-v "$(FABRICX_DIR):/config" \
+		alpine \
+		sh -c 'find /config/crypto -name "*tlsca*-cert.pem" -exec cat {} + > /config/crypto/client-tls-ca.pem'
 	@$(DOCKER) run --rm \
 		$(RUN_AS) \
 		-v "$(FABRICX_DIR):/config" \
@@ -53,26 +56,40 @@ init:
 
 .PHONY: clean
 clean:
-	@rm -rf $(FABRICX_DIR)/crypto
+	@$(DOCKER) run --rm -v "$(FABRICX_DIR):/config" alpine sh -c 'rm -rf /config/crypto /config/data'
 
-
-# Dev mode (all-in-one test committer, includes built-in orderer)
-.PHONY: start-dev
-start-dev:
+# Distributed mode
+.PHONY: start
+start:
 	@if [ ! -d "$(FABRICX_DIR)/crypto" ]; then echo "Error: crypto directory not found — run 'make init' first."; exit 1; fi
 	@if nc -z localhost 7050 2>/dev/null; then echo "Error: port 7050 is already in use."; exit 1; fi
+	@mkdir -p \
+<% orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0).forEach((org, index) => { %>		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-router \
+		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-batcher \
+		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-consenter \
+		$(FABRICX_DIR)/data/orderers/party<%= index + 1 %>-assembler \
+<% }) %><% orgs.filter(o => o.peers && o.peers.length > 0).forEach((org) => { %>		$(FABRICX_DIR)/data/committer-<%= org.name.toLowerCase() %>/db \
+		$(FABRICX_DIR)/data/committer-<%= org.name.toLowerCase() %>/ledger \
+<% }) %>		$(FABRICX_DIR)/data/dummy
 	@$(COMPOSE) -f $(FABRICX_DIR)/compose.test-committer.yaml up -d
-	@echo "Waiting for test committer to be ready..."
-	@while ! nc -z localhost 7001 2>/dev/null; do sleep 1; done
+<% if (orgs.filter(o => o.peers && o.peers.length > 0).length > 0) { -%>
+	@echo "Waiting for sidecars to be ready..."
+	@while ! nc -z localhost 4001 2>/dev/null; do sleep 1; done
+<% } -%>
 
-.PHONY: stop-dev
-stop-dev:
+.PHONY: stop
+stop:
 	@$(COMPOSE) -f $(FABRICX_DIR)/compose.test-committer.yaml down
 
-.PHONY: purge-dev
-purge-dev:
-	@$(COMPOSE) -f $(FABRICX_DIR)/compose.test-committer.yaml down -v
+.PHONY: purge
+purge:
+	@$(COMPOSE) -f $(FABRICX_DIR)/compose.test-committer.yaml down -v --remove-orphans
+	@$(DOCKER) run --rm -v "$(FABRICX_DIR):/config" alpine sh -c 'rm -rf /config/crypto /config/data'
 
+<%
+  const firstPeerOrg = orgs.find(o => o.peers && o.peers.length > 0) || { name: 'dummy', domain: 'dummy.com' };
+  const firstOrdererOrg = orgs.find(o => o.ordererGroups && o.ordererGroups.length > 0) || { name: 'dummy', domain: 'dummy.com' };
+%>
 # Namespace init
 define run-fxconfig
 	@$(DOCKER) run --rm --network $(NETWORK) \
@@ -80,10 +97,10 @@ define run-fxconfig
 		--env "FX_NS=$(NS)" \
 		--env "FX_POLICY=$(POLICY)" \
 		-v "$(FABRICX_DIR)/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/ordererOrganizations/orderer-org-1/msp/tlscacerts/tlsca.orderer-org-1-cert.pem:/orderer-tls-ca.pem:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/peers/fxconfig.<%= firstPeerOrg.domain %>/tls:/tls:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/users/User1@<%= firstPeerOrg.domain %>/msp:/msp:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/msp/tlscacerts/tlsca.<%= firstPeerOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/ordererOrganizations/<%= firstOrdererOrg.name %>/msp/tlscacerts/tlsca.<%= firstOrdererOrg.domain %>-cert.pem:/orderer-tls-ca.pem:ro,Z" \
 		$(TOOLS_IMAGE) \
 		sh -c 'fxconfig namespace list --config=/config/fxconfig.yaml 2>/dev/null | grep -q ") $$FX_NS:" || \
 		fxconfig namespace create "$$FX_NS" --policy="$$FX_POLICY" --endorse --submit --wait --config=/config/fxconfig.yaml'
@@ -94,30 +111,20 @@ list-namespaces:
 	@$(DOCKER) run --rm --network $(NETWORK) \
 		$(RUN_AS) \
 		-v "$(FABRICX_DIR)/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/ordererOrganizations/orderer-org-1/msp/tlscacerts/tlsca.orderer-org-1-cert.pem:/orderer-tls-ca.pem:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/peers/fxconfig.<%= firstPeerOrg.domain %>/tls:/tls:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/users/User1@<%= firstPeerOrg.domain %>/msp:/msp:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/peerOrganizations/<%= firstPeerOrg.domain %>/msp/tlscacerts/tlsca.<%= firstPeerOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+		-v "$(FABRICX_DIR)/crypto/ordererOrganizations/<%= firstOrdererOrg.name %>/msp/tlscacerts/tlsca.<%= firstOrdererOrg.domain %>-cert.pem:/orderer-tls-ca.pem:ro,Z" \
 		$(TOOLS_IMAGE) \
 		fxconfig namespace list --config=/config/fxconfig.yaml
 
-.PHONY: init-namespace-org1
-init-namespace-org1: POLICY = AND('Org1MSP.member')
-init-namespace-org1:
+<% channels.forEach((channel) => { %>
+.PHONY: init-namespace-<%= channel.name %>
+init-namespace-<%= channel.name %>: NS = <%= channel.name %>
+init-namespace-<%= channel.name %>: POLICY = AND(<%- channel.orgs.map(o => `'${o.name}MSP.member'`).join(',') %>)
+init-namespace-<%= channel.name %>:
 	$(run-fxconfig)
+<% }) %>
 
-.PHONY: init-namespace
-init-namespace:
-	$(run-fxconfig)
-
-.PHONY: transaction-submit
-transaction-submit:
-	@$(DOCKER) run --rm --network $(NETWORK) \
-		$(RUN_AS) \
-		-v "$(FABRICX_DIR)/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
-		-v "$(FABRICX_DIR)/crypto/ordererOrganizations/orderer-org-1/msp/tlscacerts/tlsca.orderer-org-1-cert.pem:/orderer-tls-ca.pem:ro,Z" \
-		$(TOOLS_IMAGE) \
-		fxconfig transaction submit --config=/config/fxconfig.yaml --namespace $(NS) --payload "Hello Fabric-X!"
+.PHONY: init-namespaces
+init-namespaces: <% channels.forEach((channel) => { %>init-namespace-<%= channel.name %> <% }) %>

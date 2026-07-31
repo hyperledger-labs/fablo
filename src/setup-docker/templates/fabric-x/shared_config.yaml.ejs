@@ -2,109 +2,36 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Arma Shared Configuration for the 4-party devnet.
+# Arma Shared Configuration for the dynamic devnet.
 # Cert paths are absolute inside the Docker container (config/crypto/ mounted at /crypto).
-
+<% const ordererOrgs = orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0); %>
 Parties:
-  - PartyID: 1
+<% ordererOrgs.forEach((org, index) => { %>
+  - PartyID: <%= index + 1 %>
     CACerts:
-      - /crypto/ordererOrganizations/orderer-org-1/msp/cacerts/ca.orderer-org-1-cert.pem
+      - /crypto/ordererOrganizations/<%= org.domain %>/msp/cacerts/ca.<%= org.domain %>-cert.pem
     TLSCACerts:
-      - /crypto/ordererOrganizations/orderer-org-1/msp/tlscacerts/tlsca.orderer-org-1-cert.pem
+      - /crypto/ordererOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem
     RouterConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/router.orderer-org-1/tls/server.crt
-      Host: orderer-party1-router
-      Port: 7050
+      TLSCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/router.<%= org.domain %>/tls/server.crt
+      Host: <%= org.name.toLowerCase() %>-router
+      Port: <%= 7050 + (index * 100) %>
     BatchersConfig:
       - ShardID: 1
-        SignCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/batcher1.orderer-org-1/msp/signcerts/batcher1.orderer-org-1-cert.pem
-        TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/batcher1.orderer-org-1/tls/server.crt
-        Host: orderer-party1-batcher
-        Port: 7051
+        SignCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/batcher1.<%= org.domain %>/msp/signcerts/batcher1.<%= org.domain %>-cert.pem
+        TLSCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/batcher1.<%= org.domain %>/tls/server.crt
+        Host: <%= org.name.toLowerCase() %>-batcher
+        Port: <%= 7051 + (index * 100) %>
     ConsenterConfig:
-      SignCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/msp/signcerts/consenter.orderer-org-1-cert.pem
-      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/tls/server.crt
-      Host: orderer-party1-consenter
-      Port: 7052
+      SignCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/msp/signcerts/consenter.<%= org.domain %>-cert.pem
+      TLSCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/tls/server.crt
+      Host: <%= org.name.toLowerCase() %>-consenter
+      Port: <%= 7052 + (index * 100) %>
     AssemblerConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-1/orderers/party1/assembler.orderer-org-1/tls/server.crt
-      Host: orderer-party1-assembler
-      Port: 7053
-
-  - PartyID: 2
-    CACerts:
-      - /crypto/ordererOrganizations/orderer-org-2/msp/cacerts/ca.orderer-org-2-cert.pem
-    TLSCACerts:
-      - /crypto/ordererOrganizations/orderer-org-2/msp/tlscacerts/tlsca.orderer-org-2-cert.pem
-    RouterConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/router.orderer-org-2/tls/server.crt
-      Host: orderer-party2-router
-      Port: 7150
-    BatchersConfig:
-      - ShardID: 1
-        SignCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/batcher1.orderer-org-2/msp/signcerts/batcher1.orderer-org-2-cert.pem
-        TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/batcher1.orderer-org-2/tls/server.crt
-        Host: orderer-party2-batcher
-        Port: 7151
-    ConsenterConfig:
-      SignCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/msp/signcerts/consenter.orderer-org-2-cert.pem
-      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/tls/server.crt
-      Host: orderer-party2-consenter
-      Port: 7152
-    AssemblerConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-2/orderers/party2/assembler.orderer-org-2/tls/server.crt
-      Host: orderer-party2-assembler
-      Port: 7153
-
-  - PartyID: 3
-    CACerts:
-      - /crypto/ordererOrganizations/orderer-org-3/msp/cacerts/ca.orderer-org-3-cert.pem
-    TLSCACerts:
-      - /crypto/ordererOrganizations/orderer-org-3/msp/tlscacerts/tlsca.orderer-org-3-cert.pem
-    RouterConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/router.orderer-org-3/tls/server.crt
-      Host: orderer-party3-router
-      Port: 7250
-    BatchersConfig:
-      - ShardID: 1
-        SignCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/batcher1.orderer-org-3/msp/signcerts/batcher1.orderer-org-3-cert.pem
-        TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/batcher1.orderer-org-3/tls/server.crt
-        Host: orderer-party3-batcher
-        Port: 7251
-    ConsenterConfig:
-      SignCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/msp/signcerts/consenter.orderer-org-3-cert.pem
-      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/tls/server.crt
-      Host: orderer-party3-consenter
-      Port: 7252
-    AssemblerConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-3/orderers/party3/assembler.orderer-org-3/tls/server.crt
-      Host: orderer-party3-assembler
-      Port: 7253
-
-  - PartyID: 4
-    CACerts:
-      - /crypto/ordererOrganizations/orderer-org-4/msp/cacerts/ca.orderer-org-4-cert.pem
-    TLSCACerts:
-      - /crypto/ordererOrganizations/orderer-org-4/msp/tlscacerts/tlsca.orderer-org-4-cert.pem
-    RouterConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/router.orderer-org-4/tls/server.crt
-      Host: orderer-party4-router
-      Port: 7350
-    BatchersConfig:
-      - ShardID: 1
-        SignCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/batcher1.orderer-org-4/msp/signcerts/batcher1.orderer-org-4-cert.pem
-        TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/batcher1.orderer-org-4/tls/server.crt
-        Host: orderer-party4-batcher
-        Port: 7351
-    ConsenterConfig:
-      SignCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/msp/signcerts/consenter.orderer-org-4-cert.pem
-      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/tls/server.crt
-      Host: orderer-party4-consenter
-      Port: 7352
-    AssemblerConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer-org-4/orderers/party4/assembler.orderer-org-4/tls/server.crt
-      Host: orderer-party4-assembler
-      Port: 7353
+      TLSCert: /crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/assembler.<%= org.domain %>/tls/server.crt
+      Host: <%= org.name.toLowerCase() %>-assembler
+      Port: <%= 7053 + (index * 100) %>
+<% }) %>
 
 Consensus:
   SmartBFT:
@@ -137,4 +64,4 @@ Batching:
     PreferredMaxBytes: 2097152
   RequestMaxBytes: 1048576
 
-MaxPartyID: 4
+MaxPartyID: <%= ordererOrgs.length %>

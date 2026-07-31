@@ -1,125 +1,48 @@
-#
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+<% const ordererOrgs = orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0); %>
+<% const peerOrgs = orgs.filter(o => o.peers && o.peers.length > 0); %>
 ---
 Organizations:
-  - &OrdererOrg1MSP
-    Name: orderer-org-1
+<% ordererOrgs.forEach((org, index) => { %>
+  - &Orderer<%= org.name %>MSP
+    Name: <%= org.name %>
     SkipAsForeign: false
-    ID: OrdererOrg1MSP
-    MSPDir: ./crypto/ordererOrganizations/orderer-org-1/msp
+    ID: Orderer<%= org.name %>MSP
+    MSPDir: ./crypto/ordererOrganizations/<%= org.domain %>/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('OrdererOrg1MSP.member')
+        Rule: OR('Orderer<%= org.name %>MSP.member')
       Writers:
         Type: Signature
-        Rule: OR('OrdererOrg1MSP.member')
+        Rule: OR('Orderer<%= org.name %>MSP.member')
       Admins:
         Type: Signature
-        Rule: OR('OrdererOrg1MSP.admin')
+        Rule: OR('Orderer<%= org.name %>MSP.admin')
     OrdererEndpoints:
-      - id=0,broadcast,orderer-party1-router:7050
-      - id=0,deliver,orderer-party1-assembler:7053
+      - id=<%= index %>,broadcast,<%= org.name.toLowerCase() %>-router:7<%= index %>50
+      - id=<%= index %>,deliver,<%= org.name.toLowerCase() %>-assembler:7<%= index %>53
+<% }) %>
 
-  - &OrdererOrg2MSP
-    Name: orderer-org-2
-    SkipAsForeign: false
-    ID: OrdererOrg2MSP
-    MSPDir: ./crypto/ordererOrganizations/orderer-org-2/msp
+<% peerOrgs.forEach((org) => { %>
+  - &<%= org.name %>MSP
+    Name: <%= org.name %>
+    ID: <%= org.name %>MSP
+    MSPDir: ./crypto/peerOrganizations/<%= org.domain %>/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('OrdererOrg2MSP.member')
+        Rule: OR('<%= org.name %>MSP.member')
       Writers:
         Type: Signature
-        Rule: OR('OrdererOrg2MSP.member')
-      Admins:
-        Type: Signature
-        Rule: OR('OrdererOrg2MSP.admin')
-    OrdererEndpoints:
-      - id=1,broadcast,orderer-party2-router:7150
-      - id=1,deliver,orderer-party2-assembler:7153
-
-  - &OrdererOrg3MSP
-    Name: orderer-org-3
-    SkipAsForeign: false
-    ID: OrdererOrg3MSP
-    MSPDir: ./crypto/ordererOrganizations/orderer-org-3/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: OR('OrdererOrg3MSP.member')
-      Writers:
-        Type: Signature
-        Rule: OR('OrdererOrg3MSP.member')
-      Admins:
-        Type: Signature
-        Rule: OR('OrdererOrg3MSP.admin')
-    OrdererEndpoints:
-      - id=2,broadcast,orderer-party3-router:7250
-      - id=2,deliver,orderer-party3-assembler:7253
-
-  - &OrdererOrg4MSP
-    Name: orderer-org-4
-    SkipAsForeign: false
-    ID: OrdererOrg4MSP
-    MSPDir: ./crypto/ordererOrganizations/orderer-org-4/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: OR('OrdererOrg4MSP.member')
-      Writers:
-        Type: Signature
-        Rule: OR('OrdererOrg4MSP.member')
-      Admins:
-        Type: Signature
-        Rule: OR('OrdererOrg4MSP.admin')
-    OrdererEndpoints:
-      - id=3,broadcast,orderer-party4-router:7350
-      - id=3,deliver,orderer-party4-assembler:7353
-
-  - &Org1MSP
-    Name: Org1
-    ID: Org1MSP
-    MSPDir: ./crypto/peerOrganizations/org1.example.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: OR('Org1MSP.member')
-      Writers:
-        Type: Signature
-        Rule: OR('Org1MSP.member')
+        Rule: OR('<%= org.name %>MSP.member')
       Endorsement:
         Type: Signature
-        Rule: OR('Org1MSP.member')
+        Rule: OR('<%= org.name %>MSP.member')
       Admins:
         Type: Signature
-        Rule: OR('Org1MSP.admin')
+        Rule: OR('<%= org.name %>MSP.admin')
     AnchorPeers:
-
-
-  - &Org2MSP
-    Name: Org2
-    ID: Org2MSP
-    MSPDir: ./crypto/peerOrganizations/org2.example.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: OR('Org2MSP.member')
-      Writers:
-        Type: Signature
-        Rule: OR('Org2MSP.member')
-      Endorsement:
-        Type: Signature
-        Rule: OR('Org2MSP.member')
-      Admins:
-        Type: Signature
-        Rule: OR('Org2MSP.admin')
-    AnchorPeers:
-
+<% }) %>
 
 Capabilities:
   Channel: &ChannelCapabilities
@@ -151,8 +74,9 @@ Application: &ApplicationDefaults
     event/Block: /Channel/Application/Readers
     event/FilteredBlock: /Channel/Application/Readers
   Organizations:
-    - *Org1MSP
-    - *Org2MSP
+<% peerOrgs.forEach((org) => { %>
+    - *<%= org.name %>MSP
+<% }) %>
   Policies:
     Readers:
       Type: ImplicitMeta
@@ -168,7 +92,7 @@ Application: &ApplicationDefaults
       Rule: ANY Endorsement
     LifecycleEndorsement:
       Type: Signature
-      Rule: OR('Org1MSP.member','Org2MSP.member')
+      Rule: OR(<%- peerOrgs.length > 0 ? peerOrgs.map(org => `'${org.name}MSP.member'`).join(',') : `'Orderer${ordererOrgs[0].name}MSP.member'` %>)
   Capabilities:
     <<: *ApplicationCapabilities
 
@@ -181,39 +105,19 @@ Orderer: &OrdererDefaults
     PreferredMaxBytes: 4 MB
   MaxChannels: 0
   ConsenterMapping:
-    - ID: 1
-      Host: orderer-party1-consenter
-      Port: 7052
-      MSPID: OrdererOrg1MSP
-      Identity: ./crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/msp/signcerts/consenter.orderer-org-1-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/orderer-org-1/orderers/party1/consenter.orderer-org-1/tls/server.crt
-    - ID: 2
-      Host: orderer-party2-consenter
-      Port: 7152
-      MSPID: OrdererOrg2MSP
-      Identity: ./crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/msp/signcerts/consenter.orderer-org-2-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/orderer-org-2/orderers/party2/consenter.orderer-org-2/tls/server.crt
-    - ID: 3
-      Host: orderer-party3-consenter
-      Port: 7252
-      MSPID: OrdererOrg3MSP
-      Identity: ./crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/msp/signcerts/consenter.orderer-org-3-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/orderer-org-3/orderers/party3/consenter.orderer-org-3/tls/server.crt
-    - ID: 4
-      Host: orderer-party4-consenter
-      Port: 7352
-      MSPID: OrdererOrg4MSP
-      Identity: ./crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/msp/signcerts/consenter.orderer-org-4-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/orderer-org-4/orderers/party4/consenter.orderer-org-4/tls/server.crt
+<% ordererOrgs.forEach((org, index) => { %>
+    - ID: <%= index + 1 %>
+      Host: <%= org.name.toLowerCase() %>-consenter
+      Port: 7<%= index %>52
+      MSPID: Orderer<%= org.name %>MSP
+      Identity: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/msp/signcerts/consenter.<%= org.domain %>-cert.pem
+      ClientTLSCert: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/tls/server.crt
+      ServerTLSCert: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/tls/server.crt
+<% }) %>
   Organizations:
-    - *OrdererOrg1MSP
-    - *OrdererOrg2MSP
-    - *OrdererOrg3MSP
-    - *OrdererOrg4MSP
+<% ordererOrgs.forEach((org) => { %>
+    - *Orderer<%= org.name %>MSP
+<% }) %>
   Policies:
     Readers:
       Type: ImplicitMeta

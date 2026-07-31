@@ -16,7 +16,7 @@ monitoring:
 
 verifier:
   endpoints:
-    - committer-verifier:5001
+    - committer-<%= org.name.toLowerCase() %>-verifier:5001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt
@@ -26,7 +26,7 @@ verifier:
 
 validator-committer:
   endpoints:
-    - committer-validator:6001
+    - committer-<%= org.name.toLowerCase() %>-validator:6001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt

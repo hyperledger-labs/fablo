@@ -10,14 +10,20 @@ server:
     ca-cert-paths:
       - /org-tls-ca.pem
 monitoring:
-  endpoint: :2115
+  endpoint: :2116
   tls:
     mode: none
 
-batch-size-cutoff: 50
-batch-time-cutoff: 1ms
-channel-buffer-size: 50
-parallelism: 40
+tx-signature:
+  num-of-parallel-workers: 3
+
+identity:
+  msp-dir: /msp
+  bccsp:
+    Default: SW
+    SW:
+      Security: 256
+      Hash: SHA2
 
 logging:
   logSpec: info:grpc=error

@@ -76,7 +76,8 @@ export default class SetupDocker extends Command {
       await this._copyFabricXDevnetTemplates(configExtended);
       
       this.log("Done & done !!! Try the network out: ");
-      this.log("-> cd fabric-x && docker-compose -f compose.test-committer.yaml up");
+      this.log("-> cd fabric-x");
+      this.log("-> make init && make start");
       return;
     }
 
@@ -308,8 +309,8 @@ export default class SetupDocker extends Command {
     }
   }
 
-  async _copyFabricXDevnetTemplates(config: FabloConfigExtended): Promise<void> {
-    const files = [
+  async _copyFabricXDevnetTemplates(configExtended: FabloConfigExtended): Promise<void> {
+    const staticFiles = [
       "compose.test-committer.yaml",
       "crypto-config.yaml",
       "configtx.yaml",
@@ -317,18 +318,41 @@ export default class SetupDocker extends Command {
       "fxconfig.yaml",
       "Makefile",
       ".gitignore",
-      "config/mock-orderer.yaml",
-      "config/committer-sidecar-dev.yaml",
-      "config/committer-coordinator.yaml",
-      "config/committer-verifier.yaml",
-      "config/committer-validator.yaml",
-      "config/committer-query-service.yaml",
     ];
 
-    for (const file of files) {
+    for (const file of staticFiles) {
       const templatePath = getTemplatePath(this.templatesDir, `fabric-x/${file}.ejs`);
       const destPath = getDestinationPath(this.outputDir, `fabric-x/${file}`);
-      await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
+      await renderTemplate(templatePath, destPath, configExtended as unknown as Record<string, unknown>);
+    }
+
+    // 1. Loop over Orderers
+    const ordererOrgs = configExtended.orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0);
+    for (let index = 0; index < ordererOrgs.length; index++) {
+      const org = ordererOrgs[index];
+      const partyId = index + 1;
+      const partyName = `party${partyId}`;
+      const localMspId = `${org.name}MSP`;
+      
+      const ordererTemplates = ["router", "batcher", "consenter", "assembler"];
+      for (const tpl of ordererTemplates) {
+        const templatePath = getTemplatePath(this.templatesDir, `fabric-x/config/${tpl}.yaml.ejs`);
+        const destPath = getDestinationPath(this.outputDir, `fabric-x/config/${partyName}-${tpl}.yaml`);
+        await renderTemplate(templatePath, destPath, { partyId, localMspId });
+      }
+    }
+
+    // 2. Loop over Peers
+    const peerOrgs = configExtended.orgs.filter(o => o.peers && o.peers.length > 0);
+    for (const org of peerOrgs) {
+      const orgName = org.name.toLowerCase();
+      
+      const committerTemplates = ["sidecar", "coordinator", "validator", "verifier", "query-service"];
+      for (const tpl of committerTemplates) {
+        const templatePath = getTemplatePath(this.templatesDir, `fabric-x/config/${tpl}.yaml.ejs`);
+        const destPath = getDestinationPath(this.outputDir, `fabric-x/config/${orgName}-${tpl}.yaml`);
+        await renderTemplate(templatePath, destPath, { org, configExtended });
+      }
     }
   }
 }

@@ -1,42 +1,43 @@
 ---
 OrdererOrgs:
-  - Name: orderer-org-1
-    Domain: orderer-org-1
+<% orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0).forEach((org, index) => { %>
+  - Name: <%= org.name %>
+    Domain: <%= org.domain %>
     EnableNodeOUs: false
     CA:
       Hostname: ca
     Specs:
       - Hostname: router
-        Party: party1
+        Party: party<%= index + 1 %>
         SANS:
-          - orderer-party1-router
+          - <%= org.name.toLowerCase() %>-router
           - host.docker.internal
           - 0.0.0.0
           - localhost
           - 127.0.0.1
           - ::1
       - Hostname: batcher1
-        Party: party1
+        Party: party<%= index + 1 %>
         SANS:
-          - orderer-party1-batcher
+          - <%= org.name.toLowerCase() %>-batcher
           - host.docker.internal
           - 0.0.0.0
           - localhost
           - 127.0.0.1
           - ::1
       - Hostname: consenter
-        Party: party1
+        Party: party<%= index + 1 %>
         SANS:
-          - orderer-party1-consenter
+          - <%= org.name.toLowerCase() %>-consenter
           - host.docker.internal
           - 0.0.0.0
           - localhost
           - 127.0.0.1
           - ::1
       - Hostname: assembler
-        Party: party1
+        Party: party<%= index + 1 %>
         SANS:
-          - orderer-party1-assembler
+          - <%= org.name.toLowerCase() %>-assembler
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -44,145 +45,12 @@ OrdererOrgs:
           - ::1
     Users:
       Count: 1
-
-  - Name: orderer-org-2
-    Domain: orderer-org-2
-    EnableNodeOUs: false
-    CA:
-      Hostname: ca
-    Specs:
-      - Hostname: router
-        Party: party2
-        SANS:
-          - orderer-party2-router
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: batcher1
-        Party: party2
-        SANS:
-          - orderer-party2-batcher
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: consenter
-        Party: party2
-        SANS:
-          - orderer-party2-consenter
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: assembler
-        Party: party2
-        SANS:
-          - orderer-party2-assembler
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-    Users:
-      Count: 1
-
-  - Name: orderer-org-3
-    Domain: orderer-org-3
-    EnableNodeOUs: false
-    CA:
-      Hostname: ca
-    Specs:
-      - Hostname: router
-        Party: party3
-        SANS:
-          - orderer-party3-router
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: batcher1
-        Party: party3
-        SANS:
-          - orderer-party3-batcher
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: consenter
-        Party: party3
-        SANS:
-          - orderer-party3-consenter
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: assembler
-        Party: party3
-        SANS:
-          - orderer-party3-assembler
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-    Users:
-      Count: 1
-
-  - Name: orderer-org-4
-    Domain: orderer-org-4
-    EnableNodeOUs: false
-    CA:
-      Hostname: ca
-    Specs:
-      - Hostname: router
-        Party: party4
-        SANS:
-          - orderer-party4-router
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: batcher1
-        Party: party4
-        SANS:
-          - orderer-party4-batcher
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: consenter
-        Party: party4
-        SANS:
-          - orderer-party4-consenter
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: assembler
-        Party: party4
-        SANS:
-          - orderer-party4-assembler
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-    Users:
-      Count: 1
+<% }) %>
 
 PeerOrgs:
-  - Name: Org1
-    Domain: org1.example.com
+<% orgs.filter(o => o.peers && o.peers.length > 0).forEach((org) => { %>
+  - Name: <%= org.name %>
+    Domain: <%= org.domain %>
     EnableNodeOUs: false
     CA:
       hostname: ca
@@ -193,9 +61,13 @@ PeerOrgs:
         - ::1
     Users:
       Count: 1
+      Specs:
+        - Name: channel_admin
+          HSM: false
     Specs:
       - Hostname: committer-sidecar
         SANS:
+          - committer-<%= org.name.toLowerCase() %>-sidecar
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -203,6 +75,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-coordinator
         SANS:
+          - committer-<%= org.name.toLowerCase() %>-coordinator
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -210,6 +83,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-validator
         SANS:
+          - committer-<%= org.name.toLowerCase() %>-validator
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -217,6 +91,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-verifier
         SANS:
+          - committer-<%= org.name.toLowerCase() %>-verifier
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -224,6 +99,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-query-service
         SANS:
+          - committer-<%= org.name.toLowerCase() %>-query-service
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -243,71 +119,4 @@ PeerOrgs:
           - localhost
           - 127.0.0.1
           - ::1
-      - Hostname: committer-test
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-          # SANs covering all Docker aliases in compose.test-committer.yaml
-          - committer-sidecar
-          - committer-query-service
-          - orderer-party1-router
-          - orderer-party1-assembler
-
-  - Name: Org2
-    Domain: org2.example.com
-    EnableNodeOUs: false
-    CA:
-      hostname: ca
-      SANS:
-        - 0.0.0.0
-        - localhost
-        - 127.0.0.1
-        - ::1
-    Users:
-      Count: 1
-    Specs:
-      - Hostname: committer-org2-sidecar
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: committer-org2-coordinator
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: committer-org2-validator
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: committer-org2-verifier
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: committer-org2-query-service
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: endorser
-        SANS:
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
+<% }) %>

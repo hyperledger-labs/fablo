@@ -1,12 +1,15 @@
-logging:
+<%
+  const firstPeerOrg = orgs.find(o => o.peers && o.peers.length > 0);
+  const firstOrdererOrg = orgs.find(o => o.ordererGroups && o.ordererGroups.length > 0);
+%>logging:
   level: info
 
 msp:
-  localMspID: Org1MSP
+  localMspID: <%= firstPeerOrg ? firstPeerOrg.name : 'Org1' %>MSP
   configPath: /msp
 
 orderer:
-  address: orderer-party1-router:7050
+  address: <%= firstOrdererOrg.name.toLowerCase() %>-router:7050
   channel: mychannel
   tls:
     enabled: true
@@ -17,7 +20,7 @@ orderer:
       - /org-tls-ca.pem      # dev: test-committer uses a peer cert
 
 queries:
-  address: committer-query-service:7001
+  address: committer-<%= firstPeerOrg ? firstPeerOrg.name.toLowerCase() : 'org1' %>-query-service:7001
   tls:
     enabled: true
     clientCert: /tls/server.crt
@@ -26,7 +29,7 @@ queries:
       - /org-tls-ca.pem
 
 notifications:
-  address: committer-sidecar:4001
+  address: committer-<%= firstPeerOrg ? firstPeerOrg.name.toLowerCase() : 'org1' %>-sidecar:4001
   tls:
     enabled: true
     clientCert: /tls/server.crt
