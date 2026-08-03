@@ -1,48 +1,48 @@
-<% const ordererOrgs = orgs.filter(o => o.ordererGroups && o.ordererGroups.length > 0); %>
-<% const peerOrgs = orgs.filter(o => o.peers && o.peers.length > 0); %>
+
+
 ---
 Organizations:
-<% ordererOrgs.forEach((org, index) => { %>
-  - &Orderer<%= org.name %>MSP
-    Name: <%= org.name %>
+
+  - &OrdererOrdererMSP
+    Name: Orderer
     SkipAsForeign: false
-    ID: Orderer<%= org.name %>MSP
-    MSPDir: ./crypto/ordererOrganizations/<%= org.domain %>/msp
+    ID: OrdererOrdererMSP
+    MSPDir: ./crypto/ordererOrganizations/orderer.example.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('Orderer<%= org.name %>MSP.member')
+        Rule: OR('OrdererOrdererMSP.member')
       Writers:
         Type: Signature
-        Rule: OR('Orderer<%= org.name %>MSP.member')
+        Rule: OR('OrdererOrdererMSP.member')
       Admins:
         Type: Signature
-        Rule: OR('Orderer<%= org.name %>MSP.admin')
+        Rule: OR('OrdererOrdererMSP.admin')
     OrdererEndpoints:
-      - id=<%= index %>,broadcast,<%= org.name.toLowerCase() %>-router:7<%= index %>50
-      - id=<%= index %>,deliver,<%= org.name.toLowerCase() %>-assembler:7<%= index %>53
-<% }) %>
+      - id=0,broadcast,orderer-router:7050
+      - id=0,deliver,orderer-assembler:7053
 
-<% peerOrgs.forEach((org) => { %>
-  - &<%= org.name %>MSP
-    Name: <%= org.name %>
-    ID: <%= org.name %>MSP
-    MSPDir: ./crypto/peerOrganizations/<%= org.domain %>/msp
+
+
+  - &Org1MSP
+    Name: Org1
+    ID: Org1MSP
+    MSPDir: ./crypto/peerOrganizations/org1.example.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('<%= org.name %>MSP.member')
+        Rule: OR('Org1MSP.member')
       Writers:
         Type: Signature
-        Rule: OR('<%= org.name %>MSP.member')
+        Rule: OR('Org1MSP.member')
       Endorsement:
         Type: Signature
-        Rule: OR('<%= org.name %>MSP.member')
+        Rule: OR('Org1MSP.member')
       Admins:
         Type: Signature
-        Rule: OR('<%= org.name %>MSP.admin')
+        Rule: OR('Org1MSP.admin')
     AnchorPeers:
-<% }) %>
+
 
 Capabilities:
   Channel: &ChannelCapabilities
@@ -74,9 +74,9 @@ Application: &ApplicationDefaults
     event/Block: /Channel/Application/Readers
     event/FilteredBlock: /Channel/Application/Readers
   Organizations:
-<% peerOrgs.forEach((org) => { %>
-    - *<%= org.name %>MSP
-<% }) %>
+
+    - *Org1MSP
+
   Policies:
     Readers:
       Type: ImplicitMeta
@@ -92,7 +92,7 @@ Application: &ApplicationDefaults
       Rule: ANY Endorsement
     LifecycleEndorsement:
       Type: Signature
-      Rule: OR(<%- peerOrgs.length > 0 ? peerOrgs.map(org => `'${org.name}MSP.member'`).join(',') : `'Orderer${ordererOrgs[0].name}MSP.member'` %>)
+      Rule: OR('Org1MSP.member')
   Capabilities:
     <<: *ApplicationCapabilities
 
@@ -105,19 +105,19 @@ Orderer: &OrdererDefaults
     PreferredMaxBytes: 4 MB
   MaxChannels: 0
   ConsenterMapping:
-<% ordererOrgs.forEach((org, index) => { %>
-    - ID: <%= index + 1 %>
-      Host: <%= org.name.toLowerCase() %>-consenter
-      Port: 7<%= index %>52
-      MSPID: Orderer<%= org.name %>MSP
-      Identity: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/msp/signcerts/consenter.<%= org.domain %>-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/<%= org.domain %>/orderers/party<%= index + 1 %>/consenter.<%= org.domain %>/tls/server.crt
-<% }) %>
+
+    - ID: 1
+      Host: orderer-consenter
+      Port: 7052
+      MSPID: OrdererOrdererMSP
+      Identity: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp/signcerts/consenter.orderer.example.com-cert.pem
+      ClientTLSCert: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
+      ServerTLSCert: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
+
   Organizations:
-<% ordererOrgs.forEach((org) => { %>
-    - *Orderer<%= org.name %>MSP
-<% }) %>
+
+    - *OrdererOrdererMSP
+
   Policies:
     Readers:
       Type: ImplicitMeta
