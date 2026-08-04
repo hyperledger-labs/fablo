@@ -54,7 +54,7 @@ You can also override generated fields with `--set`:
 
 ```
 fablo init --set global.fabricVersion=2.5.0
-fablo init --set global.tls=false --set orgs[1].peer.db=CouchDb
+fablo init --set global.monitoring.loglevel=debug --set orgs[1].peer.db=CouchDb
 fablo init node --set orgs[1].peer.instances=5
 ```
 

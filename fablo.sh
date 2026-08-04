@@ -261,6 +261,7 @@ initConfig() {
   executeOnFabloDocker "init$args"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
+
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   executeOnFabloDocker "validate" "" "$fablo_config"
@@ -395,6 +396,7 @@ elif [ "$COMMAND" = "use" ]; then
 elif [ "$COMMAND" = "init" ]; then
   shift
   initConfig "$@"
+
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"
 

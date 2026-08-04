@@ -208,7 +208,7 @@ fablo chaincodes list <peer> <channel>
 **Arguments:**
 | Argument | Required | Description |
 |---|---|---|
-| `peer` | Yes | Peer to list installed chaincodes for. |
+| `peer` | Yes | Peer to list installed chaincodes for (requires full address, like `peer0.org1.example.com`). |
 | `channel` | Yes | Channel to list installed chaincodes for. |
 
 

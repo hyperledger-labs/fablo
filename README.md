@@ -149,7 +149,7 @@ Review the files before committing to version control.
 fablo up [/path/to/fablo-config.json|yaml]
 ```
 
-Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and instantiates chaincodes.
+Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and deploys chaincodes (package / install / approve / commit).
 If no configuration exists, it will call the `generate` command for the given config file.
 
 ### down, start, stop
