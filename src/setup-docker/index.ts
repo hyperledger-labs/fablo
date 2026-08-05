@@ -324,6 +324,7 @@ export default class SetupDocker extends Command {
       "crypto-config.yaml",
       "configtx.yaml",
       "shared_config.yaml",
+      ".gitignore",
     ];
 
     for (const file of staticFiles) {
@@ -341,7 +342,7 @@ export default class SetupDocker extends Command {
       "committer-query-service.yaml",
       "committer-sidecar-dev.yaml",
       "committer-validator.yaml",
-      "committer-verifier.yaml"
+      "committer-verifier.yaml",
     ];
 
     for (const config of staticConfigs) {
