@@ -70,17 +70,6 @@ export default class SetupDocker extends Command {
     this.log(`Fabric version is: ${global.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
 
-    // ======= Fabric-X =================================================================
-    if (configExtended.global.provider === "fabric-x") {
-      this.log(`Detected Fabric-X configuration, generating Fabric-X devnet...`);
-      await this._copyFabricXDevnetTemplates(configExtended);
-
-      this.log("Done & done !!! Try the network out: ");
-      this.log("-> cd fabric-x");
-      this.log("-> make init && make start");
-      return;
-    }
-
     // ======= fabric-config ============================================================
     await this._copyOrgCryptoConfig(orgs);
     await this._createConnectionProfiles(global, orgs, channels, configExtended.ordererGroups);
@@ -144,15 +133,9 @@ export default class SetupDocker extends Command {
     for (const org of orgsTransformed) {
       const connectionProfile = createConnectionProfile(global, org, orgsTransformed, channels, ordererGroups);
       const orgName = org.name.toLowerCase();
-      const jsonPath = getDestinationPath(
-        this.outputDir,
-        `fabric-config/connection-profiles/connection-profile-${orgName}.json`,
-      );
-      const yamlPath = getDestinationPath(
-        this.outputDir,
-        `fabric-config/connection-profiles/connection-profile-${orgName}.yaml`,
-      );
-
+      const jsonPath = getDestinationPath(this.outputDir, `fabric-config/connection-profiles/connection-profile-${orgName}.json`);
+      const yamlPath = getDestinationPath(this.outputDir, `fabric-config/connection-profiles/connection-profile-${orgName}.yaml`);
+      
       await fs.ensureDir(path.dirname(jsonPath));
       await fs.writeJSON(jsonPath, connectionProfile, { spaces: 2 });
       await fs.writeFile(yamlPath, yaml.dump(connectionProfile), "utf-8");
@@ -170,49 +153,46 @@ export default class SetupDocker extends Command {
     }
   }
 
-  async _createExplorerMaterial(
-    global: Global,
-    orgsTransformed: OrgConfig[],
-    channels: ChannelConfig[],
-  ): Promise<void> {
-    try {
-      // Create explorer directory first
-      const explorerDir = getDestinationPath(this.outputDir, "fabric-config/explorer");
-      await fs.ensureDir(explorerDir);
 
-      if (!explorerDir) {
-        this.log("Error: Explorer directory path is undefined");
-        return;
-      }
+  async _createExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): Promise<void> {
+  try {
+    // Create explorer directory first
+    const explorerDir = getDestinationPath(this.outputDir, "fabric-config/explorer");
+    await fs.ensureDir(explorerDir);
 
-      const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
-      const orgWithChannels = pairOrgWithChannels(orgs, channels);
-
-      for (const p of orgWithChannels) {
-        if (global.tools?.explorer !== undefined || p.org.tools?.explorer !== undefined) {
-          const connectionProfile = createExplorerConnectionProfile(global, p, orgsTransformed);
-          const orgName = p.org.name.toLowerCase();
-          const connectionProfilePath = getDestinationPath(
-            this.outputDir,
-            `fabric-config/explorer/connection-profile-${orgName}.json`,
-          );
-
-          const configPath = getDestinationPath(this.outputDir, `fabric-config/explorer/config-${orgName}.json`);
-          await fs.ensureDir(path.dirname(connectionProfilePath));
-          await fs.writeJSON(connectionProfilePath, connectionProfile, { spaces: 2 });
-          await fs.writeJSON(configPath, createExplorerConfig([p.org]), { spaces: 2 });
-        }
-      }
-
-      const globalConfigPath = getDestinationPath(this.outputDir, "fabric-config/explorer/config-global.json");
-      if (!globalConfigPath) {
-        this.error("Error: Global config path is undefined");
-      }
-      await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
-    } catch (error: unknown) {
-      this.error("Error creating explorer material: " + (error instanceof Error ? error.message : String(error)));
+    if(!explorerDir){
+      this.log("Error: Explorer directory path is undefined");
+      return;
     }
+
+    const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
+    const orgWithChannels = pairOrgWithChannels(orgs, channels);
+
+    for (const p of orgWithChannels) {
+      if (global.tools?.explorer !== undefined || p.org.tools?.explorer !== undefined) {
+        const connectionProfile = createExplorerConnectionProfile(global, p, orgsTransformed);
+        const orgName = p.org.name.toLowerCase();
+        const connectionProfilePath = getDestinationPath(
+          this.outputDir,
+          `fabric-config/explorer/connection-profile-${orgName}.json`,
+        );
+
+        const configPath = getDestinationPath(this.outputDir, `fabric-config/explorer/config-${orgName}.json`);
+        await fs.ensureDir(path.dirname(connectionProfilePath));
+        await fs.writeJSON(connectionProfilePath, connectionProfile, { spaces: 2 });
+        await fs.writeJSON(configPath, createExplorerConfig([p.org]), { spaces: 2 });
+      }
+    }
+
+    const globalConfigPath = getDestinationPath(this.outputDir, "fabric-config/explorer/config-global.json");
+    if (!globalConfigPath) {
+      this.error("Error: Global config path is undefined");
+    }
+    await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
+  } catch (error: any) {
+    this.error("Error creating explorer material: " + error.message);
   }
+}
   async _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
     const settings = {
       composeNetworkName,
@@ -253,7 +233,7 @@ export default class SetupDocker extends Command {
       await renderTemplate(templatePath, destPath, {
         ...(config as unknown as Record<string, unknown>),
         shellQuote,
-      });
+      })
     }
   }
 
@@ -317,38 +297,5 @@ export default class SetupDocker extends Command {
       await renderTemplate(templatePath, destPath, { hooks });
     }
   }
-
-  async _copyFabricXDevnetTemplates(configExtended: FabloConfigExtended): Promise<void> {
-    const staticFiles = [
-      "docker-compose.yaml",
-      "crypto-config.yaml",
-      "configtx.yaml",
-      "shared_config.yaml",
-      ".gitignore",
-    ];
-
-    for (const file of staticFiles) {
-      const templatePath = getTemplatePath(this.templatesDir, `fabric-x/${file}`);
-      const destPath = getDestinationPath(this.outputDir, `fabric-x/${file}`);
-      await renderTemplate(templatePath, destPath, configExtended as unknown as Record<string, unknown>);
-    }
-
-    const staticConfigs = [
-      "party1-router.yaml",
-      "party1-batcher.yaml",
-      "party1-consenter.yaml",
-      "party1-assembler.yaml",
-      "committer-coordinator.yaml",
-      "committer-query-service.yaml",
-      "committer-sidecar-dev.yaml",
-      "committer-validator.yaml",
-      "committer-verifier.yaml",
-    ];
-
-    for (const config of staticConfigs) {
-      const templatePath = getTemplatePath(this.templatesDir, `fabric-x/config/${config}`);
-      const destPath = getDestinationPath(this.outputDir, `fabric-x/config/${config}`);
-      await renderTemplate(templatePath, destPath, {});
-    }
-  }
 }
+
