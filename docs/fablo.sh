@@ -131,14 +131,14 @@ printSplash() {
 printHelp() {
   printSplash
   echo "Usage:
-  fablo init [node] [rest] [dev] [gateway]
-    Creates simple Fablo config in current directory with optional Node.js, chaincode and REST API and dev mode.
+  fablo init [node] [rest] [dev] [ccaas] [gateway] [--set <path>=<value> ...]
+    Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS, REST API, gateway sample, and/or dev mode. Use --set to override generated fields.
 
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
 
   fablo up [/path/to/fablo-config.json|yaml]
-    Starts the Hyperledger Fabric network for given Fablo configuration file, creates channels, installs and instantiates chaincodes. If there is no configuration, it will call 'generate' command for given config file.
+    Starts the Hyperledger Fabric network for given Fablo configuration file, creates channels, and installs and deploys chaincodes. A source fablo-config.json|yaml must exist; if generated fablo-target files are missing, it calls 'generate' first.
 
   fablo <down | start | stop>
     Downs, starts or stops the Hyperledger Fabric network for configuration in the current directory. This is similar to down, start and stop commands for Docker Compose.
@@ -161,14 +161,14 @@ printHelp() {
   fablo chaincode upgrade <chaincode-name> <version>
     Upgrades chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
 
-  fablo chaincode invoke <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
-    Invokes chaincode with specified parameters.
+  fablo chaincode invoke <peers_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]
+    Invokes chaincode with specified parameters. Transient data is optional.
 
   fablo chaincodes list <peer> <channel>
     Lists chaincodes installed on specified peer and channel.
     
-  fablo chaincode query <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
-    Queries chaincode with specified parameters.
+  fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]
+    Queries chaincode on a single peer. Transient data is optional.
 
   fablo channel --help
     To list available channel query options which can be executed on running network.
@@ -254,7 +254,11 @@ useVersion() {
 
 initConfig() {
   printSplash
-  executeOnFabloDocker "init \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  local args=""
+  for arg in "$@"; do
+    args="$args \"$arg\""
+  done
+  executeOnFabloDocker "init$args"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
@@ -390,7 +394,8 @@ elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
 
 elif [ "$COMMAND" = "init" ]; then
-  initConfig "$2" "$3"
+  shift
+  initConfig "$@"
 
 elif [ "$COMMAND" = "validate" ]; then
   validateConfig "$2"

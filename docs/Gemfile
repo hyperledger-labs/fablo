@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+# Local preview only (`bundle exec jekyll serve`). GitHub Pages ignores this and
+# builds with its own legacy environment. This theme is plain Jekyll layouts —
+# no remote theme, no plugins — so it builds on the legacy /docs Pages build with
+# nothing to pin.
+gem "jekyll", "~> 3.9.5"
+gem "kramdown-parser-gfm"
+gem "webrick", "~> 1.7"
+gem "ffi", "< 1.17" # ffi 1.17+ requires Ruby 3; keep a 2.7-compatible release
