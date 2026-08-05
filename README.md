@@ -120,7 +120,7 @@ fablo init node dev
 fablo init --set global.fabricVersion=2.5.0
 
 # Multiple overrides
-fablo init --set global.tls=false --set orgs[0].peer.db=CouchDb
+fablo init --set global.tls=false --set orgs[1].peer.db=CouchDb
 
 # With positional arguments
 fablo init node --set global.fabricVersion=3.0.0 --set orgs[1].peer.instances=5
@@ -149,7 +149,7 @@ Review the files before committing to version control.
 fablo up [/path/to/fablo-config.json|yaml]
 ```
 
-Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and instantiates chaincodes.
+Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and deploys chaincodes (package / install / approve / commit).
 If no configuration exists, it will call the `generate` command for the given config file.
 
 ### down, start, stop

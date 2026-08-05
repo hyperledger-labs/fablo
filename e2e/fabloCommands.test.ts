@@ -22,7 +22,7 @@ describe("init", () => {
     ]);
     expect(commands.getFileContent("fablo-config.json")).toMatchSnapshot();
   });
-  it("should handle numeric string coercion correctly for ports", () => {
+  it("should handle numeric string coercion correctly for instances", () => {
     // When
     const commandResult = commands.fabloExec("init --set orgs[1].peer.instances=5");
 
@@ -34,7 +34,7 @@ describe("init", () => {
     expect(config.orgs[1].peer?.instances).toBe(5);
   });
 
-  it("should create non-existent nested paths (e.g. hooks)", () => {
+  it("should create non-existent nested paths (e.g. loglevel)", () => {
     // When
     const commandResult = commands.fabloExec("init --set global.monitoring.loglevel=debug");
 
