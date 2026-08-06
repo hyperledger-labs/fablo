@@ -21,6 +21,18 @@
   code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);color:#c9d7e5;padding:.15em .42em;border-radius:5px;border:1px solid var(--line)}
   pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow:auto}
   pre code{background:none;padding:0;border:0}
+  /* copy-to-clipboard button on code blocks (wrapper is added by script below) */
+  .code-wrap{position:relative;margin:1em 0}
+  .code-wrap>pre{margin:0}
+  .copy-btn{position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:.72rem;font-weight:600;
+    color:var(--muted);background:var(--panel-2);border:1px solid var(--line);border-radius:6px;
+    padding:5px 9px;line-height:1;cursor:pointer;opacity:0;transition:opacity .12s,color .12s,border-color .12s}
+  .code-wrap:hover .copy-btn,.copy-btn:focus-visible{opacity:1}
+  .copy-btn:hover{color:var(--fg);border-color:#3a4657}
+  .copy-btn.copied{color:var(--accent);border-color:rgba(63,185,80,.45);opacity:1}
+  .copy-btn.failed{color:#ff7b72;border-color:rgba(255,123,114,.45);opacity:1}
+  /* touch devices have no hover, so keep the button visible there */
+  @media(hover:none){.copy-btn{opacity:1}}
   /* nav */
   .nav{position:sticky;top:0;z-index:50;height:var(--nav-h);display:flex;align-items:center;gap:24px;
     padding:0 28px;background:rgba(10,14,20,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -122,5 +134,69 @@
       </div>
     </div>
   </footer>
+<script>
+// Adds a copy button to every code block. Progressive enhancement: the page
+// is fully usable without it, and nothing here runs if there are no blocks.
+(function () {
+  var blocks = document.querySelectorAll('.content pre, .home-body pre');
+  if (!blocks.length) return;
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Fallback for non-secure contexts, where the async clipboard API is unavailable.
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy command failed'));
+    });
+  }
+
+  Array.prototype.forEach.call(blocks, function (pre) {
+    var wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+    var reset;
+    btn.addEventListener('click', function () {
+      var code = pre.querySelector('code');
+      // textContent (not innerText) so highlight spans concatenate cleanly and
+      // newlines inside the pre are preserved verbatim. Trailing whitespace is
+      // trimmed because it would paste as a stray blank line into a shell.
+      var text = (code || pre).textContent.replace(/\s+$/, '');
+      copyText(text).then(function () {
+        btn.textContent = 'Copied';
+        btn.className = 'copy-btn copied';
+      })['catch'](function () {
+        btn.textContent = 'Failed';
+        btn.className = 'copy-btn failed';
+      });
+      clearTimeout(reset);
+      reset = setTimeout(function () {
+        btn.textContent = 'Copy';
+        btn.className = 'copy-btn';
+      }, 1600);
+    });
+
+    wrap.appendChild(btn);
+  });
+})();
+</script>
 </body>
 </html>
