@@ -160,7 +160,7 @@ export default class Init extends Command {
 
     const unsupportedArgs = argv.filter((arg) => arg.startsWith("--"));
     if (unsupportedArgs.length > 0) {
-      this.error("Unsupported override syntax. Use --set <path>=<value>.");
+      this.error(`Unknown option(s): ${unsupportedArgs.join(", ")}. ` + `Did you mean --set <path>=<value>?`);
     }
     const flags = this.getEffectiveFlags({ options: argv });
     if (flags.ccaas) {
