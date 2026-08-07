@@ -4,22 +4,18 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FABRICX_DIR="$SCRIPT_DIR/fabric-x"
 
+
 export COMPOSE_FILE="$FABRICX_DIR/docker-compose.yaml"
 
-.
 TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.0}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.0}"
 RUN_AS=(--user "$(id -u):$(id -g)")
 
 NETWORK="${NETWORK:-fabric-x}"
-DEFAULT_POLICY="AND('Org1MSP.member','Org2MSP.member')"
-ORG1_POLICY="AND('Org1MSP.member')"
-ORG2_POLICY="AND('Org2MSP.member')"
+DEFAULT_POLICY="AND('Org1MSP.member')"
 
 COMMAND="$1"
 SUBCOMMAND="$2"
-ORG="$3"
-
 
 generateArtifacts() {
   echo "Generating Fabric-X crypto material..."
@@ -28,9 +24,8 @@ generateArtifacts() {
     -v "$FABRICX_DIR:/config" \
     "$TOOLS_IMAGE" \
     sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \
-      && cat /config/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem \
-             /config/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem \
-        > /config/crypto/client-tls-ca.pem'
+      && cp /config/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem \
+            /config/crypto/client-tls-ca.pem'
 
   echo "Generating Fabric-X shared config proto..."
   docker run --rm "${RUN_AS[@]}" \
@@ -51,6 +46,7 @@ generateArtifacts() {
     --configPath /config
 }
 
+
 runFxconfig() {
   local ns="$1"
   local policy="$2"
@@ -68,13 +64,7 @@ runFxconfig() {
 }
 
 namespaceInit() {
-  local org="$1"
-  local policy="$DEFAULT_POLICY"
-  case "$org" in
-  org1) policy="$ORG1_POLICY" ;;
-  org2) policy="$ORG2_POLICY" ;;
-  esac
-  runFxconfig "mynamespace" "$policy"
+  runFxconfig "mynamespace" "$DEFAULT_POLICY"
 }
 
 namespaceList() {
@@ -89,31 +79,21 @@ namespaceList() {
 }
 
 
-waitForCommitterReady() {
-  echo "Waiting for test committer to be ready..."
-  while ! nc -z localhost 7001 2>/dev/null; do sleep 1; done
-}
-
 fabricxUp() {
   if [ ! -d "$FABRICX_DIR/crypto" ]; then
     generateArtifacts
   fi
-  docker compose up -d
-  waitForCommitterReady
-  namespaceInit ""
+  docker compose up -d --wait
+  namespaceInit
 }
-
 
 fabricxStart() {
-  docker compose up -d
-  waitForCommitterReady
+  docker compose up -d --wait
 }
-
 
 fabricxStop() {
   docker compose down
 }
-
 
 fabricxDown() {
   docker compose down -v
@@ -131,7 +111,7 @@ fabricxNamespace() {
     namespaceList
     ;;
   init)
-    namespaceInit "$ORG"
+    namespaceInit
     ;;
   *)
     echo "Error: unknown namespace subcommand '$SUBCOMMAND'. Expected 'list' or 'init'."
