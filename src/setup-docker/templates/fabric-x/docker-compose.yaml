@@ -153,7 +153,7 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     command: start verifier --config=/config/verifier.yaml
     volumes:
-      - ./config/committer-verifier.yaml:/config/verifier.yaml:ro,Z
+      - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-verifier.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     networks:
@@ -166,7 +166,7 @@ services:
     user: "${UID:-1000}:${GID:-1000}"
     command: start vc --config=/config/validator.yaml
     volumes:
-      - ./config/committer-validator.yaml:/config/validator.yaml:ro,Z
+      - ./config/validator.yaml:/config/validator.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-validator.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     environment:
@@ -209,7 +209,7 @@ services:
     ports:
       - "4001:4001"
     volumes:
-      - ./config/committer-sidecar-dev.yaml:/config/sidecar.yaml:ro,Z
+      - ./config/sidecar.yaml:/config/sidecar.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-sidecar.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z
@@ -235,7 +235,7 @@ services:
     ports:
       - "7001:7001"
     volumes:
-      - ./config/committer-query-service.yaml:/config/query-service.yaml:ro,Z
+      - ./config/query-service.yaml:/config/query-service.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-query-service.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     environment:
