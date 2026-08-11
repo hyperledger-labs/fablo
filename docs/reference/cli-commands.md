@@ -6,12 +6,12 @@ title: CLI commands
 
 # Outline
 
-1. Introduction
-2. Network Lifecycle Commands — `init`, `generate`, `up`, `down` / `start` / `stop`, `reset`, `prune`, `recreate`
-3. Chaincode Commands — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode invoke`, `chaincodes list`, `chaincode query`
-4. Channel Commands — `channel --help`
-5. Snapshot Commands — `snapshot`, `restore`
-6. Utility Commands — `validate`, `version`, `export-network-topology`, `extend-config`
+1. [Introduction](#fablo-cli-command-reference)
+2. [Network Lifecycle Commands](#network-lifecycle-commands) — `init`, `generate`, `up`, `down` / `start` / `stop`, `reset`, `prune`, `recreate`
+3. [Chaincode Commands](#chaincode-commands) — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode invoke`, `chaincodes list`, `chaincode query`
+4. [Channel Commands](#channel-commands) — `channel --help`
+5. [Snapshot Commands](#snapshot-commands) — `snapshot`, `restore`
+6. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`
 
 
 # Fablo CLI Command Reference
