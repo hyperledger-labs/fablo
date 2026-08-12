@@ -32,6 +32,7 @@ fablo init [node] [rest] [dev] [ccaas] [gateway] [--set <path>=<value> ...]
 Option order does not matter. Valid options: `node`, `dev`, `ccaas`, `gateway`, `rest`.
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `node` | No | Copies a sample Node.js chaincode into `chaincodes/chaincode-kv-node` and registers it in the config. |
@@ -54,6 +55,7 @@ fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `$(pwd)/fablo-config.json` or `$(pwd)/fablo-config.yaml`. |
@@ -70,6 +72,7 @@ fablo up [/path/to/fablo-config.json|yaml]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. |
@@ -87,6 +90,7 @@ fablo stop
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `down` \| `start` \| `stop` | Yes | Selects which lifecycle action to perform on the network. |
@@ -126,6 +130,7 @@ fablo recreate [/path/to/fablo-config.json|yaml]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `$(pwd)/fablo-config.json` or `$(pwd)/fablo-config.yaml`. |
@@ -155,6 +160,7 @@ fablo chaincode install <chaincode-name> <version>
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `chaincode-name` | Yes | Name of the chaincode to install. |
@@ -171,6 +177,7 @@ fablo chaincode upgrade <chaincode-name> <version>
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `chaincode-name` | Yes | Name of the chaincode to upgrade. |
@@ -187,6 +194,7 @@ fablo chaincode invoke <peers_domains_comma_separated> <channel_name> <chaincode
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `peers_domains_comma_separated` | Yes | Comma-separated list of peer domains to target. |
@@ -206,6 +214,7 @@ fablo chaincodes list <peer> <channel>
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `peer` | Yes | Peer to list installed chaincodes for (requires full address, like `peer0.org1.example.com`). |
@@ -222,6 +231,7 @@ fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [t
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `peer_domain` | Yes | Single peer domain to query. |
@@ -257,6 +267,7 @@ fablo snapshot <target-snapshot-path>
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `target-snapshot-path` | Yes | Path where the snapshot will be created. |
@@ -272,6 +283,7 @@ fablo restore <source-snapshot-path>
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `source-snapshot-path` | Yes | Path to the snapshot to restore from. |
@@ -289,6 +301,7 @@ fablo validate [/path/to/fablo-config.json|yaml]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |
@@ -304,6 +317,7 @@ fablo version [-v]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `-v` / `--verbose` | No | Show verbose version information. |
@@ -319,6 +333,7 @@ fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |
@@ -335,6 +350,7 @@ fablo extend-config [/path/to/fablo-config.json|yaml]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `fablo-config.json`. |

@@ -1,0 +1,278 @@
+#!/usr/bin/env jaiph
+
+# Checks that Fablo's documentation still matches the implementation.
+#
+#   jaiph run .jaiph/docs_parity.jh static   # deterministic checks only, no
+#                                            # agent calls and no API key
+#   jaiph run .jaiph/docs_parity.jh check    # read-only; writes a findings
+#                                            # report and fails on drift
+#   jaiph run .jaiph/docs_parity.jh fix      # edits the docs in place
+#
+# "check" is the default when no mode is given, so an accidental bare run
+# never rewrites files.
+import "lib_docs.jh" as lib
+
+config {
+  agent.backend = "claude"
+  agent.default_model = "opus"
+  agent.claude_flags = "--permission-mode bypassPermissions"
+}
+
+const role = """
+  Project context for reviewing Fablo's documentation:
+
+  - Fablo is a CLI that generates and runs Hyperledger Fabric networks. It
+    ships as a Bash entrypoint (fablo.sh) that delegates into a Docker image
+    running an oclif TypeScript CLI (src/commands/).
+  - You read TypeScript and Bash fluently, so verify every claim against the
+    implementation. Do not trust the existing documentation: it is the thing
+    under test.
+  - There are two command surfaces and both matter. fablo.sh dispatches
+    init, generate, up, use, validate, prune, recreate, snapshot, restore,
+    extend-config, export-network-topology and version. Everything else
+    (down, start, stop, reset, chaincode *, chaincodes *, channel *) falls
+    through to the generated network script, whose template lives at
+    src/setup-docker/templates/fabric-docker.sh.
+  - docs/fablo.sh is a GENERATED MIRROR of ./fablo.sh. It is overwritten on
+    every version bump. Never edit it; edit ./fablo.sh instead.
+  - docs/schema.json is the schema 'fablo validate' enforces. Field names in
+    the docs must match it exactly, including case. The implementation reads
+    global.monitoring.loglevel, all lowercase, not logLevel.
+  - Navigation between docs pages comes from the Jekyll layouts in
+    docs/_layouts/. Do not add manual navigation sections to markdown pages.
+    Inline contextual links between pages are fine.
+  - docs/*.md and docs/reference/*.md carry Jekyll front matter (layout,
+    title). Preserve it exactly.
+  - The site renders through kramdown. ALWAYS leave a blank line between a
+    markdown table and whatever precedes it, including a bold lead-in such
+    as a bold "Arguments:" label. Without that blank line kramdown folds the
+    table into the paragraph and it renders as literal pipe characters. Do
+    not copy this mistake from surrounding text if you see it; fix it.
+  - Prefer plain language: everyday words, complete sentences, no marketing
+    tone. Fabric terms (peer, orderer, channel, chaincode) are fine and need
+    no definition.
+"""
+
+# --- Read-only review -------------------------------------------------------
+workflow check_page(path) {
+  const sources = run lib.source_of_truth_for(path)
+
+  const result = prompt """
+    <role>
+    ${role}
+    </role>
+    <task>
+    Review ${path} for factual drift against the implementation. This is a
+    READ-ONLY review: do not edit any file.
+
+    Treat these as the source of truth for this page:
+    ${sources}
+
+    Check specifically:
+    1. Every command, subcommand, flag and argument named on the page exists,
+       is spelled correctly, and takes the arguments in the order shown.
+    2. Every config field named on the page exists with that exact casing,
+       and any stated default matches the implementation.
+    3. Every code sample and command line would actually run as written.
+    4. Anything the implementation supports that the page claims it does not,
+       or claims it does when it does not.
+    5. Wording that contradicts the CLI help text for the same command.
+
+    Report only drift you verified by reading the source. Do not report
+    style, tone or formatting preferences. If a claim is merely incomplete
+    rather than wrong, say so and mark it minor.
+
+    Set status to "drift" if you found at least one factual error, otherwise
+    "ok". Put findings in markdown: one bullet per issue, each naming the
+    file and line of the doc and the source file that contradicts it. If
+    status is "ok", set findings to a single line saying the page matches.
+    </task>
+  """
+  returns "{ status: string, findings: string }"
+
+  const entry = """
+    ## ${path}
+
+    **Status:** ${result.status}
+
+    ${result.findings}
+  """
+
+  run lib.append_report(entry)
+  log "${path}: ${result.status}"
+}
+
+# Runs the deterministic checks WITHOUT aborting, recording each failure as a
+# report entry. Check mode needs the complete picture, so a failing cheap
+# check must not hide the agent's findings. The recorded "drift" status still
+# fails the run at the end, via no_drift_recorded.
+workflow check_static() {
+  run lib.assert_fablo_mirror_in_sync() catch (err) {
+    const mirror_entry = """
+      ## fablo.sh mirror
+
+      **Status:** drift
+
+      ${err}
+    """
+    run lib.append_report(mirror_entry)
+  }
+
+  run lib.assert_config_keys_documented() catch (err) {
+    const schema_entry = """
+      ## docs/schema.json coverage
+
+      **Status:** drift
+
+      ${err}
+    """
+    run lib.append_report(schema_entry)
+  }
+
+  run lib.assert_documented_commands_exist() catch (err) {
+    const commands_entry = """
+      ## documented command names
+
+      **Status:** drift
+
+      ${err}
+    """
+    run lib.append_report(commands_entry)
+  }
+
+  run lib.assert_tables_render() catch (err) {
+    const tables_entry = """
+      ## markdown table rendering
+
+      **Status:** drift
+
+      ${err}
+    """
+    run lib.append_report(tables_entry)
+  }
+}
+
+workflow check_all(pages) {
+  run lib.init_report()
+  run check_static()
+  for path in pages {
+    run check_page(path)
+  }
+  const report = run lib.read_report()
+  log report
+  ensure lib.worktree_is_clean()
+  ensure lib.no_drift_recorded()
+  return report
+}
+
+# --- Fix mode ---------------------------------------------------------------
+workflow fix_page(path) {
+  const sources = run lib.source_of_truth_for(path)
+
+  prompt """
+    <role>
+    ${role}
+    </role>
+    <task>
+    Correct any factual drift in ${path} so it matches the implementation.
+
+    Treat these as the source of truth for this page:
+    ${sources}
+
+    Fix, in this order of priority:
+    1. Commands, subcommands, flags and argument order that do not match the
+       implementation.
+    2. Config field names with the wrong casing or spelling, and stated
+       defaults that do not match the implementation.
+    3. Code samples and command lines that would not run as written.
+    4. Supported behaviour the page omits, and claims the implementation does
+       not support.
+
+    Constraints:
+    - Edit ${path}. You may also edit ./fablo.sh printHelp() text and the
+      oclif static description / args / flags summaries in
+      src/commands/*/index.ts when the help text is what is wrong. Help text
+      only: do not change any command behaviour.
+    - Never edit docs/fablo.sh. It is a generated mirror and the workflow
+      syncs it for you.
+    - Do not touch tests, build config, templates or unrelated source.
+    - Preserve Jekyll front matter exactly.
+    - Do not add manual navigation sections.
+    - Make the smallest edit that fixes the fact. Do not restructure or
+      rewrite pages that are already correct.
+    </task>
+  """
+}
+
+workflow docs_overview(pages) {
+  prompt """
+    <role>
+    ${role}
+    </role>
+    <task>
+    Read all of these documentation pages together:
+    ${pages}
+
+    Each has already been checked against the implementation individually.
+    Now fix problems that are only visible across pages:
+    1. The same command, flag or config field described differently in two
+       places. Make them agree, using the implementation to settle it.
+    2. Broken or outdated cross-references between pages. Links from a
+       markdown file to another markdown file end in .md.
+    3. Content that contradicts README.md, or README.md content that
+       contradicts fablo.sh printHelp().
+    4. Leftovers from older Fablo versions that no longer apply.
+
+    Same constraints as before: documentation and CLI help text only, never
+    docs/fablo.sh, preserve front matter, no manual navigation sections, and
+    make the smallest edit that resolves each inconsistency.
+    </task>
+  """
+}
+
+workflow fix_all(pages) {
+  const allowed = run lib.build_allowed_paths()
+  run lib.init_report()
+  run check_static()
+  for path in pages {
+    run fix_page(path)
+  }
+  run docs_overview(pages)
+  run lib.sync_fablo_mirror()
+  ensure lib.only_allowed_paths_changed(allowed)
+  return "Documentation parity fixes applied. Review the diff before committing."
+}
+
+# --- Entrypoint -------------------------------------------------------------
+# Static mode is the only one that gates on the deterministic checks: its
+# whole job is to fail CI cheaply. Check and fix modes record those failures
+# instead, so that one bad schema entry cannot mask everything else -- and so
+# fix mode does not deadlock on drift it is not allowed to repair (schema.json
+# is not an editable documentation surface).
+workflow static_only() {
+  const pages = run lib.list_doc_pages()
+  ensure lib.docs_files_present(pages)
+  ensure lib.static_parity_checks()
+  return "Static documentation parity checks passed."
+}
+
+workflow guarded_run(mode) {
+  ensure lib.worktree_is_clean()
+
+  const pages = run lib.list_doc_pages()
+  ensure lib.docs_files_present(pages)
+
+  const outcome = match mode {
+    "fix" => run fix_all(pages)
+    _ => run check_all(pages)
+  }
+
+  return outcome
+}
+
+workflow default(mode) {
+  return match mode {
+    "static" => run static_only()
+    _ => run guarded_run(mode)
+  }
+}

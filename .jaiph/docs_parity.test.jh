@@ -1,0 +1,207 @@
+import "docs_parity.jh" as app
+import "lib_docs.jh" as lib
+
+# The git- and filesystem-touching pieces are mocked so the suite is
+# deterministic and never writes to the working tree. What is under test is
+# the orchestration: that check mode reports without editing, that fix mode
+# syncs the generated mirror and enforces the allowlist, and that a bare run
+# falls through to check mode.
+test "check mode records a status for every page" {
+  mock prompt {
+    _ => "{\"status\": \"ok\", \"findings\": \"Page matches the implementation.\"}"
+  }
+  mock rule lib.worktree_is_clean() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.no_drift_recorded() {
+    true
+  }
+  mock script lib.list_doc_pages() {
+    printf '%s\n' docs/index.md README.md
+  }
+  mock script lib.source_of_truth_for() {
+    echo "fablo.sh"
+  }
+  mock script lib.init_report() {
+    echo "report"
+  }
+  mock script lib.append_report() {
+    true
+  }
+  mock script lib.read_report() {
+    printf '%s\n' "## docs/index.md" "**Status:** ok" "## README.md" "**Status:** ok"
+  }
+
+  const out = run app.default("check")
+  expect_contain out "docs/index.md"
+  expect_contain out "README.md"
+  expect_contain out "ok"
+}
+
+test "check mode surfaces drift findings in the report" {
+  mock prompt {
+    _ => "{\"status\": \"drift\", \"findings\": \"- configuration.md names logLevel but the implementation reads loglevel\"}"
+  }
+  mock rule lib.worktree_is_clean() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.no_drift_recorded() {
+    true
+  }
+  mock script lib.list_doc_pages() {
+    echo "docs/reference/configuration.md"
+  }
+  mock script lib.source_of_truth_for() {
+    echo "docs/schema.json"
+  }
+  mock script lib.init_report() {
+    echo "report"
+  }
+  mock script lib.append_report() {
+    true
+  }
+  mock script lib.read_report() {
+    printf '%s\n' "## docs/reference/configuration.md" "**Status:** drift" "- configuration.md names logLevel but the implementation reads loglevel"
+  }
+
+  const out = run app.default("check")
+  expect_contain out "drift"
+  expect_contain out "loglevel"
+}
+
+test "check mode fails when drift is recorded" {
+  mock prompt {
+    _ => "{\"status\": \"drift\", \"findings\": \"- stale command name\"}"
+  }
+  mock rule lib.worktree_is_clean() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.no_drift_recorded() {
+    echo "drift detected" >&2
+    exit 1
+  }
+  mock script lib.list_doc_pages() {
+    echo "README.md"
+  }
+  mock script lib.source_of_truth_for() {
+    echo "fablo.sh"
+  }
+  mock script lib.init_report() {
+    echo "report"
+  }
+  mock script lib.append_report() {
+    true
+  }
+  mock script lib.read_report() {
+    echo "**Status:** drift"
+  }
+
+  const out = run app.default("check") allow_failure
+  expect_contain out "drift"
+}
+
+test "fix mode syncs the generated mirror and enforces the allowlist" {
+  mock prompt {
+    _ => "edited"
+  }
+  mock rule lib.worktree_is_clean() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.only_allowed_paths_changed() {
+    true
+  }
+  mock script lib.list_doc_pages() {
+    echo "README.md"
+  }
+  mock script lib.source_of_truth_for() {
+    echo "fablo.sh"
+  }
+  mock script lib.build_allowed_paths() {
+    printf '%s\n' README.md fablo.sh docs/fablo.sh
+  }
+  mock script lib.sync_fablo_mirror() {
+    echo "synced docs/fablo.sh from fablo.sh"
+  }
+
+  const out = run app.default("fix")
+  expect_contain out "fixes applied"
+}
+
+test "an unrecognised mode falls through to check, never fix" {
+  mock prompt {
+    _ => "{\"status\": \"ok\", \"findings\": \"matches\"}"
+  }
+  mock rule lib.worktree_is_clean() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.no_drift_recorded() {
+    true
+  }
+  mock script lib.list_doc_pages() {
+    echo "README.md"
+  }
+  mock script lib.source_of_truth_for() {
+    echo "fablo.sh"
+  }
+  mock script lib.init_report() {
+    echo "report"
+  }
+  mock script lib.append_report() {
+    true
+  }
+  mock script lib.read_report() {
+    echo "**Status:** ok"
+  }
+  mock script lib.sync_fablo_mirror() {
+    echo "MIRROR SYNC SHOULD NOT RUN"
+  }
+
+  const out = run app.default("")
+  expect_contain out "ok"
+  expect_not_contain out "MIRROR SYNC SHOULD NOT RUN"
+}
+
+test "static mode does not require a clean worktree" {
+  mock rule lib.docs_files_present() {
+    true
+  }
+  mock rule lib.static_parity_checks() {
+    true
+  }
+  mock script lib.list_doc_pages() {
+    echo "README.md"
+  }
+
+  const out = run app.default("static")
+  expect_contain out "Static documentation parity checks passed."
+}

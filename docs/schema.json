@@ -566,6 +566,18 @@
             "title": "Chaincode image URI",
             "type": "string"
           },
+          "chaincodeMountPath": {
+            "$id": "#/properties/chaincodes/items/properties/chaincodeMountPath",
+            "title": "Chaincode mount path",
+            "description": "Directory mounted into a CCaaS chaincode container as its working directory",
+            "type": "string"
+          },
+          "chaincodeStartCommand": {
+            "$id": "#/properties/chaincodes/items/properties/chaincodeStartCommand",
+            "title": "Chaincode start command",
+            "description": "Command used as the entrypoint for a CCaaS chaincode container",
+            "type": "string"
+          },
           "privateData": {
             "$id": "#/properties/chaincodes/items/properties/privateData",
             "title": "Private data collections",
