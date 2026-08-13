@@ -109,6 +109,18 @@
           ],
           "default": "docker"
         },
+        "provider": {
+          "$id": "#/properties/global/properties/provider",
+          "title": "Network provider (EXPERIMENTAL)",
+          "description": "Selects the network provider. 'fabric' is the default and fully supported. 'fabric-x' is experimental",
+          "type": "string",
+          "enum": [
+            "fabric",
+            "fabric-x"
+          ],
+          "default": "fabric"
+        },
+        
         "monitoring": {
           "$id": "#/properties/monitoring",
           "title": "Monitoring settings",

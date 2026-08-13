@@ -49,6 +49,7 @@ export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5 | CapabilitiesV3_0
 export interface Global extends FabricVersions, FabricImages {
   tls: boolean;
   engine: "kubernetes" | "docker";
+  provider: "fabric" | "fabric-x";
   monitoring: { loglevel: string };
   paths: { fabloConfig: string; chaincodesBaseDir: string };
   capabilities: Capabilities;

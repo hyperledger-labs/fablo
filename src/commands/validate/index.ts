@@ -116,10 +116,17 @@ export default class Validate extends Command {
 
     const configContent = fs.readFileSync(this.fabloConfigPath, "utf-8");
     const networkConfig = parseFabloConfig(configContent);
+    const provider = networkConfig.global.provider ?? "fabric";
+
     this._validateFabricVersion(networkConfig.global);
-    networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
+
+    if (provider === "fabric-x") {
+      this._validateFabricXSettings(networkConfig);
+      return;
+    }
+    networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
 
@@ -527,7 +534,58 @@ export default class Validate extends Command {
 
     // TODO engine-specific validation rules
   }
+  _validateFabricXSettings(networkConfig: FabloConfigJson): void {
+    const { global, chaincodes, channels, orgs } = networkConfig;
 
+    if (global.engine === "kubernetes") {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "fabric-x does not support the 'kubernetes' engine .Use 'docker'",
+      });
+    }
+
+    if (!global.tls) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "fabric-x requires 'global.tls' to be true.",
+      });
+    }
+
+    if (global.peerDevMode) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "fabric-x requires 'global.peerDevMode' to be false.",
+      });
+    }
+
+    if (global.tools?.explorer === true || orgs.some((o) => o.tools?.explorer === true)) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Explorer is not supported for fabric-x.",
+      });
+    }
+
+    if (orgs.some((o) => o.tools?.fabloRest === true)) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "Fablo REST is not supported for provider fabric-x.",
+      });
+    }
+
+    if (chaincodes.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHAINCODE,
+        message: "fabric-x does not support chaincodes in this PoC.",
+      });
+    }
+
+    if (channels.length !== 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x requires exactly one channel found ${channels.length}.`,
+      });
+    }
+  }
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
     if (global.tools?.explorer === true) {
       orgs
