@@ -732,7 +732,7 @@ applying the manifest and points to the FabricOps installation instructions.
 For chaincode operations, install the FabricOps CLI:
 
 ```bash
-go install github.com/dpereowei/fabricops/cmd/fabricopsctl@latest
+go install github.com/LF-Decentralized-Trust-labs/FabricOps/cmd/fabricopsctl@latest
 export PATH="$(go env GOPATH)/bin:$PATH"
 ```
 

@@ -78,7 +78,7 @@ NAMESPACE="\${NAMESPACE:-default}"
 FABRICOPS_NAMESPACE="\${FABRICOPS_NAMESPACE:-fabricops-system}"
 FABRICOPS_WAIT_TIMEOUT="\${FABRICOPS_WAIT_TIMEOUT:-20m}"
 FABRICOPS_OPERATION_TIMEOUT="\${FABRICOPS_OPERATION_TIMEOUT:-180s}"
-FABRICOPS_INSTALL_URL="https://github.com/dpereowei/FabricOps#installation"
+FABRICOPS_INSTALL_URL="https://github.com/LF-Decentralized-Trust-labs/FabricOps#installation"
 
 KUBECTL_ARGS=()
 FABRICOPSCTL_ARGS=()
@@ -128,7 +128,7 @@ fabricopsctlCmd() {
 requireFabricOpsctl() {
   if ! command -v fabricopsctl >/dev/null 2>&1; then
     echo "Error: fabricopsctl is required for Fablo Kubernetes chaincode operations"
-    echo "Install it with: go install github.com/dpereowei/fabricops/cmd/fabricopsctl@latest"
+    echo "Install it with: go install github.com/LF-Decentralized-Trust-labs/FabricOps/cmd/fabricopsctl@latest"
     echo 'If go install succeeds but fabricopsctl is still not found, add Go binaries to PATH:'
     # shellcheck disable=SC2016
     echo '  export PATH="$(go env GOPATH)/bin:$PATH"'

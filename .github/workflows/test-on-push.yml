@@ -51,7 +51,7 @@ jobs:
     env:
       KIND_CLUSTER: fablo-k8s-e2e
       KIND_VERSION: v0.31.0
-      FABRICOPS_VERSION: v0.1.2
+      FABRICOPS_VERSION: v0.2.0
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -74,12 +74,12 @@ jobs:
 
       - name: Install FabricOps
         run: |
-          kubectl apply -f "https://github.com/dpereowei/FabricOps/releases/download/${FABRICOPS_VERSION}/install.yaml"
+          kubectl apply -f "https://github.com/LF-Decentralized-Trust-labs/FabricOps/releases/download/${FABRICOPS_VERSION}/install.yaml"
           kubectl rollout status deployment/fabricops-controller-manager -n fabricops-system --timeout=180s
 
       - name: Install fabricopsctl
         run: |
-          go install "github.com/dpereowei/fabricops/cmd/fabricopsctl@${FABRICOPS_VERSION}"
+          go install "github.com/LF-Decentralized-Trust-labs/FabricOps/cmd/fabricopsctl@${FABRICOPS_VERSION}"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Build Fablo
