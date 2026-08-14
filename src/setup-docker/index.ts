@@ -24,6 +24,7 @@ import { createExplorerConfig } from "../types/ExplorerConfig";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
+import { FabricXDockerWriter } from "./fabricXDockerWriter";
 
 export default class SetupDocker extends Command {
   static override description = "Setup Docker network files from Fablo config";
@@ -69,6 +70,21 @@ export default class SetupDocker extends Command {
     this.log(`Used network config: ${fabloConfigPath}`);
     this.log(`Fabric version is: ${global.fabricVersion}`);
     this.log(`Generating docker-compose network '${composeNetworkName}'...`);
+
+    // ======= Fabric-X =================================================================
+    if (global.provider === "fabric-x") {
+      this.log("Provider is fabric-x, delegating to FabricXDockerWriter...");
+      const fabricXWriter = new FabricXDockerWriter(this.templatesDir, this.outputDir, (msg) => this.log(msg));
+      await fabricXWriter.write(configExtended);
+
+      // ======= hooks ====================================================================
+      await this._copyHooks(configExtended.hooks);
+
+      this.log("Done & done !!! Try the network out: ");
+      this.log("-> cd fabric-x");
+      this.log("-> docker compose up -d");
+      return;
+    }
 
     // ======= fabric-config ============================================================
     await this._copyOrgCryptoConfig(orgs);
