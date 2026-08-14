@@ -1,0 +1,36 @@
+---
+server:
+  endpoint: :6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2115
+  tls:
+    mode: none
+
+state-db:
+  db-type: sql
+  sql:
+    max-open-conns: 1000
+    max-idle-conns: 50
+    conn-max-idle-time: 1m0s
+    postgres:
+      dsn: host=committer-org1-db port=5432 user=fabricx password=fabricx dbname=fabricx sslmode=disable
+
+mvcc-validation:
+  pipeline-size: 10
+  parallel-workers-num: 3
+
+block-committer:
+  pipeline-size: 10
+  parallel-workers-num: 3
+
+identity:
+  msp-id: Org1MSP
+
+logging:
+  logSpec: info:grpc=error
