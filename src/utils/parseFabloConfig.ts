@@ -9,7 +9,11 @@ const parseFabloConfig = (str: string): FabloConfigJson => {
       const yamlContent = yaml.load(str);
       return JSON.parse(JSON.stringify(yamlContent));
     } catch (e2) {
-      throw new Error("Cannot parse file neither as JSON nor YAML file.");
+      const jsonError = e instanceof Error ? e.message : String(e);
+      const yamlError = e2 instanceof Error ? e2.message : String(e2);
+      throw new Error(
+        `Cannot parse config file.\n  JSON error: ${jsonError}\n  YAML error: ${yamlError}`,
+      );
     }
   }
 };

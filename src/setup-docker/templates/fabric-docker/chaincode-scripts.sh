@@ -27,7 +27,7 @@ chaincodeList() {
 #   5. transient data (optional)
 chaincodeInvoke() {
   if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
-    echo "Expected 4 or 5 parameters for chaincode list, but got: $*"
+    echo "Expected 4 or 5 parameters for chaincode invoke, but got: $*"
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi

@@ -1710,17 +1710,17 @@ elif [ "$1" = "stop" ]; then
 elif [ "$1" = "chaincodes" ] && [ "$2" = "install" ]; then
   installChaincodes
 elif [ "$1" = "chaincode" ] && [ "$2" = "install" ]; then
-  installChaincode "$3" "$4"
+  installChaincode "\${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "upgrade" ]; then
-  upgradeChaincode "$3" "$4"
+  upgradeChaincode "\${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "dev" ]; then
-  runDevModeChaincode "$3" "$4"
+  runDevModeChaincode "\${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "invoke" ]; then
-  chaincodeInvoke "$3" "$4" "$5" "$6" "$7"
+  chaincodeInvoke "\${@:3}"
 elif [ "$1" = "chaincode" ] && [ "$2" = "query" ]; then
-  chaincodeQuery "$3" "$4" "$5" "$6" "$7"
+  chaincodeQuery "\${@:3}"
 elif [ "$1" = "chaincodes" ] && [ "$2" = "list" ]; then
-  chaincodeList "$3" "$4"
+  chaincodeList "\${@:3}"
 elif [ "$1" = "channel" ]; then
   channelQuery "\${@:2}"
 elif [ "$1" = "snapshot" ]; then
@@ -1737,6 +1737,7 @@ else
   echo "To list channel query helper commands type: 'fablo channel --help'"
   echo "Also check: 'chaincode install'"
   echo "Use 'help' or '--help' for more information"
+  exit 1
 fi
 "
 `;
@@ -1817,7 +1818,7 @@ chaincodeList() {
 #   5. transient data (optional)
 chaincodeInvoke() {
   if [ "$#" -ne 4 ] && [ "$#" -ne 5 ]; then
-    echo "Expected 4 or 5 parameters for chaincode list, but got: $*"
+    echo "Expected 4 or 5 parameters for chaincode invoke, but got: $*"
     echo "Usage: fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]"
     exit 1
   fi

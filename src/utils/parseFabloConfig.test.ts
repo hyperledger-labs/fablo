@@ -146,4 +146,11 @@ describe("parseFabloConfig", () => {
     const result = parseFabloConfig(emptyConfig);
     expect(result).toEqual({});
   });
+
+  it("should fail parsing with detailed JSON and YAML errors", () => {
+    const invalidConfig = `{ invalid: [ }`;
+    expect(() => parseFabloConfig(invalidConfig)).toThrow(
+      /Cannot parse config file\.\n\s+JSON error:.*\n\s+YAML error:.*/,
+    );
+  });
 });
