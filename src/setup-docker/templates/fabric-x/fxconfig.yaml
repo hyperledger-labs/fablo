@@ -6,7 +6,7 @@ msp:
   configPath: /msp
 
 orderer:
-  address: orderer-party1-router:7050
+  address: orderer-router:7050
   channel: mychannel
   tls:
     enabled: true
@@ -17,7 +17,7 @@ orderer:
       - /org-tls-ca.pem      
 
 queries:
-  address: committer-query-service:7001
+  address: committer-org1-query-service:7001
   tls:
     enabled: true
     clientCert: /tls/server.crt
@@ -26,7 +26,7 @@ queries:
       - /org-tls-ca.pem
 
 notifications:
-  address: committer-sidecar:4001
+  address: committer-org1-sidecar:4001
   tls:
     enabled: true
     clientCert: /tls/server.crt
