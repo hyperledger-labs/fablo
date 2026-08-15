@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+printHeadline() {
+  bold=$'\e[1m'
+  end=$'\e[0m'
+  TEXT=$1
+  EMOJI=$2
+  printf "${bold}============ %b %s %b ==============${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
+}
+
+printStartSuccessInfo() {
+  printHeadline "Done! Fabric-X network is up" "U1F984"
+  echo "No namespace has been created yet - app-level submit/query calls need one first."
+  echo "Run './fabric-x-docker.sh namespace init' to create the default namespace."
+}
+
 TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.0}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.0}"
 NETWORK="${NETWORK:-fabric-x}"
@@ -43,23 +57,21 @@ generateArtifacts() {
 networkUp() {
   generateArtifacts
   (cd "$FABRIC_X_ROOT" && docker compose up -d --wait)
+  printStartSuccessInfo
 }
 
-
+#
 networkDown() {
   (cd "$FABRIC_X_ROOT" && docker compose down -v)
   rm -rf "$FABRIC_X_ROOT/crypto" "$FABRIC_X_ROOT/data"
 }
 
-
-startNetwork() {
   (cd "$FABRIC_X_ROOT" && docker compose start)
 }
 
 stopNetwork() {
   (cd "$FABRIC_X_ROOT" && docker compose stop)
 }
-
 
 namespaceInit() {
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
