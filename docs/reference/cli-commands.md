@@ -39,7 +39,7 @@ Option order does not matter. Valid options: `node`, `dev`, `ccaas`, `gateway`, 
 | `dev` | No | Used with `node`: configures the chaincode for hot-reload / CCaaS-style dev mode. |
 | `ccaas` | No | Adds a sample chaincode-as-a-service definition to the config. Cannot be combined with `node` or `dev`. |
 | `gateway` | No | Copies a sample Node.js gateway app into a `gateway` directory (does not change the config file itself). |
-| `--set <path>=<value>` | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
+| <code>--set &lt;path&gt;=&lt;value&gt;</code> | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
 
 By default, `fablo init` writes a config with Fabric `3.1.0`, TLS enabled, two BFT orderers, and two LevelDB peers under `Org1`.
 
