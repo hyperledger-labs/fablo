@@ -5,7 +5,7 @@ FABLO_NETWORK_ROOT="$(cd "$(dirname "$0")" && pwd)"
 FABRIC_X_ROOT="$FABLO_NETWORK_ROOT/fabric-x"
 
 source "$FABLO_NETWORK_ROOT/fabric-x/scripts/base-help.sh"
-source "$FABLO_NETWORK_ROOT/fabric-x/scripts/base-functions.sh"
+source "$FABLO_NETWORK_ROOT/fabric-x/scripts/commands-generated.sh"
 
 if [ "$1" = "up" ]; then
   networkUp

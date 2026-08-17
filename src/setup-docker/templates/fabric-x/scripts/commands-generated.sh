@@ -42,7 +42,7 @@ generateArtifacts() {
     --entrypoint /usr/local/bin/armageddon \
     "$ORDERER_IMAGE" \
     createSharedConfigProto \
-    --sharedConfigYaml=/config/shared_config.yaml \
+    --sharedConfigYaml=/config/shared_config.yml \
     --output=/config/crypto/shared_config.binpb
 
   echo "Generating Fabric-X genesis / config block..."
