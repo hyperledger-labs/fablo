@@ -31,5 +31,5 @@ printHelp() {
   echo "./fabric-x-docker.sh namespace init"
   echo -e "\t Creates the default namespace. Required before submitting or querying at the app level -"
   echo -e "\t not required just to bring the network up."
-  echo ""
+ 
 }

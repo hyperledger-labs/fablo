@@ -42,7 +42,7 @@ generateArtifacts() {
     --entrypoint /usr/local/bin/armageddon \
     "$ORDERER_IMAGE" \
     createSharedConfigProto \
-    --sharedConfigYaml=/config/shared-config.yml \
+    --sharedConfigYaml=/config/shared-config.yaml \
     --output=/config/crypto/
 
   echo "Generating Fabric-X genesis / config block..."
@@ -53,13 +53,6 @@ generateArtifacts() {
     --outputBlock /config/crypto/config-block.pb.bin \
     --configPath /config
 }
-
-
-# networkUp() {
-#   generateArtifacts
-#   (cd "$FABRIC_X_ROOT" && docker compose up -d --wait)
-#   printStartSuccessInfo
-# }
 networkUp() {
   mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
            "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
