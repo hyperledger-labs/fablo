@@ -55,12 +55,22 @@ generateArtifacts() {
 }
 
 
+# networkUp() {
+#   generateArtifacts
+#   (cd "$FABRIC_X_ROOT" && docker compose up -d --wait)
+#   printStartSuccessInfo
+# }
 networkUp() {
+  mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
+           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
+           "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
+           "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
+           "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger" \
+           "$FABRIC_X_ROOT/data/committer-org1/db"
   generateArtifacts
   (cd "$FABRIC_X_ROOT" && docker compose up -d --wait)
   printStartSuccessInfo
 }
-
 
 networkDown() {
   (cd "$FABRIC_X_ROOT" && docker compose down -v)

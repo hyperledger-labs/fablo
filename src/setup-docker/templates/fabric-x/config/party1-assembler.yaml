@@ -53,6 +53,10 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Router:
-  NumberOfConnectionsPerBatcher: 10
-  NumberOfStreamsPerConnection: 20
+Assembler:
+  PrefetchBufferMemoryBytes: 1073741824
+  RestartLedgerScanTimeout: 5s
+  PrefetchEvictionTtl: 1h
+  PopWaitMonitorTimeout: 1s
+  ReplicationChannelSize: 100
+  BatchRequestsChannelSize: 1000
