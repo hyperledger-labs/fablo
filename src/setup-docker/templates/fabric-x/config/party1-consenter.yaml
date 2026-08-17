@@ -9,9 +9,8 @@ General:
     Certificate: /node-tls/server.crt
     RootCAs:
       - /org-tls-ca.pem
-    ClientAuthRequired: true
+    ClientAuthRequired: false
     ClientRootCAs:
-      - /client-tls-ca.pem
   Keepalive:
     ServerMinInterval: 60s
     ServerInterval: 7200s
@@ -53,6 +52,5 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Router:
-  NumberOfConnectionsPerBatcher: 10
-  NumberOfStreamsPerConnection: 20
+Consensus:
+  WALDir: /data/wal
