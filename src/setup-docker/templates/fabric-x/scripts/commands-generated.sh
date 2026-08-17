@@ -42,8 +42,8 @@ generateArtifacts() {
     --entrypoint /usr/local/bin/armageddon \
     "$ORDERER_IMAGE" \
     createSharedConfigProto \
-    --sharedConfigYaml=/config/shared_config.yml \
-    --output=/config/crypto/shared_config.binpb
+    --sharedConfigYaml=/config/shared-config.yml \
+    --output=/config/crypto/
 
   echo "Generating Fabric-X genesis / config block..."
   docker run --rm --user "$(id -u):$(id -g)" \
