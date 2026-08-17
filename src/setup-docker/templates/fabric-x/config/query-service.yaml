@@ -12,14 +12,14 @@ monitoring:
   tls:
     mode: none
 
-state-db:
-  db-type: sql
-  sql:
-    max-open-conns: 1000
-    max-idle-conns: 50
-    conn-max-idle-time: 1m0s
-    postgres:
-      dsn: host=committer-org1-db port=5432 user=fabricx password=fabricx dbname=fabricx sslmode=disable
+database:
+  endpoints:
+    - committer-org1-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  tls:
+    mode: none
 
 identity:
   msp-dir: /msp
