@@ -156,6 +156,12 @@ services:
       - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-verifier.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2115/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     networks:
       - fabric-x
 
@@ -169,12 +175,12 @@ services:
       - ./config/validator.yaml:/config/validator.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-validator.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-    environment:
-      SC_VC_DATABASE_ENDPOINTS: committer-org1-db:5432
-      SC_VC_DATABASE_DB: postgres
-      SC_VC_DATABASE_USER: fabricx
-      SC_VC_DATABASE_PASSWORD: fabricx
-      SC_VC_DATABASE_NAME: fabricx
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2116/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     depends_on:
       committer-org1-db:
         condition: service_healthy
@@ -191,12 +197,17 @@ services:
       - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-coordinator.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-    environment:
-      SC_COORDINATOR_VERIFIER_ENDPOINTS: committer-org1-verifier:5001
-      SC_COORDINATOR_VALIDATOR_COMMITTER_ENDPOINTS: committer-org1-validator:6001
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2119/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     depends_on:
-      - committer-org1-verifier
-      - committer-org1-validator
+      committer-org1-verifier:
+        condition: service_healthy
+      committer-org1-validator:
+        condition: service_healthy
     networks:
       - fabric-x
 
@@ -216,9 +227,15 @@ services:
       - ./crypto/ordererOrganizations:/orderer-cas:ro,Z
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
       - ./data/committer-org1/sidecar-ledger:/ledger:Z
+    healthcheck:
+      test: ["CMD", "curl", "-sk", "--cert", "/node-tls/server.crt", "--key", "/node-tls/server.key", "https://localhost:2114/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
     depends_on:
       committer-org1-coordinator:
-        condition: service_started
+        condition: service_healthy
 
       orderer-router:
         condition: service_healthy
@@ -238,12 +255,6 @@ services:
       - ./config/query-service.yaml:/config/query-service.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-query-service.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-    environment:
-      SC_QUERY_DATABASE_ENDPOINTS: committer-org1-db:5432
-      SC_QUERY_DATABASE_DB: postgres
-      SC_QUERY_DATABASE_USER: fabricx
-      SC_QUERY_DATABASE_PASSWORD: fabricx
-      SC_QUERY_DATABASE_NAME: fabricx
     depends_on:
       committer-org1-db:
         condition: service_healthy
@@ -255,5 +266,3 @@ services:
       start_period: 10s
     networks:
       - fabric-x
-
-
