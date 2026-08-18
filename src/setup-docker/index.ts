@@ -73,7 +73,6 @@ export default class SetupDocker extends Command {
 
     // ======= Fabric-X =================================================================
     if (global.provider === "fabric-x") {
-      this.log("Provider is fabric-x, delegating to FabricXDockerWriter...");
       const fabricXWriter = new FabricXDockerWriter(this.templatesDir, this.outputDir, (msg) => this.log(msg));
       await fabricXWriter.write(configExtended);
 
@@ -194,6 +193,7 @@ export default class SetupDocker extends Command {
     if (!globalConfigPath) {
       this.error("Error: Global config path is undefined");
     }
+    await fs.ensureDir(path.dirname(globalConfigPath));
     await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
   }
   async _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
