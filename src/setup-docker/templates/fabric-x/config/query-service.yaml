@@ -1,0 +1,33 @@
+---
+server:
+  endpoint: :7001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2117
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org1-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  tls:
+    mode: none
+
+identity:
+  msp-dir: /msp
+  bccsp:
+    Default: SW
+    SW:
+      Security: 256
+      Hash: SHA2
+
+logging:
+  logSpec: info:grpc=error

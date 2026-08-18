@@ -1,0 +1,62 @@
+PartyID: 1
+
+General:
+  ListenAddress: 0.0.0.0
+  ListenPort: 7050
+  TLS:
+    Enabled: true
+    PrivateKey: /node-tls/server.key
+    Certificate: /node-tls/server.crt
+    RootCAs:
+      - /org-tls-ca.pem
+    ClientAuthRequired: true
+    ClientRootCAs:
+      - /client-tls-ca.pem
+  Keepalive:
+    ServerMinInterval: 60s
+    ServerInterval: 7200s
+    ServerTimeout: 20s
+  Backoff:
+    BaseDelay: 1s
+    Multiplier: 1.6
+    MaxDelay: 2m
+  MaxRecvMsgSize: 104857600
+  MaxSendMsgSize: 104857600
+  Bootstrap:
+    Method: block
+    File: /bootstrap/genesis.block
+  Cluster:
+    SendBufferSize: 100
+    ClientCertificate: /node-tls/server.crt
+    ClientPrivateKey: /node-tls/server.key
+  LocalMSPDir: /node-msp
+  LocalMSPID: OrdererOrdererMSP
+  BCCSP:
+    Default: SW
+    SW:
+      Hash: SHA2
+      Security: 256
+      FileKeyStore:
+        KeyStore:
+  LogSpec: info
+
+FileStore:
+  Location: /data
+
+Operations:
+  ListenAddress: 0.0.0.0
+  ListenPort: 9443
+  TLS:
+    Enabled: false
+
+Metrics:
+  Provider: prometheus
+  MetricsLogInterval: 0s
+
+Assembler:
+  PrefetchBufferMemoryBytes: 1073741824
+  RestartLedgerScanTimeout: 5s
+  PrefetchEvictionTtl: 1h
+  PopWaitMonitorTimeout: 1s
+  ReplicationChannelSize: 100
+  BatchRequestsChannelSize: 1000
