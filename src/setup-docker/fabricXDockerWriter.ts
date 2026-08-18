@@ -26,19 +26,14 @@ export class FabricXDockerWriter {
   private async renderTemplateDirectory(dir: string, data: Record<string, unknown>): Promise<void> {
     const templateDirPath = getTemplatePath(this.templatesDir, dir);
     
-    if (!(await fs.pathExists(templateDirPath))) {
-      return;
-    }
-    
-    const files = await fs.readdir(templateDirPath);
-    for (const file of files) {
-      const fullPath = path.join(templateDirPath, file);
-      const stat = await fs.stat(fullPath);
-      const relativePath = path.join(dir, file);
-      
-      if (stat.isDirectory()) {
+    const entries = await fs.readdir(templateDirPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const relativePath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
         await this.renderTemplateDirectory(relativePath, data);
-      } else {
+      } else if (entry.isFile()) {
         await this.renderTemplateFile(relativePath, data);
       }
     }

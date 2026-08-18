@@ -170,6 +170,16 @@ export default class SetupDocker extends Command {
 
 
   async _createExplorerMaterial(global: Global, orgsTransformed: OrgConfig[], channels: ChannelConfig[]): Promise<void> {
+  try {
+    // Create explorer directory first
+    const explorerDir = getDestinationPath(this.outputDir, "fabric-config/explorer");
+    await fs.ensureDir(explorerDir);
+
+    if(!explorerDir){
+      this.log("Error: Explorer directory path is undefined");
+      return;
+    }
+
     const orgs = orgsTransformed.filter((o) => o.anchorPeers.length > 0);
     const orgWithChannels = pairOrgWithChannels(orgs, channels);
 
@@ -193,9 +203,11 @@ export default class SetupDocker extends Command {
     if (!globalConfigPath) {
       this.error("Error: Global config path is undefined");
     }
-    await fs.ensureDir(path.dirname(globalConfigPath));
     await fs.writeJSON(globalConfigPath, createExplorerConfig(orgWithChannels.map((p) => p.org)), { spaces: 2 });
+  } catch (error: any) {
+    this.error("Error creating explorer material: " + error.message);
   }
+}
   async _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
     const settings = {
       composeNetworkName,
