@@ -7,6 +7,7 @@ printHeadline() {
   EMOJI=$2
   printf "${bold}============ %b %s %b ==============${end}\n" "\\$EMOJI" "$TEXT" "\\$EMOJI"
 }
+
 printStartSuccessInfo() {
   printHeadline "Done! Fabric-X network is up" "U1F984"
   echo "No namespace has been created yet - app-level submit/query calls need one first."
