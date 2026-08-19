@@ -12,6 +12,7 @@ script list_doc_pages = ```
 printf '%s\n' \
   docs/index.md \
   docs/getting-started.md \
+  docs/examples.md \
   docs/reference/cli-commands.md \
   docs/reference/configuration.md \
   README.md \
@@ -30,6 +31,7 @@ script build_allowed_paths = ```
   printf '%s\n' \
     docs/index.md \
     docs/getting-started.md \
+    docs/examples.md \
     docs/reference/cli-commands.md \
     docs/reference/configuration.md \
     docs/fablo.sh \
@@ -64,6 +66,13 @@ case "$1" in
       "src/commands/init/index.ts -- init options, --set override behaviour, generated config" \
       "samples/ -- the sample configs and chaincodes init copies" \
       "fablo.sh -- printHelp() usage lines"
+    ;;
+  docs/examples.md)
+    printf '%s\n' \
+      "samples/ -- the sample configs and chaincodes the examples walk through" \
+      "src/commands/init/index.ts -- init options used in the first-network example" \
+      "fablo.sh -- printHelp() for snapshot, restore and other commands shown" \
+      "docs/schema.json -- options such as explorer, CCaaS and private data"
     ;;
   docs/index.md)
     printf '%s\n' \
@@ -186,7 +195,8 @@ echo "all documented commands exist"
 # whatever convention it sees, so the check has to be deterministic.
 script assert_tables_render = ```
 status=0
-for file in docs/index.md docs/getting-started.md docs/reference/*.md \
+for file in docs/index.md docs/getting-started.md docs/examples.md \
+            docs/reference/*.md \
             README.md SUPPORTED_FEATURES.md ARCHITECTURE.md; do
   [ -f "$file" ] || continue
   broken="$(awk -v f="$file" '

@@ -48,16 +48,65 @@ const role = """
     as a bold "Arguments:" label. Without that blank line kramdown folds the
     table into the paragraph and it renders as literal pipe characters. Do
     not copy this mistake from surrounding text if you see it; fix it.
-  - Prefer plain language: everyday words, complete sentences, no marketing
-    tone. Fabric terms (peer, orderer, channel, chaincode) are fine and need
-    no definition.
+  - Prose must follow the plain-writing skill
+    (.jaiph/skills/plain-writing/SKILL.md): everyday words, complete
+    sentences, and no marketing tone. Fabric terms (peer, orderer, channel,
+    chaincode) are fine and need no definition.
 """
+
+const skills_preamble = """
+  Before doing anything else, read and follow BOTH skills:
+  1. .jaiph/skills/documentation-writer/SKILL.md — Diátaxis framework,
+     the four document types, the clarify -> outline -> write workflow,
+     and the four guiding principles (clarity, accuracy, user-centricity,
+     consistency).
+  2. .jaiph/skills/plain-writing/SKILL.md — write and revise prose in a
+     plain, human-readable style (simple words, complete sentences, no
+     unnecessary jargon, limited sentence complexity, full clear
+     explanations). Apply it before considering a page done.
+  For this workflow, follow the writing rules only — do NOT write the
+  optional /tmp revision HTML artifact from that skill.
+"""
+
+# Logs `claude -p "/usage"` once. Information is enough: do not wait, retry,
+# or sleep if usage is high. A missing CLI or unparseable output must not
+# block the run.
+script log_claude_usage = ```
+if ! usage="$(claude -p "/usage" 2>&1)"; then
+  echo "Could not read Claude usage (claude -p /usage failed)." >&2
+  printf '%s\n' "$usage" >&2
+  echo "Claude usage was not available."
+  exit 0
+fi
+
+printf '%s\n' "$usage"
+
+percent="$(
+  printf '%s\n' "$usage" |
+    sed -nE 's/.*Current session: ([0-9]+)% used.*/\1/p' |
+    awk 'NR == 1 { print; exit }'
+)"
+case "$percent" in
+  ''|*[!0-9]*)
+    echo "Could not parse current Claude session usage from /usage output." >&2
+    ;;
+  *)
+    echo "Claude current session usage is ${percent}%."
+    ;;
+esac
+```
+
+workflow report_claude_usage() {
+  const status = run log_claude_usage()
+  log status
+}
 
 # --- Read-only review -------------------------------------------------------
 workflow check_page(path) {
   const sources = run lib.source_of_truth_for(path)
 
   const result = prompt """
+    ${skills_preamble}
     <role>
     ${role}
     </role>
@@ -170,6 +219,7 @@ workflow fix_page(path) {
   const sources = run lib.source_of_truth_for(path)
 
   prompt """
+    ${skills_preamble}
     <role>
     ${role}
     </role>
@@ -206,6 +256,7 @@ workflow fix_page(path) {
 
 workflow docs_overview(pages) {
   prompt """
+    ${skills_preamble}
     <role>
     ${role}
     </role>
@@ -240,6 +291,7 @@ workflow fix_all(pages) {
   run docs_overview(pages)
   run lib.sync_fablo_mirror()
   ensure lib.only_allowed_paths_changed(allowed)
+  run report_claude_usage()
   return "Documentation parity fixes applied. Review the diff before committing."
 }
 
@@ -257,6 +309,7 @@ workflow static_only() {
 }
 
 workflow guarded_run(mode) {
+  run report_claude_usage()
   ensure lib.worktree_is_clean()
 
   const pages = run lib.list_doc_pages()

@@ -1,119 +1,62 @@
 name: Docs parity
 
 # Keeps the documentation honest against the implementation.
-#
-# Three layers, cheapest first:
-#   static-checks  every PR, including forks. No agent, no API key.
-#   agent-review   same-repo PRs. Read-only agent review, comments findings.
-#   agent-fix      weekly and on demand. Agent edits the docs, opens a PR.
+# Manual dispatch runs the agent in fix mode, shows the recommended diff,
+# and opens a pull request with the edits.
 
 on:
-  pull_request:
-    paths:
-      - "docs/**"
-      - "README.md"
-      - "SUPPORTED_FEATURES.md"
-      - "ARCHITECTURE.md"
-      - "fablo.sh"
-      - "src/**"
-      - ".jaiph/**"
-  schedule:
-    # Mondays at 04:00 UTC.
-    - cron: "0 4 * * 1"
+  # pull_request:
+  #   paths:
+  #     - "docs/**"
+  #     - "README.md"
+  #     - "SUPPORTED_FEATURES.md"
+  #     - "ARCHITECTURE.md"
+  #     - "fablo.sh"
+  #     - "src/**"
+  #     - ".jaiph/**"
   workflow_dispatch:
-    inputs:
-      mode:
-        description: "static | check | fix"
-        required: false
-        default: check
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
-  # Deterministic parity checks. Runs everywhere, needs no secrets, so fork
-  # PRs get the same protection as branch PRs.
-  static-checks:
-    if: github.event_name != 'schedule'
+  docs-parity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Jaiph
-        run: npm install --global jaiph@0.11.0
+        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
+        with:
+          version: 0.13.0
+
+      - name: Install Claude Code CLI
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          command -v claude
 
       - name: Validate workflow definitions
         run: |
           jaiph compile .jaiph
           jaiph test .jaiph/docs_parity.test.jh
 
-      - name: Run static documentation parity checks
-        run: jaiph run --unsafe .jaiph/docs_parity.jh static
-
-  # Agent review of each doc page against its source of truth. Skipped on
-  # fork PRs, where secrets are unavailable and the token is read-only.
-  agent-review:
-    if: >-
-      github.event_name != 'schedule' &&
-      (github.event_name != 'pull_request' ||
-       github.event.pull_request.head.repo.full_name == github.repository) &&
-      (github.event_name != 'workflow_dispatch' || inputs.mode == 'check')
-    needs: static-checks
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Jaiph
-        run: npm install --global jaiph@0.11.0
-
-      - name: Review documentation against the implementation
-        id: review
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: jaiph run --unsafe .jaiph/docs_parity.jh check
-
-      - name: Upload findings report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-parity-report
-          path: .jaiph/tmp/docs-parity-report.md
-          if-no-files-found: warn
-
-      - name: Comment findings on the pull request
-        if: always() && github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-path: .jaiph/tmp/docs-parity-report.md
-
-  # Weekly repair pass. Opens a PR rather than pushing to a branch directly.
-  agent-fix:
-    if: >-
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fix')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Jaiph
-        run: npm install --global jaiph@0.11.0
-
       - name: Fix documentation drift
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: jaiph run --unsafe .jaiph/docs_parity.jh fix
+        run: .jaiph/docs_parity.jh --unsafe fix
+
+      - name: Show recommended documentation changes
+        if: always()
+        run: |
+          git diff --stat
+          git diff
 
       - name: Open a pull request with the corrections
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: docs/parity-sync
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: docs/parity-sync-${{ github.run_id }}
           title: "docs: sync documentation with the implementation"
           commit-message: "docs: sync documentation with the implementation"
           body: |

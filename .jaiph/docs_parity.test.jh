@@ -5,7 +5,8 @@ import "lib_docs.jh" as lib
 # deterministic and never writes to the working tree. What is under test is
 # the orchestration: that check mode reports without editing, that fix mode
 # syncs the generated mirror and enforces the allowlist, and that a bare run
-# falls through to check mode.
+# falls through to check mode. Claude usage logging is mocked so the suite
+# never calls the Claude CLI.
 test "check mode records a status for every page" {
   mock prompt {
     _ => "{\"status\": \"ok\", \"findings\": \"Page matches the implementation.\"}"
@@ -36,6 +37,9 @@ test "check mode records a status for every page" {
   }
   mock script lib.read_report() {
     printf '%s\n' "## docs/index.md" "**Status:** ok" "## README.md" "**Status:** ok"
+  }
+  mock script app.log_claude_usage() {
+    echo "Claude current session usage is 12%."
   }
 
   const out = run app.default("check")
@@ -75,6 +79,9 @@ test "check mode surfaces drift findings in the report" {
   mock script lib.read_report() {
     printf '%s\n' "## docs/reference/configuration.md" "**Status:** drift" "- configuration.md names logLevel but the implementation reads loglevel"
   }
+  mock script app.log_claude_usage() {
+    echo "Claude current session usage is 12%."
+  }
 
   const out = run app.default("check")
   expect_contain out "drift"
@@ -113,6 +120,9 @@ test "check mode fails when drift is recorded" {
   mock script lib.read_report() {
     echo "**Status:** drift"
   }
+  mock script app.log_claude_usage() {
+    echo "Claude current session usage is 12%."
+  }
 
   const out = run app.default("check") allow_failure
   expect_contain out "drift"
@@ -145,6 +155,9 @@ test "fix mode syncs the generated mirror and enforces the allowlist" {
   }
   mock script lib.sync_fablo_mirror() {
     echo "synced docs/fablo.sh from fablo.sh"
+  }
+  mock script app.log_claude_usage() {
+    echo "Claude current session usage is 12%."
   }
 
   const out = run app.default("fix")
@@ -184,6 +197,9 @@ test "an unrecognised mode falls through to check, never fix" {
   }
   mock script lib.sync_fablo_mirror() {
     echo "MIRROR SYNC SHOULD NOT RUN"
+  }
+  mock script app.log_claude_usage() {
+    echo "Claude current session usage is 12%."
   }
 
   const out = run app.default("")
