@@ -9,7 +9,7 @@ printHeadline() {
 }
 
 printStartSuccessInfo() {
-  printHeadline "Done!! Fabric-X network is up" "U1F984"
+  printHeadline "Done! Fabric-X network is up" "U1F984"
   echo "App-level submit/query calls need a namespace."
   echo "Run './fabric-x-docker.sh namespace init' to create the default namespace if needed."
 }
