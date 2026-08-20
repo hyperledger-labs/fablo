@@ -220,7 +220,7 @@ export default class Init extends Command {
     let fabloConfigJson = getDefaultFabloConfig(flags.fabricX);
 
     if (flags.fabricX) {
-      console.log("Creating minimal Fabric-X starter config");
+      this.log("Creating minimal Fabric-X starter config");
     }
 
     if (flags.ccaas) {
