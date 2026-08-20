@@ -9,9 +9,9 @@ printHeadline() {
 }
 
 printStartSuccessInfo() {
-  printHeadline "Done! Fabric-X network is up" "U1F984"
-  echo "No namespace has been created yet - app-level submit/query calls need one first."
-  echo "Run './fabric-x-docker.sh namespace init' to create the default namespace."
+  printHeadline "Done!! Fabric-X network is up" "U1F984"
+  echo "App-level submit/query calls need a namespace."
+  echo "Run './fabric-x-docker.sh namespace init' to create the default namespace if needed."
 }
 
 TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.0}"
@@ -21,10 +21,19 @@ DEFAULT_POLICY="AND('Org1MSP.member')"
 
 
 generateArtifacts() {
-  if [ -d "$FABRIC_X_ROOT/crypto" ]; then
-    echo "Crypto material already exists, skipping generation."
+  if [ -f "$FABRIC_X_ROOT/crypto/config-block.pb.bin" ] &&
+    [ -f "$FABRIC_X_ROOT/crypto/shared_config.binpb" ] &&
+    [ -f "$FABRIC_X_ROOT/crypto/client-tls-ca.pem" ]; then
+    echo "Fabric-X crypto and config artifacts already exist, skipping generation."
     return
   fi
+
+  if [ -d "$FABRIC_X_ROOT/crypto" ]; then
+    echo "Removing incomplete Fabric-X crypto material..."
+    rm -rf "$FABRIC_X_ROOT/crypto"
+  fi
+
+  mkdir -p "$FABRIC_X_ROOT/crypto"
 
   echo "Generating Fabric-X crypto material..."
   docker run --rm --user "$(id -u):$(id -g)" \
