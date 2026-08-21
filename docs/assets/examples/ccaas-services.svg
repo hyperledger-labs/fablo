@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="500" viewBox="0 0 1040 500" role="img" aria-labelledby="title desc">
+  <title id="title">Running CCaaS and Fablo REST services</title>
+  <desc id="desc">A dark terminal window showing representative running Docker services for two peer organizations, CouchDB, Fablo REST, and a CCaaS chaincode.</desc>
+  <rect width="1040" height="500" rx="16" fill="#0d1117"/>
+  <rect x="1" y="1" width="1038" height="498" rx="15" fill="none" stroke="#263040" stroke-width="2"/>
+  <path d="M0 58H1040" stroke="#263040"/>
+  <circle cx="28" cy="29" r="7" fill="#ff5f56"/><circle cx="52" cy="29" r="7" fill="#ffbd2e"/><circle cx="76" cy="29" r="7" fill="#27c93f"/>
+  <text x="100" y="35" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16">bash / docker-services</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">
+    <text x="28" y="96" fill="#3fb950">$</text><text x="50" y="96" fill="#e6edf3">fablo up</text>
+    <text x="28" y="132" fill="#7ee787">Network is ready</text>
+    <text x="28" y="174" fill="#3fb950">$</text><text x="50" y="174" fill="#e6edf3">docker ps --format "table {{.Names}}\t{{.Status}}"</text>
+    <text x="28" y="216" fill="#8b949e">SERVICE                                      STATUS</text>
+    <text x="28" y="250" fill="#c9d7e5">peer0.org1.example.com                       running</text>
+    <text x="28" y="282" fill="#c9d7e5">peer0.org2.example.com                       running</text>
+    <text x="28" y="314" fill="#c9d7e5">couchdb.peer0.org1.example.com               running</text>
+    <text x="28" y="346" fill="#c9d7e5">couchdb.peer0.org2.example.com               running</text>
+    <text x="28" y="378" fill="#c9d7e5">fablo-rest.org1.example.com                  running</text>
+    <text x="28" y="410" fill="#c9d7e5">fablo-rest.org2.example.com                  running</text>
+    <text x="28" y="442" fill="#c9d7e5">chaincode1-peer0-org1                        running</text>
+    <text x="28" y="474" fill="#8b949e">CCaaS image: fablo-sample-kv-node-chaincode:2.2.0</text>
+  </g>
+</svg>

@@ -5,13 +5,14 @@ layout: base
   <aside class="sidebar">
     <h4>Guides</h4>
     <a href="/getting-started.html"{% if page.url == '/getting-started.html' %} class="active"{% endif %}>Getting started</a>
+    <a href="/examples.html"{% if page.url == '/examples.html' %} class="active"{% endif %}>Examples</a>
     <h4>Reference</h4>
     <a href="/reference/configuration.html"{% if page.url contains 'configuration' %} class="active"{% endif %}>Configuration file</a>
     <a href="/reference/cli-commands.html"{% if page.url contains 'cli-commands' %} class="active"{% endif %}>CLI commands</a>
     <h4>Tools</h4>
     <a href="/editor.html">Config editor</a>
   </aside>
-  <main class="content">
+  <main class="content" id="main-content">
     {{ content }}
   </main>
 </div>

@@ -7,10 +7,10 @@ title: Getting started
 # Set Up Your First Fablo Network
 
 **Outline**
-1. What You'll Need
-2. Step 1 — Scaffold a Config with `fablo init`
-3. Step 2 — Generate and Start the Network with `fablo up`
-4. Step 3 — Tear Down the Network (`down` / `prune`)
+1. [What You'll Need](#what-youll-need)
+2. [Step 1 — Scaffold a Config with `fablo init`](#step-1--scaffold-a-config-with-fablo-init)
+3. [Step 2 — Generate and Start the Network with `fablo up`](#step-2--generate-and-start-the-network-with-fablo-up)
+4. [Step 3 — Tear Down the Network](#step-3--tear-down-the-network) (`down` / `prune`)
 
 
 ## What You'll Need

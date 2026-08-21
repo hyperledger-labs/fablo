@@ -14,10 +14,14 @@
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 24px)}
   html,body{margin:0;padding:0}
   body{font-family:var(--sans);color:var(--fg);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
   a{color:var(--cyan);text-decoration:none}
   a:hover{text-decoration:underline}
+  .skip-link{position:fixed;top:10px;left:12px;z-index:100;transform:translateY(-160%);font-family:var(--mono);font-weight:700;
+    color:#04140a;background:var(--accent);padding:8px 12px;border-radius:7px;transition:transform .2s}
+  .skip-link:focus{transform:translateY(0);outline:2px solid var(--fg);outline-offset:2px}
   code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);color:#c9d7e5;padding:.15em .42em;border-radius:5px;border:1px solid var(--line)}
   pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;overflow:auto}
   pre code{background:none;padding:0;border:0}
@@ -34,16 +38,19 @@
   /* touch devices have no hover, so keep the button visible there */
   @media(hover:none){.copy-btn{opacity:1}}
   /* nav */
-  .nav{position:sticky;top:0;z-index:50;height:var(--nav-h);display:flex;align-items:center;gap:24px;
+  .nav{position:sticky;top:0;z-index:50;height:var(--nav-h);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
     padding:0 28px;background:rgba(10,14,20,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .nav .brand{display:flex;align-items:center;gap:9px}
   .nav .brand img{height:30px;width:30px;display:block;filter:invert(1)}
   .nav .brand span{font-family:var(--mono);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--fg)}
-  .nav .links{margin-left:auto;display:flex;gap:22px;align-items:center}
+  .nav .links{display:flex;gap:22px;align-items:center;justify-content:center}
   .nav .links a{color:var(--muted);font-weight:500;font-size:.92rem}
   .nav .links a:hover{color:var(--fg);text-decoration:none}
-  .nav .cta{font-family:var(--mono);background:var(--accent);color:#04140a !important;padding:8px 15px;border-radius:8px;font-weight:700;font-size:.88rem}
-  .nav .cta:hover{background:#4ade80}
+  .nav a{transition:color .2s,background-color .2s,transform .2s}
+  .nav a:focus-visible,.btn:focus-visible,.card:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .nav .cta{justify-self:end;font-family:var(--mono);background:var(--accent);color:#04140a !important;padding:8px 15px;border-radius:8px;font-weight:700;font-size:.88rem}
+  .nav .cta:hover{background:#4ade80;text-decoration:none}
+  .nav .cta:active{transform:translateY(1px)}
   /* sidebar layout */
   .shell{max-width:var(--maxw);margin:0 auto;display:flex;gap:48px;padding:0 28px}
   .sidebar{width:var(--sidebar-w);flex:0 0 var(--sidebar-w);padding:34px 0;position:sticky;top:var(--nav-h);align-self:flex-start;height:calc(100vh - var(--nav-h));overflow:auto}
@@ -97,11 +104,47 @@
   .home-body{max-width:var(--maxw);margin:0 auto;padding:46px 28px 40px}
   .home-body h2{font-size:1.55rem;letter-spacing:-.02em}
   .home-body p{color:#aeb9c4}
+  .home-section{padding:36px 0 42px}
+  .home-section + .home-section{border-top:1px solid var(--line);padding-top:64px}
+  .home-body .section-kicker{font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+  .home-body .section-heading{max-width:760px;font-size:clamp(2rem,4vw,3.25rem);line-height:1.08;letter-spacing:-.04em;text-wrap:balance;margin:0 0 28px}
+  .section-copy{max-width:72ch}
+  .section-copy p{font-size:1.02rem;line-height:1.8;margin:0 0 18px;text-wrap:pretty}
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:30px}
+  .step-card{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:22px;transition:border-color .2s,transform .2s}
+  .step-card:hover{border-color:#354052;transform:translateY(-2px)}
+  .step-number{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.76rem;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:22px}
+  .step-card h3{font-family:var(--mono);font-size:1rem;line-height:1.4;color:var(--fg);margin:0 0 10px}
+  .step-card p{font-size:.92rem;line-height:1.65;color:var(--muted);margin:0 0 22px}
+  .step-card pre{margin:auto 0 0;border-radius:8px;padding:14px 15px;min-height:80px;display:flex;align-items:center}
+  .step-card pre code{font-size:.82rem;line-height:1.65;white-space:pre-wrap}
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:22px}
   .card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px 22px;transition:border-color .15s,transform .15s}
   .card:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
   .card h3{font-family:var(--mono);margin:.1em 0 .4em;font-size:1rem;color:var(--fg)}
   .card p{color:var(--muted);margin:0;font-size:.92rem}
+  /* examples */
+  .examples-page{--example-soft:#aeb9c4;--example-code:#0d1117}
+  .examples-page h1{font-size:2.5rem;line-height:1.12;max-width:15ch;margin-bottom:.45em}
+  .examples-page .examples-lede{color:var(--example-soft);font-size:1.08rem;max-width:64ch;margin-bottom:1.75rem}
+  .example-index{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:1.75rem 0 3.25rem;padding:0;list-style:none}
+  .example-index a{display:flex;align-items:center;min-height:48px;padding:10px 13px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:#c9d7e5;font-family:var(--mono);font-size:.82rem;line-height:1.35;transition:border-color .2s,color .2s,transform .2s}
+  .example-index a:hover{border-color:var(--accent);color:var(--fg);text-decoration:none;transform:translateY(-1px)}
+  .example-index a:focus-visible,.example-links a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .example-feature{scroll-margin-top:calc(var(--nav-h) + 22px);margin:0 0 4.75rem}
+  .example-feature h2{margin-bottom:.45rem}
+  .example-feature .example-summary{color:var(--example-soft);font-size:1rem;max-width:66ch;margin-top:0}
+  .example-meta{display:flex;flex-wrap:wrap;gap:8px;margin:1rem 0 1.2rem}
+  .example-meta span{font-family:var(--mono);font-size:.75rem;color:#adbac7;border:1px solid var(--line);border-radius:6px;padding:4px 8px;background:var(--panel)}
+  .example-feature h3{font-family:var(--mono);font-size:.9rem;color:var(--fg);margin-top:1.5rem}
+  .example-feature pre{margin:10px 0 18px;line-height:1.55}
+  .example-output{margin:1.5rem 0 1.25rem}
+  .example-output img{display:block;width:100%;height:auto;border-radius:12px;background:var(--example-code)}
+  .example-output figcaption{margin-top:9px;color:var(--muted);font-size:.82rem;line-height:1.5}
+  .example-links{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:1.25rem;font-family:var(--mono);font-size:.82rem}
+  .examples-next{border:1px solid rgba(63,185,80,.28);background:rgba(63,185,80,.08);border-radius:10px;padding:18px 20px;margin-top:1rem}
+  .examples-next h2{border:0;padding:0;margin:0 0 .4rem;font-size:1.25rem}
+  .examples-next p{margin:.35rem 0;color:var(--example-soft)}
   /* footer */
   .foot{border-top:1px solid var(--line);background:var(--panel)}
   .foot-in{max-width:var(--maxw);margin:0 auto;padding:26px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -109,18 +152,49 @@
   .foot .who{font-size:.88rem;color:var(--muted)}
   .foot .who b{color:var(--fg)}
   .foot .flinks{margin-left:auto;display:flex;gap:20px;font-size:.88rem}
+  @media(max-width:980px){
+    .nav{grid-template-columns:auto 1fr auto;gap:16px;padding:0 20px}
+    .nav .links{justify-content:flex-start;gap:16px;overflow-x:auto;scrollbar-width:none}
+    .nav .links::-webkit-scrollbar{display:none}
+    .nav .links a{white-space:nowrap}
+    .nav .brand span{display:none}
+    .steps{grid-template-columns:1fr}
+    .step-card pre{min-height:0}
+  }
   @media(max-width:820px){.sidebar{display:none}.hero h1{font-size:2.2rem}.term{flex-basis:100%}}
+  @media(max-width:620px){
+    :root{--nav-h:136px}
+    .nav{grid-template-columns:1fr auto;height:var(--nav-h);padding:10px 18px 8px;gap:8px 16px}
+    .nav .brand{grid-column:1;grid-row:1}
+    .nav .brand span{display:inline}
+    .nav .cta{grid-column:2;grid-row:1}
+    .nav .links{grid-column:1 / -1;grid-row:2;width:100%;flex-wrap:wrap;justify-content:flex-start;gap:6px 14px;overflow:visible;padding-bottom:2px}
+    .nav .links a{font-size:.8rem}
+    .hero{padding-top:52px}
+    .hero-text{min-width:0}
+    .home-body{padding-inline:20px}
+    .home-section{padding-top:24px}
+    .examples-page h1{font-size:2rem}
+    .example-index{grid-template-columns:1fr;margin-bottom:2.5rem}
+    .example-feature{margin-bottom:3.5rem}
+    .example-output{margin-left:-4px;margin-right:-4px}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.nav a,.step-card,.skip-link,.example-index a{transition:none}}
 </style>
 </head>
 <body>
-  <nav class="nav">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav class="nav" aria-label="Main navigation">
     <a class="brand" href="/"><img src="/assets/sygnet.png" alt=""><span>fablo</span></a>
     <div class="links">
+      <a href="/#why-fablo">Why Fablo</a>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/examples.html">Examples</a>
       <a href="/reference/configuration.html">Reference</a>
       <a href="/editor.html">Config editor</a>
-      <a href="https://github.com/hyperledger-labs/fablo">GitHub</a>
-      <a class="cta" href="/getting-started.html">Get started</a>
+      <a href="https://github.com/hyperledger-labs/fablo" aria-label="Fablo on GitHub">GitHub</a>
     </div>
+    <a class="cta" href="/getting-started.html">Get started</a>
   </nav>
   {{ content }}
   <footer class="foot">
@@ -130,6 +204,7 @@
       <div class="flinks">
         <a href="https://github.com/hyperledger-labs/fablo">GitHub</a>
         <a href="https://github.com/hyperledger-labs/fablo/blob/main/LICENSE">License</a>
+        <a href="/examples.html">Examples</a>
         <a href="/editor.html">Config editor</a>
       </div>
     </div>
