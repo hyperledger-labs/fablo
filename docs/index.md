@@ -4,8 +4,9 @@ title: Home
 ---
 
 <section class="home-section" id="why-fablo" aria-labelledby="why-fablo-heading">
-  <p class="section-kicker">A better starting point</p>
-  <h2 class="section-heading" id="why-fablo-heading">The network is complex. Your setup shouldn't be.</h2>
+  <p class="section-kicker">Why Fablo?</p>
+  <h2 class="section-heading" id="why-fablo-heading">A better starting point</h2>
+  <p class="section-subheading">The network is complex. Your setup shouldn't be.</p>
   <div class="section-copy">
     <p>Setting up a Hyperledger Fabric network by hand means writing dozens of crypto, configtx, and Docker Compose files. Fablo replaces all of that with a single declarative config: describe the organizations, channels, and chaincodes you want, and Fablo generates the network and the scripts to operate it on Docker — with TLS, RAFT/BFT ordering, CouchDB or LevelDB, private data, chaincode-as-a-service, Fablo REST, and optional Blockchain Explorer for Fabric v2.</p>
     <p>Fablo is built for local development and CI: spin up a full network in seconds, run chaincode and integration tests against it, then tear it down and repeat the process reliably on any machine with Docker.</p>
@@ -13,7 +14,7 @@ title: Home
 </section>
 
 <section class="home-section" id="how-it-works" aria-labelledby="how-it-works-heading">
-  <p class="section-kicker">Three simple steps</p>
+  <p class="section-kicker">How it works</p>
   <h2 class="section-heading" id="how-it-works-heading">From config to a running network</h2>
   <div class="steps">
     <article class="step-card">
