@@ -1,8 +1,12 @@
 name: Docs parity
 
 # Keeps the documentation honest against the implementation.
-# Manual dispatch runs the agent in fix mode, shows the recommended diff,
-# and opens a pull request with the edits.
+# Runs on a remote GitHub runner (manual dispatch, or later CI).
+# The agent edits the docs, then this job opens a PR.
+# The pull request is the review surface — inspect the diff and merge
+# if the documentation changes are correct. No separate findings report.
+#
+# Required repository secret: CLAUDE_CODE_OAUTH_TOKEN
 
 on:
   # pull_request:
@@ -23,8 +27,16 @@ permissions:
 jobs:
   docs-parity:
     runs-on: ubuntu-latest
+    env:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
 
       - name: Set up Jaiph
         uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
@@ -36,23 +48,29 @@ jobs:
           npm install -g @anthropic-ai/claude-code
           command -v claude
 
+      - name: Verify Claude Code authentication
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "Repository secret CLAUDE_CODE_OAUTH_TOKEN is not set." >&2
+            exit 1
+          fi
+          claude -p "/usage"
+
       - name: Validate workflow definitions
         run: |
           jaiph compile .jaiph
           jaiph test .jaiph/docs_parity.test.jh
 
       - name: Fix documentation drift
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: .jaiph/docs_parity.jh --unsafe fix
 
-      - name: Show recommended documentation changes
+      - name: Show documentation diff
         if: always()
         run: |
           git diff --stat
           git diff
 
-      - name: Open a pull request with the corrections
+      - name: Open a pull request with the documentation edits
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -60,11 +78,14 @@ jobs:
           title: "docs: sync documentation with the implementation"
           commit-message: "docs: sync documentation with the implementation"
           body: |
-            Automated documentation parity pass (`.jaiph/docs_parity.jh fix`).
+            The docs-parity agent reviewed the documentation against the
+            implementation and applied the edits in this pull request.
 
-            Each page was checked against its source of truth in the
-            implementation. Review the diff before merging: the agent edits
-            prose, and prose can be wrong.
+            **Review the diff and merge if the documentation is correct.**
+            The agent can be wrong: it is allowed to change prose and CLI
+            help text, not command behaviour.
+
+            If there is no diff, no pull request is opened.
 
             `docs/fablo.sh` is a generated mirror and was synced from
             `./fablo.sh` by the workflow, not edited directly.

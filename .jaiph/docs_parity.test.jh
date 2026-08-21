@@ -161,7 +161,7 @@ test "fix mode syncs the generated mirror and enforces the allowlist" {
   }
 
   const out = run app.default("fix")
-  expect_contain out "fixes applied"
+  expect_contain out "edits applied"
 }
 
 test "an unrecognised mode falls through to check, never fix" {

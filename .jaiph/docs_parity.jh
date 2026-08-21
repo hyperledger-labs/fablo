@@ -2,14 +2,17 @@
 
 # Checks that Fablo's documentation still matches the implementation.
 #
+# The review surface is a pull request, not a findings report. CI runs
+# `fix`, the agent edits the docs, and GitHub opens a PR. Inspect the
+# diff and merge if the changes are correct.
+#
 #   jaiph run .jaiph/docs_parity.jh static   # deterministic checks only, no
 #                                            # agent calls and no API key
-#   jaiph run .jaiph/docs_parity.jh check    # read-only; writes a findings
-#                                            # report and fails on drift
+#   jaiph run .jaiph/docs_parity.jh check    # read-only debug; fails on drift
 #   jaiph run .jaiph/docs_parity.jh fix      # edits the docs in place
 #
 # "check" is the default when no mode is given, so an accidental bare run
-# never rewrites files.
+# never rewrites files. GitHub Actions always passes `fix`.
 import "lib_docs.jh" as lib
 
 config {
@@ -283,8 +286,18 @@ workflow docs_overview(pages) {
 
 workflow fix_all(pages) {
   const allowed = run lib.build_allowed_paths()
-  run lib.init_report()
-  run check_static()
+  run lib.assert_fablo_mirror_in_sync() catch (err) {
+    log err
+  }
+  run lib.assert_config_keys_documented() catch (err) {
+    log err
+  }
+  run lib.assert_documented_commands_exist() catch (err) {
+    log err
+  }
+  run lib.assert_tables_render() catch (err) {
+    log err
+  }
   for path in pages {
     run fix_page(path)
   }
@@ -292,7 +305,7 @@ workflow fix_all(pages) {
   run lib.sync_fablo_mirror()
   ensure lib.only_allowed_paths_changed(allowed)
   run report_claude_usage()
-  return "Documentation parity fixes applied. Review the diff before committing."
+  return "Documentation edits applied. Inspect the pull request (or git diff) and merge if the changes are correct."
 }
 
 # --- Entrypoint -------------------------------------------------------------
