@@ -71,7 +71,7 @@ function getFabricConfig(): FabloConfigJson {
 }
 
 
-function getFabricXConfig(): FabloConfigJson {
+function getDefaultFabricXConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
@@ -92,7 +92,15 @@ function getFabricXConfig(): FabloConfigJson {
           prefix: "ca",
           db: "sqlite",
         },
-        orderers: [],
+        orderers: [
+          {
+            groupName: "group1",
+
+            type: "BFT",
+            instances: 1,
+            prefix: "orderer",
+          },
+        ],
       },
     ],
     channels: [
@@ -111,8 +119,8 @@ function getFabricXConfig(): FabloConfigJson {
   };
 }
 
-function getDefaultFabloConfig(fabricX = false): FabloConfigJson {
-  return fabricX ? getFabricXConfig() : getFabricConfig();
+function getDefaultFabloConfig(): FabloConfigJson {
+  return getFabricConfig();
 }
 
 export function parseOverrideValue(raw: string): unknown {
@@ -217,7 +225,7 @@ export default class Init extends Command {
       }
     }
 
-    let fabloConfigJson = getDefaultFabloConfig(flags.fabricX);
+   let fabloConfigJson = flags.fabricX ? getDefaultFabricXConfig() : getDefaultFabloConfig();
 
     if (flags.fabricX) {
       this.log("Creating minimal Fabric-X starter config");
