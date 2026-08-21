@@ -4,8 +4,11 @@ title: CLI commands
 ---
 
 
-# Outline
+# Fablo CLI Command Reference
 
+This reference documents the commands exposed by the Fablo CLI (`fablo`). For each command it lists the command's purpose, its syntax, and the arguments it accepts.
+
+**Outline**
 1. [Introduction](#fablo-cli-command-reference)
 2. [Network Lifecycle Commands](#network-lifecycle-commands) — `init`, `generate`, `up`, `down` / `start` / `stop`, `reset`, `prune`, `recreate`
 3. [Chaincode Commands](#chaincode-commands) — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode invoke`, `chaincodes list`, `chaincode query`
@@ -13,10 +16,6 @@ title: CLI commands
 5. [Snapshot Commands](#snapshot-commands) — `snapshot`, `restore`
 6. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`
 
-
-# Fablo CLI Command Reference
-
-This reference documents the commands exposed by the Fablo CLI (`fablo`). For each command it lists the command's purpose, its syntax, and the arguments it accepts.
 
 ## Network Lifecycle Commands
 
@@ -40,7 +39,7 @@ Option order does not matter. Valid options: `node`, `dev`, `ccaas`, `gateway`, 
 | `dev` | No | Used with `node`: configures the chaincode for hot-reload / CCaaS-style dev mode. |
 | `ccaas` | No | Adds a sample chaincode-as-a-service definition to the config. Cannot be combined with `node` or `dev`. |
 | `gateway` | No | Copies a sample Node.js gateway app into a `gateway` directory (does not change the config file itself). |
-| `--set <path>=<value>` | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
+| <code>--set &lt;path&gt;=&lt;value&gt;</code> | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
 
 By default, `fablo init` writes a config with Fabric `3.1.0`, TLS enabled, two BFT orderers, and two LevelDB peers under `Org1`.
 

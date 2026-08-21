@@ -1,0 +1,27 @@
+---
+server:
+  endpoint: :5001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2115
+  tls:
+    mode: none
+
+tx-signature:
+  num-of-parallel-workers: 3
+
+identity:
+  msp-dir: /msp
+  bccsp:
+    Default: SW
+    SW:
+      Security: 256
+      Hash: SHA2
+
+logging:
+  logSpec: info:grpc=error

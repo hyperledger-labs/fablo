@@ -21,15 +21,13 @@ title: Home
       <span class="step-number">01</span>
       <h3>Describe your network</h3>
       <p>Keep organizations, channels, and chaincodes in one readable config file.</p>
-      <pre aria-label="Example network configuration"><code>network: fabric
-version: 3.1.0</code></pre>
+      <pre aria-label="Command to scaffold a network config"><code>fablo init node</code></pre>
     </article>
     <article class="step-card">
       <span class="step-number">02</span>
       <h3>Generate everything</h3>
       <p>Fablo creates the artifacts and scripts your local network needs.</p>
-      <pre aria-label="Commands to generate a network"><code>fablo init node
-fablo generate</code></pre>
+      <pre aria-label="Command to generate a network"><code>fablo generate</code></pre>
     </article>
     <article class="step-card">
       <span class="step-number">03</span>

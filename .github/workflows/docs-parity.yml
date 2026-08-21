@@ -62,7 +62,7 @@ jobs:
           jaiph test .jaiph/docs_parity.test.jh
 
       - name: Fix documentation drift
-        run: .jaiph/docs_parity.jh --unsafe fix
+        run: .jaiph/docs_parity.jh --unsafe fix --yes
 
       - name: Show documentation diff
         if: always()

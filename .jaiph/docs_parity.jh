@@ -17,7 +17,7 @@ import "lib_docs.jh" as lib
 
 config {
   agent.backend = "claude"
-  agent.default_model = "opus"
+  agent.model = "opus"
   agent.claude_flags = "--permission-mode bypassPermissions"
 }
 

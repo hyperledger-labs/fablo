@@ -1,0 +1,38 @@
+---
+server:
+  endpoint: :6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2116
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org1-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  max-connections: 1000
+  min-connections: 50
+  load-balance: false
+  tls:
+    mode: none
+
+resource-limits:
+  max-workers-for-preparer: 3
+  max-workers-for-validator: 3
+  max-workers-for-committer: 3
+  min-transaction-batch-size: 1
+  timeout-for-min-transaction-batch-size: 5s
+
+identity:
+  msp-id: Org1MSP
+
+logging:
+  logSpec: info:grpc=error
