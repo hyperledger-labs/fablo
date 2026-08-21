@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="430" viewBox="0 0 1040 430" role="img" aria-labelledby="title desc">
+  <title id="title">Snapshot and restore workflow</title>
+  <desc id="desc">A dark terminal window showing Fablo snapshot, down, and restore commands used to preserve and recover a local network.</desc>
+  <rect width="1040" height="430" rx="16" fill="#0d1117"/>
+  <rect x="1" y="1" width="1038" height="428" rx="15" fill="none" stroke="#263040" stroke-width="2"/>
+  <path d="M0 58H1040" stroke="#263040"/>
+  <circle cx="28" cy="29" r="7" fill="#ff5f56"/><circle cx="52" cy="29" r="7" fill="#ffbd2e"/><circle cx="76" cy="29" r="7" fill="#27c93f"/>
+  <text x="100" y="35" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16">bash / repeatable-state</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">
+    <text x="28" y="102" fill="#3fb950">$</text><text x="50" y="102" fill="#e6edf3">fablo snapshot ./snapshots/before-upgrade</text>
+    <text x="28" y="142" fill="#7ee787">Snapshot saved</text>
+    <text x="28" y="198" fill="#3fb950">$</text><text x="50" y="198" fill="#e6edf3">fablo down</text>
+    <text x="28" y="238" fill="#8b949e">Network containers stopped</text>
+    <text x="28" y="294" fill="#3fb950">$</text><text x="50" y="294" fill="#e6edf3">fablo restore ./snapshots/before-upgrade</text>
+    <text x="28" y="334" fill="#7ee787">Network state restored</text>
+    <text x="28" y="390" fill="#8b949e">Transactions and identities are included in the snapshot.</text>
+  </g>
+</svg>
