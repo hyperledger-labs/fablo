@@ -6,6 +6,9 @@ networks:
     name: fabric-x
     driver: bridge
 
+volumes:
+  committer-org1-db-data:
+
 services:
 
   # ─── Orderer Party 1 ───────────────────────────────────────────────────────
@@ -14,7 +17,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: router --config=/config/node_config.yaml
     ports:
       - "7050:7050"
@@ -43,7 +46,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: batcher --config=/config/node_config.yaml
     ports:
       - "7051:7051"
@@ -71,7 +74,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: consensus --config=/config/node_config.yaml
     ports:
       - "7052:7052"
@@ -96,7 +99,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: assembler --config=/config/node_config.yaml
     ports:
       - "7053:7053"
@@ -128,21 +131,21 @@ services:
 
   committer-org1-db:
     image: docker.io/library/postgres:18.3-alpine3.23
+    command: postgres -c max_connections=500
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
     environment:
       POSTGRES_DB: fabricx
       POSTGRES_USER: fabricx
       POSTGRES_PASSWORD: fabricx
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - ./data/committer-org1/db:/var/lib/postgresql/data:Z
+      - committer-org1-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U fabricx -d fabricx"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 30
     networks:
       - fabric-x
 
@@ -150,7 +153,6 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
     command: start verifier --config=/config/verifier.yaml
     volumes:
       - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
@@ -169,7 +171,6 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
     command: start vc --config=/config/validator.yaml
     volumes:
       - ./config/validator.yaml:/config/validator.yaml:ro,Z
@@ -191,7 +192,6 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
     command: start coordinator --config=/config/coordinator.yaml
     volumes:
       - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
@@ -215,7 +215,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start sidecar --config=/config/sidecar.yaml
     ports:
       - "4001:4001"
@@ -247,7 +247,6 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
     command: start query --config=/config/query-service.yaml
     ports:
       - "7001:7001"
