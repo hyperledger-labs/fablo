@@ -1,0 +1,18 @@
+#!/usr/bin/env jaiph
+
+# Cheap verification after the agent edits the tree.
+# Full Fabric network e2e stays on the pull request (test-on-push.yml).
+#
+#   jaiph run .jaiph/verification.jh
+script all = ```
+  set -euo pipefail
+  # package.json is inside the agent's edit scope. Do not expose credentials to
+  # scripts that may have changed as part of the proposed implementation.
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run build
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:unit
+```
+
+workflow default() {
+  run all()
+  return "verification passed"
+}

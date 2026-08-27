@@ -59,7 +59,7 @@ jobs:
       - name: Validate workflow definitions
         run: |
           jaiph compile .jaiph
-          jaiph test .jaiph/docs_parity.test.jh
+          jaiph test .jaiph
 
       - name: Fix documentation drift
         run: .jaiph/docs_parity.jh --unsafe fix --yes

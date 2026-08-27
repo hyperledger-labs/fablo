@@ -42,6 +42,7 @@ See `git help commit`:
 ## Running Fablo locally
 
 You may want to verify some changes by running Fablo locally. To do so:
+
 1. Execute `./fablo-build.sh` script to create a Fablo Docker image locally.
 2. Use `./fablo.sh` from source root directory to call Fablo commands.
 
@@ -52,5 +53,29 @@ You may want to verify some changes by running Fablo locally. To do so:
 3. **Provide details**: Give your pull request a descriptive title and provide details about the changes you've made.
 4. **Review process**: Your pull request will be reviewed by maintainers. Be responsive to any feedback and make necessary changes.
 
-We appreciate your contributions and look forward to working with you!
+## Implementing an issue from a comment (maintainers)
 
+Maintainers with write access can ask CI to implement an issue. Comment on the issue, first line only:
+
+```text
+@fablo-bot implement
+```
+
+`/implement` on the first line works the same way. Extra lines after that are passed to the agent as steering. The workflow verifies that the commenter currently has `write`, `maintain`, or `admin` permission on the repository.
+
+The Action (`.github/workflows/implement-issue.yml`) then:
+
+1. Acknowledges the comment
+2. Runs the Jaiph workflow `.jaiph/implement_issue.jh` (Claude Code edits the tree; Jaiph does not push)
+3. Runs `npm run build` and `npm run test:unit`
+4. Opens a pull request with `Fixes #<n>` (draft if those checks still fail)
+
+Full Fabric network tests stay on the existing Tests workflow. A human reviews and merges. The agent cannot edit `.github/` or `.jaiph/`, and it does not merge.
+
+Until this workflow is on the default branch, test it with **Actions → Implement issue → Run workflow** and an issue number. A manual run targets the branch selected in the Actions UI; the comment trigger targets the repository's default branch.
+
+Required repository secret (already used by docs-parity): `CLAUDE_CODE_OAUTH_TOKEN`.
+
+PRs opened with the default `GITHUB_TOKEN` do not start Checks by themselves. Until the optional App is installed, manually dispatch the **Tests** workflow against the generated PR branch. Later, install the `fablo-bot` GitHub App (`FABLO_BOT_APP_ID`, `FABLO_BOT_PRIVATE_KEY`) so Checks start automatically. The App needs Contents, Issues, and Pull requests (read/write), no webhook, and no Workflows permission.
+
+We appreciate your contributions and look forward to working with you!

@@ -1,0 +1,69 @@
+import "implement_issue.jh" as app
+import "readiness.jh" as ready
+import "verification.jh" as verify
+
+# Prompts, git, npm, and filesystem checks are mocked so the suite never
+# calls Claude or mutates the tree. What is under test is the orchestration:
+# preflight, then implement, then verification, then the forbidden-path gate.
+test "default implements the issue then verifies" {
+  mock prompt {
+    _ => "implemented"
+  }
+  mock rule ready.tools_present() {
+    true
+  }
+  mock script app.read_issue() {
+    echo "{\"number\":42,\"title\":\"demo issue\"}"
+  }
+  mock script verify.all() {
+    echo "ok"
+  }
+  mock script app.assert_no_forbidden_paths() {
+    echo "Changed paths pass the safety policy."
+  }
+
+  const out = run app.default("issue.json")
+  expect_contain out "Implementation complete"
+}
+
+test "default fails when the agent edits a forbidden path" {
+  mock prompt {
+    _ => "implemented"
+  }
+  mock rule ready.tools_present() {
+    true
+  }
+  mock script app.read_issue() {
+    echo "{\"number\":42,\"title\":\"demo issue\"}"
+  }
+  mock script verify.all() {
+    echo "ok"
+  }
+  mock script app.assert_no_forbidden_paths() {
+    echo "Agent edited forbidden paths:" >&2
+    echo ".github/workflows/secret.yml" >&2
+    exit 1
+  }
+
+  const out = run app.default("issue.json") allow_failure
+  expect_contain out "forbidden"
+}
+
+test "readiness fails when node_modules is missing" {
+  mock script ready.has_node() {
+    true
+  }
+  mock script ready.has_npm() {
+    true
+  }
+  mock script ready.has_package_json() {
+    true
+  }
+  mock script ready.has_node_modules() {
+    echo "node_modules missing" >&2
+    exit 1
+  }
+
+  const out = run ready.default() allow_failure
+  expect_contain out "node_modules"
+}

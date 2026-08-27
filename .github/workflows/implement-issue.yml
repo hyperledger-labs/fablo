@@ -1,0 +1,321 @@
+name: Implement issue
+
+# Maintainer comments `@fablo-bot implement` (or `/implement`) on an issue.
+# The agent implements in the working tree, cheap tests run, then a pull
+# request is opened. Full Fabric network e2e stays on Tests (test-on-push.yml).
+# The pull request is the review surface — a human merges.
+#
+# Required repository secret: CLAUDE_CODE_OAUTH_TOKEN (same as docs-parity).
+# The default GITHUB_TOKEN is enough to comment and open a PR. GitHub prevents
+# that token from triggering a second workflow, so Tests must be dispatched
+# manually against the generated branch until the optional App is installed.
+# Optional later: GitHub App secrets FABLO_BOT_APP_ID and FABLO_BOT_PRIVATE_KEY
+# so the PR is opened as fablo-bot and Tests start without that extra click.
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to implement"
+        required: true
+        type: string
+      extra_instructions:
+        description: "Optional extra instructions for the agent"
+        required: false
+        type: string
+
+concurrency:
+  group: implement-issue-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  implement:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issue_comment' &&
+        !github.event.issue.pull_request &&
+        github.event.comment.user.type != 'Bot' &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+        (
+          contains(github.event.comment.body, '@fablo-bot implement') ||
+          contains(github.event.comment.body, '/implement')
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+      BASE_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || github.event.repository.default_branch }}
+      HAS_BOT_APP: ${{ secrets.FABLO_BOT_APP_ID != '' && secrets.FABLO_BOT_PRIVATE_KEY != '' }}
+    steps:
+      - name: Gate on implement command
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          EXTRA_INPUT: ${{ inputs.extra_instructions }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRIGGER_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            delimiter="JAIPH_$(openssl rand -hex 16)"
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "extra<<$delimiter"
+              printf '%s\n' "${EXTRA_INPUT:-}"
+              echo "$delimiter"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          first="$(printf '%s\n' "$COMMENT_BODY" | sed -n '1p' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          extra="$(printf '%s\n' "$COMMENT_BODY" | tail -n +2)"
+          case "$first" in
+            '@fablo-bot implement'|'/implement')
+              ;;
+            *)
+              echo "Not an implement command on the first line; skipping."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+          permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGER_ACTOR}/permission" --jq '.permission')"
+          case "$permission" in
+            admin|maintain|write)
+              ;;
+            *)
+              echo "${TRIGGER_ACTOR} has '${permission}' permission; write access is required."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+          delimiter="JAIPH_$(openssl rand -hex 16)"
+          echo "run=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "extra<<$delimiter"
+            printf '%s\n' "$extra"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate issue number
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          set -euo pipefail
+          if [[ ! "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Invalid issue number: ${ISSUE_NUMBER}" >&2
+            exit 1
+          fi
+
+      - name: Acknowledge on the issue
+        if: steps.gate.outputs.run == 'true' && github.event_name == 'issue_comment'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='eyes' || true
+          gh issue comment "$ISSUE_NUMBER" --body "Working on this in ${RUN_URL}."
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          fetch-depth: 0
+          # Claude runs later in this job. Do not leave GitHub push credentials
+          # in the repository's local git configuration for it to discover.
+          persist-credentials: false
+
+      - name: Fetch and validate issue
+        if: steps.gate.outputs.run == 'true'
+        id: issue-data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXTRA: ${{ steps.gate.outputs.extra }}
+          TRIGGERED_BY: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          mkdir -p .jaiph/tmp
+          gh issue view "$ISSUE_NUMBER" --json number,title,body,comments,labels,state,url \
+            > .jaiph/tmp/issue.raw.json
+          jq -e '.state == "OPEN"' .jaiph/tmp/issue.raw.json >/dev/null || {
+            echo "Issue #${ISSUE_NUMBER} is not open." >&2
+            exit 1
+          }
+          existing_pr="$(gh pr list --state open --head "ai/issue-${ISSUE_NUMBER}" --json url --jq '.[0].url // empty')"
+          if [ -n "$existing_pr" ]; then
+            echo "existing_pr=$existing_pr" >> "$GITHUB_OUTPUT"
+            echo "An implementation pull request already exists: ${existing_pr}" >&2
+            exit 1
+          fi
+          jq --arg extra "${EXTRA:-}" --arg by "$TRIGGERED_BY" \
+            '. + {extraInstructions: $extra, triggeredBy: $by}' \
+            .jaiph/tmp/issue.raw.json > .jaiph/tmp/issue.json
+
+      - name: Read issue title
+        if: steps.gate.outputs.run == 'true'
+        id: issue
+        run: |
+          set -euo pipefail
+          {
+            echo "title<<EOF"
+            jq -r '.title' .jaiph/tmp/issue.json
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: npm ci
+
+      - name: Set up Jaiph
+        if: steps.gate.outputs.run == 'true'
+        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
+        with:
+          version: 0.13.0
+
+      - name: Install Claude Code CLI
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          command -v claude
+
+      - name: Verify Claude Code authentication
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "Repository secret CLAUDE_CODE_OAUTH_TOKEN is not set." >&2
+            exit 1
+          fi
+          claude -p "/usage"
+
+      - name: Validate workflow definitions
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          jaiph compile .jaiph
+          jaiph test .jaiph/implement_issue.test.jh
+
+      - name: Implement the issue
+        id: implement
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+        run: jaiph run --unsafe --yes .jaiph/implement_issue.jh -- .jaiph/tmp/issue.json
+
+      - name: Show implementation diff
+        if: always() && steps.gate.outputs.run == 'true'
+        run: |
+          git diff --stat
+          git diff
+          git status --short
+
+      - name: Enforce pull request safety policy
+        if: >
+          always() &&
+          steps.gate.outputs.run == 'true' &&
+          steps.issue.outcome == 'success' &&
+          (steps.implement.outcome == 'success' || steps.implement.outcome == 'failure')
+        id: safety
+        env:
+          START_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          safe=true
+
+          if [ "$(git rev-parse HEAD)" != "$START_SHA" ]; then
+            echo "The agent changed repository history; refusing to open a pull request." >&2
+            safe=false
+          fi
+
+          while IFS= read -r -d '' path; do
+            case "$path" in
+              .github|.github/*|.jaiph|.jaiph/*|.env|.env.*|*/.env|*/.env.*|*.pem|*.key|credentials.json|*/credentials.json)
+                echo "Forbidden path: ${path}" >&2
+                safe=false
+                ;;
+            esac
+          done < <(git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z)
+
+          echo "safe=$safe" >> "$GITHUB_OUTPUT"
+          [ "$safe" = "true" ]
+
+      - name: GitHub App token
+        if: always() && steps.safety.outputs.safe == 'true' && env.HAS_BOT_APP == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.FABLO_BOT_APP_ID }}
+          private-key: ${{ secrets.FABLO_BOT_PRIVATE_KEY }}
+
+      - name: Open a pull request
+        if: always() && steps.safety.outputs.safe == 'true'
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          branch: ai/issue-${{ env.ISSUE_NUMBER }}
+          base: ${{ env.BASE_BRANCH }}
+          title: "Implement #${{ env.ISSUE_NUMBER }}: ${{ steps.issue.outputs.title }}"
+          draft: ${{ steps.implement.outcome != 'success' }}
+          signoff: true
+          commit-message: |
+            Implement #${{ env.ISSUE_NUMBER }}
+
+            Triggered by ${{ github.actor }} via the implement-issue workflow.
+          body: |
+            Fixes #${{ env.ISSUE_NUMBER }}
+
+            Implemented from a maintainer `@fablo-bot implement` (or `/implement`) command.
+
+            **Review the diff before merging.** The agent can be wrong.
+            Cheap checks (`npm run build`, `npm run test:unit`) ran in this
+            workflow. Full network e2e runs on this pull request via Tests.
+
+            If Checks did not start, dispatch the `Tests` workflow manually
+            against this PR branch. This is required until the optional
+            fablo-bot GitHub App is installed.
+
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          delete-branch: true
+
+      - name: Comment on the issue
+        if: always() && steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          PR_OP: ${{ steps.cpr.outputs.pull-request-operation }}
+          EXISTING_PR: ${{ steps.issue-data.outputs.existing_pr }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ -n "${EXISTING_PR:-}" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "An implementation pull request is already open: ${EXISTING_PR}"
+          elif [ "${PR_OP:-}" = "created" ] || [ "${PR_OP:-}" = "updated" ]; then
+            note=""
+            if [ "${HAS_BOT_APP}" != "true" ]; then
+              note=" If Checks did not start, run the Tests workflow manually against the PR branch."
+            fi
+            gh issue comment "$ISSUE_NUMBER" --body "Opened ${PR_URL} for #${ISSUE_NUMBER}.${note}"
+          elif [ "${PR_OP:-}" = "skipped" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "No file changes; no pull request opened. See ${RUN_URL}."
+          else
+            gh issue comment "$ISSUE_NUMBER" --body "Implement run finished without a pull request. See ${RUN_URL}."
+          fi
