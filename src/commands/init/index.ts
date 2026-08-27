@@ -8,7 +8,7 @@ import * as fs from "fs-extra";
 import { version } from "../../../package.json";
 import { schema } from "../../config";
 
-function getDefaultFabloConfig(): FabloConfigJson {
+function getFabricConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
@@ -70,6 +70,58 @@ function getDefaultFabloConfig(): FabloConfigJson {
   };
 }
 
+
+function getDefaultFabricXConfig(): FabloConfigJson {
+  return {
+    $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
+    global: {
+      fabricVersion: "3.1.0",
+      tls: true,
+      engine: "docker",
+      peerDevMode: false,
+      provider: "fabric-x",
+    },
+    orgs: [
+      {
+        organization: {
+          name: "Org1",
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
+        },
+        ca: {
+          prefix: "ca",
+          db: "sqlite",
+        },
+        orderers: [
+          {
+            groupName: "group1",
+            type: "BFT",
+            instances: 1,
+            prefix: "orderer",
+          },
+        ],
+      },
+    ],
+    channels: [
+      {
+        name: "mychannel",
+        orgs: [
+          {
+            name: "Org1",
+            peers: [],
+          },
+        ],
+      },
+    ],
+    chaincodes: [],
+    hooks: {},
+  };
+}
+
+function getDefaultFabloConfig(): FabloConfigJson {
+  return getFabricConfig();
+}
+
 export function parseOverrideValue(raw: string): unknown {
   const trimmed = raw.trim();
   if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
@@ -117,7 +169,7 @@ export default class Init extends Command {
     options: Args.string({
       multiple: true,
       required: false,
-      description: "Options: node, dev, ccaas, gateway, rest (order does not matter)",
+      description: "Options: node, dev, ccaas, gateway, rest, fabric-x (order does not matter)",
     }),
   };
 
@@ -136,8 +188,9 @@ export default class Init extends Command {
     ccaas: boolean;
     gateway: boolean;
     rest: boolean;
+    fabricX: boolean;
   } {
-    const validOptions = ["node", "dev", "ccaas", "gateway", "rest"] as const;
+    const validOptions = ["node", "dev", "ccaas", "gateway", "rest", "fabric-x"] as const;
     const optionsArr = Array.isArray(args?.options) ? args.options : args?.options ? [args.options] : [];
     const raw = optionsArr.filter((s) => !s.startsWith("-")).map((s) => s.toLowerCase());
     const invalid = raw.filter((o) => !validOptions.includes(o as (typeof validOptions)[number]));
@@ -150,11 +203,11 @@ export default class Init extends Command {
       ccaas: raw.includes("ccaas"),
       gateway: raw.includes("gateway"),
       rest: raw.includes("rest"),
+      fabricX: raw.includes("fabric-x"),
     };
   }
 
   async copySampleConfig(): Promise<void> {
-    let fabloConfigJson = getDefaultFabloConfig();
     const parsed = await this.parse(Init);
     const argv = (parsed.argv ?? []) as string[];
 
@@ -163,6 +216,20 @@ export default class Init extends Command {
       this.error(`Unknown option(s): ${unsupportedArgs.join(", ")}. ` + `Did you mean --set <path>=<value>?`);
     }
     const flags = this.getEffectiveFlags({ options: argv });
+
+    if (flags.fabricX) {
+      const incompatible = (["node", "dev", "ccaas", "gateway", "rest"] as const).filter((opt) => flags[opt]);
+      if (incompatible.length > 0) {
+        this.error(`Error: fabric-x cannot be used together with ${incompatible.join(", ")}`);
+      }
+    }
+
+   let fabloConfigJson = flags.fabricX ? getDefaultFabricXConfig() : getDefaultFabloConfig();
+
+    if (flags.fabricX) {
+      this.log("Creating minimal Fabric-X starter config");
+    }
+
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
         this.log(chalk.red("Error: ccaas cannot be used together with dev or node"));
