@@ -5,73 +5,75 @@ set -e
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
+FABLO_K8S_CONFIG="$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode-k8s.json"
+
+export FABLO_HOME
+if command -v go >/dev/null 2>&1; then
+  export PATH="$(go env GOPATH)/bin:$PATH"
+fi
+
+cleanup_done=false
 
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init kubernetes node)
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
+  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up "$FABLO_K8S_CONFIG")
 }
 
 dumpLogs() {
-  echo "Saving logs of $1 to $TEST_LOGS/$1.log"
   mkdir -p "$TEST_LOGS"
-  docker logs "$1" >"$TEST_LOGS/$1.log" 2>&1
+
+  kubectl get fabricnetworks.fabricops.io -A -o yaml >"$TEST_LOGS/fabricnetworks.yaml" 2>&1 || true
+  kubectl get pods,jobs,deployments,svc -A -o wide >"$TEST_LOGS/k8s-resources.txt" 2>&1 || true
+  kubectl get events -A --sort-by=.lastTimestamp >"$TEST_LOGS/k8s-events.txt" 2>&1 || true
+
+  while read -r namespace pod; do
+    [ -n "$namespace" ] || continue
+    echo "Saving logs of $namespace/$pod to $TEST_LOGS/$namespace-$pod.log"
+    kubectl logs -n "$namespace" "$pod" --all-containers=true >"$TEST_LOGS/$namespace-$pod.log" 2>&1 || true
+  done < <(kubectl get pods -A --no-headers -o custom-columns='NAMESPACE:.metadata.namespace,NAME:.metadata.name' 2>/dev/null || true)
 }
 
 networkDown() {
-  rm -rf "$TEST_LOGS"
-  (cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" down)
-}
+  if [ "$cleanup_done" = "true" ]; then
+    return
+  fi
+  cleanup_done=true
 
-waitForContainer() {
-  sh "$TEST_TMP/../wait-for-container.sh" "$1" "$2"
-}
+  dumpLogs
 
-waitForChaincode() {
-  sh "$TEST_TMP/../wait-for-chaincode.sh" "$1" "$2" "$3" "$4" "$5"
+  if [ -d "$TEST_TMP/fablo-target" ]; then
+    (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down) || true
+  fi
 }
 
 expectInvoke() {
-  sh "$TEST_TMP/../expect-invoke-cli.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
+  (cd "$TEST_TMP" && ../expect-invoke-cli.sh "$1" "$2" "$3" "$4" "$5" "${6:-}")
+}
+
+expectQuery() {
+  (cd "$TEST_TMP" && ../expect-query-cli.sh "$1" "$2" "$3" "$4" "$5" "${6:-}")
 }
 
 trap networkDown EXIT
 trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
-# start the network
 networkUp
 
-peer0="$(kubectl get pods | grep peer0 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1) peer"
-peer1="$(kubectl get pods | grep peer1 | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1 | head -n 1) peer"
-ca=$(kubectl get pods | grep org1-ca | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
-orderer=$(kubectl get pods | grep orderer-node | tr -s ' ' | cut -d ':' -f 1 | cut -d ' ' -f 1)
+fabricopsctl wait -n default --timeout 20m fablo-network
 
-waitForContainer "$orderer" "Starting raft node as part of a new channel channel=my-channel1 node=1"
-waitForContainer "$ca" "Listening on https://0.0.0.0:7054"
-waitForContainer "$peer0" "Joining gossip network of channel my-channel1 with 1 organizations"
-waitForContainer "$peer1" "Joining gossip network of channel my-channel1 with 1 organizations"
-waitForContainer "$peer0" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
-waitForContainer "$peer0" "Anchor peer.*with same endpoint, skipping connecting to myself"
-waitForContainer "$peer0" "Membership view has changed. peers went online:"
-waitForContainer "$peer1" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
-waitForContainer "$peer1" "Membership view has changed. peers went online:"
+# Test simple chaincode through both peers, one after the other.
+expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:put", "name", "Willy Wonka"]}' \
+  'Chaincode invoke successful'
+expectQuery "peer1.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:get", "name"]}' \
+  'Willy Wonka'
 
+expectInvoke "peer1.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:put", "name", "Charlie Bucket"]}' \
+  'Chaincode invoke successful'
+expectQuery "peer0.org1.example.com" "my-channel1" "chaincode1" \
+  '{"Args":["KVContract:get", "name"]}' \
+  'Charlie Bucket'
 
-#Test simple chaincode
-expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
- "put" "[\"name\"]" "Willy Wonka" "{\"success\":\"OK\"}"
-expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
- "get" "[\"name\"]" "" '{"success":"Willy Wonka"}'
-
-
-# Reset and ensure the state is lost after reset
-(cd "$TEST_TMP" && "$(find . -type f -iname 'fabric-k8s.sh')" reset)
-waitForChaincode "admin" "peer0.default" "my-channel1" "chaincode1" "1.0"
-waitForChaincode "admin" "peer1.default" "my-channel1" "chaincode1" "1.0"
-
-expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
-  "get" "[\"name\"]" "" '{"error":"NOT_FOUND"}'
-
-# Put some data again
-expectInvoke "admin" "peer1.default" "my-channel1" "chaincode1" \
-  "put" "[\"name\"]" "James Bond" "{\"success\":\"OK\"}"
+echo "Test passed ✅"

@@ -1,3 +1,16 @@
+## Unreleased
+
+### Features
+* Add experimental Kubernetes engine support backed by FabricOps.
+* Route Kubernetes `fablo chaincode invoke` and `fablo chaincode query` through `fabricopsctl`.
+
+### Documentation
+* Document that FabricOps-backed Kubernetes networks require `global.tls=true` when channels are declared. Docker-based local development networks can still use non-TLS configurations.
+
+### Notes
+* The Kubernetes engine targets FabricOps `v0.1.1` or newer for channel participation, peer/orderer readiness, and CCaaS lifecycle fixes.
+* Chaincode invoke/query support requires a `fabricopsctl` build with raw Fabric payload support.
+
 ## 2.6.0
 
 ### Features

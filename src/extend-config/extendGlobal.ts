@@ -100,13 +100,15 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
   const explorer = !globalJson?.tools?.explorer
     ? {}
     : {
-      explorer: { address: "explorer.example.com", port: 7010 },
-    };
+        explorer: { address: "explorer.example.com", port: 7010 },
+      };
 
-  const paths = process.env.FABLO_CONFIG ? getPathsFromEnv() : {
-    fabloConfig: "fablo-config.json",
-    chaincodesBaseDir: ".",
-  };
+  const paths = process.env.FABLO_CONFIG
+    ? getPathsFromEnv()
+    : {
+        fabloConfig: "fablo-config.json",
+        chaincodesBaseDir: ".",
+      };
 
   return {
     ...globalJsonRest,
