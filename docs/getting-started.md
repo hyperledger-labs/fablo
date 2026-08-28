@@ -45,10 +45,18 @@ fablo init rest
 ```
 
 - `node` — copies a sample Node.js chaincode into `chaincodes/chaincode-kv-node` and registers it in the config.
-- `dev` — used together with `node`, configures the chaincode to run in hot-reload / CCaaS-style dev mode instead of a normal install.
-- `ccaas` — adds a sample chaincode-as-a-service definition. Cannot be combined with `node` or `dev`.
-- `gateway` — copies a sample Node.js gateway app into a `gateway` directory (separate from Fablo REST).
+- `dev` — used together with `node`, configures the chaincode to run as a chaincode-as-a-service container that reloads on source changes, instead of a normal install.
+- `ccaas` — adds a sample chaincode-as-a-service definition to the config. It does not copy any chaincode source, and it cannot be combined with `node` or `dev`.
+- `gateway` — copies a sample Node.js gateway app into `gateway/node`, which is separate from Fablo REST.
 - `rest` — enables [Fablo REST](https://github.com/fablo-io/fablo-rest) for each organization in the config.
+
+The `fabric-x` option works differently, because you get a whole different starter config instead of extra scaffolding on top of the default one:
+
+```
+fablo init fabric-x
+```
+
+Fablo writes a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`, a single organization (`Org1`) that has one BFT orderer and no peers, and a channel named `mychannel`. You cannot combine `fabric-x` with `node`, `dev`, `ccaas`, `gateway` or `rest`.
 
 You can also override generated fields with `--set`:
 
@@ -58,7 +66,7 @@ fablo init --set global.monitoring.loglevel=debug --set orgs[1].peer.db=CouchDb
 fablo init node --set orgs[1].peer.instances=5
 ```
 
-Use `orgs[1]` for peer settings — `orgs[0]` is the orderer organization and has no `peer` block. Creating only `peer.db` without `peer.instances` is also invalid.
+Use `orgs[1]` for peer settings, because `orgs[0]` is the orderer organization and has no `peer` block. If you add a `peer` block where there was none, for example with `--set orgs[0].peer.db=CouchDb`, Fablo rejects the result, because a `peer` block also needs `instances`. Every override is checked against the schema before anything is saved, so a config file is written only when the final config is valid.
 
 ## Step 2 — Generate and Start the Network with `fablo up`
 
@@ -68,7 +76,9 @@ Start the network defined by your config:
 fablo up
 ```
 
-By default this looks for `fablo-config.json` or `fablo-config.yaml` in the current directory. A source config file must already exist (`fablo init` creates one). `fablo up` starts the Hyperledger Fabric network, creates the channels, and installs and deploys chaincodes (package / install / approve / commit). If the generated `fablo-target` files are missing, `fablo up` generates them for you before starting.
+By default this looks for `fablo-config.json` or `fablo-config.yaml` in the current directory, and you can point it at another file with `fablo up [/path/to/fablo-config.json|yaml]`. A source config file must already exist (`fablo init` creates one). `fablo up` starts the Hyperledger Fabric network, creates the channels, and installs and deploys chaincodes (package, install, approve and commit). If the generated `fablo-target` files are missing, `fablo up` generates them for you before starting.
+
+Once the network has been generated, `fablo up` compares your config with the copy it stored in `fablo-target`. If the two differ, it stops with an error instead of starting, and you then run `fablo prune` to remove the old network, or `fablo recreate [/path/to/fablo-config.json|yaml]` to prune and start again with the new config in one step.
 
 If you want to generate the network files without starting anything (for inspection, or to target a specific config or output directory), use:
 

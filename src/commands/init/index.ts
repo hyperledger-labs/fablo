@@ -163,7 +163,7 @@ function validateFabloConfig(configToValidate: FabloConfigJson): string[] {
 
 export default class Init extends Command {
   static override description =
-    "Creates simple Fablo config in current directory with optional Node.js, chaincode, REST API and dev mode";
+    "Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS chaincode, gateway sample, REST API and dev mode, or a minimal config for the experimental Fabric-X provider";
 
   static args = {
     options: Args.string({
@@ -176,7 +176,7 @@ export default class Init extends Command {
   static flags = {
     set: Flags.string({
       multiple: true,
-      summary: "Override config values",
+      summary: "Override generated config values, given as <path>=<value>",
     }),
   };
 
