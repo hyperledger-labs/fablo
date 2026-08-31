@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-set -x # Enable verbose tracing in CI to pinpoint exact failing lines
+[ "${FABLO_TEST_DEBUG:-0}" = "1" ] && set -x # Enable verbose tracing in CI to pinpoint exact failing lines
 
 # Test Harness & Workspace Scaffolding
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
@@ -42,7 +42,7 @@ run_fablo() {
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" "$@")
 }
 
-# Spin up Docker containers with retry loop
+# Spin up Docker containers with retry loop to handle transient startup flakes
 UP_SUCCESS=false
 for i in {1..5}; do
   if run_fablo up; then
@@ -84,21 +84,28 @@ assert_non_empty "$CONFIG_BLOCK"
 assert_non_empty "$SHARED_CONFIG"
 assert_non_empty "$CLIENT_TLS"
 
-# Container Health Checks
-echo "Running Container Health Checks..."
-RUNNING_CONTAINERS=$(docker ps --filter "label=com.docker.compose.project=fabric-x" --format '{{.Names}}')
+# Container Health Checks: explicitly verify readiness messages in stdout logs
+echo "Running Container Health Checks using wait-for-container.sh..."
 
-if ! echo "$RUNNING_CONTAINERS" | grep -q "orderer"; then
-  echo "Error: No orderer containers found running for the Fabric-X project."
-  exit 1
-fi
+waitForContainer() {
+  sh "$TEST_TMP/../wait-for-container.sh" "$1" "$2"
+}
 
-if ! echo "$RUNNING_CONTAINERS" | grep -q "committer"; then
-  echo "Error: No committer containers found running for the Fabric-X project."
-  exit 1
-fi
+# Wait for orderer nodes
+waitForContainer "orderer-router" "Router network service is starting"
+waitForContainer "orderer-batcher" "Batcher network service is starting"
+waitForContainer "orderer-consenter" "Consensus network service is starting"
+waitForContainer "orderer-assembler" "Assembler network service is starting"
 
-echo "All required Fabric-X containers are running."
+# Wait for committer stack
+waitForContainer "fabric-x-committer-org1-db-1" "database system is ready to accept connections"
+waitForContainer "fabric-x-committer-org1-verifier-1" "Serving gRPC on"
+waitForContainer "fabric-x-committer-org1-validator-1" "Serving gRPC on"
+waitForContainer "fabric-x-committer-org1-coordinator-1" "Serving gRPC on"
+waitForContainer "fabric-x-committer-org1-query-service-1" "Serving gRPC on"
+waitForContainer "fabric-x-committer-org1-sidecar-1" "Updated dynamic TLS"
+
+echo "All required Fabric-X containers are ready."
 
 # Namespace & Lifecycle Regression Validation
 echo "Running Namespace & Lifecycle Regression Validation..."
@@ -130,6 +137,7 @@ if [ "$MYNAMESPACE_COUNT" -ne 1 ]; then
 fi
 
 echo "5. Cache / Up Skip"
+# Verify idempotent behavior (skip generating artifacts if they already exist)
 CONFIG_MTIME_BEFORE=$(stat -c %Y "$CONFIG_BLOCK")
 
 UP_SUCCESS=false
