@@ -1,0 +1,24 @@
+#!/usr/bin/env jaiph
+
+# Cheap preflight for issue implementation. No agent calls.
+#
+#   jaiph run .jaiph/readiness.jh
+script has_node = `command -v node >/dev/null`
+
+script has_npm = `command -v npm >/dev/null`
+
+script has_package_json = `test -f package.json`
+
+script has_node_modules = `test -d node_modules`
+
+rule tools_present() {
+  run has_node()
+  run has_npm()
+  run has_package_json()
+  run has_node_modules()
+}
+
+workflow default() {
+  ensure tools_present()
+  return "ready"
+}

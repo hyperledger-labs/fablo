@@ -1,0 +1,173 @@
+name: Implement issue
+
+# Maintainer comments `@fablo-bot implement` (or `/implement`) on an issue.
+# The agent implements in the working tree, cheap tests run, then a pull
+# request is opened. Full Fabric network e2e stays on Tests (test-on-push.yml).
+# The pull request is the review surface — a human merges.
+#
+# Required repository secret: CLAUDE_CODE_OAUTH_TOKEN (same as docs-parity).
+# The default GITHUB_TOKEN is enough to comment and open a PR. GitHub prevents
+# that token from triggering a second workflow, so Tests must be dispatched
+# manually against the generated branch.
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to implement"
+        required: true
+        type: string
+      extra_instructions:
+        description: "Optional extra instructions for the agent"
+        required: false
+        type: string
+
+concurrency:
+  group: implement-issue-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  implement:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issue_comment' &&
+        !github.event.issue.pull_request &&
+        github.event.comment.user.type != 'Bot' &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
+        (
+          contains(github.event.comment.body, '@fablo-bot implement') ||
+          contains(github.event.comment.body, '/implement')
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
+      BASE_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || github.event.repository.default_branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Claude runs later in this job. Do not leave GitHub push credentials
+          # in the repository's local git configuration for it to discover.
+          persist-credentials: false
+
+      # Command, caller, issue number, issue state, and duplicate pull request
+      # are all checked by one script; it also writes the agent's issue payload
+      # and acknowledges on the issue. A refusal sets run=false, not a failure.
+      - name: Gate and prepare the implement run
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          EXTRA_INPUT: ${{ inputs.extra_instructions }}
+          TRIGGER_ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/scripts/implement-issue-gate.sh
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: npm ci
+
+      - name: Set up Jaiph
+        if: steps.gate.outputs.run == 'true'
+        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
+        with:
+          version: 0.13.0
+
+      - name: Install Claude Code CLI
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          command -v claude
+          claude -p "/usage"
+
+      - name: Implement the issue
+        id: implement
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
+        run: jaiph run --unsafe --yes .jaiph/implement_issue.jh -- .jaiph/tmp/issue.json
+
+      - name: Show implementation diff
+        if: always() && steps.gate.outputs.run == 'true'
+        run: |
+          git diff --stat
+          git diff
+          git status --short
+
+      # The agent may have failed part way through, so the safety policy is
+      # re-run here, outside the agent's control, before anything is pushed.
+      - name: Enforce pull request safety policy
+        if: >
+          always() &&
+          steps.gate.outputs.run == 'true' &&
+          (steps.implement.outcome == 'success' || steps.implement.outcome == 'failure')
+        id: safety
+        run: .jaiph/verification.jh --unsafe safety --yes -- "${{ github.sha }}"
+
+      - name: Open a pull request
+        if: always() && steps.safety.outcome == 'success'
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ai/issue-${{ env.ISSUE_NUMBER }}
+          base: ${{ env.BASE_BRANCH }}
+          title: "Implement #${{ env.ISSUE_NUMBER }}: ${{ steps.gate.outputs.title }}"
+          draft: ${{ steps.implement.outcome != 'success' }}
+          signoff: true
+          commit-message: |
+            Implement #${{ env.ISSUE_NUMBER }}
+
+            Triggered by ${{ github.actor }} via the implement-issue workflow.
+          body: |
+            Fixes #${{ env.ISSUE_NUMBER }}
+
+            Implemented from a maintainer `@fablo-bot implement` (or `/implement`) command.
+
+            **Review the diff before merging.** The agent can be wrong.
+            Cheap checks (`npm run build`, `npm run test:unit`) ran in this
+            workflow. Full network e2e runs on this pull request via Tests.
+
+            If Checks did not start, dispatch the `Tests` workflow manually
+            against this PR branch. GitHub does not let a workflow started
+            with the default `GITHUB_TOKEN` trigger another workflow.
+
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          delete-branch: true
+
+      - name: Comment on the issue
+        if: always() && steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          PR_OP: ${{ steps.cpr.outputs.pull-request-operation }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "${PR_OP:-}" = "created" ] || [ "${PR_OP:-}" = "updated" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "Opened ${PR_URL} for #${ISSUE_NUMBER}. If Checks did not start, run the Tests workflow manually against the PR branch."
+          elif [ "${PR_OP:-}" = "skipped" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "No file changes; no pull request opened. See ${RUN_URL}."
+          else
+            gh issue comment "$ISSUE_NUMBER" --body "Implement run finished without a pull request. See ${RUN_URL}."
+          fi
