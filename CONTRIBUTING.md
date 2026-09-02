@@ -76,6 +76,6 @@ Until this workflow is on the default branch, test it with **Actions → Impleme
 
 Required repository secret (already used by docs-parity): `CLAUDE_CODE_OAUTH_TOKEN`.
 
-PRs opened with the default `GITHUB_TOKEN` do not start Checks by themselves. Until the optional App is installed, manually dispatch the **Tests** workflow against the generated PR branch. Later, install the `fablo-bot` GitHub App (`FABLO_BOT_APP_ID`, `FABLO_BOT_PRIVATE_KEY`) so Checks start automatically. The App needs Contents, Issues, and Pull requests (read/write), no webhook, and no Workflows permission.
+PRs opened with the default `GITHUB_TOKEN` do not start Checks by themselves, so dispatch the **Tests** workflow manually against the generated PR branch.
 
 We appreciate your contributions and look forward to working with you!

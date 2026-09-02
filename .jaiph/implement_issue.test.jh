@@ -18,7 +18,7 @@ test "default implements the issue then verifies" {
   mock script verify.all() {
     echo "ok"
   }
-  mock script app.assert_no_forbidden_paths() {
+  mock script verify.no_forbidden_paths() {
     echo "Changed paths pass the safety policy."
   }
 
@@ -39,7 +39,7 @@ test "default fails when the agent edits a forbidden path" {
   mock script verify.all() {
     echo "ok"
   }
-  mock script app.assert_no_forbidden_paths() {
+  mock script verify.no_forbidden_paths() {
     echo "Agent edited forbidden paths:" >&2
     echo ".github/workflows/secret.yml" >&2
     exit 1

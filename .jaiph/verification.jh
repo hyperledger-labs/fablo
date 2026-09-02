@@ -1,9 +1,11 @@
 #!/usr/bin/env jaiph
 
-# Cheap verification after the agent edits the tree.
+# Cheap verification after the agent edits the tree, plus the safety policy
+# that decides whether the working tree may become a pull request.
 # Full Fabric network e2e stays on the pull request (test-on-push.yml).
 #
-#   jaiph run .jaiph/verification.jh
+#   .jaiph/verification.jh
+#   .jaiph/verification.jh safety "$(git rev-parse HEAD)"
 script all = ```
   set -euo pipefail
   # package.json is inside the agent's edit scope. Do not expose credentials to
@@ -12,7 +14,54 @@ script all = ```
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:unit
 ```
 
-workflow default() {
+# The agent must leave commits alone: the Action, not the agent, turns the
+# working tree into a commit on a fresh branch.
+script no_history_rewrite = ```
+  set -euo pipefail
+  start_sha="$1"
+  if [ -z "$start_sha" ]; then
+    echo "No start SHA given; cannot verify that history is unchanged." >&2
+    exit 1
+  fi
+  if [ "$(git rev-parse HEAD)" != "$start_sha" ]; then
+    echo "The agent changed repository history." >&2
+    exit 1
+  fi
+  echo "Repository history is unchanged."
+```
+
+script no_forbidden_paths = ```
+  set -euo pipefail
+  blocked=0
+  while IFS= read -r -d '' path; do
+    case "$path" in
+      .github|.github/*|.jaiph|.jaiph/*|.env|.env.*|*/.env|*/.env.*|*.pem|*.key|credentials.json|*/credentials.json)
+        echo "forbidden: ${path}" >&2
+        blocked=1
+        ;;
+    esac
+  done < <(git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z)
+  if [ "$blocked" -ne 0 ]; then
+    echo "Agent edited forbidden paths." >&2
+    exit 1
+  fi
+  echo "Changed paths pass the safety policy."
+```
+
+workflow safety(start_sha) {
+  run no_history_rewrite(start_sha)
+  run no_forbidden_paths()
+  return "safety policy passed"
+}
+
+workflow verify_all() {
   run all()
   return "verification passed"
+}
+
+workflow default(mode, start_sha) {
+  return match mode {
+    "safety" => run safety(start_sha)
+    _ => run verify_all()
+  }
 }

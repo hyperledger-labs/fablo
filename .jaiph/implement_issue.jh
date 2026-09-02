@@ -49,24 +49,6 @@ const constraints = """
 
 script read_issue = `cat "$1"`
 
-script assert_no_forbidden_paths = ```
-  set -euo pipefail
-  blocked=0
-  while IFS= read -r -d '' path; do
-    case "$path" in
-      .github|.github/*|.jaiph|.jaiph/*|.env|.env.*|*/.env|*/.env.*|*.pem|*.key|credentials.json|*/credentials.json)
-        echo "forbidden: ${path}" >&2
-        blocked=1
-        ;;
-    esac
-  done < <(git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z)
-  if [ "$blocked" -ne 0 ]; then
-    echo "Agent edited forbidden paths." >&2
-    exit 1
-  fi
-  echo "Changed paths pass the safety policy."
-```
-
 workflow implement(issue_text) {
   prompt """
     ${role}
@@ -95,6 +77,6 @@ workflow default(issue_path) {
       ${err}
     """
   }
-  run assert_no_forbidden_paths()
+  run verify.no_forbidden_paths()
   return "Implementation complete. Inspect the working tree; the Action opens the pull request."
 }
