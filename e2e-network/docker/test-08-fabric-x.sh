@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-[ "${FABLO_TEST_DEBUG:-0}" = "1" ] && set -x # Enable verbose tracing in CI to pinpoint exact failing lines
+set -e
 
-# Test Harness & Workspace Scaffolding
 TEST_TMP="$(rm -rf "$0.tmpdir" && mkdir -p "$0.tmpdir" && (cd "$0.tmpdir" && pwd))"
 TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
@@ -15,167 +13,122 @@ dumpLogs() {
   docker logs "$1" >"$TEST_LOGS/$1.log" 2>&1 || true
 }
 
-networkDown() {
-  local exit_code=$?
-  set +e
-  echo "Executing teardown. Capturing container logs..."
-  docker ps -a --filter "label=com.docker.compose.project=fabric-x" --format '{{.Names}}' | while read -r name; do
-    [ -n "$name" ] && dumpLogs "$name"
-  done
-  ( cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down ) || true
-  if [ $exit_code -ne 0 ]; then
-    echo "❌ Test failed with exit code $exit_code"
-  fi
-  exit $exit_code
-}
-
-trap networkDown EXIT SIGINT
-
-echo "Starting Fabric-X Network Initialization..."
-"$FABLO_HOME/fablo-build.sh"
-
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init fabric-x)
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" validate)
-
-# Helper function to run Fablo inside temp directory
 run_fablo() {
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" "$@")
 }
 
-# Spin up Docker containers with retry loop to handle transient startup flakes
-UP_SUCCESS=false
-for i in {1..5}; do
-  if run_fablo up; then
-    UP_SUCCESS=true
-    break
-  fi
-  if [ "$i" -lt 5 ]; then
-    echo "fablo up failed (attempt $i). Cleaning and retrying in 10s..."
-    run_fablo down || true
-    sleep 10
-  else
-    echo "fablo up failed (attempt $i). Final attempt failed."
-  fi
-done
+networkDown() {
+  sleep 2
+  (for name in $(docker ps -a --format '{{.Names}}'); do dumpLogs "$name"; done)
+  run_fablo down
+}
 
-if [ "$UP_SUCCESS" = false ]; then
-  echo "Error: fablo up failed after 5 attempts."
+waitForHealthy() {
+  local container="$1"
+  local max_attempts="${2:-90}"
+  
+  for i in $(seq 1 "$max_attempts"); do
+    echo "➜ verifying if container $container is healthy ($i)..."
+    local status
+    status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no_healthcheck{{end}}' "$container" 2>/dev/null || echo "not_found")
+    
+    if [ "$status" = "healthy" ]; then
+      echo "✅ ok: Container $container is healthy!"
+      return 0
+    fi
+    sleep 1
+  done
+
+  echo "❌ failed: Container $container did not become healthy within timeout."
+  docker logs "$container" | tail -n 30
   exit 1
-fi
+}
 
-echo "Network started successfully."
+expectCommand() {
+  sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
+}
 
-# Artifact Verification
-echo "Running Artifact Verification..."
-assert_non_empty() {
-  local file="$1"
-  if [ -z "$file" ] || [ ! -s "$file" ]; then
-    echo "Error: Artifact missing or empty: $file"
+expectNotCommand() {
+  local command="$1"
+  local expected="$2"
+  echo ""
+  echo "➜ testing not contains: $command"
+  local response
+  response="$(eval "$command" 2>&1)"
+  echo "$response"
+  if echo "$response" | grep -a -E "$expected"; then
+    echo "❌ failed (cli): $command | expected not to contain: $expected"
     exit 1
+  else
+    echo "✅ ok (cli - not found): $command"
   fi
-  echo "Verified artifact exists and is non-empty: $file"
 }
 
-CONFIG_BLOCK=$(find "$TEST_TMP/fablo-target" -name "config-block.pb.bin" | head -n 1 || true)
-SHARED_CONFIG=$(find "$TEST_TMP/fablo-target" -name "shared_config.binpb" | head -n 1 || true)
-CLIENT_TLS=$(find "$TEST_TMP/fablo-target" -name "client-tls-ca.pem" | head -n 1 || true)
+networkUp() {
+  "$FABLO_HOME/fablo-build.sh"
+  run_fablo init fabric-x
+  run_fablo validate
 
-assert_non_empty "$CONFIG_BLOCK"
-assert_non_empty "$SHARED_CONFIG"
-assert_non_empty "$CLIENT_TLS"
-
-# Container Health Checks: explicitly verify readiness messages in stdout logs
-echo "Running Container Health Checks using wait-for-container.sh..."
-
-waitForContainer() {
-  sh "$TEST_TMP/../wait-for-container.sh" "$1" "$2"
+  run_fablo up
 }
 
-# Wait for orderer nodes
-waitForContainer "orderer-router" "Router network service is starting"
-waitForContainer "orderer-batcher" "Batcher network service is starting"
-waitForContainer "orderer-consenter" "Consensus network service is starting"
-waitForContainer "orderer-assembler" "Assembler network service is starting"
+trap networkDown EXIT
+trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
-# Wait for committer stack
-waitForContainer "fabric-x-committer-org1-db-1" "database system is ready to accept connections"
-waitForContainer "fabric-x-committer-org1-verifier-1" "Serving gRPC on"
-waitForContainer "fabric-x-committer-org1-validator-1" "Serving gRPC on"
-waitForContainer "fabric-x-committer-org1-coordinator-1" "Serving gRPC on"
-waitForContainer "fabric-x-committer-org1-query-service-1" "Serving gRPC on"
-waitForContainer "fabric-x-committer-org1-sidecar-1" "Updated dynamic TLS"
+# start the network
+networkUp
 
-echo "All required Fabric-X containers are ready."
+# verify artifacts
+CONFIG_BLOCK="$TEST_TMP/fablo-target/fabric-x/crypto/config-block.pb.bin"
+SHARED_CONFIG="$TEST_TMP/fablo-target/fabric-x/crypto/shared_config.binpb"
+CLIENT_TLS="$TEST_TMP/fablo-target/fabric-x/crypto/client-tls-ca.pem"
 
-# Namespace & Lifecycle Regression Validation
-echo "Running Namespace & Lifecycle Regression Validation..."
-
-echo "1. Zero State"
-NS_LIST=$(run_fablo namespace list 2>&1 || true)
-if echo "$NS_LIST" | grep -q "mynamespace"; then
-  echo "Error: Expected 0 namespaces in zero state. Found: $NS_LIST"
+if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS" ]; then
+  echo "Error: Artifact missing or empty"
   exit 1
 fi
 
-echo "2. Commit State"
+# check if ready
+waitForHealthy "orderer-router"
+waitForHealthy "orderer-batcher"
+waitForHealthy "orderer-consenter"
+waitForHealthy "orderer-assembler"
+waitForHealthy "fabric-x-committer-org1-db-1"
+waitForHealthy "fabric-x-committer-org1-verifier-1"
+waitForHealthy "fabric-x-committer-org1-validator-1"
+waitForHealthy "fabric-x-committer-org1-coordinator-1"
+waitForHealthy "fabric-x-committer-org1-query-service-1"
+waitForHealthy "fabric-x-committer-org1-sidecar-1"
+
+# namespace zero state
+expectNotCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
+
+# init namespace
 run_fablo namespace init
 
-echo "3. Post-Init Query"
-NS_LIST=$(run_fablo namespace list 2>&1 || true)
-if ! echo "$NS_LIST" | grep -q "mynamespace"; then
-  echo "Error: mynamespace not found after init. Output: $NS_LIST"
-  exit 1
-fi
+# post-init query
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
 
-echo "4. Idempotency"
+# idempotency
 run_fablo namespace init
-NS_LIST_IDEMPOTENT=$(run_fablo namespace list 2>&1 || true)
-MYNAMESPACE_COUNT=$(echo "$NS_LIST_IDEMPOTENT" | grep -c "mynamespace" || true)
-if [ "$MYNAMESPACE_COUNT" -ne 1 ]; then
-  echo "Error: Expected exactly 1 mynamespace after idempotent init, found $MYNAMESPACE_COUNT"
-  exit 1
-fi
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
 
-echo "5. Cache / Up Skip"
-# Verify idempotent behavior (skip generating artifacts if they already exist)
-CONFIG_MTIME_BEFORE=$(stat -c %Y "$CONFIG_BLOCK")
-
-UP_SUCCESS=false
-for i in {1..3}; do
-  if run_fablo up; then
-    UP_SUCCESS=true
-    break
-  fi
-  echo "fablo up failed (attempt $i). Retrying in 10s..."
-  sleep 10
-done
-
-if [ "$UP_SUCCESS" = false ]; then
-  echo "Error: fablo up failed after cached up attempts."
-  exit 1
-fi
-
-CONFIG_MTIME_AFTER=$(stat -c %Y "$CONFIG_BLOCK")
-if [ "$CONFIG_MTIME_BEFORE" != "$CONFIG_MTIME_AFTER" ]; then
+# cache skip check
+CONFIG_HASH_BEFORE=$(sha256sum "$CONFIG_BLOCK" | awk '{print $1}')
+run_fablo up
+CONFIG_HASH_AFTER=$(sha256sum "$CONFIG_BLOCK" | awk '{print $1}')
+if [ "$CONFIG_HASH_BEFORE" != "$CONFIG_HASH_AFTER" ]; then
   echo "Error: Artifacts were regenerated during a cached 'up' command."
   exit 1
 fi
 
-echo "6. Stop / Start"
+# stop start persistence
 run_fablo stop
 run_fablo start
-NS_LIST=$(run_fablo namespace list 2>&1 || true)
-if ! echo "$NS_LIST" | grep -q "mynamespace"; then
-  echo "Error: mynamespace not found after stop/start. Output: $NS_LIST"
-  exit 1
-fi
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
 
-echo "7. Reset State"
+# reset state
 run_fablo reset
-NS_LIST_RESET=$(run_fablo namespace list 2>&1 || true)
-if echo "$NS_LIST_RESET" | grep -q "mynamespace"; then
-  echo "Error: mynamespace should be gone after reset."
-  exit 1
-fi
+expectNotCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
 
 echo "Test passed ✅"
