@@ -153,6 +153,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start verifier --config=/config/verifier.yaml
     volumes:
       - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
@@ -171,6 +172,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start vc --config=/config/validator.yaml
     volumes:
       - ./config/validator.yaml:/config/validator.yaml:ro,Z
@@ -192,6 +194,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start coordinator --config=/config/coordinator.yaml
     volumes:
       - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
@@ -247,6 +250,7 @@ services:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start query --config=/config/query-service.yaml
     ports:
       - "7001:7001"

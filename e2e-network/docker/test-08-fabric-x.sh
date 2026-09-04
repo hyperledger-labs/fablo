@@ -19,30 +19,11 @@ run_fablo() {
 
 networkDown() {
   sleep 2
-  (for name in $(docker ps -a --format '{{.Names}}'); do dumpLogs "$name"; done)
+  (for name in $(docker ps -a --filter "label=com.docker.compose.project=fabric-x" --format '{{.Names}}'); do dumpLogs "$name"; done)
   run_fablo down
 }
 
-waitForHealthy() {
-  local container="$1"
-  local max_attempts="${2:-90}"
-  
-  for i in $(seq 1 "$max_attempts"); do
-    echo "➜ verifying if container $container is healthy ($i)..."
-    local status
-    status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no_healthcheck{{end}}' "$container" 2>/dev/null || echo "not_found")
-    
-    if [ "$status" = "healthy" ]; then
-      echo "✅ ok: Container $container is healthy!"
-      return 0
-    fi
-    sleep 1
-  done
 
-  echo "❌ failed: Container $container did not become healthy within timeout."
-  docker logs "$container" | tail -n 30
-  exit 1
-}
 
 expectCommand() {
   sh "$TEST_TMP/../expect-command.sh" "$1" "$2"
@@ -73,7 +54,7 @@ networkUp() {
 }
 
 trap networkDown EXIT
-trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
+trap 'trap - EXIT ; networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 
 # start the network
 networkUp
@@ -88,17 +69,6 @@ if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS"
   exit 1
 fi
 
-# check if ready
-waitForHealthy "orderer-router"
-waitForHealthy "orderer-batcher"
-waitForHealthy "orderer-consenter"
-waitForHealthy "orderer-assembler"
-waitForHealthy "fabric-x-committer-org1-db-1"
-waitForHealthy "fabric-x-committer-org1-verifier-1"
-waitForHealthy "fabric-x-committer-org1-validator-1"
-waitForHealthy "fabric-x-committer-org1-coordinator-1"
-waitForHealthy "fabric-x-committer-org1-query-service-1"
-waitForHealthy "fabric-x-committer-org1-sidecar-1"
 
 # namespace zero state
 expectNotCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"

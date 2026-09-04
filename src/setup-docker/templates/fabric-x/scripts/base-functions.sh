@@ -62,8 +62,7 @@ generateArtifacts() {
     --outputBlock /config/crypto/config-block.pb.bin \
     --configPath /config
 
-  echo "Fixing permissions for crypto material to ensure containers can read TLS keys..."
-  chmod -R a+rX "$FABRIC_X_ROOT/crypto" || true
+
 }
 networkUp() {
   mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
@@ -73,9 +72,6 @@ networkUp() {
            "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger"
 
   generateArtifacts
-  # cryptogen writes private keys with mode 600. Run the services as the same
-  # host user that owns those files instead of relying on Compose's 1000:1000
-  # fallback, which is a different UID on many CI runners.
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
     docker compose --project-directory "$FABRIC_X_ROOT" up -d --wait
   printStartSuccessInfo
@@ -83,10 +79,7 @@ networkUp() {
 
 networkDown() {
   (cd "$FABRIC_X_ROOT" && docker compose down -v)
-  # Some containers (like Postgres) may change data dir ownership to their internal user (e.g. 999), 
-  # making rm -rf fail for the CI runner user. Use docker to clean up if needed.
-  rm -rf "$FABRIC_X_ROOT/crypto" "$FABRIC_X_ROOT/data" 2>/dev/null || \
-    docker run --rm -v "$FABRIC_X_ROOT:/tmp/fx" alpine rm -rf /tmp/fx/crypto /tmp/fx/data
+  rm -rf "$FABRIC_X_ROOT/crypto" "$FABRIC_X_ROOT/data"
 }
 
 
