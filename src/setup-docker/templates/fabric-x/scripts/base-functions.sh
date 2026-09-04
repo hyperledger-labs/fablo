@@ -61,16 +61,19 @@ generateArtifacts() {
     configtxgen --channelID mychannel --profile OrgsChannel \
     --outputBlock /config/crypto/config-block.pb.bin \
     --configPath /config
+
+
 }
 networkUp() {
   mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
-           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
            "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
            "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
-           "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger" \
-           "$FABRIC_X_ROOT/data/committer-org1/db"
+           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
+           "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger"
+
   generateArtifacts
-  (cd "$FABRIC_X_ROOT" && docker compose up -d --wait)
+  FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
+    docker compose --project-directory "$FABRIC_X_ROOT" up -d --wait
   printStartSuccessInfo
 }
 
