@@ -19,7 +19,7 @@ test "default implements the issue then verifies" {
     echo "ok"
   }
   mock script verify.no_forbidden_paths() {
-    echo "Changed paths pass the safety policy."
+    echo "Changed paths pass the policy."
   }
 
   const out = run app.default("issue.json")
@@ -40,8 +40,7 @@ test "default fails when the agent edits a forbidden path" {
     echo "ok"
   }
   mock script verify.no_forbidden_paths() {
-    echo "Agent edited forbidden paths:" >&2
-    echo ".github/workflows/secret.yml" >&2
+    echo "forbidden: src/credentials.json" >&2
     exit 1
   }
 

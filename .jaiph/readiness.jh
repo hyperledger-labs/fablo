@@ -20,5 +20,4 @@ rule tools_present() {
 
 workflow default() {
   ensure tools_present()
-  return "ready"
 }
