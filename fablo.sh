@@ -134,6 +134,9 @@ printHelp() {
   fablo init [node] [rest] [dev] [ccaas] [gateway] [--set <path>=<value> ...]
     Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS, REST API, gateway sample, and/or dev mode. Use --set to override generated fields.
 
+  fablo init fabric-x [--set <path>=<value> ...]
+    Creates minimal Fablo config for the experimental Fabric-X provider. Cannot be combined with node, rest, dev, ccaas or gateway.
+
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
 
@@ -161,10 +164,13 @@ printHelp() {
   fablo chaincode upgrade <chaincode-name> <version>
     Upgrades chaincode on all relevant peers. Chaincode directory is specified in Fablo config file.
 
-  fablo chaincode invoke <peers_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]
+  fablo chaincode dev <chaincode-name>
+    Approves and commits a chaincode definition for peers started in dev mode, using the version from the Fablo config file. Supported only on channels with Fabric v2 capabilities.
+
+  fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]
     Invokes chaincode with specified parameters. Transient data is optional.
 
-  fablo chaincodes list <peer> <channel>
+  fablo chaincodes list <peer_domain> <channel_name>
     Lists chaincodes installed on specified peer and channel.
     
   fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]
@@ -173,11 +179,23 @@ printHelp() {
   fablo channel --help
     To list available channel query options which can be executed on running network.
 
-  fablo snapshot <target-snapshot-path>
-    Creates a snapshot of the network in target path. The snapshot contains all network state, including transactions and identities.
+  fablo namespace <list | init>
+    Lists namespaces on the running network, or creates the default namespace. Available only for the experimental Fabric-X provider.
 
-  fablo restore <source-snapshot-path>
-    Restores the network from a snapshot.
+  fablo snapshot <target-snapshot-path>
+    Creates a snapshot of the network. The snapshot contains all network state, including transactions and identities. It is saved as '<target-snapshot-path>.fablo.tar.gz', unless the given path already ends with 'tar.gz'.
+
+  fablo restore <source-snapshot-path> [hook-command]
+    Restores the network from a snapshot, so that it can be started with the 'start' command. Requires the network to be pruned first. The optional hook command is executed in the restored directory before the containers are created.
+
+  fablo validate [/path/to/fablo-config.json|yaml]
+    Validates the Fablo config file against the schema and additional checks. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml'.
+
+  fablo extend-config [/path/to/fablo-config.json|yaml]
+    Reads the Fablo config file, extends it and prints the result as JSON. Useful for debugging.
+
+  fablo export-network-topology [/path/to/fablo-config.json|yaml [outputFile.mmd]]
+    Exports the network topology described by the Fablo config file to a Mermaid diagram. Default output file is 'network-topology.mmd'.
 
   fablo use [version]
     Updates this Fablo script to specified version. Prints all versions if no version parameter is provided.

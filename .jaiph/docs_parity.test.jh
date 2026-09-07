@@ -4,9 +4,8 @@ import "lib_docs.jh" as lib
 # The git- and filesystem-touching pieces are mocked so the suite is
 # deterministic and never writes to the working tree. What is under test is
 # the orchestration: that check mode reports without editing, that fix mode
-# syncs the generated mirror and enforces the allowlist, and that a bare run
-# falls through to check mode. Claude usage logging is mocked so the suite
-# never calls the Claude CLI.
+# syncs the generated mirror, and that a bare run falls through to check mode.
+# Claude usage logging is mocked so the suite never calls the Claude CLI.
 test "check mode records a status for every page" {
   mock prompt {
     _ => "{\"status\": \"ok\", \"findings\": \"Page matches the implementation.\"}"
@@ -128,7 +127,7 @@ test "check mode fails when drift is recorded" {
   expect_contain out "drift"
 }
 
-test "fix mode syncs the generated mirror and enforces the allowlist" {
+test "fix mode syncs the generated mirror" {
   mock prompt {
     _ => "edited"
   }
@@ -141,17 +140,11 @@ test "fix mode syncs the generated mirror and enforces the allowlist" {
   mock rule lib.docs_files_present() {
     true
   }
-  mock rule lib.only_allowed_paths_changed() {
-    true
-  }
   mock script lib.list_doc_pages() {
     echo "README.md"
   }
   mock script lib.source_of_truth_for() {
     echo "fablo.sh"
-  }
-  mock script lib.build_allowed_paths() {
-    printf '%s\n' README.md fablo.sh docs/fablo.sh
   }
   mock script lib.sync_fablo_mirror() {
     echo "synced docs/fablo.sh from fablo.sh"

@@ -132,10 +132,10 @@ The complete sample applies the peer and tool settings to both organizations and
 
 ## Add Blockchain Explorer to Fabric v2
 
-Enable the optional Explorer UI when you need to inspect channels, blocks, and transactions in a Fabric 2.5 development network.
+Enable the optional Explorer UI when you need to inspect channels, blocks, and transactions in a Fabric v2 development network.
 {: .example-summary }
 
-<div class="example-meta"><span>Fabric 2.5 only</span><span>Explorer</span><span>TLS</span><span>RAFT</span></div>
+<div class="example-meta"><span>Fabric v2 only</span><span>Explorer</span><span>TLS</span><span>RAFT</span></div>
 
 ### Configuration excerpt
 
@@ -149,7 +149,7 @@ Enable the optional Explorer UI when you need to inspect channels, blocks, and t
 }
 ```
 
-Explorer is supported for Fabric v2 and not Fabric v3. Keep the Fabric version explicit, then run `fablo up` to generate its connection material and start its containers with the network.
+Explorer is supported for Fabric v2 and not Fabric v3. `fablo validate` warns when the Fabric version is 2.5.13 or newer, or older than 1.4.0, because Hyperledger Explorer may not support those versions. You can also set `tools.explorer` on a single organization instead of setting it globally. When the global `tools.explorer` is true, Fablo ignores the setting on each organization. Run `fablo up` to generate the Explorer connection material and start its containers with the network.
 
 <figure class="example-output">
   <img src="/assets/examples/explorer-services.svg" width="1040" height="460" loading="lazy" alt="Terminal output showing generated Blockchain Explorer configuration and connection profile files for a Fabric version 2 network.">
@@ -175,15 +175,16 @@ Capture a complete local network state, including transactions and identities, t
 ### Try it
 
 ```bash
-fablo snapshot ./snapshots/before-upgrade
-fablo down
-fablo restore ./snapshots/before-upgrade
+fablo snapshot before-upgrade
+fablo prune
+fablo restore before-upgrade
+fablo start
 ```
 
-Use a snapshot path outside `fablo-target` if you plan to prune generated files before restoring the network.
+Take the snapshot while the network is running, because Fablo copies the state out of the running containers. The command `fablo snapshot before-upgrade` writes an archive named `before-upgrade.fablo.tar.gz` in the current directory, and it fails when that file already exists. Run `fablo prune` before you restore, because `fablo restore` stops with an error when a `fablo-target` directory is already there, and `fablo down` leaves that directory in place. A restored network is created but not started, so run `fablo start` at the end.
 
 <figure class="example-output">
-  <img src="/assets/examples/snapshot-restore.svg" width="1040" height="430" loading="lazy" alt="Terminal workflow running fablo snapshot, fablo down, and fablo restore against a named local snapshot.">
+  <img src="/assets/examples/snapshot-restore.svg" width="1040" height="430" loading="lazy" alt="Terminal workflow running fablo snapshot, fablo prune, fablo restore, and fablo start against a named local snapshot.">
   <figcaption>A compact snapshot workflow for repeatable integration tests and local upgrade experiments.</figcaption>
 </figure>
 
