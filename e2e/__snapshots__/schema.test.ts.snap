@@ -473,6 +473,25 @@ exports[`schema should match snapshot 1`] = `
         "properties": {
           "ca": {
             "$id": "#/properties/orgs/items/properties/ca",
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "external": {
+                      "const": true,
+                    },
+                  },
+                  "required": [
+                    "external",
+                  ],
+                },
+                "then": {
+                  "required": [
+                    "url",
+                  ],
+                },
+              },
+            ],
             "properties": {
               "db": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/db",
@@ -484,10 +503,25 @@ exports[`schema should match snapshot 1`] = `
                 "title": "Database",
                 "type": "string",
               },
+              "external": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/external",
+                "title": "External CA",
+                "type": "boolean",
+              },
               "prefix": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
                 "pattern": "^[a-z0-9\\.\\-]+$",
                 "title": "Domain prefix",
+                "type": "string",
+              },
+              "tlsCACertPath": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/tlsCACertPath",
+                "title": "External CA TLS CA certificate path",
+                "type": "string",
+              },
+              "url": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/url",
+                "title": "External CA URL",
                 "type": "string",
               },
             },

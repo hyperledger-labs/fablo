@@ -139,6 +139,18 @@ describe("schema", () => {
     expect(withCADomainPrefix(specialCharacters2)).not.toMatchSchema(schema);
   });
 
+  it("should validate ca external settings", () => {
+    const withExternalCa = (ca: Record<string, unknown>) =>
+      updatedBase((json: FabloConfigJson) => {
+        json.orgs[1].ca = ca as unknown as FabloConfigJson["orgs"][number]["ca"];
+      });
+
+    expect(withExternalCa({ prefix: "ca" })).toMatchSchema(schema);
+    expect(withExternalCa({ external: true, url: "ca0.org1.example.com:7054" })).toMatchSchema(schema);
+    expect(withExternalCa({ external: true })).not.toMatchSchema(schema);
+    expect(withExternalCa({ external: false })).toMatchSchema(schema);
+  });
+
   it("should validate peer domain prefix", () => {
     const withPeerDomainPrefix = (d: string) =>
       updatedBase((json: FabloConfigJson) => {

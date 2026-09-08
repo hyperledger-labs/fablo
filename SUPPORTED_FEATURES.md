@@ -19,6 +19,7 @@ This document provides an overview of Fablo features. The table below tracks fea
 | CA DB - MySQL                          | ✓         | ✓         | ✓          | [04_v3](/e2e-network/docker/test-04-v3-snapshot-ccaas.sh) |  |
 | Kubernetes engine (`global.engine`)    | ✓         | ✕         | ✕          | [01_k8s](/e2e-network/k8s/test-01-simple-k8s.sh) (disabled in CI) | |
 | Fabric-X provider (`global.provider`)  | -         | -         | ✓          |          | [#811](https://github.com/hyperledger-labs/fablo/pull/811) |
+| External CA (`orgs[].ca.external`), first step towards joining an existing network | ✓ | ✓ | ✓ | | [#619](https://github.com/hyperledger-labs/fablo/issues/619) |
 | <br>**CHANNELS**                       |           |           |            |          |                 |
 | Channel query scripts                  | ✓         | ✓         | ✓          | [01_v3](/e2e-network/docker/test-01-v3-simple.sh), [05_v3](/e2e-network/docker/test-05-v3.sh), [06_v3](/e2e-network/docker/test-06-v3-bft.sh) |                 |
 | <br>**CHAINCODES**                     |           |           |            |          |                 |

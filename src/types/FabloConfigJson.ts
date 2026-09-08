@@ -29,6 +29,9 @@ export interface OrganizationDetailsJson {
 export interface CAJson {
   prefix: string;
   db: "sqlite" | "postgres" | "mysql";
+  external?: boolean;
+  url?: string;
+  tlsCACertPath?: string;
 }
 
 export interface OrdererJson {

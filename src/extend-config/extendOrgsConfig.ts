@@ -25,15 +25,18 @@ const extendCaConfig = (
   const caDb = caJsonFormat?.db || defaults.ca.db;
   const address = `${caPrefix}.${orgDomainJsonFormat}`;
   const port = 7054;
+  const external = caJsonFormat?.external === true;
   return {
     prefix: caPrefix,
     address,
     port,
     exposePort: caExposePort,
-    fullAddress: `${address}:${port}`,
+    fullAddress: external && caJsonFormat.url ? caJsonFormat.url : `${address}:${port}`,
     caAdminNameVar: `${orgName.toUpperCase()}_CA_ADMIN_NAME`,
     caAdminPassVar: `${orgName.toUpperCase()}_CA_ADMIN_PASSWORD`,
     db: caDb,
+    external,
+    tlsCACertPath: caJsonFormat?.tlsCACertPath,
   };
 };
 
@@ -196,7 +199,7 @@ const fabloRestConfig = (
     address: `fablo-rest.${domain}`,
     mspId: mspName,
     port,
-    fabricCaUrl: `${schema}${ca.address}:${ca.port}`,
+    fabricCaUrl: `${schema}${ca.fullAddress}`,
     fabricCaName: ca.address,
     ...discoveryEndpointsConfig,
     logging: fabloRestLoggingConfig(global),

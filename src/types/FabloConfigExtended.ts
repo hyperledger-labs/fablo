@@ -76,6 +76,10 @@ export interface CAConfig {
   port: number;
   prefix: string;
   db: "sqlite" | "postgres" | "mysql";
+  // `external` marks a CA that already runs outside of this network (e.g. it belongs to a
+  // network being joined), so Fablo does not generate a CA container for it.
+  external: boolean;
+  tlsCACertPath?: string;
 }
 
 export interface PeerConfig {

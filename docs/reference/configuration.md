@@ -139,6 +139,11 @@ Organization Certificate Authority (CA) settings.
 |---|---|---|---|---|
 | `prefix` | Domain prefix | `string` | No | pattern `^[a-z0-9\.\-]+$` (default `ca`) |
 | `db` | CA database | `string` | No | `sqlite` (default), `postgres`, `mysql` |
+| `external` | The CA already runs outside of this network (for example it belongs to a network being joined), so Fablo does not generate a CA container for it | `boolean` | No | defaults to `false` |
+| `url` | Address of the already-running CA | `string` | Yes, when `external` is `true` | |
+| `tlsCACertPath` | Path to the external CA's TLS CA certificate | `string` | No | |
+
+`external`, `url` and `tlsCACertPath` are the first, still experimental building block for joining an existing network (see [#619](https://github.com/hyperledger-labs/fablo/issues/619)): Fablo only stops generating a duplicate CA container and points tools such as Fablo REST at the given `url`. Provisioning the joining peer's crypto material and orderer/channel access from another network is not automated yet.
 
 ### `orgs[].orderers`
 

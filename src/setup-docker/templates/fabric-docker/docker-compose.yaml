@@ -3,6 +3,7 @@ networks:
 
 services:
 <% orgs.forEach(function(org){ %>
+  <%_ if (!org.ca.external) { _%>
   <%= org.ca.address %>:
     container_name: <%= org.ca.address %>
     image: ${FABRIC_CA_IMAGE}
@@ -82,6 +83,7 @@ services:
       - /var/lib/mysql
     networks:
       - basic
+  <%_ } _%>
   <%_ } _%>
 
   <%= org.cli.address %>:

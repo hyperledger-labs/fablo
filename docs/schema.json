@@ -234,6 +234,17 @@
             "type": "object",
             "title": "Organization Certificate Authority (CA)",
             "required": [],
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "external": { "const": true } },
+                  "required": [ "external" ]
+                },
+                "then": {
+                  "required": [ "url" ]
+                }
+              }
+            ],
             "properties": {
               "prefix": {
                 "$id": "#/properties/orgs/items/properties/ca/properties/prefix",
@@ -250,6 +261,21 @@
                   "postgres",
                   "mysql"
                 ]
+              },
+              "external": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/external",
+                "title": "External CA",
+                "type": "boolean"
+              },
+              "url": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/url",
+                "title": "External CA URL",
+                "type": "string"
+              },
+              "tlsCACertPath": {
+                "$id": "#/properties/orgs/items/properties/ca/properties/tlsCACertPath",
+                "title": "External CA TLS CA certificate path",
+                "type": "string"
               }
             }
           },

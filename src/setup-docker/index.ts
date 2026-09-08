@@ -159,6 +159,7 @@ export default class SetupDocker extends Command {
 
   async _createFabricCaServerConfigs(orgsTransformed: OrgConfig[]): Promise<void> {
     for (const orgTransformed of orgsTransformed) {
+      if (orgTransformed.ca.external) continue;
       const templatePath = getTemplatePath(this.templatesDir, "fabric-config/fabric-ca-server-config.yaml");
       const destPath = getDestinationPath(
         this.outputDir,
