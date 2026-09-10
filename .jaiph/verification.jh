@@ -6,12 +6,34 @@
 #
 #   .jaiph/verification.jh
 #   .jaiph/verification.jh no_destructive_changes "$(git rev-parse HEAD)"
+#
+# The caller runs the policy modes from the base commit's copy of this file,
+# not the working tree's, so the agent cannot edit the rules it is judged by.
 script all = ```
   set -euo pipefail
   # package.json is inside the agent's edit scope. Do not expose credentials to
   # scripts that may have changed as part of the proposed implementation.
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run build
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:unit
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run lint
+```
+
+# Snapshots under e2e/__snapshots__/ are generator output: the only way to
+# change one is to build the image and re-run the suite (see CONTRIBUTING.md).
+# The agent is told to do this, and it is done here too, so that forgetting
+# cannot reach the pull request. A docs-only change skips the Docker build.
+script snapshots = ```
+  set -euo pipefail
+  changed="$(git diff --name-only HEAD; git ls-files --others --exclude-standard)"
+  if [ -z "$changed" ]; then
+    echo "No changes; snapshots cannot be affected."
+    exit 0
+  fi
+  if ! printf '%s\n' "$changed" | grep -qvE '^docs/|\.md$'; then
+    echo "Docs-only change; skipping the snapshot rebuild."
+    exit 0
+  fi
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:e2e-update
 ```
 
 # The agent must leave commits alone: the caller, not the agent, turns the
@@ -30,13 +52,17 @@ script no_history_rewrite = ```
   echo "Repository history is unchanged."
 ```
 
+# Credential files are the only paths the agent may never write. It is allowed
+# to change .github/ and .jaiph/, because an issue may be about the automation
+# itself; those changes are flagged for review by the caller instead of being
+# refused here.
 script no_forbidden_paths = ```
   set -euo pipefail
   blocked=0
   while IFS= read -r -d '' path; do
     case "$path" in
       .env|.env.*|*/.env|*/.env.*|*.pem|*.key|credentials.json|*/credentials.json)
-        echo "forbidden: ${path}" >&2
+        echo "forbidden (credential file): ${path}" >&2
         blocked=1
         ;;
     esac

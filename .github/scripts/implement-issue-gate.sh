@@ -24,12 +24,27 @@ if [[ ! "$permission" =~ ^(admin|maintain|write)$ ]]; then
   exit 1
 fi
 
-# 2. Collect the instructions for the agent. On a comment the command is the
-#    first line — the workflow `if` guarantees it — and the rest is guidance.
+# 2. Collect the instructions for the agent. On a comment, the first line is
+#    the command; steering may follow it on that same line, on later lines, or
+#    both. Comments written in the web UI arrive with CRLF line endings.
 if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
   additional="${ADDITIONAL_INPUT:-}"
 else
-  additional="$(printf '%s\n' "$COMMENT_BODY" | tail -n +2)"
+  body="$(printf '%s\n' "$COMMENT_BODY" | tr -d '\r')"
+  first_line="$(printf '%s\n' "$body" | head -n 1)"
+
+  # The workflow `if` only tests the prefix, so `/implementation ...` reaches
+  # this point. The command has to be the whole first word.
+  if [[ ! "$first_line" =~ ^/implement([[:space:]]|$) ]]; then
+    echo "Comment does not start with the /implement command." >&2
+    exit 1
+  fi
+
+  # `sed '/./,$!d'` drops the blank first line left behind when the command
+  # stands alone, so the payload does not open with empty steering.
+  same_line="${first_line#/implement}"
+  additional="$(printf '%s\n%s\n' "${same_line# }" \
+    "$(printf '%s\n' "$body" | tail -n +2)" | sed '/./,$!d')"
 fi
 
 # 3. Verify the issue number; on workflow_dispatch it is free-form input.
@@ -54,6 +69,15 @@ if [ -n "$existing_pr" ]; then
     --body "An implementation pull request is already open: ${existing_pr}"
   echo "An implementation pull request already exists: ${existing_pr}" >&2
   exit 1
+fi
+
+# Closing a pull request leaves its branch behind, and the next run would build
+# on those stale commits. No open pull request uses this branch, and the name
+# belongs to this workflow, so it is safe to remove.
+branch_ref="repos/${GITHUB_REPOSITORY}/git/refs/heads/ai/issue-${ISSUE_NUMBER}"
+if gh api "$branch_ref" > /dev/null 2>&1; then
+  gh api --method DELETE "$branch_ref" > /dev/null
+  echo "Deleted the stale ai/issue-${ISSUE_NUMBER} branch left by a closed run."
 fi
 
 # 5. Hand the issue to the agent, and its title to the pull request step.
