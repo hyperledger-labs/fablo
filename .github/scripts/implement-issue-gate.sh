@@ -71,15 +71,6 @@ if [ -n "$existing_pr" ]; then
   exit 1
 fi
 
-# Closing a pull request leaves its branch behind, and the next run would build
-# on those stale commits. No open pull request uses this branch, and the name
-# belongs to this workflow, so it is safe to remove.
-branch_ref="repos/${GITHUB_REPOSITORY}/git/refs/heads/ai/issue-${ISSUE_NUMBER}"
-if gh api "$branch_ref" > /dev/null 2>&1; then
-  gh api --method DELETE "$branch_ref" > /dev/null
-  echo "Deleted the stale ai/issue-${ISSUE_NUMBER} branch left by a closed run."
-fi
-
 # 5. Hand the issue to the agent, and its title to the pull request step.
 jq --arg additional "$additional" --arg by "$TRIGGER_ACTOR" \
   '. + {additionalInstructions: $additional, triggeredBy: $by}' \
