@@ -96,6 +96,20 @@
               "title": "Nodeenv image",
               "type": "string",
               "default": "hyperledger/fabric-nodeenv"
+            },
+            "committer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/committer",
+              "title": "Fabric-X committer image",
+              "description": "Custom image repository or full image name for Fabric-X committer microservices",
+              "type": "string",
+              "default": "ghcr.io/hyperledger/fabric-x-committer"
+            },
+            "postgres": {
+              "$id": "#/properties/global/properties/fabricImages/properties/postgres",
+              "title": "Fabric-X committer database image",
+              "description": "Custom image repository or full image name for Fabric-X PostgreSQL database",
+              "type": "string",
+              "default": "docker.io/library/postgres"
             }
           }
         },
