@@ -7,7 +7,7 @@ networks:
     driver: bridge
 
 volumes:
-  committer-org1-db-data:
+  committer-<%= primaryOrgSlug %>-db-data:
 
 services:
 
@@ -127,9 +127,9 @@ services:
 
 
 
-  # ─── Org1 Committer Stack ───────────────────────────────────────────────────
+  # ─── <%= primaryOrg.name %> Committer Stack ───────────────────────────────────────────────────
 
-  committer-org1-db:
+  committer-<%= primaryOrgSlug %>-db:
     image: docker.io/library/postgres:18.3-alpine3.23
     command: postgres -c max_connections=500
     pull_policy: missing
@@ -140,7 +140,7 @@ services:
       POSTGRES_PASSWORD: fabricx
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - committer-org1-db-data:/var/lib/postgresql/data
+      - committer-<%= primaryOrgSlug %>-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U fabricx -d fabricx"]
       interval: 5s
@@ -149,7 +149,7 @@ services:
     networks:
       - fabric-x
 
-  committer-org1-verifier:
+  committer-<%= primaryOrgSlug %>-verifier:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
@@ -157,8 +157,8 @@ services:
     command: start verifier --config=/config/verifier.yaml
     volumes:
       - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/peers/committer-verifier.org1.example.com/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/peers/committer-verifier.<%= primaryOrg.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/msp/tlscacerts/tlsca.<%= primaryOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2115/metrics"]
       interval: 2s
@@ -168,7 +168,7 @@ services:
     networks:
       - fabric-x
 
-  committer-org1-validator:
+  committer-<%= primaryOrgSlug %>-validator:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
@@ -176,8 +176,8 @@ services:
     command: start vc --config=/config/validator.yaml
     volumes:
       - ./config/validator.yaml:/config/validator.yaml:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/peers/committer-validator.org1.example.com/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/peers/committer-validator.<%= primaryOrg.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/msp/tlscacerts/tlsca.<%= primaryOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2116/metrics"]
       interval: 2s
@@ -185,12 +185,12 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-org1-db:
+      committer-<%= primaryOrgSlug %>-db:
         condition: service_healthy
     networks:
       - fabric-x
 
-  committer-org1-coordinator:
+  committer-<%= primaryOrgSlug %>-coordinator:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
@@ -198,8 +198,8 @@ services:
     command: start coordinator --config=/config/coordinator.yaml
     volumes:
       - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/peers/committer-coordinator.org1.example.com/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/peers/committer-coordinator.<%= primaryOrg.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/msp/tlscacerts/tlsca.<%= primaryOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2119/metrics"]
       interval: 2s
@@ -207,14 +207,14 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-org1-verifier:
+      committer-<%= primaryOrgSlug %>-verifier:
         condition: service_healthy
-      committer-org1-validator:
+      committer-<%= primaryOrgSlug %>-validator:
         condition: service_healthy
     networks:
       - fabric-x
 
-  committer-org1-sidecar:
+  committer-<%= primaryOrgSlug %>-sidecar:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
@@ -224,12 +224,12 @@ services:
       - "4001:4001"
     volumes:
       - ./config/sidecar.yaml:/config/sidecar.yaml:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/peers/committer-sidecar.org1.example.com/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/peers/committer-sidecar.<%= primaryOrg.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/msp/tlscacerts/tlsca.<%= primaryOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/users/User1@<%= primaryOrg.domain %>/msp:/msp:ro,Z
       - ./crypto/ordererOrganizations:/orderer-cas:ro,Z
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/committer-org1/sidecar-ledger:/ledger:Z
+      - ./data/committer-<%= primaryOrgSlug %>/sidecar-ledger:/ledger:Z
     healthcheck:
       test: ["CMD", "curl", "-sk", "--cert", "/node-tls/server.crt", "--key", "/node-tls/server.key", "https://localhost:2114/metrics"]
       interval: 2s
@@ -237,7 +237,7 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-org1-coordinator:
+      committer-<%= primaryOrgSlug %>-coordinator:
         condition: service_healthy
 
       orderer-router:
@@ -246,7 +246,7 @@ services:
     networks:
       - fabric-x
 
-  committer-org1-query-service:
+  committer-<%= primaryOrgSlug %>-query-service:
     image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
     pull_policy: missing
     restart: unless-stopped
@@ -256,10 +256,10 @@ services:
       - "7001:7001"
     volumes:
       - ./config/query-service.yaml:/config/query-service.yaml:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/peers/committer-query-service.org1.example.com/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/peers/committer-query-service.<%= primaryOrg.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= primaryOrg.domain %>/msp/tlscacerts/tlsca.<%= primaryOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     depends_on:
-      committer-org1-db:
+      committer-<%= primaryOrgSlug %>-db:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2117/metrics"]

@@ -22,7 +22,7 @@ orderer:
 
       - /orderer-cas/Orderer/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
   identity:
-    msp-id: Org1MSP
+    msp-id: <%= primaryOrg.mspName %>
     msp-dir: /msp
     bccsp:
       Default: SW
@@ -31,7 +31,7 @@ orderer:
         Hash: SHA2
 
 committer:
-  endpoint: committer-org1-coordinator:9001
+  endpoint: committer-<%= primaryOrgSlug %>-coordinator:9001
   tls: *tlsConfig
 
 ledger:
