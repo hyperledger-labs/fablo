@@ -61,7 +61,7 @@ Maintainers with write access can ask CI to implement an issue. Comment on the i
 /implement
 ```
 
-Extra lines after that are passed to the agent as steering. The workflow verifies that the commenter currently has `write`, `maintain`, or `admin` permission on the repository.
+Extra lines after that are passed to the agent as steering. The workflow verifies that the commenter currently has `write`, `maintain`, or `admin` permission on the repository, or is listed in the `AI_ALLOWED_ACTORS` repository variable.
 
 The Action opens a pull request with the implementation, for a maintainer to review and merge.
 

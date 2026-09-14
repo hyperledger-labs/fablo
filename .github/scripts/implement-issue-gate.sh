@@ -9,18 +9,49 @@
 #
 # Reads from the environment: EVENT_NAME, COMMENT_BODY, ADDITIONAL_INPUT,
 # ISSUE_NUMBER, TRIGGER_ACTOR, COMMENT_ID, RUN_URL, GH_TOKEN,
-# GITHUB_REPOSITORY, GITHUB_OUTPUT.
+# GITHUB_REPOSITORY, GITHUB_OUTPUT, AI_ALLOWED_ACTORS.
 #
 # Writes the `title` step output, used as the pull request title.
 
 set -euo pipefail
 
-# 1. Verify the caller has write access to the repo. The workflow `if` only
-#    looks at the comment body, and does not filter workflow_dispatch at all,
-#    so this is the one authoritative permission check.
-permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGER_ACTOR}/permission" --jq '.permission')"
-if [[ ! "$permission" =~ ^(admin|maintain|write)$ ]]; then
-  echo "${TRIGGER_ACTOR} has '${permission}' permission; write access is required." >&2
+# 1. Verify the caller may drive the agent. The workflow `if` only looks at the
+#    comment body, and does not filter workflow_dispatch at all, so this is the
+#    one authoritative permission check.
+#
+#    Two ways to qualify: write access to the repository, or a listing in the
+#    AI_ALLOWED_ACTORS repository variable — a comma-separated list of logins.
+#    The variable lets a maintainer hand the bot to a contributor without also
+#    handing them write access to the repository. Only a repository admin can
+#    set it, so being on the list is a deliberate grant.
+actor_allowed=0
+
+IFS=',' read -ra allowed_actors <<< "${AI_ALLOWED_ACTORS:-}"
+for allowed_actor in "${allowed_actors[@]:-}"; do
+  # Tolerate spaces around the commas, and compare case-insensitively, as
+  # GitHub logins are not case-sensitive.
+  allowed_actor="${allowed_actor//[[:space:]]/}"
+  if [ -n "$allowed_actor" ] && [ "${allowed_actor,,}" = "${TRIGGER_ACTOR,,}" ]; then
+    actor_allowed=1
+    echo "${TRIGGER_ACTOR} is listed in AI_ALLOWED_ACTORS."
+    break
+  fi
+done
+
+if [ "$actor_allowed" -eq 0 ]; then
+  # A login with no relationship to the repository reports 'none'; a failed
+  # call is treated the same way, so the refusal below stays readable.
+  permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGER_ACTOR}/permission" \
+    --jq '.permission' 2>/dev/null || echo "none")"
+  if [[ "$permission" =~ ^(admin|maintain|write)$ ]]; then
+    actor_allowed=1
+  fi
+fi
+
+if [ "$actor_allowed" -eq 0 ]; then
+  echo "${TRIGGER_ACTOR} may not run this workflow: write access to the" >&2
+  echo "repository, or a listing in the AI_ALLOWED_ACTORS repository" >&2
+  echo "variable, is required." >&2
   exit 1
 fi
 

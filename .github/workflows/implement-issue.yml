@@ -17,6 +17,11 @@ name: Implement issue
 # run with repository credentials. What the agent may never do is rewrite
 # history or edit credential files; verification.jh enforces that.
 #
+# Who may trigger it: anyone with write access, plus any login in the
+# AI_ALLOWED_ACTORS repository variable (comma-separated). That variable lets a
+# maintainer hand the bot to a contributor without giving them write access;
+# only a repository admin can set it.
+#
 # Required repository secret: CLAUDE_CODE_OAUTH_TOKEN (same as docs-parity).
 # The default GITHUB_TOKEN is enough to comment and open a PR. GitHub prevents
 # that token from triggering a second workflow, so Tests must be dispatched
@@ -90,6 +95,7 @@ jobs:
           COMMENT_ID: ${{ github.event.comment.id }}
           ADDITIONAL_INPUT: ${{ inputs.additional_instructions }}
           TRIGGER_ACTOR: ${{ github.actor }}
+          AI_ALLOWED_ACTORS: ${{ vars.AI_ALLOWED_ACTORS }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: .github/scripts/implement-issue-gate.sh
