@@ -24,12 +24,27 @@ if [[ ! "$permission" =~ ^(admin|maintain|write)$ ]]; then
   exit 1
 fi
 
-# 2. Collect the instructions for the agent. On a comment the command is the
-#    first line — the workflow `if` guarantees it — and the rest is guidance.
+# 2. Collect the instructions for the agent. On a comment, the first line is
+#    the command; steering may follow it on that same line, on later lines, or
+#    both. Comments written in the web UI arrive with CRLF line endings.
 if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
   additional="${ADDITIONAL_INPUT:-}"
 else
-  additional="$(printf '%s\n' "$COMMENT_BODY" | tail -n +2)"
+  body="$(printf '%s\n' "$COMMENT_BODY" | tr -d '\r')"
+  first_line="$(printf '%s\n' "$body" | head -n 1)"
+
+  # The workflow `if` only tests the prefix, so `/implementation ...` reaches
+  # this point. The command has to be the whole first word.
+  if [[ ! "$first_line" =~ ^/implement([[:space:]]|$) ]]; then
+    echo "Comment does not start with the /implement command." >&2
+    exit 1
+  fi
+
+  # `sed '/./,$!d'` drops the blank first line left behind when the command
+  # stands alone, so the payload does not open with empty steering.
+  same_line="${first_line#/implement}"
+  additional="$(printf '%s\n%s\n' "${same_line# }" \
+    "$(printf '%s\n' "$body" | tail -n +2)" | sed '/./,$!d')"
 fi
 
 # 3. Verify the issue number; on workflow_dispatch it is free-form input.

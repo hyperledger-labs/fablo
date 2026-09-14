@@ -63,19 +63,6 @@ Maintainers with write access can ask CI to implement an issue. Comment on the i
 
 Extra lines after that are passed to the agent as steering. The workflow verifies that the commenter currently has `write`, `maintain`, or `admin` permission on the repository.
 
-The Action (`.github/workflows/implement-issue.yml`) then:
-
-1. Acknowledges the comment
-2. Runs the Jaiph workflow `.jaiph/implement_issue.jh` (Claude Code edits the tree; Jaiph does not push)
-3. Runs `npm run build` and `npm run test:unit`
-4. Opens a pull request with `Fixes #<n>` (draft if those checks still fail)
-
-Full Fabric network tests stay on the existing Tests workflow. A human reviews and merges. The agent is told not to touch `.github/` or `.jaiph/`, and the workflow refuses to open a pull request that rewrites history or touches credential files. The agent never merges.
-
-Until this workflow is on the default branch, test it with **Actions → Implement issue → Run workflow** and an issue number. A manual run targets the branch selected in the Actions UI; the comment trigger targets the repository's default branch.
-
-Required repository secret (already used by docs-parity): `CLAUDE_CODE_OAUTH_TOKEN`.
-
-PRs opened with the default `GITHUB_TOKEN` do not start Checks by themselves, so dispatch the **Tests** workflow manually against the generated PR branch.
+The Action opens a pull request with the implementation, for a maintainer to review and merge.
 
 We appreciate your contributions and look forward to working with you!
