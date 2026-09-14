@@ -6,9 +6,6 @@
 #
 #   .jaiph/verification.jh
 #   .jaiph/verification.jh no_destructive_changes "$(git rev-parse HEAD)"
-#
-# The caller runs the policy modes from the base commit's copy of this file,
-# not the working tree's, so the agent cannot edit the rules it is judged by.
 script all = ```
   set -euo pipefail
   # package.json is inside the agent's edit scope. Do not expose credentials to

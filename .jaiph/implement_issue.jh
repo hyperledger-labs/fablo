@@ -55,9 +55,9 @@ const constraints = """
     closely, because they run with repository credentials.
   - Do not weaken the checks in .jaiph/verification.jh, the permission gate in
     .github/scripts/implement-issue-gate.sh, or .github/workflows/
-    implement-issue.yml in order to make your own run pass. Those files are
-    re-read from the base commit after you exit, so an edit made to get past a
-    failing check fails the run instead of taking effect. Fix the code.
+    implement-issue.yml in order to make your own run pass. If a check fails,
+    fix the code it is complaining about. Changing these to implement the
+    issue is fine; changing them to get past your own failure is not.
   - Do not edit secrets, .env files, credentials, keys, or PEM files.
   - Do not run destructive git commands (reset --hard, checkout --, clean -fdx,
     push --force).

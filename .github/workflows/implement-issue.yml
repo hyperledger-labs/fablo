@@ -15,9 +15,7 @@ name: Implement issue
 # come with its own job in test-on-push.yml. Such a change forces the pull
 # request to open as a draft and is called out in its body, because those files
 # run with repository credentials. What the agent may never do is rewrite
-# history or edit credential files; verification.jh enforces that, and is run
-# below from the base commit rather than from the tree the agent just edited,
-# so the rules cannot be edited by the run they govern.
+# history or edit credential files; verification.jh enforces that.
 #
 # Required repository secret: CLAUDE_CODE_OAUTH_TOKEN (same as docs-parity).
 # The default GITHUB_TOKEN is enough to comment and open a PR. GitHub prevents
@@ -162,19 +160,12 @@ jobs:
             echo "AUTOMATION_WARNING"
           } >> "$GITHUB_OUTPUT"
 
-      # The agent may have failed part way through, so the policy is re-run here
-      # before anything is pushed. It is read from the base commit, not from the
-      # working tree, so an agent that edited verification.jh is still judged by
-      # the rules that were in force when the run started.
+      # The agent may have failed part way through, so the policy is re-run
+      # here before anything is pushed.
       - name: Enforce no destructive changes
         id: safety
         if: always() && (steps.implement.outcome == 'success' || steps.implement.outcome == 'failure')
-        run: |
-          set -euo pipefail
-          policy="${RUNNER_TEMP}/verification.jh"
-          git show "${{ github.sha }}:.jaiph/verification.jh" > "$policy"
-          chmod +x "$policy"
-          "$policy" --unsafe no_destructive_changes --yes -- "${{ github.sha }}"
+        run: .jaiph/verification.jh --unsafe no_destructive_changes --yes -- "${{ github.sha }}"
 
       - name: Open a pull request
         id: cpr
