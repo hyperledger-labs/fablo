@@ -10,14 +10,16 @@ export interface FabricVersions {
 }
 
 export interface FabricImages {
-  peerImage: string;
+  peerImage?: string;
   ordererImage: string;
-  caImage: string;
+  caImage?: string;
   toolsImage: string;
-  ccenvImage: string;
-  baseosImage: string;
-  javaenvImage: string;
-  nodeenvImage: string;
+  ccenvImage?: string;
+  baseosImage?: string;
+  javaenvImage?: string;
+  nodeenvImage?: string;
+  committerImage?: string;
+  postgresImage?: string;
 }
 
 interface CapabilitiesV2 {

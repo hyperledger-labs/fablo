@@ -14,7 +14,7 @@ services:
   # ─── Orderer Party 1 ───────────────────────────────────────────────────────
   orderer-router:
     container_name: orderer-router
-    image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
+    image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -43,7 +43,7 @@ services:
 
   orderer-batcher:
     container_name: orderer-batcher
-    image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
+    image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -71,7 +71,7 @@ services:
 
   orderer-consenter:
     container_name: orderer-consenter
-    image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
+    image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -96,7 +96,7 @@ services:
 
   orderer-assembler:
     container_name: orderer-assembler
-    image: ghcr.io/hyperledger/fabric-x-orderer:1.0.0
+    image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -130,7 +130,7 @@ services:
   # ─── Org1 Committer Stack ───────────────────────────────────────────────────
 
   committer-org1-db:
-    image: docker.io/library/postgres:18.3-alpine3.23
+    image: <%= global.postgresImage %>
     command: postgres -c max_connections=500
     pull_policy: missing
     restart: unless-stopped
@@ -150,7 +150,7 @@ services:
       - fabric-x
 
   committer-org1-verifier:
-    image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
+    image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -169,7 +169,7 @@ services:
       - fabric-x
 
   committer-org1-validator:
-    image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
+    image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -191,7 +191,7 @@ services:
       - fabric-x
 
   committer-org1-coordinator:
-    image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
+    image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -215,7 +215,7 @@ services:
       - fabric-x
 
   committer-org1-sidecar:
-    image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
+    image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
@@ -247,7 +247,7 @@ services:
       - fabric-x
 
   committer-org1-query-service:
-    image: ghcr.io/hyperledger/fabric-x-committer:1.0.3
+    image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
