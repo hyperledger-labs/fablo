@@ -9,19 +9,26 @@
 #
 # Reads from the environment: EVENT_NAME, COMMENT_BODY, ADDITIONAL_INPUT,
 # ISSUE_NUMBER, TRIGGER_ACTOR, COMMENT_ID, RUN_URL, GH_TOKEN,
-# GITHUB_REPOSITORY, GITHUB_OUTPUT.
+# GITHUB_REPOSITORY, GITHUB_OUTPUT, AI_ALLOWED_ACTORS.
 #
 # Writes the `title` step output, used as the pull request title.
 
 set -euo pipefail
 
-# 1. Verify the caller has write access to the repo. The workflow `if` only
-#    looks at the comment body, and does not filter workflow_dispatch at all,
-#    so this is the one authoritative permission check.
-permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGER_ACTOR}/permission" --jq '.permission')"
-if [[ ! "$permission" =~ ^(admin|maintain|write)$ ]]; then
-  echo "${TRIGGER_ACTOR} has '${permission}' permission; write access is required." >&2
-  exit 1
+# 1. Verify the caller has write access to the repo, or is listed in the
+#    AI_ALLOWED_ACTORS variable — a comma-separated list of logins, which lets a
+#    maintainer hand the bot to a contributor without write access. The workflow
+#    `if` only looks at the comment body, and does not filter workflow_dispatch
+#    at all, so this is the one authoritative permission check.
+#    Spaces around the commas are tolerated, and logins compare case-insensitively.
+allowed=",${AI_ALLOWED_ACTORS:-},"
+allowed="${allowed//[[:space:]]/}"
+if [[ "${allowed,,}" != *",${TRIGGER_ACTOR,,},"* ]]; then
+  permission="$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${TRIGGER_ACTOR}/permission" --jq '.permission')"
+  if [[ ! "$permission" =~ ^(admin|maintain|write)$ ]]; then
+    echo "${TRIGGER_ACTOR} has '${permission}' permission and is not in AI_ALLOWED_ACTORS; write access is required." >&2
+    exit 1
+  fi
 fi
 
 # 2. Collect the instructions for the agent. On a comment, the first line is
