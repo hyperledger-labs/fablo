@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="460" viewBox="0 0 1040 460" role="img" aria-labelledby="title desc">
+  <title id="title">Generated Blockchain Explorer services</title>
+  <desc id="desc">A dark terminal window showing generated Explorer configuration files and a running Explorer service for a Fabric version 2 network.</desc>
+  <rect width="1040" height="460" rx="16" fill="#0d1117"/>
+  <rect x="1" y="1" width="1038" height="458" rx="15" fill="none" stroke="#263040" stroke-width="2"/>
+  <path d="M0 58H1040" stroke="#263040"/>
+  <circle cx="28" cy="29" r="7" fill="#ff5f56"/><circle cx="52" cy="29" r="7" fill="#ffbd2e"/><circle cx="76" cy="29" r="7" fill="#27c93f"/>
+  <text x="100" y="35" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16">bash / explorer-output</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">
+    <text x="28" y="98" fill="#3fb950">$</text><text x="50" y="98" fill="#e6edf3">fablo generate fablo-config.json fablo-target</text>
+    <text x="28" y="142" fill="#e6edf3">fablo-target/fabric-config/explorer/</text>
+    <text x="54" y="178" fill="#c9d7e5">├── config-global.json</text>
+    <text x="54" y="212" fill="#c9d7e5">├── config-org1.json</text>
+    <text x="54" y="246" fill="#c9d7e5">└── connection-profile-org1.json</text>
+    <text x="28" y="302" fill="#3fb950">$</text><text x="50" y="302" fill="#e6edf3">fablo up</text>
+    <text x="28" y="348" fill="#7ee787">Explorer containers started for Fabric 2.5 network</text>
+    <text x="28" y="392" fill="#8b949e">Explorer is intentionally unavailable for Fabric 3.x.</text>
+    <text x="28" y="428" fill="#8b949e">Use the compatibility table before selecting this tool.</text>
+  </g>
+</svg>

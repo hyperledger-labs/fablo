@@ -1,0 +1,359 @@
+#!/usr/bin/env jaiph
+
+# Shared scripts and rules for the Fablo documentation parity workflow.
+#
+# Everything here is deterministic: no prompts, no agent calls. The cheap
+# checks in this file run before any LLM work so that obvious drift fails
+# fast and for free. See docs_parity.jh for the agent-driven passes.
+# --- Documentation surfaces -------------------------------------------------
+# Pages the workflow reviews one by one. Each has a matching entry in
+# source_of_truth_for below.
+script list_doc_pages = ```
+printf '%s\n' \
+  docs/index.md \
+  docs/getting-started.md \
+  docs/examples.md \
+  docs/reference/cli-commands.md \
+  docs/reference/configuration.md \
+  README.md \
+  SUPPORTED_FEATURES.md \
+  ARCHITECTURE.md
+```
+
+# Files a fix-mode run is allowed to modify. Anything outside this list means
+# the agent went off-task and the run is rejected.
+#
+# Deliberately EXCLUDES docs/fablo.sh: it is a generated mirror of ./fablo.sh
+# that gets overwritten on every version bump, so edits there are silently
+# lost. Fix mode edits ./fablo.sh and then calls sync_fablo_mirror.
+script build_allowed_paths = ```
+{
+  printf '%s\n' \
+    docs/index.md \
+    docs/getting-started.md \
+    docs/examples.md \
+    docs/reference/cli-commands.md \
+    docs/reference/configuration.md \
+    docs/fablo.sh \
+    README.md \
+    SUPPORTED_FEATURES.md \
+    ARCHITECTURE.md \
+    fablo.sh
+  ls -1 src/commands/*/index.ts 2>/dev/null || true
+} | sort -u
+```
+
+# Maps a documentation page to the implementation files that define its truth.
+# Naming the exact sources beats telling the agent "check the source code" and
+# hoping it finds them.
+script source_of_truth_for = ```
+case "$1" in
+  docs/reference/cli-commands.md)
+    printf '%s\n' \
+      "fablo.sh -- printHelp() and the COMMAND dispatch chain at the bottom" \
+      "src/setup-docker/templates/fabric-docker.sh -- dispatch for chaincode/channel/up/down/start/stop/reset" \
+      "src/commands/*/index.ts -- oclif static description, args and flags"
+    ;;
+  docs/reference/configuration.md)
+    printf '%s\n' \
+      "docs/schema.json -- the JSON schema fablo validate enforces" \
+      "src/types/FabloConfigJson.ts -- the accepted config shape" \
+      "src/extend-config/defaults.ts -- default values" \
+      "src/extend-config/extendGlobal.ts -- how defaults are applied"
+    ;;
+  docs/getting-started.md)
+    printf '%s\n' \
+      "src/commands/init/index.ts -- init options, --set override behaviour, generated config" \
+      "samples/ -- the sample configs and chaincodes init copies" \
+      "fablo.sh -- printHelp() usage lines"
+    ;;
+  docs/examples.md)
+    printf '%s\n' \
+      "samples/ -- the sample configs and chaincodes the examples walk through" \
+      "src/commands/init/index.ts -- init options used in the first-network example" \
+      "fablo.sh -- printHelp() for snapshot, restore and other commands shown" \
+      "docs/schema.json -- options such as explorer, CCaaS and private data"
+    ;;
+  docs/index.md)
+    printf '%s\n' \
+      "README.md -- keep the landing page consistent with it" \
+      "SUPPORTED_FEATURES.md -- the feature list"
+    ;;
+  README.md)
+    printf '%s\n' \
+      "fablo.sh -- printHelp() is the authority on command syntax and wording" \
+      "package.json -- version and metadata"
+    ;;
+  SUPPORTED_FEATURES.md)
+    printf '%s\n' \
+      "src/setup-docker/ -- what the Docker target actually generates" \
+      "src/setup-k8s/ -- what the Kubernetes target actually generates" \
+      "docs/schema.json -- which options are accepted"
+    ;;
+  ARCHITECTURE.md)
+    printf '%s\n' \
+      "src/ -- overall module layout" \
+      "fablo.sh -- the entrypoint and how it delegates into the Docker image"
+    ;;
+  *)
+    printf '%s\n' "src/ and fablo.sh"
+    ;;
+esac
+```
+
+# --- Cheap deterministic checks ---------------------------------------------
+# ./fablo.sh and ./docs/fablo.sh must be byte-identical. docs/fablo.sh is
+# regenerated from fablo.sh on version bump, so any divergence is drift that
+# will be silently reverted later.
+script assert_fablo_mirror_in_sync = ```
+if ! diff -q fablo.sh docs/fablo.sh >/dev/null 2>&1; then
+  echo "fablo.sh and docs/fablo.sh have diverged." >&2
+  echo "docs/fablo.sh is a generated mirror; run 'cp fablo.sh docs/fablo.sh'." >&2
+  diff fablo.sh docs/fablo.sh >&2 || true
+  exit 1
+fi
+echo "fablo.sh mirror is in sync"
+```
+
+# Every config key documented in a configuration.md table must exist in
+# docs/schema.json. Catches renamed, removed and misspelled keys -- for
+# example logLevel where the implementation reads loglevel.
+script assert_config_keys_documented = ```python3
+import json, re, sys
+
+with open("docs/schema.json") as fh:
+    schema = json.load(fh)
+
+names = set()
+
+def walk(node):
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key == "properties" and isinstance(value, dict):
+                names.update(value.keys())
+                for child in value.values():
+                    walk(child)
+            elif isinstance(value, (dict, list)):
+                walk(value)
+    elif isinstance(node, list):
+        for child in node:
+            walk(child)
+
+walk(schema)
+
+with open("docs/reference/configuration.md") as fh:
+    documented = set(re.findall(r"^\|\s*`([A-Za-z0-9._\[\]-]+)`", fh.read(), re.M))
+
+missing = sorted(
+    key for key in documented
+    if key.split(".")[-1].split("[")[0] not in names
+)
+
+if missing:
+    print("Config keys documented in configuration.md but absent from docs/schema.json:", file=sys.stderr)
+    for key in missing:
+        print("  - " + key, file=sys.stderr)
+    print("Either the docs name a field that does not exist, or schema.json is incomplete.", file=sys.stderr)
+    sys.exit(1)
+
+print("all %d documented config keys exist in schema.json" % len(documented))
+```
+
+# Every 'fablo <command>' mentioned in the docs must be dispatched somewhere:
+# fablo.sh, the generated fabric-docker.sh, or an oclif command directory.
+script assert_documented_commands_exist = ```
+known="$(
+  {
+    grep -oE '\$COMMAND" = "[a-z-]+"' fablo.sh | sed 's/.*= "//;s/"//'
+    grep -oE '\$1" = "[a-z-]+"' src/setup-docker/templates/fabric-docker.sh | sed 's/.*= "//;s/"//'
+    ls -1 src/commands
+  } | sort -u
+)"
+
+status=0
+for command in $(grep -rhoE '\bfablo [a-z][a-z-]+' \
+    README.md SUPPORTED_FEATURES.md ARCHITECTURE.md \
+    docs/*.md docs/reference/*.md 2>/dev/null \
+  | sed 's/fablo //' | sort -u); do
+  if ! printf '%s\n' "$known" | grep -qx "$command"; then
+    echo "Docs reference 'fablo $command', which is not dispatched anywhere." >&2
+    status=1
+  fi
+done
+
+if [ "$status" -ne 0 ]; then
+  echo "Checked fablo.sh, src/setup-docker/templates/fabric-docker.sh and src/commands/." >&2
+  exit 1
+fi
+echo "all documented commands exist"
+```
+
+# A markdown table must be preceded by a blank line. Without one, kramdown
+# (which Jekyll uses for this site) folds the table into the preceding
+# paragraph and the pipes render as literal text. This silently broke all 16
+# tables on the CLI commands page, and an agent fixing that page will copy
+# whatever convention it sees, so the check has to be deterministic.
+script assert_tables_render = ```
+status=0
+for file in docs/index.md docs/getting-started.md docs/examples.md \
+            docs/reference/*.md \
+            README.md SUPPORTED_FEATURES.md ARCHITECTURE.md; do
+  [ -f "$file" ] || continue
+  broken="$(awk -v f="$file" '
+    # Only inspect a table header. The separator row also starts with a pipe,
+    # but follows its header directly and must not be treated as a new table.
+    NR > 1 && /^\|[[:space:]]*[^| -:]/ && prev !~ /^\|/ && prev !~ /^[[:space:]]*$/ {
+      printf "  %s:%d (after: %s)\n", f, NR, prev
+    }
+    { prev = $0 }
+  ' "$file")"
+  if [ -n "$broken" ]; then
+    echo "Markdown tables that will render as plain text in $file:" >&2
+    echo "$broken" >&2
+    status=1
+  fi
+done
+
+if [ "$status" -ne 0 ]; then
+  echo "Insert a blank line between the preceding text and the table header." >&2
+  exit 1
+fi
+echo "all markdown tables are preceded by a blank line"
+```
+
+# --- Worktree guards --------------------------------------------------------
+script assert_worktree_clean = ```
+changed="$(
+  {
+    git diff --name-only --cached
+    git diff --name-only
+    git ls-files --others --exclude-standard
+  } | sort -u
+)"
+if [ -n "$changed" ]; then
+  echo "Refusing to run the docs parity workflow on a dirty worktree." >&2
+  echo "Commit, stash or discard these files first:" >&2
+  echo "$changed" >&2
+  exit 1
+fi
+echo "worktree is clean"
+```
+
+script assert_paths_are_files = ```
+while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  if [ ! -f "$path" ]; then
+    echo "Expected documentation file is missing: $path" >&2
+    exit 1
+  fi
+done <<EOF
+$1
+EOF
+echo "all documentation files present"
+```
+
+script assert_only_allowed_changed = ```
+allowed="$1"
+status=0
+
+changed="$(
+  {
+    git diff --name-only --cached
+    git diff --name-only
+    git ls-files --others --exclude-standard
+  } | sort -u
+)"
+
+while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  if ! printf '%s\n' "$allowed" | grep -qx "$path"; then
+    echo "Agent modified a file outside the documentation allowlist: $path" >&2
+    status=1
+  fi
+done <<EOF
+$changed
+EOF
+
+if [ "$status" -ne 0 ]; then
+  echo "Run 'git checkout -- .' to discard, then narrow the prompt." >&2
+  exit 1
+fi
+echo "only allowlisted documentation files changed"
+```
+
+# Copy the canonical script over its generated mirror.
+script sync_fablo_mirror = ```
+cp fablo.sh docs/fablo.sh
+echo "synced docs/fablo.sh from fablo.sh"
+```
+
+# --- Findings report --------------------------------------------------------
+script init_report = ```
+mkdir -p .jaiph/tmp
+{
+  echo "# Documentation parity report"
+  echo ""
+  echo "Generated by .jaiph/docs_parity.jh against commit $(git rev-parse --short HEAD)."
+  echo ""
+} > .jaiph/tmp/docs-parity-report.md
+echo ".jaiph/tmp/docs-parity-report.md"
+```
+
+script append_report = ```
+mkdir -p .jaiph/tmp
+printf '%s\n\n' "$1" >> .jaiph/tmp/docs-parity-report.md
+```
+
+script read_report = ```
+cat .jaiph/tmp/docs-parity-report.md
+```
+
+# Exit non-zero when any page was reported as drifted, so CI fails.
+script assert_no_drift_recorded = ```
+if grep -q '^\*\*Status:\*\* drift' .jaiph/tmp/docs-parity-report.md 2>/dev/null; then
+  echo "Documentation drift detected. See .jaiph/tmp/docs-parity-report.md." >&2
+  exit 1
+fi
+echo "no documentation drift detected"
+```
+
+# --- Rules ------------------------------------------------------------------
+rule worktree_is_clean() {
+  run assert_worktree_clean()
+}
+
+rule docs_files_present(paths) {
+  run assert_paths_are_files(paths)
+}
+
+rule fablo_mirror_in_sync() {
+  run assert_fablo_mirror_in_sync()
+}
+
+rule config_keys_documented() {
+  run assert_config_keys_documented()
+}
+
+rule documented_commands_exist() {
+  run assert_documented_commands_exist()
+}
+
+rule only_allowed_paths_changed(allowed) {
+  run assert_only_allowed_changed(allowed)
+}
+
+rule no_drift_recorded() {
+  run assert_no_drift_recorded()
+}
+
+# The full cheap-check suite. Runs before any agent work.
+rule tables_render() {
+  run assert_tables_render()
+}
+
+rule static_parity_checks() {
+  ensure fablo_mirror_in_sync()
+  ensure config_keys_documented()
+  ensure documented_commands_exist()
+  ensure tables_render()
+}

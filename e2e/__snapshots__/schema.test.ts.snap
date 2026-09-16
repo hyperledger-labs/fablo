@@ -46,6 +46,18 @@ exports[`schema should match snapshot 1`] = `
           },
         ],
         "properties": {
+          "chaincodeMountPath": {
+            "$id": "#/properties/chaincodes/items/properties/chaincodeMountPath",
+            "description": "Directory mounted into a CCaaS chaincode container as its working directory",
+            "title": "Chaincode mount path",
+            "type": "string",
+          },
+          "chaincodeStartCommand": {
+            "$id": "#/properties/chaincodes/items/properties/chaincodeStartCommand",
+            "description": "Command used as the entrypoint for a CCaaS chaincode container",
+            "title": "Chaincode start command",
+            "type": "string",
+          },
           "channel": {
             "$id": "#/properties/chaincodes/items/properties/channel",
             "enumSource": [

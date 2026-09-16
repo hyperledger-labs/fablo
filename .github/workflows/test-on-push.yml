@@ -5,6 +5,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  jaiph-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Jaiph
+        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
+        with:
+          version: 0.13.0
+
+      - name: Compile and test Jaiph workflows
+        run: |
+          jaiph compile .jaiph
+          jaiph test .jaiph
+
   test-main:
     runs-on: ubuntu-latest
     steps:
@@ -276,3 +292,31 @@ jobs:
           path: |
             e2e-network/docker/test-07-v2-peer-dev-mode.sh.logs/*
             e2e-network/docker/test-07-v2-peer-dev-mode.sh.tmpdir/fablo-target/**/*
+
+  test-08-fabric-x:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+        
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+
+      - name: Test Fabric-X
+        run: e2e-network/docker/test-08-fabric-x.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-08-fabric-x-snapshot
+          path: |
+            e2e-network/docker/test-08-fabric-x.sh.logs/*
+            e2e-network/docker/test-08-fabric-x.sh.tmpdir/fablo-target/**/*

@@ -1,0 +1,88 @@
+#!/usr/bin/env jaiph
+
+# Cheap verification after the agent edits the tree, plus the policy that
+# decides whether the working tree may become a pull request.
+# Full Fabric network e2e stays on the pull request (test-on-push.yml).
+#
+#   .jaiph/verification.jh
+#   .jaiph/verification.jh no_destructive_changes "$(git rev-parse HEAD)"
+script all = ```
+  set -euo pipefail
+  # package.json is inside the agent's edit scope. Do not expose credentials to
+  # scripts that may have changed as part of the proposed implementation.
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run build
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:unit
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run lint
+```
+
+# Snapshots under e2e/__snapshots__/ are generator output: the only way to
+# change one is to build the image and re-run the suite (see CONTRIBUTING.md).
+# The agent is told to do this, and it is done here too, so that forgetting
+# cannot reach the pull request. A docs-only change skips the Docker build.
+script snapshots = ```
+  set -euo pipefail
+  changed="$(git diff --name-only HEAD; git ls-files --others --exclude-standard)"
+  if [ -z "$changed" ]; then
+    echo "No changes; snapshots cannot be affected."
+    exit 0
+  fi
+  if ! printf '%s\n' "$changed" | grep -qvE '^docs/|\.md$'; then
+    echo "Docs-only change; skipping the snapshot rebuild."
+    exit 0
+  fi
+  env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:e2e-update
+```
+
+# The agent must leave commits alone: the caller, not the agent, turns the
+# working tree into a commit on a fresh branch.
+script no_history_rewrite = ```
+  set -euo pipefail
+  start_sha="$1"
+  if [ -z "$start_sha" ]; then
+    echo "No start SHA given; cannot verify that history is unchanged." >&2
+    exit 1
+  fi
+  if [ "$(git rev-parse HEAD)" != "$start_sha" ]; then
+    echo "The agent changed repository history." >&2
+    exit 1
+  fi
+  echo "Repository history is unchanged."
+```
+
+# Credential files are the only paths the agent may never write. It is allowed
+# to change .github/ and .jaiph/, because an issue may be about the automation
+# itself; those changes are flagged for review by the caller instead of being
+# refused here.
+script no_forbidden_paths = ```
+  set -euo pipefail
+  blocked=0
+  while IFS= read -r -d '' path; do
+    case "$path" in
+      .env|.env.*|*/.env|*/.env.*|*.pem|*.key|credentials.json|*/credentials.json)
+        echo "forbidden (credential file): ${path}" >&2
+        blocked=1
+        ;;
+    esac
+  done < <(git diff --name-only -z HEAD; git ls-files --others --exclude-standard -z)
+  if [ "$blocked" -ne 0 ]; then
+    echo "Agent edited files that must never be part of a generated change." >&2
+    exit 1
+  fi
+  echo "Changed paths pass the policy."
+```
+
+workflow no_destructive_changes(start_sha) {
+  run no_history_rewrite(start_sha)
+  run no_forbidden_paths()
+}
+
+workflow verify_all() {
+  run all()
+}
+
+workflow default(mode, start_sha) {
+  return match mode {
+    "no_destructive_changes" => run no_destructive_changes(start_sha)
+    _ => run verify_all()
+  }
+}
