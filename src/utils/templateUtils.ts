@@ -50,4 +50,3 @@ export function getTemplatePath(templatesDir: string, templateFile: string): str
 export function getDestinationPath(outputDir: string, destinationFile: string): string {
   return path.join(outputDir, destinationFile);
 }
-

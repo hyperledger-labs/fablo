@@ -70,7 +70,6 @@ function getFabricConfig(): FabloConfigJson {
   };
 }
 
-
 function getDefaultFabricXConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
@@ -224,7 +223,7 @@ export default class Init extends Command {
       }
     }
 
-   let fabloConfigJson = flags.fabricX ? getDefaultFabricXConfig() : getDefaultFabloConfig();
+    let fabloConfigJson = flags.fabricX ? getDefaultFabricXConfig() : getDefaultFabloConfig();
 
     if (flags.fabricX) {
       this.log("Creating minimal Fabric-X starter config");
