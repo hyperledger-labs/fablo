@@ -14,7 +14,7 @@ monitoring:
 
 verifier:
   endpoints:
-    - committer-org1-verifier:5001
+    - committer-<%= primaryOrgSlug %>-verifier:5001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt
@@ -24,7 +24,7 @@ verifier:
 
 validator-committer:
   endpoints:
-    - committer-org1-validator:6001
+    - committer-<%= primaryOrgSlug %>-validator:6001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt

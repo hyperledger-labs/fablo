@@ -49,8 +49,8 @@ OrdererOrgs:
 
 PeerOrgs:
 
-  - Name: Org1
-    Domain: org1.example.com
+  - Name: <%= primaryOrg.name %>
+    Domain: <%= primaryOrg.domain %>
     EnableNodeOUs: false
     CA:
       hostname: ca
@@ -67,7 +67,7 @@ PeerOrgs:
     Specs:
       - Hostname: committer-sidecar
         SANS:
-          - committer-org1-sidecar
+          - committer-<%= primaryOrgSlug %>-sidecar
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -75,7 +75,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-coordinator
         SANS:
-          - committer-org1-coordinator
+          - committer-<%= primaryOrgSlug %>-coordinator
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -83,7 +83,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-validator
         SANS:
-          - committer-org1-validator
+          - committer-<%= primaryOrgSlug %>-validator
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -91,7 +91,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-verifier
         SANS:
-          - committer-org1-verifier
+          - committer-<%= primaryOrgSlug %>-verifier
           - host.docker.internal
           - 0.0.0.0
           - localhost
@@ -99,7 +99,7 @@ PeerOrgs:
           - ::1
       - Hostname: committer-query-service
         SANS:
-          - committer-org1-query-service
+          - committer-<%= primaryOrgSlug %>-query-service
           - host.docker.internal
           - 0.0.0.0
           - localhost

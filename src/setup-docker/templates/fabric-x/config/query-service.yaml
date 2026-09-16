@@ -14,7 +14,7 @@ monitoring:
 
 database:
   endpoints:
-    - committer-org1-db:5432
+    - committer-<%= primaryOrgSlug %>-db:5432
   username: fabricx
   password: fabricx
   database: fabricx

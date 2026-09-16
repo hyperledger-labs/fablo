@@ -14,7 +14,7 @@ monitoring:
 
 database:
   endpoints:
-    - committer-org1-db:5432
+    - committer-<%= primaryOrgSlug %>-db:5432
   username: fabricx
   password: fabricx
   database: fabricx
@@ -32,7 +32,7 @@ resource-limits:
   timeout-for-min-transaction-batch-size: 5s
 
 identity:
-  msp-id: Org1MSP
+  msp-id: <%= primaryOrg.mspName %>
 
 logging:
   logSpec: info:grpc=error
