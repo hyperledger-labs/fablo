@@ -10,7 +10,7 @@ title: Configuration file
 
 1. [Overview](#overview)
 2. [`$schema`](#schema) — schema URL for the config
-3. [`global`](#global) — network-wide settings (Fabric version, TLS, images, engine, monitoring, tools)
+3. [`global`](#global) — network-wide settings (Fabric version, TLS, engine, provider, images, monitoring, tools)
 4. [`orgs`](#orgs) — organization definitions (CA, orderers, peers, tools)
 5. [`channels`](#channels) — channel definitions and organization/peer membership
 6. [`chaincodes`](#chaincodes) — chaincode definitions, endorsement, and private data collections
@@ -21,9 +21,11 @@ title: Configuration file
 
 A Fablo configuration file is a **JSON or YAML** document. Required top-level sections: `global`, `orgs`, `channels`, and `chaincodes`. Optional top-level fields: `$schema` and `hooks`.
 
-This page covers the main fields used in practice. For the full JSON Schema (including schema-only defaults), see [`schema.json`](/schema.json). Note that some schema defaults (for example Fabric `2.4.2` or a solo orderer) are stale relative to what `fablo init` generates today — prefer the `fablo init` defaults below when starting a new network.
+Commands that take an optional config path, such as `fablo up` and `fablo validate`, look for `fablo-config.json` in the current directory, and fall back to `fablo-config.yaml` if the JSON file is not there.
 
-**What `fablo init` generates today:** Fabric `3.1.0`, TLS on, two BFT orderers, two LevelDB peers under `Org1`, channel `my-channel1`, empty `chaincodes` and `hooks`.
+This page covers the main fields used in practice. For the full JSON Schema (including schema-only defaults), see [`schema.json`](/schema.json). Note that some schema defaults (for example Fabric `2.4.2` or a solo orderer) are stale relative to what `fablo init` generates today, so prefer the `fablo init` defaults below when starting a new network.
+
+**What `fablo init` generates today:** Fabric `3.1.0`, TLS on, engine `docker`, an `Orderer` organization with two BFT orderers in group `group1`, an `Org1` organization with two LevelDB peers, channel `my-channel1`, and empty `chaincodes` and `hooks`. The generated channel has no `ordererGroup`, so it falls back to the first orderer group. `fablo init fabric-x` writes a different starter config, described under [`global.provider`](#globalprovider).
 
 
 ## `$schema`
@@ -32,11 +34,13 @@ This page covers the main fields used in practice. For the full JSON Schema (inc
 |---|---|---|---|
 | `$schema` | URL of the Fablo JSON Schema used to validate this config | `string` | Recommended |
 
-`fablo init` sets this to the schema for the current Fablo release, for example:
+`fablo init` sets this to the schema for the Fablo release you are running, for example:
 
 ```json
 "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/<version>/schema.json"
 ```
+
+`fablo validate` reads the version out of the URL and reports an error when it does not match the Fablo release you are running, so update `$schema` when you upgrade Fablo.
 
 
 ## `global`
@@ -45,13 +49,27 @@ Basic settings of the Hyperledger Fabric network. Type: `object`. Required field
 
 | Field | Purpose | Type | Required | Notes |
 |---|---|---|---|---|
-| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes | `fablo init` uses `3.1.0` |
+| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes | Must be `2.0.0` or higher. `fablo init` uses `3.1.0` |
 | `tls` | Whether TLS is used across the network | `boolean` | Yes | `fablo init` uses `true` |
-| `peerDevMode` | Start all peers in dev mode | `boolean` | No | Default `false`. Supported on Fabric v2 without TLS; not supported on Fabric v3. See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md). |
+| `peerDevMode` | Start all peers in dev mode | `boolean` | No | Default `false`. Requires `tls` to be `false`, and `fablo validate` reports an error when both are `true`. Supported on Fabric v2 only, not on Fabric v3. See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md). |
 | `engine` | Engine on which the network will be deployed | `string` | No | `docker` (default) or `kubernetes` |
+| `provider` | Network provider | `string` | No | `fabric` (default) or `fabric-x`. `fabric-x` is experimental, see below |
 | `fabricImages` | Optional Docker images for Hyperledger Fabric components | `object` | No | see below |
 | `monitoring` | Optional settings for monitoring purposes | `object` | No | see below |
 | `tools` | Tool toggles at the network level | `object` | No | see below |
+
+### `global.provider`
+
+Selects the network provider. The default is `fabric`, which is the fully supported Hyperledger Fabric network. The value `fabric-x` selects the experimental Fabric-X provider, and `fablo init fabric-x` writes a starter config that uses it.
+
+When `provider` is `fabric-x`, `fablo validate` reports an error for any of the following:
+
+- `engine` is `kubernetes`, because Fabric-X supports `docker` only
+- `tls` is `false`, because Fabric-X requires TLS
+- `peerDevMode` is `true`
+- Explorer or Fablo REST is enabled, in `global.tools` or in any `orgs[].tools`
+- `chaincodes` is not empty, because the Fabric-X provider does not deploy chaincodes yet
+- `channels` does not hold exactly one channel
 
 ### `global.fabricImages`
 
@@ -62,11 +80,13 @@ Optional Docker images for Hyperledger Fabric components.
 | `peer` | Peer image | `string` | No | `hyperledger/fabric-peer` |
 | `orderer` | Orderer image | `string` | No | `hyperledger/fabric-orderer` |
 | `ca` | CA image | `string` | No | `hyperledger/fabric-ca` |
-| `tools` | Tools image | `string` | No | `hyperledger/fabric-tools` (Fabric 3.x default repo: `ghcr.io/fablo-io/fabric-tools`) |
+| `tools` | Tools image | `string` | No | `hyperledger/fabric-tools` below Fabric `3.0.0`, `ghcr.io/fablo-io/fabric-tools` from Fabric `3.0.0` up |
 | `ccenv` | CCENV image | `string` | No | `hyperledger/fabric-ccenv` |
 | `baseos` | BaseOS image | `string` | No | `hyperledger/fabric-baseos` |
 | `javaenv` | Javaenv image | `string` | No | `hyperledger/fabric-javaenv` |
 | `nodeenv` | Nodeenv image | `string` | No | `hyperledger/fabric-nodeenv` |
+
+The defaults above are repository names without a tag. When you give an image with no tag and no digest, Fablo appends a tag it derives from `fabricVersion`, so `myregistry/fabric-peer` becomes `myregistry/fabric-peer:3.1.0` on a Fabric `3.1.0` network. Give the image with a tag or a digest to pin it yourself.
 
 ### `global.monitoring`
 
@@ -83,6 +103,8 @@ Optional settings for monitoring purposes.
 | `explorer` | Whether Blockchain Explorer is enabled network-wide | `boolean` | No | `false` |
 
 Explorer is supported on Fabric v2 only, not on Fabric v3 (including the default `3.1.0` init config). See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md).
+
+When `global.tools.explorer` is `true`, Fablo runs one Explorer for the whole network and ignores the `orgs[].tools.explorer` setting on each organization. `fablo validate` warns about each organization whose setting is ignored this way.
 
 ### Example
 
@@ -131,8 +153,11 @@ An array of orderer group definitions for this organization. Each item requires 
 
 Notes:
 
-- `solo` is for Fabric v2 development only; it is not supported on Fabric v3.
+- `solo` is for Fabric v2 development only; it is not supported on Fabric v3. With `solo`, only one instance is created, and `fablo validate` warns if `instances` is greater than `1`.
+- `raft` requires `global.tls` to be `true`.
 - `BFT` requires Fabric v3.
+- An organization may have at most 9 orderers in total across all of its groups.
+- `groupName` must be unique within an organization, and every orderer in a group must use the same `type`, even when the group spans several organizations.
 - `fablo init` creates one orderer group: `groupName: "group1"`, `type: "BFT"`, `instances: 2`.
 
 ### `orgs[].peer`
@@ -143,8 +168,10 @@ Peer settings for this organization. If a `peer` object is present, `instances` 
 |---|---|---|---|---|
 | `prefix` | Domain prefix | `string` | No | pattern `^[a-z0-9\.\-]+$` (default `peer`) |
 | `instances` | Number of peer instances | `integer` | Yes (within `peer`) | minimum `1`, maximum `9` |
-| `anchorPeerInstances` | Number of anchor peer instances | `integer` | No | minimum `1`, maximum `9` |
+| `anchorPeerInstances` | Number of anchor peer instances | `integer` | No | minimum `1`, maximum `9` (defaults to the value of `instances`) |
 | `db` | Peer database type | `string` | No | `LevelDb` (default), `CouchDb` |
+
+Peers are named after the `prefix` followed by a zero based index, so the default `prefix` gives `peer0`, `peer1` and so on. The first `anchorPeerInstances` peers become anchor peers, and because the default is the value of `instances`, every peer is an anchor peer unless you set a lower number. `fablo validate` reports an error when `anchorPeerInstances` is greater than `instances`.
 
 ### `orgs[].tools`
 
@@ -154,6 +181,8 @@ Peer settings for this organization. If a `peer` object is present, `instances` 
 | `explorer` | Whether Blockchain Explorer is enabled for this org | `boolean` | No |
 
 Fablo REST is a separate REST API client for CA and chaincodes. It is not the same as the optional Node.js gateway sample copied by `fablo init gateway`. Explorer is Fabric v2 only.
+
+Fablo REST cannot be used together with `global.peerDevMode`, and `fablo validate` reports an error for each organization that enables both. Peers in dev mode do not expose their chaincodes through the discovery service, which Fablo REST needs.
 
 ### Example
 
@@ -191,10 +220,10 @@ An array of channel definitions. Type: `array`. Each item's required fields: `na
 | Field | Purpose | Type | Required | Allowed values |
 |---|---|---|---|---|
 | `name` | Channel name | `string` | Yes | pattern `^[a-z0-9_-]+$` |
-| `ordererGroup` | Name of the orderer **group** (`orgs[].orderers[].groupName`) that handles this channel | `string` | No | Defaults to the first orderer group found |
+| `ordererGroup` | Name of the orderer **group** (`orgs[].orderers[].groupName`) that handles this channel | `string` | No | pattern `^[a-zA-Z0-9]+$` (defaults to the first orderer group defined in `orgs`) |
 | `orgs` | Organizations participating in the channel | `array` | Yes | see below |
 
-`ordererGroup` references an orderer group's `groupName`, not an organization name.
+`ordererGroup` references an orderer group's `groupName`, not an organization name. `fablo validate` reports an error when the value does not match a `groupName` defined in `orgs`. The pattern for `ordererGroup` allows letters and digits only, so it cannot reference a `groupName` that contains a dot or a hyphen.
 
 ### `channels[].orgs[]`
 
@@ -204,6 +233,8 @@ Each item requires `name` and `peers`.
 |---|---|---|---|---|
 | `name` | Organization name (must match an organization defined in `orgs`) | `string` | Yes | pattern `^[a-zA-Z0-9]+$` |
 | `peers` | Peers for the organization on this channel | `array` of `string` | Yes | each item pattern `^[a-z0-9]+$` |
+
+Each entry in `peers` is a peer name, which is the organization's peer `prefix` followed by a zero based index, for example `peer0`. An organization listed here must have a `peer` block, so you cannot join an orderer-only organization to a channel.
 
 ### Example
 
@@ -230,18 +261,24 @@ An array of chaincode definitions. Type: `array`. Each item's required fields: `
 | `version` | Chaincode version | `string` | Yes | pattern `^[a-zA-Z0-9\.]+$` |
 | `lang` | Chaincode language | `string` | Yes | `golang`, `java`, `node`, `ccaas` |
 | `channel` | Channel name the chaincode is deployed on (must match a channel defined in `channels`) | `string` | Yes | pattern `^[a-z0-9_-]+$` |
-| `init` | Initialization arguments (legacy; Fabric below 2.0) | `string` | No | — |
-| `initRequired` | Whether the chaincode requires an initialization transaction (Fabric 2.0+) | `boolean` | No | default `false` |
-| `endorsement` | Endorsement policy | `string` | No | — |
+| `init` | Initialization arguments | `string` | No | default `{"Args":[]}` |
+| `initRequired` | Whether the chaincode requires an initialization transaction | `boolean` | No | default `false` |
+| `endorsement` | Endorsement policy | `string` | No | see below |
 | `directory` | Chaincode source directory | `string` | Required unless `lang` is `ccaas` | — |
 | `image` | Chaincode image URI | `string` | Required only when `lang` is `ccaas` | — |
 | `chaincodeMountPath` | Directory mounted into the chaincode container as its working directory | `string` | No | **`ccaas` only** |
 | `chaincodeStartCommand` | Command used as the chaincode container command | `string` | No | **`ccaas` only** |
 | `privateData` | Private data collections | `array` | No | see below |
 
+Fablo chooses between `init` and `initRequired` from `global.fabricVersion`. On Fabric 2.x it uses `initRequired`, and `fablo validate` warns that `init` is ignored. From Fabric `3.0.0` up it uses `init`, and `fablo validate` warns that `initRequired` is ignored.
+
+When you leave `endorsement` out, the default depends on `global.fabricVersion` as well. On Fabric 2.x Fablo sets no policy and Fabric applies its own default. From Fabric `3.0.0` up Fablo builds a policy that requires every organization on the channel, for example `AND ('Org1MSP.member')` for a channel with only `Org1`.
+
 Constraints:
 
 - `chaincodeMountPath` and `chaincodeStartCommand` are only valid when `lang` is `ccaas`. Using them with `node` / `golang` / `java` fails validation.
+- `lang: "ccaas"` requires `global.tls` to be `true`. CCaaS without TLS is not supported yet.
+- Chaincode names must be unique within a channel.
 - `fablo init ccaas` cannot be combined with `node` or `dev`.
 - Peer dev mode (`global.peerDevMode` / `fablo init node dev`) has Fabric-version limits; see [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md).
 
@@ -252,7 +289,9 @@ Each item requires `name` and `orgNames`.
 | Field | Purpose | Type | Required | Allowed values |
 |---|---|---|---|---|
 | `name` | Private data collection name | `string` | Yes | pattern `^[A-Za-z0-9_-]+$` |
-| `orgNames` | Organizations included in the collection (must match organizations defined in `orgs`) | `array` of `string` | Yes | each item pattern `^[A-Za-z0-9]+$` |
+| `orgNames` | Organizations included in the collection | `array` of `string` | Yes | each item pattern `^[A-Za-z0-9]+$` |
+
+Every name in `orgNames` must be an organization that has joined the chaincode's channel, not merely an organization defined in `orgs`. Fablo builds the collection policy as `OR` over the MSPs of the named organizations, for example `OR('Org1MSP.member')`.
 
 ### Example
 
@@ -294,6 +333,8 @@ Optional Bash commands run after specific events.
 |---|---|---|---|
 | `postGenerate` | Run after network config is generated (`fablo generate`, or automatically during `fablo up`) | `string` | No |
 | `postStart` | Run after the network is started (`fablo up` or `fablo start`) | `string` | No |
+
+Fablo renders each hook into a script under `fablo-target/hooks/` and runs it from the directory where you ran `fablo`, not from `fablo-target`. A relative path in a hook is resolved against your project directory, which is why the example below can use `./chaincodes/chaincode-kv-node`.
 
 ### Example
 

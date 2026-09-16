@@ -85,33 +85,43 @@ In this case you should keep `fablo-target` directory intact and out of the vers
 Fablo will manage it locally.
 
 On the other hand you can use Fablo to generate initial network configuration, keep it in version control and tweak for specific requirements.
-In this case, however, you should use generated `fablo-docker.sh` instead of `fablo` script.
+In this case, however, you should use the generated `fabric-docker.sh` instead of the `fablo` script.
 
 ## Managing the network
 
 ### init
 
 ```bash
-fablo init [node] [rest] [dev] [gateway]
+fablo init [node] [rest] [dev] [ccaas] [gateway] [--set <path>=<value> ...]
 ```
 
 Creates a simple network configuration file (`fablo-config.json`) in the current directory.
 This is a good starting point for your Fablo journey or to set up a quick prototype. 
 
 The generated network configuration includes an orderer organization with two BFT orderer nodes and a peer organization with two peers.
-It uses Fabric version `3.1.0`. 
+It uses Fabric version `3.1.0` with TLS enabled. 
 
 The `fablo init` command accepts several optional parameters (order doesn't matter):
-* `node` - generates a sample Node.js chaincode
-* `rest` - enables a simple REST API with [Fablo REST](https://github.com/fablo-io/fablo-rest) as a standalone Docker container
-* `dev` - enables chaincode hot reload mode
-* `gateway` - generates a sample Node.js server that connects to the gateway
+* `node` - copies a sample Node.js chaincode into `chaincodes/chaincode-kv-node` and adds it to the config
+* `rest` - enables [Fablo REST](https://github.com/fablo-io/fablo-rest) for every organization in the generated config
+* `dev` - when you use it together with `node`, the sample chaincode becomes a CCaaS chaincode with the source code mounted, so it reloads when you change the code
+* `ccaas` - adds a sample CCaaS chaincode that runs from a prebuilt image. You cannot combine it with `node` or `dev`
+* `gateway` - copies a sample Node.js gateway app into `gateway/node`. It does not change the config file
 
 Sample command:
 
 ```bash
 fablo init node dev
 ```
+
+#### Fabric-X
+
+```bash
+fablo init fabric-x [--set <path>=<value> ...]
+```
+
+Creates a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`.
+You cannot combine `fabric-x` with `node`, `rest`, `dev`, `ccaas` or `gateway`.
 
 #### Custom overrides
 
@@ -150,15 +160,16 @@ fablo up [/path/to/fablo-config.json|yaml]
 ```
 
 Starts the Hyperledger Fabric network for the given Fablo configuration file, creates channels, and installs and deploys chaincodes (package / install / approve / commit).
-If no configuration exists, it will call the `generate` command for the given config file.
+If the `fablo-target` directory is missing or empty, Fablo runs the `generate` command for the given config file first.
+If the network is already generated and the config file has changed since then, `up` stops with an error and prints the difference, so you have to run `prune` or `recreate` before the change takes effect.
 
 ### down, start, stop
 
 ```bash
-fablo [down | start | stop]
+fablo <down | start | stop>
 ```
 
-Stops, starts, or stops the Hyperledger Fabric network for the configuration in the current directory.
+Downs, starts, or stops the Hyperledger Fabric network for the configuration in the current directory.
 This is similar to the down, start, and stop commands for Docker Compose.
 
 ### prune
@@ -167,7 +178,7 @@ This is similar to the down, start, and stop commands for Docker Compose.
 fablo prune
 ```
 
-Stops the network and removes the `fablo-target` directory.
+Downs the network and removes the `fablo-target` directory.
 
 ### reset and recreate
 
@@ -185,15 +196,15 @@ fablo recreate [/path/to/fablo-config.json|yaml]
 fablo validate [/path/to/fablo-config.json|yaml]
 ```
 
-Validates the network configuration. This command will validate your network config and suggest necessary changes or additional tweaks.
-Note that this step is also executed automatically before each `generate` to ensure that at least critical errors are fixed. 
+Validates the network configuration against the schema and with extra checks across fields, and suggests necessary changes or additional tweaks.
+It is a separate command, so `generate` and `up` do not run it for you.
 
 ### export-network-topology
 
 ```bash
-fablo export-network-topology [/path/to/fablo-config.json] [outputFile.mmd]
-
+fablo export-network-topology [/path/to/fablo-config.json|yaml [outputFile.mmd]]
 ```
+
 - `outputFile.mmd`: (optional) Path to the output Mermaid file. Defaults to `network-topology.mmd`.
 
 Sample command:
@@ -210,7 +221,7 @@ You can visualize the output using any Mermaid-compatible tool or online editor.
 fablo extend-config [/path/to/fablo-config.json|yaml]
 ```
 
-Generates an extended version of the Fablo config by filling in default and computed values based on the provided configuration file and making some config parts more verbos. 
+Reads the Fablo config file, fills in the default and computed values, and prints the extended config as JSON on standard output. It does not write any file, so it is mostly useful for debugging. 
 
 ### snapshot and restore
 
@@ -227,8 +238,10 @@ fablo snapshot <target-snapshot-path>
 To restore a snapshot into the current directory, run:
 
 ```bash
-fablo restore <source-snapshot-path>
+fablo restore <source-snapshot-path> [hook-command]
 ```
+
+The optional hook command is a Bash command that Fablo runs in the restored directory before it creates the containers.
 
 Example:
 
@@ -244,8 +257,9 @@ Typically, a snapshot of a network with little data will be less than 1 MB, maki
 ### fabric-docker.sh
 
 The `fabric-docker.sh` script is generated alongside the Docker network configuration.
-It doesn't support the `generate` command, but other commands work the same way as in `fablo`.
-Essentially, `fablo` forwards some commands to this script.
+It supports `up`, `down`, `start`, `stop`, `reset`, the `chaincode` and `chaincodes` commands, the `channel` commands and `snapshot`, and they work the same way as in `fablo`.
+Commands such as `init`, `generate`, `validate`, `prune`, `recreate`, `restore` and `use` are handled by the `fablo` script itself.
+Essentially, `fablo` forwards the remaining commands to `fabric-docker.sh`.
 
 If you want to use Fablo for network configuration setup only, the `fabric-docker.sh` file allows you to manage the network.
 
@@ -277,19 +291,42 @@ The chaincode directory is specified in the Fablo config file.
 Invokes a chaincode with the specified parameters.
 
 ```
-fablo chaincode invoke <peers-domains-comma-separated>  <channel-name>  <chaincode-name> <command> [transient] 
+fablo chaincode invoke <peer_domains_comma_separated> <channel_name> <chaincode_name> <command> [transient]
 ```
+
 Sample command:
 
 ```
 fablo chaincode invoke "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Args":["KVContract:put", "name", "Willy Wonka"]}'
 ```
 
-### chaincodes list
-Lists the instantiated or installed chaincodes in the specified channel or peer. 
+### chaincode query
+
+Queries a chaincode on a single peer. Transient data is optional.
 
 ```
-fablo chaincodes list <peer> <channel>
+fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]
+```
+
+Sample command:
+
+```
+fablo chaincode query "peer0.org1.example.com" "my-channel1" "chaincode1" '{"Args":["KVContract:get", "name"]}'
+```
+
+### chaincodes list
+
+Lists the chaincodes installed on the given peer for the given channel.
+The peer is given as its full domain, for example `peer0.org1.example.com`, and the channel is given by name.
+
+```
+fablo chaincodes list <peer_domain> <channel_name>
+```
+
+Sample command:
+
+```
+fablo chaincodes list peer0.org1.example.com my-channel1
 ```
 
 ### Achieving chaincode hot reload
@@ -350,15 +387,14 @@ cd samples/chaincodes/java-chaincode
 
 The `run-dev.sh` script will:
 - Build the chaincode using Gradle's shadowJar task
-- Automatically detect the peer's IP address from the Docker container
-- Start the chaincode with debug logging enabled
-- Connect to the peer at port 7051
+- Read from Docker the host port mapped to port 7050 of the `peer0.org1.example.com` container
+- Check that the port accepts connections, and stop with an error if it does not
+- Start the chaincode with debug logging enabled and connect it to that port
 
 For local development and review:
-- The chaincode will run with the name `simple-asset:1.0`
+- The chaincode runs with the name `chaincode1:0.0.1` on channel `my-channel1`
 - Debug level logging is enabled via `CORE_CHAINCODE_LOGLEVEL=debug`
 - You can modify the Java code and rebuild/restart to see changes
-- The peer connection is automatically configured using the Docker container's IP
 
 ### CCaaS to achieve chaincode hot reload
 
@@ -434,9 +470,11 @@ Fetches the latest config block, decodes it, and writes it to a JSON file.
 ### channel fetch raw block
 
 ```bash
-fablo channel fetch <oldest|newest|block-number> channel_name org1 peer0 [file_name.json]
+fablo channel fetch <oldest|newest|block-number> channel_name org1 peer0 [file_name]
 ```
+
 Fetches the oldest, newest, or a block with the given number, and writes it to a file.
+The default file name is the block name with the `.block` extension.
 
 ## Utility commands
 
@@ -445,8 +483,8 @@ Fetches the oldest, newest, or a block with the given number, and writes it to a
 ```bash
 fablo version [--verbose | -v]
 ```
-Prints the current Fablo version.
-With the optional `-v` or `--verbose` flag, it also prints supported Fablo and Hyperledger Fabric versions.
+Prints the current Fablo version and build information as JSON.
+With the optional `-v` or `--verbose` flag, it also prints the range of Fablo config versions this version supports.
 
 ### use
 
@@ -467,7 +505,7 @@ Switches the current script to the selected version.
 ## Fablo config
 
 The Fablo config is a single JSON or YAML file that describes the desired Hyperledger Fabric network topology (network settings, CA, orderer, organizations, peers, channels, chaincodes).
-It must be compatible with the [schema].
+It must be compatible with the [schema](https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json), which the `fablo validate` command checks.
 You can generate a basic config with the `./fablo init` command.
 See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) directory for more complex examples.
 
@@ -489,7 +527,7 @@ Example:
 
 ```json
   "global": {
-    "fabricVersion": "2.4.2",
+    "fabricVersion": "2.5.12",
     "tls": false,
     "peerDevMode": false,
     "monitoring": {
@@ -501,20 +539,35 @@ Example:
   },
 ```
 
+Available fields in the `global` section are:
+
+* `fabricVersion` - the Hyperledger Fabric version to use (required)
+* `tls` - whether to enable TLS in the network (required)
+* `engine` - `docker` (default) or `kubernetes`
+* `provider` - `fabric` (default) or `fabric-x`, which is experimental
+* `peerDevMode` - whether to run peers in dev mode (default: `false`)
+* `monitoring.loglevel` - `debug`, `info` (default) or `warn`
+* `tools.explorer` - whether to run one Blockchain Explorer for all organizations (default: `false`)
+* `fabricImages` - Docker image overrides, described below
+
 ### global.fabricImages
 
-`global.fabricImages` is optional
+`global.fabricImages` is optional and lets you replace the Docker images Fablo uses.
 Example:
 
 ```json
 "fabricImages": {
-  "peer": "ghcr.io/fabric-dev/fabric-peer:3.1.0",
-  "orderer": "ghcr.io/fabric-dev/fabric-orderer:3.1.0",
-  "tools": "ghcr.io/fablo-io/fabric-tools:3.0.0"
+  "peer": "hyperledger/fabric-peer:3.1.0",
+  "orderer": "hyperledger/fabric-orderer:3.1.0",
+  "tools": "ghcr.io/fablo-io/fabric-tools:3.1.3"
 }
 ```
 
-For Fabric `3.x`, the default `tools` image repository is `ghcr.io/fablo-io/fabric-tools`; for older versions it is `hyperledger/fabric-tools`.
+The supported keys are `peer`, `orderer`, `ca`, `tools`, `ccenv`, `baseos`, `javaenv` and `nodeenv`.
+If you give an image without a tag or a digest, Fablo appends the tag that matches your `global.fabricVersion`.
+
+For Fabric `3.x`, the default `tools` image repository is `ghcr.io/fablo-io/fabric-tools`, and for older versions it is `hyperledger/fabric-tools`.
+The other images default to the `hyperledger` repository, for example `hyperledger/fabric-peer`.
 
 ### orgs
 
@@ -549,10 +602,11 @@ Other available parameters for entries in the `orgs` array are:
 
  * `organization.mspName` (default: `organization.name + 'MSP'`)
  * `ca.prefix` (default: `ca`)
- * `ca.db` (default: `sqlite`, other: `postgres`)
+ * `ca.db` (default: `sqlite`, other: `postgres`, `mysql`)
  * `peer.prefix` (default: `peer`)
- * `peer.anchorPeerInstances` (default: `1`)
+ * `peer.anchorPeerInstances` (default: the value of `peer.instances`, so all peers are anchor peers)
  * `orderers` (defaults to empty: `[]`)
+ * `orderers.prefix` (default: `orderer`)
  * `tools.explorer` - whether to run Blockchain Explorer for the organization (default: `false`)
  * `tools.fabloRest` - whether to run Fablo REST for the organization (default: `false`)
  
@@ -563,7 +617,7 @@ Other available parameters for entries in the `orgs` array are:
 - Is optional as some organizations may have orderers defined, but others don't.
 - At least one orderer group is required to run the Fabric network (requirement is validated before run).
 - If you want to spread orderers in a group between many organizations, use the same `groupName` in every group definition.
-- The property `orderers.type` can be `solo` or `raft`. We do not support the Kafka orderer.
+- The property `orderers.type` can be `solo`, `raft` or `BFT`. We do not support the Kafka orderer.
 
 ### channels
 
@@ -573,7 +627,7 @@ Example:
   "channels": [
     {
       "name": "my-channel1",
-      "groupName": "group1",      
+      "ordererGroup": "group1",
       "orgs": [
         {
           "name": "Org1",
@@ -594,7 +648,7 @@ Example:
   ],
 ```
 
-- Property `groupName` is optional (defaults to the first orderer group found). If you want to handle a channel with a different orderer group, define it in `orgs` and pass its name here. 
+- Property `ordererGroup` is optional (defaults to the first orderer group found). If you want to handle a channel with a different orderer group, define it in `orgs` and pass its `groupName` here.
 
 ### chaincodes
 
@@ -608,29 +662,34 @@ Example:
       "lang": "node",
       "channel": "my-channel1",
       "directory": "./chaincodes/chaincode-kv-node",
-      "privateData": {
-        "name": "org1-collection",
-        "orgNames": ["Org1"]
-      }
+      "privateData": [
+        {
+          "name": "org1-collection",
+          "orgNames": ["Org1"]
+        }
+      ]
     },
     {
       "name": "chaincode2",
       "version": "0.0.1",
       "lang": "java",
-      "channel": "my-channel2"
+      "channel": "my-channel2",
+      "directory": "./chaincodes/chaincode-java-simple"
     }
   ]
 ```
 
 The property `lang` can be `golang`, `java`, `node`, or `ccaas`.
 
-The `privateData` parameter is optional. You don't need to define the private data collection for the chaincode. By default, there is none (just the implicit private data collection which is default in Fabric).
+The `privateData` parameter is optional and holds a list of private data collections. You don't need to define any collection for the chaincode. By default, there is none (just the implicit private data collection which is default in Fabric).
+
+The `directory` parameter is required for `golang`, `java` and `node` chaincodes, and the `image` parameter is required for `ccaas` chaincodes.
 
 Other available parameters for entries in the `chaincodes` array are:
 
-* `init` - initialization arguments (for Hyperledger Fabric below 2.0; default: `{"Args":[]}`)
-* `initRequired` - whether the chaincode requires an initialization transaction (for Hyperledger Fabric 2.0 and greater; default: `false`)
-* `endorsement` - the endorsement policy for the chaincode (if missing for Hyperledger Fabric 2.0 and greater, there is no default value - Hyperledger by default will take the majority of organizations)
+* `init` - initialization arguments, used from Hyperledger Fabric 3.0.0 up and ignored below it (default: `{"Args":[]}`)
+* `initRequired` - whether the chaincode requires an initialization transaction, used on Hyperledger Fabric 2.x and ignored from 3.0.0 up (default: `false`)
+* `endorsement` - the endorsement policy for the chaincode. On Hyperledger Fabric 2.x there is no default, so Fabric applies its own. From 3.0.0 up Fablo builds a policy that requires every organization on the channel, such as `AND ('Org1MSP.member')`
 * `chaincodeMountPath` (`ccaas` only) - chaincode mount path. If provided, the given directory is mounted inside the Docker container and becomes the container working directory.
 * `chaincodeStartCommand` (`ccaas` only) - chaincode start command. If provided, this command is used as the Docker container command.
 
@@ -669,7 +728,7 @@ Generated hooks are saved in `fablo-target/hooks`.
 ---
 "$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json
 global:
-  fabricVersion: 2.4.2
+  fabricVersion: 2.5.12
   tls: false
 orgs:
   - organization:
@@ -683,9 +742,9 @@ orgs:
   - organization:
       name: Org1
       domain: org1.example.com
-      tools:
-        fabloRest: true
-        explorer: true
+    tools:
+      fabloRest: true
+      explorer: true
     peer:
       instances: 2
   - organization:
@@ -708,7 +767,6 @@ chaincodes:
     version: 0.0.1
     lang: node
     channel: my-channel1
-    init: '{"Args":[]}'
     endorsement: AND('Org1MSP.member', 'Org2MSP.member')
     directory: "./chaincodes/chaincode-kv-node"
     privateData:
@@ -726,7 +784,7 @@ TODO
 ### Connection profiles
 
 Fablo will generate connection profiles for each organization defined in the configuration.
-You can find them in the `fablo-target/fablo-config/connection-profiles` directory in `json` and `yaml` format.
+You can find them in the `fablo-target/fabric-config/connection-profiles` directory in `json` and `yaml` format.
 
 ### REST API
 
@@ -736,7 +794,7 @@ Visit the [Fablo REST](https://github.com/fablo-io/fablo-rest) project for more 
 
 ### Blockchain Explorer
 
-Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you.
+Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you on Fabric v2. It is not supported on Fabric v3.
 Set `"tools": { "explorer": true }` for your organization if you want to use it per organization, or set the same value in the `global` section of the config if you want to use one global Explorer for all organizations.
 
 ## Contributing

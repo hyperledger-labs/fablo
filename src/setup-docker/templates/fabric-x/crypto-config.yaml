@@ -1,0 +1,122 @@
+---
+OrdererOrgs:
+
+  - Name: Orderer
+    Domain: orderer.example.com
+    EnableNodeOUs: false
+    CA:
+      Hostname: ca
+    Specs:
+      - Hostname: router
+        Party: party1
+        SANS:
+          - orderer-router
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: batcher1
+        Party: party1
+        SANS:
+          - orderer-batcher
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: consenter
+        Party: party1
+        SANS:
+          - orderer-consenter
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: assembler
+        Party: party1
+        SANS:
+          - orderer-assembler
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+    Users:
+      Count: 1
+
+
+PeerOrgs:
+
+  - Name: Org1
+    Domain: org1.example.com
+    EnableNodeOUs: false
+    CA:
+      hostname: ca
+      SANS:
+        - 0.0.0.0
+        - localhost
+        - 127.0.0.1
+        - ::1
+    Users:
+      Count: 1
+      Specs:
+        - Name: channel_admin
+          HSM: false
+    Specs:
+      - Hostname: committer-sidecar
+        SANS:
+          - committer-org1-sidecar
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-coordinator
+        SANS:
+          - committer-org1-coordinator
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-validator
+        SANS:
+          - committer-org1-validator
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-verifier
+        SANS:
+          - committer-org1-verifier
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-query-service
+        SANS:
+          - committer-org1-query-service
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: endorser
+        SANS:
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: fxconfig
+        SANS:
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+
