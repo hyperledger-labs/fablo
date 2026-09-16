@@ -42,6 +42,7 @@ See `git help commit`:
 ## Running Fablo locally
 
 You may want to verify some changes by running Fablo locally. To do so:
+
 1. Execute `./fablo-build.sh` script to create a Fablo Docker image locally.
 2. Use `./fablo.sh` from source root directory to call Fablo commands.
 
@@ -52,5 +53,16 @@ You may want to verify some changes by running Fablo locally. To do so:
 3. **Provide details**: Give your pull request a descriptive title and provide details about the changes you've made.
 4. **Review process**: Your pull request will be reviewed by maintainers. Be responsive to any feedback and make necessary changes.
 
-We appreciate your contributions and look forward to working with you!
+## Implementing an issue from a comment (maintainers)
 
+Maintainers with write access can ask CI to implement an issue. Comment on the issue, starting with:
+
+```text
+/implement
+```
+
+Extra lines after that are passed to the agent as steering. The workflow verifies that the commenter currently has `write`, `maintain`, or `admin` permission on the repository, or is listed in the `AI_ALLOWED_ACTORS` repository variable.
+
+The Action opens a pull request with the implementation, for a maintainer to review and merge.
+
+We appreciate your contributions and look forward to working with you!

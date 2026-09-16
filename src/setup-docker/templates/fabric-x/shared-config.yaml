@@ -1,0 +1,64 @@
+
+# Arma Shared Configuration for the dynamic devnet.
+# Cert paths are absolute inside the Docker container (config/crypto/ mounted at /crypto).
+
+Parties:
+
+  - PartyID: 1
+    CACerts:
+      - /crypto/ordererOrganizations/orderer.example.com/msp/cacerts/ca.orderer.example.com-cert.pem
+    TLSCACerts:
+      - /crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+    RouterConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls/server.crt
+      Host: orderer-router
+      Port: 7050
+    BatchersConfig:
+      - ShardID: 1
+        SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/msp/signcerts/batcher1.orderer.example.com-cert.pem
+        TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/tls/server.crt
+        Host: orderer-batcher
+        Port: 7051
+    ConsenterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp/signcerts/consenter.orderer.example.com-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
+      Host: orderer-consenter
+      Port: 7052
+    AssemblerConfig:
+      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls/server.crt
+      Host: orderer-assembler
+      Port: 7053
+
+
+Consensus:
+  SmartBFT:
+    requestbatchmaxcount: 10000
+    requestbatchmaxbytes: 10485760
+    requestbatchmaxinterval: 100ms
+    incomingmessagebuffersize: 200
+    requestpoolsize: 500000
+    requestforwardtimeout: 2s
+    requestcomplaintimeout: 20s
+    requestautoremovetimeout: 3m0s
+    viewchangeresendinterval: 5s
+    viewchangetimeout: 20s
+    leaderheartbeattimeout: 1m0s
+    leaderheartbeatcount: 10
+    numofticksbehindbeforesyncing: 10
+    collecttimeout: 1s
+    requestmaxbytes: 1048576
+    requestpoolsubmittimeout: 5s
+
+Batching:
+  BatchTimeouts:
+    BatchCreationTimeout: 20ms # optimize for low latency
+    FirstStrikeThreshold: 10s
+    SecondStrikeThreshold: 10s
+    AutoRemoveTimeout: 10s
+  BatchSize:
+    MaxMessageCount: 10000
+    AbsoluteMaxBytes: 10485760
+    PreferredMaxBytes: 2097152
+  RequestMaxBytes: 1048576
+
+MaxPartyID: 1
