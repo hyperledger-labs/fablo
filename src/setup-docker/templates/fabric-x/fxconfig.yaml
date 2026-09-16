@@ -7,7 +7,7 @@ msp:
 
 orderer:
   address: orderer-router:7050
-  channel: <%= channels[0].name %>
+  channel: <%- fabricX.channelName %>
   tls:
     enabled: true
     clientCert: /tls/server.crt

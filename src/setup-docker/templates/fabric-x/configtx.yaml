@@ -149,7 +149,7 @@ Channel: &ChannelDefaults
     <<: *ChannelCapabilities
 
 Profiles:
-  <%= channels[0].profileName %>:
+  <%- fabricX.channelProfileName %>:
     <<: *ChannelDefaults
     Orderer:
       <<: *OrdererDefaults

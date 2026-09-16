@@ -58,7 +58,7 @@ generateArtifacts() {
   docker run --rm --user "$(id -u):$(id -g)" \
     -v "$FABRIC_X_ROOT:/config" \
     "$TOOLS_IMAGE" \
-    configtxgen --channelID <%= channels[0].name %> --profile <%= channels[0].profileName %> \
+    configtxgen --channelID <%- fabricX.channelName %>  --profile <%- fabricX.channelProfileName %> \
     --outputBlock /config/crypto/config-block.pb.bin \
     --configPath /config
 
