@@ -123,7 +123,10 @@ export default class SetupK8s extends Command {
     await renderTemplate(utilTemplate, utilDest, {});
 
     // Copy chaincode-functions.sh (base)
-    const chaincodeFunctionsBaseTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/chaincode-functions.sh");
+    const chaincodeFunctionsBaseTemplate = getTemplatePath(
+      this.templatesDir,
+      "fabric-k8s/scripts/chaincode-functions.sh",
+    );
     const chaincodeFunctionsBaseDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/chaincode-functions.sh");
     await renderTemplate(chaincodeFunctionsBaseTemplate, chaincodeFunctionsBaseDest, {});
 
@@ -145,4 +148,3 @@ export default class SetupK8s extends Command {
     }
   }
 }
-

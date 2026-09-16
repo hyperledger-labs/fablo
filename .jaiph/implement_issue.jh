@@ -12,7 +12,7 @@ import "verification.jh" as verify
 
 config {
   agent.backend = "claude"
-  agent.model = "sonnet"
+  agent.model = "opus"
   agent.claude_flags = "--permission-mode bypassPermissions"
   run.recover_limit = 3
 }
@@ -20,12 +20,24 @@ config {
 const role = """
   Project context for implementing a Fablo GitHub issue:
 
+  - Read CONTRIBUTING.md in the repository root before you start, and follow
+    it. It is the source of truth for how a change is built and tested here.
   - Fablo is a CLI that generates and runs Hyperledger Fabric networks. It
     ships as a Bash entrypoint (fablo.sh) that delegates into a Docker image
     running an oclif TypeScript CLI (src/commands/).
-  - Generated Docker/K8s assets come from EJS templates under src/. Changing
-    a template usually requires updating e2e snapshots (npm run test:e2e).
-    Do not update snapshots unless the issue requires a generator change.
+  - Generated Docker/K8s assets come from EJS templates under src/. If you
+    change anything under src/, regenerate the e2e snapshots with
+    `npm run test:e2e-update`. That command builds the Fablo Docker image and
+    rewrites e2e/__snapshots__/ from real generator output.
+  - Never write or edit a file under e2e/__snapshots__/ by hand. A snapshot
+    written by hand does not match what the generator produces, and CI fails
+    on it. `npm run test:e2e-update` is the only way to change one.
+  - A change to how a generated network behaves also needs a test script in
+    e2e-network/docker/, modelled on the test-0*.sh scripts already there.
+    lint.sh runs shellcheck over that directory, so the script must be
+    shellcheck-clean. Add the job that runs it to
+    .github/workflows/test-on-push.yml, modelled on the jobs already there,
+    and name both in your final summary.
   - docs/fablo.sh is a GENERATED MIRROR of ./fablo.sh. Never edit it; edit
     ./fablo.sh instead.
   - Follow the existing TypeScript and Bash style. Prefer a small, local
@@ -36,7 +48,16 @@ const role = """
 
 const constraints = """
   Hard constraints:
-  - Do not edit .github/ or .jaiph/.
+  - You may change .github/ and .jaiph/ when the issue calls for it: they hold
+    the CI workflows and the Jaiph programs, and an issue may be about them.
+    Keep such a change to what the issue asks for, and list every file you
+    touched there in your final summary — a reviewer is told to look at them
+    closely, because they run with repository credentials.
+  - Do not weaken the checks in .jaiph/verification.jh, the permission gate in
+    .github/scripts/implement-issue-gate.sh, or .github/workflows/
+    implement-issue.yml in order to make your own run pass. If a check fails,
+    fix the code it is complaining about. Changing these to implement the
+    issue is fine; changing them to get past your own failure is not.
   - Do not edit secrets, .env files, credentials, keys, or PEM files.
   - Do not run destructive git commands (reset --hard, checkout --, clean -fdx,
     push --force).
@@ -70,8 +91,23 @@ workflow default(issue_path) {
       ${constraints}
 
       Verification failed after the implementation. Fix the code so
-      \`npm run build\` and \`npm run test:unit\` pass. Do not edit
-      .github/ or .jaiph/. Do not commit.
+      \`npm run build\`, \`npm run test:unit\`, and \`npm run lint\` pass. Do
+      not change the checks themselves to make them pass. Do not commit.
+
+      Failure output:
+      ${err}
+    """
+  }
+  # Separate from the loop above so a snapshot rebuild does not repeat the
+  # Docker build on every recover iteration of the cheap checks.
+  run verify.snapshots() recover (err) {
+    prompt """
+      ${constraints}
+
+      Regenerating the e2e snapshots failed. This runs
+      \`npm run test:e2e-update\`, which builds the Fablo Docker image, updates
+      e2e/__snapshots__/ from generator output, and lints the generated
+      networks. Fix the code so it passes. Do not hand-edit snapshot files.
 
       Failure output:
       ${err}

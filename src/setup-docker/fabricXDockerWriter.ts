@@ -25,7 +25,7 @@ export class FabricXDockerWriter {
 
   private async renderTemplateDirectory(dir: string, data: Record<string, unknown>): Promise<void> {
     const templateDirPath = getTemplatePath(this.templatesDir, dir);
-    
+
     const entries = await fs.readdir(templateDirPath, { withFileTypes: true });
 
     for (const entry of entries) {

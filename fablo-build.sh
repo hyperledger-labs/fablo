@@ -25,6 +25,9 @@ if [ "$(command -v nvm)" != "nvm" ] && [ -f ~/.nvm/nvm.sh ]; then
 fi
 if [ "$(command -v nvm)" = "nvm" ]; then
   set +u
+  # nvm refuses to run (exit 11) when npm_config_prefix is set, which npm does
+  # when this script is invoked via `npm run`. Unset it as nvm recommends.
+  unset npm_config_prefix
   nvm install
   set -u
 fi
