@@ -1,12 +1,11 @@
 import { Args, Command } from "@oclif/core";
-import * as config from "../config";
-import { getBuildInfo } from "../version/buildUtil";
 import parseFabloConfig from "../utils/parseFabloConfig";
-import { Capabilities, FabloConfigExtended, HooksConfig, Global, OrgConfig } from "../types/FabloConfigExtended";
+import { FabloConfigExtended, HooksConfig } from "../types/FabloConfigExtended";
 import { extendConfig } from "../commands/extend-config/";
 import * as fs from "fs-extra";
 import * as path from "path";
 import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
+import { DEFAULT_FABRICNETWORK_NAME, toFabricOpsYaml } from "./fabricOpsManifest";
 
 export default class SetupK8s extends Command {
   static override description = "Setup Kubernetes network files from Fablo config";
@@ -37,25 +36,17 @@ export default class SetupK8s extends Command {
     const configContent = await fs.readFile(fabloConfigPath, "utf-8");
     const json = parseFabloConfig(configContent);
     const configExtended = extendConfig(json);
-    const { global, orgs } = configExtended;
-
-    const dateString = new Date()
-      .toISOString()
-      .substring(0, 16)
-      .replace(/[^0-9]+/g, "");
-    const composeNetworkName = `fablo_network_${dateString}`;
+    const { global } = configExtended;
 
     this.log(`Used network config: ${fabloConfigPath}`);
     this.log(`Fabric version is: ${global.fabricVersion}`);
+    this.log("Generating FabricOps Kubernetes manifest...");
 
     await this._copyGitIgnore();
 
-    // ======= fabric-k8s ===========================================================
-    await this._copyEnvFile(global, orgs, composeNetworkName);
-
-    // ======= scripts ==================================================================
-    await this._copyCommandsGeneratedScript(configExtended);
-    await this._copyUtilityScripts(configExtended.global.capabilities);
+    // ======= fabric-k8s ==============================================================
+    await this._createFabricOpsManifest(json, configExtended);
+    await this._copyFabricK8sScript(configExtended);
 
     // ======= hooks ====================================================================
     await this._copyHooks(configExtended.hooks);
@@ -70,7 +61,7 @@ export default class SetupK8s extends Command {
     this.log(`✅ Network topology exported to ${outputFile}`);
 
     this.log("Done & done !!! Try the network out: ");
-    this.log("-> fablo up - to start network");
+    this.log("-> fablo up - to apply the FabricOps network");
     this.log("-> fablo help - to view all commands");
   }
 
@@ -80,60 +71,22 @@ export default class SetupK8s extends Command {
     await renderTemplate(templatePath, destPath, {});
   }
 
-  async _copyEnvFile(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
-    const settings = {
-      composeNetworkName,
-      fabricCaVersion: global.fabricCaVersion,
-      global,
-      orgs: orgsTransformed,
-      paths: global.paths,
-      fabloVersion: config.fabloVersion,
-      fabloBuild: getBuildInfo(),
-      fabloRestVersion: "0.2.0",
-      hyperledgerExplorerVersion: "1.1.8",
-      fabricCouchDbVersion: "0.4.18",
-      couchDbVersion: "3.1",
-      fabricCaPostgresVersion: "14",
-    };
-    const templatePath = getTemplatePath(this.templatesDir, "fabric-k8s/.env");
-    const destPath = getDestinationPath(this.outputDir, "fabric-k8s/.env");
-    await renderTemplate(templatePath, destPath, settings);
+  async _createFabricOpsManifest(
+    json: ReturnType<typeof parseFabloConfig>,
+    config: FabloConfigExtended,
+  ): Promise<void> {
+    const destPath = getDestinationPath(this.outputDir, "fabric-k8s/fabricnetwork.yaml");
+    await fs.ensureDir(path.dirname(destPath));
+    await fs.writeFile(destPath, toFabricOpsYaml(json, config), "utf-8");
   }
 
-  async _copyCommandsGeneratedScript(config: FabloConfigExtended): Promise<void> {
-    const templatePath = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/base-functions.sh");
-    const destPath = getDestinationPath(this.outputDir, "fabric-k8s/scripts/base-functions.sh");
-    await renderTemplate(templatePath, destPath, config as unknown as Record<string, unknown>);
-  }
-
-  async _copyUtilityScripts(capabilities: Capabilities): Promise<void> {
-    // Copy fabric-k8s.sh
+  async _copyFabricK8sScript(config: FabloConfigExtended): Promise<void> {
     const fabricK8sShTemplate = getTemplatePath(this.templatesDir, "fabric-k8s.sh");
     const fabricK8sShDest = getDestinationPath(this.outputDir, "fabric-k8s.sh");
-    await renderTemplate(fabricK8sShTemplate, fabricK8sShDest, {});
-
-    // Copy base-help.sh
-    const baseHelpTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/base-help.sh");
-    const baseHelpDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/base-help.sh");
-    await renderTemplate(baseHelpTemplate, baseHelpDest, {});
-
-    // Copy util.sh
-    const utilTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/util.sh");
-    const utilDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/util.sh");
-    await renderTemplate(utilTemplate, utilDest, {});
-
-    // Copy chaincode-functions.sh (base)
-    const chaincodeFunctionsBaseTemplate = getTemplatePath(this.templatesDir, "fabric-k8s/scripts/chaincode-functions.sh");
-    const chaincodeFunctionsBaseDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/chaincode-functions.sh");
-    await renderTemplate(chaincodeFunctionsBaseTemplate, chaincodeFunctionsBaseDest, {});
-
-    // Copy chaincode-functions script (v2 or v1.4) - this overwrites the base
-    const chaincodeFunctionsTemplate = getTemplatePath(
-      this.templatesDir,
-      `fabric-k8s/scripts/chaincode-functions-${capabilities.isV2 ? "v2" : "v1.4"}.sh`,
-    );
-    const chaincodeFunctionsDest = getDestinationPath(this.outputDir, "fabric-k8s/scripts/chaincode-functions.sh");
-    await renderTemplate(chaincodeFunctionsTemplate, chaincodeFunctionsDest, {});
+    await renderTemplate(fabricK8sShTemplate, fabricK8sShDest, {
+      ...config,
+      fabricNetworkName: DEFAULT_FABRICNETWORK_NAME,
+    } as unknown as Record<string, unknown>);
   }
 
   async _copyHooks(hooks: HooksConfig): Promise<void> {
@@ -145,4 +98,3 @@ export default class SetupK8s extends Command {
     }
   }
 }
-

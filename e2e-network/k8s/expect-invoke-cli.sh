@@ -2,42 +2,28 @@
 
 set -e
 
-user="$1"
-peer="$2"
-channel="$3"
-chaincode="$4"
-fcn="$5"
-key="$6"
-value="$7"
-expected="$8"
-config="$(find . -type f -iname 'org1.yaml')"
-
-
-
+peers="$1"
+channel="$2"
+chaincode="$3"
+command="$4"
+expected="$5"
+transient="${6:-}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [user] [peer] [chaincdoe] [channel] [fcn] [arg1] [arg2] [expected_substring]"
+  echo "Usage: ./expect-invoke.sh [peer[,peer]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
-label="Invoke $channel/$peer"
+label="Invoke $channel/$peers $command"
 echo ""
 echo "➜ testing: $label"
 
-response="$(
-  kubectl hlf chaincode invoke \
-    --config "$config" \
-    --user "$user" \
-    --peer "$peer" \
-    --chaincode "$chaincode" \
-    --channel "$channel" \
-    --fcn "$fcn" \
-    -a "$key" \
-    ${value:+ -a "$value"} \
+args=(chaincode invoke "$peers" "$channel" "$chaincode" "$command")
+if [ -n "$transient" ]; then
+  args+=("$transient")
+fi
 
-    # shellcheck disable=SC2188
-    2>&1
-)"
+response="$("$FABLO_HOME/fablo.sh" "${args[@]}")"
 
 echo "$response"
 
