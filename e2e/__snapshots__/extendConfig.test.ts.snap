@@ -842,6 +842,8 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
 {
   "chaincodes": [
     {
+      "chaincodeMountPath": undefined,
+      "chaincodeStartCommand": undefined,
       "channel": {
         "instantiatingOrg": {
           "anchorPeers": [
@@ -933,7 +935,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         "name": "my-channel1",
         "ordererGroup": {
           "configtxOrdererDefaults": "Group1Defaults",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "genesisBlockName": "Group1Genesis.block",
           "hostingOrgs": [
             "Orderer",
@@ -942,7 +944,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
           "ordererHead": {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -954,7 +956,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -967,7 +969,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -981,7 +983,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         "ordererHead": {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -1080,9 +1082,9 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         ],
         "profileName": "MyChannel1",
       },
-      "directory": "chaincodes/chaincode-kv-node",
+      "directory": undefined,
       "endorsement": undefined,
-      "image": undefined,
+      "image": "ghcr.io/fablo-io/fablo-sample-kv-node-chaincode:2.2.0",
       "initRequired": false,
       "instantiatingOrg": {
         "anchorPeers": [
@@ -1171,9 +1173,26 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         "peersCount": 2,
         "tools": {},
       },
-      "lang": "node",
+      "lang": "ccaas",
       "name": "chaincode1",
-      "peerChaincodeInstances": [],
+      "peerChaincodeInstances": [
+        {
+          "containerName": "ccaas_peer0.org1.example.com_my-channel1_chaincode1_0.0.1",
+          "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel1_chaincode1_0.0.1",
+          "peerAddress": "peer0.org1.example.com",
+          "port": 17041,
+        },
+        {
+          "containerName": "ccaas_peer1.org1.example.com_my-channel1_chaincode1_0.0.1",
+          "orgDomain": "org1.example.com",
+          "orgName": "Org1",
+          "packageLabel": "Org1_my-channel1_chaincode1_0.0.1",
+          "peerAddress": "peer1.org1.example.com",
+          "port": 17042,
+        },
+      ],
       "privateData": [],
       "privateDataConfigFile": undefined,
       "version": "0.0.1",
@@ -1271,7 +1290,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       "name": "my-channel1",
       "ordererGroup": {
         "configtxOrdererDefaults": "Group1Defaults",
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "genesisBlockName": "Group1Genesis.block",
         "hostingOrgs": [
           "Orderer",
@@ -1280,7 +1299,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         "ordererHead": {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -1292,7 +1311,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
           {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -1305,7 +1324,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
           {
             "address": "orderer0.group1.orderer.example.com",
             "adminPort": 7053,
-            "consensus": "solo",
+            "consensus": "etcdraft",
             "domain": "orderer.example.com",
             "fullAddress": "orderer0.group1.orderer.example.com:7030",
             "name": "orderer0.group1",
@@ -1319,7 +1338,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       "ordererHead": {
         "address": "orderer0.group1.orderer.example.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer.example.com",
         "fullAddress": "orderer0.group1.orderer.example.com:7030",
         "name": "orderer0.group1",
@@ -1451,7 +1470,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
     },
     "peerImage": "hyperledger/fabric-peer:2.4.7",
     "provider": "fabric",
-    "tls": false,
+    "tls": true,
     "tools": {},
     "toolsImage": "hyperledger/fabric-tools:2.4.7",
   },
@@ -1463,7 +1482,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
     {
       "address": "orderer0.group1.orderer.example.com",
       "adminPort": 7053,
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "domain": "orderer.example.com",
       "fullAddress": "orderer0.group1.orderer.example.com:7030",
       "name": "orderer0.group1",
@@ -1475,7 +1494,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
   "ordererGroups": [
     {
       "configtxOrdererDefaults": "Group1Defaults",
-      "consensus": "solo",
+      "consensus": "etcdraft",
       "genesisBlockName": "Group1Genesis.block",
       "hostingOrgs": [
         "Orderer",
@@ -1484,7 +1503,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       "ordererHead": {
         "address": "orderer0.group1.orderer.example.com",
         "adminPort": 7053,
-        "consensus": "solo",
+        "consensus": "etcdraft",
         "domain": "orderer.example.com",
         "fullAddress": "orderer0.group1.orderer.example.com:7030",
         "name": "orderer0.group1",
@@ -1496,7 +1515,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -1509,7 +1528,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
         {
           "address": "orderer0.group1.orderer.example.com",
           "adminPort": 7053,
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "domain": "orderer.example.com",
           "fullAddress": "orderer0.group1.orderer.example.com:7030",
           "name": "orderer0.group1",
@@ -1546,7 +1565,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
       "ordererGroups": [
         {
           "configtxOrdererDefaults": "Group1Defaults",
-          "consensus": "solo",
+          "consensus": "etcdraft",
           "genesisBlockName": "Group1Genesis.block",
           "hostingOrgs": [
             "Orderer",
@@ -1556,7 +1575,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",
@@ -1569,7 +1588,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
             {
               "address": "orderer0.group1.orderer.example.com",
               "adminPort": 7053,
-              "consensus": "solo",
+              "consensus": "etcdraft",
               "domain": "orderer.example.com",
               "fullAddress": "orderer0.group1.orderer.example.com:7030",
               "name": "orderer0.group1",

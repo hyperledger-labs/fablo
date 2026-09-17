@@ -10,15 +10,15 @@ expected="$5"
 transient="${6:-}"
 
 if [ -z "$expected" ]; then
-  echo "Usage: ./expect-invoke.sh [peer[,peer]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
+  echo "Usage: ./expect-query.sh [peer[,peer]] [channel] [chaincode] [command] [expected_substring] [transient_data]"
   exit 1
 fi
 
-label="Invoke $channel/$peers $command"
+label="Query $channel/$peers $command"
 echo ""
 echo "➜ testing: $label"
 
-args=(chaincode invoke "$peers" "$channel" "$chaincode" "$command")
+args=(chaincode query "$peers" "$channel" "$chaincode" "$command")
 if [ -n "$transient" ]; then
   args+=("$transient")
 fi
