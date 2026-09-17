@@ -15,6 +15,8 @@ Fablo supports:
 
 Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
+To control a network from an MCP client, see the [Fablo MCP server](mcp/README.md), powered by Jaiph.
+
 ## See it in action
 
 [&gt;&gt;&gt; Watch the demo &lt;&lt;&lt;](https://www.youtube.com/watch?v=5yn3_g6Cybw)

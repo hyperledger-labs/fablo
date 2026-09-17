@@ -1,0 +1,34 @@
+# Only these workflows form the MCP API. No agent backend is needed.
+script fablo = ```
+  bash "$FABLO_MCP_ADAPTER" "$@"
+```
+
+# Initialize and start a network, create channels, and deploy configured chaincodes. config_path is relative to the network directory; pass an empty string to use fablo-config.json or fablo-config.yaml.
+export workflow network_up(config_path) {
+  const output = run fablo("up", config_path)
+  return output
+}
+
+# Resume an existing stopped network without regenerating it. Use network_up for first-time setup.
+export workflow network_start() {
+  const output = run fablo("start")
+  return output
+}
+
+# Stop the network containers while preserving network state for network_start.
+export workflow network_stop() {
+  const output = run fablo("stop")
+  return output
+}
+
+# Snapshot the network state, transactions, and identities. target_path is relative to the network directory; Fablo appends .fablo.tar.gz unless it already ends in tar.gz. Existing archives are not overwritten.
+export workflow network_snapshot(target_path) {
+  const output = run fablo("snapshot", target_path)
+  return output
+}
+
+# Install a configured chaincode on all relevant peers using its configured source directory. Requires the exact chaincode name and a version, for example kv and 1.0.
+export workflow chaincode_install(chaincode_name, version) {
+  const output = run fablo("chaincode", "install", chaincode_name, version)
+  return output
+}
