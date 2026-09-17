@@ -86,6 +86,7 @@ export interface HooksJson {
 }
 export interface NamespaceJson {
   name: string;
+  orgs?: string[];
   policy?: string;
 }
 export interface FabloConfigJson {

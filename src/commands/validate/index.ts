@@ -583,7 +583,7 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
-        const namespaces = networkConfig.namespaces ?? [];
+    const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.GENERAL,
@@ -592,6 +592,8 @@ export default class Validate extends Command {
     }
  
     const namespaceNames = new Set<string>();
+    const knownOrgNames = networkConfig.orgs.map((o) => o.organization.name);
+ 
     namespaces.forEach((namespace) => {
       if (namespaceNames.has(namespace.name)) {
         this.emit(validationErrorType.ERROR, {
@@ -600,6 +602,21 @@ export default class Validate extends Command {
         });
       }
       namespaceNames.add(namespace.name);
+ 
+      if (namespace.orgs && namespace.policy) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
+        });
+      }
+ 
+      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
+      if (unknownOrgNames.length > 0) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
+        });
+      }
     });
   }
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
