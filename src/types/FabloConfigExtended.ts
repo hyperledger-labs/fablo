@@ -209,7 +209,3 @@ export interface FabloConfigExtended {
   chaincodes: ChaincodeConfig[];
   hooks: HooksConfig;
 }
-export interface FabricXTemplateModel {
-  channelName: string;
-  channelProfileName: string;
-}
