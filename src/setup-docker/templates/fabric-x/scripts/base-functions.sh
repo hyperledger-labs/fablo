@@ -92,21 +92,6 @@ stopNetwork() {
 }
 
 
-
-# namespaceInit() {
-#   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
-#     --env "FX_NS=mynamespace" \
-#     --env "FX_POLICY=$DEFAULT_POLICY" \
-#     -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-#     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-#     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-#     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
-#     -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
-#     "$TOOLS_IMAGE" \
-#     sh -c 'fxconfig namespace list --config=/config/fxconfig.yaml 2>/dev/null | grep -q ") $FX_NS:" || \
-#       fxconfig namespace create "$FX_NS" --policy="$FX_POLICY" --endorse --submit --wait --config=/config/fxconfig.yaml'
-# }
-
  
 namespaceCreate() {
   local ns="$1"
