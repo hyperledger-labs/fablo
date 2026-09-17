@@ -831,6 +831,11 @@ Visit the [Fablo REST](https://github.com/fablo-io/fablo-rest) project for more 
 Fablo can run [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) for you on Fabric v2. It is not supported on Fabric v3.
 Set `"tools": { "explorer": true }` for your organization if you want to use it per organization, or set the same value in the `global` section of the config if you want to use one global Explorer for all organizations.
 
+## AI agent skill
+
+The reusable [Fablo skill](skills/fablo/SKILL.md) helps coding agents configure, validate, run, and troubleshoot Fablo networks, with safeguards for destructive operations and sensitive network artifacts.
+Copy the `skills/fablo` directory into your agent's supported skill directory, preserving `SKILL.md`, or ask your agent to read the file directly. Skill discovery and installation paths depend on the agent you use.
+
 ## Contributing
 
 We'd love to have you contribute! Please refer to our [contribution guidelines](https://github.com/hyperledger-labs/fablo/blob/main/CONTRIBUTING.md) for details.
