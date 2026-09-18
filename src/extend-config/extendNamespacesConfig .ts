@@ -2,7 +2,7 @@ import { NamespaceJson } from "../types/FabloConfigJson";
 import { NamespaceConfig, OrgConfig } from "../types/FabloConfigExtended";
 import defaults from "./defaults";
 
-const resolvePolicy = (namespaceJsonFormat: NamespaceJson, orgsTransformed: OrgConfig[]): string => {
+const resolvePolicy = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConfig[]): string => {
   const { name, orgs: namespaceOrgNames, policy } = namespaceJsonFormat;
 
   if (namespaceOrgNames && policy) {
@@ -17,22 +17,27 @@ const resolvePolicy = (namespaceJsonFormat: NamespaceJson, orgsTransformed: OrgC
   }
 
   if (namespaceOrgNames) {
-    const knownOrgNames = orgsTransformed.map((o) => o.name);
+    if (namespaceOrgNames.length === 0) {
+      throw new Error(`Namespace '${name}' has an empty 'orgs' list. Declare at least one org, or omit 'orgs'.`);
+    }
+
+    const knownOrgNames = channelOrgs.map((o) => o.name);
     const unknownOrgNames = namespaceOrgNames.filter((n) => !knownOrgNames.includes(n));
     if (unknownOrgNames.length > 0) {
       throw new Error(`Namespace '${name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`);
     }
 
-    const selectedOrgs = orgsTransformed.filter((o) => namespaceOrgNames.includes(o.name));
+    const selectedOrgs = channelOrgs.filter((o) => namespaceOrgNames.includes(o.name));
     return defaults.namespace.policy(selectedOrgs);
   }
 
-  return defaults.namespace.policy(orgsTransformed);
+
+  return defaults.namespace.policy(channelOrgs);
 };
 
-const extendNamespaceConfig = (namespaceJsonFormat: NamespaceJson, orgsTransformed: OrgConfig[]): NamespaceConfig => ({
+const extendNamespaceConfig = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConfig[]): NamespaceConfig => ({
   name: namespaceJsonFormat.name,
-  policy: resolvePolicy(namespaceJsonFormat, orgsTransformed),
+  policy: resolvePolicy(namespaceJsonFormat,channelOrgs),
 });
 
 export const checkUniqueNamespaceNames = (namespacesJsonFormat: NamespaceJson[]): void => {
@@ -46,9 +51,9 @@ export const checkUniqueNamespaceNames = (namespacesJsonFormat: NamespaceJson[])
   });
 };
 
-const extendNamespacesConfig = (namespacesJsonFormat: NamespaceJson[], orgsTransformed: OrgConfig[]): NamespaceConfig[] => {
+const extendNamespacesConfig = (namespacesJsonFormat: NamespaceJson[], channelOrgs: OrgConfig[]): NamespaceConfig[] => {
   checkUniqueNamespaceNames(namespacesJsonFormat);
-  return namespacesJsonFormat.map((ns) => extendNamespaceConfig(ns, orgsTransformed));
+  return namespacesJsonFormat.map((ns) => extendNamespaceConfig(ns,channelOrgs));
 };
 
 export default extendNamespacesConfig;

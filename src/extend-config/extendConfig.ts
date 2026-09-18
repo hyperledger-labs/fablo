@@ -26,7 +26,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   checkUniqueChaincodeNames(chaincodesJson);
   const chaincodes = extendChaincodesConfig(chaincodesJson, channels, global);
   const hooks = extendHooksConfig(hooksJson);
-  const namespaces = extendNamespacesConfig(namespacesJson ?? [], orgs);
+  const namespaces =global.provider === "fabric-x" ? extendNamespacesConfig(namespacesJson ?? [], channels[0]?.orgs ?? []) : [];
   return {
     global,
     ordererGroups,

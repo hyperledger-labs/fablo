@@ -594,7 +594,7 @@ export default class Validate extends Command {
     }
  
     const namespaceNames = new Set<string>();
-    const knownOrgNames = networkConfig.orgs.map((o) => o.organization.name);
+    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
  
     namespaces.forEach((namespace) => {
       if (namespaceNames.has(namespace.name)) {

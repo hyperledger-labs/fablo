@@ -211,5 +211,5 @@ export interface FabloConfigExtended {
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
   hooks: HooksConfig;
-  namespaces: NamespaceConfig[]
+  namespaces: NamespaceConfig[];
 }
