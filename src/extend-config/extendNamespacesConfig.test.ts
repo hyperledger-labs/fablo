@@ -1,4 +1,4 @@
-import extendNamespacesConfig from  "./extendNamespacesConfig ";
+import extendNamespacesConfig from  "./extendNamespacesConfig";
 import { OrgConfig } from "../types/FabloConfigExtended";
 
 const org = (name: string, mspName: string): OrgConfig =>
