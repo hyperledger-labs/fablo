@@ -14,8 +14,7 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
   ];
 
   const rendered = ejs.render(template, { namespaces, shellQuote });
-
-
+  
   const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
 
   const runNamespaceInit = (target: string): { stdout: string; status: number } => {
