@@ -1,51 +1,90 @@
-import * as ejs from "ejs";
-import * as fs from "fs";
-import * as path from "path";
-import { execSync } from "child_process";
-import { shellQuote } from "../utils/shellQuote";
+import extendNamespacesConfig from "./extendNamespacesConfig";
+import { OrgConfig } from "../types/FabloConfigExtended";
 
-describe("fabric-x base-functions.sh namespaceInit", () => {
-  const templatePath = path.join(__dirname, "templates/fabric-x/scripts/base-functions.sh");
-  const template = fs.readFileSync(templatePath, "utf-8");
+const org = (name: string, mspName: string): OrgConfig =>
+({
+  name,
+  mspName,
+} as OrgConfig);
 
-  const namespaces = [
-    { name: "mynamespace", policy: "AND('Org1MSP.member')" },
-    { name: "audit_ns", policy: "OutOf(1, 'Org1MSP.member')" },
-  ];
+describe("extendNamespacesConfig", () => {
+  it("should derive AND(...) from 'orgs', in channel-org order", () => {
+    const namespaces = extendNamespacesConfig(
+      [{ name: "mynamespace", orgs: ["Org1", "Org2"] }],
+      [org("Org1", "Org1MSP"), org("Org2", "Org2MSP")],
+    );
 
-  const rendered = ejs.render(template, { namespaces, shellQuote });
-  const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
-
-  const runNamespaceInit = (target: string): { stdout: string; status: number } => {
-    const script = `set -eu\n${scriptWithStub}\nnamespaceInit ${target ? `"${target}"` : '""'}`;
-    try {
-      const stdout = execSync(script, { shell: "/bin/bash", encoding: "utf-8" });
-      return { stdout, status: 0 };
-    } catch (e) {
-      const err = e as { stdout?: string; status?: number };
-      return { stdout: err.stdout ?? "", status: err.status ?? 1 };
-    }
-  };
-  it("creates every configured namespace when called with no target", () => {
-    const { stdout, status } = runNamespaceInit("");
-
-    expect(status).toBe(0);
-    expect(stdout).toContain("CALLED name=mynamespace policy=AND('Org1MSP.member')");
-    expect(stdout).toContain("CALLED name=audit_ns policy=OutOf(1, 'Org1MSP.member')");
+    expect(namespaces).toEqual([{ name: "mynamespace", policy: "AND('Org1MSP.member','Org2MSP.member')" }]);
   });
 
-  it("creates only the targeted namespace when a name is given", () => {
-    const { stdout, status } = runNamespaceInit("audit_ns");
+  it("should keep an explicit policy override as-is", () => {
+    const namespaces = extendNamespacesConfig(
+      [{ name: "mynamespace", policy: "OutOf(1, 'Org1MSP.member')" }],
+      [org("Org1", "Org1MSP")],
+    );
 
-    expect(status).toBe(0);
-    expect(stdout).not.toContain("name=mynamespace");
-    expect(stdout).toContain("CALLED name=audit_ns policy=OutOf(1, 'Org1MSP.member')");
+    expect(namespaces).toEqual([{ name: "mynamespace", policy: "OutOf(1, 'Org1MSP.member')" }]);
   });
 
-  it("fails with a non-zero exit code for an unknown namespace name", () => {
-    const { stdout, status } = runNamespaceInit("does-not-exist");
+  it("should default to an AND of every channel org when neither 'orgs' nor 'policy' is given", () => {
+    const namespaces = extendNamespacesConfig(
+      [{ name: "mynamespace" }],
+      [org("Org1", "Org1MSP"), org("Org2", "Org2MSP")],
+    );
 
-    expect(status).not.toBe(0);
-    expect(stdout).not.toContain("CALLED");
+    expect(namespaces).toEqual([{ name: "mynamespace", policy: "AND('Org1MSP.member','Org2MSP.member')" }]);
+  });
+
+  it("should extend multiple namespaces independently", () => {
+    const namespaces = extendNamespacesConfig(
+      [{ name: "ns1" }, { name: "ns2", policy: "OutOf(1, 'Org1MSP.member')" }],
+      [org("Org1", "Org1MSP")],
+    );
+
+    expect(namespaces).toEqual([
+      { name: "ns1", policy: "AND('Org1MSP.member')" },
+      { name: "ns2", policy: "OutOf(1, 'Org1MSP.member')" },
+    ]);
+  });
+
+  it("should throw on duplicate namespace names", () => {
+    expect(() =>
+      extendNamespacesConfig([{ name: "mynamespace" }, { name: "mynamespace" }], [org("Org1", "Org1MSP")]),
+    ).toThrow("Duplicate namespace 'mynamespace' found. Namespace names must be unique.");
+  });
+
+  it("should throw when both 'orgs' and 'policy' are given", () => {
+    expect(() =>
+      extendNamespacesConfig(
+        [{ name: "mynamespace", orgs: ["Org1"], policy: "AND('Org1MSP.member')" }],
+        [org("Org1", "Org1MSP")],
+      ),
+    ).toThrow("Namespace 'mynamespace' defines both 'orgs' and 'policy'");
+  });
+
+  it("should throw when 'orgs' is an empty list", () => {
+    expect(() => extendNamespacesConfig([{ name: "mynamespace", orgs: [] }], [org("Org1", "Org1MSP")])).toThrow(
+      "Namespace 'mynamespace' has an empty 'orgs' list",
+    );
+  });
+
+  it("should throw when 'orgs' references an org that isn't a member of the channel", () => {
+    expect(() => extendNamespacesConfig([{ name: "mynamespace", orgs: ["Org2"] }], [org("Org1", "Org1MSP")])).toThrow(
+      "Namespace 'mynamespace' references unknown org(s): Org2.",
+    );
+  });
+
+  it("should throw when the namespace name contains a hyphen (invalid fxconfig namespace ID)", () => {
+
+    expect(() => extendNamespacesConfig([{ name: "audit-ns" }], [org("Org1", "Org1MSP")])).toThrow(
+      "Namespace 'audit-ns' is not a valid Fabric-X namespace ID",
+    );
+  });
+
+  it("should throw when the namespace name exceeds 60 characters", () => {
+    const longName = "a".repeat(61);
+    expect(() => extendNamespacesConfig([{ name: longName }], [org("Org1", "Org1MSP")])).toThrow(
+      `Namespace '${longName}' is not a valid Fabric-X namespace ID`,
+    );
   });
 });
