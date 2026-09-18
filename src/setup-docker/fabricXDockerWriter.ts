@@ -7,6 +7,7 @@ export interface FabricXTemplateModel {
   channelName: string;
   channelProfileName: string;
 }
+
 export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): FabricXTemplateModel => {
   const [channel] = configExtended.channels;
   if (!channel) {
