@@ -1,5 +1,6 @@
 import { FabloConfigExtended } from "../types/FabloConfigExtended";
 import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
+import { shellQuote } from "../utils/shellQuote";
 import * as fs from "fs-extra";
 import * as path from "path";
 
@@ -25,8 +26,11 @@ export class FabricXDockerWriter {
 
   public async write(configExtended: FabloConfigExtended): Promise<void> {
     this.log("Generating Fabric-X network files...");
-    const fabricX = getFabricXTemplateModel(configExtended);
-    const data = { ...configExtended, fabricX } as unknown as Record<string, unknown>;
+
+    const data = {
+      ...(configExtended as unknown as Record<string, unknown>),
+      shellQuote,
+    };
 
     await this.renderTemplateFile("fabric-x-docker.sh", data);
     await this.renderTemplateDirectory("fabric-x", data);

@@ -21,7 +21,7 @@ elif [ "$1" = "stop" ]; then
 elif [ "$1" = "namespace" ] && [ "$2" = "list" ]; then
   namespaceList
 elif [ "$1" = "namespace" ] && [ "$2" = "init" ]; then
-  namespaceInit
+  namespaceInit "${3:-}"
 elif [ "$1" = "help" ]; then
   printHelp
 elif [ "$1" = "--help" ]; then
