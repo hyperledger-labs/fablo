@@ -434,6 +434,48 @@ exports[`schema should match snapshot 1`] = `
       "title": "Hooks",
       "type": "object",
     },
+    "namespaces": {
+      "$id": "#/properties/namespaces",
+      "default": [
+        {
+          "name": "mynamespace",
+        },
+      ],
+      "description": "Namespaces to declare and create for the 'fabric-x' provider. Ignored for the 'fabric' provider. Use 'orgs' to select which orgs' MSPs govern the namespace (Fablo builds the endorsement policy for you); use 'policy' only as an advanced override with a raw Fabric policy expression. A namespace must not define both.",
+      "items": {
+        "$id": "#/properties/namespaces/items",
+        "properties": {
+          "name": {
+            "$id": "#/properties/namespaces/items/properties/name",
+            "pattern": "^[a-z0-9_-]+$",
+            "title": "Name",
+            "type": "string",
+          },
+          "orgs": {
+            "$id": "#/properties/namespaces/items/properties/orgs",
+            "description": "Org names whose MSPs govern this namespace. Fablo derives the endorsement policy from this list. Mutually exclusive with 'policy'.",
+            "items": {
+              "type": "string",
+            },
+            "title": "Orgs",
+            "type": "array",
+          },
+          "policy": {
+            "$id": "#/properties/namespaces/items/properties/policy",
+            "description": "Advanced override: a raw Fabric policy expression, e.g. "AND('Org1MSP.member')". Mutually exclusive with 'orgs'. If neither is given, defaults to an AND of every org's MSP.",
+            "title": "Endorsement policy",
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+        ],
+        "title": "Namespace",
+        "type": "object",
+      },
+      "title": "Fabric-X namespaces (EXPERIMENTAL)",
+      "type": "array",
+    },
     "orgs": {
       "$id": "#/properties/orgs",
       "default": [

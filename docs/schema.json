@@ -624,48 +624,54 @@
         }
       }
     },
-      "namespaces": {
-      "$id": "#/properties/namespaces",
-      "type": "array",
-      "title": "Fabric-X namespaces (EXPERIMENTAL)",
-      "description": "Namespaces to declare and create for the 'fabric-x' provider. Ignored for the 'fabric' provider. Use 'orgs' to select which orgs' MSPs govern the namespace (Fablo builds the endorsement policy for you); use 'policy' only as an advanced override with a raw Fabric policy expression. A namespace must not define both.",
-      "default": [
-        {
-          "name": "mynamespace"
-        }
+  "namespaces": {
+    "$id": "#/properties/namespaces",
+    "type": "array",
+    "title": "Fabric-X namespaces (EXPERIMENTAL)",
+    "description": "Namespaces to declare and create for the 'fabric-x' provider. Ignored for the 'fabric' provider. Use 'orgs' to select which orgs' MSPs govern the namespace (Fablo builds the endorsement policy for you); use 'policy' only as an advanced override with a raw Fabric policy expression. A namespace must not define both.",
+    "default": [
+      {
+        "name": "mynamespace",
+        "orgs": [
+          "Org1"
+        ]
+      }
+    ],
+    "items": {
+      "$id": "#/properties/namespaces/items",
+      "title": "Namespace",
+      "type": "object",
+      "required": [
+        "name"
       ],
-      "items": {
-        "$id": "#/properties/namespaces/items",
-        "title": "Namespace",
-        "type": "object",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "$id": "#/properties/namespaces/items/properties/name",
-            "type": "string",
-            "title": "Name",
-            "pattern": "^[a-z0-9_-]+$"
+      "properties": {
+        "name": {
+          "$id": "#/properties/namespaces/items/properties/name",
+          "type": "string",
+          "title": "Name",
+          "pattern": "^[a-z0-9_]+$",
+          "maxLength": 60,
+          "description": "Must match ^[a-z0-9_]+$ (lowercase letters, digits, underscores only - no hyphens), max 60 characters. This is enforced by the Fabric-X fxconfig namespace ID validation, not just Fablo's own convention."
+        },
+        "policy": {
+          "$id": "#/properties/namespaces/items/properties/policy",
+          "type": "string",
+          "title": "Endorsement policy",
+          "description": "Advanced override: a raw Fabric policy expression, e.g. \"AND('Org1MSP.member')\". Mutually exclusive with 'orgs'. If neither is given, defaults to an AND of every org's MSP."
+        },
+        "orgs": {
+          "$id": "#/properties/namespaces/items/properties/orgs",
+          "type": "array",
+          "title": "Orgs",
+          "description": "Org names whose MSPs govern this namespace. Fablo derives the endorsement policy from this list. Mutually exclusive with 'policy'.",
+          "items": {
+            "type": "string"
           },
-          "policy": {
-            "$id": "#/properties/namespaces/items/properties/policy",
-            "type": "string",
-            "title": "Endorsement policy",
-            "description": "Advanced override: a raw Fabric policy expression, e.g. \"AND('Org1MSP.member')\". Mutually exclusive with 'orgs'. If neither is given, defaults to an AND of every org's MSP."
-          },
-          "orgs": {
-            "$id": "#/properties/namespaces/items/properties/orgs",
-            "type": "array",
-            "title": "Orgs",
-            "description": "Org names whose MSPs govern this namespace. Fablo derives the endorsement policy from this list. Mutually exclusive with 'policy'.",
-            "items": {
-              "type": "string"
-            }
-          }
+          "minItems": 1
         }
       }
-    },
+    }
+  },
     "hooks": {
       "$id": "#/properties/hooks",
       "title": "Hooks",

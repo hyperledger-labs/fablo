@@ -40,10 +40,20 @@ const extendNamespaceConfig = (namespaceJsonFormat: NamespaceJson,  channelOrgs:
   policy: resolvePolicy(namespaceJsonFormat,channelOrgs),
 });
 
+const VALID_NAMESPACE_ID = /^[a-z0-9_]+$/;
+const MAX_NAMESPACE_ID_LENGTH = 60;
+
 export const checkUniqueNamespaceNames = (namespacesJsonFormat: NamespaceJson[]): void => {
   const namespaceNames = new Set<string>();
 
   namespacesJsonFormat.forEach((namespace) => {
+    if (!VALID_NAMESPACE_ID.test(namespace.name) || namespace.name.length > MAX_NAMESPACE_ID_LENGTH) {
+      throw new Error(
+        `Namespace '${namespace.name}' is not a valid Fabric-X namespace ID - only lowercase letters, ` +
+        `digits, and underscores are allowed (no hyphens), max 60 characters.`,
+      );
+    }
+
     if (namespaceNames.has(namespace.name)) {
       throw new Error(`Duplicate namespace '${namespace.name}' found. Namespace names must be unique.`);
     }
@@ -53,7 +63,7 @@ export const checkUniqueNamespaceNames = (namespacesJsonFormat: NamespaceJson[])
 
 const extendNamespacesConfig = (namespacesJsonFormat: NamespaceJson[], channelOrgs: OrgConfig[]): NamespaceConfig[] => {
   checkUniqueNamespaceNames(namespacesJsonFormat);
-  return namespacesJsonFormat.map((ns) => extendNamespaceConfig(ns,channelOrgs));
+  return namespacesJsonFormat.map((ns) => extendNamespaceConfig(ns, channelOrgs));
 };
 
 export default extendNamespacesConfig;
