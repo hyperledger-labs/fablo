@@ -8,6 +8,7 @@ import * as path from "path";
 import {
   ChaincodeJson,
   ChannelJson,
+  FabricImagesJson,
   FabloConfigJson,
   GlobalJson,
   OrdererJson,
@@ -126,6 +127,7 @@ export default class Validate extends Command {
       this._validateFabricXSettings(networkConfig);
       return;
     }
+    this._validateClassicFabricImages(networkConfig.global);
     networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateOrgs(networkConfig.orgs);
     this._validateEngineSpecificSettings(networkConfig);
@@ -585,6 +587,30 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
+
+    classicOnlyImages.forEach((key) => {
+      if (global.fabricImages?.[key]) {
+        this.emit(validationErrorType.WARN, {
+          category: validationCategories.GENERAL,
+          message: `Setting 'global.fabricImages.${key}' is not supported for provider 'fabric-x' and will be ignored.`,
+        });
+      }
+    });
+  }
+
+  _validateClassicFabricImages(global: GlobalJson): void {
+    const fabricXOnlyImages: (keyof FabricImagesJson)[] = ["committer", "postgres"];
+
+    fabricXOnlyImages.forEach((key) => {
+      if (global.fabricImages?.[key]) {
+        this.emit(validationErrorType.WARN, {
+          category: validationCategories.GENERAL,
+          message: `Setting 'global.fabricImages.${key}' is only supported when 'global.provider' is 'fabric-x' and will be ignored.`,
+        });
+      }
+    });
   }
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
     if (global.tools?.explorer === true) {

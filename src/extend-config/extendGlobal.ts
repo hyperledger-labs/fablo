@@ -76,6 +76,31 @@ const getImages = (fabricVersion: string, versions: FabricVersions, fabricImages
   };
 };
 
+export const FABRIC_X_DEFAULT_IMAGES = {
+  orderer: "ghcr.io/hyperledger/fabric-x-orderer",
+  ordererTag: "1.0.0",
+  committer: "ghcr.io/hyperledger/fabric-x-committer",
+  committerTag: "1.0.3",
+  tools: "ghcr.io/hyperledger/fabric-x-tools",
+  toolsTag: "1.0.0",
+  postgres: "docker.io/library/postgres",
+  postgresTag: "18.3-alpine3.23",
+};
+
+const getFabricXImages = (fabricImages?: FabricImagesJson): FabricImages => {
+  const rawOrderer = fabricImages?.orderer ?? FABRIC_X_DEFAULT_IMAGES.orderer;
+  const rawCommitter = fabricImages?.committer ?? FABRIC_X_DEFAULT_IMAGES.committer;
+  const rawTools = fabricImages?.tools ?? FABRIC_X_DEFAULT_IMAGES.tools;
+  const rawPostgres = fabricImages?.postgres ?? FABRIC_X_DEFAULT_IMAGES.postgres;
+
+  return {
+    ordererImage: toImage(rawOrderer, FABRIC_X_DEFAULT_IMAGES.ordererTag),
+    committerImage: toImage(rawCommitter, FABRIC_X_DEFAULT_IMAGES.committerTag),
+    toolsImage: toImage(rawTools, FABRIC_X_DEFAULT_IMAGES.toolsTag),
+    postgresImage: toImage(rawPostgres, FABRIC_X_DEFAULT_IMAGES.postgresTag),
+  };
+};
+
 const getEnvVarOrThrow = (name: string): string => {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -89,10 +114,13 @@ const getPathsFromEnv = () => ({
 
 const extendGlobal = (globalJson: GlobalJson): Global => {
   const { fabricImages, ...globalJsonRest } = globalJson;
-  const versions = getVersions(globalJson.fabricVersion);
-  const images = getImages(globalJson.fabricVersion, versions, fabricImages);
-  const engine = globalJson.engine ?? "docker";
   const provider = globalJson.provider ?? "fabric";
+  const versions = getVersions(globalJson.fabricVersion);
+  const images =
+    provider === "fabric-x"
+      ? getFabricXImages(fabricImages)
+      : getImages(globalJson.fabricVersion, versions, fabricImages);
+  const engine = globalJson.engine ?? "docker";
   const monitoring = {
     loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };

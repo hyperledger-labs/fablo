@@ -14,8 +14,8 @@ printStartSuccessInfo() {
   echo "Run './fabric-x-docker.sh namespace init' to create the default namespace if needed."
 }
 
-TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.0}"
-ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.0}"
+TOOLS_IMAGE="${TOOLS_IMAGE:-<%= global.toolsImage %>}"
+ORDERER_IMAGE="${ORDERER_IMAGE:-<%= global.ordererImage %>}"
 NETWORK="${NETWORK:-fabric-x}"
 DEFAULT_POLICY="AND('Org1MSP.member')"
 
