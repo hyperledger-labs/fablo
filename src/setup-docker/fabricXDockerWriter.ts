@@ -4,7 +4,24 @@ import { shellQuote } from "../utils/shellQuote";
 import * as fs from "fs-extra";
 import * as path from "path";
 
+export interface FabricXTemplateModel {
+  channelName: string;
+  channelProfileName: string;
+}
+
+export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): FabricXTemplateModel => {
+  const [channel] = configExtended.channels;
+  if (!channel) {
+    throw new Error("Fabric-X generation requires exactly one channel.");
+  }
+  return {
+    channelName: channel.name,
+    channelProfileName: channel.profileName,
+  };
+};
+
 export class FabricXDockerWriter {
+  
   constructor(private templatesDir: string, private outputDir: string, private log: (msg: string) => void) {}
 
   public async write(configExtended: FabloConfigExtended): Promise<void> {
