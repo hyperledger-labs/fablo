@@ -439,6 +439,9 @@ exports[`schema should match snapshot 1`] = `
       "default": [
         {
           "name": "mynamespace",
+          "orgs": [
+            "Org1",
+          ],
         },
       ],
       "description": "Namespaces to declare and create for the 'fabric-x' provider. Ignored for the 'fabric' provider. Use 'orgs' to select which orgs' MSPs govern the namespace (Fablo builds the endorsement policy for you); use 'policy' only as an advanced override with a raw Fabric policy expression. A namespace must not define both.",
@@ -447,7 +450,9 @@ exports[`schema should match snapshot 1`] = `
         "properties": {
           "name": {
             "$id": "#/properties/namespaces/items/properties/name",
-            "pattern": "^[a-z0-9_-]+$",
+            "description": "Must match ^[a-z0-9_]+$ (lowercase letters, digits, underscores only - no hyphens), max 60 characters. This is enforced by the Fabric-X fxconfig namespace ID validation, not just Fablo's own convention.",
+            "maxLength": 60,
+            "pattern": "^[a-z0-9_]+$",
             "title": "Name",
             "type": "string",
           },
@@ -457,6 +462,7 @@ exports[`schema should match snapshot 1`] = `
             "items": {
               "type": "string",
             },
+            "minItems": 1,
             "title": "Orgs",
             "type": "array",
           },
