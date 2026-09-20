@@ -26,8 +26,12 @@ export class FabricXDockerWriter {
 
   public async write(configExtended: FabloConfigExtended): Promise<void> {
     this.log("Generating Fabric-X network files...");
-    const fabricX = getFabricXTemplateModel(configExtended);
-    const data = { ...configExtended, fabricX,shellQuote} as unknown as Record<string, unknown>;
+
+    const data = {
+      ...(configExtended as unknown as Record<string, unknown>),
+      fabricX: getFabricXTemplateModel(configExtended),
+      shellQuote,
+    };
 
     await this.renderTemplateFile("fabric-x-docker.sh", data);
     await this.renderTemplateDirectory("fabric-x", data);

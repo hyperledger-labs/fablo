@@ -13,7 +13,11 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     { name: "audit-ns", policy: "OutOf(1, 'Org1MSP.member')" },
   ];
 
-  const rendered = ejs.render(template, { namespaces, shellQuote });
+  const rendered = ejs.render(template, {
+    namespaces,
+    fabricX: { channelName: "mychannel", channelProfileName: "SampleFabricXChannel" },
+    shellQuote,
+  });
   
   const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
 
