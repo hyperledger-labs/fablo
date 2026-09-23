@@ -10,7 +10,7 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
 
   const namespaces = [
     { name: "mynamespace", policy: "AND('Org1MSP.member')" },
-    { name: "audit-ns", policy: "OutOf(1, 'Org1MSP.member')" },
+    { name: "audit_ns", policy: "OutOf(1, 'Org1MSP.member')" },
   ];
 
   const rendered = ejs.render(template, {
@@ -37,15 +37,15 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
 
     expect(status).toBe(0);
     expect(stdout).toContain("CALLED name=mynamespace policy=AND('Org1MSP.member')");
-    expect(stdout).toContain("CALLED name=audit-ns policy=OutOf(1, 'Org1MSP.member')");
+    expect(stdout).toContain("CALLED name=audit_ns policy=OutOf(1, 'Org1MSP.member')");
   });
 
   it("creates only the targeted namespace when a name is given", () => {
-    const { stdout, status } = runNamespaceInit("audit-ns");
+    const { stdout, status } = runNamespaceInit("audit_ns");
 
     expect(status).toBe(0);
     expect(stdout).not.toContain("name=mynamespace");
-    expect(stdout).toContain("CALLED name=audit-ns policy=OutOf(1, 'Org1MSP.member')");
+    expect(stdout).toContain("CALLED name=audit_ns policy=OutOf(1, 'Org1MSP.member')");
   });
 
   it("fails with a non-zero exit code for an unknown namespace name", () => {

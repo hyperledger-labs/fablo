@@ -84,7 +84,8 @@ run_fablo namespace init mynamespace
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
 
 # targeted init with an unknown name should fail, not hang or silently succeed
-expectNotCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does-not-exist || echo \"EXIT:\$?\")" "EXIT:0"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "Namespace 'does_not_exist' not found"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "EXIT:"
 
 # idempotency
 run_fablo namespace init
