@@ -236,6 +236,63 @@ describe("validate", () => {
     expect(commandResult.output).toContain(" instance.orgs[0].organization.mspName : does not match pattern");
     expect(commands.getFiles()).toEqual([]);
   });
+
+  it("should warn when classic-only image is configured for Fabric-X", () => {
+    // Given
+    commands.fabloExec("init fabric-x --set global.fabricImages.peer=myorg/peer:2.5");
+
+    // When
+    const commandResult = commands.fabloExec("validate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation warnings count: 1");
+    expect(commandResult.output).toContain(
+      "Setting 'global.fabricImages.peer' is not supported for provider 'fabric-x' and will be ignored.",
+    );
+  });
+
+  it("should warn when committer image is configured for classic Fabric", () => {
+    // Given
+    commands.fabloExec("init --set global.fabricImages.committer=myorg/committer:1.0.3");
+
+    // When
+    const commandResult = commands.fabloExec("validate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation warnings count: 1");
+    expect(commandResult.output).toContain(
+      "Setting 'global.fabricImages.committer' is only supported when 'global.provider' is 'fabric-x' and will be ignored.",
+    );
+  });
+
+  it("should not produce warnings for shared orderer and tools settings", () => {
+    // Given
+    commands.fabloExec(
+      "init --set global.fabricImages.orderer=myorg/orderer:custom --set global.fabricImages.tools=myorg/tools:custom",
+    );
+
+    // When
+    const classicResult = commands.fabloExec("validate");
+
+    // Then
+    expect(classicResult).toEqual(TestCommands.success());
+    expect(classicResult.output).toContain("Validation warnings count: 0");
+
+    // Given
+    commands.cleanupWorkdir();
+    commands.fabloExec(
+      "init fabric-x --set global.fabricImages.orderer=myorg/orderer:custom --set global.fabricImages.tools=myorg/tools:custom",
+    );
+
+    // When
+    const fabricXResult = commands.fabloExec("validate");
+
+    // Then
+    expect(fabricXResult).toEqual(TestCommands.success());
+    expect(fabricXResult.output).toContain("Validation warnings count: 0");
+  });
 });
 
 describe("extend config", () => {

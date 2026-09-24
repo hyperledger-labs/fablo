@@ -10,16 +10,29 @@ export interface FabricVersions {
 }
 
 export interface FabricImages {
-  peerImage?: string;
+  peerImage: string;
   ordererImage: string;
-  caImage?: string;
+  caImage: string;
   toolsImage: string;
-  ccenvImage?: string;
-  baseosImage?: string;
-  javaenvImage?: string;
-  nodeenvImage?: string;
-  committerImage?: string;
-  postgresImage?: string;
+  ccenvImage: string;
+  baseosImage: string;
+  javaenvImage: string;
+  nodeenvImage: string;
+}
+
+export interface FabricXImages {
+  ordererImage: string;
+  toolsImage: string;
+  committerImage: string;
+  postgresImage: string;
+}
+
+export interface FabricXVersions {
+  fabricVersion: string;
+  ordererVersion: string;
+  committerVersion: string;
+  toolsVersion: string;
+  postgresVersion: string;
 }
 
 interface CapabilitiesV2 {
@@ -48,15 +61,24 @@ interface CapabilitiesV3_0 {
 
 export type Capabilities = CapabilitiesV2 | CapabilitiesV_2_5 | CapabilitiesV3_0;
 
-export interface Global extends FabricVersions, FabricImages {
+interface GlobalBase {
   tls: boolean;
   engine: "kubernetes" | "docker";
-  provider: "fabric" | "fabric-x";
   monitoring: { loglevel: string };
   paths: { fabloConfig: string; chaincodesBaseDir: string };
   capabilities: Capabilities;
   tools: { explorer?: ExplorerConfig };
 }
+
+export interface FabricGlobal extends GlobalBase, FabricVersions, FabricImages {
+  provider: "fabric";
+}
+
+export interface FabricXGlobal extends GlobalBase, FabricXVersions, FabricXImages {
+  provider: "fabric-x";
+}
+
+export type Global = FabricGlobal | FabricXGlobal;
 
 export interface OrdererConfig {
   name: string;

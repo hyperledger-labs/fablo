@@ -73,48 +73,100 @@ describe("extendGlobal fabricImages", () => {
 
   describe("Fabric-X image resolution", () => {
     it("should use pinned default Fabric-X images when provider is fabric-x", () => {
-      const global = extendGlobal({
+      // Given
+      const globalJson = {
         fabricVersion: "3.1.0",
         tls: true,
         peerDevMode: false,
-        provider: "fabric-x",
-      });
+        provider: "fabric-x" as const,
+      };
 
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
       expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.0");
       expect(global.committerImage).toBe("ghcr.io/hyperledger/fabric-x-committer:1.0.3");
       expect(global.toolsImage).toBe("ghcr.io/hyperledger/fabric-x-tools:1.0.0");
       expect(global.postgresImage).toBe("docker.io/library/postgres:18.3-alpine3.23");
-      expect(global.peerImage).toBeUndefined();
+      expect("peerImage" in global).toBe(false);
+      expect("caImage" in global).toBe(false);
+      expect("ccenvImage" in global).toBe(false);
+      expect("baseosImage" in global).toBe(false);
+      expect("javaenvImage" in global).toBe(false);
+      expect("nodeenvImage" in global).toBe(false);
+      expect("fabricCaVersion" in global).toBe(false);
+      expect("fabricCcenvVersion" in global).toBe(false);
+      expect("fabricBaseosVersion" in global).toBe(false);
+      expect("fabricJavaenvVersion" in global).toBe(false);
+      expect("fabricNodeenvVersion" in global).toBe(false);
+      expect(global.ordererVersion).toBe("1.0.0");
+      expect(global.committerVersion).toBe("1.0.3");
+      expect(global.toolsVersion).toBe("1.0.0");
+      expect(global.postgresVersion).toBe("18.3-alpine3.23");
     });
 
     it("should keep pinned Fabric-X default tags regardless of fabricVersion", () => {
-      const global = extendGlobal({
+      // Given
+      const globalJson = {
         fabricVersion: "2.5.12",
         tls: true,
         peerDevMode: false,
-        provider: "fabric-x",
-      });
+        provider: "fabric-x" as const,
+      };
 
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
       expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.0");
       expect(global.committerImage).toBe("ghcr.io/hyperledger/fabric-x-committer:1.0.3");
       expect(global.toolsImage).toBe("ghcr.io/hyperledger/fabric-x-tools:1.0.0");
+      expect(global.postgresImage).toBe("docker.io/library/postgres:18.3-alpine3.23");
+    });
+
+    it("should align Fabric-X orderer and tools image versions when fabricVersion matches a Fabric-X release", () => {
+      // Given
+      const globalJson = {
+        fabricVersion: "1.0.2",
+        tls: true,
+        peerDevMode: false,
+        provider: "fabric-x" as const,
+      };
+
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
+      expect(global.ordererVersion).toBe("1.0.2");
+      expect(global.toolsVersion).toBe("1.0.2");
+      expect(global.committerVersion).toBe("1.0.3");
+      expect(global.postgresVersion).toBe("18.3-alpine3.23");
+      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.2");
+      expect(global.toolsImage).toBe("ghcr.io/hyperledger/fabric-x-tools:1.0.2");
+      expect(global.committerImage).toBe("ghcr.io/hyperledger/fabric-x-committer:1.0.3");
       expect(global.postgresImage).toBe("docker.io/library/postgres:18.3-alpine3.23");
     });
 
     it("should append pinned default tags when overriding Fabric-X image repositories without tags", () => {
-      const global = extendGlobal({
+      // Given
+      const globalJson = {
         fabricVersion: "3.1.0",
         tls: true,
         peerDevMode: false,
-        provider: "fabric-x",
+        provider: "fabric-x" as const,
         fabricImages: {
           committer: "mirror.local/committer",
           postgres: "mirror.local/postgres",
           orderer: "mirror.local/orderer",
           tools: "mirror.local/tools",
         },
-      });
+      };
 
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
       expect(global.committerImage).toBe("mirror.local/committer:1.0.3");
       expect(global.postgresImage).toBe("mirror.local/postgres:18.3-alpine3.23");
       expect(global.ordererImage).toBe("mirror.local/orderer:1.0.0");
@@ -122,23 +174,88 @@ describe("extendGlobal fabricImages", () => {
     });
 
     it("should keep custom tags or digests for Fabric-X images as is", () => {
-      const global = extendGlobal({
+      // Given
+      const globalJson = {
         fabricVersion: "3.1.0",
         tls: true,
         peerDevMode: false,
-        provider: "fabric-x",
+        provider: "fabric-x" as const,
         fabricImages: {
           committer: "myorg/committer:2.0.0-rc1",
           postgres: "myorg/postgres@sha256:deadbeefcafe",
           orderer: "myorg/orderer:custom-tag",
           tools: "myorg/tools@sha256:1234567890",
         },
-      });
+      };
 
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
       expect(global.committerImage).toBe("myorg/committer:2.0.0-rc1");
       expect(global.postgresImage).toBe("myorg/postgres@sha256:deadbeefcafe");
       expect(global.ordererImage).toBe("myorg/orderer:custom-tag");
       expect(global.toolsImage).toBe("myorg/tools@sha256:1234567890");
     });
+
+    it("should ignore classic-only images configured for Fabric-X", () => {
+      // Given
+      const globalJson = {
+        fabricVersion: "3.1.0",
+        tls: true,
+        peerDevMode: false,
+        provider: "fabric-x" as const,
+        fabricImages: {
+          peer: "myorg/peer:custom",
+          ca: "myorg/ca:custom",
+          ccenv: "myorg/ccenv:custom",
+          baseos: "myorg/baseos:custom",
+          javaenv: "myorg/javaenv:custom",
+          nodeenv: "myorg/nodeenv:custom",
+        },
+      };
+
+      // When
+      const global = extendGlobal(globalJson);
+
+      // Then
+      expect("peerImage" in global).toBe(false);
+      expect("caImage" in global).toBe(false);
+      expect("ccenvImage" in global).toBe(false);
+      expect("baseosImage" in global).toBe(false);
+      expect("javaenvImage" in global).toBe(false);
+      expect("nodeenvImage" in global).toBe(false);
+      expect("fabricCaVersion" in global).toBe(false);
+      expect("fabricCcenvVersion" in global).toBe(false);
+      expect("fabricBaseosVersion" in global).toBe(false);
+      expect("fabricJavaenvVersion" in global).toBe(false);
+      expect("fabricNodeenvVersion" in global).toBe(false);
+      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.0");
+    });
+  });
+
+  it("should ignore Fabric-X only images configured for classic Fabric", () => {
+    // Given
+    const globalJson = {
+      fabricVersion: "2.5.12",
+      tls: true,
+      peerDevMode: false,
+      fabricImages: {
+        committer: "myorg/committer:custom",
+        postgres: "myorg/postgres:custom",
+      },
+    };
+
+    // When
+    const global = extendGlobal(globalJson);
+
+    // Then
+    expect("committerImage" in global).toBe(false);
+    expect("postgresImage" in global).toBe(false);
+    expect("ordererVersion" in global).toBe(false);
+    expect("committerVersion" in global).toBe(false);
+    expect("toolsVersion" in global).toBe(false);
+    expect("postgresVersion" in global).toBe(false);
+    expect(global.peerImage).toBe("hyperledger/fabric-peer:2.5.12");
   });
 });
