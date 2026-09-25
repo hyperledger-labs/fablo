@@ -136,7 +136,7 @@ jobs:
       - name: Save git patch
         id: patch
         if: always() && steps.implement.outcome != 'skipped'
-        run: .jaiph/git/save-worktree-patch.sh "No git diff produced by implement run"
+        run: .jaiph/git/save-worktree-patch.sh
 
       - name: Upload git patch
         if: always() && steps.implement.outcome != 'skipped'

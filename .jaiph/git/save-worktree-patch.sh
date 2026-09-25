@@ -7,10 +7,9 @@
 # caller left it; untracked files are still included in the patch.
 #
 # Usage, from the repository root:
-#   .jaiph/git/save-worktree-patch.sh "No git diff produced by implement run"
+#   .jaiph/git/save-worktree-patch.sh
 set -euo pipefail
 
-note="${1:?empty-patch note required}"
 run_id="${GITHUB_RUN_ID:-local}"
 mkdir -p .jaiph/tmp
 patch_file=".jaiph/tmp/worktree-${run_id}.patch"
@@ -20,7 +19,7 @@ git diff --binary > "${patch_file}" || true
 git reset -q
 
 if [ ! -s "${patch_file}" ]; then
-  printf '# %s\n' "${note}" > "${patch_file}"
+  printf '# No git diff produced by this run\n' > "${patch_file}"
 fi
 
 if [ -n "${GITHUB_OUTPUT:-}" ]; then
