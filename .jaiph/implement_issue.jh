@@ -1,9 +1,9 @@
 #!/usr/bin/env jaiph
 
 # Implements a GitHub issue in the working tree. Does not commit, push, or
-# open a pull request — the caller does that after this workflow exits.
+# open a pull request — the caller does that after this def exits.
 #
-#   jaiph run .jaiph/implement_issue.jh --unsafe --yes -- .jaiph/tmp/issue.json
+#   .jaiph/implement_issue.jh .jaiph/tmp/issue.json
 #
 # The JSON file is written by the caller. Expected keys: number, title, body,
 # comments, additionalInstructions, triggeredBy, url.
@@ -67,9 +67,19 @@ const constraints = """
   - Keep the change as small as possible. Do not reformat unrelated files.
 """
 
-script read_issue = `cat "$1"`
+script read_issue = 'cat "$1"'
 
-workflow implement(issue_text) {
+# A recover binding is the failed step's output. Stream it to a file; do not
+# pass the bytes on argv or interpolate the whole log into the prompt.
+script save_failure_log = '''
+  set -euo pipefail
+  dest="$1"
+  mkdir -p "$(dirname -- "$dest")"
+  cat > "$dest"
+  test -s "$dest"
+'''
+
+def implement(issue_text) {
   prompt """
     ${role}
     ${constraints}
@@ -82,37 +92,42 @@ workflow implement(issue_text) {
   """
 }
 
-workflow default(issue_path) {
-  run ready.default()
-  const issue_text = run read_issue(issue_path)
-  run implement(issue_text)
-  run verify.all() recover (err) {
+export def main(issue_path) {
+  ready.main()
+  const issue_text = read_issue(issue_path)
+  implement(issue_text)
+  verify.all() recover (failure) {
+    stdin failure -> save_failure_log(".jaiph/tmp/implement-verify.log")
     prompt """
       ${constraints}
 
       Verification failed after the implementation. Fix the code so
-      \`npm run build\`, \`npm run test:unit\`, and \`npm run lint\` pass. Do
+      `npm run build`, `npm run test:unit`, and `npm run lint` pass. Do
       not change the checks themselves to make them pass. Do not commit.
 
-      Failure output:
-      ${err}
+      Failure output was saved to .jaiph/tmp/implement-verify.log. Start by
+      inspecting the tail of that log (for example:
+      tail -n 200 '.jaiph/tmp/implement-verify.log') and then apply the
+      smallest fix.
     """
   }
   # Separate from the loop above so a snapshot rebuild does not repeat the
   # Docker build on every recover iteration of the cheap checks.
-  run verify.snapshots() recover (err) {
+  verify.snapshots() recover (failure) {
+    stdin failure -> save_failure_log(".jaiph/tmp/implement-snapshots.log")
     prompt """
       ${constraints}
 
       Regenerating the e2e snapshots failed. This runs
-      \`npm run test:e2e-update\`, which builds the Fablo Docker image, updates
+      `npm run test:e2e-update`, which builds the Fablo Docker image, updates
       e2e/__snapshots__/ from generator output, and lints the generated
       networks. Fix the code so it passes. Do not hand-edit snapshot files.
 
-      Failure output:
-      ${err}
+      Failure output was saved to .jaiph/tmp/implement-snapshots.log. Start
+      by inspecting the tail of that log (for example:
+      tail -n 200 '.jaiph/tmp/implement-snapshots.log').
     """
   }
-  run verify.no_forbidden_paths()
+  verify.no_forbidden_paths()
   log "Implementation complete. Inspect the working tree; the Action opens the pull request."
 }
