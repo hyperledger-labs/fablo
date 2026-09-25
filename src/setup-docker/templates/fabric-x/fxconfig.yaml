@@ -2,7 +2,7 @@ logging:
   level: info
 
 msp:
-  localMspID: Org1MSP
+  localMspID: <%= fabricX.applicationOrg.mspName %>
   configPath: /msp
 
 orderer:
@@ -17,7 +17,7 @@ orderer:
       - /org-tls-ca.pem      
 
 queries:
-  address: committer-org1-query-service:7001
+  address: committer-<%= fabricX.applicationOrgSlug %>-query-service:7001
   tls:
     enabled: true
     clientCert: /tls/server.crt
@@ -26,7 +26,7 @@ queries:
       - /org-tls-ca.pem
 
 notifications:
-  address: committer-org1-sidecar:4001
+  address: committer-<%= fabricX.applicationOrgSlug %>-sidecar:4001
   tls:
     enabled: true
     clientCert: /tls/server.crt
