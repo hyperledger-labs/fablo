@@ -67,7 +67,7 @@ const constraints = """
   - Keep the change as small as possible. Do not reformat unrelated files.
 """
 
-export script read_issue = 'cat "$1"'
+script read_issue = 'cat "$1"'
 
 # A recover binding is the failed step's output. Stream it to a file; do not
 # pass the bytes on argv or interpolate the whole log into the prompt.

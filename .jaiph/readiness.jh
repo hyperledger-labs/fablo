@@ -3,15 +3,15 @@
 # Cheap preflight for issue implementation. No agent calls.
 #
 #   jaiph run .jaiph/readiness.jh
-export script has_node = 'command -v node >/dev/null'
+script has_node = 'command -v node >/dev/null'
 
-export script has_npm = 'command -v npm >/dev/null'
+script has_npm = 'command -v npm >/dev/null'
 
-export script has_package_json = 'test -f package.json'
+script has_package_json = 'test -f package.json'
 
-export script has_node_modules = 'test -d node_modules'
+script has_node_modules = 'test -d node_modules'
 
-export def tools_present() {
+def tools_present() {
   has_node()
   has_npm()
   has_package_json()
