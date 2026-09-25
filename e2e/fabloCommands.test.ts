@@ -359,3 +359,35 @@ describe("version", () => {
     expect(commandResult1.output).toEqual(commandResult2.output);
   });
 });
+
+describe("generate", () => {
+  beforeEach(() => commands.cleanupWorkdir());
+
+  it("should generate Fabric-X network files with custom organization", () => {
+    // Given
+    commands.fabloExec(
+      "init fabric-x --set orgs[0].organization.name=Bank --set orgs[0].organization.domain=bank.fablo.com --set orgs[0].organization.mspName=BankMSP --set channels[0].orgs[0].name=Bank",
+    );
+
+    // When
+    const commandResult = commands.fabloExec("generate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+
+    const fxConfig = commands.getFileContent("fablo-target/fabric-x/fxconfig.yaml");
+    expect(fxConfig).toContain("localMspID: BankMSP");
+
+    const configtx = commands.getFileContent("fablo-target/fabric-x/configtx.yaml");
+    expect(configtx).toContain("MSPDir: ./crypto/peerOrganizations/bank.fablo.com/msp");
+
+    const dockerCompose = commands.getFileContent("fablo-target/fabric-x/docker-compose.yaml");
+    expect(dockerCompose).toContain("tlsca.bank.fablo.com-cert.pem");
+    expect(dockerCompose).toContain("User1@bank.fablo.com");
+    expect(dockerCompose).toContain("committer-bank-coordinator");
+
+    const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
+    expect(baseFunctions).toContain("User1@bank.fablo.com");
+    expect(baseFunctions).toContain("AND('BankMSP.member')");
+  });
+});
