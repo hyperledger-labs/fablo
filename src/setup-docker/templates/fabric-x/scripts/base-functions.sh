@@ -17,7 +17,7 @@ printStartSuccessInfo() {
 TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.0}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.0}"
 NETWORK="${NETWORK:-fabric-x}"
-DEFAULT_POLICY="AND('Org1MSP.member')"
+DEFAULT_POLICY="AND('<%= fabricX.applicationOrg.mspName %>.member')"
 
 
 generateArtifacts() {
@@ -40,7 +40,7 @@ generateArtifacts() {
     -v "$FABRIC_X_ROOT:/config" \
     "$TOOLS_IMAGE" \
     sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \
-      && cp /config/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem \
+      && cp /config/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem \
             /config/crypto/client-tls-ca.pem'
 
   echo "Generating Fabric-X shared config proto..."
@@ -69,7 +69,7 @@ networkUp() {
            "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
            "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
            "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
-           "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger"
+           "$FABRIC_X_ROOT/data/committer-<%= fabricX.applicationOrgSlug %>/sidecar-ledger"
 
   generateArtifacts
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
@@ -97,9 +97,9 @@ namespaceInit() {
     --env "FX_NS=mynamespace" \
     --env "FX_POLICY=$DEFAULT_POLICY" \
     -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
     -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
     "$TOOLS_IMAGE" \
     sh -c 'fxconfig namespace list --config=/config/fxconfig.yaml 2>/dev/null | grep -q ") $FX_NS:" || \
@@ -109,9 +109,9 @@ namespaceInit() {
 namespaceList() {
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
     -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
     -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
     "$TOOLS_IMAGE" \
     fxconfig namespace list --config=/config/fxconfig.yaml
