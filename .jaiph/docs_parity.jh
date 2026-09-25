@@ -74,39 +74,39 @@ const skills_preamble = """
 # Logs `claude -p "/usage"` once. Information is enough: do not wait, retry,
 # or sleep if usage is high. A missing CLI or unparseable output must not
 # block the run.
-script log_claude_usage = ```
-if ! usage="$(claude -p "/usage" 2>&1)"; then
-  echo "Could not read Claude usage (claude -p /usage failed)." >&2
-  printf '%s\n' "$usage" >&2
-  echo "Claude usage was not available."
-  exit 0
-fi
+export script log_claude_usage = '''
+  if ! usage="$(claude -p "/usage" 2>&1)"; then
+    echo "Could not read Claude usage (claude -p /usage failed)." >&2
+    printf '%s\n' "$usage" >&2
+    echo "Claude usage was not available."
+    exit 0
+  fi
 
-printf '%s\n' "$usage"
+  printf '%s\n' "$usage"
 
-percent="$(
-  printf '%s\n' "$usage" |
-    sed -nE 's/.*Current session: ([0-9]+)% used.*/\1/p' |
-    awk 'NR == 1 { print; exit }'
-)"
-case "$percent" in
-  ''|*[!0-9]*)
-    echo "Could not parse current Claude session usage from /usage output." >&2
-    ;;
-  *)
-    echo "Claude current session usage is ${percent}%."
-    ;;
-esac
-```
+  percent="$(
+    printf '%s\n' "$usage" |
+      sed -nE 's/.*Current session: ([0-9]+)% used.*/\1/p' |
+      awk 'NR == 1 { print; exit }'
+  )"
+  case "$percent" in
+    ''|*[!0-9]*)
+      echo "Could not parse current Claude session usage from /usage output." >&2
+      ;;
+    *)
+      echo "Claude current session usage is ${percent}%."
+      ;;
+  esac
+'''
 
-workflow report_claude_usage() {
-  const status = run log_claude_usage()
+def report_claude_usage() {
+  const status = log_claude_usage()
   log status
 }
 
 # --- Read-only review -------------------------------------------------------
-workflow check_page(path) {
-  const sources = run lib.source_of_truth_for(path)
+def check_page(path) {
+  const sources = lib.source_of_truth_for(path)
 
   const result = prompt """
     ${skills_preamble}
@@ -150,7 +150,7 @@ workflow check_page(path) {
     ${result.findings}
   """
 
-  run lib.append_report(entry)
+  lib.append_report(entry)
   log "${path}: ${result.status}"
 }
 
@@ -158,8 +158,8 @@ workflow check_page(path) {
 # report entry. Check mode needs the complete picture, so a failing cheap
 # check must not hide the agent's findings. The recorded "drift" status still
 # fails the run at the end, via no_drift_recorded.
-workflow check_static() {
-  run lib.assert_fablo_mirror_in_sync() catch (err) {
+def check_static() {
+  lib.assert_fablo_mirror_in_sync() catch (err) {
     const mirror_entry = """
       ## fablo.sh mirror
 
@@ -167,10 +167,10 @@ workflow check_static() {
 
       ${err}
     """
-    run lib.append_report(mirror_entry)
+    lib.append_report(mirror_entry)
   }
 
-  run lib.assert_config_keys_documented() catch (err) {
+  lib.assert_config_keys_documented() catch (err) {
     const schema_entry = """
       ## docs/schema.json coverage
 
@@ -178,10 +178,10 @@ workflow check_static() {
 
       ${err}
     """
-    run lib.append_report(schema_entry)
+    lib.append_report(schema_entry)
   }
 
-  run lib.assert_documented_commands_exist() catch (err) {
+  lib.assert_documented_commands_exist() catch (err) {
     const commands_entry = """
       ## documented command names
 
@@ -189,10 +189,10 @@ workflow check_static() {
 
       ${err}
     """
-    run lib.append_report(commands_entry)
+    lib.append_report(commands_entry)
   }
 
-  run lib.assert_tables_render() catch (err) {
+  lib.assert_tables_render() catch (err) {
     const tables_entry = """
       ## markdown table rendering
 
@@ -200,26 +200,26 @@ workflow check_static() {
 
       ${err}
     """
-    run lib.append_report(tables_entry)
+    lib.append_report(tables_entry)
   }
 }
 
-workflow check_all(pages) {
-  run lib.init_report()
-  run check_static()
+def check_all(pages) {
+  lib.init_report()
+  check_static()
   for path in pages {
-    run check_page(path)
+    check_page(path)
   }
-  const report = run lib.read_report()
+  const report = lib.read_report()
   log report
-  ensure lib.worktree_is_clean()
-  ensure lib.no_drift_recorded()
+  lib.worktree_is_clean()
+  lib.no_drift_recorded()
   return report
 }
 
 # --- Fix mode ---------------------------------------------------------------
-workflow fix_page(path) {
-  const sources = run lib.source_of_truth_for(path)
+def fix_page(path) {
+  const sources = lib.source_of_truth_for(path)
 
   prompt """
     ${skills_preamble}
@@ -257,7 +257,7 @@ workflow fix_page(path) {
   """
 }
 
-workflow docs_overview(pages) {
+def docs_overview(pages) {
   prompt """
     ${skills_preamble}
     <role>
@@ -284,30 +284,30 @@ workflow docs_overview(pages) {
   """
 }
 
-workflow fix_all(pages) {
+def fix_all(pages) {
   # Temporarily disabled so a documentation run can still open a reviewable
   # pull request when it updates related documentation assets. Re-enable this
   # after the allowlist policy covers those assets without blocking the run.
-  # const allowed = run lib.build_allowed_paths()
-  run lib.assert_fablo_mirror_in_sync() catch (err) {
+  # const allowed = lib.build_allowed_paths()
+  lib.assert_fablo_mirror_in_sync() catch (err) {
     log err
   }
-  run lib.assert_config_keys_documented() catch (err) {
+  lib.assert_config_keys_documented() catch (err) {
     log err
   }
-  run lib.assert_documented_commands_exist() catch (err) {
+  lib.assert_documented_commands_exist() catch (err) {
     log err
   }
-  run lib.assert_tables_render() catch (err) {
+  lib.assert_tables_render() catch (err) {
     log err
   }
   for path in pages {
-    run fix_page(path)
+    fix_page(path)
   }
-  run docs_overview(pages)
-  run lib.sync_fablo_mirror()
-  # ensure lib.only_allowed_paths_changed(allowed)
-  run report_claude_usage()
+  docs_overview(pages)
+  lib.sync_fablo_mirror()
+  # lib.only_allowed_paths_changed(allowed)
+  report_claude_usage()
   return "Documentation edits applied. Inspect the pull request (or git diff) and merge if the changes are correct."
 }
 
@@ -317,31 +317,31 @@ workflow fix_all(pages) {
 # instead, so that one bad schema entry cannot mask everything else -- and so
 # fix mode does not deadlock on drift it is not allowed to repair (schema.json
 # is not an editable documentation surface).
-workflow static_only() {
-  const pages = run lib.list_doc_pages()
-  ensure lib.docs_files_present(pages)
-  ensure lib.static_parity_checks()
+def static_only() {
+  const pages = lib.list_doc_pages()
+  lib.docs_files_present(pages)
+  lib.static_parity_checks()
   return "Static documentation parity checks passed."
 }
 
-workflow guarded_run(mode) {
-  run report_claude_usage()
-  ensure lib.worktree_is_clean()
+def guarded_run(mode) {
+  report_claude_usage()
+  lib.worktree_is_clean()
 
-  const pages = run lib.list_doc_pages()
-  ensure lib.docs_files_present(pages)
+  const pages = lib.list_doc_pages()
+  lib.docs_files_present(pages)
 
   const outcome = match mode {
-    "fix" => run fix_all(pages)
-    _ => run check_all(pages)
+    "fix" => fix_all(pages)
+    _ => check_all(pages)
   }
 
   return outcome
 }
 
-workflow default(mode) {
+export def main(mode) {
   return match mode {
-    "static" => run static_only()
-    _ => run guarded_run(mode)
+    "static" => static_only()
+    _ => guarded_run(mode)
   }
 }

@@ -39,9 +39,9 @@ jobs:
           node-version: "22"
 
       - name: Set up Jaiph
-        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.13.0
+        uses: jaiphlang/jaiph/actions/setup-jaiph@v0.15.0
         with:
-          version: 0.13.0
+          version: 0.15.0
 
       - name: Install Claude Code CLI
         run: |
@@ -50,13 +50,27 @@ jobs:
           claude -p "/usage"
 
       - name: Fix documentation drift
-        run: .jaiph/docs_parity.jh --unsafe fix --yes
+        run: .jaiph/docs_parity.jh fix
 
       - name: Show documentation diff
         if: always()
         run: |
           git diff --stat
           git diff
+
+      - name: Save git patch
+        id: patch
+        if: always()
+        run: .jaiph/git/save-worktree-patch.sh "No git diff produced by docs parity run"
+
+      - name: Upload git patch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-parity-patch-${{ github.run_id }}
+          path: ${{ steps.patch.outputs.patch_file }}
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Open a pull request with the documentation edits
         uses: peter-evans/create-pull-request@v6

@@ -6,20 +6,20 @@
 #
 #   .jaiph/verification.jh
 #   .jaiph/verification.jh no_destructive_changes "$(git rev-parse HEAD)"
-script all = ```
+export script all = '''
   set -euo pipefail
   # package.json is inside the agent's edit scope. Do not expose credentials to
   # scripts that may have changed as part of the proposed implementation.
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run build
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:unit
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run lint
-```
+'''
 
 # Snapshots under e2e/__snapshots__/ are generator output: the only way to
 # change one is to build the image and re-run the suite (see CONTRIBUTING.md).
 # The agent is told to do this, and it is done here too, so that forgetting
 # cannot reach the pull request. A docs-only change skips the Docker build.
-script snapshots = ```
+export script snapshots = '''
   set -euo pipefail
   changed="$(git diff --name-only HEAD; git ls-files --others --exclude-standard)"
   if [ -z "$changed" ]; then
@@ -31,11 +31,11 @@ script snapshots = ```
     exit 0
   fi
   env -u CLAUDE_CODE_OAUTH_TOKEN -u GITHUB_TOKEN -u GH_TOKEN npm run test:e2e-update
-```
+'''
 
 # The agent must leave commits alone: the caller, not the agent, turns the
 # working tree into a commit on a fresh branch.
-script no_history_rewrite = ```
+script no_history_rewrite = '''
   set -euo pipefail
   start_sha="$1"
   if [ -z "$start_sha" ]; then
@@ -47,13 +47,13 @@ script no_history_rewrite = ```
     exit 1
   fi
   echo "Repository history is unchanged."
-```
+'''
 
 # Credential files are the only paths the agent may never write. It is allowed
 # to change .github/ and .jaiph/, because an issue may be about the automation
 # itself; those changes are flagged for review by the caller instead of being
 # refused here.
-script no_forbidden_paths = ```
+export script no_forbidden_paths = '''
   set -euo pipefail
   blocked=0
   while IFS= read -r -d '' path; do
@@ -69,20 +69,20 @@ script no_forbidden_paths = ```
     exit 1
   fi
   echo "Changed paths pass the policy."
-```
+'''
 
-workflow no_destructive_changes(start_sha) {
-  run no_history_rewrite(start_sha)
-  run no_forbidden_paths()
+def no_destructive_changes(start_sha) {
+  no_history_rewrite(start_sha)
+  no_forbidden_paths()
 }
 
-workflow verify_all() {
-  run all()
+def verify_all() {
+  all()
 }
 
-workflow default(mode, start_sha) {
+export def main(mode, start_sha) {
   return match mode {
-    "no_destructive_changes" => run no_destructive_changes(start_sha)
-    _ => run verify_all()
+    "no_destructive_changes" => no_destructive_changes(start_sha)
+    _ => verify_all()
   }
 }

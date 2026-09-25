@@ -10,8 +10,8 @@ test "default implements the issue then verifies" {
   mock prompt {
     _ => "implemented"
   }
-  mock rule ready.tools_present() {
-    true
+  mock def ready.tools_present() {
+    return "ok"
   }
   mock script app.read_issue() {
     echo "{\"number\":42,\"title\":\"demo issue\"}"
@@ -26,7 +26,7 @@ test "default implements the issue then verifies" {
     echo "Changed paths pass the policy."
   }
 
-  const out = run app.default("issue.json")
+  const out = app.main("issue.json")
   expect_contain out "Implementation complete"
 }
 
@@ -34,8 +34,8 @@ test "default fails when the agent edits a forbidden path" {
   mock prompt {
     _ => "implemented"
   }
-  mock rule ready.tools_present() {
-    true
+  mock def ready.tools_present() {
+    return "ok"
   }
   mock script app.read_issue() {
     echo "{\"number\":42,\"title\":\"demo issue\"}"
@@ -51,7 +51,7 @@ test "default fails when the agent edits a forbidden path" {
     exit 1
   }
 
-  const out = run app.default("issue.json") allow_failure
+  const out = app.main("issue.json") allow_failure
   expect_contain out "forbidden"
 }
 
@@ -61,8 +61,8 @@ test "default fails when the snapshots cannot be regenerated" {
   mock prompt {
     _ => "tried to fix it"
   }
-  mock rule ready.tools_present() {
-    true
+  mock def ready.tools_present() {
+    return "ok"
   }
   mock script app.read_issue() {
     echo "{\"number\":42,\"title\":\"demo issue\"}"
@@ -78,7 +78,7 @@ test "default fails when the snapshots cannot be regenerated" {
     echo "Changed paths pass the policy."
   }
 
-  const out = run app.default("issue.json") allow_failure
+  const out = app.main("issue.json") allow_failure
   expect_contain out "snapshot rebuild failed"
 }
 
@@ -97,6 +97,6 @@ test "readiness fails when node_modules is missing" {
     exit 1
   }
 
-  const out = run ready.default() allow_failure
+  const out = ready.main() allow_failure
   expect_contain out "node_modules"
 }

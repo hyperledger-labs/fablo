@@ -10,17 +10,17 @@ test "check mode records a status for every page" {
   mock prompt {
     _ => "{\"status\": \"ok\", \"findings\": \"Page matches the implementation.\"}"
   }
-  mock rule lib.worktree_is_clean() {
-    true
+  mock def lib.worktree_is_clean() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
-  mock rule lib.no_drift_recorded() {
-    true
+  mock def lib.no_drift_recorded() {
+    return "ok"
   }
   mock script lib.list_doc_pages() {
     printf '%s\n' docs/index.md README.md
@@ -41,7 +41,7 @@ test "check mode records a status for every page" {
     echo "Claude current session usage is 12%."
   }
 
-  const out = run app.default("check")
+  const out = app.main("check")
   expect_contain out "docs/index.md"
   expect_contain out "README.md"
   expect_contain out "ok"
@@ -51,17 +51,17 @@ test "check mode surfaces drift findings in the report" {
   mock prompt {
     _ => "{\"status\": \"drift\", \"findings\": \"- configuration.md names logLevel but the implementation reads loglevel\"}"
   }
-  mock rule lib.worktree_is_clean() {
-    true
+  mock def lib.worktree_is_clean() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
-  mock rule lib.no_drift_recorded() {
-    true
+  mock def lib.no_drift_recorded() {
+    return "ok"
   }
   mock script lib.list_doc_pages() {
     echo "docs/reference/configuration.md"
@@ -82,7 +82,7 @@ test "check mode surfaces drift findings in the report" {
     echo "Claude current session usage is 12%."
   }
 
-  const out = run app.default("check")
+  const out = app.main("check")
   expect_contain out "drift"
   expect_contain out "loglevel"
 }
@@ -91,18 +91,17 @@ test "check mode fails when drift is recorded" {
   mock prompt {
     _ => "{\"status\": \"drift\", \"findings\": \"- stale command name\"}"
   }
-  mock rule lib.worktree_is_clean() {
-    true
+  mock def lib.worktree_is_clean() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
-  mock rule lib.no_drift_recorded() {
-    echo "drift detected" >&2
-    exit 1
+  mock def lib.no_drift_recorded() {
+    fail "drift detected"
   }
   mock script lib.list_doc_pages() {
     echo "README.md"
@@ -123,7 +122,7 @@ test "check mode fails when drift is recorded" {
     echo "Claude current session usage is 12%."
   }
 
-  const out = run app.default("check") allow_failure
+  const out = app.main("check") allow_failure
   expect_contain out "drift"
 }
 
@@ -131,14 +130,14 @@ test "fix mode syncs the generated mirror" {
   mock prompt {
     _ => "edited"
   }
-  mock rule lib.worktree_is_clean() {
-    true
+  mock def lib.worktree_is_clean() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
   mock script lib.list_doc_pages() {
     echo "README.md"
@@ -153,7 +152,7 @@ test "fix mode syncs the generated mirror" {
     echo "Claude current session usage is 12%."
   }
 
-  const out = run app.default("fix")
+  const out = app.main("fix")
   expect_contain out "edits applied"
 }
 
@@ -161,17 +160,17 @@ test "an unrecognised mode falls through to check, never fix" {
   mock prompt {
     _ => "{\"status\": \"ok\", \"findings\": \"matches\"}"
   }
-  mock rule lib.worktree_is_clean() {
-    true
+  mock def lib.worktree_is_clean() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
-  mock rule lib.no_drift_recorded() {
-    true
+  mock def lib.no_drift_recorded() {
+    return "ok"
   }
   mock script lib.list_doc_pages() {
     echo "README.md"
@@ -195,22 +194,22 @@ test "an unrecognised mode falls through to check, never fix" {
     echo "Claude current session usage is 12%."
   }
 
-  const out = run app.default("")
+  const out = app.main("")
   expect_contain out "ok"
   expect_not_contain out "MIRROR SYNC SHOULD NOT RUN"
 }
 
 test "static mode does not require a clean worktree" {
-  mock rule lib.docs_files_present() {
-    true
+  mock def lib.docs_files_present() {
+    return "ok"
   }
-  mock rule lib.static_parity_checks() {
-    true
+  mock def lib.static_parity_checks() {
+    return "ok"
   }
   mock script lib.list_doc_pages() {
     echo "README.md"
   }
 
-  const out = run app.default("static")
+  const out = app.main("static")
   expect_contain out "Static documentation parity checks passed."
 }
