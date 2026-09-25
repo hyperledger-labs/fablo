@@ -10,6 +10,7 @@ import {
   FabloConfigExtended,
   HooksConfig,
   Global,
+  FabricGlobal,
   OrgConfig,
   OrdererGroup,
   Capabilities,
@@ -217,7 +218,11 @@ export default class SetupDocker extends Command {
       this.error("Error creating explorer material: " + error.message);
     }
   }
-  async _copyDockerComposeEnv(global: Global, orgsTransformed: OrgConfig[], composeNetworkName: string): Promise<void> {
+  async _copyDockerComposeEnv(
+    global: FabricGlobal,
+    orgsTransformed: OrgConfig[],
+    composeNetworkName: string,
+  ): Promise<void> {
     const settings = {
       composeNetworkName,
       fabricCaVersion: global.fabricCaVersion,

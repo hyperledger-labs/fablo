@@ -309,6 +309,13 @@ exports[`schema should match snapshot 1`] = `
               "title": "CCENV image",
               "type": "string",
             },
+            "committer": {
+              "$id": "#/properties/global/properties/fabricImages/properties/committer",
+              "default": "ghcr.io/hyperledger/fabric-x-committer",
+              "description": "Custom image repository or full image name for Fabric-X committer microservices",
+              "title": "Fabric-X committer image",
+              "type": "string",
+            },
             "javaenv": {
               "$id": "#/properties/global/properties/fabricImages/properties/javaenv",
               "default": "hyperledger/fabric-javaenv",
@@ -331,6 +338,13 @@ exports[`schema should match snapshot 1`] = `
               "$id": "#/properties/global/properties/fabricImages/properties/peer",
               "default": "hyperledger/fabric-peer",
               "title": "Peer image",
+              "type": "string",
+            },
+            "postgres": {
+              "$id": "#/properties/global/properties/fabricImages/properties/postgres",
+              "default": "docker.io/library/postgres",
+              "description": "Custom image repository or full image name for Fabric-X PostgreSQL database",
+              "title": "Fabric-X committer database image",
               "type": "string",
             },
             "tools": {

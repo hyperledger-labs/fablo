@@ -1,5 +1,14 @@
 // Used https://github.com/hyperledger/fabric/blob/v1.4.8/sampleconfig/configtx.yaml for values
-import { Capabilities, FabricImages, FabricVersions, Global } from "../types/FabloConfigExtended";
+import {
+  Capabilities,
+  FabricGlobal,
+  FabricImages,
+  FabricVersions,
+  FabricXGlobal,
+  FabricXImages,
+  FabricXVersions,
+  Global,
+} from "../types/FabloConfigExtended";
 import { version } from "../repositoryUtils";
 import { FabricImagesJson, GlobalJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
@@ -35,6 +44,18 @@ const getVersions = (fabricVersion: string): FabricVersions => {
     fabricJavaenvVersion: below3_0_0(majorMinor),
     fabricNodeenvVersion: fabricNodeenvExceptions[fabricVersion] ?? below3_0_0(majorMinor),
     fabricRecommendedNodeVersion: version(fabricVersion).isGreaterOrEqual("2.4") ? "16" : "12",
+  };
+};
+
+const getFabricXVersions = (fabricVersion: string): FabricXVersions => {
+  const isFabricXRelease = !version(fabricVersion).isGreaterOrEqual("2.0.0");
+
+  return {
+    fabricVersion,
+    ordererVersion: isFabricXRelease ? fabricVersion : "1.0.0",
+    committerVersion: "1.0.3",
+    toolsVersion: isFabricXRelease ? fabricVersion : "1.0.0",
+    postgresVersion: "18.3-alpine3.23",
   };
 };
 
@@ -76,6 +97,28 @@ const getImages = (fabricVersion: string, versions: FabricVersions, fabricImages
   };
 };
 
+const getFabricXImages = (
+  _fabricVersion: string,
+  versions: FabricXVersions,
+  fabricImages?: FabricImagesJson,
+): FabricXImages => {
+  const defaultToolsImage = "ghcr.io/hyperledger/fabric-x-tools";
+
+  const baseImages = {
+    ordererImage: fabricImages?.orderer ?? "ghcr.io/hyperledger/fabric-x-orderer",
+    committerImage: fabricImages?.committer ?? "ghcr.io/hyperledger/fabric-x-committer",
+    toolsImage: fabricImages?.tools ?? defaultToolsImage,
+    postgresImage: fabricImages?.postgres ?? "docker.io/library/postgres",
+  };
+
+  return {
+    ordererImage: toImage(baseImages.ordererImage, versions.ordererVersion),
+    committerImage: toImage(baseImages.committerImage, versions.committerVersion),
+    toolsImage: toImage(baseImages.toolsImage, versions.toolsVersion),
+    postgresImage: toImage(baseImages.postgresImage, versions.postgresVersion),
+  };
+};
+
 const getEnvVarOrThrow = (name: string): string => {
   const value = process.env[name];
   if (!value || !value.length) throw new Error(`Missing environment variable ${name}`);
@@ -87,12 +130,13 @@ const getPathsFromEnv = () => ({
   chaincodesBaseDir: getEnvVarOrThrow("CHAINCODES_BASE_DIR"),
 });
 
-const extendGlobal = (globalJson: GlobalJson): Global => {
+function extendGlobal(globalJson: GlobalJson & { provider: "fabric-x" }): FabricXGlobal;
+function extendGlobal(globalJson: GlobalJson & { provider?: "fabric" }): FabricGlobal;
+function extendGlobal(globalJson: GlobalJson): Global;
+function extendGlobal(globalJson: GlobalJson): Global {
   const { fabricImages, ...globalJsonRest } = globalJson;
-  const versions = getVersions(globalJson.fabricVersion);
-  const images = getImages(globalJson.fabricVersion, versions, fabricImages);
-  const engine = globalJson.engine ?? "docker";
   const provider = globalJson.provider ?? "fabric";
+  const engine = globalJson.engine ?? "docker";
   const monitoring = {
     loglevel: globalJson?.monitoring?.loglevel || defaults.global.monitoring.loglevel,
   };
@@ -110,18 +154,40 @@ const extendGlobal = (globalJson: GlobalJson): Global => {
         chaincodesBaseDir: ".",
       };
 
-  return {
-    ...globalJsonRest,
-    ...versions,
-    ...images,
+  const commonConfig = {
     engine,
-    provider,
     paths,
     monitoring,
     capabilities: getNetworkCapabilities(globalJson.fabricVersion),
     tools: { ...explorer },
   };
-};
+
+  if (provider === "fabric-x") {
+    const versions = getFabricXVersions(globalJson.fabricVersion);
+    const images = getFabricXImages(globalJson.fabricVersion, versions, fabricImages);
+    return {
+      ...globalJsonRest,
+      ...versions,
+      ...images,
+      provider: "fabric-x",
+      ...commonConfig,
+    };
+  }
+
+  const versions = getVersions(globalJson.fabricVersion);
+  const images = getImages(globalJson.fabricVersion, versions, fabricImages);
+  return {
+    ...globalJsonRest,
+    ...versions,
+    ...images,
+    engine,
+    provider: "fabric",
+    paths,
+    monitoring,
+    capabilities: getNetworkCapabilities(globalJson.fabricVersion),
+    tools: { ...explorer },
+  };
+}
 
 export { getNetworkCapabilities };
 export default extendGlobal;
