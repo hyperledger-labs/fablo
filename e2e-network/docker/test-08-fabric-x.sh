@@ -48,8 +48,9 @@ expectNotCommand() {
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
   run_fablo init fabric-x
+  jq '.namespaces += [{"name": "audit_ns", "orgs": ["Org1"]}]' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
+  mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
   run_fablo validate
-
   run_fablo up
 }
 
