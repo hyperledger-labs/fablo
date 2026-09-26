@@ -61,7 +61,13 @@ describe("extendNamespacesConfig", () => {
       ),
     ).toThrow("Namespace 'mynamespace' defines both 'orgs' and 'policy'");
   });
-
+  
+  it("should throw when 'orgs' is given alongside an explicitly empty-string policy", () => {
+    expect(() =>
+      extendNamespacesConfig([{ name: "mynamespace", orgs: ["Org1"], policy: "" }], [org("Org1", "Org1MSP")]),
+    ).toThrow("Namespace 'mynamespace' defines both 'orgs' and 'policy'");
+  });
+ 
   it("should throw when 'orgs' is an empty list", () => {
     expect(() => extendNamespacesConfig([{ name: "mynamespace", orgs: [] }], [org("Org1", "Org1MSP")])).toThrow(
       "Namespace 'mynamespace' has an empty 'orgs' list",

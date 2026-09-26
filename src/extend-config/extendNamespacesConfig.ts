@@ -5,14 +5,14 @@ import defaults from "./defaults";
 const resolvePolicy = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConfig[]): string => {
   const { name, orgs: namespaceOrgNames, policy } = namespaceJsonFormat;
 
-  if (namespaceOrgNames && policy) {
+  if (namespaceOrgNames && policy!== undefined) {
     throw new Error(
       `Namespace '${name}' defines both 'orgs' and 'policy'. Use 'orgs' for the standard case, ` +
         `or 'policy' as an advanced override, not both.`,
     );
   }
 
-  if (policy) {
+  if (policy !== undefined) {
     return policy;
   }
 

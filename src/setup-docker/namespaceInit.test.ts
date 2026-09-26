@@ -15,7 +15,12 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
 
   const rendered = ejs.render(template, {
     namespaces,
-    fabricX: { channelName: "mychannel", channelProfileName: "SampleFabricXChannel" },
+    fabricX: {
+      channelName: "mychannel",
+      channelProfileName: "SampleFabricXChannel",
+      applicationOrg: { domain: "org1.example.com" },
+      applicationOrgSlug: "org1",
+    },
     shellQuote,
   });
   

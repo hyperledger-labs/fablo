@@ -614,7 +614,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy) {
+      if (namespace.orgs && namespace.policy!== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
