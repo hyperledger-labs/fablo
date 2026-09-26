@@ -585,6 +585,57 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+    const namespaceNames = new Set<string>();
+    const validNamespaceId = /^[a-z0-9_]+$/;
+    const maxNamespaceIdLength = 60;
+    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
+
+    const namespaces = networkConfig.namespaces ?? [];
+    if (namespaces.length < 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "fabric-x requires at least one entry in 'namespaces'.",
+      });
+    }
+
+    namespaces.forEach((namespace) => {
+      if (!validNamespaceId.test(namespace.name) || namespace.name.length > maxNamespaceIdLength) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' is not a valid Fabric-X namespace ID - only lowercase letters, digits, and underscores are allowed (no hyphens), max 60 characters.`,
+        });
+      }
+
+      if (namespaceNames.has(namespace.name)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Duplicate namespace '${namespace.name}' found. Namespace names must be unique.`,
+        });
+      }
+      namespaceNames.add(namespace.name);
+
+      if (namespace.orgs && namespace.policy!== undefined) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
+        });
+      }
+
+      if (namespace.orgs && namespace.orgs.length === 0) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' has an empty 'orgs' list. Declare at least one org, or omit 'orgs'.`,
+        });
+      }
+
+      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
+      if (unknownOrgNames.length > 0) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
+        });
+      }
+    });
   }
   _validateExplorer(global: GlobalJson, orgs: OrgJson[]): void {
     if (global.tools?.explorer === true) {

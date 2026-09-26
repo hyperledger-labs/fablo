@@ -621,6 +621,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode.json 1`] = `
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -1478,6 +1479,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-k8s.json 1`] = 
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -2292,6 +2294,7 @@ exports[`extend config samples/fablo-config-hlf2-1org-1chaincode-peer-dev-mode.j
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -3671,6 +3674,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-private-data.
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -5963,6 +5967,7 @@ exports[`extend config samples/fablo-config-hlf2-2orgs-2chaincodes-raft.yaml 1`]
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
     "postStart": "docker ps --format 'table {{.Names}}	{{.Status}}	{{.Ports}}' > ./fablo-target/container-list.txt 2>&1 && echo 'Container list saved into fablo-target directory'",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer1.com",
@@ -8569,6 +8574,7 @@ exports[`extend config samples/fablo-config-hlf2-3orgs-1chaincode-raft-explorer.
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -10429,6 +10435,7 @@ exports[`extend config samples/fablo-config-hlf3-1org-2chaincode-raft-ccaas.json
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -11698,6 +11705,7 @@ exports[`extend config samples/fablo-config-hlf3-1orgs-2chaincodes.json 1`] = `
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -12760,6 +12768,7 @@ exports[`extend config samples/fablo-config-hlf3-2orgs-1chaincode-raft-ccaas.jso
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -13741,6 +13750,7 @@ exports[`extend config samples/fablo-config-hlf3-bft-1orgs-1chaincode.json 1`] =
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -15192,6 +15202,7 @@ exports[`extend config samples/invalid-fablo-config.json 1`] = `
     "postGenerate": "perl -i -pe 's/MaxMessageCount: 10/MaxMessageCount: 1/g' "./fablo-target/fabric-config/configtx.yaml"",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.orderer.example.com",
@@ -15906,6 +15917,7 @@ exports[`extend config samples/java-dev-mode-sample.json 1`] = `
     "postGenerate": "",
     "postStart": "",
   },
+  "namespaces": [],
   "orderedHeadsDistinct": [
     {
       "address": "orderer0.group1.root.com",

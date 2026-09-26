@@ -48,8 +48,9 @@ expectNotCommand() {
 networkUp() {
   "$FABLO_HOME/fablo-build.sh"
   run_fablo init fabric-x
+  jq '.namespaces += [{"name": "audit_ns", "orgs": ["Org1"]}]' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
+  mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
   run_fablo validate
-
   run_fablo up
 }
 
@@ -78,6 +79,17 @@ run_fablo namespace init
 
 # post-init query
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "audit_ns"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -cE '^[0-9]+\) .+: version')" "2"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "Namespace 'does_not_exist' not found"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "EXIT:"
+# targeted init: creating an already-existing namespace by name should still succeed (idempotent)
+run_fablo namespace init mynamespace
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
+
+# targeted init with an unknown name should fail, not hang or silently succeed
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "Namespace 'does_not_exist' not found"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does_not_exist 2>&1 || echo \"EXIT:\$?\")" "EXIT:"
 
 # idempotency
 run_fablo namespace init
