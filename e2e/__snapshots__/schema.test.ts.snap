@@ -452,7 +452,6 @@ exports[`schema should match snapshot 1`] = `
             "$id": "#/properties/namespaces/items/properties/name",
             "description": "Must match ^[a-z0-9_]+$ (lowercase letters, digits, underscores only - no hyphens), max 60 characters. This is enforced by the Fabric-X fxconfig namespace ID validation, not just Fablo's own convention.",
             "maxLength": 60,
-            "minLength": 1,
             "pattern": "^[a-z0-9_]+$",
             "title": "Name",
             "type": "string",
@@ -470,6 +469,7 @@ exports[`schema should match snapshot 1`] = `
           "policy": {
             "$id": "#/properties/namespaces/items/properties/policy",
             "description": "Advanced override: a raw Fabric policy expression, e.g. "AND('Org1MSP.member')". Mutually exclusive with 'orgs'. If neither is given, defaults to an AND of every org's MSP.",
+            "minLength": 1,
             "title": "Endorsement policy",
             "type": "string",
           },
