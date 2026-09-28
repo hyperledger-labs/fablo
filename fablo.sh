@@ -197,6 +197,9 @@ printHelp() {
   fablo export-network-topology [/path/to/fablo-config.json|yaml [outputFile.mmd]]
     Exports the network topology described by the Fablo config file to a Mermaid diagram. Default output file is 'network-topology.mmd'.
 
+  fablo mcp [/path/to/network]
+    Starts an MCP server over stdio for the network in the given directory (default: current directory), so AI agents can start and manage it. Requires Jaiph and, for starting networks from instructions, an agent backend.
+
   fablo use [version]
     Updates this Fablo script to specified version. Prints all versions if no version parameter is provided.
 
@@ -408,6 +411,25 @@ restoreSnapshot() {
   echo "📦 Network restored from '$archive'! Execute 'start' command to run it."
 }
 
+startMcpServer() {
+  local network_dir="${1:-$COMMAND_CALL_ROOT}"
+  if ! command -v jaiph >/dev/null 2>&1; then
+    echo "Error: 'fablo mcp' requires Jaiph on the PATH. See https://jaiph.org" >&2
+    exit 1
+  fi
+
+  # Stdout carries the MCP protocol, so everything else goes to stderr. The
+  # server and skill ship in the Fablo image to match this script's version.
+  docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp skills | tar -xf - -C "$FABLO_TEMP_DIR" >&2
+  if [ ! -f "$FABLO_TEMP_DIR/mcp/start.sh" ]; then
+    echo "Error: Cannot read the MCP server from $FABLO_IMAGE" >&2
+    exit 1
+  fi
+
+  FABLO_MCP_SCRIPT="${FABLO_MCP_SCRIPT:-$(cd "$(dirname "$0")" && pwd)/$(basename "$0")}" \
+    bash "$FABLO_TEMP_DIR/mcp/start.sh" "$network_dir"
+}
+
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -452,6 +474,9 @@ elif [ "$COMMAND" = "snapshot" ]; then
 
 elif [ "$COMMAND" = "restore" ]; then
   restoreSnapshot "$2" "${3:-""}"
+
+elif [ "$COMMAND" = "mcp" ]; then
+  startMcpServer "$2"
 
 else
   executeFabloCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"

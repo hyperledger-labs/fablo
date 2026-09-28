@@ -1,6 +1,6 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { spawn } = require("node:child_process");
+const { spawn, spawnSync } = require("node:child_process");
 const { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } = require("node:fs");
 const { tmpdir } = require("node:os");
 const path = require("node:path");
@@ -13,9 +13,11 @@ test("MCP discovery, command routing, validation, locking, and failures", { time
 printf '<%s>\\n' "$PWD" "$@"
 if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
 `);
+  const skill = path.join(directory, "SKILL.md");
+  writeFileSync(skill, "# Fake Fablo skill\n");
   const child = spawn("bash", [path.join(__dirname, "start.sh"), directory], {
     cwd: tmpdir(),
-    env: { ...process.env, FABLO_MCP_SCRIPT: script },
+    env: { ...process.env, FABLO_MCP_SCRIPT: script, FABLO_MCP_SKILL: skill },
     stdio: ["pipe", "pipe", "pipe"],
   });
   let stderr = "";
@@ -58,16 +60,17 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })}\n`);
   const listed = await request("tools/list", {});
   assert.deepEqual(listed.result.tools.map((tool) => tool.name).sort(), [
-    "chaincode_install", "network_snapshot", "network_start", "network_stop", "network_up",
+    "chaincode_install", "network_prune", "network_snapshot", "network_start", "network_stop", "network_up",
   ]);
   for (const tool of listed.result.tools) assert.ok(tool.description);
   const call = (name, args = {}) => request("tools/call", { name, arguments: args });
   const content = (response) => response.result.content.map((item) => item.text || "").join("\n");
   const cases = [
-    ["network_up", { config_path: "" }, ["up"]],
-    ["network_up", { config_path: "config with spaces.yaml" }, ["up", "config with spaces.yaml"]],
+    // Empty instructions start the existing config without calling an agent.
+    ["network_up", { instructions: "" }, ["up"]],
     ["network_start", {}, ["start"]],
     ["network_stop", {}, ["stop"]],
+    ["network_prune", {}, ["prune"]],
     ["network_snapshot", { target_path: "backup with spaces" }, ["snapshot", "backup with spaces"]],
     ["chaincode_install", { chaincode_name: "kv", version: "1.0" }, ["chaincode", "install", "kv", "1.0"]],
   ];
@@ -96,4 +99,27 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   assert.equal(failed.result.isError, true);
   assert.ok(content(failed).includes("simulated Docker failure"));
   assert.equal(existsSync(path.join(directory, ".fablo-mcp.lock")), false);
+});
+
+test("the agent's fablo shim allows only config commands", () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "fablo mcp shim "));
+  try {
+    const script = path.join(directory, "fake fablo.sh");
+    writeFileSync(script, "printf '<%s>\\n' \"$@\"\n");
+    const shim = (...args) => spawnSync("bash", [path.join(__dirname, "agent-fablo.sh"), ...args], {
+      env: { ...process.env, FABLO_MCP_SCRIPT: script }, encoding: "utf8",
+    });
+    for (const command of ["init", "validate", "extend-config"]) {
+      const result = shim(command, "arg with spaces");
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.stdout, `<${command}>\n<arg with spaces>\n`);
+    }
+    for (const command of ["up", "prune", "down", "generate", ""]) {
+      const result = shim(command);
+      assert.equal(result.status, 2);
+      assert.equal(result.stdout, "");
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });

@@ -3,11 +3,7 @@ set -euo pipefail
 
 fail() { echo "$*" >&2; exit 2; }
 case "${1:-}" in
-  up)
-    [ "$#" -eq 2 ] || fail "Expected config_path (empty string selects the default)."
-    if [ -z "$2" ]; then set -- up; fi
-    ;;
-  start|stop)
+  up|start|stop|prune)
     [ "$#" -eq 1 ] || fail "This command takes no arguments."
     ;;
   snapshot)

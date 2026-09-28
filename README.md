@@ -15,7 +15,7 @@ Fablo supports:
 
 Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
 
-To control a network from an MCP client, see the [Fablo MCP server](mcp/README.md), powered by Jaiph.
+To let AI agents start and manage a network, run `fablo mcp` and see the [Fablo MCP server](mcp/README.md), powered by Jaiph.
 
 ## See it in action
 
@@ -487,6 +487,16 @@ fablo version [--verbose | -v]
 ```
 Prints the current Fablo version and build information as JSON.
 With the optional `-v` or `--verbose` flag, it also prints the range of Fablo config versions this version supports.
+
+### mcp
+
+```bash
+fablo mcp [/path/to/network]
+```
+
+Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory (default: the current directory).
+It requires [Jaiph](https://jaiph.org/), and starting a network from a plain-language description also requires the Claude CLI.
+See the [Fablo MCP server](mcp/README.md) for the tools and client setup.
 
 ### use
 
