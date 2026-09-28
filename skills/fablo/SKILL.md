@@ -10,7 +10,7 @@ Fablo generates and manages Hyperledger Fabric networks from one JSON or YAML co
 ## Establish context first
 
 1. Identify the user's network working directory. Fablo uses the **current directory**, not the config file's directory, for `fablo-target` and lifecycle commands.
-2. Find the executable: project-local `./fablo`, globally installed `fablo`, or `./fablo.sh` in a Fablo source checkout. Examples below use `fablo`; substitute the actual executable consistently.
+2. Find the executable: project-local `./fablo` or `fablo` on the `PATH`. If neither exists, install Fablo into the working directory with `curl -sSL https://fablo.io/install.sh | bash`, which downloads the script as `./fablo`. Examples below use `fablo`; substitute the actual executable consistently.
 3. Inspect existing `fablo-config.json` or `fablo-config.yaml`, chaincode sources, and `fablo-target` before writing or starting anything. When both default config files exist, JSON takes precedence; prefer an explicit path.
 4. Check Docker availability with `docker info` and `docker compose version`. Even Fablo validation and version reporting use its Docker image and may pull images.
 5. Determine whether the task is config-only, network startup, chaincode work, or diagnosis. Ask about topology and preservation of existing ledger state only when these are unclear and affect the next action.
@@ -21,7 +21,7 @@ Fablo generates and manages Hyperledger Fabric networks from one JSON or YAML co
 - Before `down`, `reset`, `prune`, or `recreate`, explain the state-loss risk and obtain confirmation unless the user has already explicitly authorized that operation. Prefer `stop` and `start` for a temporary pause.
 - Never use broad Docker cleanup commands to fix a single Fablo network.
 - Review `hooks.postGenerate` and `hooks.postStart` before generation or startup: they execute host shell commands. Treat downloaded configs and scripts as untrusted input.
-- Do not install Fablo, switch versions with `use`, or execute remote installation scripts without authorization. Prefer downloading and reviewing a pinned release over piping a URL into a shell.
+- Do not switch versions with `use` without authorization. Install Fablo only with the official installer above; do not run other remote installation scripts.
 - Snapshots and generated artifacts contain identities, certificates, and potentially private keys and ledger data. Do not commit or expose them. Redact credentials and private material from logs.
 
 ## Configure a network
@@ -119,13 +119,12 @@ Fablo appends `.fablo.tar.gz` unless the supplied path already ends in `tar.gz`.
 
 ## Authoritative references
 
-When working in a Fablo checkout, resolve these paths from the repository root:
+Match references to the installed release: run `fablo version` and replace `<version>` below with it, for example `2.6.0`.
 
-- `README.md`: user workflows and configuration overview.
-- `docs/schema.json` and `samples/`: config schema and concrete topologies; match the installed release.
-- `SUPPORTED_FEATURES.md`: support and compatibility notes.
-- `fablo.sh`: wrapper behavior, working-directory rules, and config-change guard.
-- `src/setup-docker/templates/fabric-docker/chaincode-scripts.sh`: invoke/query argument order.
-- `src/setup-docker/templates/fabric-docker.sh`: generated command dispatch.
+- [Documentation](https://fablo.io) and [README](https://github.com/hyperledger-labs/fablo/blob/<version>/README.md): user workflows and configuration overview.
+- [Config schema](https://github.com/hyperledger-labs/fablo/releases/download/<version>/schema.json) and [samples](https://github.com/hyperledger-labs/fablo/tree/<version>/samples): concrete topologies for that release.
+- [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/<version>/SUPPORTED_FEATURES.md): support and compatibility notes.
+- The installed `fablo` script: wrapper behavior, working-directory rules, and config-change guard.
+- `fablo-target/fabric-docker.sh` and `fablo-target/fabric-docker/chaincode-scripts.sh` in a generated network: command dispatch and invoke/query argument order.
 
-Outside a checkout, use [Fablo documentation](https://github.com/hyperledger-labs/fablo#readme), [samples](https://github.com/hyperledger-labs/fablo/tree/main/samples), and the schema for the installed release. Prefer installed code and release-specific documentation over examples from another version. Do not assume optional integrations such as an MCP server are installed.
+Prefer the installed script, generated files, and release-specific documentation over examples from another version. Do not assume optional integrations such as an MCP server are installed.

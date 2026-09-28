@@ -834,7 +834,13 @@ Set `"tools": { "explorer": true }` for your organization if you want to use it 
 ## AI agent skill
 
 The reusable [Fablo skill](skills/fablo/SKILL.md) helps coding agents configure, validate, run, and troubleshoot Fablo networks, with safeguards for destructive operations and sensitive network artifacts.
-Copy the `skills/fablo` directory into your agent's supported skill directory, preserving `SKILL.md`, or ask your agent to read the file directly. Skill discovery and installation paths depend on the agent you use.
+Install it with the [skills CLI](https://github.com/vercel-labs/skills), which detects your agents and copies the skill into their skill directories:
+
+```bash
+npx skills add hyperledger-labs/fablo --skill fablo
+```
+
+Add `-g` to install it for your user instead of the current project, or `-a <agent>` to choose the agent, for example `-a claude-code`.
 
 ## Contributing
 
