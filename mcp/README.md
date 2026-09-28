@@ -1,49 +1,96 @@
 # Fablo MCP server
 
-This MVP exposes Fablo's shell commands through [Jaiph's stdio MCP server](https://jaiph.org/how-to/mcp). It needs no agent credentials or npm dependencies.
+`fablo mcp` serves a Fablo network directory to MCP clients over stdio, through [Jaiph's MCP server](https://jaiph.org/how-to/mcp). An agent can describe the network it wants in plain language, and then stop, resume, snapshot, and prune it.
 
-Install [Jaiph](https://jaiph.org/) (tested with 0.13.0), and have Bash, Docker, and the usual Fablo prerequisites available on the host. Create a network directory containing your Fablo configuration and chaincode sources, or use an existing network directory.
+## Requirements
 
-Launch the server from an MCP client using this configuration, replacing the absolute paths:
+- Fablo, Docker, and Bash on the host.
+- [Jaiph](https://jaiph.org/) on the `PATH` (tested with 0.13.0).
+- The [Claude CLI](https://docs.anthropic.com/en/docs/claude-code), signed in, for `network_up` with instructions. The other tools call no agent.
+
+## Connect a client
+
+Run `fablo mcp` with the network directory. It defaults to the current directory, but most clients do not set one, so pass an absolute path. With Claude Code:
+
+```bash
+claude mcp add fablo -- /absolute/path/to/fablo mcp /absolute/path/to/network
+```
+
+Other clients take the same command in their configuration:
 
 ```json
 {
   "mcpServers": {
     "fablo": {
-      "command": "bash",
-      "args": [
-        "/absolute/path/to/fablo/mcp/start.sh",
-        "/absolute/path/to/network"
-      ]
+      "command": "/absolute/path/to/fablo",
+      "args": ["mcp", "/absolute/path/to/network"]
     }
   }
 }
 ```
 
-Ensure `jaiph` and Docker are on the client's `PATH`. The launcher works independently of the client's working directory and uses this checkout's `fablo.sh`. To select another installed Fablo shell script, set `FABLO_MCP_SCRIPT` to its absolute path in the MCP server's `env` configuration. Do not point it at the npm/oclif entrypoint, which provides the generator commands rather than the network lifecycle commands.
+`fablo mcp` reads the server and the [Fablo skill](../skills/fablo/SKILL.md) from the Fablo Docker image for its version, so they always match the installed script. Use one server entry for each network. Configure a generous tool timeout in your client: starting a network and building chaincodes can take several minutes.
 
-| Tool | Arguments (strings) | Fablo command |
+## Tools
+
+All arguments are strings.
+
+| Tool | Arguments | What it does |
 | --- | --- | --- |
-| `network_up` | `config_path` (use `""` for the default config) | `fablo up [config_path]` |
+| `network_up` | `instructions` | Prepares the config from instructions, then runs `fablo up`. |
 | `network_start` | None | `fablo start` |
 | `network_stop` | None | `fablo stop` |
+| `network_prune` | None | `fablo prune`. Destroys the network state. |
 | `network_snapshot` | `target_path` | `fablo snapshot <target_path>` |
 | `chaincode_install` | `chaincode_name`, `version` | `fablo chaincode install <name> <version>` |
 
-For example, call `network_up` with `{"config_path":""}` to generate and start a network, including its configured channels and chaincodes. Use `network_start` to resume it after `network_stop`. Install an individual configured chaincode with `{"chaincode_name":"kv","version":"1.0"}`. Names and versions accept letters, digits, dots, underscores, plus signs, and hyphens, starting with a letter or digit.
+Every tool except `network_up` with instructions wraps a Fablo command directly.
 
-Paths are relative to the configured network directory unless absolute. A snapshot target of `backup` produces `backup.fablo.tar.gz`; Fablo refuses to overwrite an existing archive. Snapshot support depends on the network provider; the adapter preserves the existing CLI behavior. Configure a generous tool timeout in your client: initial setup and chaincode builds can take several minutes.
+### Start a network from instructions
 
-The launcher explicitly selects Jaiph's `--unsafe` host execution mode because Fablo operates the host Docker daemon and persistent network files. Connected clients can run these five operations with the launching user's permissions, including hooks configured in the network. Use a trusted configuration and a dedicated server entry for each network. This MVP serves local stdio only.
+Call `network_up` with a description, for example:
 
-Command output becomes MCP text content; command failures become tool results with `isError: true`. Jaiph stores execution records under the network directory's `.jaiph/runs/`. A `.fablo-mcp.lock` directory rejects overlapping MCP mutations of the same network; it does not coordinate commands run manually outside MCP. After a forced kill, remove a stale lock only once the operation has stopped. Cancellation does not roll back changes already made by Fablo.
+```json
+{"instructions": "Two organizations with two peers each, a RAFT orderer with three nodes, one channel, and the sample Node.js chaincode"}
+```
 
-Validate the workflow and run the protocol integration test from this checkout:
+An agent reads the Fablo skill and writes `fablo-config.json` in the network directory, running `fablo init` for samples when that helps. It reports ready only after `fablo validate` passes. Fablo then runs `fablo up`, which generates the network, starts it, creates channels, and deploys chaincodes. The result starts with the agent's summary of the network.
+
+To start the config already in the network directory without an agent, pass `{"instructions": ""}`.
+
+The agent does not start or change a network that already exists. If `fablo-target` is present and its config does not satisfy the instructions, the call fails with the reason. Use `network_prune` first to replace the network.
+
+The agent runs with limited permissions. It can edit files only in the network directory, and its `fablo` command runs only `init`, `validate`, and `extend-config`. It is told never to add `hooks`, because they run shell commands on the host, but this rule is not enforced. Check the config before calling `network_up` again with it.
+
+Peer dev mode is not handled yet: the agent does not start local chaincode processes.
+
+To use a different agent, set `JAIPH_AGENT_BACKEND` in the server's `env` configuration, for example to `cursor`. The permission limits above are Claude CLI flags, so apply equivalent limits with `JAIPH_AGENT_CURSOR_FLAGS`.
+
+## Behavior and safety
+
+Paths are relative to the network directory unless absolute. A snapshot target of `backup` produces `backup.fablo.tar.gz`, and Fablo refuses to overwrite an existing archive. Chaincode names and versions accept letters, digits, dots, underscores, plus signs, and hyphens, starting with a letter or digit.
+
+The server runs in Jaiph's `--unsafe` host mode, because Fablo drives the host Docker daemon and keeps network files between calls. Connected clients can run these tools with your permissions, including any hooks already in the network's config. Only use configs you trust.
+
+Command output becomes the tool result, and a failed command returns a result with `isError: true`. Jaiph keeps a record of each call under the network directory's `.jaiph/runs/`. A `.fablo-mcp.lock` directory stops two MCP commands from changing the same network at once. It does not cover Fablo commands you run yourself. After a forced kill, remove a stale lock only once the operation has stopped. Canceling a call does not undo changes Fablo already made.
+
+## Develop and test
+
+In a Fablo checkout, run the server without the Docker image:
+
+```bash
+bash mcp/start.sh /absolute/path/to/network
+```
+
+It uses the checkout's `fablo.sh` and `skills/fablo/SKILL.md`. Set `FABLO_MCP_SCRIPT` or `FABLO_MCP_SKILL` to absolute paths to use others.
+
+Validate the workflow and run the tests:
 
 ```bash
 jaiph compile mcp/server.jh
-jaiph format --check mcp/server.jh
+jaiph format --check mcp/server.jh mcp/server.test.jh
+jaiph test mcp/server.test.jh
 node --test mcp/server.test.cjs
 ```
 
-The test requires Node.js 18+ and Jaiph. It launches the real MCP server against a fake Fablo script in a temporary directory, checks tool discovery and routing, argument validation and quoting, lock handling, and failure propagation. It does not start Docker. Jaiph may create audit keys in `~/.jaiph` during the test. Real Fabric network operations remain covered by the existing network test suites rather than this protocol test.
+The Jaiph test mocks the agent and checks when `network_up` calls it and when it starts the network. The Node.js test (Node.js 18+) starts the real MCP server against a fake Fablo script. It checks tool discovery, command routing, argument validation and quoting, locking, failures, and the limits on the agent's `fablo` command. Neither test calls an agent or Docker. Jaiph may create audit keys in `~/.jaiph`.

@@ -23,6 +23,9 @@ COPY bin/run.mjs /fablo/bin/run.mjs
 COPY docs /fablo/docs
 COPY README.md /fablo/README.md
 COPY samples /fablo/samples/
+# extracted to the host by `fablo mcp`
+COPY mcp /fablo/mcp
+COPY skills /fablo/skills
 
 ARG VERSION_DETAILS
 RUN echo "{ \"buildInfo\": \"$VERSION_DETAILS\" }" > /fablo/version.json
