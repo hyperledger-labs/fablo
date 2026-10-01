@@ -366,7 +366,7 @@ describe("generate", () => {
   it("should generate Fabric-X network files with custom organization", () => {
     // Given
     commands.fabloExec(
-      "init fabric-x --set orgs[0].organization.name=Bank --set orgs[0].organization.domain=bank.fablo.com --set orgs[0].organization.mspName=BankMSP --set channels[0].orgs[0].name=Bank",
+      "init fabric-x --set orgs[0].organization.name=Bank --set orgs[0].organization.domain=bank.fablo.com --set orgs[0].organization.mspName=BankMSP --set channels[0].orgs[0].name=Bank --set namespaces[0].orgs[0]=Bank",
     );
 
     // When

@@ -199,7 +199,10 @@ export interface HooksConfig {
   postGenerate: string;
   postStart: string;
 }
-
+export interface NamespaceConfig {
+  name: string;
+  policy: string;
+}
 export interface FabloConfigExtended {
   global: Global;
   ordererGroups: OrdererGroup[];
@@ -208,4 +211,5 @@ export interface FabloConfigExtended {
   channels: ChannelConfig[];
   chaincodes: ChaincodeConfig[];
   hooks: HooksConfig;
+  namespaces: NamespaceConfig[];
 }
