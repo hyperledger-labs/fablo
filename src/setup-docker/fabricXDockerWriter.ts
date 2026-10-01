@@ -1,7 +1,31 @@
-import { FabloConfigExtended } from "../types/FabloConfigExtended";
+import { FabloConfigExtended, OrgConfig } from "../types/FabloConfigExtended";
 import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
+import { shellQuote } from "../utils/shellQuote";
 import * as fs from "fs-extra";
 import * as path from "path";
+
+export interface FabricXTemplateModel {
+  channelName: string;
+  channelProfileName: string;
+  applicationOrg: OrgConfig;
+  applicationOrgSlug: string;
+}
+
+export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): FabricXTemplateModel => {
+  const [channel] = configExtended.channels;
+  if (!channel) {
+    throw new Error("Fabric-X generation requires exactly one channel.");
+  }
+  if (!channel.instantiatingOrg) {
+    throw new Error("Fabric-X generator requires at least one channel with an organization.");
+  }
+  return {
+    channelName: channel.name,
+    channelProfileName: channel.profileName,
+    applicationOrg: channel.instantiatingOrg,
+    applicationOrgSlug: channel.instantiatingOrg.name.toLowerCase(),
+  };
+};
 
 export class FabricXDockerWriter {
   constructor(private templatesDir: string, private outputDir: string, private log: (msg: string) => void) {}
@@ -9,7 +33,11 @@ export class FabricXDockerWriter {
   public async write(configExtended: FabloConfigExtended): Promise<void> {
     this.log("Generating Fabric-X network files...");
 
-    const data = configExtended as unknown as Record<string, unknown>;
+    const data = {
+      ...(configExtended as unknown as Record<string, unknown>),
+      fabricX: getFabricXTemplateModel(configExtended),
+      shellQuote,
+    };
 
     await this.renderTemplateFile("fabric-x-docker.sh", data);
     await this.renderTemplateDirectory("fabric-x", data);
