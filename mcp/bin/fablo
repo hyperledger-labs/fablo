@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# start.sh puts this on the PATH of the network_up agent. The agent prepares
+# and checks the config; the MCP tools own every network lifecycle command.
+case "${1:-}" in
+  init|validate|extend-config) exec bash "${FABLO_MCP_SCRIPT:?Start this server with mcp/start.sh}" "$@" ;;
+  *) echo "Only fablo init, validate, and extend-config are available here." >&2; exit 2 ;;
+esac
