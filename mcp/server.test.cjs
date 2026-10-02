@@ -1,7 +1,7 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const { spawn, spawnSync } = require("node:child_process");
-const { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } = require("node:fs");
+const { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync, readFileSync } = require("node:fs");
 const { tmpdir } = require("node:os");
 const path = require("node:path");
 const { createInterface } = require("node:readline");
@@ -13,11 +13,9 @@ test("MCP discovery, command routing, validation, locking, and failures", { time
 printf '<%s>\\n' "$PWD" "$@"
 if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
 `);
-  const skill = path.join(directory, "SKILL.md");
-  writeFileSync(skill, "# Fake Fablo skill\n");
   const child = spawn("bash", [path.join(__dirname, "start.sh"), directory], {
     cwd: tmpdir(),
-    env: { ...process.env, FABLO_MCP_SCRIPT: script, FABLO_MCP_SKILL: skill },
+    env: { ...process.env, FABLO_MCP_SCRIPT: script },
     stdio: ["pipe", "pipe", "pipe"],
   });
   let stderr = "";
@@ -60,19 +58,17 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })}\n`);
   const listed = await request("tools/list", {});
   assert.deepEqual(listed.result.tools.map((tool) => tool.name).sort(), [
-    "chaincode_install", "network_prune", "network_snapshot", "network_start", "network_stop", "network_up",
+    "chaincode_upgrade", "network_prune", "network_snapshot", "network_start", "network_stop", "network_up",
   ]);
   for (const tool of listed.result.tools) assert.ok(tool.description);
   const call = (name, args = {}) => request("tools/call", { name, arguments: args });
   const content = (response) => response.result.content.map((item) => item.text || "").join("\n");
   const cases = [
-    // Empty instructions start the existing config without calling an agent.
-    ["network_up", { instructions: "" }, ["up"]],
     ["network_start", {}, ["start"]],
     ["network_stop", {}, ["stop"]],
     ["network_prune", {}, ["prune"]],
     ["network_snapshot", { target_path: "backup with spaces" }, ["snapshot", "backup with spaces"]],
-    ["chaincode_install", { chaincode_name: "kv", version: "1.0" }, ["chaincode", "install", "kv", "1.0"]],
+    ["chaincode_upgrade", { chaincode_name: "kv", version: "1.1" }, ["chaincode", "upgrade", "kv", "1.1"]],
   ];
   for (const [name, args, expected] of cases) {
     const response = await call(name, args);
@@ -85,11 +81,18 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   const quoted = await call("network_snapshot", { target_path: injection });
   assert.ok(content(quoted).includes(`<${injection}>`));
   assert.equal(existsSync(path.join(directory, "injected")), false);
-  const invalid = await call("chaincode_install", { chaincode_name: "kv", version: injection });
+  // network_up needs instructions: it never starts whatever config is present.
+  for (const instructions of ["", "  "]) {
+    const empty = await call("network_up", { instructions });
+    assert.equal(empty.result.isError, true);
+    assert.ok(content(empty).includes("Describe the network"), content(empty));
+  }
+  assert.equal(existsSync(path.join(directory, ".fablo-mcp.lock")), false);
+  const invalid = await call("chaincode_upgrade", { chaincode_name: "kv", version: injection });
   assert.equal(invalid.result.isError, true);
   assert.ok(content(invalid).includes("Invalid chaincode version"));
   assert.equal((await call("network_snapshot", { target_path: "" })).result.isError, true);
-  assert.ok((await call("chaincode_install", { chaincode_name: "kv" })).error);
+  assert.ok((await call("chaincode_upgrade", { chaincode_name: "kv" })).error);
   assert.ok((await call("network_stop", { unexpected: "value" })).error);
   mkdirSync(path.join(directory, ".fablo-mcp.lock"));
   assert.equal((await call("network_stop")).result.isError, true);
@@ -106,7 +109,7 @@ test("the agent's fablo shim allows only config commands", () => {
   try {
     const script = path.join(directory, "fake fablo.sh");
     writeFileSync(script, "printf '<%s>\\n' \"$@\"\n");
-    const shim = (...args) => spawnSync("bash", [path.join(__dirname, "agent-fablo.sh"), ...args], {
+    const shim = (...args) => spawnSync(path.join(__dirname, "bin", "fablo"), args, {
       env: { ...process.env, FABLO_MCP_SCRIPT: script }, encoding: "utf8",
     });
     for (const command of ["init", "validate", "extend-config"]) {
@@ -122,4 +125,11 @@ test("the agent's fablo shim allows only config commands", () => {
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("the embedded skill matches skills/fablo/SKILL.md", () => {
+  const generated = spawnSync("bash", [path.join(__dirname, "embed-skill.sh")], { encoding: "utf8" });
+  assert.equal(generated.status, 0, generated.stderr);
+  assert.equal(readFileSync(path.join(__dirname, "skill.jh"), "utf8"), generated.stdout,
+    "Run: bash mcp/embed-skill.sh > mcp/skill.jh");
 });

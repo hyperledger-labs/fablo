@@ -10,7 +10,7 @@ case "${1:-}" in
     [ "$#" -eq 2 ] && [ -n "$2" ] || fail "A non-empty target_path is required."
     ;;
   chaincode)
-    [ "$#" -eq 4 ] && [ "$2" = install ] || fail "Expected chaincode install <name> <version>."
+    [ "$#" -eq 4 ] && [ "$2" = upgrade ] || fail "Expected chaincode upgrade <name> <version>."
     # Generated Fabric scripts interpolate these identifiers into shell commands.
     [[ "$3" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.+-]*$ ]] || fail "Invalid chaincode name."
     [[ "$4" =~ ^[a-zA-Z0-9][a-zA-Z0-9_.+-]*$ ]] || fail "Invalid chaincode version."
