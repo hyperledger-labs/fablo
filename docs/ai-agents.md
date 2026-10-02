@@ -28,7 +28,7 @@ The skill is a single file, [`skills/fablo/SKILL.md`](https://github.com/hyperle
 
 ## Connect the MCP Server
 
-`fablo mcp` lets an agent start and manage a network through MCP tools. The agent can describe the network it wants in plain language. Fablo then writes and validates the config with the help of the Fablo skill, and starts the network. The agent can also stop, resume, snapshot, and prune the network, and install chaincodes.
+`fablo mcp` lets an agent start and manage a network through MCP tools. The agent can describe the network it wants in plain language. Fablo then writes and validates the config with the help of the Fablo skill, and starts the network. The agent can also stop, resume, snapshot, and prune the network, and upgrade chaincodes.
 
 It requires [Jaiph](https://jaiph.org/) on the `PATH`. Starting a network from a description also requires the signed-in Claude CLI. To add the server to Claude Code:
 

@@ -1,8 +1,7 @@
 import "server.jh" as server
 
 # The prompt and the Fablo adapter are mocked, so these tests call no agent
-# and no Docker. They cover when network_up asks the agent and when it starts
-# the network.
+# and no Docker. They cover when network_up starts the network.
 test "network_up starts the network after the agent prepares the config" {
   mock prompt {
     _ => "{\"ready\": true, \"summary\": \"Two orgs on channel my-channel1.\"}"
@@ -10,14 +9,11 @@ test "network_up starts the network after the agent prepares the config" {
   mock script server.network_dir() {
     printf '/networks/demo'
   }
-  mock script server.read_skill() {
-    echo "# Fablo skill"
-  }
   mock script server.fablo() {
     echo "fablo $*"
   }
 
-  const out = run server.network_up("two organizations with one channel")
+  const out = server.network_up("two organizations with one channel")
   expect_contain out "Two orgs on channel my-channel1."
   expect_contain out "fablo up"
 }
@@ -29,23 +25,41 @@ test "network_up does not start the network when the agent is not ready" {
   mock script server.network_dir() {
     printf '/networks/demo'
   }
-  mock script server.read_skill() {
-    echo "# Fablo skill"
-  }
   mock script server.fablo() {
     echo "fablo $*"
   }
 
-  const out = run server.network_up("three organizations") allow_failure
+  const out = server.network_up("three organizations") allow_failure
   expect_contain out "fablo-target exists with another topology."
   expect_not_contain out "fablo up"
 }
 
-test "network_up with empty instructions starts the existing config" {
+test "network_up sends the instructions and the embedded skill to the agent" {
+  mock prompt {
+    /Request: one organization[\s\S]*name: fablo/ => "{\"ready\": true, \"summary\": \"prompt had both\"}"
+    _ => "{\"ready\": false, \"summary\": \"prompt was incomplete\"}"
+  }
+  mock script server.network_dir() {
+    printf '/networks/demo'
+  }
   mock script server.fablo() {
     echo "fablo $*"
   }
 
-  const out = run server.network_up("")
-  expect_equal out "fablo up"
+  const out = server.network_up("one organization")
+  expect_contain out "prompt had both"
+}
+
+test "network_up without instructions calls no agent and starts nothing" {
+  mock prompt {
+    _ => "{\"ready\": true, \"summary\": \"AGENT SHOULD NOT RUN\"}"
+  }
+  mock script server.fablo() {
+    echo "fablo $*"
+  }
+
+  const out = server.network_up("") allow_failure
+  expect_contain out "Describe the network"
+  expect_not_contain out "AGENT SHOULD NOT RUN"
+  expect_not_contain out "fablo up"
 }

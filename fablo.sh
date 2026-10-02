@@ -419,8 +419,8 @@ startMcpServer() {
   fi
 
   # Stdout carries the MCP protocol, so everything else goes to stderr. The
-  # server and skill ship in the Fablo image to match this script's version.
-  docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp skills | tar -xf - -C "$FABLO_TEMP_DIR" >&2
+  # server ships in the Fablo image to match this script's version.
+  docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp | tar -xf - -C "$FABLO_TEMP_DIR" >&2
   if [ ! -f "$FABLO_TEMP_DIR/mcp/start.sh" ]; then
     echo "Error: Cannot read the MCP server from $FABLO_IMAGE" >&2
     exit 1
