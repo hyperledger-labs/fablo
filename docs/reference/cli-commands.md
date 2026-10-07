@@ -457,6 +457,10 @@ fablo extend-config [/path/to/fablo-config.json|yaml]
 fablo mcp [/path/to/network]
 ```
 
+By default the MCP server runs in a temporary directory: `fablo mcp` unpacks the server from the Fablo Docker image for its version into a temporary directory and runs it from there, so it always matches the installed script. The network itself lives in the given directory.
+
+**Note:** the MCP server works with Claude only. The agent behind `network_up` is the Claude CLI, so it must be installed and signed in on the host, whichever MCP client you connect from.
+
 **Arguments:**
 
 | Argument | Required | Description |

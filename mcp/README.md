@@ -10,13 +10,21 @@
 
 ## Connect a client
 
-Run `fablo mcp` with the network directory. It defaults to the current directory, but most clients do not set one, so pass an absolute path. With Claude Code:
+Run `fablo mcp` with the network directory. It defaults to the current directory, but most clients do not set one, so pass an absolute path.
+
+> **Note:** the MCP server works with Claude only. The agent behind `network_up` is the Claude CLI, so it must be installed and signed in on the host, whichever MCP client you connect from.
+
+### Claude Code
 
 ```bash
 claude mcp add fablo -- /absolute/path/to/fablo mcp /absolute/path/to/network
 ```
 
-Other clients take the same command in their configuration:
+Add `--scope user` to make the server available in every project. Claude Code needs no timeout change: its default tool timeout for stdio servers is about 28 hours.
+
+### Cursor
+
+Add the server to `.cursor/mcp.json` in the project, or to `~/.cursor/mcp.json` for all projects. Servers can be toggled under Customize in the sidebar:
 
 ```json
 {
@@ -29,7 +37,27 @@ Other clients take the same command in their configuration:
 }
 ```
 
-`fablo mcp` reads the server from the Fablo Docker image for its version, so it always matches the installed script. Use one server entry for each network. Configure a generous tool timeout in your client: starting a network and building chaincodes can take several minutes.
+### Codex
+
+```bash
+codex mcp add fablo -- /absolute/path/to/fablo mcp /absolute/path/to/network
+```
+
+Or add it to `~/.codex/config.toml`. The timeouts are in seconds; the defaults are too short for `network_up`:
+
+```toml
+[mcp_servers.fablo]
+command = "/absolute/path/to/fablo"
+args = ["mcp", "/absolute/path/to/network"]
+startup_timeout_sec = 120
+tool_timeout_sec = 900
+```
+
+### Other clients
+
+Any client that launches stdio MCP servers takes the same command and arguments in its configuration, as in the Cursor example above.
+
+By default the server runs in a temporary directory: `fablo mcp` unpacks it from the Fablo Docker image for its version, so it always matches the installed script. Use one server entry for each network. Configure a generous tool timeout in your client: starting a network and building chaincodes can take several minutes.
 
 ## Tools
 
@@ -63,8 +91,6 @@ The agent does not change a network that already exists. If `fablo-target` is pr
 The agent runs with limited permissions. It can edit files only in the network directory, and its `fablo` command runs only `init`, `validate`, and `extend-config`. It is told never to add `hooks`, because they run shell commands on the host, but this rule is not enforced. Check the config before calling `network_up` again with it.
 
 Peer dev mode is not handled yet: the agent does not start local chaincode processes.
-
-To use a different agent, set `JAIPH_AGENT_BACKEND` in the server's `env` configuration, for example to `cursor`. The permission limits above are Claude CLI flags, so apply equivalent limits with `JAIPH_AGENT_CURSOR_FLAGS`.
 
 ## Behavior and safety
 
