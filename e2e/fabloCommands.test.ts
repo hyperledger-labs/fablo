@@ -293,6 +293,61 @@ describe("validate", () => {
     expect(fabricXResult).toEqual(TestCommands.success());
     expect(fabricXResult.output).toContain("Validation warnings count: 0");
   });
+
+  it("should fail when channel references an organization not in top-level orgs for Fabric-X", () => {
+    // Given
+    commands.cleanupWorkdir();
+    commands.fabloExec("init fabric-x --set channels[0].orgs[0].name=MissingOrg");
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("Channel 'mychannel' references unknown org(s): MissingOrg.");
+  });
+
+  it("should fail when channel defines multiple organizations for Fabric-X", () => {
+    // Given
+    commands.cleanupWorkdir();
+    commands.fabloExec("init fabric-x");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    config.orgs.push({
+      organization: { name: "Org2", domain: "org2.example.com", mspName: "Org2MSP" },
+      ca: { prefix: "ca", db: "sqlite" },
+      orderers: undefined,
+    });
+    config.channels[0].orgs.push({ name: "Org2", peers: [] });
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("fabric-x currently supports only one organization on a channel, found 2.");
+  });
+
+  it("should fail when namespace references multiple organizations or unsupported MSP for Fabric-X", () => {
+    // Given
+    commands.cleanupWorkdir();
+    commands.fabloExec("init fabric-x --set namespaces[0].orgs[1]=Org2");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    (config.namespaces ??= []).push({ name: "policy_ns", policy: "AND('UnsupportedMSP.member')" });
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("Namespace 'mynamespace' references multiple organizations.");
+    expect(result.output).toContain(
+      "Namespace 'policy_ns' policy references unsupported or unknown MSP(s): UnsupportedMSP.",
+    );
+  });
 });
 
 describe("extend config", () => {

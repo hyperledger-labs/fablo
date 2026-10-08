@@ -586,6 +586,50 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    const topLevelOrgNames = orgs.map((o) => o.organization.name);
+    const channelOrgs = channels[0]?.orgs ?? [];
+
+    if (channelOrgs.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x requires at least one organization on channel '${channels[0]?.name}'.`,
+      });
+    }
+
+    const unknownChannelOrgs = channelOrgs.map((o) => o.name).filter((name) => !topLevelOrgNames.includes(name));
+    if (unknownChannelOrgs.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channels[0]?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
+      });
+    }
+
+    if (channelOrgs.length > 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x currently supports only one organization on a channel, found ${channelOrgs.length}.`,
+      });
+    }
+
+    const appOrgName = channelOrgs[0]?.name;
+    const appOrg = orgs.find((o) => o.organization.name === appOrgName);
+    const appOrgMsp = appOrg?.organization.mspName ?? (appOrg ? `${appOrg.organization.name}MSP` : undefined);
+
+    if (appOrgName && topLevelOrgNames.includes(appOrgName)) {
+      const extraAppOrgs = orgs.filter(
+        (o) => o.organization.name !== appOrgName && (o.peer !== undefined || !o.orderers || o.orderers.length === 0),
+      );
+      if (extraAppOrgs.length > 0) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORGS,
+          message: `fabric-x currently supports only one application organization, but found additional: ${extraAppOrgs
+            .map((o) => o.organization.name)
+            .join(", ")}.`,
+        });
+      }
+    }
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {
@@ -600,7 +644,7 @@ export default class Validate extends Command {
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
     const maxNamespaceIdLength = 60;
-    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
+    const knownOrgNames = channelOrgs.map((o) => o.name);
 
     const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {
@@ -626,7 +670,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy!== undefined) {
+      if (namespace.orgs && namespace.policy !== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
@@ -646,6 +690,29 @@ export default class Validate extends Command {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
         });
+      }
+
+      if ((namespace.orgs?.length ?? 0) > 1) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' references multiple organizations. Multi-organization namespace policies are not supported yet.`,
+        });
+      }
+
+      if (namespace.policy !== undefined && appOrgMsp) {
+        const mspMatches = Array.from(namespace.policy.matchAll(/'([A-Za-z0-9]+)(?:\.[a-zA-Z]+)?'/g));
+        const referencedMsps = [...new Set(mspMatches.map((m) => m[1]))];
+        const unsupportedMsps = referencedMsps.filter((msp) => msp !== appOrgMsp);
+        if (unsupportedMsps.length > 0) {
+          this.emit(validationErrorType.ERROR, {
+            category: validationCategories.GENERAL,
+            message: `Namespace '${
+              namespace.name
+            }' policy references unsupported or unknown MSP(s): ${unsupportedMsps.join(
+              ", ",
+            )}. Only '${appOrgMsp}' is supported.`,
+          });
+        }
       }
     });
   }
