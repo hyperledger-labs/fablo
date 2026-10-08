@@ -14,7 +14,7 @@ This reference documents the commands exposed by the Fablo CLI (`fablo`). For ea
 3. [Chaincode Commands](#chaincode-commands) — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode dev`, `chaincode invoke`, `chaincodes list`, `chaincode query`
 4. [Channel Commands](#channel-commands) — `channel --help`, `channel list`, `channel getinfo`, `channel fetch`
 5. [Snapshot Commands](#snapshot-commands) — `snapshot`, `restore`
-6. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`, `use`, `help`
+6. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`, `mcp`, `use`, `help`
 
 
 ## Network Lifecycle Commands
@@ -446,6 +446,26 @@ fablo extend-config [/path/to/fablo-config.json|yaml]
 | Argument | Required | Description |
 |---|---|---|
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `$(pwd)/fablo-config.json` or `$(pwd)/fablo-config.yaml`. |
+
+
+### `fablo mcp`
+
+**Purpose:** Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory. Agents can start a network from a plain-language description, and stop, resume, snapshot, and prune it. It requires [Jaiph](https://jaiph.org/), and starting a network from a description also requires the Claude CLI. See [AI agents](../ai-agents.html) for the tools and client setup.
+
+**Syntax:**
+```
+fablo mcp [/path/to/network]
+```
+
+By default the MCP server runs in a temporary directory: `fablo mcp` unpacks the server from the Fablo Docker image for its version into a temporary directory and runs it from there, so it always matches the installed script. The network itself lives in the given directory.
+
+**Note:** the MCP server works with Claude only. The agent behind `network_up` is the Claude CLI, so it must be installed and signed in on the host, whichever MCP client you connect from.
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `/path/to/network` | No | Network directory to serve. Defaults to the current directory. |
 
 
 ### `fablo use`
