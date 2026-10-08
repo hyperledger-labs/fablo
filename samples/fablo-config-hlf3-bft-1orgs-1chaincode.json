@@ -10,8 +10,12 @@
     "orgs": [
       {
         "organization": {
-          "name": "Orderer",
-          "domain": "orderer.example.com"
+          "name": "Org1",
+          "domain": "org1.example.com"
+        },
+        "peer": {
+          "instances": 2,
+          "db": "LevelDb"
         },
         "orderers": [
           {
@@ -19,18 +23,7 @@
             "type": "BFT",
             "instances": 4
           }
-
         ]
-      },
-      {
-        "organization": {
-          "name": "Org1",
-          "domain": "org1.example.com"
-        },
-        "peer": {
-          "instances": 2,
-          "db": "LevelDb"
-        }
       }
     ],
     "channels": [
@@ -57,4 +50,3 @@
       }
     ]
   }
-  

@@ -31,12 +31,13 @@ Channel: &ChannelDefaults
 ################################################################################
 Organizations:
 <%_ orgs.forEach(function(org){ _%>
+    <%_ const orgOrderers = org.ordererGroups.flatMap(function(group) { return group.orderers; }); _%>
     - &<%= org.name %>
       Name: <%= org.mspName %>
       ID: <%= org.mspName %>
       MSPDir: crypto-config/peerOrganizations/<%= org.domain %>/msp
-      <%_ if (global.capabilities.isV3) { _%>
-      OrdererEndpoints:<% ordererGroups[0].orderers.forEach(function(orderer) { %>
+      <%_ if (global.capabilities.isV3 && orgOrderers.length > 0) { _%>
+      OrdererEndpoints:<% orgOrderers.forEach(function(orderer) { %>
           - <%= orderer.fullAddress %><% }) -%>
       <%_ } _%>
 
