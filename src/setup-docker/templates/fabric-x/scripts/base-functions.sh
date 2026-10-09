@@ -65,10 +65,10 @@ generateArtifacts() {
 
 }
 networkUp() {
-  mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
-           "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
-           "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
-           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
+  mkdir -p "$FABRIC_X_ROOT/data/orderers/orderer-router" \
+           "$FABRIC_X_ROOT/data/orderers/orderer-consenter" \
+           "$FABRIC_X_ROOT/data/orderers/orderer-assembler" \
+           "$FABRIC_X_ROOT/data/orderers/orderer-batcher" \
            "$FABRIC_X_ROOT/data/committer-<%= fabricX.applicationOrgSlug %>/sidecar-ledger"
 
   generateArtifacts

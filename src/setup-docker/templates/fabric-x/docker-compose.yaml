@@ -22,7 +22,7 @@ services:
     ports:
       - "7050:7050"
     volumes:
-      - ./config/party1-router.yaml:/config/node_config.yaml:ro,Z
+      - ./config/orderer-router.yaml:/config/node_config.yaml:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls:/node-tls:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/msp:/node-msp:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
@@ -51,7 +51,7 @@ services:
     ports:
       - "7051:7051"
     volumes:
-      - ./config/party1-batcher.yaml:/config/node_config.yaml:ro,Z
+      - ./config/orderer-batcher.yaml:/config/node_config.yaml:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/tls:/node-tls:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/msp:/node-msp:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
@@ -79,7 +79,7 @@ services:
     ports:
       - "7052:7052"
     volumes:
-      - ./config/party1-consenter.yaml:/config/node_config.yaml:ro,Z
+      - ./config/orderer-consenter.yaml:/config/node_config.yaml:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls:/node-tls:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp:/node-msp:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
@@ -104,7 +104,7 @@ services:
     ports:
       - "7053:7053"
     volumes:
-      - ./config/party1-assembler.yaml:/config/node_config.yaml:ro,Z
+      - ./config/orderer-assembler.yaml:/config/node_config.yaml:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls:/node-tls:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/msp:/node-msp:ro,Z
       - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
