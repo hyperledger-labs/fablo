@@ -17,7 +17,7 @@ printHelp() {
 
   echo "Namespace commands:"
   echo "  namespace list   List namespaces defined on the running network"
-  echo "  namespace init   Create the default namespace (required for app-level"
+  echo "  namespace init   Create the configured namespace (required for app-level"
   echo "                   submit/query, not required to bring the network up)"
   echo ""
 }

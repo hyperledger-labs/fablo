@@ -1,7 +1,3 @@
-
-# Arma Shared Configuration for the dynamic devnet.
-# Cert paths are absolute inside the Docker container (config/crypto/ mounted at /crypto).
-
 Parties:
 
   - PartyID: 1
@@ -51,7 +47,7 @@ Consensus:
 
 Batching:
   BatchTimeouts:
-    BatchCreationTimeout: 20ms # optimize for low latency
+    BatchCreationTimeout: 20ms 
     FirstStrikeThreshold: 10s
     SecondStrikeThreshold: 10s
     AutoRemoveTimeout: 10s
