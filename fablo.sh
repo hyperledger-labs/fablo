@@ -180,7 +180,7 @@ printHelp() {
     To list available channel query options which can be executed on running network.
 
   fablo namespace <list | init>
-    Lists namespaces on the running network, or creates the default namespace. Available only for the experimental Fabric-X provider.
+    Lists namespaces on the running network, or creates the configured namespace. Available only for the experimental Fabric-X provider.
 
   fablo snapshot <target-snapshot-path>
     Creates a snapshot of the network. The snapshot contains all network state, including transactions and identities. It is saved as '<target-snapshot-path>.fablo.tar.gz', unless the given path already ends with 'tar.gz'.
