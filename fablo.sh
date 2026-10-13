@@ -172,7 +172,10 @@ printHelp() {
 
   fablo chaincodes list <peer_domain> <channel_name>
     Lists chaincodes installed on specified peer and channel.
-    
+
+  fablo chaincode query <channel_name> <chaincode_name> <peers_domains_comma_separated>  <command> <transient>
+    Queries chaincode with specified parameters.
+
   fablo chaincode query <peer_domain> <channel_name> <chaincode_name> <command> [transient]
     Queries chaincode on a single peer. Transient data is optional.
 
@@ -278,6 +281,7 @@ initConfig() {
   done
   executeOnFabloDocker "init$args"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
+  rm -f "$COMMAND_CALL_ROOT/passwd" "$COMMAND_CALL_ROOT/group"
 }
 
 validateConfig() {
