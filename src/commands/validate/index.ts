@@ -586,6 +586,32 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    const channelOrgs = channels[0]?.orgs ?? [];
+    if (channelOrgs.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x requires at least one organization on channel '${channels[0]?.name}'.`,
+      });
+    }
+
+    const unknownChannelOrgs = channelOrgs
+      .map((o) => o.name)
+      .filter((name) => !orgs.some((o) => o.organization.name === name));
+    if (unknownChannelOrgs.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channels[0]?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
+      });
+    }
+
+    if (channelOrgs.length > 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x currently supports only one organization on a channel, found ${channelOrgs.length}.`,
+      });
+    }
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {
@@ -600,7 +626,6 @@ export default class Validate extends Command {
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
     const maxNamespaceIdLength = 60;
-    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
 
     const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {
@@ -626,7 +651,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy!== undefined) {
+      if (namespace.orgs && namespace.policy !== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
@@ -640,11 +665,18 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
+      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !channelOrgs.some((co) => co.name === n));
       if (unknownOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
+        });
+      }
+
+      if ((namespace.orgs?.length ?? 0) > 1) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.GENERAL,
+          message: `Namespace '${namespace.name}' references multiple organizations. Multi-organization namespace policies are not supported yet.`,
         });
       }
     });
