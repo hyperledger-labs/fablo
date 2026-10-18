@@ -14,9 +14,6 @@ if [[ "$FABLO_MCP_SCRIPT" != /* ]] || [ ! -f "$FABLO_MCP_SCRIPT" ]; then
   echo "FABLO_MCP_SCRIPT must name an existing absolute path to a Fablo shell script." >&2
   exit 2
 fi
-# The network_up agent calls `fablo`; this shim limits it to config commands.
-export PATH="$mcp_dir/bin:$PATH"
-
-# Jaiph gives scripts and agents only the variables granted here.
+# Jaiph gives scripts only the variables granted here.
 exec jaiph mcp --workspace "$FABLO_MCP_NETWORK_DIR" \
   --env FABLO_MCP_NETWORK_DIR --env FABLO_MCP_SCRIPT "$mcp_dir/server.jh"

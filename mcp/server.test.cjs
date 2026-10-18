@@ -1,15 +1,20 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { spawn, spawnSync } = require("node:child_process");
-const { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync, readFileSync } = require("node:fs");
+const { spawn } = require("node:child_process");
+const { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } = require("node:fs");
 const { tmpdir } = require("node:os");
 const path = require("node:path");
 const { createInterface } = require("node:readline");
 
-test("MCP discovery, command routing, validation, locking, and failures", { timeout: 60000 }, async (t) => {
+test("MCP discovery, command routing, validation, hooks, locking, and failures", { timeout: 60000 }, async (t) => {
   const directory = mkdtempSync(path.join(tmpdir(), "fablo mcp "));
   const script = path.join(directory, "fake fablo.sh");
+  // The fake prints extend-config output with the hooks from a "hooks" file.
   writeFileSync(script, `#!/usr/bin/env bash
+if [ "$1" = extend-config ]; then
+  printf '{\\n  "hooks": {\\n    "postGenerate": "%s",\\n    "postStart": ""\\n  }\\n}\\n' "$(cat hooks 2>/dev/null)"
+  exit
+fi
 printf '<%s>\\n' "$PWD" "$@"
 if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
 `);
@@ -58,12 +63,20 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   child.stdin.write(`${JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })}\n`);
   const listed = await request("tools/list", {});
   assert.deepEqual(listed.result.tools.map((tool) => tool.name).sort(), [
-    "chaincode_upgrade", "network_prune", "network_snapshot", "network_start", "network_stop", "network_up",
+    "chaincode_upgrade", "config_init", "config_validate", "network_info", "network_prune", "network_snapshot",
+    "network_start", "network_stop", "network_up",
   ]);
   for (const tool of listed.result.tools) assert.ok(tool.description);
   const call = (name, args = {}) => request("tools/call", { name, arguments: args });
   const content = (response) => response.result.content.map((item) => item.text || "").join("\n");
+  const info = content(await call("network_info"));
+  assert.ok(info.includes(`Network directory: ${directory}`), info);
+  assert.ok(info.includes("Config: none"), info);
   const cases = [
+    ["config_init", { options: "" }, ["init"]],
+    ["config_init", { options: " node  rest " }, ["init", "node", "rest"]],
+    ["config_validate", {}, ["validate"]],
+    ["network_up", {}, ["up"]],
     ["network_start", {}, ["start"]],
     ["network_stop", {}, ["stop"]],
     ["network_prune", {}, ["prune"]],
@@ -81,11 +94,36 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   const quoted = await call("network_snapshot", { target_path: injection });
   assert.ok(content(quoted).includes(`<${injection}>`));
   assert.equal(existsSync(path.join(directory, "injected")), false);
-  // network_up needs instructions: it never starts whatever config is present.
-  for (const instructions of ["", "  "]) {
-    const empty = await call("network_up", { instructions });
-    assert.equal(empty.result.isError, true);
-    assert.ok(content(empty).includes("Describe the network"), content(empty));
+  for (const options of ["dev", "node fabric-x", "node;touch injected"]) {
+    const rejected = await call("config_init", { options });
+    assert.equal(rejected.result.isError, true);
+    assert.ok(content(rejected).includes("Unsupported init option"), content(rejected));
+  }
+  writeFileSync(path.join(directory, "fablo-config.yaml"), "");
+  assert.ok(content(await call("network_info")).includes("Config: fablo-config.yaml"));
+  const existing = await call("config_init", { options: "node" });
+  assert.equal(existing.result.isError, true);
+  assert.ok(content(existing).includes("already has a Fablo config"), content(existing));
+  // Hooks run on the host, so neither a config nor a generated network with
+  // hooks starts.
+  writeFileSync(path.join(directory, "hooks"), "touch injected");
+  const hooked = await call("network_up");
+  assert.equal(hooked.result.isError, true);
+  assert.ok(content(hooked).includes("sets hooks"), content(hooked));
+  assert.ok(!content(hooked).includes("<up>"), content(hooked));
+  rmSync(path.join(directory, "hooks"));
+  const hooksDir = path.join(directory, "fablo-target", "hooks");
+  mkdirSync(hooksDir, { recursive: true });
+  const template = '#!/usr/bin/env bash\n\n# The code from this file is called after Fablo starts\necho "Executing post-start hook"\n\n';
+  writeFileSync(path.join(hooksDir, "post-start.sh"), template);
+  assert.notEqual((await call("network_start")).result.isError, true);
+  assert.ok(content(await call("network_info")).includes("fablo-target exists"));
+  writeFileSync(path.join(hooksDir, "post-start.sh"), `${template}touch injected\n`);
+  for (const name of ["network_start", "network_up"]) {
+    const rendered = await call(name);
+    assert.equal(rendered.result.isError, true);
+    assert.ok(content(rendered).includes("fablo-target has hooks"), content(rendered));
+    assert.ok(!content(rendered).includes(`<${name.slice(8)}>`), content(rendered));
   }
   assert.equal(existsSync(path.join(directory, ".fablo-mcp.lock")), false);
   const invalid = await call("chaincode_upgrade", { chaincode_name: "kv", version: injection });
@@ -102,34 +140,4 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   assert.equal(failed.result.isError, true);
   assert.ok(content(failed).includes("simulated Docker failure"));
   assert.equal(existsSync(path.join(directory, ".fablo-mcp.lock")), false);
-});
-
-test("the agent's fablo shim allows only config commands", () => {
-  const directory = mkdtempSync(path.join(tmpdir(), "fablo mcp shim "));
-  try {
-    const script = path.join(directory, "fake fablo.sh");
-    writeFileSync(script, "printf '<%s>\\n' \"$@\"\n");
-    const shim = (...args) => spawnSync(path.join(__dirname, "bin", "fablo"), args, {
-      env: { ...process.env, FABLO_MCP_SCRIPT: script }, encoding: "utf8",
-    });
-    for (const command of ["init", "validate", "extend-config"]) {
-      const result = shim(command, "arg with spaces");
-      assert.equal(result.status, 0, result.stderr);
-      assert.equal(result.stdout, `<${command}>\n<arg with spaces>\n`);
-    }
-    for (const command of ["up", "prune", "down", "generate", ""]) {
-      const result = shim(command);
-      assert.equal(result.status, 2);
-      assert.equal(result.stdout, "");
-    }
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
-});
-
-test("the embedded skill matches skills/fablo/SKILL.md", () => {
-  const generated = spawnSync("bash", [path.join(__dirname, "embed-skill.sh")], { encoding: "utf8" });
-  assert.equal(generated.status, 0, generated.stderr);
-  assert.equal(readFileSync(path.join(__dirname, "skill.jh"), "utf8"), generated.stdout,
-    "Run: bash mcp/embed-skill.sh > mcp/skill.jh");
 });

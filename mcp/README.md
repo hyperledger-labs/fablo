@@ -1,18 +1,16 @@
 # Fablo MCP server
 
-`fablo mcp` serves a Fablo network directory to MCP clients over stdio, through [Jaiph's MCP server](https://jaiph.org/how-to/mcp). An agent can describe the network it wants in plain language, and then stop, resume, snapshot, and prune it.
+`fablo mcp` serves a Fablo network directory to MCP clients over stdio, through [Jaiph's MCP server](https://jaiph.org/how-to/mcp). Each tool runs one Fablo command: the connected agent writes the config itself, validates it, starts the network, and then stops, resumes, snapshots, and prunes it.
 
 ## Requirements
 
 - Fablo, Docker, and Bash on the host.
 - [Jaiph](https://jaiph.org/) on the `PATH` (tested with 0.15.0).
-- The [Claude CLI](https://docs.anthropic.com/en/docs/claude-code), signed in, for `network_up`. The other tools call no agent.
+- An MCP client that can edit files in the network directory, such as Claude Code, Cursor, or Codex. Install the [Fablo skill](../skills/fablo/SKILL.md) in it, so it knows how to write Fablo configs.
 
 ## Connect a client
 
 Run `fablo mcp` with the network directory. It defaults to the current directory, but most clients do not set one, so pass an absolute path.
-
-> **Note:** the MCP server works with Claude only. The agent behind `network_up` is the Claude CLI, so it must be installed and signed in on the host, whichever MCP client you connect from.
 
 ### Claude Code
 
@@ -65,38 +63,38 @@ All arguments are strings.
 
 | Tool | Arguments | What it does |
 | --- | --- | --- |
-| `network_up` | `instructions` | Prepares the config from instructions, then runs `fablo up`. |
-| `network_start` | None | `fablo start` |
+| `network_info` | None | Shows the network directory, its config file, and whether `fablo-target` exists. |
+| `config_init` | `options` | `fablo init <options>`, with any of `node`, `ccaas`, `gateway`, and `rest`. Fails if a config exists. |
+| `config_validate` | None | `fablo validate` |
+| `network_up` | None | `fablo validate`, a hooks check, then `fablo up`. |
+| `network_start` | None | A hooks check, then `fablo start`. |
 | `network_stop` | None | `fablo stop` |
 | `network_prune` | None | `fablo prune`. Destroys the network state. |
 | `network_snapshot` | `target_path` | `fablo snapshot <target_path>` |
 | `chaincode_upgrade` | `chaincode_name`, `version` | `fablo chaincode upgrade <name> <version>` |
 
-Every tool except `network_up` wraps a Fablo command directly.
+### Start a network
 
-### Start a network from instructions
+The server runs no agent. The connected agent describes the network by writing the config:
 
-Call `network_up` with a description, for example:
+1. `network_info` shows where the config goes and whether a network already exists.
+2. `config_init` creates a starter `fablo-config.json`, for example with `node rest`. The agent can also write the config from scratch.
+3. The agent edits the config in the network directory, and calls `config_validate` until it passes.
+4. `network_up` generates the network, starts it, creates channels, and deploys chaincodes.
 
-```json
-{"instructions": "Two organizations with two peers each, a RAFT orderer with three nodes, one channel, and the sample Node.js chaincode"}
-```
+To change a network that `fablo-target` already holds, prune it first with `network_prune`.
 
-An agent follows the [Fablo skill](../skills/fablo/SKILL.md), which is embedded in the server, and writes `fablo-config.json` in the network directory, running `fablo init` for samples when that helps. It reports ready only after `fablo validate` passes. Fablo then runs `fablo up`, which generates the network, starts it, creates channels, and deploys chaincodes. The result starts with the agent's summary of the network.
+### Hooks
 
-`network_up` always needs instructions, so it never starts a config that nobody described. If the directory already has a config, the agent keeps it only when it satisfies the instructions, and edits it otherwise.
+`hooks.postGenerate` and `hooks.postStart` run shell commands on the host. Through MCP they would run outside the client's own permission checks, so the server refuses to start a network that has them: `network_up` checks the config and any generated hooks in `fablo-target`, and `network_start` checks the generated hooks. To use hooks, run `fablo up` and `fablo start` yourself. For the same reason, `config_init` does not offer `dev`, which adds a `postGenerate` hook.
 
-The agent does not change a network that already exists. If `fablo-target` is present and its config does not satisfy the instructions, the call fails with the reason. Use `network_prune` first to replace the network.
-
-The agent runs with limited permissions. It can edit files only in the network directory, and its `fablo` command runs only `init`, `validate`, and `extend-config`. It is told never to add `hooks`, because they run shell commands on the host, but this rule is not enforced. Check the config before calling `network_up` again with it.
-
-Peer dev mode is not handled yet: the agent does not start local chaincode processes.
+Peer dev mode is not handled yet.
 
 ## Behavior and safety
 
 Paths are relative to the network directory unless absolute. A snapshot target of `backup` produces `backup.fablo.tar.gz`, and Fablo refuses to overwrite an existing archive. Chaincode names and versions accept letters, digits, dots, underscores, plus signs, and hyphens, starting with a letter or digit.
 
-Jaiph runs the tools on the host with no sandbox, because Fablo drives the host Docker daemon and keeps network files between calls. Connected clients can run these tools with your permissions, including any hooks already in the network's config. Only use configs you trust.
+Jaiph runs the tools on the host with no sandbox, because Fablo drives the host Docker daemon and keeps network files between calls. Connected clients can run these tools with your permissions. Only use configs and chaincodes you trust.
 
 Command output becomes the tool result, and a failed command returns a result with `isError: true`. Jaiph keeps a record of each call under the network directory's `.jaiph/runs/`. A `.fablo-mcp.lock` directory stops two MCP commands from changing the same network at once. It does not cover Fablo commands you run yourself. After a forced kill, remove a stale lock only once the operation has stopped. Canceling a call does not undo changes Fablo already made.
 
@@ -110,19 +108,12 @@ bash mcp/start.sh /absolute/path/to/network
 
 It uses the checkout's `fablo.sh`. Set `FABLO_MCP_SCRIPT` to the absolute path of another Fablo script to use that instead.
 
-The server embeds the skill as `mcp/skill.jh`, generated from `skills/fablo/SKILL.md`. After changing the skill, regenerate it:
-
-```bash
-bash mcp/embed-skill.sh > mcp/skill.jh
-```
-
 Validate the workflow and run the tests:
 
 ```bash
 jaiph compile mcp/server.jh
-jaiph format --check mcp/server.jh mcp/server.test.jh mcp/skill.jh
-jaiph test mcp/server.test.jh
+jaiph format --check mcp/server.jh
 node --test mcp/server.test.cjs
 ```
 
-The Jaiph test mocks the agent. It checks what `network_up` sends to the agent and when it starts the network. The Node.js test (Node.js 18+) starts the real MCP server against a fake Fablo script. It checks tool discovery, command routing, argument validation and quoting, locking, failures, the limits on the agent's `fablo` command, and that `mcp/skill.jh` matches the skill. Neither test calls an agent or Docker. Jaiph may create audit keys in `~/.jaiph`.
+The Node.js test (Node.js 18+) starts the real MCP server against a fake Fablo script. It checks tool discovery, command routing, argument validation and quoting, the hooks checks, locking, and failures. It calls no Docker. Jaiph may create audit keys in `~/.jaiph`.

@@ -198,7 +198,7 @@ printHelp() {
     Exports the network topology described by the Fablo config file to a Mermaid diagram. Default output file is 'network-topology.mmd'.
 
   fablo mcp [/path/to/network]
-    Starts an MCP server over stdio for the network in the given directory (default: current directory), so AI agents can start and manage it. Requires Jaiph and, for starting networks from instructions, an agent backend.
+    Starts an MCP server over stdio for the network in the given directory (default: current directory), so AI agents can start and manage it. Requires Jaiph.
 
   fablo use [version]
     Updates this Fablo script to specified version. Prints all versions if no version parameter is provided.

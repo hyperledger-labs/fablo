@@ -495,7 +495,7 @@ fablo mcp [/path/to/network]
 ```
 
 Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory (default: the current directory).
-It requires [Jaiph](https://jaiph.org/), and starting a network from a plain-language description also requires the Claude CLI.
+It requires [Jaiph](https://jaiph.org/).
 See the [Fablo MCP server](mcp/README.md) for the tools and client setup.
 
 ### use

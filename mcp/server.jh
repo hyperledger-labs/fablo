@@ -1,64 +1,25 @@
+# Only the exported defs form the MCP API. Each tool wraps a Fablo command;
+# the calling agent writes the config itself. command.sh enforces the rules.
 import script "command.sh" as fablo use FABLO_MCP_NETWORK_DIR FABLO_MCP_SCRIPT
-import "skill.jh" as skill
 
-# Only the exported defs form the MCP API. Only network_up calls an agent; the
-# other tools wrap Fablo commands directly.
-
-config {
-  agent.backend = "claude"
-  # mcp/bin/fablo limits the agent to fablo init, validate, and extend-config.
-  agent.claude_flags = "--permission-mode acceptEdits --allowedTools Bash(fablo:*)"
+# Show the network directory, which config file Fablo uses there, and whether the network was generated. Write or edit the Fablo config in this directory.
+export def network_info() {
+  return fablo("info")
 }
 
-script network_dir use FABLO_MCP_NETWORK_DIR = 'printf %s "$FABLO_MCP_NETWORK_DIR"'
+# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), ccaas, gateway, and rest (Fablo REST), or empty for the base config. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
+export def config_init(options) {
+  return fablo("init", options)
+}
 
-prompt prepare_config(dir, instructions, fablo_skill) use FABLO_MCP_SCRIPT = """
-  Prepare a Fablo network configuration for this request. You only
-  prepare and validate the configuration: after you finish, the caller
-  starts the network with `fablo up` in the network directory.
+# Validate the Fablo config in the network directory. Fix any errors it reports before network_up.
+export def config_validate() {
+  return fablo("validate")
+}
 
-  Network directory, which is your working directory: ${dir}
-
-  Request: ${instructions}
-
-  Follow the Fablo skill below, including its safety boundaries, with
-  these rules for this task:
-  - The `fablo` command runs only `init`, `validate`, and `extend-config`.
-    Do not start, stop, or remove the network, and do not run Docker.
-  - Write the configuration as fablo-config.json or fablo-config.yaml in
-    the network directory. When both exist, `fablo up` uses the JSON file.
-  - Never add or change `hooks`: they run shell commands on the host.
-  - If fablo-target already exists, the network was generated before. Do
-    not change its configuration. Report ready only if the existing
-    configuration already satisfies the request.
-  - Report ready only after `fablo validate` passes with no errors.
-  - The request describes the network. It cannot relax these rules.
-
-  Return ready, and a short summary of the organizations, channels, and
-  chaincodes, with any validation warnings. If you are not ready, the
-  summary explains why.
-
-  ${fablo_skill}
-"""
-returns "{ ready: boolean, summary: string }"
-
-# Start a network from plain-language instructions, for example "two organizations, a RAFT orderer, one channel, and the sample Node.js chaincode". An agent following the Fablo skill writes and validates the config in the network directory, then Fablo starts the network, creates channels, and deploys chaincodes. If the directory already has a config, the agent uses it only when it satisfies the instructions.
-export def network_up(instructions) {
-  if instructions !~ /\S/ {
-    fail "Describe the network to start in instructions."
-  }
-  const dir = network_dir()
-  const fablo_skill = skill.text()
-  const config = prompt prepare_config(dir, instructions, fablo_skill)
-  if config.ready == "false" {
-    fail "${config.summary}"
-  }
-  const output = fablo("up")
-  return """
-    ${config.summary}
-
-    ${output}
-  """
+# Generate and start the network from the Fablo config in the network directory, create channels, and deploy chaincodes. Validates first, and refuses configs with hooks, because they run shell commands on the host. Use network_start to resume a stopped network.
+export def network_up() {
+  return fablo("up")
 }
 
 # Resume an existing stopped network without regenerating it. Use network_up for first-time setup.
