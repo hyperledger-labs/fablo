@@ -586,6 +586,24 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    const channel = channels[0];
+    const knownOrgNames = (channel?.orgs ?? []).map((o) => o.name);
+    if (knownOrgNames.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `fabric-x requires at least one organization on channel '${channel?.name}'.`,
+      });
+    }
+
+    const unknownChannelOrgs = knownOrgNames.filter((name) => !orgs.some((o) => o.organization.name === name));
+    if (unknownChannelOrgs.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channel?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
+      });
+    }
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {
@@ -600,7 +618,6 @@ export default class Validate extends Command {
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
     const maxNamespaceIdLength = 60;
-    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
 
     const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {

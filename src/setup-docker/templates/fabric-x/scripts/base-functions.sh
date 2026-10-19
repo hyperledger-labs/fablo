@@ -17,7 +17,7 @@ printStartSuccessInfo() {
 TOOLS_IMAGE="${TOOLS_IMAGE:-<%= global.toolsImage %>}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-<%= global.ordererImage %>}"
 NETWORK="${NETWORK:-fabric-x}"
-DEFAULT_POLICY="AND('<%= fabricX.applicationOrg.mspName %>.member')"
+DEFAULT_POLICY="<%- fabricX.defaultPolicy %>"
 
 
 generateArtifacts() {
@@ -40,8 +40,7 @@ generateArtifacts() {
     -v "$FABRIC_X_ROOT:/config" \
     "$TOOLS_IMAGE" \
     sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \
-      && cp /config/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem \
-            /config/crypto/client-tls-ca.pem'
+      && cat /config/crypto/peerOrganizations/*/msp/tlscacerts/*.pem > /config/crypto/client-tls-ca.pem'
 
   echo "Generating Fabric-X shared config proto..."
 
@@ -68,8 +67,8 @@ networkUp() {
   mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
            "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
            "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
-           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
-           "$FABRIC_X_ROOT/data/committer-<%= fabricX.applicationOrgSlug %>/sidecar-ledger"
+           "$FABRIC_X_ROOT/data/orderers/party1-batcher"<% fabricX.applicationOrgs.forEach((org) => { %> \
+           "$FABRIC_X_ROOT/data/committer-<%= org.slug %>/sidecar-ledger"<% }); %>
 
   generateArtifacts
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
@@ -99,10 +98,10 @@ namespaceCreate() {
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
     --env "FX_NS=$ns" \
     --env "FX_POLICY=$policy" \
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/fxconfig-<%= fabricX.applicationOrgs[0].slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/peers/fxconfig.<%= fabricX.applicationOrgs[0].domain %>/tls:/tls:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/users/User1@<%= fabricX.applicationOrgs[0].domain %>/msp:/msp:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrgs[0].domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
     -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
     "$TOOLS_IMAGE" \
     sh -c 'fxconfig namespace list --config=/config/fxconfig.yaml 2>/dev/null | grep -q ") $FX_NS:" || \
@@ -127,10 +126,10 @@ namespaceInit() {
  
 namespaceList() {
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/fxconfig-<%= fabricX.applicationOrgs[0].slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/peers/fxconfig.<%= fabricX.applicationOrgs[0].domain %>/tls:/tls:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/users/User1@<%= fabricX.applicationOrgs[0].domain %>/msp:/msp:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrgs[0].domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
     -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
     "$TOOLS_IMAGE" \
     fxconfig namespace list --config=/config/fxconfig.yaml

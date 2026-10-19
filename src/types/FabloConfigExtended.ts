@@ -227,6 +227,22 @@ export interface NamespaceConfig {
   name: string;
   policy: string;
 }
+
+export interface FabricXOrgConfig {
+  name: string;
+  domain: string;
+  mspName: string;
+  slug: string;
+  sidecarPort: number;
+  queryServicePort: number;
+}
+
+export interface FabricXTemplateModel {
+  channelName: string;
+  channelProfileName: string;
+  applicationOrgs: FabricXOrgConfig[];
+  defaultPolicy: string;
+}
 export interface FabloConfigExtended {
   global: Global;
   ordererGroups: OrdererGroup[];
