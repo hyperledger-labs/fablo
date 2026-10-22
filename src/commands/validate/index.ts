@@ -19,6 +19,7 @@ import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
 import { createPackageLabel } from "../../extend-config/extendChaincodesConfig";
 import { Capabilities } from "../../types/FabloConfigExtended";
 import { version } from "../../repositoryUtils";
+import { SUPPORTED_ORDERER_PARTIES } from "../../setup-docker/fabricXOrderer";
 import ListCompatibleUpdates from "../../list-compatible-updates";
 
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
@@ -586,6 +587,23 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    const ordererGroups = orgs.flatMap((o) => o.orderers ?? []);
+    if (ordererGroups.length > 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.ORDERER,
+        message: `fabric-x supports exactly one orderer group, found ${ordererGroups.length}.`,
+      });
+    }
+    ordererGroups.forEach((group) => {
+      if (group.instances !== SUPPORTED_ORDERER_PARTIES) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Orderer group '${group.groupName}' has ${group.instances} instances. fabric-x supports ${SUPPORTED_ORDERER_PARTIES} orderer party for now, so 'instances' must be ${SUPPORTED_ORDERER_PARTIES}.`,
+        });
+      }
+    });
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {

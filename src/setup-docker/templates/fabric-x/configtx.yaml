@@ -3,24 +3,26 @@
 ---
 Organizations:
 
-  - &OrdererOrdererMSP
-    Name: Orderer
+  - &<%= fabricX.orderer.org.mspId %>
+    Name: <%= fabricX.orderer.org.name %>
     SkipAsForeign: false
-    ID: OrdererOrdererMSP
-    MSPDir: ./crypto/ordererOrganizations/orderer.example.com/msp
+    ID: <%= fabricX.orderer.org.mspId %>
+    MSPDir: ./crypto/ordererOrganizations/<%= fabricX.orderer.org.domain %>/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('OrdererOrdererMSP.member')
+        Rule: OR('<%= fabricX.orderer.org.mspId %>.member')
       Writers:
         Type: Signature
-        Rule: OR('OrdererOrdererMSP.member')
+        Rule: OR('<%= fabricX.orderer.org.mspId %>.member')
       Admins:
         Type: Signature
-        Rule: OR('OrdererOrdererMSP.admin')
+        Rule: OR('<%= fabricX.orderer.org.mspId %>.admin')
     OrdererEndpoints:
-      - id=0,broadcast,orderer-router:7050
-      - id=0,deliver,orderer-assembler:7053
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+      - id=<%= party.endpointId %>,broadcast,<%= party.router.host %>:<%= party.router.port %>
+      - id=<%= party.endpointId %>,deliver,<%= party.assembler.host %>:<%= party.assembler.port %>
+<%_ }); -%>
 
 
 
@@ -106,17 +108,19 @@ Orderer: &OrdererDefaults
   MaxChannels: 0
   ConsenterMapping:
 
-    - ID: 1
-      Host: orderer-consenter
-      Port: 7052
-      MSPID: OrdererOrdererMSP
-      Identity: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp/signcerts/consenter.orderer.example.com-cert.pem
-      ClientTLSCert: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
-      ServerTLSCert: ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+    - ID: <%= party.partyId %>
+      Host: <%= party.consenter.host %>
+      Port: <%= party.consenter.port %>
+      MSPID: <%= fabricX.orderer.org.mspId %>
+      Identity: ./crypto/<%= party.consenter.cryptoDir %>/msp/signcerts/<%= party.consenter.cryptoName %>.<%= fabricX.orderer.org.domain %>-cert.pem
+      ClientTLSCert: ./crypto/<%= party.consenter.cryptoDir %>/tls/server.crt
+      ServerTLSCert: ./crypto/<%= party.consenter.cryptoDir %>/tls/server.crt
+<%_ }); -%>
 
   Organizations:
 
-    - *OrdererOrdererMSP
+    - *<%= fabricX.orderer.org.mspId %>
 
   Policies:
     Readers:

@@ -20,7 +20,7 @@ orderer:
     key-path: /node-tls/server.key
     common-ca-cert-paths:
 
-      - /orderer-cas/Orderer/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+      - /orderer-cas/<%= fabricX.orderer.org.name %>/msp/tlscacerts/tlsca.<%= fabricX.orderer.org.domain %>-cert.pem
   identity:
     msp-id: <%= fabricX.applicationOrg.mspName %>
     msp-dir: /msp

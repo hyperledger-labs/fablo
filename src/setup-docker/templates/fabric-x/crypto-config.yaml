@@ -1,48 +1,25 @@
 ---
 OrdererOrgs:
 
-  - Name: Orderer
-    Domain: orderer.example.com
+  - Name: <%= fabricX.orderer.org.name %>
+    Domain: <%= fabricX.orderer.org.domain %>
     EnableNodeOUs: false
     CA:
       Hostname: ca
     Specs:
-      - Hostname: router
-        Party: party1
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+<%_ [party.router, ...party.batchers, party.consenter, party.assembler].forEach((node) => { -%>
+      - Hostname: <%= node.cryptoName %>
+        Party: <%= party.slug %>
         SANS:
-          - orderer-router
+          - <%= node.host %>
           - host.docker.internal
           - 0.0.0.0
           - localhost
           - 127.0.0.1
           - ::1
-      - Hostname: batcher1
-        Party: party1
-        SANS:
-          - orderer-batcher
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: consenter
-        Party: party1
-        SANS:
-          - orderer-consenter
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
-      - Hostname: assembler
-        Party: party1
-        SANS:
-          - orderer-assembler
-          - host.docker.internal
-          - 0.0.0.0
-          - localhost
-          - 127.0.0.1
-          - ::1
+<%_ }); -%>
+<%_ }); -%>
     Users:
       Count: 1
 
