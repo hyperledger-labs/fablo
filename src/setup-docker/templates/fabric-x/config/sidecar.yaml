@@ -12,7 +12,7 @@ monitoring:
   tls: *tlsConfig
 
 orderer:
-  fault-tolerance-level: CFT
+  fault-tolerance-level: <%= fabricX.orderer.faultTolerance %>
   latest-known-config-block-path: /bootstrap/genesis.block
   tls:
     mode: mtls
@@ -20,7 +20,9 @@ orderer:
     key-path: /node-tls/server.key
     common-ca-cert-paths:
 
-      - /orderer-cas/Orderer/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+      - /orderer-cas/<%= party.org.name %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem
+<%_ }); -%>
   identity:
     msp-id: <%= fabricX.applicationOrg.mspName %>
     msp-dir: /msp

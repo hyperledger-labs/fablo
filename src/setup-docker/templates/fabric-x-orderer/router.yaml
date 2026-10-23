@@ -1,8 +1,8 @@
-PartyID: 1
+PartyID: <%= party.partyId %>
 
 General:
   ListenAddress: 0.0.0.0
-  ListenPort: 7053
+  ListenPort: <%= node.port %>
   TLS:
     Enabled: true
     PrivateKey: /node-tls/server.key
@@ -30,7 +30,7 @@ General:
     ClientCertificate: /node-tls/server.crt
     ClientPrivateKey: /node-tls/server.key
   LocalMSPDir: /node-msp
-  LocalMSPID: OrdererOrdererMSP
+  LocalMSPID: <%= party.org.mspId %>
   BCCSP:
     Default: SW
     SW:
@@ -53,10 +53,6 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Assembler:
-  PrefetchBufferMemoryBytes: 1073741824
-  RestartLedgerScanTimeout: 5s
-  PrefetchEvictionTtl: 1h
-  PopWaitMonitorTimeout: 1s
-  ReplicationChannelSize: 100
-  BatchRequestsChannelSize: 1000
+Router:
+  NumberOfConnectionsPerBatcher: 10
+  NumberOfStreamsPerConnection: 20
