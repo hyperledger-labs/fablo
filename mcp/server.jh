@@ -1,0 +1,48 @@
+# Only the exported defs form the MCP API. Each tool wraps a Fablo command;
+# the calling agent writes the config itself. command.sh enforces the rules.
+import script "command.sh" as fablo use FABLO_MCP_NETWORK_DIR FABLO_MCP_SCRIPT
+
+# Show the network directory, which config file Fablo uses there, and whether the network was generated. Write or edit the Fablo config in this directory.
+export def network_info() {
+  return fablo("info")
+}
+
+# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), ccaas, gateway, and rest (Fablo REST), or empty for the base config. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
+export def config_init(options) {
+  return fablo("init", options)
+}
+
+# Validate the Fablo config in the network directory. Fix any errors it reports before network_up.
+export def config_validate() {
+  return fablo("validate")
+}
+
+# Generate and start the network from the Fablo config in the network directory, create channels, and deploy chaincodes. Validates first, and refuses configs with hooks, because they run shell commands on the host. Use network_start to resume a stopped network.
+export def network_up() {
+  return fablo("up")
+}
+
+# Resume an existing stopped network without regenerating it. Use network_up for first-time setup.
+export def network_start() {
+  return fablo("start")
+}
+
+# Stop the network containers while preserving network state for network_start.
+export def network_stop() {
+  return fablo("stop")
+}
+
+# Destructive: take the network down and delete fablo-target, losing all ledger state, identities, and generated files. Keeps the Fablo config and chaincode sources. Snapshot first with network_snapshot if the state matters.
+export def network_prune() {
+  return fablo("prune")
+}
+
+# Snapshot the network state, transactions, and identities. target_path is relative to the network directory; Fablo appends .fablo.tar.gz unless it already ends in tar.gz. Existing archives are not overwritten.
+export def network_snapshot(target_path) {
+  return fablo("snapshot", target_path)
+}
+
+# Upgrade a configured chaincode to a new version on all relevant peers, building it from its configured source directory. Requires the exact chaincode name and the new version, for example kv and 1.1.
+export def chaincode_upgrade(chaincode_name, version) {
+  return fablo("chaincode", "upgrade", chaincode_name, version)
+}
