@@ -450,11 +450,11 @@ fablo extend-config [/path/to/fablo-config.json|yaml]
 
 ### `fablo mcp`
 
-**Purpose:** Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory. Each tool runs one Fablo command: agents write and validate the config, start the network, and stop, resume, snapshot, and prune it. It requires [Jaiph](https://jaiph.org/). See [AI agents](../ai-agents.html) for the tools and client setup.
+**Purpose:** Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory. Each tool runs one Fablo command, and every command in `fablo --help` except `mcp` has a tool. Agents write and validate the config and run the network. It requires [Jaiph](https://jaiph.org/). See [AI agents](../ai-agents.html) for the tools and client setup.
 
 **Syntax:**
 ```
-fablo mcp [/path/to/network]
+fablo mcp </path/to/network>
 ```
 
 By default the MCP server runs in a temporary directory: `fablo mcp` unpacks the server from the Fablo Docker image for its version into a temporary directory and runs it from there, so it always matches the installed script. The network itself lives in the given directory.
@@ -463,7 +463,7 @@ By default the MCP server runs in a temporary directory: `fablo mcp` unpacks the
 
 | Argument | Required | Description |
 |---|---|---|
-| `/path/to/network` | No | Network directory to serve. Defaults to the current directory. |
+| `/path/to/network` | Yes | Network directory to serve. It must exist. MCP clients often start the server without a working directory, so there is no default. |
 
 
 ### `fablo use`

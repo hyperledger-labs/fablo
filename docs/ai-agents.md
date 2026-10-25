@@ -28,13 +28,13 @@ The skill is a single file, [`skills/fablo/SKILL.md`](https://github.com/hyperle
 
 ## Connect the MCP Server
 
-`fablo mcp` lets an agent start and manage a network through MCP tools. Each tool runs one Fablo command. The agent writes the config in the network directory itself, with the help of the Fablo skill above, validates it, and starts the network. It can also stop, resume, snapshot, and prune the network, and upgrade chaincodes.
+`fablo mcp` lets an agent start and manage a network through MCP tools. Each tool runs one Fablo command. The agent writes the config in the network directory itself, with the help of the Fablo skill above, validates it, and starts the network. Every other Fablo command has a tool too: stopping, resuming, snapshotting, and pruning the network, and managing chaincodes and channels. The server also gives the agent the Fablo skill and the config schema.
 
-It requires [Jaiph](https://jaiph.org/) on the `PATH`. By default the server runs in a temporary directory: `fablo mcp` unpacks it from the Fablo Docker image for its version, so it always matches the installed script.
+It requires [Jaiph](https://jaiph.org/) on the `PATH`. Install it with `curl -fsSL https://jaiph.org/install | bash`, and add `~/.local/bin` to the `PATH` if `jaiph` is still not found. By default the server runs in a temporary directory: `fablo mcp` unpacks it from the Fablo Docker image for its version, so it always matches the installed script.
 
 The server runs no agent of its own, so it works with any MCP client. The client needs to edit files in the network directory to write the config.
 
-Use one server for each network directory, and pass absolute paths, because most clients do not set a working directory. Starting a network and building chaincodes can take several minutes, so give the tools a generous timeout.
+Use one server for each network directory. The directory is required: pass it as an absolute path, because most clients do not set a working directory. Starting a network and building chaincodes can take several minutes, so give the tools a generous timeout.
 
 ### Claude Code
 

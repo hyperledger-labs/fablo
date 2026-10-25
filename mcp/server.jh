@@ -1,25 +1,50 @@
 # Only the exported defs form the MCP API. Each tool wraps a Fablo command;
 # the calling agent writes the config itself. command.sh enforces the rules.
-import script "command.sh" as fablo use FABLO_MCP_NETWORK_DIR FABLO_MCP_SCRIPT
+import script "command.sh" as fablo use FABLO_MCP_NETWORK_DIR FABLO_MCP_SCRIPT FABLO_MCP_DIR
 
 # Show the network directory, which config file Fablo uses there, and whether the network was generated. Write or edit the Fablo config in this directory.
 export def network_info() {
   return fablo("info")
 }
 
-# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), ccaas, gateway, and rest (Fablo REST), or empty for the base config. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
-export def config_init(options) {
-  return fablo("init", options)
+# Return the Fablo skill: how to write and validate fablo-config.json, choose options, run the network, and troubleshoot it. Read it before writing or changing a config.
+export def config_instructions() {
+  return fablo("skill")
 }
 
-# Validate the Fablo config in the network directory. Fix any errors it reports before network_up.
-export def config_validate() {
-  return fablo("validate")
+# Return the JSON schema of the Fablo config for this Fablo version. Use it to check field names and allowed values while writing fablo-config.json.
+export def config_schema() {
+  return fablo("schema")
 }
 
-# Generate and start the network from the Fablo config in the network directory, create channels, and deploy chaincodes. Validates first, and refuses configs with hooks, because they run shell commands on the host. Use network_start to resume a stopped network.
-export def network_up() {
-  return fablo("up")
+# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), dev (peer dev mode with a hot-reloaded Node.js chaincode), ccaas, gateway, and rest (Fablo REST), or fabric-x alone for the experimental Fabric-X provider; empty for the base config. overrides sets generated fields, one <path>=<value> per line, for example global.fabricVersion=2.5.12; empty for none. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
+export def config_init(options, overrides) {
+  return fablo("init", options, overrides)
+}
+
+# Validate the Fablo config. config_path is relative to the network directory; empty for fablo-config.json or fablo-config.yaml. Fix any errors it reports before network_up.
+export def config_validate(config_path) {
+  return fablo("validate", config_path)
+}
+
+# Print the Fablo config extended with all defaults, as JSON. config_path is relative to the network directory; empty for the default config.
+export def config_extend(config_path) {
+  return fablo("extend-config", config_path)
+}
+
+# Export the network topology described by the Fablo config to a Mermaid diagram. config_path and output_path are relative to the network directory; empty for the default config and network-topology.mmd.
+export def config_export_topology(config_path, output_path) {
+  return fablo("export-network-topology", config_path, output_path)
+}
+
+# Generate the network files without starting the network. config_path and target_path are relative to the network directory; empty for the default config and fablo-target. Refuses configs with hooks, except the one from config_init with dev.
+export def network_generate(config_path, target_path) {
+  return fablo("generate", config_path, target_path)
+}
+
+# Generate and start the network from the Fablo config, create channels, and deploy chaincodes. config_path is relative to the network directory; empty for the default config. Validates first, and refuses configs with hooks, because they run shell commands on the host, except the one from config_init with dev. Use network_start to resume a stopped network.
+export def network_up(config_path) {
+  return fablo("up", config_path)
 }
 
 # Resume an existing stopped network without regenerating it. Use network_up for first-time setup.
@@ -32,17 +57,112 @@ export def network_stop() {
   return fablo("stop")
 }
 
+# Destructive: remove the network containers, losing ledger state. Keeps the generated files in fablo-target, so network_up can start the network again.
+export def network_down() {
+  return fablo("down")
+}
+
+# Destructive: take the network down and up again, losing all ledger state. Keeps the configuration and the generated files.
+export def network_reset() {
+  return fablo("reset")
+}
+
 # Destructive: take the network down and delete fablo-target, losing all ledger state, identities, and generated files. Keeps the Fablo config and chaincode sources. Snapshot first with network_snapshot if the state matters.
 export def network_prune() {
   return fablo("prune")
 }
 
-# Snapshot the network state, transactions, and identities. target_path is relative to the network directory; Fablo appends .fablo.tar.gz unless it already ends in tar.gz. Existing archives are not overwritten.
-export def network_snapshot(target_path) {
-  return fablo("snapshot", target_path)
+# Destructive: prune the network, then start it again from the Fablo config, which applies config changes. config_path is relative to the network directory; empty for the default config. Validates first and refuses configs with hooks, like network_up.
+export def network_recreate(config_path) {
+  return fablo("recreate", config_path)
 }
 
-# Upgrade a configured chaincode to a new version on all relevant peers, building it from its configured source directory. Requires the exact chaincode name and the new version, for example kv and 1.1.
+# Snapshot the network state, transactions, and identities. path is relative to the network directory and stays inside it; Fablo appends .fablo.tar.gz unless it already ends in tar.gz. Existing archives are not overwritten.
+export def network_snapshot(path) {
+  return fablo("snapshot", path)
+}
+
+# Restore a network from a snapshot, so network_start can start it. path is relative to the network directory, as in network_snapshot. Requires a pruned network.
+export def network_restore(path) {
+  return fablo("restore", path)
+}
+
+# Install all chaincodes from the Fablo config on the relevant peers.
+export def chaincodes_install() {
+  return fablo("chaincodes", "install")
+}
+
+# Install a configured chaincode on all relevant peers, building it from its configured source directory. Requires the exact chaincode name and version, for example chaincode1 and 0.0.1.
+export def chaincode_install(chaincode_name, version) {
+  return fablo("chaincode", "install", chaincode_name, version)
+}
+
+# Upgrade a configured chaincode to a new version on all relevant peers, building it from its configured source directory. Requires the exact chaincode name and the new version, for example chaincode1 and 0.0.2.
 export def chaincode_upgrade(chaincode_name, version) {
   return fablo("chaincode", "upgrade", chaincode_name, version)
+}
+
+# Approve and commit a chaincode definition for peers started in dev mode, using the version from the Fablo config. Supported only on channels with Fabric v2 capabilities.
+export def chaincode_dev(chaincode_name) {
+  return fablo("chaincode", "dev", chaincode_name)
+}
+
+# Invoke a chaincode. peers is a comma-separated list of peer domains, for example peer0.org1.example.com. command is the chaincode input as JSON, for example {"Args":["KVContract:put","name","Willy"]}. transient is optional transient data as JSON; empty for none.
+export def chaincode_invoke(peers, channel_name, chaincode_name, command, transient) {
+  return fablo("chaincode", "invoke", peers, channel_name, chaincode_name, command, transient)
+}
+
+# Query a chaincode on one peer. peer is a peer domain, for example peer0.org1.example.com. command is the chaincode input as JSON, for example {"Args":["KVContract:get","name"]}. transient is optional transient data as JSON; empty for none.
+export def chaincode_query(peer, channel_name, chaincode_name, command, transient) {
+  return fablo("chaincode", "query", peer, channel_name, chaincode_name, command, transient)
+}
+
+# List the chaincodes installed on a peer for a channel. peer is a peer domain, for example peer0.org1.example.com.
+export def chaincodes_list(peer, channel_name) {
+  return fablo("chaincodes", "list", peer, channel_name)
+}
+
+# List the channel query commands for the running network, with the organization and peer names they take.
+export def channel_help() {
+  return fablo("channel", "--help")
+}
+
+# List the channels a peer has joined. org is the lowercase organization name and peer the peer name, for example org1 and peer0, as listed by channel_help.
+export def channel_list(org, peer) {
+  return fablo("channel", "list", org, peer)
+}
+
+# Get the channel height and current block hash from a peer. org and peer are as in channel_list.
+export def channel_getinfo(channel_name, org, peer) {
+  return fablo("channel", "getinfo", channel_name, org, peer)
+}
+
+# Fetch a channel block from a peer and save it in the network directory. block is config (the latest config block, saved as JSON), newest, oldest, or a block number. org and peer are as in channel_list. file is relative to the network directory; empty for the Fablo default name.
+export def channel_fetch(block, channel_name, org, peer, file) {
+  return fablo("channel", "fetch", block, channel_name, org, peer, file)
+}
+
+# List the namespaces on the running network. Available only for the experimental Fabric-X provider.
+export def namespace_list() {
+  return fablo("namespace", "list")
+}
+
+# Create the namespaces from the Fablo config, or only the named one; empty name for all. Available only for the experimental Fabric-X provider.
+export def namespace_init(name) {
+  return fablo("namespace", "init", name)
+}
+
+# Print the Fablo manual.
+export def fablo_help() {
+  return fablo("help")
+}
+
+# Print the Fablo version and build information as JSON. verbose is true to include the range of supported config versions, or false.
+export def fablo_version(verbose) {
+  return fablo("version", verbose)
+}
+
+# Switch the Fablo script this server uses to another version, downloaded from the Fablo releases; empty version lists the available versions. Restart the MCP server after switching.
+export def fablo_use(version) {
+  return fablo("use", version)
 }

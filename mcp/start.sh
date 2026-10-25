@@ -6,7 +6,8 @@ if [ "$#" -ne 1 ] || [ ! -d "$1" ]; then
   exit 2
 fi
 
-mcp_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export FABLO_MCP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mcp_dir="$FABLO_MCP_DIR"
 export FABLO_MCP_NETWORK_DIR="$(cd "$1" && pwd)"
 # An operator may select an installed Fablo shell script instead of this checkout.
 export FABLO_MCP_SCRIPT="${FABLO_MCP_SCRIPT:-$mcp_dir/../fablo.sh}"
@@ -16,4 +17,4 @@ if [[ "$FABLO_MCP_SCRIPT" != /* ]] || [ ! -f "$FABLO_MCP_SCRIPT" ]; then
 fi
 # Jaiph gives scripts only the variables granted here.
 exec jaiph mcp --workspace "$FABLO_MCP_NETWORK_DIR" \
-  --env FABLO_MCP_NETWORK_DIR --env FABLO_MCP_SCRIPT "$mcp_dir/server.jh"
+  --env FABLO_MCP_NETWORK_DIR --env FABLO_MCP_SCRIPT --env FABLO_MCP_DIR "$mcp_dir/server.jh"

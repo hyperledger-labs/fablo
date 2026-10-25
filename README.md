@@ -491,10 +491,10 @@ With the optional `-v` or `--verbose` flag, it also prints the range of Fablo co
 ### mcp
 
 ```bash
-fablo mcp [/path/to/network]
+fablo mcp </path/to/network>
 ```
 
-Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory (default: the current directory).
+Starts an MCP server over stdio, so that AI agents can start and manage the network in the given directory. The directory is required and must exist.
 It requires [Jaiph](https://jaiph.org/).
 See the [Fablo MCP server](mcp/README.md) for the tools and client setup.
 
