@@ -587,30 +587,8 @@ export default class Validate extends Command {
       });
     }
 
-    const channelOrgs = channels[0]?.orgs ?? [];
-    if (channelOrgs.length === 0) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.CHANNEL,
-        message: `fabric-x requires at least one organization on channel '${channels[0]?.name}'.`,
-      });
-    }
-
-    const unknownChannelOrgs = channelOrgs
-      .map((o) => o.name)
-      .filter((name) => !orgs.some((o) => o.organization.name === name));
-    if (unknownChannelOrgs.length > 0) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.CHANNEL,
-        message: `Channel '${channels[0]?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
-      });
-    }
-
-    if (channelOrgs.length > 1) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.CHANNEL,
-        message: `fabric-x currently supports only one organization on a channel, found ${channelOrgs.length}.`,
-      });
-    }
+    this._validateFabricXChannelOrganizations(channels, orgs);
+    this._validateFabricXNamespaces(networkConfig);
 
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
@@ -622,6 +600,43 @@ export default class Validate extends Command {
         });
       }
     });
+  }
+
+  _validateFabricXChannelOrganizations(channels: ChannelJson[], orgs: OrgJson[]): void {
+    const channel = channels[0];
+    if (!channel) {
+      return;
+    }
+
+    const configuredOrgNames = new Set(orgs.map((org) => org.organization.name));
+    const channelOrgNames = channel.orgs.map((orgRef) => orgRef.name);
+
+    if (channelOrgNames.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X requires at least one organization on channel '${channel.name}'.`,
+      });
+      return;
+    }
+
+    const unknownChannelOrgNames = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
+    if (unknownChannelOrgNames.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgNames.join(", ")}.`,
+      });
+    }
+
+    if (channelOrgNames.length > 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X currently supports only one organization on a channel, found ${channelOrgNames.length}.`,
+      });
+    }
+  }
+
+  _validateFabricXNamespaces(networkConfig: FabloConfigJson): void {
+    const channelOrgNames = new Set((networkConfig.channels[0]?.orgs ?? []).map((orgRef) => orgRef.name));
 
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
@@ -665,18 +680,11 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !channelOrgs.some((co) => co.name === n));
-      if (unknownOrgNames.length > 0) {
+      const unknownNamespaceOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
+      if (unknownNamespaceOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
-          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
-        });
-      }
-
-      if ((namespace.orgs?.length ?? 0) > 1) {
-        this.emit(validationErrorType.ERROR, {
-          category: validationCategories.GENERAL,
-          message: `Namespace '${namespace.name}' references multiple organizations. Multi-organization namespace policies are not supported yet.`,
+          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownNamespaceOrgNames.join(", ")}.`,
         });
       }
     });
