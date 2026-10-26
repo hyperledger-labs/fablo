@@ -1,12 +1,16 @@
 #!/usr/bin/env jaiph
 
-# Implements a GitHub issue in the working tree. Does not commit, push, or
-# open a pull request — the caller does that after this def exits.
+# Implements a GitHub issue in the working tree, or revises the pull request
+# that an earlier run opened for it. Does not commit, push, or open a pull
+# request — the caller does that after this def exits.
 #
-#   .jaiph/implement_issue.jh .jaiph/tmp/issue.json
+#   .jaiph/implement_issue.jh .jaiph/tmp/issue.json implement
+#   .jaiph/implement_issue.jh .jaiph/tmp/issue.json revise
 #
-# The JSON file is written by the caller. Expected keys: number, title, body,
-# comments, additionalInstructions, triggeredBy, url.
+# The JSON file is written by the caller. Expected keys: mode, number, title,
+# body, comments, additionalInstructions, triggeredBy, url. A revise also has
+# pullRequest (with its comments and reviews) and reviewThreads, and runs with
+# the pull request branch checked out.
 import "readiness.jh" as ready
 import "verification.jh" as verify
 
@@ -92,10 +96,44 @@ def implement(issue_text) {
   """
 }
 
-export def main(issue_path) {
+def revise(issue_text) {
+  prompt """
+    ${role}
+    ${constraints}
+
+    The working tree is the branch of an open pull request that implements
+    the GitHub issue described by this JSON. The implementation is already
+    there; a maintainer has reviewed it and asked for another pass. Read the
+    change so far first: `git diff origin/<base>...HEAD`, where <base> is
+    pullRequest.baseRefName.
+
+    Then address the review, in this order of weight:
+    1. additionalInstructions — what the maintainer asked for in the comment
+       that started this run.
+    2. reviewThreads — unresolved comments left on lines of the diff. A thread
+       marked isOutdated points at code that has since changed (its line is
+       then null, and originalLine is where it was); check whether it still
+       applies before acting on it.
+    3. pullRequest.reviews and pullRequest.comments — earlier feedback on the
+       pull request as a whole.
+
+    Change only what the review asks for. Do not redo the implementation or
+    revert earlier work the review did not object to. If a review comment is
+    wrong or conflicts with the hard constraints, leave the code as it is and
+    say why in your final summary. End with a short list of what you changed
+    for each point of feedback.
+
+    ${issue_text}
+  """
+}
+
+export def main(issue_path, mode) {
   ready.main()
   const issue_text = read_issue(issue_path)
-  implement(issue_text)
+  match mode {
+    "revise" => revise(issue_text)
+    _ => implement(issue_text)
+  }
   verify.all() recover (failure) {
     stdin failure -> save_failure_log(".jaiph/tmp/implement-verify.log")
     prompt """

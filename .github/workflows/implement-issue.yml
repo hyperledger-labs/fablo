@@ -5,6 +5,13 @@ name: Implement issue
 # opened. Full Fabric network e2e stays on Tests (test-on-push.yml). The pull
 # request is the review surface — a human merges. The agent never merges.
 #
+# The same command on that pull request starts another round. The agent gets
+# the comment's instructions, the unresolved review threads, and the reviews,
+# edits the pull request branch, and the result is pushed to it as a new
+# commit. Leave review comments on the diff first, then comment `/implement`
+# (with or without more instructions) to have them addressed. Only pull
+# requests on an ai/issue-<n> branch of this repository can be revised.
+#
 # What runs here: .jaiph/implement_issue.jh (Claude Code edits the tree; Jaiph
 # does not push), then npm run build, test:unit and lint, then a snapshot
 # rebuild via npm run test:e2e-update for anything that is not a docs-only
@@ -29,7 +36,14 @@ name: Implement issue
 #
 # The issue_comment trigger always runs the copy of this file on the default
 # branch. To try a change to it before merging, use Run workflow from the
-# Actions tab with the branch selected there.
+# Actions tab with the branch selected there. Review events are deliberately
+# not triggers: they would run the workflow file from the pull request branch,
+# which the agent wrote.
+#
+# A revise checks out the pull request branch, which the agent wrote and nobody
+# has merged yet. So the Jaiph programs and scripts that drive the run are
+# copied from the trusted checkout first and always run from that copy, and
+# the Claude token is given only to the steps that call Claude.
 
 on:
   issue_comment:
@@ -37,7 +51,7 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "Issue number to implement"
+        description: "Issue to implement, or implementation pull request to revise"
         required: true
         type: string
       additional_instructions:
@@ -57,13 +71,14 @@ permissions:
 jobs:
   implement:
     # The comment must start with the command, so an `/implement` quoted inside
-    # a longer comment does not trigger a run. Write access to the repository is
-    # verified by the gate script, for this event and for workflow_dispatch.
+    # a longer comment does not trigger a run. It may be on an issue or on a
+    # pull request; the gate script tells the two apart. Write access to the
+    # repository is verified by the gate script, for this event and for
+    # workflow_dispatch.
     if: >
       github.event_name == 'workflow_dispatch' ||
       (
         github.event_name == 'issue_comment' &&
-        !github.event.issue.pull_request &&
         github.event.comment.user.type != 'Bot' &&
         startsWith(github.event.comment.body, '/implement')
       )
@@ -72,7 +87,6 @@ jobs:
     # this budget, so it is well above what the cheap checks alone would need.
     timeout-minutes: 60
     env:
-      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       ISSUE_NUMBER: ${{ github.event.issue.number || inputs.issue_number }}
       BASE_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || github.event.repository.default_branch }}
     steps:
@@ -83,10 +97,21 @@ jobs:
           # in the repository's local git configuration for it to discover.
           persist-credentials: false
 
-      # Caller, issue number, issue state, and duplicate pull request are all
-      # checked by one script; it also writes the agent's issue payload and
-      # acknowledges on the issue. A refusal fails the job, so every later step
-      # is skipped without repeating the condition.
+      # Taken before a revise switches to the pull request branch; see the note
+      # at the top of this file.
+      - name: Keep a trusted copy of the automation
+        run: |
+          set -euo pipefail
+          TRUSTED="$RUNNER_TEMP/trusted"
+          echo "TRUSTED=$TRUSTED" >> "$GITHUB_ENV"
+          mkdir -p "$TRUSTED/.github"
+          cp -R .github/scripts "$TRUSTED/.github/scripts"
+          rsync -a --exclude tmp --exclude runs .jaiph/ "$TRUSTED/.jaiph/"
+
+      # Caller, issue or pull request, its state, and duplicate pull request are
+      # all checked by one script; it also writes the agent's payload and
+      # acknowledges on the issue or pull request. A refusal fails the job, so
+      # every later step is skipped without repeating the condition.
       - name: Gate and prepare the implement run
         id: gate
         env:
@@ -98,7 +123,24 @@ jobs:
           AI_ALLOWED_ACTORS: ${{ vars.AI_ALLOWED_ACTORS }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: .github/scripts/implement-issue-gate.sh
+        run: '"$TRUSTED"/.github/scripts/implement-issue-gate.sh'
+
+      # A revise continues the pull request branch. `clean: false` keeps the
+      # payload the gate left in .jaiph/tmp, which git ignores.
+      - name: Check out the pull request branch
+        if: steps.gate.outputs.mode == 'revise'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.gate.outputs.head_ref }}
+          fetch-depth: 0
+          clean: false
+          persist-credentials: false
+
+      # The commit the agent starts from: the base commit for an implement, the
+      # pull request head for a revise. The history check compares against it.
+      - name: Record the starting commit
+        id: start
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -114,6 +156,8 @@ jobs:
           version: 0.15.0
 
       - name: Install Claude Code CLI
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: |
           npm install -g @anthropic-ai/claude-code
           command -v claude
@@ -122,9 +166,12 @@ jobs:
       - name: Implement the issue
         id: implement
         env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           GITHUB_TOKEN: ""
           GH_TOKEN: ""
-        run: .jaiph/implement_issue.jh .jaiph/tmp/issue.json
+        run: |
+          jaiph run --workspace "$GITHUB_WORKSPACE" "$TRUSTED/.jaiph/implement_issue.jh" \
+            .jaiph/tmp/issue.json "${{ steps.gate.outputs.mode }}"
 
       - name: Show implementation diff
         if: always() && steps.implement.outcome != 'skipped'
@@ -136,7 +183,7 @@ jobs:
       - name: Save git patch
         id: patch
         if: always() && steps.implement.outcome != 'skipped'
-        run: .jaiph/git/save-worktree-patch.sh
+        run: '"$TRUSTED"/.jaiph/git/save-worktree-patch.sh'
 
       - name: Upload git patch
         if: always() && steps.implement.outcome != 'skipped'
@@ -185,25 +232,27 @@ jobs:
       - name: Enforce no destructive changes
         id: safety
         if: always() && (steps.implement.outcome == 'success' || steps.implement.outcome == 'failure')
-        run: .jaiph/verification.jh no_destructive_changes "${{ github.sha }}"
+        run: |
+          jaiph run --workspace "$GITHUB_WORKSPACE" "$TRUSTED/.jaiph/verification.jh" \
+            no_destructive_changes "${{ steps.start.outputs.sha }}"
 
       - name: Open a pull request
         id: cpr
-        if: always() && steps.safety.outcome == 'success'
+        if: always() && steps.safety.outcome == 'success' && steps.gate.outputs.mode == 'implement'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ai/issue-${{ env.ISSUE_NUMBER }}
+          branch: ai/issue-${{ steps.gate.outputs.issue_number }}
           base: ${{ env.BASE_BRANCH }}
-          title: "Implement #${{ env.ISSUE_NUMBER }}: ${{ steps.gate.outputs.title }}"
+          title: "Implement #${{ steps.gate.outputs.issue_number }}: ${{ steps.gate.outputs.title }}"
           draft: ${{ steps.implement.outcome != 'success' || steps.automation.outputs.changed == 'true' }}
           signoff: true
           commit-message: |
-            Implement #${{ env.ISSUE_NUMBER }}
+            Implement #${{ steps.gate.outputs.issue_number }}
 
             Triggered by ${{ github.actor }} via the implement-issue workflow.
           body: |
-            Fixes #${{ env.ISSUE_NUMBER }}
+            Fixes #${{ steps.gate.outputs.issue_number }}
 
             Implemented from a maintainer `/implement` command.
 
@@ -225,8 +274,43 @@ jobs:
             Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           delete-branch: true
 
+      # A revise adds a commit to the pull request branch instead. The push is
+      # not forced: if someone pushed to the branch during the run, it is
+      # rejected rather than overwriting their work.
+      - name: Push to the pull request
+        id: push
+        if: always() && steps.safety.outcome == 'success' && steps.gate.outputs.mode == 'revise'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ steps.gate.outputs.head_ref }}
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            echo "No file changes; nothing to push."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -s -m "Address review on #${ISSUE_NUMBER}" \
+            -m "Triggered by ${{ github.actor }} via the implement-issue workflow."
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" \
+            push origin "HEAD:refs/heads/${HEAD_REF}"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # A failed check or a change to the automation turns the pull request
+      # back into a draft, the same rule an implement run opens it with.
+      - name: Mark the pull request as a draft
+        if: >
+          always() && steps.push.outputs.pushed == 'true' &&
+          (steps.implement.outcome != 'success' || steps.automation.outputs.changed == 'true')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr ready "$ISSUE_NUMBER" --undo
+
       - name: Comment on the issue
-        if: always() && steps.gate.outcome == 'success'
+        if: always() && steps.gate.outcome == 'success' && steps.gate.outputs.mode == 'implement'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
@@ -241,3 +325,29 @@ jobs:
           else
             gh issue comment "$ISSUE_NUMBER" --body "Implement run finished without a pull request. See ${RUN_URL}."
           fi
+
+      - name: Comment on the pull request
+        if: always() && steps.gate.outcome == 'success' && steps.gate.outputs.mode == 'revise'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUSHED: ${{ steps.push.outputs.pushed }}
+          CHECKS_PASSED: ${{ steps.implement.outcome == 'success' }}
+          AUTOMATION_WARNING: ${{ steps.automation.outputs.warning }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "${PUSHED:-}" = "true" ]; then
+            body="Pushed $(git rev-parse --short HEAD) to address the review. See ${RUN_URL} for what changed."
+            if [ "$CHECKS_PASSED" != "true" ]; then
+              body="${body}"$'\n\n'"A check failed, so this pull request is a draft again."
+            fi
+            if [ -n "${AUTOMATION_WARNING:-}" ]; then
+              body="${body}"$'\n\n'"${AUTOMATION_WARNING}"
+            fi
+            body="${body}"$'\n\n'"If Checks did not start, run the Tests workflow manually against this branch. Resolve the review threads that are done, and comment \`/implement\` again for another round."
+          elif [ "${PUSHED:-}" = "false" ]; then
+            body="No file changes; nothing pushed. See ${RUN_URL}."
+          else
+            body="Revise run finished without pushing. See ${RUN_URL}."
+          fi
+          gh pr comment "$ISSUE_NUMBER" --body "$body"
