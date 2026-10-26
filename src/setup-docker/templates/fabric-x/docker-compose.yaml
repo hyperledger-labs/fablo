@@ -7,9 +7,9 @@ networks:
     driver: bridge
 
 volumes:
-  # <% fabricX.applicationOrgs.forEach((org) => { %>
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
   committer-<%= org.slug %>-db-data:
-  # <% }) %>
+<%_ }); _%>
 
 services:
 
@@ -129,7 +129,8 @@ services:
 
 
 
-  # <% fabricX.applicationOrgs.forEach((org) => { %>─── <%= org.name %> Committer Stack ───────────────────────────────────────────────────
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+  # ─── <%= org.name %> Committer Stack ───────────────────────────────────────────────────
 
   committer-<%= org.slug %>-db:
     image: <%= global.postgresImage %>
@@ -269,6 +270,6 @@ services:
       start_period: 10s
     networks:
       - fabric-x
-  # <% }) %>
+<%_ }); _%>
 
 

@@ -64,11 +64,16 @@ generateArtifacts() {
 
 }
 networkUp() {
-  mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
-           "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
-           "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
-           "$FABRIC_X_ROOT/data/orderers/party1-batcher"<% fabricX.applicationOrgs.forEach((org) => { %> \
-           "$FABRIC_X_ROOT/data/committer-<%= org.slug %>/sidecar-ledger"<% }); %>
+  local ledger_dirs=(
+    "$FABRIC_X_ROOT/data/orderers/party1-router"
+    "$FABRIC_X_ROOT/data/orderers/party1-consenter"
+    "$FABRIC_X_ROOT/data/orderers/party1-assembler"
+    "$FABRIC_X_ROOT/data/orderers/party1-batcher"
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+    "$FABRIC_X_ROOT/data/committer-<%= org.slug %>/sidecar-ledger"
+<%_ }); _%>
+  )
+  mkdir -p "${ledger_dirs[@]}"
 
   generateArtifacts
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
@@ -125,13 +130,21 @@ namespaceInit() {
 }
  
 namespaceList() {
-  docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
-    -v "$FABRIC_X_ROOT/fxconfig-<%= fabricX.applicationOrgs[0].slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/peers/fxconfig.<%= fabricX.applicationOrgs[0].domain %>/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/users/User1@<%= fabricX.applicationOrgs[0].domain %>/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrgs[0].domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
-    "$TOOLS_IMAGE" \
-    fxconfig namespace list --config=/config/fxconfig.yaml
+  local org_slug="${1:-<%= fabricX.applicationOrgs[0].slug %>}"
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+  if [ "$org_slug" = "<%= org.slug %>" ] || [ "$org_slug" = "<%= org.name %>" ]; then
+    docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
+      -v "$FABRIC_X_ROOT/fxconfig-<%= org.slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/peers/fxconfig.<%= org.domain %>/tls:/tls:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/users/User1@<%= org.domain %>/msp:/msp:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
+      "$TOOLS_IMAGE" \
+      fxconfig namespace list --config=/config/fxconfig.yaml
+    return 0
+  fi
+<%_ }); _%>
+  echo "Organization '$org_slug' not found in fabric-x configuration." >&2
+  return 1
 }
  

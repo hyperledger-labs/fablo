@@ -1,9 +1,28 @@
-import { FabloConfigExtended, FabricXOrgConfig, FabricXTemplateModel } from "../types/FabloConfigExtended";
+import { FabloConfigExtended } from "../types/FabloConfigExtended";
 import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/templateUtils";
 import { shellQuote } from "../utils/shellQuote";
 import defaults from "../extend-config/defaults";
 import * as fs from "fs-extra";
 import * as path from "path";
+
+export const BASE_SIDECAR_PORT = 4001;
+export const BASE_QUERY_SERVICE_PORT = 7001;
+
+export interface FabricXOrgConfig {
+  name: string;
+  domain: string;
+  mspName: string;
+  slug: string;
+  sidecarPort: number;
+  queryServicePort: number;
+}
+
+export interface FabricXTemplateModel {
+  channelName: string;
+  channelProfileName: string;
+  applicationOrgs: FabricXOrgConfig[];
+  defaultPolicy: string;
+}
 
 export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): FabricXTemplateModel => {
   const [channel] = configExtended.channels;
@@ -19,8 +38,8 @@ export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): Fa
     domain: org.domain,
     mspName: org.mspName,
     slug: org.name.toLowerCase(),
-    sidecarPort: 4001 + index,
-    queryServicePort: 8001 + index,
+    sidecarPort: BASE_SIDECAR_PORT + index,
+    queryServicePort: BASE_QUERY_SERVICE_PORT + index,
   }));
 
   const defaultPolicy = defaults.namespace.policy(channel.orgs);

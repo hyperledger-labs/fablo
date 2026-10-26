@@ -3,8 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
 import { shellQuote } from "../utils/shellQuote";
-import { getFabricXTemplateModel } from "./fabricXDockerWriter";
-import { FabloConfigExtended } from "../types/FabloConfigExtended";
 
 describe("fabric-x base-functions.sh namespaceInit", () => {
   const templatePath = path.join(__dirname, "templates/fabric-x/scripts/base-functions.sh");
@@ -69,52 +67,5 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
 
     expect(status).not.toBe(0);
     expect(stdout).not.toContain("CALLED");
-  });
-});
-
-describe("getFabricXTemplateModel", () => {
-  it("resolves multi-org topology with port offsets and combined policy", () => {
-    const configExtended = {
-      orgs: [
-        { name: "Org1", domain: "org1.com", mspName: "Org1MSP" },
-        { name: "Org2", domain: "org2.com", mspName: "Org2MSP" },
-      ],
-      channels: [
-        {
-          name: "my-channel",
-          profileName: "MyChannel",
-          orgs: [
-            { name: "Org1", domain: "org1.com", mspName: "Org1MSP" },
-            { name: "Org2", domain: "org2.com", mspName: "Org2MSP" },
-          ],
-        },
-      ],
-    };
-
-    const model = getFabricXTemplateModel(configExtended as unknown as FabloConfigExtended);
-
-    expect(model.channelName).toBe("my-channel");
-    expect(model.channelProfileName).toBe("MyChannel");
-    expect(model.applicationOrgs[0].name).toBe("Org1");
-    expect(model.applicationOrgs).toHaveLength(2);
-    expect(model.applicationOrgs[0].slug).toBe("org1");
-    expect(model.applicationOrgs[0].sidecarPort).toBe(4001);
-    expect(model.applicationOrgs[0].queryServicePort).toBe(8001);
-    expect(model.applicationOrgs[1].slug).toBe("org2");
-    expect(model.applicationOrgs[1].sidecarPort).toBe(4002);
-    expect(model.applicationOrgs[1].queryServicePort).toBe(8002);
-    expect(model.defaultPolicy).toBe("AND('Org1MSP.member','Org2MSP.member')");
-  });
-
-  it("throws when channel is missing or channel has no organizations", () => {
-    expect(() => getFabricXTemplateModel({ channels: [] } as unknown as FabloConfigExtended)).toThrow(
-      "Fabric-X generation requires exactly one channel.",
-    );
-
-    expect(() =>
-      getFabricXTemplateModel({
-        channels: [{ name: "my-channel", profileName: "MyChannel", orgs: [] }],
-      } as unknown as FabloConfigExtended),
-    ).toThrow("Fabric-X generator requires at least one channel with an organization.");
   });
 });

@@ -588,20 +588,70 @@ export default class Validate extends Command {
     }
 
     const channel = channels[0];
-    const knownOrgNames = (channel?.orgs ?? []).map((o) => o.name);
-    if (knownOrgNames.length === 0) {
+    const configuredOrgNames = new Set(orgs.map((o) => o.organization.name));
+    const channelOrgNames = (channel?.orgs ?? []).map((o) => o.name);
+
+    if (channelOrgNames.length === 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
         message: `fabric-x requires at least one organization on channel '${channel?.name}'.`,
       });
     }
 
-    const unknownChannelOrgs = knownOrgNames.filter((name) => !orgs.some((o) => o.organization.name === name));
+    if (channelOrgNames.length > 48) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X supports up to 48 organizations per channel to avoid port collision with orderers (ports 7050-7053). Got ${channelOrgNames.length}.`,
+      });
+    }
+
+    const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
     if (unknownChannelOrgs.length > 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
         message: `Channel '${channel?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
       });
+    }
+
+    const channelOrgsConfig = channelOrgNames
+      .map((name) => orgs.find((o) => o.organization.name === name)?.organization)
+      .filter((o): o is OrgJson["organization"] => Boolean(o));
+
+    const seenSlugs = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const slug = org.name.toLowerCase();
+      if (seenSlugs.has(slug)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X generated duplicate organization slug '${slug}'. Organization names must be unique case-insensitively.`,
+        });
+      }
+      seenSlugs.add(slug);
+    }
+
+    const seenMsps = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const msp = org.mspName ?? `${org.name}MSP`;
+      if (seenMsps.has(msp)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate MSP name '${msp}'. Organization MSP names must be unique.`,
+        });
+      }
+      seenMsps.add(msp);
+    }
+
+    const seenDomains = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      if (org.domain && seenDomains.has(org.domain)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate domain '${org.domain}'. Organization domains must be unique.`,
+        });
+      }
+      if (org.domain) {
+        seenDomains.add(org.domain);
+      }
     }
 
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
@@ -643,7 +693,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy!== undefined) {
+      if (namespace.orgs && namespace.policy !== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
@@ -657,7 +707,7 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
+      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !channelOrgNames.includes(n));
       if (unknownOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
