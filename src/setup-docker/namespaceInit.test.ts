@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
 import { shellQuote } from "../utils/shellQuote";
-import { buildFabricXOrderer } from "./fabricXOrderer";
+import { buildFabricXOrderer } from "./fabricXOrdererTopology";
 
 describe("fabric-x base-functions.sh namespaceInit", () => {
   const templatePath = path.join(__dirname, "templates/fabric-x/scripts/base-functions.sh");
