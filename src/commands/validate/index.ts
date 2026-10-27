@@ -663,7 +663,7 @@ _validateFabricXOrderer(networkConfig: FabloConfigJson): void {
   const { orgs, fabricX } = networkConfig;
   const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
 
-  // The orderer group is only kept so channels have an orderer to refer to. The parties come from 'fabricX'.
+
   const ordererGroups = orgs.flatMap((o) => o.orderers ?? []);
   if (ordererGroups.length !== 1) {
     this.emit(validationErrorType.ERROR, {
@@ -701,7 +701,7 @@ _validateFabricXOrderer(networkConfig: FabloConfigJson): void {
     });
   }
 
-  // Names, domains and MSP names end up in folder names and MSP definitions, so they must not repeat.
+
   const mspNameOf = (o: { name: string; mspName?: string }): string =>
     o.mspName ?? defaults.organization.mspName(o.name);
   const organizations = [
