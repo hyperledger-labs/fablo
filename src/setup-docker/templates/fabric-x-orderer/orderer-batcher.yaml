@@ -29,7 +29,7 @@ General:
     ClientCertificate: /node-tls/server.crt
     ClientPrivateKey: /node-tls/server.key
   LocalMSPDir: /node-msp
-  LocalMSPID: <%= party.org.mspId %>
+  LocalMSPID: <%= party.org.mspName %>
   BCCSP:
     Default: SW
     SW:
@@ -52,5 +52,8 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Consensus:
-  WALDir: /data/wal
+Batcher:
+  ShardID: <%= node.shardId %>
+  BatchSequenceGap: 10
+  MemPoolMaxSize: 1000000
+  SubmitTimeout: 500ms

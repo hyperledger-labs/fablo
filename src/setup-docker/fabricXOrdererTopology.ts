@@ -61,7 +61,7 @@ const buildNode = (
   cryptoName,
   cryptoDir: `ordererOrganizations/${party.org.domain}/orderers/${party.slug}/${cryptoName}.${party.org.domain}`,
   dataDir: `data/orderers/${party.slug}-${role}`,
-  configFile: `config/${party.slug}-${role}.yaml`,
+  configFile: `config/${hostPrefix}-${role}.yaml`,
   acceptsClients: ROLES_WITH_CLIENTS.includes(role),
   dependsOn: [],
   ...(shardId === undefined ? {} : { shardId }),

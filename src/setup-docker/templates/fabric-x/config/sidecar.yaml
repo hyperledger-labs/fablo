@@ -21,7 +21,7 @@ orderer:
     common-ca-cert-paths:
 
 <%_ fabricX.orderer.parties.forEach((party) => { -%>
-      - /orderer-cas/<%= party.org.name %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem
+      - /orderer-cas/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem
 <%_ }); -%>
   identity:
     msp-id: <%= fabricX.applicationOrg.mspName %>

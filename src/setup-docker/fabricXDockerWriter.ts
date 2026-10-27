@@ -49,15 +49,15 @@ export class FabricXDockerWriter {
     this.log("Fabric-X network files successfully generated under fabric-x/");
   }
 
-  private async renderOrdererNodeConfigs(orderer:FabricXOrdererTopology, data: Record<string, unknown>): Promise<void> {
-    for (const party of orderer.parties) {
-
-      const templatePath = getTemplatePath(this.templatesDir, path.join("fabric-x-orderer", `${Node.role}.yaml`));
-      const destPath = getDestinationPath(this.outputDir, path.join("fabric-x", Node.configFile));
-      await renderTemplate(templatePath, destPath, { ...data, party, Node });
-
+private async renderOrdererNodeConfigs(orderer: FabricXOrdererTopology, data: Record<string, unknown>): Promise<void> {
+  for (const party of orderer.parties) {
+    for (const node of party.nodes) {
+      const templatePath = getTemplatePath(this.templatesDir, path.join("fabric-x-orderer", `orderer-${node.role}.yaml`));
+      const destPath = getDestinationPath(this.outputDir, path.join("fabric-x", node.configFile));
+      await renderTemplate(templatePath, destPath, { ...data, party, node });
     }
   }
+}
   private async renderTemplateFile(file: string, data: Record<string, unknown>): Promise<void> {
     const templatePath = getTemplatePath(this.templatesDir, file);
     const destPath = getDestinationPath(this.outputDir, file);

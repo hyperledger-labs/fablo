@@ -4,21 +4,21 @@
 Organizations:
 
 <%_ fabricX.orderer.parties.forEach((party, index) => { -%>
-  - &<%= party.org.mspId %>
+  - &<%= party.org.mspName %>
     Name: <%= party.org.name %>
     SkipAsForeign: false
-    ID: <%= party.org.mspId %>
+    ID: <%= party.org.mspName %>
     MSPDir: ./crypto/ordererOrganizations/<%= party.org.domain %>/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: OR('<%= party.org.mspId %>.member')
+        Rule: OR('<%= party.org.mspName %>.member')
       Writers:
         Type: Signature
-        Rule: OR('<%= party.org.mspId %>.member')
+        Rule: OR('<%= party.org.mspName %>.member')
       Admins:
         Type: Signature
-        Rule: OR('<%= party.org.mspId %>.admin')
+        Rule: OR('<%= party.org.mspName %>.admin')
     OrdererEndpoints:
       - id=<%= party.endpointId %>,broadcast,<%= party.router.host %>:<%= party.router.port %>
       - id=<%= party.endpointId %>,deliver,<%= party.assembler.host %>:<%= party.assembler.port %>
