@@ -320,3 +320,30 @@ jobs:
           path: |
             e2e-network/docker/test-08-fabric-x.sh.logs/*
             e2e-network/docker/test-08-fabric-x.sh.tmpdir/fablo-target/**/*
+  test-09-fabric-x-bft:
+    needs: test-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Downgrade Docker to v28
+        uses: ./.github/actions/setup-docker-v28
+
+      - name: Build Fablo
+        run: |
+          shellcheck --version && \
+          yamllint -v && \
+          npm install && \
+          ./fablo-build.sh
+
+      - name: Test Fabric-X with four orderer parties
+        run: e2e-network/docker/test-09-fabric-x-bft.sh
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-09-fabric-x-bft-snapshot
+          path: |
+            e2e-network/docker/test-09-fabric-x-bft.sh.logs/*
+            e2e-network/docker/test-09-fabric-x-bft.sh.tmpdir/fablo-target/**/*
