@@ -14,19 +14,6 @@ services:
 <%_ fabricX.orderer.parties.forEach((party) => { -%>
   # ─── Orderer Party <%= party.partyId %> ───────────────────────────────────────────────────────
 <%_ party.nodes.forEach((node) => { -%>
-  ...
-<%_ if (node.acceptsClients) { -%>
-      - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
-<%_ } -%>
-  ...
-<%_ if (node.dependsOn.length > 0) { -%>
-    depends_on:
-<%_ node.dependsOn.forEach((dependency) => { -%>
-      <%= dependency %>:
-        condition: service_healthy
-<%_ }); -%>
-<%_ } -%>
-<%_ services.forEach(({ node, clientCa, dependsOn }) => { -%>
   <%= node.host %>:
     container_name: <%= node.host %>
     image: <%= global.ordererImage %>
@@ -41,7 +28,7 @@ services:
       - ./crypto/<%= node.cryptoDir %>/tls:/node-tls:ro,Z
       - ./crypto/<%= node.cryptoDir %>/msp:/node-msp:ro,Z
       - ./crypto/ordererOrganizations/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
-<%_ if (clientCa) { -%>
+<%_ if (node.acceptsClients) { -%>
       - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
 <%_ } -%>
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
@@ -52,10 +39,10 @@ services:
       timeout: 3s
       retries: 20
       start_period: 10s
-<%_ if (dependsOn.length > 0) { -%>
+<%_ if (node.dependsOn.length > 0) { -%>
     depends_on:
-<%_ dependsOn.forEach((dependency) => { -%>
-      <%= dependency.host %>:
+<%_ node.dependsOn.forEach((dependency) => { -%>
+      <%= dependency %>:
         condition: service_healthy
 <%_ }); -%>
 <%_ } -%>
@@ -64,8 +51,6 @@ services:
 
 <%_ }); -%>
 <%_ }); -%>
-
-
 
 
   # ─── <%= fabricX.applicationOrg.name %> Committer Stack ───────────────────────────────────────────────────

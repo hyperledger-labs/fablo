@@ -1,6 +1,4 @@
 
-
----
 Organizations:
 
 <%_ fabricX.orderer.parties.forEach((party, index) => { -%>
@@ -115,7 +113,7 @@ Orderer: &OrdererDefaults
     - ID: <%= party.partyId %>
       Host: <%= party.consenter.host %>
       Port: <%= party.consenter.port %>
-      MSPID: <%= party.org.mspId %>
+      MSPID: <%= party.org.mspName %>
       Identity: ./crypto/<%= party.consenter.cryptoDir %>/msp/signcerts/<%= party.consenter.cryptoName %>.<%= party.org.domain %>-cert.pem
       ClientTLSCert: ./crypto/<%= party.consenter.cryptoDir %>/tls/server.crt
       ServerTLSCert: ./crypto/<%= party.consenter.cryptoDir %>/tls/server.crt
@@ -124,7 +122,7 @@ Orderer: &OrdererDefaults
   Organizations:
 
 <%_ fabricX.orderer.parties.forEach((party) => { -%>
-    - *<%= party.org.mspId %>
+    - *<%= party.org.mspName %>
 <%_ }); -%>
 
   Policies:
