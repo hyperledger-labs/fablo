@@ -1,14 +1,4 @@
-// Command fabric-x-app is a small application fixture for the Fabric-X e2e test.
-//
-// It follows the external endorser model. The program starts an endorser for one
-// namespace, then acts as the client:
-//
-//  1. send a "set" proposal to the endorser
-//  2. submit the endorsed transaction to the orderer
-//  3. wait for the commit notification from the sidecar
-//  4. read the key back through the endorser
-//
-// The key and value are constants, so a successful run always prints the same line.
+
 package main
 
 import (
@@ -89,7 +79,7 @@ func run(o options) error {
 		return fmt.Errorf("load signer: %w", err)
 	}
 
-	// The same client certificate is used for the sidecar and the orderer, like fxconfig does.
+
 	clientTLS := func(cas ...string) network.TLSConfig {
 		return network.TLSConfig{
 			Mode:        network.TLSModeMTLS,
@@ -101,13 +91,13 @@ func run(o options) error {
 	sidecar := network.PeerConf{Address: o.sidecar, TLS: clientTLS(o.orgTLSCA)}
 	orderer := network.OrdererConf{Address: o.orderer, TLS: clientTLS(o.ordererTLSCA, o.orgTLSCA)}
 
-	// Start the endorser. It keeps its own state in memory, synced from the sidecar.
+	
 	endorserAddr, err := startEndorser(ctx, o, sidecar, logger)
 	if err != nil {
 		return err
 	}
 
-	// The endorser is on loopback in the same process, so it does not need TLS.
+	
 	ec, err := network.NewEndorsementClient(
 		[]network.PeerConf{{Address: endorserAddr, TLS: network.TLSConfig{Mode: network.TLSModeNone}}},
 		signer, o.channel, o.namespace, nsVersion,
@@ -115,15 +105,15 @@ func run(o options) error {
 	if err != nil {
 		return fmt.Errorf("create endorsement client: %w", err)
 	}
-	defer ec.Close() //nolint:errcheck
+	defer ec.Close() 
 
 	submitter, err := nfabx.NewSubmitter(ctx, []network.OrdererConf{orderer}, signer, 0, logger)
 	if err != nil {
 		return fmt.Errorf("create submitter: %w", err)
 	}
-	defer submitter.Close() //nolint:errcheck
+	defer submitter.Close() 
 
-	// Start listening for commit notifications before anything is submitted.
+
 	events := make(chan notification.TxStatusEvent, 16)
 	txIDs := make(chan []string, 1)
 	streamDone, err := startNotifications(ctx, o, sidecar, signer, logger, events, txIDs)
@@ -131,7 +121,7 @@ func run(o options) error {
 		return err
 	}
 
-	// 1. endorse
+
 	end, _, err := endorse(ctx, ec, o.namespace, "set", fixtureKey, fixtureValue)
 	if err != nil {
 		return err
@@ -141,18 +131,17 @@ func run(o options) error {
 		return err
 	}
 
-	// 2. submit
 	txIDs <- []string{txID}
 	if err := submitter.Submit(ctx, end); err != nil {
 		return fmt.Errorf("submit: %w", err)
 	}
 
-	// 3. wait for commit
+	
 	if err := waitForCommit(ctx, events, streamDone, txID); err != nil {
 		return err
 	}
 
-	// 4. query
+
 	if err := waitForValue(ctx, ec, o.namespace, fixtureKey, fixtureValue); err != nil {
 		return err
 	}
@@ -161,8 +150,7 @@ func run(o options) error {
 	return nil
 }
 
-// startEndorser runs the endorser service on a random loopback port and waits
-// until it has caught up with the sidecar. It stops when ctx is done.
+
 func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, logger sdk.Logger) (string, error) {
 	svc, err := service.New(
 		service.ServiceConfig{
@@ -199,9 +187,7 @@ func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, log
 	return lis.Addr().String(), nil
 }
 
-// startNotifications opens the commit notification stream. Transaction IDs sent
-// on txIDs are watched and their status is delivered on events. The returned
-// channel receives an error if the stream ends.
+
 func startNotifications(
 	ctx context.Context,
 	o options,
@@ -221,13 +207,12 @@ func startNotifications(
 
 	done := make(chan error, 1)
 	go func() {
-		defer peer.Close() //nolint:errcheck
+		defer peer.Close() 
 		done <- notifier.Subscribe(ctx, txIDs)
 	}()
 	return done, nil
 }
 
-// chanHandler forwards transaction status events to a channel.
 type chanHandler struct {
 	out chan<- notification.TxStatusEvent
 }
@@ -243,7 +228,7 @@ func (h chanHandler) Handle(ctx context.Context, events []notification.TxStatusE
 	return nil
 }
 
-// endorse sends one proposal to the endorser and returns the endorsement and the response payload.
+
 func endorse(ctx context.Context, ec *network.EndorsementClient, namespace string, args ...string) (sdk.Endorsement, []byte, error) {
 	raw := make([][]byte, len(args))
 	for i, a := range args {
@@ -263,7 +248,7 @@ func endorse(ctx context.Context, ec *network.EndorsementClient, namespace strin
 	return end, resp.Payload, nil
 }
 
-// txIDOf reads the transaction ID from the proposal header.
+
 func txIDOf(end sdk.Endorsement) (string, error) {
 	hdr, err := protoutil.UnmarshalHeader(end.Proposal.Header)
 	if err != nil {
@@ -276,7 +261,7 @@ func txIDOf(end sdk.Endorsement) (string, error) {
 	return chdr.TxId, nil
 }
 
-// waitForCommit blocks until the sidecar reports the status of txID.
+
 func waitForCommit(ctx context.Context, events <-chan notification.TxStatusEvent, streamDone <-chan error, txID string) error {
 	for {
 		select {
@@ -296,8 +281,7 @@ func waitForCommit(ctx context.Context, events <-chan notification.TxStatusEvent
 	}
 }
 
-// waitForValue reads the key through the endorser until it has the wanted value.
-// The endorser syncs from the sidecar, so it can be a few moments behind the commit.
+
 func waitForValue(ctx context.Context, ec *network.EndorsementClient, namespace, key, want string) error {
 	var last string
 	var lastErr error

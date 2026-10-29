@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
-# Runs the Fabric-X app fixture against a network created by fablo.sh.
-#
-# The fixture runs in a Go container on the Fabric-X Docker network and uses the
-# same certificates as fxconfig, so it reaches the orderer and the sidecar by
-# their service names.
-#
-# Usage: run.sh <path to fablo-target/fabric-x>
-#
-# Optional environment variables (defaults match "fablo init fabric-x"):
-#   NETWORK, ORG_DOMAIN, ORG_SLUG, MSP_ID, CHANNEL, NAMESPACE, GO_IMAGE
+
 
 set -euo pipefail
 

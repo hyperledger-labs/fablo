@@ -1,10 +1,3 @@
-/*
-Based on SampleExecutor from hyperledger/fabric-x-samples (custom-endorser).
-
-Copyright IBM Corp. All Rights Reserved.
-
-SPDX-License-Identifier: Apache-2.0
-*/
 
 package main
 
@@ -16,13 +9,11 @@ import (
 	"github.com/hyperledger/fabric-x-sdk/endorsement"
 )
 
-// Executor is a minimal key value store with two functions:
-// "set <key> <value>" writes a key, "get <key>" returns its value.
 type Executor struct{}
 
-// Execute implements service.Executor.
+
 func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv endorsement.Invocation) (endorsement.ExecutionResult, error) {
-	// Block number 0 means the current state.
+
 	store, err := newStore(0)
 	if err != nil {
 		return endorsement.ExecutionResult{}, fmt.Errorf("simulation store: %w", err)
@@ -47,8 +38,7 @@ func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv en
 		if len(inv.Args) < 3 {
 			return endorsement.BadRequest("usage: set [key] [value]"), nil
 		}
-		// The write is only recorded in the read/write set. It becomes state
-		// when the transaction is committed.
+		
 		if err := store.PutState(string(inv.Args[1]), inv.Args[2]); err != nil {
 			return endorsement.ExecutionResult{}, fmt.Errorf("put state: %w", err)
 		}
