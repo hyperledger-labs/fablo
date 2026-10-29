@@ -2,9 +2,7 @@ module github.com/hyperledger-labs/fablo/e2e-network/docker/fabric-x-app
 
 go 1.26.3
 
-// Versions match github.com/hyperledger/fabric-x-samples/custom-endorser and the
-// committer image used by Fablo. Run "go mod tidy" once to create go.sum and the
-// indirect requirements, then commit both files.
+
 require (
 	github.com/hyperledger/fabric-x-committer v1.0.3
 	github.com/hyperledger/fabric-x-common v0.2.6
