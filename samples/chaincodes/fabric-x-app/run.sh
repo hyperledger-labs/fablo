@@ -7,13 +7,16 @@ FABRIC_X_ROOT="${1:?usage: run.sh <path to fablo-target/fabric-x>}"
 FABRIC_X_ROOT="$(cd "$FABRIC_X_ROOT" && pwd)"
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+CHANNEL="${CHANNEL:?CHANNEL is required}"
+NAMESPACE="${NAMESPACE:?NAMESPACE is required}"
+MSP_ID="${MSP_ID:?MSP_ID is required}"
+ORG_DOMAIN="${ORG_DOMAIN:?ORG_DOMAIN is required}"
+ORG_SLUG="${ORG_SLUG:?ORG_SLUG is required}"
+
 NETWORK="${NETWORK:-fabric-x}"
-ORG_DOMAIN="${ORG_DOMAIN:-org1.example.com}"
-ORG_SLUG="${ORG_SLUG:-org1}"
-MSP_ID="${MSP_ID:-Org1MSP}"
-CHANNEL="${CHANNEL:-mychannel}"
-NAMESPACE="${NAMESPACE:-mynamespace}"
 GO_IMAGE="${GO_IMAGE:-golang:1.26}"
+ORDERER_ADDR="${ORDERER_ADDR:-orderer-router:7050}"
+SIDECAR_ADDR="${SIDECAR_ADDR:-committer-$ORG_SLUG-sidecar:4001}"
 
 CRYPTO="$FABRIC_X_ROOT/crypto"
 CACHE_DIR="$APP_DIR/.cache"
@@ -36,5 +39,5 @@ docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
   --channel "$CHANNEL" \
   --msp-id "$MSP_ID" \
   --namespace "$NAMESPACE" \
-  --orderer orderer-router:7050 \
-  --sidecar "committer-$ORG_SLUG-sidecar:4001"
+  --orderer "$ORDERER_ADDR" \
+  --sidecar "$SIDECAR_ADDR"

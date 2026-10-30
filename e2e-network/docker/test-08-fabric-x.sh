@@ -97,7 +97,15 @@ run_fablo namespace init
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
 
 # application transaction: submit to the namespace, wait for commit, query the state
-expectCommand "\"$TEST_TMP/../fabric-x-app/run.sh\" \"$TEST_TMP/fablo-target/fabric-x\"" "FABRIC_X_APP_OK namespace=mynamespace key=fixture-key value=fixture-value"
+FX_CONFIG="$TEST_TMP/fablo-config.json"
+FX_CHANNEL="$(jq -r '.channels[0].name' "$FX_CONFIG")"
+FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$FX_CONFIG")"
+FX_ORG="$(jq -r '.channels[0].orgs[0].name' "$FX_CONFIG")"
+FX_ORG_DOMAIN="$(jq -r --arg org "$FX_ORG" '.orgs[] | select(.organization.name == $org) | .organization.domain' "$FX_CONFIG")"
+FX_MSP_ID="$(jq -r --arg org "$FX_ORG" '.orgs[] | select(.organization.name == $org) | .organization.mspName // ($org + "MSP")' "$FX_CONFIG")"
+FX_ORG_SLUG="$(echo "$FX_ORG" | tr '[:upper:]' '[:lower:]')"
+
+expectCommand "CHANNEL=\"$FX_CHANNEL\" NAMESPACE=\"$FX_NAMESPACE\" MSP_ID=\"$FX_MSP_ID\" ORG_DOMAIN=\"$FX_ORG_DOMAIN\" ORG_SLUG=\"$FX_ORG_SLUG\" \"$FABLO_HOME/samples/chaincodes/fabric-x-app/run.sh\" \"$TEST_TMP/fablo-target/fabric-x\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
 
 # cache skip check
 CONFIG_HASH_BEFORE=$(sha256sum "$CONFIG_BLOCK" | awk '{print $1}')

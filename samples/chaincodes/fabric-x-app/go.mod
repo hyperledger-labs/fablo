@@ -1,4 +1,4 @@
-module github.com/hyperledger-labs/fablo/e2e-network/docker/fabric-x-app
+module github.com/hyperledger-labs/fablo/samples/chaincodes/fabric-x-app
 
 go 1.26.3
 

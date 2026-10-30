@@ -14,13 +14,11 @@ import (
 	"time"
 
 	"github.com/hyperledger/fabric-x-committer/utils/serve"
-	"github.com/hyperledger/fabric-x-common/protoutil"
 	"github.com/hyperledger/fabric-x-samples/custom-endorser/service"
 	sdk "github.com/hyperledger/fabric-x-sdk"
 	"github.com/hyperledger/fabric-x-sdk/identity"
 	"github.com/hyperledger/fabric-x-sdk/network"
 	nfabx "github.com/hyperledger/fabric-x-sdk/network/fabricx"
-	"github.com/hyperledger/fabric-x-sdk/notification"
 	"google.golang.org/grpc"
 )
 
@@ -28,39 +26,53 @@ const (
 	fixtureKey   = "fixture-key"
 	fixtureValue = "fixture-value"
 	nsVersion    = "1.0"
+	pollInterval = 250 * time.Millisecond
 )
 
 type options struct {
-	channel       string
-	mspID         string
-	mspDir        string
-	namespace     string
-	tlsDir        string
-	orgTLSCA      string
-	ordererTLSCA  string
-	orderer       string
-	sidecar       string
+	channel        string
+	mspID          string
+	mspDir         string
+	namespace      string
+	tlsDir         string
+	orgTLSCA       string
+	ordererTLSCA   string
+	orderer        string
+	sidecar        string
 	overallTimeout time.Duration
 }
 
-func parseOptions() options {
+func parseOptions() (options, error) {
 	var o options
-	flag.StringVar(&o.channel, "channel", "mychannel", "channel name")
-	flag.StringVar(&o.mspID, "msp-id", "Org1MSP", "MSP ID of the signing identity")
+	flag.StringVar(&o.channel, "channel", "", "channel name (required)")
+	flag.StringVar(&o.mspID, "msp-id", "", "MSP ID of the signing identity (required)")
+	flag.StringVar(&o.namespace, "namespace", "", "namespace to write to (required)")
+	flag.StringVar(&o.orderer, "orderer", "", "orderer router address, host:port (required)")
+	flag.StringVar(&o.sidecar, "sidecar", "", "committer sidecar address, host:port (required)")
 	flag.StringVar(&o.mspDir, "msp-dir", "/msp", "MSP directory of the signing identity")
-	flag.StringVar(&o.namespace, "namespace", "mynamespace", "namespace to write to")
 	flag.StringVar(&o.tlsDir, "tls-dir", "/tls", "directory with the client TLS certificate (server.crt and server.key)")
 	flag.StringVar(&o.orgTLSCA, "org-tls-ca", "/org-tls-ca.pem", "TLS CA certificate of the application org")
 	flag.StringVar(&o.ordererTLSCA, "orderer-tls-ca", "/orderer-tls-ca.pem", "TLS CA certificate of the orderer org")
-	flag.StringVar(&o.orderer, "orderer", "orderer-router:7050", "orderer router address")
-	flag.StringVar(&o.sidecar, "sidecar", "committer-org1-sidecar:4001", "committer sidecar address")
 	flag.DurationVar(&o.overallTimeout, "timeout", 90*time.Second, "overall timeout for the whole run")
 	flag.Parse()
-	return o
+
+	for name, v := range map[string]string{
+		"channel": o.channel, "msp-id": o.mspID, "namespace": o.namespace,
+		"orderer": o.orderer, "sidecar": o.sidecar,
+	} {
+		if v == "" {
+			return o, fmt.Errorf("missing required flag --%s", name)
+		}
+	}
+	return o, nil
 }
 
 func main() {
-	if err := run(parseOptions()); err != nil {
+	o, err := parseOptions()
+	if err == nil {
+		err = run(o)
+	}
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "FABRIC_X_APP_FAILED:", err)
 		os.Exit(1)
 	}
@@ -79,7 +91,6 @@ func run(o options) error {
 		return fmt.Errorf("load signer: %w", err)
 	}
 
-
 	clientTLS := func(cas ...string) network.TLSConfig {
 		return network.TLSConfig{
 			Mode:        network.TLSModeMTLS,
@@ -91,13 +102,11 @@ func run(o options) error {
 	sidecar := network.PeerConf{Address: o.sidecar, TLS: clientTLS(o.orgTLSCA)}
 	orderer := network.OrdererConf{Address: o.orderer, TLS: clientTLS(o.ordererTLSCA, o.orgTLSCA)}
 
-	
 	endorserAddr, err := startEndorser(ctx, o, sidecar, logger)
 	if err != nil {
 		return err
 	}
 
-	
 	ec, err := network.NewEndorsementClient(
 		[]network.PeerConf{{Address: endorserAddr, TLS: network.TLSConfig{Mode: network.TLSModeNone}}},
 		signer, o.channel, o.namespace, nsVersion,
@@ -105,40 +114,21 @@ func run(o options) error {
 	if err != nil {
 		return fmt.Errorf("create endorsement client: %w", err)
 	}
-	defer ec.Close() 
+	defer ec.Close()
 
 	submitter, err := nfabx.NewSubmitter(ctx, []network.OrdererConf{orderer}, signer, 0, logger)
 	if err != nil {
 		return fmt.Errorf("create submitter: %w", err)
 	}
-	defer submitter.Close() 
-
-
-	events := make(chan notification.TxStatusEvent, 16)
-	txIDs := make(chan []string, 1)
-	streamDone, err := startNotifications(ctx, o, sidecar, signer, logger, events, txIDs)
-	if err != nil {
-		return err
-	}
+	defer submitter.Close()
 
 
 	end, _, err := endorse(ctx, ec, o.namespace, "set", fixtureKey, fixtureValue)
 	if err != nil {
 		return err
 	}
-	txID, err := txIDOf(end)
-	if err != nil {
-		return err
-	}
-
-	txIDs <- []string{txID}
 	if err := submitter.Submit(ctx, end); err != nil {
 		return fmt.Errorf("submit: %w", err)
-	}
-
-	
-	if err := waitForCommit(ctx, events, streamDone, txID); err != nil {
-		return err
 	}
 
 
@@ -188,47 +178,6 @@ func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, log
 }
 
 
-func startNotifications(
-	ctx context.Context,
-	o options,
-	sidecar network.PeerConf,
-	signer sdk.Signer,
-	logger sdk.Logger,
-	events chan<- notification.TxStatusEvent,
-	txIDs <-chan []string,
-) (<-chan error, error) {
-	peer, err := nfabx.NewPeer(sidecar, o.channel, signer)
-	if err != nil {
-		return nil, fmt.Errorf("create sidecar client: %w", err)
-	}
-	processor := notification.NewProcessor([]notification.TxStatusHandler{chanHandler{out: events}}, logger)
-	notifier := notification.NewNotifier(peer, processor)
-	notifier.SetDefaultTimeout(o.overallTimeout)
-
-	done := make(chan error, 1)
-	go func() {
-		defer peer.Close() 
-		done <- notifier.Subscribe(ctx, txIDs)
-	}()
-	return done, nil
-}
-
-type chanHandler struct {
-	out chan<- notification.TxStatusEvent
-}
-
-func (h chanHandler) Handle(ctx context.Context, events []notification.TxStatusEvent) error {
-	for _, ev := range events {
-		select {
-		case h.out <- ev:
-		case <-ctx.Done():
-			return ctx.Err()
-		}
-	}
-	return nil
-}
-
-
 func endorse(ctx context.Context, ec *network.EndorsementClient, namespace string, args ...string) (sdk.Endorsement, []byte, error) {
 	raw := make([][]byte, len(args))
 	for i, a := range args {
@@ -249,39 +198,6 @@ func endorse(ctx context.Context, ec *network.EndorsementClient, namespace strin
 }
 
 
-func txIDOf(end sdk.Endorsement) (string, error) {
-	hdr, err := protoutil.UnmarshalHeader(end.Proposal.Header)
-	if err != nil {
-		return "", fmt.Errorf("read proposal header: %w", err)
-	}
-	chdr, err := protoutil.UnmarshalChannelHeader(hdr.ChannelHeader)
-	if err != nil {
-		return "", fmt.Errorf("read channel header: %w", err)
-	}
-	return chdr.TxId, nil
-}
-
-
-func waitForCommit(ctx context.Context, events <-chan notification.TxStatusEvent, streamDone <-chan error, txID string) error {
-	for {
-		select {
-		case ev := <-events:
-			if ev.TxID != txID {
-				continue
-			}
-			if !ev.Valid() {
-				return fmt.Errorf("tx %s was not committed: status %v at block %d", txID, ev.Status, ev.BlockNum)
-			}
-			return nil
-		case err := <-streamDone:
-			return fmt.Errorf("notification stream ended before tx %s was committed: %v", txID, err)
-		case <-ctx.Done():
-			return fmt.Errorf("waiting for commit of tx %s: %w", txID, ctx.Err())
-		}
-	}
-}
-
-
 func waitForValue(ctx context.Context, ec *network.EndorsementClient, namespace, key, want string) error {
 	var last string
 	var lastErr error
@@ -295,7 +211,7 @@ func waitForValue(ctx context.Context, ec *network.EndorsementClient, namespace,
 		select {
 		case <-ctx.Done():
 			return fmt.Errorf("key %q in namespace %s never had value %q (last value %q, last error %v)", key, namespace, want, last, lastErr)
-		case <-time.After(250 * time.Millisecond):
+		case <-time.After(pollInterval):
 		}
 	}
 }
