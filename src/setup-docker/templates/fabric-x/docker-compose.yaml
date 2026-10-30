@@ -11,120 +11,46 @@ volumes:
 
 services:
 
-  # ─── Orderer Party 1 ───────────────────────────────────────────────────────
-  orderer-router:
-    container_name: orderer-router
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+  # ─── Orderer Party <%= party.partyId %> ───────────────────────────────────────────────────────
+<%_ party.nodes.forEach((node) => { -%>
+  <%= node.host %>:
+    container_name: <%= node.host %>
     image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: router --config=/config/node_config.yaml
+    command: <%= node.command %> --config=/config/node_config.yaml
     ports:
-      - "7050:7050"
+      - "<%= node.port %>:<%= node.port %>"
     volumes:
-      - ./config/orderer-router.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./<%= node.configFile %>:/config/node_config.yaml:ro,Z
+      - ./crypto/<%= node.cryptoDir %>/tls:/node-tls:ro,Z
+      - ./crypto/<%= node.cryptoDir %>/msp:/node-msp:ro,Z
+      - ./crypto/ordererOrganizations/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+<%_ if (node.acceptsClients) { -%>
       - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
+<%_ } -%>
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-router:/data:Z
+      - ./<%= node.dataDir %>:/data:Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 10s
+<%_ if (node.dependsOn.length > 0) { -%>
     depends_on:
-      orderer-assembler:
+<%_ node.dependsOn.forEach((dependency) => { -%>
+      <%= dependency %>:
         condition: service_healthy
+<%_ }); -%>
+<%_ } -%>
     networks:
       - fabric-x
 
-  orderer-batcher:
-    container_name: orderer-batcher
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: batcher --config=/config/node_config.yaml
-    ports:
-      - "7051:7051"
-    volumes:
-      - ./config/orderer-batcher.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-batcher:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    depends_on:
-      orderer-consenter:
-        condition: service_healthy
-    networks:
-      - fabric-x
-
-  orderer-consenter:
-    container_name: orderer-consenter
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: consensus --config=/config/node_config.yaml
-    ports:
-      - "7052:7052"
-    volumes:
-      - ./config/orderer-consenter.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-consenter:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    networks:
-      - fabric-x
-
-  orderer-assembler:
-    container_name: orderer-assembler
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: assembler --config=/config/node_config.yaml
-    ports:
-      - "7053:7053"
-    volumes:
-      - ./config/orderer-assembler.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-assembler:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    depends_on:
-      orderer-batcher:
-        condition: service_healthy
-    networks:
-      - fabric-x
-
-
-
+<%_ }); -%>
+<%_ }); -%>
 
 
   # ─── <%= fabricX.applicationOrg.name %> Committer Stack ───────────────────────────────────────────────────
@@ -240,8 +166,10 @@ services:
       committer-<%= fabricX.applicationOrgSlug %>-coordinator:
         condition: service_healthy
 
-      orderer-router:
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+      <%= party.router.host %>:
         condition: service_healthy
+<%_ }); -%>
 
     networks:
       - fabric-x

@@ -7,6 +7,7 @@ import extendChaincodesConfig, { checkUniqueChaincodeNames } from "./extendChain
 import extendHooksConfig from "./extendHooksConfig";
 import { distinctOrdererHeads, mergeOrdererGroups } from "./mergeOrdererGroups";
 import extendNamespacesConfig from "./extendNamespacesConfig";
+import extendFabricXConfig from "./extendFabricXConfig";
 const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
     global: globalJson,
@@ -15,6 +16,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     chaincodes: chaincodesJson,
     hooks: hooksJson,
     namespaces: namespacesJson,
+    fabricX: fabricXJson,
   } = json;
 
   const global = extendGlobal(globalJson);
@@ -36,6 +38,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     chaincodes,
     hooks,
     namespaces,
+    ...(global.provider === "fabric-x" ? { fabricX: extendFabricXConfig(fabricXJson) } : {}),
   };
 };
 

@@ -1,30 +1,35 @@
 # Cert paths are absolute inside the Docker container (config/crypto/ mounted at /crypto).
 Parties:
 
-  - PartyID: 1
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+<%_ const dir = (node) => `/crypto/${node.cryptoDir}`; -%>
+  - PartyID: <%= party.partyId %>
     CACerts:
-      - /crypto/ordererOrganizations/orderer.example.com/msp/cacerts/ca.orderer.example.com-cert.pem
+      - /crypto/ordererOrganizations/<%= party.org.domain %>/msp/cacerts/ca.<%= party.org.domain %>-cert.pem
     TLSCACerts:
-      - /crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+      - /crypto/ordererOrganizations/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem
     RouterConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls/server.crt
-      Host: orderer-router
-      Port: 7050
+      TLSCert: <%= dir(party.router) %>/tls/server.crt
+      Host: <%= party.router.host %>
+      Port: <%= party.router.port %>
     BatchersConfig:
-      - ShardID: 1
-        SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/msp/signcerts/batcher1.orderer.example.com-cert.pem
-        TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/tls/server.crt
-        Host: orderer-batcher
-        Port: 7051
+<%_ party.batchers.forEach((batcher) => { -%>
+      - ShardID: <%= batcher.shardId %>
+        SignCert: <%= dir(batcher) %>/msp/signcerts/<%= batcher.cryptoName %>.<%= party.org.domain %>-cert.pem
+        TLSCert: <%= dir(batcher) %>/tls/server.crt
+        Host: <%= batcher.host %>
+        Port: <%= batcher.port %>
+<%_ }); -%>
     ConsenterConfig:
-      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp/signcerts/consenter.orderer.example.com-cert.pem
-      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls/server.crt
-      Host: orderer-consenter
-      Port: 7052
+      SignCert: <%= dir(party.consenter) %>/msp/signcerts/<%= party.consenter.cryptoName %>.<%= party.org.domain %>-cert.pem
+      TLSCert: <%= dir(party.consenter) %>/tls/server.crt
+      Host: <%= party.consenter.host %>
+      Port: <%= party.consenter.port %>
     AssemblerConfig:
-      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls/server.crt
-      Host: orderer-assembler
-      Port: 7053
+      TLSCert: <%= dir(party.assembler) %>/tls/server.crt
+      Host: <%= party.assembler.host %>
+      Port: <%= party.assembler.port %>
+<%_ }); -%>
 
 
 Consensus:
@@ -58,4 +63,4 @@ Batching:
     PreferredMaxBytes: 2097152
   RequestMaxBytes: 1048576
 
-MaxPartyID: 1
+MaxPartyID: <%= fabricX.orderer.parties.length %>

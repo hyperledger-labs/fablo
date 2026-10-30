@@ -118,6 +118,19 @@ function getDefaultFabricXConfig(): FabloConfigJson {
         orgs: ["Org1"],
       },
     ],
+    fabricX: {
+      orderer: {
+        parties: [
+          {
+            organization: {
+              name: "Orderer",
+              domain: "orderer.example.com",
+              mspName: "OrdererOrdererMSP",
+            },
+          },
+        ],
+      },
+    },
     chaincodes: [],
     hooks: {},
   }

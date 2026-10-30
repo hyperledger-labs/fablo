@@ -19,8 +19,9 @@ import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
 import { createPackageLabel } from "../../extend-config/extendChaincodesConfig";
 import { Capabilities } from "../../types/FabloConfigExtended";
 import { version } from "../../repositoryUtils";
+import { SUPPORTED_ORDERER_PARTY_COUNTS } from "../../setup-docker/fabricXOrdererTopology";
 import ListCompatibleUpdates from "../../list-compatible-updates";
-
+import defaults from "../../extend-config/defaults"
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
   const duplicates: Record<string, string[]> = {};
   const seenCounts = new Map<string, number>();
@@ -127,6 +128,12 @@ export default class Validate extends Command {
       this._validateFabricXSettings(networkConfig);
       return;
     }
+    if (networkConfig.fabricX !== undefined) {
+  this.emit(validationErrorType.ERROR, {
+    category: validationCategories.GENERAL,
+    message: "The 'fabricX' section is only supported when 'global.provider' is 'fabric-x'.",
+  });
+}
     this._validateClassicFabricImages(networkConfig.global);
     networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
     this._validateOrgs(networkConfig.orgs);
@@ -586,6 +593,9 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+   this._validateFabricXOrderer(networkConfig);
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {
@@ -649,7 +659,76 @@ export default class Validate extends Command {
       }
     });
   }
+_validateFabricXOrderer(networkConfig: FabloConfigJson): void {
+  const { orgs, fabricX } = networkConfig;
+  const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
 
+
+  const ordererGroups = orgs.flatMap((o) => o.orderers ?? []);
+  if (ordererGroups.length !== 1) {
+    this.emit(validationErrorType.ERROR, {
+      category: validationCategories.ORDERER,
+      message: `fabric-x requires exactly one orderer group, found ${ordererGroups.length}.`,
+    });
+  }
+  ordererGroups.forEach((group) => {
+    if (group.type !== "BFT") {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.ORDERER,
+        message: `Orderer group '${group.groupName}' has type '${group.type}'. fabric-x requires type 'BFT'.`,
+      });
+    }
+    if (group.instances !== 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.ORDERER,
+        message: `Orderer group '${group.groupName}' has ${group.instances} instances. fabric-x requires 'instances' to be 1. Set the parties in 'fabricX.orderer.parties'.`,
+      });
+    }
+  });
+
+  const parties = fabricX?.orderer?.parties;
+  if (!parties) {
+    this.emit(validationErrorType.ERROR, {
+      category: validationCategories.ORDERER,
+      message: "fabric-x requires 'fabricX.orderer.parties' with the organizations of the orderer parties.",
+    });
+    return;
+  }
+  if (!SUPPORTED_ORDERER_PARTY_COUNTS.includes(parties.length)) {
+    this.emit(validationErrorType.ERROR, {
+      category: validationCategories.ORDERER,
+      message: `'fabricX.orderer.parties' has ${parties.length} parties. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
+    });
+  }
+
+
+  const mspNameOf = (o: { name: string; mspName?: string }): string =>
+    o.mspName ?? defaults.organization.mspName(o.name);
+  const organizations = [
+    ...orgs.map((o) => ({ where: `orgs '${o.organization.name}'`, ...o.organization })),
+    ...parties.map((p, i) => ({ where: `fabricX.orderer.parties[${i}]`, ...p.organization })),
+  ];
+  const fields: [string, (o: { name: string; domain: string; mspName?: string }) => string][] = [
+    ["name", (o) => o.name],
+    ["domain", (o) => o.domain],
+    ["mspName", mspNameOf],
+  ];
+  fields.forEach(([field, valueOf]) => {
+    const seen = new Map<string, string>();
+    organizations.forEach((o) => {
+      const value = valueOf(o);
+      const first = seen.get(value);
+      if (first !== undefined) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Organization ${field} '${value}' is used by ${first} and by ${o.where}. Every organization needs its own ${field}.`,
+        });
+      } else {
+        seen.set(value, o.where);
+      }
+    });
+  });
+}
   _validateClassicFabricImages(global: GlobalJson): void {
     const fabricXOnlyImages: (keyof FabricImagesJson)[] = ["committer", "postgres"];
 

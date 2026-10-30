@@ -1,16 +1,17 @@
-PartyID: 1
+PartyID: <%= party.partyId %>
 
 General:
   ListenAddress: 0.0.0.0
-  ListenPort: 7051
+  ListenPort: <%= node.port %>
   TLS:
     Enabled: true
     PrivateKey: /node-tls/server.key
     Certificate: /node-tls/server.crt
     RootCAs:
       - /org-tls-ca.pem
-    ClientAuthRequired: false
+    ClientAuthRequired: true
     ClientRootCAs:
+      - /client-tls-ca.pem
   Keepalive:
     ServerMinInterval: 60s
     ServerInterval: 7200s
@@ -29,7 +30,7 @@ General:
     ClientCertificate: /node-tls/server.crt
     ClientPrivateKey: /node-tls/server.key
   LocalMSPDir: /node-msp
-  LocalMSPID: OrdererOrdererMSP
+  LocalMSPID: <%= party.org.mspName %>
   BCCSP:
     Default: SW
     SW:
@@ -52,8 +53,10 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Batcher:
-  ShardID: 1
-  BatchSequenceGap: 10
-  MemPoolMaxSize: 1000000
-  SubmitTimeout: 500ms
+Assembler:
+  PrefetchBufferMemoryBytes: 1073741824
+  RestartLedgerScanTimeout: 5s
+  PrefetchEvictionTtl: 1h
+  PopWaitMonitorTimeout: 1s
+  ReplicationChannelSize: 100
+  BatchRequestsChannelSize: 1000

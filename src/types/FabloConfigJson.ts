@@ -91,6 +91,12 @@ export interface NamespaceJson {
   orgs?: string[];
   policy?: string;
 }
+export interface FabricXOrdererPartyJson {
+  organization: OrganizationDetailsJson;
+}
+export interface FabricXJson {
+  orderer: { parties: FabricXOrdererPartyJson[] };
+}
 export interface FabloConfigJson {
   $schema: string;
   global: GlobalJson;
@@ -99,4 +105,5 @@ export interface FabloConfigJson {
   chaincodes: ChaincodeJson[];
   hooks: HooksJson;
   namespaces?: NamespaceJson[];
+  fabricX?: FabricXJson;
 }
