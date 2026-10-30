@@ -469,4 +469,34 @@ describe("generate", () => {
     expect(baseFunctions).toContain('TOOLS_IMAGE="${TOOLS_IMAGE:-myorg/tools:2.0.0}"');
     expect(baseFunctions).toContain('ORDERER_IMAGE="${ORDERER_IMAGE:-myorg/orderer:2.0.0}"');
   });
+
+  it("should generate Fabric-X network files with tested default fabricImages and role configuration", () => {
+    // Given
+    commands.fabloExec("init fabric-x");
+
+    // When
+    const commandResult = commands.fabloExec("generate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+
+    const dockerCompose = commands.getFileContent("fablo-target/fabric-x/docker-compose.yaml");
+    expect(dockerCompose).toContain("image: ghcr.io/hyperledger/fabric-x-committer:1.0.7");
+    expect(dockerCompose).toContain("image: ghcr.io/hyperledger/fabric-x-orderer:1.0.6");
+    expect(dockerCompose).toContain("image: docker.io/library/postgres:18.3-alpine3.23");
+    expect(dockerCompose).toContain("committer-org1-init-db:");
+    expect(dockerCompose).toContain("command: init-db --config=/config/validator.yaml");
+
+    const configtx = commands.getFileContent("fablo-target/fabric-x/configtx.yaml");
+    expect(configtx).toContain("AbsoluteMaxBytes: 10 MB");
+    expect(configtx).toContain("SnapshotEndorsement:");
+    expect(configtx).toContain("CheckpointEndorsement:");
+
+    const sharedConfig = commands.getFileContent("fablo-target/fabric-x/shared-config.yaml");
+    expect(sharedConfig).toContain("AbsoluteMaxBytes: 10485760");
+
+    const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
+    expect(baseFunctions).toContain('TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.3}"');
+    expect(baseFunctions).toContain('ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.6}"');
+  });
 });

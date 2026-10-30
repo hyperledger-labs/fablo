@@ -90,6 +90,12 @@ Application: &ApplicationDefaults
     Endorsement:
       Type: ImplicitMeta
       Rule: ANY Endorsement
+    SnapshotEndorsement:
+      Type: ImplicitMeta
+      Rule: MAJORITY Endorsement
+    CheckpointEndorsement:
+      Type: ImplicitMeta
+      Rule: MAJORITY Endorsement
     LifecycleEndorsement:
       Type: Signature
       Rule: OR('<%= fabricX.applicationOrg.mspName %>.member')
@@ -101,8 +107,7 @@ Orderer: &OrdererDefaults
   BatchTimeout: 500ms
   BatchSize:
     MaxMessageCount: 3500
-    AbsoluteMaxBytes: 16 MB
-    PreferredMaxBytes: 4 MB
+    AbsoluteMaxBytes: 10 MB
   MaxChannels: 0
   ConsenterMapping:
 
