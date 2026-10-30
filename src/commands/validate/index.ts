@@ -588,7 +588,8 @@ export default class Validate extends Command {
     }
 
     const channel = channels[0];
-    const configuredOrgNames = new Set(orgs.map((o) => o.organization.name));
+    const orgByName = new Map(orgs.map((o) => [o.organization.name, o.organization]));
+    const configuredOrgNames = orgByName;
     const channelOrgNames = (channel?.orgs ?? []).map((o) => o.name);
 
     if (channelOrgNames.length === 0) {
@@ -613,9 +614,7 @@ export default class Validate extends Command {
       });
     }
 
-    const channelOrgsConfig = channelOrgNames
-      .map((name) => orgs.find((o) => o.organization.name === name)?.organization)
-      .filter((o): o is OrgJson["organization"] => Boolean(o));
+    const channelOrgsConfig = channelOrgNames.flatMap((n) => orgByName.get(n) ?? []);
 
     const seenSlugs = new Set<string>();
     for (const org of channelOrgsConfig) {

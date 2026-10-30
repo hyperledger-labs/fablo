@@ -60,7 +60,7 @@ export class FabricXDockerWriter {
 
     const fabricX = getFabricXTemplateModel(configExtended);
     const data = {
-      ...(configExtended as unknown as Record<string, unknown>),
+      ...configExtended,
       fabricX,
       shellQuote,
     };

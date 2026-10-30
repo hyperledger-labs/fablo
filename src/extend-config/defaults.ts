@@ -34,7 +34,7 @@ export default {
       return capabilities.isV2 ? undefined : `AND (${orgs.map((o) => `'${o.mspName}.member'`).join(", ")})`;
     },
   },
-  namespace: {
+   namespace: {
     policy(orgs: OrgConfig[]): string {
       return `AND(${orgs.map((o) => `'${o.mspName}.member'`).join(",")})`;
     },

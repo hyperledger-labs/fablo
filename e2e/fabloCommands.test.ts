@@ -1,6 +1,6 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabloVersion } from "../package.json";
-import { FabloConfigJson } from "../src/types/FabloConfigJson";
+import { FabloConfigJson, OrgJson } from "../src/types/FabloConfigJson";
 import * as fs from "fs";
 
 const commands = new TestCommands("e2e/__tmp__/commands-tests");
@@ -294,41 +294,47 @@ describe("validate", () => {
     expect(fabricXResult.output).toContain("Validation warnings count: 0");
   });
 
-  it("should validate Fabric-X multi-org topology and reject unknown orgs", () => {
-    // 1. Valid multi-org config with valid multi-org namespace policy
-    commands.fabloExec("init fabric-x");
+  describe("Fabric-X multi-org topology validation", () => {
+    let config: FabloConfigJson;
     const configPath = `${commands.workdir}/fablo-config.json`;
-    const config = JSON.parse(fs.readFileSync(configPath, "utf-8")) as FabloConfigJson;
 
-    config.orgs.push({
-      organization: { name: "Org2", domain: "org2.example.com", mspName: "Org2MSP" },
-      ca: { prefix: "ca", db: "sqlite" },
-      orderers: undefined,
+    beforeEach(() => {
+      commands.fabloExec("init fabric-x");
+      config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+      config.orgs.push({
+        organization: { name: "Org2", domain: "org2.example.com", mspName: "Org2MSP" },
+        ca: { prefix: "ca", db: "sqlite" },
+      } as OrgJson);
+      config.channels[0].orgs.push({ name: "Org2", peers: [] });
     });
-    config.channels[0].orgs.push({ name: "Org2", peers: [] });
-    config.namespaces = [{ name: "my_ns", policy: "AND('Org1MSP.member','Org2MSP.member')" }];
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
-    const validResult = commands.fabloExec("validate", true);
-    expect(validResult).toEqual(TestCommands.success());
-    expect(validResult.output).toContain("Validation errors count: 0");
+    it("should validate valid multi-org config with valid multi-org namespace policy", () => {
+      config.namespaces = [{ name: "my_ns", policy: "AND('Org1MSP.member','Org2MSP.member')" }];
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
-    // 2. Reject channel organization not in top-level orgs
-    config.channels[0].orgs.push({ name: "MissingOrg", peers: [] });
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+      const validResult = commands.fabloExec("validate", true);
+      expect(validResult).toEqual(TestCommands.success());
+      expect(validResult.output).toContain("Validation errors count: 0");
+    });
 
-    const missingOrgResult = commands.fabloExec("validate", true);
-    expect(missingOrgResult).toEqual(TestCommands.failure());
-    expect(missingOrgResult.output).toContain("Channel 'mychannel' references unknown org(s): MissingOrg.");
+    it("should reject channel organization not in top-level orgs", () => {
+      const channelName = config.channels[0].name;
+      config.channels[0].orgs.push({ name: "MissingOrg", peers: [] });
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
-    // 3. Reject namespace referencing unknown org
-    config.channels[0].orgs.pop();
-    config.namespaces = [{ name: "my_ns", orgs: ["UnknownOrg"] }];
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+      const missingOrgResult = commands.fabloExec("validate", true);
+      expect(missingOrgResult).toEqual(TestCommands.failure());
+      expect(missingOrgResult.output).toContain(`Channel '${channelName}' references unknown org(s): MissingOrg.`);
+    });
 
-    const unknownOrgResult = commands.fabloExec("validate", true);
-    expect(unknownOrgResult).toEqual(TestCommands.failure());
-    expect(unknownOrgResult.output).toContain("Namespace 'my_ns' references unknown org(s): UnknownOrg.");
+    it("should reject namespace referencing unknown org", () => {
+      config.namespaces = [{ name: "my_ns", orgs: ["UnknownOrg"] }];
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const unknownOrgResult = commands.fabloExec("validate", true);
+      expect(unknownOrgResult).toEqual(TestCommands.failure());
+      expect(unknownOrgResult.output).toContain("Namespace 'my_ns' references unknown org(s): UnknownOrg.");
+    });
   });
 });
 

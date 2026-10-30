@@ -227,7 +227,6 @@ export interface NamespaceConfig {
   name: string;
   policy: string;
 }
-
 export interface FabloConfigExtended {
   global: Global;
   ordererGroups: OrdererGroup[];

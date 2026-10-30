@@ -25,7 +25,7 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
           mspName: "Org1MSP",
           slug: "org1",
           sidecarPort: 4001,
-          queryServicePort: 8001,
+          queryServicePort: 7001,
         },
       ],
       defaultPolicy: "AND('Org1MSP.member')",
