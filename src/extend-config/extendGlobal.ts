@@ -49,9 +49,9 @@ const getVersions = (fabricVersion: string): FabricVersions => {
 
 const getFabricXVersions = (fabricVersion: string): FabricXVersions => ({
   fabricVersion,
-  ordererVersion: "1.0.0",
-  committerVersion: "1.0.3",
-  toolsVersion: "1.0.0",
+  ordererVersion: "1.0.6",
+  committerVersion: "1.0.7",
+  toolsVersion: "1.0.3",
   postgresVersion: "18.3-alpine3.23",
 });
 

@@ -149,6 +149,18 @@ services:
     networks:
       - fabric-x
 
+  committer-<%= fabricX.applicationOrgSlug %>-init-db:
+    image: <%= global.committerImage %>
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
+    command: init-db --config=/config/validator.yaml
+    volumes:
+      - ./config/validator.yaml:/config/validator.yaml:ro,Z
+    depends_on:
+      committer-<%= fabricX.applicationOrgSlug %>-db:
+        condition: service_healthy
+    networks:
+      - fabric-x
+
   committer-<%= fabricX.applicationOrgSlug %>-verifier:
     image: <%= global.committerImage %>
     pull_policy: missing
@@ -187,6 +199,8 @@ services:
     depends_on:
       committer-<%= fabricX.applicationOrgSlug %>-db:
         condition: service_healthy
+      committer-<%= fabricX.applicationOrgSlug %>-init-db:
+        condition: service_completed_successfully
     networks:
       - fabric-x
 
@@ -261,6 +275,8 @@ services:
     depends_on:
       committer-<%= fabricX.applicationOrgSlug %>-db:
         condition: service_healthy
+      committer-<%= fabricX.applicationOrgSlug %>-init-db:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2117/metrics"]
       interval: 2s
