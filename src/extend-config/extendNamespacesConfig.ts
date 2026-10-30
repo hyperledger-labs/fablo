@@ -2,10 +2,10 @@ import { NamespaceJson } from "../types/FabloConfigJson";
 import { NamespaceConfig, OrgConfig } from "../types/FabloConfigExtended";
 import defaults from "./defaults";
 
-const resolvePolicy = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConfig[]): string => {
+const resolvePolicy = (namespaceJsonFormat: NamespaceJson, channelOrgs: OrgConfig[]): string => {
   const { name, orgs: namespaceOrgNames, policy } = namespaceJsonFormat;
 
-  if (namespaceOrgNames && policy!== undefined) {
+  if (namespaceOrgNames && policy !== undefined) {
     throw new Error(
       `Namespace '${name}' defines both 'orgs' and 'policy'. Use 'orgs' for the standard case, ` +
         `or 'policy' as an advanced override, not both.`,
@@ -31,13 +31,12 @@ const resolvePolicy = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConf
     return defaults.namespace.policy(selectedOrgs);
   }
 
-
   return defaults.namespace.policy(channelOrgs);
 };
 
-const extendNamespaceConfig = (namespaceJsonFormat: NamespaceJson,  channelOrgs: OrgConfig[]): NamespaceConfig => ({
+const extendNamespaceConfig = (namespaceJsonFormat: NamespaceJson, channelOrgs: OrgConfig[]): NamespaceConfig => ({
   name: namespaceJsonFormat.name,
-  policy: resolvePolicy(namespaceJsonFormat,channelOrgs),
+  policy: resolvePolicy(namespaceJsonFormat, channelOrgs),
 });
 
 const VALID_NAMESPACE_ID = /^[a-z0-9_]+$/;
@@ -50,7 +49,7 @@ export const checkUniqueNamespaceNames = (namespacesJsonFormat: NamespaceJson[])
     if (!VALID_NAMESPACE_ID.test(namespace.name) || namespace.name.length > MAX_NAMESPACE_ID_LENGTH) {
       throw new Error(
         `Namespace '${namespace.name}' is not a valid Fabric-X namespace ID - only lowercase letters, ` +
-        `digits, and underscores are allowed (no hyphens), max 60 characters.`,
+          `digits, and underscores are allowed (no hyphens), max 60 characters.`,
       );
     }
 
