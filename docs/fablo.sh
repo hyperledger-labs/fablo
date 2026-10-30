@@ -180,7 +180,7 @@ printHelp() {
     To list available channel query options which can be executed on running network.
 
   fablo namespace <list | init>
-    Lists namespaces on the running network, or creates the default namespace. Available only for the experimental Fabric-X provider.
+    Lists namespaces on the running network, or creates the configured namespace or only the named one if a name is given. Available only for the experimental Fabric-X provider.
 
   fablo snapshot <target-snapshot-path>
     Creates a snapshot of the network. The snapshot contains all network state, including transactions and identities. It is saved as '<target-snapshot-path>.fablo.tar.gz', unless the given path already ends with 'tar.gz'.
@@ -196,6 +196,9 @@ printHelp() {
 
   fablo export-network-topology [/path/to/fablo-config.json|yaml [outputFile.mmd]]
     Exports the network topology described by the Fablo config file to a Mermaid diagram. Default output file is 'network-topology.mmd'.
+
+  fablo mcp </path/to/network>
+    Starts an MCP server over stdio for the network in the given directory, so AI agents can start and manage it. Requires Jaiph.
 
   fablo use [version]
     Updates this Fablo script to specified version. Prints all versions if no version parameter is provided.
@@ -356,6 +359,7 @@ executeFabloCommand() {
     "$FABLO_TARGET/fabric-docker.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   elif [ -f "$FABLO_TARGET/fabric-k8s.sh" ]; then
     echo "Executing Fablo Kubernetes command: $1"
+    chmod +x "$FABLO_TARGET/fabric-k8s.sh" || true
     "$FABLO_TARGET/fabric-k8s.sh" "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
   elif [ -f "$FABLO_TARGET/fabric-x-docker.sh" ]; then
     echo "Executing Fablo Fabric-X command: $1"
@@ -407,6 +411,38 @@ restoreSnapshot() {
   echo "📦 Network restored from '$archive'! Execute 'start' command to run it."
 }
 
+startMcpServer() {
+  # MCP clients often start this process without a working directory, so the
+  # network directory is required rather than defaulting to the current one.
+  local network_dir="$1"
+  if [ -z "$network_dir" ] || [ ! -d "$network_dir" ]; then
+    echo "Error: 'fablo mcp' requires an existing network directory: fablo mcp </path/to/network>" >&2
+    exit 1
+  fi
+  if ! command -v jaiph >/dev/null 2>&1; then
+    {
+      echo "Error: 'fablo mcp' requires Jaiph on the PATH."
+      echo "Install:"
+      echo "  curl -fsSL https://jaiph.org/install | bash"
+      echo "If jaiph is still not found, add ~/.local/bin to PATH."
+      echo "https://jaiph.org/how-to/install"
+    } >&2
+    exit 1
+  fi
+
+  # Stdout carries the MCP protocol, so everything else goes to stderr. The
+  # server, the Fablo skill, and the config schema ship in the Fablo image to
+  # match this script's version.
+  docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp skills/fablo docs/schema.json | tar -xf - -C "$FABLO_TEMP_DIR" >&2
+  if [ ! -f "$FABLO_TEMP_DIR/mcp/start.sh" ]; then
+    echo "Error: Cannot read the MCP server from $FABLO_IMAGE" >&2
+    exit 1
+  fi
+
+  FABLO_MCP_SCRIPT="${FABLO_MCP_SCRIPT:-$(cd "$(dirname "$0")" && pwd)/$(basename "$0")}" \
+    bash "$FABLO_TEMP_DIR/mcp/start.sh" "$network_dir"
+}
+
 if [ -z "$COMMAND" ]; then
   printHelp
   exit 1
@@ -451,6 +487,9 @@ elif [ "$COMMAND" = "snapshot" ]; then
 
 elif [ "$COMMAND" = "restore" ]; then
   restoreSnapshot "$2" "${3:-""}"
+
+elif [ "$COMMAND" = "mcp" ]; then
+  startMcpServer "$2"
 
 else
   executeFabloCommand "$COMMAND" "$2" "$3" "$4" "$5" "$6" "$7" "$8"
