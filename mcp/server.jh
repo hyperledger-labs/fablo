@@ -17,7 +17,7 @@ export def config_schema() {
   return fablo("schema")
 }
 
-# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), dev (peer dev mode with a hot-reloaded Node.js chaincode), ccaas, gateway, and rest (Fablo REST), or fabric-x alone for the experimental Fabric-X provider; empty for the base config. overrides sets generated fields, one <path>=<value> per line, for example global.fabricVersion=2.5.12; empty for none. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
+# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), dev (use with node: the sample chaincode runs as CCaaS and reloads when its source changes), ccaas, gateway, and rest (Fablo REST), or fabric-x alone for the experimental Fabric-X provider; empty for the base config. overrides sets generated fields, one <path>=<value> per line, for example global.fabricVersion=2.5.12; empty for none. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
 export def config_init(options, overrides) {
   return fablo("init", options, overrides)
 }
@@ -37,12 +37,12 @@ export def config_export_topology(config_path, output_path) {
   return fablo("export-network-topology", config_path, output_path)
 }
 
-# Generate the network files without starting the network. config_path and target_path are relative to the network directory; empty for the default config and fablo-target. Refuses configs with hooks, except the one from config_init with dev.
+# Generate the network files without starting the network. config_path and target_path are relative to the network directory; empty for the default config and fablo-target. Refuses configs with hooks, except the postGenerate hook from config_init with node dev.
 export def network_generate(config_path, target_path) {
   return fablo("generate", config_path, target_path)
 }
 
-# Generate and start the network from the Fablo config, create channels, and deploy chaincodes. config_path is relative to the network directory; empty for the default config. Validates first, and refuses configs with hooks, because they run shell commands on the host, except the one from config_init with dev. Use network_start to resume a stopped network.
+# Generate and start the network from the Fablo config, create channels, and deploy chaincodes. config_path is relative to the network directory; empty for the default config. Validates first, and refuses configs with hooks, because they run shell commands on the host, except the postGenerate hook from config_init with node dev. Use network_start to resume a stopped network.
 export def network_up(config_path) {
   return fablo("up", config_path)
 }

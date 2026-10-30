@@ -35,9 +35,9 @@ archive_path() {
 
 # Hooks run shell commands on the host, outside the client's own permission
 # checks, so the MCP server refuses to start a network that has any. The one
-# exception is the hook `fablo init dev` writes itself.
+# exception is the hook `fablo init node dev` writes itself.
 dev_hook='npm i --prefix ./chaincodes/chaincode-kv-node'
-hooks_refused="hooks, which run shell commands on the host. The MCP server runs only the postGenerate hook from 'fablo init dev' ($dev_hook)."
+hooks_refused="hooks, which run shell commands on the host. The MCP server runs only the postGenerate hook from 'fablo init node dev' ($dev_hook)."
 hook_value() {
   local lines
   lines="$(sed -n "s/^    \"$1\": \"\(.*\)\",\{0,1\}\$/=\1/p" <<<"$2")"

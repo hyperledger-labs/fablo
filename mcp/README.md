@@ -68,7 +68,7 @@ All arguments are strings. An empty optional argument means the Fablo default: t
 | `network_info` | None | Shows the network directory, its config file, and whether `fablo-target` exists. |
 | `config_instructions` | None | Returns the [Fablo skill](../skills/fablo/SKILL.md): how to write, validate, and run a config. |
 | `config_schema` | None | Returns the config JSON schema for this Fablo version. |
-| `config_init` | `options`, `overrides` | `fablo init <options> [--set <path>=<value> ...]`. `options` takes any of `node`, `dev`, `ccaas`, `gateway`, and `rest`, or `fabric-x` alone. `overrides` takes one `<path>=<value>` per line. Fails if a config exists. |
+| `config_init` | `options`, `overrides` | `fablo init <options> [--set <path>=<value> ...]`. `options` takes any of `node`, `dev`, `ccaas`, `gateway`, and `rest`, or `fabric-x` alone. `dev` only matters together with `node`: the sample chaincode runs as CCaaS and reloads when its source changes. `overrides` takes one `<path>=<value>` per line. Fails if a config exists. |
 | `config_validate` | `config_path` | `fablo validate [config]` |
 | `config_extend` | `config_path` | `fablo extend-config [config]` |
 | `config_export_topology` | `config_path`, `output_path` | `fablo export-network-topology [config [output]]` |
@@ -130,7 +130,7 @@ To change a network that `fablo-target` already holds, use `network_recreate`, o
 
 `hooks.postGenerate` and `hooks.postStart` run shell commands on the host. Through MCP they would run outside the client's own permission checks, so the server refuses to start a network that has them: `network_up` checks the config and any generated hooks in `fablo-target`, `network_generate` and `network_recreate` check the config, and `network_start` checks the generated hooks. To use other hooks, run Fablo yourself.
 
-The one exception is the hook that `fablo init dev` writes, `npm i --prefix ./chaincodes/chaincode-kv-node`, which installs the dependencies of the sample chaincode. The server allows exactly that `postGenerate` command, so a `config_init` starter with `dev` starts through `network_up`. npm must be installed on the host.
+The one exception is the hook that `fablo init node dev` writes, `npm i --prefix ./chaincodes/chaincode-kv-node`, which installs the dependencies of the sample chaincode. The server allows exactly that `postGenerate` command, so a `config_init` starter with `node dev` starts through `network_up`. npm must be installed on the host.
 
 ## Behavior and safety
 

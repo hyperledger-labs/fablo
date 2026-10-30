@@ -185,7 +185,7 @@ if [ -f fail ]; then echo 'simulated Docker failure' >&2; exit 7; fi
   await expectError("config_init", { options: "node", overrides: "" }, "already has a Fablo config");
 
   // Hooks run on the host, so a config or a generated network with hooks does
-  // not start, except for the hook from `fablo init dev`.
+  // not start, except for the hook from `fablo init node dev`.
   writeFileSync(path.join(directory, "post-generate"), devHook);
   await expectOk("network_up", { config_path: "" });
   await expectOk("network_generate", { config_path: "", target_path: "" });
