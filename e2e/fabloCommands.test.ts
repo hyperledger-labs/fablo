@@ -1,6 +1,6 @@
 import TestCommands from "./TestCommands";
 import { version as currentFabloVersion } from "../package.json";
-import { FabloConfigJson } from "../src/types/FabloConfigJson";
+import { FabloConfigJson, OrgJson } from "../src/types/FabloConfigJson";
 import * as fs from "fs";
 
 const commands = new TestCommands("e2e/__tmp__/commands-tests");
@@ -293,6 +293,103 @@ describe("validate", () => {
     expect(fabricXResult).toEqual(TestCommands.success());
     expect(fabricXResult.output).toContain("Validation warnings count: 0");
   });
+
+  describe("Fabric-X multi-org topology validation", () => {
+    let config: FabloConfigJson;
+    const configPath = `${commands.workdir}/fablo-config.json`;
+
+    beforeEach(() => {
+      commands.fabloExec("init fabric-x");
+      config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+      config.orgs.push({
+        organization: { name: "Org2", domain: "org2.example.com", mspName: "Org2MSP" },
+        ca: { prefix: "ca", db: "sqlite" },
+      } as OrgJson);
+      config.channels[0].orgs.push({ name: "Org2", peers: [] });
+    });
+
+    it("should validate valid multi-org config with valid multi-org namespace policy", () => {
+      config.namespaces = [{ name: "my_ns", policy: "AND('Org1MSP.member','Org2MSP.member')" }];
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const validResult = commands.fabloExec("validate", true);
+      expect(validResult).toEqual(TestCommands.success());
+      expect(validResult.output).toContain("Validation errors count: 0");
+    });
+
+    it("should reject channel organization not in top-level orgs", () => {
+      const channelName = config.channels[0].name;
+      config.channels[0].orgs.push({ name: "MissingOrg", peers: [] });
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const missingOrgResult = commands.fabloExec("validate", true);
+      expect(missingOrgResult).toEqual(TestCommands.failure());
+      expect(missingOrgResult.output).toContain(`Channel '${channelName}' references unknown org(s): MissingOrg.`);
+    });
+
+    it("should reject namespace referencing unknown org", () => {
+      config.namespaces = [{ name: "my_ns", orgs: ["UnknownOrg"] }];
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const unknownOrgResult = commands.fabloExec("validate", true);
+      expect(unknownOrgResult).toEqual(TestCommands.failure());
+      expect(unknownOrgResult.output).toContain("Namespace 'my_ns' references unknown org(s): UnknownOrg.");
+    });
+
+    it("should reject duplicate organization slug case-insensitively", () => {
+      config.orgs.push({
+        organization: { name: "org1", domain: "org1-dup.example.com", mspName: "Org1DupMSP" },
+        ca: { prefix: "ca", db: "sqlite" },
+      } as OrgJson);
+      config.channels[0].orgs.push({ name: "org1", peers: [] });
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateSlugResult = commands.fabloExec("validate", true);
+      expect(duplicateSlugResult).toEqual(TestCommands.failure());
+      expect(duplicateSlugResult.output).toContain(
+        "Fabric-X generated duplicate organization slug 'org1'. Organization names must be unique case-insensitively.",
+      );
+    });
+
+    it("should reject duplicate MSP name", () => {
+      config.orgs[1].organization.mspName = "Org1MSP";
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateMspResult = commands.fabloExec("validate", true);
+      expect(duplicateMspResult).toEqual(TestCommands.failure());
+      expect(duplicateMspResult.output).toContain(
+        "Fabric-X found duplicate MSP name 'Org1MSP'. Organization MSP names must be unique.",
+      );
+    });
+
+    it("should reject duplicate domain", () => {
+      config.orgs[1].organization.domain = "org1.example.com";
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateDomainResult = commands.fabloExec("validate", true);
+      expect(duplicateDomainResult).toEqual(TestCommands.failure());
+      expect(duplicateDomainResult.output).toContain(
+        "Fabric-X found duplicate domain 'org1.example.com'. Organization domains must be unique.",
+      );
+    });
+
+    it("should reject channel with more than 48 organizations", () => {
+      for (let i = 3; i <= 49; i++) {
+        config.orgs.push({
+          organization: { name: `Org${i}`, domain: `org${i}.example.com`, mspName: `Org${i}MSP` },
+          ca: { prefix: "ca", db: "sqlite" },
+        } as OrgJson);
+        config.channels[0].orgs.push({ name: `Org${i}`, peers: [] });
+      }
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const tooManyOrgsResult = commands.fabloExec("validate", true);
+      expect(tooManyOrgsResult).toEqual(TestCommands.failure());
+      expect(tooManyOrgsResult.output).toContain(
+        "Fabric-X supports up to 48 organizations per channel to avoid port collision with orderers (ports 7050-7053). Got 49.",
+      );
+    });
+  });
 });
 
 describe("extend config", () => {
@@ -432,7 +529,7 @@ describe("generate", () => {
     // Then
     expect(commandResult).toEqual(TestCommands.success());
 
-    const fxConfig = commands.getFileContent("fablo-target/fabric-x/fxconfig.yaml");
+    const fxConfig = commands.getFileContent("fablo-target/fabric-x/fxconfig-bank.yaml");
     expect(fxConfig).toContain("localMspID: BankMSP");
 
     const configtx = commands.getFileContent("fablo-target/fabric-x/configtx.yaml");

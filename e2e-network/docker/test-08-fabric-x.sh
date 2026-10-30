@@ -47,7 +47,21 @@ expectNotCommand() {
 
 networkUp() {
   run_fablo init fabric-x
-  jq '.namespaces += [{"name": "audit_ns", "orgs": ["Org1"]}]' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
+  jq '
+    .orgs += [{
+      "organization": {
+        "name": "Org2",
+        "domain": "org2.example.com",
+        "mspName": "Org2MSP"
+      },
+      "ca": { "prefix": "ca", "db": "sqlite" }
+    }] |
+    .channels[0].orgs += [{ "name": "Org2", "peers": [] }] |
+    .namespaces = [
+      { "name": "mynamespace", "orgs": ["Org1", "Org2"] },
+      { "name": "audit_ns", "orgs": ["Org1"] }
+    ]
+  ' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
   mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
   run_fablo validate
   run_fablo up
@@ -63,8 +77,10 @@ networkUp
 CONFIG_BLOCK="$TEST_TMP/fablo-target/fabric-x/crypto/config-block.pb.bin"
 SHARED_CONFIG="$TEST_TMP/fablo-target/fabric-x/crypto/shared_config.binpb"
 CLIENT_TLS="$TEST_TMP/fablo-target/fabric-x/crypto/client-tls-ca.pem"
+FXCONFIG_ORG1="$TEST_TMP/fablo-target/fabric-x/fxconfig-org1.yaml"
+FXCONFIG_ORG2="$TEST_TMP/fablo-target/fabric-x/fxconfig-org2.yaml"
 
-if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS" ]; then
+if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS" ] || [ ! -s "$FXCONFIG_ORG1" ] || [ ! -s "$FXCONFIG_ORG2" ]; then
   echo "Error: Artifact missing or empty"
   exit 1
 fi
@@ -79,6 +95,8 @@ run_fablo namespace init
 # post-init query
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "audit_ns"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list Org1)" "mynamespace"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list Org2)" "mynamespace"
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -cE '^[0-9]+\) .+: version')" "2"
 # targeted init: creating an already-existing namespace by name should still succeed (idempotent)
 run_fablo namespace init mynamespace

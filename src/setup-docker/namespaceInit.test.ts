@@ -18,12 +18,21 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     fabricX: {
       channelName: "mychannel",
       channelProfileName: "SampleFabricXChannel",
-      applicationOrg: { domain: "org1.example.com" },
-      applicationOrgSlug: "org1",
+      applicationOrgs: [
+        {
+          name: "Org1",
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
+          slug: "org1",
+          sidecarPort: 4001,
+          queryServicePort: 7001,
+        },
+      ],
+      defaultPolicy: "AND('Org1MSP.member')",
     },
     shellQuote,
   });
-  
+
   const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
 
   const runNamespaceInit = (target: string): { stdout: string; status: number } => {
