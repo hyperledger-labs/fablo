@@ -335,6 +335,60 @@ describe("validate", () => {
       expect(unknownOrgResult).toEqual(TestCommands.failure());
       expect(unknownOrgResult.output).toContain("Namespace 'my_ns' references unknown org(s): UnknownOrg.");
     });
+
+    it("should reject duplicate organization slug case-insensitively", () => {
+      config.orgs.push({
+        organization: { name: "org1", domain: "org1-dup.example.com", mspName: "Org1DupMSP" },
+        ca: { prefix: "ca", db: "sqlite" },
+      } as OrgJson);
+      config.channels[0].orgs.push({ name: "org1", peers: [] });
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateSlugResult = commands.fabloExec("validate", true);
+      expect(duplicateSlugResult).toEqual(TestCommands.failure());
+      expect(duplicateSlugResult.output).toContain(
+        "Fabric-X generated duplicate organization slug 'org1'. Organization names must be unique case-insensitively.",
+      );
+    });
+
+    it("should reject duplicate MSP name", () => {
+      config.orgs[1].organization.mspName = "Org1MSP";
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateMspResult = commands.fabloExec("validate", true);
+      expect(duplicateMspResult).toEqual(TestCommands.failure());
+      expect(duplicateMspResult.output).toContain(
+        "Fabric-X found duplicate MSP name 'Org1MSP'. Organization MSP names must be unique.",
+      );
+    });
+
+    it("should reject duplicate domain", () => {
+      config.orgs[1].organization.domain = "org1.example.com";
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateDomainResult = commands.fabloExec("validate", true);
+      expect(duplicateDomainResult).toEqual(TestCommands.failure());
+      expect(duplicateDomainResult.output).toContain(
+        "Fabric-X found duplicate domain 'org1.example.com'. Organization domains must be unique.",
+      );
+    });
+
+    it("should reject channel with more than 48 organizations", () => {
+      for (let i = 3; i <= 49; i++) {
+        config.orgs.push({
+          organization: { name: `Org${i}`, domain: `org${i}.example.com`, mspName: `Org${i}MSP` },
+          ca: { prefix: "ca", db: "sqlite" },
+        } as OrgJson);
+        config.channels[0].orgs.push({ name: `Org${i}`, peers: [] });
+      }
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const tooManyOrgsResult = commands.fabloExec("validate", true);
+      expect(tooManyOrgsResult).toEqual(TestCommands.failure());
+      expect(tooManyOrgsResult.output).toContain(
+        "Fabric-X supports up to 48 organizations per channel to avoid port collision with orderers (ports 7050-7053). Got 49.",
+      );
+    });
   });
 });
 

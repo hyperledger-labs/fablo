@@ -589,7 +589,7 @@ export default class Validate extends Command {
 
     const channel = channels[0];
     const orgByName = new Map(orgs.map((o) => [o.organization.name, o.organization]));
-    const configuredOrgNames = orgByName;
+    const configuredOrgNames = new Set(orgs.map((o) => o.organization.name));
     const channelOrgNames = (channel?.orgs ?? []).map((o) => o.name);
 
     if (channelOrgNames.length === 0) {
