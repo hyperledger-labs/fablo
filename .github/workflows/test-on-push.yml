@@ -21,6 +21,12 @@ jobs:
           jaiph compile .jaiph
           jaiph test .jaiph
 
+      - name: Compile and test the MCP server
+        run: |
+          jaiph compile mcp/server.jh
+          jaiph format --check mcp/server.jh
+          node --test mcp/server.test.cjs
+
   test-main:
     runs-on: ubuntu-latest
     steps:

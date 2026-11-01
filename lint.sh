@@ -10,6 +10,7 @@ set -e
 
 FABLO_HOME="$(dirname "$0")"
 shellcheck "$FABLO_HOME"/*.sh
+shellcheck "$FABLO_HOME"/mcp/command.sh "$FABLO_HOME"/mcp/start.sh
 shellcheck "$FABLO_HOME"/e2e-network/docker/*.sh
 shellcheck "$FABLO_HOME"/e2e-network/k8s/*.sh
 
