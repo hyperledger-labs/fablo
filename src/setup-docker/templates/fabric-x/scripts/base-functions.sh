@@ -11,13 +11,13 @@ printHeadline() {
 printStartSuccessInfo() {
   printHeadline "Done!! Fabric-X network is up" "U1F984"
   echo "App-level submit/query calls need a namespace."
-  echo "Run './fabric-x-docker.sh namespace init' to create the default namespace if needed."
+  echo "Run './fabric-x-docker.sh namespace init' to create the configured namespace if needed."
 }
 
 TOOLS_IMAGE="${TOOLS_IMAGE:-<%= global.toolsImage %>}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-<%= global.ordererImage %>}"
 NETWORK="${NETWORK:-fabric-x}"
-DEFAULT_POLICY="AND('<%= fabricX.applicationOrg.mspName %>.member')"
+
 
 
 generateArtifacts() {
