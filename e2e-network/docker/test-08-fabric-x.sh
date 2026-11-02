@@ -18,7 +18,6 @@ run_fablo() {
 }
 
 networkDown() {
- 
   sleep 2
   (for name in $(docker ps -a --filter "label=com.docker.compose.project=fabric-x" --format '{{.Names}}'); do dumpLogs "$name"; done)
   run_fablo down
