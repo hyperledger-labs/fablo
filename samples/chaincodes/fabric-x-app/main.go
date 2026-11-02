@@ -1,6 +1,4 @@
-
 package main
-
 import (
 	"context"
 	"errors"
@@ -30,38 +28,43 @@ const (
 )
 
 type options struct {
-	channel        string
-	mspID          string
-	mspDir         string
-	namespace      string
-	tlsDir         string
-	orgTLSCA       string
-	ordererTLSCA   string
-	orderer        string
-	sidecar        string
-	overallTimeout time.Duration
+	channel   string
+	namespace string
+	mspID     string
+	orderer   string
+	sidecar   string
+	mspDir        string
+	tlsDir        string
+	orgTLSCA      string
+	ordererCAGlob string
+
+	timeout time.Duration
 }
 
 func parseOptions() (options, error) {
 	var o options
 	flag.StringVar(&o.channel, "channel", "", "channel name (required)")
-	flag.StringVar(&o.mspID, "msp-id", "", "MSP ID of the signing identity (required)")
 	flag.StringVar(&o.namespace, "namespace", "", "namespace to write to (required)")
-	flag.StringVar(&o.orderer, "orderer", "", "orderer router address, host:port (required)")
-	flag.StringVar(&o.sidecar, "sidecar", "", "committer sidecar address, host:port (required)")
+	flag.StringVar(&o.mspID, "msp-id", "", "MSP ID of the signing identity (required)")
+	flag.StringVar(&o.orderer, "orderer", "", "address of the orderer router, host:port (required)")
+	flag.StringVar(&o.sidecar, "sidecar", "", "address of the committer sidecar, host:port (required)")
 	flag.StringVar(&o.mspDir, "msp-dir", "/msp", "MSP directory of the signing identity")
 	flag.StringVar(&o.tlsDir, "tls-dir", "/tls", "directory with the client TLS certificate (server.crt and server.key)")
 	flag.StringVar(&o.orgTLSCA, "org-tls-ca", "/org-tls-ca.pem", "TLS CA certificate of the application org")
-	flag.StringVar(&o.ordererTLSCA, "orderer-tls-ca", "/orderer-tls-ca.pem", "TLS CA certificate of the orderer org")
-	flag.DurationVar(&o.overallTimeout, "timeout", 90*time.Second, "overall timeout for the whole run")
+	flag.StringVar(&o.ordererCAGlob, "orderer-tls-ca-glob", "/orderer-cas/*/msp/tlscacerts/*.pem", "pattern of the TLS CA certificates of the orderer orgs")
+	flag.DurationVar(&o.timeout, "timeout", 90*time.Second, "overall timeout")
 	flag.Parse()
 
-	for name, v := range map[string]string{
-		"channel": o.channel, "msp-id": o.mspID, "namespace": o.namespace,
-		"orderer": o.orderer, "sidecar": o.sidecar,
-	} {
-		if v == "" {
-			return o, fmt.Errorf("missing required flag --%s", name)
+	required := []struct{ name, value string }{
+		{"channel", o.channel},
+		{"namespace", o.namespace},
+		{"msp-id", o.mspID},
+		{"orderer", o.orderer},
+		{"sidecar", o.sidecar},
+	}
+	for _, r := range required {
+		if r.value == "" {
+			return o, fmt.Errorf("flag -%s is required", r.name)
 		}
 	}
 	return o, nil
@@ -81,7 +84,7 @@ func main() {
 func run(o options) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	ctx, cancel := context.WithTimeout(ctx, o.overallTimeout)
+	ctx, cancel := context.WithTimeout(ctx, o.timeout)
 	defer cancel()
 
 	logger := sdk.NewStdLogger("fabric-x-app")
@@ -91,7 +94,16 @@ func run(o options) error {
 		return fmt.Errorf("load signer: %w", err)
 	}
 
-	clientTLS := func(cas ...string) network.TLSConfig {
+	ordererCAs, err := filepath.Glob(o.ordererCAGlob)
+	if err != nil {
+		return fmt.Errorf("find orderer TLS CAs: %w", err)
+	}
+	if len(ordererCAs) == 0 {
+		return fmt.Errorf("no orderer TLS CA certificate matches %s", o.ordererCAGlob)
+	}
+
+
+	clientTLS := func(cas []string) network.TLSConfig {
 		return network.TLSConfig{
 			Mode:        network.TLSModeMTLS,
 			CertPath:    filepath.Join(o.tlsDir, "server.crt"),
@@ -99,13 +111,15 @@ func run(o options) error {
 			CACertPaths: cas,
 		}
 	}
-	sidecar := network.PeerConf{Address: o.sidecar, TLS: clientTLS(o.orgTLSCA)}
-	orderer := network.OrdererConf{Address: o.orderer, TLS: clientTLS(o.ordererTLSCA, o.orgTLSCA)}
+	sidecar := network.PeerConf{Address: o.sidecar, TLS: clientTLS([]string{o.orgTLSCA})}
+	orderer := network.OrdererConf{Address: o.orderer, TLS: clientTLS(append(ordererCAs, o.orgTLSCA))}
 
+	
 	endorserAddr, err := startEndorser(ctx, o, sidecar, logger)
 	if err != nil {
 		return err
 	}
+
 
 	ec, err := network.NewEndorsementClient(
 		[]network.PeerConf{{Address: endorserAddr, TLS: network.TLSConfig{Mode: network.TLSModeNone}}},
@@ -114,15 +128,20 @@ func run(o options) error {
 	if err != nil {
 		return fmt.Errorf("create endorsement client: %w", err)
 	}
-	defer ec.Close()
+	defer func() { _ = ec.Close() }()
 
 	submitter, err := nfabx.NewSubmitter(ctx, []network.OrdererConf{orderer}, signer, 0, logger)
 	if err != nil {
 		return fmt.Errorf("create submitter: %w", err)
 	}
-	defer submitter.Close()
-
-
+	defer func() { _ = submitter.Close() }()
+	existing, err := read(ctx, ec, o.namespace, fixtureKey)
+	if err != nil {
+		return err
+	}
+	if len(existing) != 0 {
+		return fmt.Errorf("key %q already has the value %q in namespace %s, run the fixture on a fresh network", fixtureKey, existing, o.namespace)
+	}
 	end, _, err := endorse(ctx, ec, o.namespace, "set", fixtureKey, fixtureValue)
 	if err != nil {
 		return err
@@ -130,8 +149,6 @@ func run(o options) error {
 	if err := submitter.Submit(ctx, end); err != nil {
 		return fmt.Errorf("submit: %w", err)
 	}
-
-
 	if err := waitForValue(ctx, ec, o.namespace, fixtureKey, fixtureValue); err != nil {
 		return err
 	}
@@ -139,8 +156,6 @@ func run(o options) error {
 	fmt.Printf("FABRIC_X_APP_OK namespace=%s key=%s value=%s\n", o.namespace, fixtureKey, fixtureValue)
 	return nil
 }
-
-
 func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, logger sdk.Logger) (string, error) {
 	svc, err := service.New(
 		service.ServiceConfig{
@@ -172,12 +187,10 @@ func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, log
 	}()
 
 	if !svc.WaitForReady(ctx) {
-		return "", errors.New("endorser did not catch up with the sidecar before the timeout")
+		return "", errors.New("the endorser did not catch up with the sidecar before the timeout")
 	}
 	return lis.Addr().String(), nil
 }
-
-
 func endorse(ctx context.Context, ec *network.EndorsementClient, namespace string, args ...string) (sdk.Endorsement, []byte, error) {
 	raw := make([][]byte, len(args))
 	for i, a := range args {
@@ -187,8 +200,8 @@ func endorse(ctx context.Context, ec *network.EndorsementClient, namespace strin
 	if err != nil {
 		return sdk.Endorsement{}, nil, fmt.Errorf("endorse %s: %w", args[0], err)
 	}
-	if len(end.Responses) != 1 {
-		return sdk.Endorsement{}, nil, fmt.Errorf("endorse %s: expected 1 response, got %d", args[0], len(end.Responses))
+	if len(end.Responses) != 1 || end.Responses[0] == nil || end.Responses[0].Response == nil {
+		return sdk.Endorsement{}, nil, fmt.Errorf("endorse %s: expected exactly one response", args[0])
 	}
 	resp := end.Responses[0].Response
 	if resp.Status < 200 || resp.Status >= 400 {
@@ -196,17 +209,18 @@ func endorse(ctx context.Context, ec *network.EndorsementClient, namespace strin
 	}
 	return end, resp.Payload, nil
 }
-
-
+func read(ctx context.Context, ec *network.EndorsementClient, namespace, key string) ([]byte, error) {
+	_, payload, err := endorse(ctx, ec, namespace, "get", key)
+	return payload, err
+}
 func waitForValue(ctx context.Context, ec *network.EndorsementClient, namespace, key, want string) error {
-	var last string
+	var last []byte
 	var lastErr error
 	for {
-		_, payload, err := endorse(ctx, ec, namespace, "get", key)
-		if err == nil && string(payload) == want {
+		last, lastErr = read(ctx, ec, namespace, key)
+		if lastErr == nil && string(last) == want {
 			return nil
 		}
-		last, lastErr = string(payload), err
 
 		select {
 		case <-ctx.Done():
