@@ -142,7 +142,7 @@ Enable the optional Explorer UI when you need to inspect channels, blocks, and t
 ```json
 {
   "global": {
-    "fabricVersion": "2.5.12",
+    "fabricVersion": "2.5.16",
     "tls": true,
     "tools": { "explorer": true }
   }
