@@ -12,7 +12,7 @@ function getFabricConfig(): FabloConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
-      fabricVersion: "3.1.0",
+      fabricVersion: "3.1.5",
       tls: true,
       peerDevMode: false,
     },
@@ -133,7 +133,7 @@ function getDefaultFabricXConfig(): FabloConfigJson {
     },
     chaincodes: [],
     hooks: {},
-  }
+  };
 }
 
 function getDefaultFabloConfig(): FabloConfigJson {

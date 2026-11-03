@@ -594,7 +594,9 @@ export default class Validate extends Command {
       });
     }
 
-   this._validateFabricXOrderer(networkConfig);
+    this._validateFabricXOrderer(networkConfig);
+    this._validateFabricXChannelOrganizations(channels, orgs);
+    this._validateFabricXNamespaces(networkConfig);
 
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
@@ -606,11 +608,47 @@ export default class Validate extends Command {
         });
       }
     });
+  }
+
+  _validateFabricXChannelOrganizations(channels: ChannelJson[], orgs: OrgJson[]): void {
+    const channel = channels[0];
+    if (!channel) {
+      return;
+    }
+
+    const configuredOrgNames = new Set(orgs.map((org) => org.organization.name));
+    const channelOrgNames = channel.orgs.map((orgRef) => orgRef.name);
+
+    if (channelOrgNames.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X requires at least one organization on channel '${channel.name}'.`,
+      });
+      return;
+    }
+
+    const unknownChannelOrgNames = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
+    if (unknownChannelOrgNames.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgNames.join(", ")}.`,
+      });
+    }
+
+    if (channelOrgNames.length > 1) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X currently supports only one organization on a channel, found ${channelOrgNames.length}.`,
+      });
+    }
+  }
+
+  _validateFabricXNamespaces(networkConfig: FabloConfigJson): void {
+    const channelOrgNames = new Set((networkConfig.channels[0]?.orgs ?? []).map((orgRef) => orgRef.name));
 
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
     const maxNamespaceIdLength = 60;
-    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
 
     const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {
@@ -636,7 +674,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy!== undefined) {
+      if (namespace.orgs && namespace.policy !== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
@@ -650,11 +688,11 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
-      if (unknownOrgNames.length > 0) {
+      const unknownNamespaceOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
+      if (unknownNamespaceOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
-          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
+          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownNamespaceOrgNames.join(", ")}.`,
         });
       }
     });

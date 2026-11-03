@@ -1,8 +1,8 @@
 # Test cases
 
-| Test case                  |  01-v2-simple   | 02-v2-raft-2orgs | 03-v2-private-data |      04-v2-snapshot      | test-05-v3 | test-06-v3-bft | k8s-01-simple |
+| Test case                  |  01-v3-simple   | 02-v2-raft-2orgs | 03-v2-private-data |      04-v3-snapshot      | test-05-v3 | test-06-v3-bft | k8s-01-simple |
 | -------------------------- | :-------------: | :--------------: | :----------------: | :----------------------: | :--------: | :------------: | :-----------: |
-| Fabric versions            |     2.5.12      |      2.4.3       |       2.5.12       |          2.5.12          |   3.1.0    |     3.1.0      |     2.4.7     |
+| Fabric versions            |      3.1.5      |      2.5.16      |       2.5.16       |          3.1.5           |   3.1.5    |     3.1.5      |     2.4.7     |
 | Engine                     |     Docker      |      Docker      |       Docker       |          Docker          |   Docker   |     Docker     |  Kubernetes   |
 | TLS                        |       no        |       yes        |         no         |           yes            |    yes     |      yes       |      yes      |
 | Channel capabilities       |       v2        |        v2        |        v2_5        |            v2            |    v3_0    |      v3_0      |      v2       |
