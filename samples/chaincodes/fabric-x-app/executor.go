@@ -1,5 +1,3 @@
-
-
 package main
 
 import (
@@ -11,7 +9,6 @@ import (
 )
 
 type Executor struct{}
-
 
 func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv endorsement.Invocation) (endorsement.ExecutionResult, error) {
 
@@ -39,7 +36,7 @@ func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv en
 		if len(inv.Args) < 3 {
 			return endorsement.BadRequest("usage: set [key] [value]"), nil
 		}
-		
+
 		if err := store.PutState(string(inv.Args[1]), inv.Args[2]); err != nil {
 			return endorsement.ExecutionResult{}, fmt.Errorf("put state: %w", err)
 		}

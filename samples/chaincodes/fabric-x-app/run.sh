@@ -26,14 +26,14 @@ require() {
 
 ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$FABLO_CONFIG")"
 NAMESPACE="${NAMESPACE:-$(jq -r '.namespaces[0].name' "$FABLO_CONFIG")}"
-MSP_ID="$(fxconfig_value msp localMspID)"
+MSP_NAME="$(fxconfig_value msp localMspID)"
 CHANNEL="$(fxconfig_value orderer channel)"
 ORDERER="$(fxconfig_value orderer address)"
 SIDECAR="$(fxconfig_value notifications address)"
 
 require "the org domain from $FABLO_CONFIG" "$ORG_DOMAIN"
 require "the namespace from $FABLO_CONFIG" "$NAMESPACE"
-require "msp.localMspID from $FXCONFIG" "$MSP_ID"
+require "msp.localMspID from $FXCONFIG" "$MSP_NAME"
 require "orderer.channel from $FXCONFIG" "$CHANNEL"
 require "orderer.address from $FXCONFIG" "$ORDERER"
 require "notifications.address from $FXCONFIG" "$SIDECAR"
@@ -61,6 +61,6 @@ docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
   sh -c 'test -f go.sum || go mod tidy; go run . "$@"' sh \
   -channel "$CHANNEL" \
   -namespace "$NAMESPACE" \
-  -msp-id "$MSP_ID" \
+  -msp-name "$MSP_NAME" \
   -orderer "$ORDERER" \
   -sidecar "$SIDECAR"

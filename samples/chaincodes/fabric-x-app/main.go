@@ -1,4 +1,5 @@
 package main
+
 import (
 	"context"
 	"errors"
@@ -28,11 +29,11 @@ const (
 )
 
 type options struct {
-	channel   string
-	namespace string
-	mspID     string
-	orderer   string
-	sidecar   string
+	channel       string
+	namespace     string
+	mspName       string
+	orderer       string
+	sidecar       string
 	mspDir        string
 	tlsDir        string
 	orgTLSCA      string
@@ -45,7 +46,7 @@ func parseOptions() (options, error) {
 	var o options
 	flag.StringVar(&o.channel, "channel", "", "channel name (required)")
 	flag.StringVar(&o.namespace, "namespace", "", "namespace to write to (required)")
-	flag.StringVar(&o.mspID, "msp-id", "", "MSP ID of the signing identity (required)")
+	flag.StringVar(&o.mspName, "msp-name", "", "MSP name of the signing identity, the value fxconfig calls localMspID (required)")
 	flag.StringVar(&o.orderer, "orderer", "", "address of the orderer router, host:port (required)")
 	flag.StringVar(&o.sidecar, "sidecar", "", "address of the committer sidecar, host:port (required)")
 	flag.StringVar(&o.mspDir, "msp-dir", "/msp", "MSP directory of the signing identity")
@@ -58,7 +59,7 @@ func parseOptions() (options, error) {
 	required := []struct{ name, value string }{
 		{"channel", o.channel},
 		{"namespace", o.namespace},
-		{"msp-id", o.mspID},
+		{"msp-name", o.mspName},
 		{"orderer", o.orderer},
 		{"sidecar", o.sidecar},
 	}
@@ -89,7 +90,7 @@ func run(o options) error {
 
 	logger := sdk.NewStdLogger("fabric-x-app")
 
-	signer, err := identity.SignerFromMSP(o.mspDir, o.mspID)
+	signer, err := identity.SignerFromMSP(o.mspDir, o.mspName)
 	if err != nil {
 		return fmt.Errorf("load signer: %w", err)
 	}
@@ -102,7 +103,6 @@ func run(o options) error {
 		return fmt.Errorf("no orderer TLS CA certificate matches %s", o.ordererCAGlob)
 	}
 
-
 	clientTLS := func(cas []string) network.TLSConfig {
 		return network.TLSConfig{
 			Mode:        network.TLSModeMTLS,
@@ -114,12 +114,10 @@ func run(o options) error {
 	sidecar := network.PeerConf{Address: o.sidecar, TLS: clientTLS([]string{o.orgTLSCA})}
 	orderer := network.OrdererConf{Address: o.orderer, TLS: clientTLS(append(ordererCAs, o.orgTLSCA))}
 
-	
 	endorserAddr, err := startEndorser(ctx, o, sidecar, logger)
 	if err != nil {
 		return err
 	}
-
 
 	ec, err := network.NewEndorsementClient(
 		[]network.PeerConf{{Address: endorserAddr, TLS: network.TLSConfig{Mode: network.TLSModeNone}}},
@@ -164,7 +162,7 @@ func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, log
 			Committer: sidecar,
 			DBConnStr: "file:fabric-x-app.sqlite?mode=memory&cache=shared",
 		},
-		o.mspDir, o.mspID,
+		o.mspDir, o.mspName,
 		map[string]service.Executor{o.namespace: Executor{}},
 		logger,
 	)

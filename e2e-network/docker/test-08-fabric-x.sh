@@ -94,7 +94,7 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | gr
 
 # application transaction: submit to the namespace, wait for commit, query the state
 FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$TEST_TMP/fablo-config.json")"
-expectCommand "\"$TEST_TMP/../fabric-x-app/run.sh\" \"$TEST_TMP/fablo-config.json\" \"$TEST_TMP/fablo-target/fabric-x\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
+expectCommand "\"$FABLO_HOME/samples/chaincodes/fabric-x-app/run.sh\" \"$TEST_TMP/fablo-config.json\" \"$TEST_TMP/fablo-target/fabric-x\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
 
 
 # cache skip check
