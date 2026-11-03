@@ -18,6 +18,8 @@ export interface FabricImagesJson {
   baseos?: string;
   javaenv?: string;
   nodeenv?: string;
+  committer?: string;
+  postgres?: string;
 }
 
 export interface OrganizationDetailsJson {

@@ -27,8 +27,9 @@ elif [ "$1" = "help" ]; then
 elif [ "$1" = "--help" ]; then
   printHelp
 else
-  echo "No command specified"
-  echo "Basic commands are: up, down, start, stop, reset"
-  echo "Also check: 'namespace list', 'namespace init'"
-  echo "Use 'help' or '--help' for more information"
+  echo "Error: command '$1' is not supported with provider 'fabric-x'" >&2
+  echo "Basic commands are: up, down, start, stop, reset" >&2
+  echo "Also check: 'namespace list', 'namespace init'" >&2
+  echo "Use 'help' or '--help' for more information" >&2
+  exit 1
 fi

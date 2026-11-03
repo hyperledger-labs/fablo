@@ -236,6 +236,63 @@ describe("validate", () => {
     expect(commandResult.output).toContain(" instance.orgs[0].organization.mspName : does not match pattern");
     expect(commands.getFiles()).toEqual([]);
   });
+
+  it("should warn when classic-only image is configured for Fabric-X", () => {
+    // Given
+    commands.fabloExec("init fabric-x --set global.fabricImages.peer=myorg/peer:2.5");
+
+    // When
+    const commandResult = commands.fabloExec("validate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation warnings count: 1");
+    expect(commandResult.output).toContain(
+      "Setting 'global.fabricImages.peer' is not supported for provider 'fabric-x' and will be ignored.",
+    );
+  });
+
+  it("should warn when committer image is configured for classic Fabric", () => {
+    // Given
+    commands.fabloExec("init --set global.fabricImages.committer=myorg/committer:1.0.3");
+
+    // When
+    const commandResult = commands.fabloExec("validate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+    expect(commandResult.output).toContain("Validation warnings count: 1");
+    expect(commandResult.output).toContain(
+      "Setting 'global.fabricImages.committer' is only supported when 'global.provider' is 'fabric-x' and will be ignored.",
+    );
+  });
+
+  it("should not produce warnings for shared orderer and tools settings", () => {
+    // Given
+    commands.fabloExec(
+      "init --set global.fabricImages.orderer=myorg/orderer:custom --set global.fabricImages.tools=myorg/tools:custom",
+    );
+
+    // When
+    const classicResult = commands.fabloExec("validate");
+
+    // Then
+    expect(classicResult).toEqual(TestCommands.success());
+    expect(classicResult.output).toContain("Validation warnings count: 0");
+
+    // Given
+    commands.cleanupWorkdir();
+    commands.fabloExec(
+      "init fabric-x --set global.fabricImages.orderer=myorg/orderer:custom --set global.fabricImages.tools=myorg/tools:custom",
+    );
+
+    // When
+    const fabricXResult = commands.fabloExec("validate");
+
+    // Then
+    expect(fabricXResult).toEqual(TestCommands.success());
+    expect(fabricXResult.output).toContain("Validation warnings count: 0");
+  });
 });
 
 describe("extend config", () => {
@@ -389,5 +446,27 @@ describe("generate", () => {
     const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
     expect(baseFunctions).toContain("User1@bank.fablo.com");
     expect(baseFunctions).toContain("AND('BankMSP.member')");
+  });
+
+  it("should generate Fabric-X network files with custom fabricImages", () => {
+    // Given
+    commands.fabloExec(
+      "init fabric-x --set global.fabricImages.committer=myorg/committer:2.0.0 --set global.fabricImages.orderer=myorg/orderer:2.0.0 --set global.fabricImages.tools=myorg/tools:2.0.0 --set global.fabricImages.postgres=myorg/postgres:18.4",
+    );
+
+    // When
+    const commandResult = commands.fabloExec("generate");
+
+    // Then
+    expect(commandResult).toEqual(TestCommands.success());
+
+    const dockerCompose = commands.getFileContent("fablo-target/fabric-x/docker-compose.yaml");
+    expect(dockerCompose).toContain("image: myorg/committer:2.0.0");
+    expect(dockerCompose).toContain("image: myorg/orderer:2.0.0");
+    expect(dockerCompose).toContain("image: myorg/postgres:18.4");
+
+    const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
+    expect(baseFunctions).toContain('TOOLS_IMAGE="${TOOLS_IMAGE:-myorg/tools:2.0.0}"');
+    expect(baseFunctions).toContain('ORDERER_IMAGE="${ORDERER_IMAGE:-myorg/orderer:2.0.0}"');
   });
 });
