@@ -120,7 +120,7 @@ function getDefaultFabricXConfig(): FabloConfigJson {
     ],
     chaincodes: [],
     hooks: {},
-  }
+  };
 }
 
 function getDefaultFabloConfig(): FabloConfigJson {

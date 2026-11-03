@@ -7,6 +7,8 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
 export FABLO_HOME
 
+CONFIG="$FABLO_HOME/samples/fablo-config-fabric-x-2orgs.json"
+
 dumpLogs() {
   echo "Saving logs of $1 to $TEST_LOGS/$1.log"
   mkdir -p "$TEST_LOGS"
@@ -46,25 +48,8 @@ expectNotCommand() {
 }
 
 networkUp() {
-  run_fablo init fabric-x
-  jq '
-    .orgs += [{
-      "organization": {
-        "name": "Org2",
-        "domain": "org2.example.com",
-        "mspName": "Org2MSP"
-      },
-      "ca": { "prefix": "ca", "db": "sqlite" }
-    }] |
-    .channels[0].orgs += [{ "name": "Org2", "peers": [] }] |
-    .namespaces = [
-      { "name": "mynamespace", "orgs": ["Org1", "Org2"] },
-      { "name": "audit_ns", "orgs": ["Org1"] }
-    ]
-  ' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
-  mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
-  run_fablo validate
-  run_fablo up
+  run_fablo generate "$CONFIG"
+  run_fablo up "$CONFIG"
 }
 
 trap networkDown EXIT

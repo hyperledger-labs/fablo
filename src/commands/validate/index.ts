@@ -599,13 +599,6 @@ export default class Validate extends Command {
       });
     }
 
-    if (channelOrgNames.length > 48) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.CHANNEL,
-        message: `Fabric-X supports up to 48 organizations per channel to avoid port collision with orderers (ports 7050-7053). Got ${channelOrgNames.length}.`,
-      });
-    }
-
     const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
     if (unknownChannelOrgs.length > 0) {
       this.emit(validationErrorType.ERROR, {

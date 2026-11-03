@@ -372,23 +372,6 @@ describe("validate", () => {
         "Fabric-X found duplicate domain 'org1.example.com'. Organization domains must be unique.",
       );
     });
-
-    it("should reject channel with more than 48 organizations", () => {
-      for (let i = 3; i <= 49; i++) {
-        config.orgs.push({
-          organization: { name: `Org${i}`, domain: `org${i}.example.com`, mspName: `Org${i}MSP` },
-          ca: { prefix: "ca", db: "sqlite" },
-        } as OrgJson);
-        config.channels[0].orgs.push({ name: `Org${i}`, peers: [] });
-      }
-      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-
-      const tooManyOrgsResult = commands.fabloExec("validate", true);
-      expect(tooManyOrgsResult).toEqual(TestCommands.failure());
-      expect(tooManyOrgsResult.output).toContain(
-        "Fabric-X supports up to 48 organizations per channel to avoid port collision with orderers (ports 7050-7053). Got 49.",
-      );
-    });
   });
 });
 

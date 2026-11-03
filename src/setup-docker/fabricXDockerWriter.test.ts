@@ -1,4 +1,9 @@
-import { BASE_QUERY_SERVICE_PORT, BASE_SIDECAR_PORT, getFabricXTemplateModel } from "./fabricXDockerWriter";
+import {
+  BASE_QUERY_SERVICE_PORT,
+  BASE_SIDECAR_PORT,
+  allocateQueryServicePort,
+  getFabricXTemplateModel,
+} from "./fabricXDockerWriter";
 import {
   CAConfig,
   ChannelConfig,
@@ -115,7 +120,7 @@ const createTestConfig = (channels: ChannelConfig[], orgs: OrgConfig[] = []): Fa
 });
 
 describe("fabricXDockerWriter - getFabricXTemplateModel", () => {
-  it("resolves multi-org topology with named port offsets and combined policy", () => {
+  it("resolves multi-org topology with named port offsets", () => {
     const org1 = createTestOrg("Org1", "org1.com", "Org1MSP");
     const org2 = createTestOrg("Org2", "org2.com", "Org2MSP");
     const channel = createTestChannel("my-channel", "MyChannel", [org1, org2]);
@@ -136,8 +141,15 @@ describe("fabricXDockerWriter - getFabricXTemplateModel", () => {
     expect(model.applicationOrgs[1].slug).toBe("org2");
     expect(model.applicationOrgs[1].sidecarPort).toBe(BASE_SIDECAR_PORT + 1);
     expect(model.applicationOrgs[1].queryServicePort).toBe(BASE_QUERY_SERVICE_PORT + 1);
+  });
 
-    expect(model.defaultPolicy).toBe("AND('Org1MSP.member','Org2MSP.member')");
+  it("allocates query service ports skipping orderer ports 7050-7053", () => {
+    // Port 7001 + 48 = 7049 (index 48)
+    expect(allocateQueryServicePort(0)).toBe(7001);
+    expect(allocateQueryServicePort(48)).toBe(7049);
+    // Index 49 skips 7050-7053 and lands on 7054
+    expect(allocateQueryServicePort(49)).toBe(7054);
+    expect(allocateQueryServicePort(50)).toBe(7055);
   });
 
   it("throws when channels is empty", () => {
