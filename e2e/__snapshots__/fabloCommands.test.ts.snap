@@ -3,7 +3,7 @@
 exports[`extend config should extend custom config 1`] = `
 "{
   "global": {
-    "fabricVersion": "2.5.12",
+    "fabricVersion": "2.5.16",
     "tls": true,
     "tools": {
       "explorer": {
@@ -11,19 +11,19 @@ exports[`extend config should extend custom config 1`] = `
         "port": 7010
       }
     },
-    "fabricToolsVersion": "2.5.12",
+    "fabricToolsVersion": "2.5.16",
     "fabricCaVersion": "1.5.16",
-    "fabricCcenvVersion": "2.5.12",
-    "fabricBaseosVersion": "2.5.12",
+    "fabricCcenvVersion": "2.5.16",
+    "fabricBaseosVersion": "2.5.16",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
-    "peerImage": "hyperledger/fabric-peer:2.5.12",
-    "ordererImage": "hyperledger/fabric-orderer:2.5.12",
+    "peerImage": "hyperledger/fabric-peer:2.5.16",
+    "ordererImage": "hyperledger/fabric-orderer:2.5.16",
     "caImage": "hyperledger/fabric-ca:1.5.16",
-    "toolsImage": "hyperledger/fabric-tools:2.5.12",
-    "ccenvImage": "hyperledger/fabric-ccenv:2.5.12",
-    "baseosImage": "hyperledger/fabric-baseos:2.5.12",
+    "toolsImage": "hyperledger/fabric-tools:2.5.16",
+    "ccenvImage": "hyperledger/fabric-ccenv:2.5.16",
+    "baseosImage": "hyperledger/fabric-baseos:2.5.16",
     "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
     "engine": "docker",
@@ -2496,23 +2496,23 @@ exports[`extend config should extend custom config 1`] = `
 exports[`extend config should extend default config 1`] = `
 "{
   "global": {
-    "fabricVersion": "3.1.0",
+    "fabricVersion": "3.1.5",
     "tls": true,
     "peerDevMode": false,
     "engine": "docker",
     "fabricToolsVersion": "3.1.3",
     "fabricCaVersion": "1.5.16",
-    "fabricCcenvVersion": "3.1.0",
-    "fabricBaseosVersion": "3.1.0",
+    "fabricCcenvVersion": "3.1.5",
+    "fabricBaseosVersion": "3.1.5",
     "fabricJavaenvVersion": "2.5",
     "fabricNodeenvVersion": "2.5",
     "fabricRecommendedNodeVersion": "16",
-    "peerImage": "hyperledger/fabric-peer:3.1.0",
-    "ordererImage": "hyperledger/fabric-orderer:3.1.0",
+    "peerImage": "hyperledger/fabric-peer:3.1.5",
+    "ordererImage": "hyperledger/fabric-orderer:3.1.5",
     "caImage": "hyperledger/fabric-ca:1.5.16",
     "toolsImage": "ghcr.io/fablo-io/fabric-tools:3.1.3",
-    "ccenvImage": "hyperledger/fabric-ccenv:3.1.0",
-    "baseosImage": "hyperledger/fabric-baseos:3.1.0",
+    "ccenvImage": "hyperledger/fabric-ccenv:3.1.5",
+    "baseosImage": "hyperledger/fabric-baseos:3.1.5",
     "javaenvImage": "hyperledger/fabric-javaenv:2.5",
     "nodeenvImage": "hyperledger/fabric-nodeenv:2.5",
     "provider": "fabric",
@@ -3032,7 +3032,7 @@ exports[`init should init simple fablo config 1`] = `
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
-    "fabricVersion": "3.1.0",
+    "fabricVersion": "3.1.5",
     "tls": true,
     "peerDevMode": false,
     "engine": "docker"
@@ -3098,7 +3098,7 @@ exports[`init should init simple fablo config with ccaas chaincode 1`] = `
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
-    "fabricVersion": "3.1.0",
+    "fabricVersion": "3.1.5",
     "tls": true,
     "peerDevMode": false,
     "engine": "docker"
@@ -3174,7 +3174,7 @@ exports[`init should init simple fablo config with node chaincode 1`] = `
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
-    "fabricVersion": "3.1.0",
+    "fabricVersion": "3.1.5",
     "tls": true,
     "peerDevMode": false,
     "engine": "docker"
@@ -3249,7 +3249,7 @@ exports[`init should init simple fablo config with node chaincode and rest api 1
 "{
   "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
-    "fabricVersion": "3.1.0",
+    "fabricVersion": "3.1.5",
     "tls": true,
     "peerDevMode": false,
     "engine": "docker"
