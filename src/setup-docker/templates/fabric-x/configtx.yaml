@@ -106,7 +106,7 @@ Orderer: &OrdererDefaults
   OrdererType: arma
   BatchTimeout: 500ms
   BatchSize:
-    MaxMessageCount: 3500
+    MaxMessageCount: 10000
     AbsoluteMaxBytes: 10 MB
   MaxChannels: 0
   ConsenterMapping:

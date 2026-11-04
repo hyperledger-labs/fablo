@@ -85,7 +85,7 @@ describe("extendGlobal fabricImages", () => {
       const global = extendGlobal(globalJson);
 
       // Then
-      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.6");
+      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.8");
       expect(global.committerImage).toBe("ghcr.io/hyperledger/fabric-x-committer:1.0.7");
       expect(global.toolsImage).toBe("ghcr.io/hyperledger/fabric-x-tools:1.0.3");
       expect(global.postgresImage).toBe("docker.io/library/postgres:18.3-alpine3.23");
@@ -100,7 +100,7 @@ describe("extendGlobal fabricImages", () => {
       expect("fabricBaseosVersion" in global).toBe(false);
       expect("fabricJavaenvVersion" in global).toBe(false);
       expect("fabricNodeenvVersion" in global).toBe(false);
-      expect(global.ordererVersion).toBe("1.0.6");
+      expect(global.ordererVersion).toBe("1.0.8");
       expect(global.committerVersion).toBe("1.0.7");
       expect(global.toolsVersion).toBe("1.0.3");
       expect(global.postgresVersion).toBe("18.3-alpine3.23");
@@ -119,7 +119,7 @@ describe("extendGlobal fabricImages", () => {
       const global = extendGlobal(globalJson);
 
       // Then
-      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.6");
+      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.8");
       expect(global.committerImage).toBe("ghcr.io/hyperledger/fabric-x-committer:1.0.7");
       expect(global.toolsImage).toBe("ghcr.io/hyperledger/fabric-x-tools:1.0.3");
       expect(global.postgresImage).toBe("docker.io/library/postgres:18.3-alpine3.23");
@@ -146,7 +146,7 @@ describe("extendGlobal fabricImages", () => {
       // Then
       expect(global.committerImage).toBe("mirror.local/committer:1.0.7");
       expect(global.postgresImage).toBe("mirror.local/postgres:18.3-alpine3.23");
-      expect(global.ordererImage).toBe("mirror.local/orderer:1.0.6");
+      expect(global.ordererImage).toBe("mirror.local/orderer:1.0.8");
       expect(global.toolsImage).toBe("mirror.local/tools:1.0.3");
     });
 
@@ -207,7 +207,7 @@ describe("extendGlobal fabricImages", () => {
       expect("fabricBaseosVersion" in global).toBe(false);
       expect("fabricJavaenvVersion" in global).toBe(false);
       expect("fabricNodeenvVersion" in global).toBe(false);
-      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.6");
+      expect(global.ordererImage).toBe("ghcr.io/hyperledger/fabric-x-orderer:1.0.8");
     });
   });
 

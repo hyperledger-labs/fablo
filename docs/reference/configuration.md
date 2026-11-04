@@ -90,6 +90,19 @@ Optional Docker images for Hyperledger Fabric components.
 
 The defaults above are repository names without a tag. When you give an image with no tag and no digest, Fablo appends a tag it derives from `fabricVersion`, so `myregistry/fabric-peer` becomes `myregistry/fabric-peer:3.1.5` on a Fabric `3.1.5` network. Give the image with a tag or a digest to pin it yourself.
 
+#### Fabric-X Images (`provider: "fabric-x"`)
+
+When `provider` is set to `fabric-x`, the network uses Fabric-X microservices instead of classic peer and orderer containers. Fabric-X components use independently versioned images pinned to a tested compatible version tuple matching the [Fabric-X version compatibility matrix](https://github.com/hyperledger/fabric-x#version-compatibility-matrix):
+
+| Field | Purpose | Type | Required | Default Repository | Pinned Default Version |
+|---|---|---|---|---|---|
+| `orderer` | Orderer microservices (router, consenter, batcher, assembler) | `string` | No | `ghcr.io/hyperledger/fabric-x-orderer` | `1.0.8` |
+| `committer` | Committer microservices (coordinator, verifier, validator, sidecar) | `string` | No | `ghcr.io/hyperledger/fabric-x-committer` | `1.0.7` |
+| `tools` | Fabric-X CLI tools container (`fxconfig`, `cryptogen`) | `string` | No | `ghcr.io/hyperledger/fabric-x-tools` | `1.0.3` |
+| `postgres` | Committer PostgreSQL database | `string` | No | `docker.io/library/postgres` | `18.3-alpine3.23` |
+
+Unlike classic Fabric where untagged image overrides derive their tag from `fabricVersion`, Fabric-X untagged overrides append the pinned default tag (for example, setting `committer: "mirror.local/committer"` resolves to `mirror.local/committer:1.0.7`). Custom tags or digests (such as `myorg/committer:custom-tag` or `mirror.local/postgres@sha256:...`) are preserved as is. Classic-only image settings (`peer`, `ca`, `ccenv`, `baseos`, `javaenv`, `nodeenv`) are not used by the Fabric-X provider.
+
 ### `global.monitoring`
 
 Optional settings for monitoring purposes.

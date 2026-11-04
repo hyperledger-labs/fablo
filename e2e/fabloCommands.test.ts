@@ -544,12 +544,13 @@ describe("generate", () => {
 
     const dockerCompose = commands.getFileContent("fablo-target/fabric-x/docker-compose.yaml");
     expect(dockerCompose).toContain("image: ghcr.io/hyperledger/fabric-x-committer:1.0.7");
-    expect(dockerCompose).toContain("image: ghcr.io/hyperledger/fabric-x-orderer:1.0.6");
+    expect(dockerCompose).toContain("image: ghcr.io/hyperledger/fabric-x-orderer:1.0.8");
     expect(dockerCompose).toContain("image: docker.io/library/postgres:18.3-alpine3.23");
     expect(dockerCompose).toContain("committer-org1-init-db:");
     expect(dockerCompose).toContain("command: init-db --config=/config/validator.yaml");
 
     const configtx = commands.getFileContent("fablo-target/fabric-x/configtx.yaml");
+    expect(configtx).toContain("MaxMessageCount: 10000");
     expect(configtx).toContain("AbsoluteMaxBytes: 10 MB");
     expect(configtx).toContain("SnapshotEndorsement:");
     expect(configtx).toContain("CheckpointEndorsement:");
@@ -559,6 +560,6 @@ describe("generate", () => {
 
     const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
     expect(baseFunctions).toContain('TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.3}"');
-    expect(baseFunctions).toContain('ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.6}"');
+    expect(baseFunctions).toContain('ORDERER_IMAGE="${ORDERER_IMAGE:-ghcr.io/hyperledger/fabric-x-orderer:1.0.8}"');
   });
 });
