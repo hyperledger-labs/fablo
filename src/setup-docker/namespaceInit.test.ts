@@ -28,7 +28,6 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
           queryServicePort: 7001,
         },
       ],
-      defaultPolicy: "AND('Org1MSP.member')",
     },
     shellQuote,
   });
