@@ -7,6 +7,7 @@ Parties:
     TLSCACerts:
       - /crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
     RouterConfig:
+      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/msp/signcerts/router.orderer.example.com-cert.pem
       TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls/server.crt
       Host: orderer-router
       Port: 7050
@@ -22,6 +23,7 @@ Parties:
       Host: orderer-consenter
       Port: 7052
     AssemblerConfig:
+      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/msp/signcerts/assembler.orderer.example.com-cert.pem
       TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls/server.crt
       Host: orderer-assembler
       Port: 7053
