@@ -293,6 +293,68 @@ describe("validate", () => {
     expect(fabricXResult).toEqual(TestCommands.success());
     expect(fabricXResult.output).toContain("Validation warnings count: 0");
   });
+
+  it("should reject an unknown Fabric-X channel organization", () => {
+    // Given
+    commands.fabloExec(
+      "init fabric-x --set channels[0].orgs[0].name=MissingOrg --set namespaces[0].orgs[0]=MissingOrg",
+    );
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("Channel 'mychannel' references unknown org(s): MissingOrg.");
+  });
+
+  it("should reject multiple Fabric-X channel organizations", () => {
+    // Given
+    commands.fabloExec("init fabric-x");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    config.orgs.push({
+      ...config.orgs[0],
+      organization: {
+        name: "Org2",
+        domain: "org2.example.com",
+        mspName: "Org2MSP",
+      },
+    });
+    config.channels[0].orgs.push({ name: "Org2", peers: [] });
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("Fabric-X currently supports only one organization on a channel, found 2.");
+  });
+
+  it("should reject a namespace organization outside the Fabric-X channel", () => {
+    // Given
+    commands.fabloExec("init fabric-x");
+    const configPath = `${commands.workdir}/fablo-config.json`;
+    const config = JSON.parse(commands.getFileContent("fablo-config.json")) as FabloConfigJson;
+    config.orgs.push({
+      ...config.orgs[0],
+      organization: {
+        name: "Org2",
+        domain: "org2.example.com",
+        mspName: "Org2MSP",
+      },
+    });
+    config.namespaces = [{ name: "mynamespace", orgs: ["Org2"] }];
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+    // When
+    const result = commands.fabloExec("validate");
+
+    // Then
+    expect(result).toEqual(TestCommands.failure());
+    expect(result.output).toContain("Namespace 'mynamespace' references unknown org(s): Org2.");
+  });
 });
 
 describe("extend config", () => {
