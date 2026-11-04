@@ -93,9 +93,39 @@ run_fablo namespace init
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
 
 # application transaction: submit to the namespace, wait for commit, query the state
+FX_APP_DIR="$FABLO_HOME/samples/chaincodes/fabric-x-app"
+FX_APP_LOG="$TEST_LOGS/fabric-x-app.log"
+FX_CRYPTO="$TEST_TMP/fablo-target/fabric-x/crypto"
+FX_ORG_DOMAIN="org1.example.com"
 FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$TEST_TMP/fablo-config.json")"
-expectCommand "\"$FABLO_HOME/samples/chaincodes/fabric-x-app/run.sh\" \"$TEST_TMP/fablo-config.json\" \"$TEST_TMP/fablo-target/fabric-x\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
+mkdir -p "$FX_APP_DIR/.cache"
 
+echo "Running the Fabric-X application fixture, output in $FX_APP_LOG"
+docker run --rm --network fabric-x --user "$(id -u):$(id -g)" \
+  -e HOME=/tmp \
+  -e GOCACHE=/cache/build \
+  -e GOMODCACHE=/cache/mod \
+  -e GOFLAGS=-buildvcs=false \
+  -v "$FX_APP_DIR:/src:Z" \
+  -v "$FX_APP_DIR/.cache:/cache:Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/peers/fxconfig.$FX_ORG_DOMAIN/tls:/tls:ro,Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/users/User1@$FX_ORG_DOMAIN/msp:/msp:ro,Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/msp/tlscacerts/tlsca.$FX_ORG_DOMAIN-cert.pem:/org-tls-ca.pem:ro,Z" \
+  -v "$FX_CRYPTO/ordererOrganizations:/orderer-cas:ro,Z" \
+  -w /src \
+  golang:1.26 \
+  go run . \
+  -channel mychannel \
+  -namespace "$FX_NAMESPACE" \
+  -msp-name Org1MSP \
+  -orderer orderer-router:7050 \
+  -sidecar committer-org1-sidecar:4001 \
+  >"$FX_APP_LOG" 2>&1 || {
+  echo "❌ failed: Fabric-X application fixture exited with a non-zero code"
+  cat "$FX_APP_LOG"
+  exit 1
+}
+expectCommand "cat \"$FX_APP_LOG\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
 
 # cache skip check
 CONFIG_HASH_BEFORE=$(sha256sum "$CONFIG_BLOCK" | awk '{print $1}')
