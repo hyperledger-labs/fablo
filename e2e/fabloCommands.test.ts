@@ -557,6 +557,10 @@ describe("generate", () => {
 
     const sharedConfig = commands.getFileContent("fablo-target/fabric-x/shared-config.yaml");
     expect(sharedConfig).toContain("AbsoluteMaxBytes: 10485760");
+    expect(sharedConfig).toContain("router.orderer.example.com/msp/signcerts/router.orderer.example.com-cert.pem");
+    expect(sharedConfig).toContain(
+      "assembler.orderer.example.com/msp/signcerts/assembler.orderer.example.com-cert.pem",
+    );
 
     const baseFunctions = commands.getFileContent("fablo-target/fabric-x/scripts/base-functions.sh");
     expect(baseFunctions).toContain('TOOLS_IMAGE="${TOOLS_IMAGE:-ghcr.io/hyperledger/fabric-x-tools:1.0.3}"');
