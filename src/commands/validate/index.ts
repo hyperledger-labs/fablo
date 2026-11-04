@@ -701,7 +701,6 @@ export default class Validate extends Command {
     const { orgs, fabricX } = networkConfig;
     const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
 
-   
     orgs.forEach((org) => {
       if ((org.orderers ?? []).length > 0) {
         this.emit(validationErrorType.ERROR, {

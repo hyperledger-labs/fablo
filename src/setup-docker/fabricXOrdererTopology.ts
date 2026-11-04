@@ -83,7 +83,6 @@ const buildParty = (
   const party = { partyId, slug: `party${partyId}`, org: { name, domain, mspName } };
   const hostPrefix = hostPrefixOf(partyId, partyCount);
 
-
   const batchers = [buildNode(party, hostPrefix, "batcher", "batcher1", consenterHosts, 1)];
   const consenter = buildNode(party, hostPrefix, "consenter", "consenter", []);
   const assembler = buildNode(

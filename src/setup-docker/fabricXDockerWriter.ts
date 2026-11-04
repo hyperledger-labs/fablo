@@ -10,7 +10,7 @@ export interface FabricXTemplateModel {
   channelProfileName: string;
   applicationOrg: OrgConfig;
   applicationOrgSlug: string;
-  orderer:FabricXOrdererTopology;
+  orderer: FabricXOrdererTopology;
 }
 
 export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): FabricXTemplateModel => {
