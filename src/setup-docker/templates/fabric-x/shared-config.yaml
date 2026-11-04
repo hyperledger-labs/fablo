@@ -12,6 +12,10 @@ Parties:
       TLSCert: <%= dir(party.router) %>/tls/server.crt
       Host: <%= party.router.host %>
       Port: <%= party.router.port %>
+      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/msp/signcerts/router.orderer.example.com-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls/server.crt
+      Host: orderer-router
+      Port: 7050
     BatchersConfig:
 <%_ party.batchers.forEach((batcher) => { -%>
       - ShardID: <%= batcher.shardId %>
@@ -30,6 +34,10 @@ Parties:
       Host: <%= party.assembler.host %>
       Port: <%= party.assembler.port %>
 <%_ }); -%>
+      SignCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/msp/signcerts/assembler.orderer.example.com-cert.pem
+      TLSCert: /crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls/server.crt
+      Host: orderer-assembler
+      Port: 7053
 
 
 Consensus:
