@@ -50,7 +50,7 @@ export interface PeerJson {
 export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
-  orderers: OrdererJson[] | undefined;
+  orderers?: OrdererJson[];
   peer?: PeerJson;
   tools?: { fabloRest?: boolean; explorer?: boolean };
 }
@@ -92,7 +92,7 @@ export interface NamespaceJson {
   policy?: string;
 }
 export interface FabricXOrdererPartyJson {
-  organization: OrganizationDetailsJson;
+  organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
 }
 export interface FabricXJson {
   orderer: { parties: FabricXOrdererPartyJson[] };

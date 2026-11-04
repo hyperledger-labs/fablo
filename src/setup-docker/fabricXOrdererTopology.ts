@@ -47,15 +47,21 @@ const ROLE_COMMAND: Record<FabricXOrdererRole, string> = {
 };
 const ROLES_WITH_CLIENTS: FabricXOrdererRole[] = ["router", "assembler"];
 
+const hostPrefixOf = (partyId: number, partyCount: number): string =>
+  partyCount === 1 ? HOST_PREFIX : `${HOST_PREFIX}-party${partyId}`;
+
+const hostOf = (hostPrefix: string, role: FabricXOrdererRole): string => `${hostPrefix}-${role}`;
+
 const buildNode = (
   party: { partyId: number; slug: string; org: FabricXOrdererOrg },
   hostPrefix: string,
   role: FabricXOrdererRole,
   cryptoName: string,
+  dependsOn: string[],
   shardId?: number,
 ): FabricXOrdererNode => ({
   role,
-  host: `${hostPrefix}-${role}`,
+  host: hostOf(hostPrefix, role),
   command: ROLE_COMMAND[role],
   port: FIRST_PORT + (party.partyId - 1) * PORT_STEP_PER_PARTY + ROLE_PORT_OFFSET[role],
   cryptoName,
@@ -63,18 +69,32 @@ const buildNode = (
   dataDir: `data/orderers/${party.slug}-${role}`,
   configFile: `config/${hostPrefix}-${role}.yaml`,
   acceptsClients: ROLES_WITH_CLIENTS.includes(role),
-  dependsOn: [],
+  dependsOn,
   ...(shardId === undefined ? {} : { shardId }),
 });
 
-const buildParty = (partyId: number, partyCount: number, config: FabricXOrdererPartyConfig): FabricXOrdererParty => {
+const buildParty = (
+  partyId: number,
+  partyCount: number,
+  config: FabricXOrdererPartyConfig,
+  consenterHosts: string[],
+): FabricXOrdererParty => {
   const { name, domain, mspName } = config.organization;
   const party = { partyId, slug: `party${partyId}`, org: { name, domain, mspName } };
-  const hostPrefix = partyCount === 1 ? HOST_PREFIX : `${HOST_PREFIX}-${party.slug}`;
-  const router = buildNode(party, hostPrefix, "router", "router");
-  const batchers = [buildNode(party, hostPrefix, "batcher", "batcher1", 1)];
-  const consenter = buildNode(party, hostPrefix, "consenter", "consenter");
-  const assembler = buildNode(party, hostPrefix, "assembler", "assembler");
+  const hostPrefix = hostPrefixOf(partyId, partyCount);
+
+
+  const batchers = [buildNode(party, hostPrefix, "batcher", "batcher1", consenterHosts, 1)];
+  const consenter = buildNode(party, hostPrefix, "consenter", "consenter", []);
+  const assembler = buildNode(
+    party,
+    hostPrefix,
+    "assembler",
+    "assembler",
+    batchers.map((batcher) => batcher.host),
+  );
+  const router = buildNode(party, hostPrefix, "router", "router", [assembler.host]);
+
   return {
     ...party,
     endpointId: partyId - 1,
@@ -90,17 +110,14 @@ export const buildFabricXOrdererTopology = (partyConfigs: FabricXOrdererPartyCon
   const partyCount = partyConfigs.length;
   if (!SUPPORTED_ORDERER_PARTY_COUNTS.includes(partyCount)) {
     throw new Error(
-      `Fablo currently supports ${SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ")} Fabric-X orderer parties, but ${partyCount} were configured.`,
+      `Fablo currently supports ${SUPPORTED_ORDERER_PARTY_COUNTS.join(
+        " or ",
+      )} Fabric-X orderer parties, but ${partyCount} were configured.`,
     );
   }
-  const parties = partyConfigs.map((config, i) => buildParty(i + 1, partyCount, config));
 
-
-  parties.forEach((party) => {
-    party.router.dependsOn = [party.assembler.host];
-    party.batchers.forEach((batcher) => (batcher.dependsOn = parties.map((p) => p.consenter.host)));
-    party.assembler.dependsOn = party.batchers.map((batcher) => batcher.host);
-  });
+  const consenterHosts = partyConfigs.map((_, i) => hostOf(hostPrefixOf(i + 1, partyCount), "consenter"));
+  const parties = partyConfigs.map((config, i) => buildParty(i + 1, partyCount, config, consenterHosts));
 
   return {
     parties,

@@ -91,14 +91,6 @@ function getDefaultFabricXConfig(): FabloConfigJson {
           prefix: "ca",
           db: "sqlite",
         },
-        orderers: [
-          {
-            groupName: "group1",
-            type: "BFT",
-            instances: 1,
-            prefix: "orderer",
-          },
-        ],
       },
     ],
     channels: [

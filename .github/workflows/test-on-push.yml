@@ -302,9 +302,6 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Downgrade Docker to v28
-        uses: ./.github/actions/setup-docker-v28
-
       - name: Build Fablo
         run: |
           shellcheck --version && \

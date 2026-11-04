@@ -14,4 +14,3 @@ const extendFabricXConfig = (fabricXJson: FabricXJson | undefined): FabricXConfi
   },
 });
 export default extendFabricXConfig;
-

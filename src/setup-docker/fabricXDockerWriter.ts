@@ -27,7 +27,7 @@ export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): Fa
     applicationOrg: channel.instantiatingOrg,
     applicationOrgSlug: channel.instantiatingOrg.name.toLowerCase(),
     orderer: buildFabricXOrdererTopology(configExtended.fabricX?.orderer.parties ?? []),
-};
+  };
 };
 export class FabricXDockerWriter {
   constructor(private templatesDir: string, private outputDir: string, private log: (msg: string) => void) {}
@@ -49,15 +49,21 @@ export class FabricXDockerWriter {
     this.log("Fabric-X network files successfully generated under fabric-x/");
   }
 
-private async renderOrdererNodeConfigs(orderer: FabricXOrdererTopology, data: Record<string, unknown>): Promise<void> {
-  for (const party of orderer.parties) {
-    for (const node of party.nodes) {
-      const templatePath = getTemplatePath(this.templatesDir, path.join("fabric-x-orderer", `orderer-${node.role}.yaml`));
-      const destPath = getDestinationPath(this.outputDir, path.join("fabric-x", node.configFile));
-      await renderTemplate(templatePath, destPath, { ...data, party, node });
+  private async renderOrdererNodeConfigs(
+    orderer: FabricXOrdererTopology,
+    data: Record<string, unknown>,
+  ): Promise<void> {
+    for (const party of orderer.parties) {
+      for (const node of party.nodes) {
+        const templatePath = getTemplatePath(
+          this.templatesDir,
+          path.join("fabric-x-orderer", `orderer-${node.role}.yaml`),
+        );
+        const destPath = getDestinationPath(this.outputDir, path.join("fabric-x", node.configFile));
+        await renderTemplate(templatePath, destPath, { ...data, party, node });
+      }
     }
   }
-}
   private async renderTemplateFile(file: string, data: Record<string, unknown>): Promise<void> {
     const templatePath = getTemplatePath(this.templatesDir, file);
     const destPath = getDestinationPath(this.outputDir, file);
