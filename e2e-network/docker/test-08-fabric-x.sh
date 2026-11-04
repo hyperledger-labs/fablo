@@ -48,6 +48,7 @@ expectNotCommand() {
 }
 
 networkUp() {
+  run_fablo validate "$CONFIG"
   run_fablo generate "$CONFIG"
   run_fablo up "$CONFIG"
 }

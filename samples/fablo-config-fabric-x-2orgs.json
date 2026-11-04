@@ -1,8 +1,10 @@
 {
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/1.2.0/schema.json",
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
   "global": {
-    "fabricVersion": "2.5.0",
-    "tls": false,
+    "fabricVersion": "3.1.0",
+    "tls": true,
+    "engine": "docker",
+    "peerDevMode": false,
     "provider": "fabric-x"
   },
   "orgs": [
@@ -15,7 +17,15 @@
       "ca": {
         "prefix": "ca",
         "db": "sqlite"
-      }
+      },
+      "orderers": [
+        {
+          "groupName": "group1",
+          "type": "BFT",
+          "instances": 1,
+          "prefix": "orderer"
+        }
+      ]
     },
     {
       "organization": {
@@ -58,5 +68,7 @@
         "Org1"
       ]
     }
-  ]
+  ],
+  "chaincodes": [],
+  "hooks": {}
 }

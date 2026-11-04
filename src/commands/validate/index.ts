@@ -587,23 +587,43 @@ export default class Validate extends Command {
       });
     }
 
+    this._validateFabricXChannelOrganizations(channels, orgs);
+    this._validateFabricXNamespaces(networkConfig);
+
+    const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
+
+    classicOnlyImages.forEach((key) => {
+      if (global.fabricImages?.[key]) {
+        this.emit(validationErrorType.WARN, {
+          category: validationCategories.GENERAL,
+          message: `Setting 'global.fabricImages.${key}' is not supported for provider 'fabric-x' and will be ignored.`,
+        });
+      }
+    });
+  }
+
+  _validateFabricXChannelOrganizations(channels: ChannelJson[], orgs: OrgJson[]): void {
     const channel = channels[0];
+    if (!channel) {
+      return;
+    }
+
     const orgByName = new Map(orgs.map((o) => [o.organization.name, o.organization]));
-    const configuredOrgNames = new Set(orgs.map((o) => o.organization.name));
-    const channelOrgNames = (channel?.orgs ?? []).map((o) => o.name);
+    const channelOrgNames = channel.orgs.map((o) => o.name);
 
     if (channelOrgNames.length === 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
-        message: `fabric-x requires at least one organization on channel '${channel?.name}'.`,
+        message: `Fabric-X requires at least one organization on channel '${channel.name}'.`,
       });
+      return;
     }
 
-    const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
+    const unknownChannelOrgs = channelOrgNames.filter((name) => !orgByName.has(name));
     if (unknownChannelOrgs.length > 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
-        message: `Channel '${channel?.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
+        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
       });
     }
 
@@ -645,17 +665,10 @@ export default class Validate extends Command {
         seenDomains.add(org.domain);
       }
     }
+  }
 
-    const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
-
-    classicOnlyImages.forEach((key) => {
-      if (global.fabricImages?.[key]) {
-        this.emit(validationErrorType.WARN, {
-          category: validationCategories.GENERAL,
-          message: `Setting 'global.fabricImages.${key}' is not supported for provider 'fabric-x' and will be ignored.`,
-        });
-      }
-    });
+  _validateFabricXNamespaces(networkConfig: FabloConfigJson): void {
+    const channelOrgNames = new Set((networkConfig.channels[0]?.orgs ?? []).map((orgRef) => orgRef.name));
 
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
@@ -699,7 +712,7 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !channelOrgNames.includes(n));
+      const unknownOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
       if (unknownOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
