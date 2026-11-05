@@ -3,7 +3,7 @@ module github.com/hyperledger-labs/fablo/samples/chaincodes/fabric-x-app
 go 1.26.3
 
 require (
-	github.com/hyperledger/fabric-x-committer v1.0.3
+	github.com/hyperledger/fabric-x-committer v1.0.7
 	github.com/hyperledger/fabric-x-samples/custom-endorser v0.0.0-20261030063544-b58a08afcf6b
 	github.com/hyperledger/fabric-x-sdk v0.0.0-20260618080057-dddd57eee118
 	google.golang.org/grpc v1.81.1
