@@ -8,10 +8,20 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
+# This test runs Fablo from the npm package packed from this checkout, not from
+# fablo.sh with the Docker image, to verify that both behave the same way.
+FABLO_NPM_PREFIX="$(mktemp -d -t fablo-npm.XXXXXXXX)"
+FABLO="$FABLO_NPM_PREFIX/bin/fablo"
+
+installNpmPackage() {
+  (cd "$FABLO_HOME" && npm ci && npm pack --pack-destination "$FABLO_NPM_PREFIX")
+  npm install --global --prefix "$FABLO_NPM_PREFIX" "$FABLO_NPM_PREFIX"/fablo-io-fablo-*.tgz
+}
+
 networkUp() {
-  "$FABLO_HOME/fablo-build.sh"
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" init node dev)
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" up)
+  installNpmPackage
+  (cd "$TEST_TMP" && "$FABLO" init node dev)
+  (cd "$TEST_TMP" && "$FABLO" up)
 }
 
 dumpLogs() {
@@ -22,7 +32,7 @@ dumpLogs() {
 
 networkDown() {
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
+  (cd "$TEST_TMP" && "$FABLO" down)
 }
 
 waitForContainer() {
@@ -97,19 +107,19 @@ expectQueryWithRetry "peer1.org1.example.com" "my-channel1" "chaincode1" \
   '{"error":"SORRY_NOT_FOUND"}'
 
 # Verify channel query scripts
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch newest my-channel1 org1 peer1)
+(cd "$TEST_TMP" && "$FABLO" channel fetch newest my-channel1 org1 peer1)
 expectCommand "cat \"$TEST_TMP/newest.block\"" "KVContract:put"
 
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch 3 my-channel1 org1 peer1 "another.block")
+(cd "$TEST_TMP" && "$FABLO" channel fetch 3 my-channel1 org1 peer1 "another.block")
 expectCommand "cat \"$TEST_TMP/another.block\"" "KVContract:put"
 
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" channel fetch config my-channel1 org1 peer1 "channel-config.json")
+(cd "$TEST_TMP" && "$FABLO" channel fetch config my-channel1 org1 peer1 "channel-config.json")
 expectCommand "cat \"$TEST_TMP/channel-config.json\"" "\"mod_policy\": \"Admins\","
 
-expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" channel getinfo my-channel1 org1 peer1)" "\"height\":4"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO\" channel getinfo my-channel1 org1 peer1)" "\"height\":4"
 
 # Reset and ensure the state is lost after reset
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" reset)
+(cd "$TEST_TMP" && "$FABLO" reset)
 waitForChaincode "peer0.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 waitForChaincode "peer1.org1.example.com" "my-channel1" "chaincode1" "0.0.1"
 expectQueryWithRetry "peer0.org1.example.com" "my-channel1" "chaincode1" \
@@ -123,7 +133,7 @@ expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
 
 # Test export-network-topology to Mermaid
 cp -f "$FABLO_HOME/samples/fablo-config-hlf2-1org-1chaincode.json" "$TEST_TMP/simple-config.json"
-(cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" export-network-topology simple-config.json network-topology.mmd)
+(cd "$TEST_TMP" && "$FABLO" export-network-topology simple-config.json network-topology.mmd)
 expectCommand "cat \"$TEST_TMP/network-topology.mmd\"" "graph LR"
 
 
