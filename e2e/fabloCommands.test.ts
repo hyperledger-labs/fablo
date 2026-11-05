@@ -351,6 +351,20 @@ describe("validate", () => {
       );
     });
 
+    it("should reject duplicate top-level organization names referenced once in channel", () => {
+      config.orgs.push({
+        organization: { name: "Org1", domain: "org1-alt.example.com", mspName: "Org1AltMSP" },
+        ca: { prefix: "ca", db: "sqlite" },
+      } as OrgJson);
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+
+      const duplicateTopLevelResult = commands.fabloExec("validate", true);
+      expect(duplicateTopLevelResult).toEqual(TestCommands.failure());
+      expect(duplicateTopLevelResult.output).toContain(
+        "Fabric-X generated duplicate organization slug 'org1'. Organization names must be unique case-insensitively.",
+      );
+    });
+
     it("should reject duplicate MSP name", () => {
       config.orgs[1].organization.mspName = "Org1MSP";
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2));

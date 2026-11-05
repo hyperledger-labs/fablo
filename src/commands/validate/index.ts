@@ -608,7 +608,7 @@ export default class Validate extends Command {
       return;
     }
 
-    const orgByName = new Map(orgs.map((o) => [o.organization.name, o.organization]));
+    const configuredOrgNames = new Set(orgs.map((org) => org.organization.name));
     const channelOrgNames = channel.orgs.map((o) => o.name);
 
     if (channelOrgNames.length === 0) {
@@ -619,7 +619,7 @@ export default class Validate extends Command {
       return;
     }
 
-    const unknownChannelOrgs = channelOrgNames.filter((name) => !orgByName.has(name));
+    const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
     if (unknownChannelOrgs.length > 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
@@ -627,7 +627,9 @@ export default class Validate extends Command {
       });
     }
 
-    const channelOrgsConfig = channelOrgNames.flatMap((n) => orgByName.get(n) ?? []);
+    const channelOrgsConfig = orgs
+      .filter((org) => channelOrgNames.includes(org.organization.name))
+      .map((org) => org.organization);
 
     const seenSlugs = new Set<string>();
     for (const org of channelOrgsConfig) {
