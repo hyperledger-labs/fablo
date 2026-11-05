@@ -58,3 +58,41 @@ jobs:
           git commit -a -m "Set new development version: $NEW_VERSION"
           git push --set-upstream origin bump-version-to-$NEW_VERSION
           git gh pr create --title "Bump Version to $NEW_VERSION" --body "Bump Version to $NEW_VERSION" --label "bump-version-pr" --head "bump-version-to-$NEW_VERSION" --base main
+
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # npm trusted publishing (OIDC); also signs the package with provenance
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify version
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          PKG_JSON_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
+          if [ "$VERSION" != "$PKG_JSON_VERSION" ]; then
+              echo "Version in package.json ($PKG_JSON_VERSION) does not match tag ($VERSION)"
+              exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish to npm
+        env:
+          # Only needed until trusted publishing is configured on npmjs.com
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # trusted publishing requires npm >= 11.5.1
+          npm install --global npm@11
+          npm ci
+          # pre-release versions (e.g. 2.7.0-rc.1) must not become `latest`
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then DIST_TAG=next; else DIST_TAG=latest; fi
+          npm publish --provenance --tag "$DIST_TAG"
