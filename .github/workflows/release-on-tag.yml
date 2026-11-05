@@ -63,21 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # npm trusted publishing (OIDC); also signs the package with provenance
-      id-token: write
+      id-token: write # lets npm verify this workflow (trusted publishing + provenance)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Verify version
-        run: |
-          VERSION="${GITHUB_REF_NAME}"
-          PKG_JSON_VERSION=$(jq -r '.version' <"$GITHUB_WORKSPACE/package.json")
-          if [ "$VERSION" != "$PKG_JSON_VERSION" ]; then
-              echo "Version in package.json ($PKG_JSON_VERSION) does not match tag ($VERSION)"
-              exit 1
-          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -85,14 +75,11 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      - name: Update npm (trusted publishing needs 11.5.1 or newer)
+        run: npm install --global npm@11
+
       - name: Publish to npm
         env:
-          # Only needed until trusted publishing is configured on npmjs.com
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          # trusted publishing requires npm >= 11.5.1
-          npm install --global npm@11
-          npm ci
-          # pre-release versions (e.g. 2.7.0-rc.1) must not become `latest`
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then DIST_TAG=next; else DIST_TAG=latest; fi
-          npm publish --provenance --tag "$DIST_TAG"
+          RELEASE_TAG: ${{ github.ref_name }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # only until trusted publishing is configured
+        run: .github/scripts/publish-npm.sh
