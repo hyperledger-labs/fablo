@@ -132,7 +132,7 @@ docker run --rm --network fabric-x --user "$(id -u):$(id -g)" \
   -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/msp/tlscacerts/tlsca.$FX_ORG_DOMAIN-cert.pem:/org-tls-ca.pem:ro,Z" \
   -v "$FX_CRYPTO/ordererOrganizations:/orderer-cas:ro,Z" \
   -w /src \
-  golang:1.26.3 \
+  golang:1.27.3 \
   go run . \
   -channel "$FX_CHANNEL" \
   -namespace "$FX_NAMESPACE" \
