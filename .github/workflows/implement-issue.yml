@@ -10,8 +10,9 @@ name: Implement issue
 # unresolved review threads, the reviews and comments), edits the pull request
 # branch, and the result is pushed to it as a new commit. Leave review comments
 # on the diff first, then comment `/implement` (with or without more
-# instructions) to have them addressed. Only pull requests on an ai/issue-<n>
-# branch of this repository can be revised.
+# instructions) to have them addressed. This works on any pull request from a
+# branch of this repository, including one a person opened without an issue;
+# pull requests from forks cannot be pushed to and are refused.
 #
 # The run is three jobs, because a token's permissions are set per job:
 #   gate       checks the caller and the target, acknowledges.   writes comments
@@ -60,7 +61,7 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "Issue to implement, or implementation pull request to revise"
+        description: "Issue to implement, or pull request to revise"
         required: true
         type: string
       additional_instructions:

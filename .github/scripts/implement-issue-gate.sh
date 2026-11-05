@@ -5,8 +5,9 @@
 #
 # ISSUE_NUMBER is an issue or a pull request; GitHub numbers both from one
 # sequence. On an issue the run implements it and opens a pull request. On a
-# pull request the run revises that pull request: it must be one this workflow
-# opened, on an ai/issue-<n> branch, and the agent addresses the review on it.
+# pull request the run revises that pull request, whoever opened it and whether
+# or not it has an issue: the agent addresses the review on it and pushes to
+# its branch, which must be in this repository.
 #
 # It decides whether the run may proceed, and when it may, writes the request
 # for the agent to .jaiph/tmp/request.json and acknowledges on the issue or
@@ -20,8 +21,8 @@
 #
 # Writes these step outputs:
 #   mode          `implement` for an issue, `revise` for a pull request
-#   title         the issue title, used as the pull request title
-#   issue_number  the issue being implemented (on a revise, the one in the branch name)
+#   title         implement only: the issue title, used as the pull request title
+#   issue_number  implement only: the issue being implemented
 #   head_ref      revise only: the pull request branch to check out and push to
 
 set -euo pipefail
@@ -72,7 +73,13 @@ if [[ ! "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-if gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}" --jq 'has("pull_request")' | grep -qx true; then
+# The issues endpoint answers for pull requests too, so one lookup tells the
+# two apart; a number that is neither stops the run here.
+if ! is_pr="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}" --jq 'has("pull_request")')"; then
+  echo "#${ISSUE_NUMBER} is not an issue or a pull request in ${GITHUB_REPOSITORY}." >&2
+  exit 1
+fi
+if [ "$is_pr" = "true" ]; then
   mode="revise"
 else
   mode="implement"
@@ -97,11 +104,14 @@ if [ "$mode" = "implement" ]; then
   fi
   linked_issue="$ISSUE_NUMBER"
   head_ref=""
+  issue_json="$(jq -c '{number, title, url}' .jaiph/tmp/issue.raw.json)"
   pr_json="null"
 else
-  # 4. Verify the pull request is open and is one this workflow opened. Only a
-  #    branch in this repository can be pushed to, and only an ai/issue-<n>
-  #    branch holds agent work: a human's pull request is never rewritten.
+  # 4. Verify the pull request is open and its branch can be pushed to. Any
+  #    pull request qualifies, whoever opened it and whether or not it has an
+  #    issue: the agent works from the review and the comment's instructions.
+  #    The workflow token can only push to a branch in this repository, and the
+  #    default branch is never pushed to directly.
   gh pr view "$ISSUE_NUMBER" --json number,url,state,headRefName,baseRefName,isCrossRepository \
     > .jaiph/tmp/pr.raw.json
 
@@ -110,25 +120,27 @@ else
     exit 1
   fi
   head_ref="$(jq -r '.headRefName' .jaiph/tmp/pr.raw.json)"
+  default_branch="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.default_branch')"
   if jq -e '.isCrossRepository' .jaiph/tmp/pr.raw.json > /dev/null \
-    || [[ ! "$head_ref" =~ ^ai/issue-([0-9]+)$ ]]; then
+    || [ "$head_ref" = "$default_branch" ]; then
     gh pr comment "$ISSUE_NUMBER" \
-      --body "\`/implement\` only revises pull requests opened by the implement workflow (branch \`ai/issue-<n>\` in this repository)."
-    echo "Pull request #${ISSUE_NUMBER} (${head_ref}) was not opened by this workflow." >&2
+      --body "\`/implement\` can only revise a pull request from a branch in this repository other than \`${default_branch}\`; the workflow cannot push to this one."
+    echo "Pull request #${ISSUE_NUMBER} (${head_ref}) is from a fork or the default branch." >&2
     exit 1
   fi
-  linked_issue="${BASH_REMATCH[1]}"
-  gh issue view "$linked_issue" --json number,title,url > .jaiph/tmp/issue.raw.json
+  # The agent finds any issues the pull request closes on its own.
+  linked_issue=""
+  issue_json="null"
   pr_json="$(jq -c '{number, url, headRefName, baseRefName}' .jaiph/tmp/pr.raw.json)"
 fi
 
 # 5. Write the request for the agent, and the issue title for the pull request.
 jq -n --arg mode "$mode" --arg repo "$GITHUB_REPOSITORY" \
   --arg additional "$additional" --arg by "$TRIGGER_ACTOR" \
-  --slurpfile issue .jaiph/tmp/issue.raw.json --argjson pr "$pr_json" '{
+  --argjson issue "$issue_json" --argjson pr "$pr_json" '{
     mode: $mode,
     repository: $repo,
-    issue: ($issue[0] | {number, title, url}),
+    issue: $issue,
     pullRequest: $pr,
     additionalInstructions: $additional,
     triggeredBy: $by
@@ -140,7 +152,7 @@ delimiter="GATE_$(openssl rand -hex 16)"
   echo "issue_number=${linked_issue}"
   echo "head_ref=${head_ref}"
   printf 'title<<%s\n' "$delimiter"
-  jq -r '.issue.title' .jaiph/tmp/request.json
+  jq -r '.issue.title // empty' .jaiph/tmp/request.json
   printf '%s\n' "$delimiter"
 } >> "$GITHUB_OUTPUT"
 

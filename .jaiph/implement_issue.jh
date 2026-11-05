@@ -1,15 +1,16 @@
 #!/usr/bin/env jaiph
 
-# Implements a GitHub issue in the working tree, or revises the pull request
-# that an earlier run opened for it. Does not commit, push, or open a pull
-# request — the caller does that after this def exits.
+# Implements a GitHub issue in the working tree, or revises an open pull
+# request, whoever opened it. Does not commit, push, or open a pull request —
+# the caller does that after this def exits.
 #
 #   .jaiph/implement_issue.jh .jaiph/tmp/request.json implement
 #   .jaiph/implement_issue.jh .jaiph/tmp/request.json revise
 #
 # The JSON file is written by the gate script and holds links, not content:
-# mode, repository, issue (number, title, url), pullRequest (number, url,
-# headRefName, baseRefName; null on an implement), additionalInstructions,
+# mode, repository, issue (number, title, url; null on a revise), pullRequest
+# (number, url, headRefName, baseRefName; null on an implement),
+# additionalInstructions,
 # triggeredBy. The agent reads the issue and the review itself with `gh`, so
 # GH_TOKEN must be set, and must be read-only. A revise runs with the pull
 # request branch checked out.
@@ -108,9 +109,13 @@ def revise(request) {
     ${constraints}
 
     The working tree is the branch of the open pull request linked in this
-    JSON. It implements the linked issue, and a maintainer has reviewed it and
-    asked for another pass. Before changing anything, read:
-    - the issue: `gh issue view <issue.url>`
+    JSON. A maintainer has reviewed it and asked for another pass. The pull
+    request may have been opened by a person or by this workflow, and may or
+    may not be tied to an issue. Before changing anything, read:
+    - the issues it closes, if any: list them with
+      `gh pr view <pullRequest.url> --json closingIssuesReferences`, then
+      `gh issue view <url>` for each. With none, the pull request description
+      and the review are the whole task.
     - the change so far: `git diff origin/<baseRefName>...HEAD`
     - the pull request, its reviews and its comments:
       `gh pr view <pullRequest.url> --comments`
