@@ -96,6 +96,60 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace init does
 run_fablo namespace init
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -c \"mynamespace\")" "1"
 
+# application transaction: submit to the namespace, wait for commit, query the state
+FX_APP_DIR="$FABLO_HOME/samples/chaincodes/fabric-x-app"
+FX_APP_LOG="$TEST_LOGS/fabric-x-app.log"
+FX_CRYPTO="$TEST_TMP/fablo-target/fabric-x/crypto"
+FXCONFIG="$TEST_TMP/fablo-target/fabric-x/fxconfig.yaml"
+
+fxconfig_value() {
+  awk -v section="$1:" -v key="$2:" '
+    /^[a-zA-Z]/ { in_section = ($1 == section) }
+    in_section && $1 == key { print $2; exit }
+  ' "$FXCONFIG"
+}
+
+FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$TEST_TMP/fablo-config.json")"
+FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$TEST_TMP/fablo-config.json")"
+FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$TEST_TMP/fablo-config.json")"
+FX_CHANNEL="$(jq -r '.channels[0].name' "$TEST_TMP/fablo-config.json")"
+FX_ORDERER="$(fxconfig_value orderer address)"
+FX_SIDECAR="$(fxconfig_value notifications address)"
+for fx_value in FX_ORG_DOMAIN FX_NAMESPACE FX_MSP_NAME FX_CHANNEL FX_ORDERER FX_SIDECAR; do
+  if [ -z "${!fx_value}" ] || [ "${!fx_value}" = "null" ]; then
+    echo "❌ failed: could not read $fx_value from the config of the network"
+    exit 1
+  fi
+done
+mkdir -p "$FX_APP_DIR/.cache"
+
+echo "Running the Fabric-X application fixture, output in $FX_APP_LOG"
+docker run --rm --network fabric-x --user "$(id -u):$(id -g)" \
+  -e HOME=/tmp \
+  -e GOCACHE=/cache/build \
+  -e GOMODCACHE=/cache/mod \
+  -e GOFLAGS=-buildvcs=false \
+  -v "$FX_APP_DIR:/src:Z" \
+  -v "$FX_APP_DIR/.cache:/cache:Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/peers/fxconfig.$FX_ORG_DOMAIN/tls:/tls:ro,Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/users/User1@$FX_ORG_DOMAIN/msp:/msp:ro,Z" \
+  -v "$FX_CRYPTO/peerOrganizations/$FX_ORG_DOMAIN/msp/tlscacerts/tlsca.$FX_ORG_DOMAIN-cert.pem:/org-tls-ca.pem:ro,Z" \
+  -v "$FX_CRYPTO/ordererOrganizations:/orderer-cas:ro,Z" \
+  -w /src \
+  golang:1.27.3 \
+  go run . \
+  -channel "$FX_CHANNEL" \
+  -namespace "$FX_NAMESPACE" \
+  -msp-name "$FX_MSP_NAME" \
+  -orderer "$FX_ORDERER" \
+  -sidecar "$FX_SIDECAR" \
+  >"$FX_APP_LOG" 2>&1 || {
+  echo "❌ failed: Fabric-X application fixture exited with a non-zero code"
+  cat "$FX_APP_LOG"
+  exit 1
+}
+expectCommand "cat \"$FX_APP_LOG\"" "FABRIC_X_APP_OK namespace=$FX_NAMESPACE key=fixture-key value=fixture-value"
+
 # cache skip check
 CONFIG_HASH_BEFORE=$(sha256sum "$CONFIG_BLOCK" | awk '{print $1}')
 run_fablo up
