@@ -1,7 +1,12 @@
+import * as fs from "fs";
+import * as path from "path";
 import * as config from "../config";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const getBuildInfo = (): Record<string, unknown> => require("/fablo/version.json").buildInfo;
+// version.json is written to the package root by the Docker build; an npm install has none
+const versionJsonPath = path.join(__dirname, "../../version.json");
+
+const getBuildInfo = (): unknown =>
+  fs.existsSync(versionJsonPath) ? JSON.parse(fs.readFileSync(versionJsonPath, "utf-8")).buildInfo : "";
 
 const basicInfo = (): Record<string, unknown> => {
   return {

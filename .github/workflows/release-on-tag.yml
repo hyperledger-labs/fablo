@@ -58,3 +58,28 @@ jobs:
           git commit -a -m "Set new development version: $NEW_VERSION"
           git push --set-upstream origin bump-version-to-$NEW_VERSION
           git gh pr create --title "Bump Version to $NEW_VERSION" --body "Bump Version to $NEW_VERSION" --label "bump-version-pr" --head "bump-version-to-$NEW_VERSION" --base main
+
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # lets npm verify this workflow (trusted publishing + provenance)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Update npm (trusted publishing needs 11.5.1 or newer)
+        run: npm install --global npm@11
+
+      - name: Publish to npm
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # only until trusted publishing is configured
+        run: .github/scripts/publish-npm.sh
