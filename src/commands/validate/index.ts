@@ -624,7 +624,7 @@ export default class Validate extends Command {
     }
 
     const configuredOrgNames = new Set(orgs.map((org) => org.organization.name));
-    const channelOrgNames = channel.orgs.map((orgRef) => orgRef.name);
+    const channelOrgNames = channel.orgs.map((o) => o.name);
 
     if (channelOrgNames.length === 0) {
       this.emit(validationErrorType.ERROR, {
@@ -634,19 +634,53 @@ export default class Validate extends Command {
       return;
     }
 
-    const unknownChannelOrgNames = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
-    if (unknownChannelOrgNames.length > 0) {
+    const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
+    if (unknownChannelOrgs.length > 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHANNEL,
-        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgNames.join(", ")}.`,
+        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
       });
     }
 
-    if (channelOrgNames.length > 1) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.CHANNEL,
-        message: `Fabric-X currently supports only one organization on a channel, found ${channelOrgNames.length}.`,
-      });
+    const channelOrgsConfig = orgs
+      .filter((org) => channelOrgNames.includes(org.organization.name))
+      .map((org) => org.organization);
+
+    const seenSlugs = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const slug = org.name.toLowerCase();
+      if (seenSlugs.has(slug)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X generated duplicate organization slug '${slug}'. Organization names must be unique case-insensitively.`,
+        });
+      }
+      seenSlugs.add(slug);
+    }
+
+    const seenMsps = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const msp = org.mspName ?? `${org.name}MSP`;
+      if (seenMsps.has(msp)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate MSP name '${msp}'. Organization MSP names must be unique.`,
+        });
+      }
+      seenMsps.add(msp);
+    }
+
+    const seenDomains = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      if (org.domain && seenDomains.has(org.domain)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate domain '${org.domain}'. Organization domains must be unique.`,
+        });
+      }
+      if (org.domain) {
+        seenDomains.add(org.domain);
+      }
     }
   }
 
@@ -695,11 +729,11 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownNamespaceOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
-      if (unknownNamespaceOrgNames.length > 0) {
+      const unknownOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
+      if (unknownOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
-          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownNamespaceOrgNames.join(", ")}.`,
+          message: `Namespace '${namespace.name}' references unknown org(s): ${unknownOrgNames.join(", ")}.`,
         });
       }
     });

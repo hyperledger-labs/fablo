@@ -7,6 +7,8 @@ TEST_LOGS="$(mkdir -p "$0.logs" && (cd "$0.logs" && pwd))"
 FABLO_HOME="$TEST_TMP/../../.."
 export FABLO_HOME
 
+CONFIG="$FABLO_HOME/samples/fablo-config-fabric-x-2orgs.json"
+
 dumpLogs() {
   echo "Saving logs of $1 to $TEST_LOGS/$1.log"
   mkdir -p "$TEST_LOGS"
@@ -46,11 +48,9 @@ expectNotCommand() {
 }
 
 networkUp() {
-  run_fablo init fabric-x
-  jq '.namespaces += [{"name": "audit_ns", "orgs": ["Org1"]}]' "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
-  mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
-  run_fablo validate
-  run_fablo up
+  run_fablo validate "$CONFIG"
+  run_fablo generate "$CONFIG"
+  run_fablo up "$CONFIG"
 }
 
 trap networkDown EXIT
@@ -63,8 +63,10 @@ networkUp
 CONFIG_BLOCK="$TEST_TMP/fablo-target/fabric-x/crypto/config-block.pb.bin"
 SHARED_CONFIG="$TEST_TMP/fablo-target/fabric-x/crypto/shared_config.binpb"
 CLIENT_TLS="$TEST_TMP/fablo-target/fabric-x/crypto/client-tls-ca.pem"
+FXCONFIG_ORG1="$TEST_TMP/fablo-target/fabric-x/fxconfig-org1.yaml"
+FXCONFIG_ORG2="$TEST_TMP/fablo-target/fabric-x/fxconfig-org2.yaml"
 
-if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS" ]; then
+if [ ! -s "$CONFIG_BLOCK" ] || [ ! -s "$SHARED_CONFIG" ] || [ ! -s "$CLIENT_TLS" ] || [ ! -s "$FXCONFIG_ORG1" ] || [ ! -s "$FXCONFIG_ORG2" ]; then
   echo "Error: Artifact missing or empty"
   exit 1
 fi
@@ -79,6 +81,8 @@ run_fablo namespace init
 # post-init query
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "mynamespace"
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list)" "audit_ns"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list Org1)" "mynamespace"
+expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list Org2)" "mynamespace"
 expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | grep -cE '^[0-9]+\) .+: version')" "2"
 # targeted init: creating an already-existing namespace by name should still succeed (idempotent)
 run_fablo namespace init mynamespace
@@ -96,7 +100,7 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | gr
 FX_APP_DIR="$FABLO_HOME/samples/chaincodes/fabric-x-app"
 FX_APP_LOG="$TEST_LOGS/fabric-x-app.log"
 FX_CRYPTO="$TEST_TMP/fablo-target/fabric-x/crypto"
-FXCONFIG="$TEST_TMP/fablo-target/fabric-x/fxconfig.yaml"
+FXCONFIG="$FXCONFIG_ORG1"
 
 fxconfig_value() {
   awk -v section="$1:" -v key="$2:" '
@@ -105,10 +109,10 @@ fxconfig_value() {
   ' "$FXCONFIG"
 }
 
-FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$TEST_TMP/fablo-config.json")"
-FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$TEST_TMP/fablo-config.json")"
-FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$TEST_TMP/fablo-config.json")"
-FX_CHANNEL="$(jq -r '.channels[0].name' "$TEST_TMP/fablo-config.json")"
+FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$CONFIG")"
+FX_NAMESPACE="$(jq -r '.namespaces[] | select(.orgs == ["Org1"]) | .name' "$CONFIG" | head -n 1)"
+FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$CONFIG")"
+FX_CHANNEL="$(jq -r '.channels[0].name' "$CONFIG")"
 FX_ORDERER="$(fxconfig_value orderer address)"
 FX_SIDECAR="$(fxconfig_value notifications address)"
 for fx_value in FX_ORG_DOMAIN FX_NAMESPACE FX_MSP_NAME FX_CHANNEL FX_ORDERER FX_SIDECAR; do

@@ -19,11 +19,20 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     fabricX: {
       channelName: "mychannel",
       channelProfileName: "SampleFabricXChannel",
-      applicationOrg: { domain: "org1.example.com" },
       applicationOrgSlug: "org1",
       orderer: buildFabricXOrdererTopology([
         { organization: { name: "Orderer", domain: "orderer.example.com", mspName: "OrdererOrdererMSP" } },
       ]),
+      applicationOrgs: [
+        {
+          name: "Org1",
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
+          slug: "org1",
+          sidecarPort: 4001,
+          queryServicePort: 7001,
+        },
+      ],
     },
     shellQuote,
   });

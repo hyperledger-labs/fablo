@@ -24,7 +24,7 @@ orderer:
       - /orderer-cas/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem
 <%_ }); -%>
   identity:
-    msp-id: <%= fabricX.applicationOrg.mspName %>
+    msp-id: <%= org.mspName %>
     msp-dir: /msp
     bccsp:
       Default: SW
@@ -33,7 +33,7 @@ orderer:
         Hash: SHA2
 
 committer:
-  endpoint: committer-<%= fabricX.applicationOrgSlug %>-coordinator:9001
+  endpoint: committer-<%= org.slug %>-coordinator:9001
   tls: *tlsConfig
 
 ledger:
