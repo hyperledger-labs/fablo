@@ -27,6 +27,7 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     },
     shellQuote,
   });
+
   const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
 
   const runNamespaceInit = (target: string): { stdout: string; status: number } => {
