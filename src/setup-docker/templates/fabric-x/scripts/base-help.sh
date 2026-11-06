@@ -16,7 +16,7 @@ printHelp() {
   echo ""
 
   echo "Namespace commands:"
-  echo "  namespace list   List namespaces defined on the running network"
+  echo "  namespace list [org] List namespaces using the selected organization (defaults to the first org)"
   echo "  namespace init [name] Create all configured namespaces or only the named one(required for app-level"
   echo "                   submit/query, not required to bring the network up)"
   echo ""

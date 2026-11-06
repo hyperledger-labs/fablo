@@ -14,7 +14,7 @@ monitoring:
 
 verifier:
   endpoints:
-    - committer-<%= fabricX.applicationOrgSlug %>-verifier:5001
+    - committer-<%= org.slug %>-verifier:5001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt
@@ -24,7 +24,7 @@ verifier:
 
 validator-committer:
   endpoints:
-    - committer-<%= fabricX.applicationOrgSlug %>-validator:6001
+    - committer-<%= org.slug %>-validator:6001
   tls:
     mode: mtls
     cert-path: /node-tls/server.crt
