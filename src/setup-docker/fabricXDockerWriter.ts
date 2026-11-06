@@ -31,7 +31,6 @@ export interface FabricXOrgConfig {
 export interface FabricXTemplateModel {
   channelName: string;
   channelProfileName: string;
-  applicationOrgSlug: string;
   orderer: FabricXOrdererTopology;
   applicationOrgs: FabricXOrgConfig[];
 }
@@ -57,7 +56,6 @@ export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): Fa
   return {
     channelName: channel.name,
     channelProfileName: channel.profileName,
-    applicationOrgSlug: channel.instantiatingOrg.name.toLowerCase(),
     orderer: buildFabricXOrdererTopology(configExtended.fabricX?.orderer.parties ?? []),
     applicationOrgs,
   };
@@ -70,7 +68,6 @@ export class FabricXDockerWriter {
 
     const fabricX = getFabricXTemplateModel(configExtended);
     const data = {
-      ...(configExtended as unknown as Record<string, unknown>),
       ...configExtended,
       fabricX,
       shellQuote,

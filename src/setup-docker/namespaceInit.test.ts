@@ -19,7 +19,6 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     fabricX: {
       channelName: "mychannel",
       channelProfileName: "SampleFabricXChannel",
-      applicationOrgSlug: "org1",
       orderer: buildFabricXOrdererTopology([
         { organization: { name: "Orderer", domain: "orderer.example.com", mspName: "OrdererOrdererMSP" } },
       ]),
