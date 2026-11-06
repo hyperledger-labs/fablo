@@ -125,8 +125,8 @@ export interface CLIConfig {
 export interface ChannelConfig {
   name: string;
   profileName: string;
-  ordererGroup: OrdererGroup;
-  ordererHead: OrdererConfig;
+  ordererGroup?: OrdererGroup;
+  ordererHead?: OrdererConfig;
   orgs: OrgConfig[];
   instantiatingOrg: OrgConfig;
 }
@@ -227,6 +227,12 @@ export interface NamespaceConfig {
   name: string;
   policy: string;
 }
+export interface FabricXOrdererPartyConfig {
+  organization: { name: string; domain: string; mspName: string };
+}
+export interface FabricXConfig {
+  orderer: { parties: FabricXOrdererPartyConfig[] };
+}
 export interface FabloConfigExtended {
   global: Global;
   ordererGroups: OrdererGroup[];
@@ -236,4 +242,5 @@ export interface FabloConfigExtended {
   chaincodes: ChaincodeConfig[];
   hooks: HooksConfig;
   namespaces: NamespaceConfig[];
+  fabricX?: FabricXConfig;
 }
