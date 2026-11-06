@@ -83,7 +83,7 @@ exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp
 "
 `;
 
-exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-coordinator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-coordinator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
 "---
 server:
   endpoint: :9001
@@ -126,6 +126,329 @@ per-channel-buffer-size-per-goroutine: 10
 
 min-batch-keys: 1
 max-batch-wait: 1ms
+
+logging:
+  logSpec: info:grpc=error
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-query-service.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :7001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2117
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org1-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  max-connections: 1000
+  min-connections: 50
+  load-balance: false
+  tls:
+    mode: none
+
+identity:
+  msp-dir: /msp
+  bccsp:
+    Default: SW
+    SW:
+      Security: 256
+      Hash: SHA2
+
+logging:
+  logSpec: info:grpc=error
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-sidecar.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :4001
+  tls: &tlsConfig
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2114
+  tls: *tlsConfig
+
+orderer:
+  fault-tolerance-level: CFT
+  latest-known-config-block-path: /bootstrap/genesis.block
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    common-ca-cert-paths:
+
+      - /orderer-cas/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+  identity:
+    msp-id: Org1MSP
+    msp-dir: /msp
+    bccsp:
+      Default: SW
+      SW:
+        Security: 256
+        Hash: SHA2
+
+committer:
+  endpoint: committer-org1-coordinator:9001
+  tls: *tlsConfig
+
+ledger:
+  path: /ledger
+  sync-interval: 100
+
+notification:
+  max-timeout: 10m
+  max-active-tx-ids: 100_000
+  max-tx-ids-per-request: 1000
+
+last-committed-block-set-interval: 5s
+waiting-txs-limit: 20_000_000
+channel-buffer-size: 100
+
+logging:
+  logSpec: "info"
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-validator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2116
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org1-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  max-connections: 1000
+  min-connections: 50
+  load-balance: false
+  tls:
+    mode: none
+
+resource-limits:
+  max-workers-for-preparer: 3
+  max-workers-for-validator: 3
+  max-workers-for-committer: 3
+  min-transaction-batch-size: 1
+  timeout-for-min-transaction-batch-size: 5s
+
+identity:
+  msp-id: Org1MSP
+
+logging:
+  logSpec: info:grpc=error
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-coordinator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :9001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2119
+  tls:
+    mode: none
+
+verifier:
+  endpoints:
+    - committer-org2-verifier:5001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+
+validator-committer:
+  endpoints:
+    - committer-org2-validator:6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+
+dependency-graph:
+  num-of-local-dep-constructors: 1
+  waiting-txs-limit: 100000
+
+per-channel-buffer-size-per-goroutine: 10
+
+min-batch-keys: 1
+max-batch-wait: 1ms
+
+logging:
+  logSpec: info:grpc=error
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-query-service.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :7001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2117
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org2-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  max-connections: 1000
+  min-connections: 50
+  load-balance: false
+  tls:
+    mode: none
+
+identity:
+  msp-dir: /msp
+  bccsp:
+    Default: SW
+    SW:
+      Security: 256
+      Hash: SHA2
+
+logging:
+  logSpec: info:grpc=error
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-sidecar.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :4001
+  tls: &tlsConfig
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2114
+  tls: *tlsConfig
+
+orderer:
+  fault-tolerance-level: CFT
+  latest-known-config-block-path: /bootstrap/genesis.block
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    common-ca-cert-paths:
+
+      - /orderer-cas/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+  identity:
+    msp-id: Org2MSP
+    msp-dir: /msp
+    bccsp:
+      Default: SW
+      SW:
+        Security: 256
+        Hash: SHA2
+
+committer:
+  endpoint: committer-org2-coordinator:9001
+  tls: *tlsConfig
+
+ledger:
+  path: /ledger
+  sync-interval: 100
+
+notification:
+  max-timeout: 10m
+  max-active-tx-ids: 100_000
+  max-tx-ids-per-request: 1000
+
+last-committed-block-set-interval: 5s
+waiting-txs-limit: 20_000_000
+channel-buffer-size: 100
+
+logging:
+  logSpec: "info"
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-validator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"---
+server:
+  endpoint: :6001
+  tls:
+    mode: mtls
+    cert-path: /node-tls/server.crt
+    key-path: /node-tls/server.key
+    ca-cert-paths:
+      - /org-tls-ca.pem
+monitoring:
+  endpoint: :2116
+  tls:
+    mode: none
+
+database:
+  endpoints:
+    - committer-org2-db:5432
+  username: fabricx
+  password: fabricx
+  database: fabricx
+  max-connections: 1000
+  min-connections: 50
+  load-balance: false
+  tls:
+    mode: none
+
+resource-limits:
+  max-workers-for-preparer: 3
+  max-workers-for-validator: 3
+  max-workers-for-committer: 3
+  min-transaction-batch-size: 1
+  timeout-for-min-transaction-batch-size: 5s
+
+identity:
+  msp-id: Org2MSP
 
 logging:
   logSpec: info:grpc=error
@@ -375,143 +698,6 @@ Router:
 "
 `;
 
-exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/query-service.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
-"---
-server:
-  endpoint: :7001
-  tls:
-    mode: mtls
-    cert-path: /node-tls/server.crt
-    key-path: /node-tls/server.key
-    ca-cert-paths:
-      - /org-tls-ca.pem
-monitoring:
-  endpoint: :2117
-  tls:
-    mode: none
-
-database:
-  endpoints:
-    - committer-org1-db:5432
-  username: fabricx
-  password: fabricx
-  database: fabricx
-  max-connections: 1000
-  min-connections: 50
-  load-balance: false
-  tls:
-    mode: none
-
-identity:
-  msp-dir: /msp
-  bccsp:
-    Default: SW
-    SW:
-      Security: 256
-      Hash: SHA2
-
-logging:
-  logSpec: info:grpc=error
-"
-`;
-
-exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/sidecar.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
-"---
-server:
-  endpoint: :4001
-  tls: &tlsConfig
-    mode: mtls
-    cert-path: /node-tls/server.crt
-    key-path: /node-tls/server.key
-    ca-cert-paths:
-      - /org-tls-ca.pem
-monitoring:
-  endpoint: :2114
-  tls: *tlsConfig
-
-orderer:
-  fault-tolerance-level: CFT
-  latest-known-config-block-path: /bootstrap/genesis.block
-  tls:
-    mode: mtls
-    cert-path: /node-tls/server.crt
-    key-path: /node-tls/server.key
-    common-ca-cert-paths:
-
-      - /orderer-cas/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
-  identity:
-    msp-id: Org1MSP
-    msp-dir: /msp
-    bccsp:
-      Default: SW
-      SW:
-        Security: 256
-        Hash: SHA2
-
-committer:
-  endpoint: committer-org1-coordinator:9001
-  tls: *tlsConfig
-
-ledger:
-  path: /ledger
-  sync-interval: 100
-
-notification:
-  max-timeout: 10m
-  max-active-tx-ids: 100_000
-  max-tx-ids-per-request: 1000
-
-last-committed-block-set-interval: 5s
-waiting-txs-limit: 20_000_000
-channel-buffer-size: 100
-
-logging:
-  logSpec: "info"
-"
-`;
-
-exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/validator.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
-"---
-server:
-  endpoint: :6001
-  tls:
-    mode: mtls
-    cert-path: /node-tls/server.crt
-    key-path: /node-tls/server.key
-    ca-cert-paths:
-      - /org-tls-ca.pem
-monitoring:
-  endpoint: :2116
-  tls:
-    mode: none
-
-database:
-  endpoints:
-    - committer-org1-db:5432
-  username: fabricx
-  password: fabricx
-  database: fabricx
-  max-connections: 1000
-  min-connections: 50
-  load-balance: false
-  tls:
-    mode: none
-
-resource-limits:
-  max-workers-for-preparer: 3
-  max-workers-for-validator: 3
-  max-workers-for-committer: 3
-  min-transaction-batch-size: 1
-  timeout-for-min-transaction-batch-size: 5s
-
-identity:
-  msp-id: Org1MSP
-
-logging:
-  logSpec: info:grpc=error
-"
-`;
-
 exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/verifier.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
 "---
 server:
@@ -583,6 +769,24 @@ exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp
         Type: Signature
         Rule: OR('Org1MSP.admin')
     AnchorPeers:
+  - &Org2MSP
+    Name: Org2
+    ID: Org2MSP
+    MSPDir: ./crypto/peerOrganizations/org2.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: OR('Org2MSP.member')
+      Writers:
+        Type: Signature
+        Rule: OR('Org2MSP.member')
+      Endorsement:
+        Type: Signature
+        Rule: OR('Org2MSP.member')
+      Admins:
+        Type: Signature
+        Rule: OR('Org2MSP.admin')
+    AnchorPeers:
 
 Capabilities:
   Channel: &ChannelCapabilities
@@ -614,8 +818,8 @@ Application: &ApplicationDefaults
     event/Block: /Channel/Application/Readers
     event/FilteredBlock: /Channel/Application/Readers
   Organizations:
-
     - *Org1MSP
+    - *Org2MSP
 
   Policies:
     Readers:
@@ -638,7 +842,7 @@ Application: &ApplicationDefaults
       Rule: MAJORITY Endorsement
     LifecycleEndorsement:
       Type: Signature
-      Rule: OR('Org1MSP.member')
+      Rule: "OR('Org1MSP.member','Org2MSP.member')"
   Capabilities:
     <<: *ApplicationCapabilities
 
@@ -756,7 +960,6 @@ OrdererOrgs:
       Count: 1
 
 PeerOrgs:
-
   - Name: Org1
     Domain: org1.example.com
     EnableNodeOUs: false
@@ -827,6 +1030,76 @@ PeerOrgs:
           - localhost
           - 127.0.0.1
           - ::1
+  - Name: Org2
+    Domain: org2.example.com
+    EnableNodeOUs: false
+    CA:
+      hostname: ca
+      SANS:
+        - 0.0.0.0
+        - localhost
+        - 127.0.0.1
+        - ::1
+    Users:
+      Count: 1
+      Specs:
+        - Name: channel_admin
+          HSM: false
+    Specs:
+      - Hostname: committer-sidecar
+        SANS:
+          - committer-org2-sidecar
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-coordinator
+        SANS:
+          - committer-org2-coordinator
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-validator
+        SANS:
+          - committer-org2-validator
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-verifier
+        SANS:
+          - committer-org2-verifier
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: committer-query-service
+        SANS:
+          - committer-org2-query-service
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: endorser
+        SANS:
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
+      - Hostname: fxconfig
+        SANS:
+          - host.docker.internal
+          - 0.0.0.0
+          - localhost
+          - 127.0.0.1
+          - ::1
 "
 `;
 
@@ -840,6 +1113,7 @@ networks:
 
 volumes:
   committer-org1-db-data:
+  committer-org2-db-data:
 
 services:
 
@@ -982,7 +1256,7 @@ services:
     user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
     command: init-db --config=/config/validator.yaml
     volumes:
-      - ./config/validator.yaml:/config/validator.yaml:ro,Z
+      - ./config/committer-org1-validator.yaml:/config/validator.yaml:ro,Z
     depends_on:
       committer-org1-db:
         condition: service_healthy
@@ -1015,7 +1289,7 @@ services:
     user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
     command: start vc --config=/config/validator.yaml
     volumes:
-      - ./config/validator.yaml:/config/validator.yaml:ro,Z
+      - ./config/committer-org1-validator.yaml:/config/validator.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-validator.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
@@ -1039,7 +1313,7 @@ services:
     user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
     command: start coordinator --config=/config/coordinator.yaml
     volumes:
-      - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
+      - ./config/committer-org1-coordinator.yaml:/config/coordinator.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-coordinator.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
@@ -1065,7 +1339,7 @@ services:
     ports:
       - "4001:4001"
     volumes:
-      - ./config/sidecar.yaml:/config/sidecar.yaml:ro,Z
+      - ./config/committer-org1-sidecar.yaml:/config/sidecar.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-sidecar.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z
@@ -1097,7 +1371,7 @@ services:
     ports:
       - "7001:7001"
     volumes:
-      - ./config/query-service.yaml:/config/query-service.yaml:ro,Z
+      - ./config/committer-org1-query-service.yaml:/config/query-service.yaml:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/peers/committer-query-service.org1.example.com/tls:/node-tls:ro,Z
       - ./crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z
     depends_on:
@@ -1113,10 +1387,168 @@ services:
       start_period: 10s
     networks:
       - fabric-x
+  # ─── Org2 Committer Stack ───────────────────────────────────────────────────
+
+  committer-org2-db:
+    image: docker.io/library/postgres:18.3-alpine3.23
+    command: postgres -c max_connections=500
+    pull_policy: missing
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fabricx
+      POSTGRES_USER: fabricx
+      POSTGRES_PASSWORD: fabricx
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - committer-org2-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fabricx -d fabricx"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks:
+      - fabric-x
+
+  committer-org2-init-db:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: init-db --config=/config/validator.yaml
+    volumes:
+      - ./config/committer-org2-validator.yaml:/config/validator.yaml:ro,Z
+    depends_on:
+      committer-org2-db:
+        condition: service_healthy
+    networks:
+      - fabric-x
+
+  committer-org2-verifier:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    pull_policy: missing
+    restart: unless-stopped
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: start verifier --config=/config/verifier.yaml
+    volumes:
+      - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/peers/committer-verifier.org2.example.com/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2115/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks:
+      - fabric-x
+
+  committer-org2-validator:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    pull_policy: missing
+    restart: unless-stopped
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: start vc --config=/config/validator.yaml
+    volumes:
+      - ./config/committer-org2-validator.yaml:/config/validator.yaml:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/peers/committer-validator.org2.example.com/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2116/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    depends_on:
+      committer-org2-db:
+        condition: service_healthy
+      committer-org2-init-db:
+        condition: service_completed_successfully
+    networks:
+      - fabric-x
+
+  committer-org2-coordinator:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    pull_policy: missing
+    restart: unless-stopped
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: start coordinator --config=/config/coordinator.yaml
+    volumes:
+      - ./config/committer-org2-coordinator.yaml:/config/coordinator.yaml:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/peers/committer-coordinator.org2.example.com/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2119/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    depends_on:
+      committer-org2-verifier:
+        condition: service_healthy
+      committer-org2-validator:
+        condition: service_healthy
+    networks:
+      - fabric-x
+
+  committer-org2-sidecar:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    pull_policy: missing
+    restart: unless-stopped
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: start sidecar --config=/config/sidecar.yaml
+    ports:
+      - "4002:4001"
+    volumes:
+      - ./config/committer-org2-sidecar.yaml:/config/sidecar.yaml:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/peers/committer-sidecar.org2.example.com/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp:/msp:ro,Z
+      - ./crypto/ordererOrganizations:/orderer-cas:ro,Z
+      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
+      - ./data/committer-org2/sidecar-ledger:/ledger:Z
+    healthcheck:
+      test: ["CMD", "curl", "-sk", "--cert", "/node-tls/server.crt", "--key", "/node-tls/server.key", "https://localhost:2114/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    depends_on:
+      committer-org2-coordinator:
+        condition: service_healthy
+
+      orderer-router:
+        condition: service_healthy
+
+    networks:
+      - fabric-x
+
+  committer-org2-query-service:
+    image: ghcr.io/hyperledger/fabric-x-committer:1.0.7
+    pull_policy: missing
+    restart: unless-stopped
+    user: "\${FABRIC_X_UID:-1000}:\${FABRIC_X_GID:-1000}"
+    command: start query --config=/config/query-service.yaml
+    ports:
+      - "7002:7001"
+    volumes:
+      - ./config/committer-org2-query-service.yaml:/config/query-service.yaml:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/peers/committer-query-service.org2.example.com/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+    depends_on:
+      committer-org2-db:
+        condition: service_healthy
+      committer-org2-init-db:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:2117/metrics"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+    networks:
+      - fabric-x
 "
 `;
 
-exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig-org1.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
 "logging:
   level: info
 
@@ -1146,6 +1578,47 @@ queries:
 
 notifications:
   address: committer-org1-sidecar:4001
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /org-tls-ca.pem
+  connectionTimeout: 10s
+  waitingTimeout: 20s
+"
+`;
+
+exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig-org2.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
+"logging:
+  level: info
+
+msp:
+  localMspID: Org2MSP
+  configPath: /msp
+
+orderer:
+  address: orderer-router:7050
+  channel: mychannel
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /orderer-tls-ca.pem
+      - /org-tls-ca.pem
+
+queries:
+  address: committer-org2-query-service:7001
+  tls:
+    enabled: true
+    clientCert: /tls/server.crt
+    clientKey: /tls/server.key
+    rootCerts:
+      - /org-tls-ca.pem
+
+notifications:
+  address: committer-org2-sidecar:4001
   tls:
     enabled: true
     clientCert: /tls/server.crt
@@ -1198,8 +1671,7 @@ generateArtifacts() {
     -v "$FABRIC_X_ROOT:/config" \\
     "$TOOLS_IMAGE" \\
     sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \\
-      && cp /config/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem \\
-            /config/crypto/client-tls-ca.pem'
+      && cat /config/crypto/peerOrganizations/*/msp/tlscacerts/*.pem > /config/crypto/client-tls-ca.pem'
 
   echo "Generating Fabric-X shared config proto..."
 
@@ -1219,14 +1691,18 @@ generateArtifacts() {
     configtxgen --channelID mychannel --profile Mychannel \\
     --outputBlock /config/crypto/config-block.pb.bin \\
     --configPath /config
-
 }
+
 networkUp() {
-  mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \\
-    "$FABRIC_X_ROOT/data/orderers/party1-consenter" \\
-    "$FABRIC_X_ROOT/data/orderers/party1-assembler" \\
-    "$FABRIC_X_ROOT/data/orderers/party1-batcher" \\
+  local ledger_dirs=(
+    "$FABRIC_X_ROOT/data/orderers/party1-router"
+    "$FABRIC_X_ROOT/data/orderers/party1-batcher"
+    "$FABRIC_X_ROOT/data/orderers/party1-consenter"
+    "$FABRIC_X_ROOT/data/orderers/party1-assembler"
     "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger"
+    "$FABRIC_X_ROOT/data/committer-org2/sidecar-ledger"
+  )
+  mkdir -p "\${ledger_dirs[@]}"
 
   generateArtifacts
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \\
@@ -1253,7 +1729,7 @@ namespaceCreate() {
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \\
     --env "FX_NS=$ns" \\
     --env "FX_POLICY=$policy" \\
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \\
+    -v "$FABRIC_X_ROOT/fxconfig-org1.yaml:/config/fxconfig.yaml:ro,Z" \\
     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \\
     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \\
     -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \\
@@ -1283,14 +1759,31 @@ namespaceInit() {
 }
 
 namespaceList() {
-  docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \\
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \\
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \\
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \\
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \\
-    -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \\
-    "$TOOLS_IMAGE" \\
-    fxconfig namespace list --config=/config/fxconfig.yaml
+  local org_slug="\${1:-org1}"
+  if [ "$org_slug" = "org1" ] || [ "$org_slug" = "Org1" ]; then
+    docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \\
+      -v "$FABRIC_X_ROOT/fxconfig-org1.yaml:/config/fxconfig.yaml:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/peers/fxconfig.org1.example.com/tls:/tls:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp:/msp:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \\
+      "$TOOLS_IMAGE" \\
+      fxconfig namespace list --config=/config/fxconfig.yaml
+    return 0
+  fi
+  if [ "$org_slug" = "org2" ] || [ "$org_slug" = "Org2" ]; then
+    docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \\
+      -v "$FABRIC_X_ROOT/fxconfig-org2.yaml:/config/fxconfig.yaml:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org2.example.com/peers/fxconfig.org2.example.com/tls:/tls:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp:/msp:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem:/org-tls-ca.pem:ro,Z" \\
+      -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \\
+      "$TOOLS_IMAGE" \\
+      fxconfig namespace list --config=/config/fxconfig.yaml
+    return 0
+  fi
+  echo "Organization '$org_slug' not found in fabric-x configuration." >&2
+  return 1
 }
 "
 `;
@@ -1314,7 +1807,7 @@ printHelp() {
   echo ""
 
   echo "Namespace commands:"
-  echo "  namespace list   List namespaces defined on the running network"
+  echo "  namespace list [org] List namespaces using the selected organization (defaults to the first org)"
   echo "  namespace init [name] Create all configured namespaces or only the named one(required for app-level"
   echo "                   submit/query, not required to bring the network up)"
   echo ""
@@ -1410,7 +1903,7 @@ elif [ "$1" = "start" ]; then
 elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "namespace" ] && [ "$2" = "list" ]; then
-  namespaceList
+  namespaceList "\${3:-}"
 elif [ "$1" = "namespace" ] && [ "$2" = "init" ]; then
   namespaceInit "\${3:-}"
 elif [ "$1" = "help" ]; then
@@ -1447,19 +1940,24 @@ exports[`samples/fablo-config-fabric-x-2orgs.json should create proper files fro
 [
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fablo-config.json",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x-docker.sh",
-  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-coordinator.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-coordinator.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-query-service.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-sidecar.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org1-validator.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-coordinator.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-query-service.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-sidecar.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/committer-org2-validator.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/orderer-assembler.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/orderer-batcher.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/orderer-consenter.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/orderer-router.yaml",
-  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/query-service.yaml",
-  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/sidecar.yaml",
-  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/validator.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/config/verifier.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/configtx.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/crypto-config.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/docker-compose.yaml",
-  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig-org1.yaml",
+  "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/fxconfig-org2.yaml",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/scripts/base-functions.sh",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/scripts/base-help.sh",
   "e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/shared-config.yaml",
