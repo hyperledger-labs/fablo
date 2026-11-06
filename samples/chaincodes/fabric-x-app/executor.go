@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hyperledger/fabric-x-samples/custom-endorser/service"
 	"github.com/hyperledger/fabric-x-sdk/endorsement"
 )
 
-type Executor struct{}
+type KVExecutor struct{}
 
-func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv endorsement.Invocation) (endorsement.ExecutionResult, error) {
+func (KVExecutor) Execute(_ context.Context, newStore StoreFactory, inv endorsement.Invocation) (endorsement.ExecutionResult, error) {
 
 	store, err := newStore(0)
 	if err != nil {
@@ -30,7 +29,7 @@ func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv en
 		if err != nil {
 			return endorsement.ExecutionResult{}, fmt.Errorf("get state: %w", err)
 		}
-		return endorsement.Success(store.Result(), nil, value), nil
+		return endorsement.Success(store.Result(), "", nil, value), nil
 
 	case "set":
 		if len(inv.Args) < 3 {
@@ -40,7 +39,7 @@ func (Executor) Execute(_ context.Context, newStore service.StoreFactory, inv en
 		if err := store.PutState(string(inv.Args[1]), inv.Args[2]); err != nil {
 			return endorsement.ExecutionResult{}, fmt.Errorf("put state: %w", err)
 		}
-		return endorsement.Success(store.Result(), nil, fmt.Appendf(nil, "%s=%s", inv.Args[1], inv.Args[2])), nil
+		return endorsement.Success(store.Result(), "", nil, fmt.Appendf(nil, "%s=%s", inv.Args[1], inv.Args[2])), nil
 
 	default:
 		return endorsement.BadRequest("usage: get [key] || set [key] [value]"), nil

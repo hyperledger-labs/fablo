@@ -12,11 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hyperledger/fabric-x-committer/utils/serve"
-	"github.com/hyperledger/fabric-x-samples/custom-endorser/service"
 	sdk "github.com/hyperledger/fabric-x-sdk"
 	"github.com/hyperledger/fabric-x-sdk/identity"
 	"github.com/hyperledger/fabric-x-sdk/network"
+	nfab "github.com/hyperledger/fabric-x-sdk/network/fabric"
 	nfabx "github.com/hyperledger/fabric-x-sdk/network/fabricx"
 	"google.golang.org/grpc"
 )
@@ -24,7 +23,6 @@ import (
 const (
 	fixtureKey   = "fixture-key"
 	fixtureValue = "fixture-value"
-	nsVersion    = "1.0"
 	pollInterval = 250 * time.Millisecond
 )
 
@@ -119,9 +117,9 @@ func run(o options) error {
 		return err
 	}
 
-	ec, err := network.NewEndorsementClient(
+	ec, err := nfab.NewEndorsementClient(
 		[]network.PeerConf{{Address: endorserAddr, TLS: network.TLSConfig{Mode: network.TLSModeNone}}},
-		signer, o.channel, o.namespace, nsVersion,
+		signer, o.channel,
 	)
 	if err != nil {
 		return fmt.Errorf("create endorsement client: %w", err)
@@ -155,15 +153,14 @@ func run(o options) error {
 	return nil
 }
 func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, logger sdk.Logger) (string, error) {
-	svc, err := service.New(
-		service.ServiceConfig{
-			ChannelID: o.channel,
-			Protocol:  "fabric-x",
-			Committer: sidecar,
-			DBConnStr: "file:fabric-x-app.sqlite?mode=memory&cache=shared",
+	svc, err := newEndorser(
+		endorserConfig{
+			channelID: o.channel,
+			committer: sidecar,
+			dbConnStr: "file:fabric-x-app.sqlite?mode=memory&cache=shared",
 		},
 		o.mspDir, o.mspName,
-		map[string]service.Executor{o.namespace: Executor{}},
+		map[string]Executor{o.namespace: KVExecutor{}},
 		logger,
 	)
 	if err != nil {
@@ -175,26 +172,26 @@ func startEndorser(ctx context.Context, o options, sidecar network.PeerConf, log
 		return "", fmt.Errorf("listen: %w", err)
 	}
 	grpcServer := grpc.NewServer()
-	svc.RegisterService(serve.Servers{GRPC: grpcServer})
+	svc.register(grpcServer)
 
-	go func() { _ = svc.Run(ctx) }()
+	go svc.run(ctx)
 	go func() { _ = grpcServer.Serve(lis) }()
 	go func() {
 		<-ctx.Done()
 		grpcServer.Stop()
 	}()
 
-	if !svc.WaitForReady(ctx) {
+	if !svc.waitForReady(ctx) {
 		return "", errors.New("the endorser did not catch up with the sidecar before the timeout")
 	}
 	return lis.Addr().String(), nil
 }
-func endorse(ctx context.Context, ec *network.EndorsementClient, namespace string, args ...string) (sdk.Endorsement, []byte, error) {
+func endorse(ctx context.Context, ec *nfab.EndorsementClient, namespace string, args ...string) (sdk.Endorsement, []byte, error) {
 	raw := make([][]byte, len(args))
 	for i, a := range args {
 		raw[i] = []byte(a)
 	}
-	end, err := ec.ExecuteTransaction(ctx, namespace, nsVersion, raw)
+	end, err := ec.ExecuteTransaction(ctx, namespace, raw)
 	if err != nil {
 		return sdk.Endorsement{}, nil, fmt.Errorf("endorse %s: %w", args[0], err)
 	}
@@ -207,11 +204,11 @@ func endorse(ctx context.Context, ec *network.EndorsementClient, namespace strin
 	}
 	return end, resp.Payload, nil
 }
-func read(ctx context.Context, ec *network.EndorsementClient, namespace, key string) ([]byte, error) {
+func read(ctx context.Context, ec *nfab.EndorsementClient, namespace, key string) ([]byte, error) {
 	_, payload, err := endorse(ctx, ec, namespace, "get", key)
 	return payload, err
 }
-func waitForValue(ctx context.Context, ec *network.EndorsementClient, namespace, key, want string) error {
+func waitForValue(ctx context.Context, ec *nfab.EndorsementClient, namespace, key, want string) error {
 	var last []byte
 	var lastErr error
 	for {
