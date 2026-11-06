@@ -46,7 +46,14 @@ const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
 
   return duplicates;
 };
+type FabricXOrganizationField = "name" | "domain" | "mspName";
 
+interface FabricXOrganizationIdentity {
+  location: string;
+  name: string;
+  domain: string;
+  mspName: string;
+}
 const validationErrorType = {
   CRITICAL: "validation-critical",
   ERROR: "validation-error",
@@ -699,16 +706,8 @@ export default class Validate extends Command {
   }
   _validateFabricXOrderer(networkConfig: FabloConfigJson): void {
     const { orgs, fabricX } = networkConfig;
-    const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
 
-    orgs.forEach((org) => {
-      if ((org.orderers ?? []).length > 0) {
-        this.emit(validationErrorType.ERROR, {
-          category: validationCategories.ORDERER,
-          message: `Org '${org.organization.name}' defines 'orderers'. fabric-x does not use orderer groups, remove 'orderers' and configure the orderer in 'fabricX.orderer.parties'.`,
-        });
-      }
-    });
+    this._validateNoClassicOrderersForFabricX(orgs);
 
     const parties = fabricX?.orderer?.parties;
     if (!parties) {
@@ -718,38 +717,75 @@ export default class Validate extends Command {
       });
       return;
     }
-    if (!SUPPORTED_ORDERER_PARTY_COUNTS.includes(parties.length)) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.ORDERER,
-        message: `'fabricX.orderer.parties' has ${parties.length} parties. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
-      });
-    }
 
-    const mspNameOf = (o: { name: string; mspName?: string }): string =>
-      o.mspName ?? defaults.organization.mspName(o.name);
-    const organizations = [
-      ...orgs.map((o) => ({ where: `orgs '${o.organization.name}'`, ...o.organization })),
-      ...parties.map((p, i) => ({ where: `fabricX.orderer.parties[${i}]`, ...p.organization })),
+    this._validateFabricXOrdererPartyCount(parties.length);
+
+    const organizations: FabricXOrganizationIdentity[] = [
+      ...orgs.map(({ organization }, index) =>
+        this._toFabricXOrganizationIdentity(organization, `orgs[${index}]`),
+      ),
+      ...parties.map(({ organization }, index) =>
+        this._toFabricXOrganizationIdentity(organization, `fabricX.orderer.parties[${index}]`),
+      ),
     ];
-    const fields: [string, (o: { name: string; domain: string; mspName?: string }) => string][] = [
-      ["name", (o) => o.name],
-      ["domain", (o) => o.domain],
-      ["mspName", mspNameOf],
-    ];
-    fields.forEach(([field, valueOf]) => {
-      const seen = new Map<string, string>();
-      organizations.forEach((o) => {
-        const value = valueOf(o);
-        const first = seen.get(value);
-        if (first !== undefined) {
-          this.emit(validationErrorType.ERROR, {
-            category: validationCategories.ORDERER,
-            message: `Organization ${field} '${value}' is used by ${first} and by ${o.where}. Every organization needs its own ${field}.`,
-          });
-        } else {
-          seen.set(value, o.where);
-        }
+
+    this._validateUniqueFabricXOrganizationField(organizations, "name");
+    this._validateUniqueFabricXOrganizationField(organizations, "domain");
+    this._validateUniqueFabricXOrganizationField(organizations, "mspName");
+  }
+
+  _toFabricXOrganizationIdentity(
+    organization: { name: string; domain: string; mspName?: string },
+    location: string,
+  ): FabricXOrganizationIdentity {
+    return {
+      location,
+      name: organization.name,
+      domain: organization.domain,
+      mspName: organization.mspName ?? defaults.organization.mspName(organization.name),
+    };
+  }
+
+  _validateNoClassicOrderersForFabricX(orgs: OrgJson[]): void {
+    orgs
+      .filter((org) => (org.orderers?.length ?? 0) > 0)
+      .forEach((org) => {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Org '${org.organization.name}' defines 'orderers'. fabric-x does not use orderer groups, remove 'orderers' and configure the orderer in 'fabricX.orderer.parties'.`,
+        });
       });
+  }
+
+  _validateFabricXOrdererPartyCount(partyCount: number): void {
+    if (SUPPORTED_ORDERER_PARTY_COUNTS.includes(partyCount)) return;
+
+    const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
+    this.emit(validationErrorType.ERROR, {
+      category: validationCategories.ORDERER,
+      message: `'fabricX.orderer.parties' has ${partyCount} parties. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
+    });
+  }
+
+  _validateUniqueFabricXOrganizationField(
+    organizations: FabricXOrganizationIdentity[],
+    field: FabricXOrganizationField,
+  ): void {
+    const firstLocationByValue = new Map<string, string>();
+
+    organizations.forEach((organization) => {
+      const value = organization[field];
+      const firstLocation = firstLocationByValue.get(value);
+
+      if (firstLocation !== undefined) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Organization ${field} '${value}' is used by ${firstLocation} and by ${organization.location}. Every organization needs its own ${field}.`,
+        });
+        return;
+      }
+
+      firstLocationByValue.set(value, organization.location);
     });
   }
   _validateClassicFabricImages(global: GlobalJson): void {
