@@ -100,7 +100,7 @@ expectCommand "(cd \"$TEST_TMP\" && \"$FABLO_HOME/fablo.sh\" namespace list | gr
 FX_APP_DIR="$FABLO_HOME/samples/chaincodes/fabric-x-app"
 FX_APP_LOG="$TEST_LOGS/fabric-x-app.log"
 FX_CRYPTO="$TEST_TMP/fablo-target/fabric-x/crypto"
-FXCONFIG="$TEST_TMP/fablo-target/fabric-x/fxconfig.yaml"
+FXCONFIG="$FXCONFIG_ORG1"
 
 fxconfig_value() {
   awk -v section="$1:" -v key="$2:" '
@@ -109,10 +109,10 @@ fxconfig_value() {
   ' "$FXCONFIG"
 }
 
-FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$TEST_TMP/fablo-config.json")"
-FX_NAMESPACE="$(jq -r '.namespaces[0].name' "$TEST_TMP/fablo-config.json")"
-FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$TEST_TMP/fablo-config.json")"
-FX_CHANNEL="$(jq -r '.channels[0].name' "$TEST_TMP/fablo-config.json")"
+FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$CONFIG")"
+FX_NAMESPACE="$(jq -r '.namespaces[] | select(.orgs == ["Org1"]) | .name' "$CONFIG" | head -n 1)"
+FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$CONFIG")"
+FX_CHANNEL="$(jq -r '.channels[0].name' "$CONFIG")"
 FX_ORDERER="$(fxconfig_value orderer address)"
 FX_SIDECAR="$(fxconfig_value notifications address)"
 for fx_value in FX_ORG_DOMAIN FX_NAMESPACE FX_MSP_NAME FX_CHANNEL FX_ORDERER FX_SIDECAR; do
