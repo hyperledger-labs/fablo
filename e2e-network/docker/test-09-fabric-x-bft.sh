@@ -56,7 +56,7 @@ fi
 expectCommand "docker ps --filter 'label=com.docker.compose.project=fabric-x' --format '{{.Names}}' | grep -cE '^orderer-party[1-4]-(router|batcher|consenter|assembler)$'" "^16$"
 
 # the sidecar watches the orderer in BFT mode
-expectCommand "grep fault-tolerance-level \"$TEST_TMP/fablo-target/fabric-x/config/sidecar.yaml\"" "BFT"
+expectCommand "grep fault-tolerance-level \"$TEST_TMP/fablo-target/fabric-x/config/committer-org1-sidecar.yaml\"" "BFT"
 
 # a transaction is ordered by the four parties and committed
 run_fablo namespace init
