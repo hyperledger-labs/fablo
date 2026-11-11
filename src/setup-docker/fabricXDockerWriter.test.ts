@@ -117,6 +117,19 @@ const createTestConfig = (channels: ChannelConfig[], orgs: OrgConfig[] = []): Fa
     postStart: "",
   },
   namespaces: [],
+  fabricX: {
+    orderer: {
+      parties: [
+        {
+          organization: {
+            name: "Orderer",
+            domain: "orderer.example.com",
+            mspName: "OrdererOrdererMSP",
+          },
+        },
+      ],
+    },
+  },
 });
 
 describe("fabricXDockerWriter - getFabricXTemplateModel", () => {
@@ -131,6 +144,7 @@ describe("fabricXDockerWriter - getFabricXTemplateModel", () => {
     expect(model.channelName).toBe("my-channel");
     expect(model.channelProfileName).toBe("MyChannel");
     expect(model.applicationOrgs).toHaveLength(2);
+    expect(model.orderer.parties).toHaveLength(1);
 
     expect(model.applicationOrgs[0].name).toBe("Org1");
     expect(model.applicationOrgs[0].slug).toBe("org1");

@@ -6,7 +6,7 @@ msp:
   configPath: /msp
 
 orderer:
-  address: orderer-router:7050
+  address: <%= fabricX.orderer.parties[0].router.host %>:<%= fabricX.orderer.parties[0].router.port %>
   channel: <%- fabricX.channelName %>
   tls:
     enabled: true

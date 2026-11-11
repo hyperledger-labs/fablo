@@ -20,15 +20,7 @@ exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp
       "ca": {
         "prefix": "ca",
         "db": "sqlite"
-      },
-      "orderers": [
-        {
-          "groupName": "group1",
-          "type": "BFT",
-          "instances": 1,
-          "prefix": "orderer"
-        }
-      ]
+      }
     },
     {
       "organization": {
@@ -72,6 +64,19 @@ exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp
       ]
     }
   ],
+  "fabricX": {
+    "orderer": {
+      "parties": [
+        {
+          "organization": {
+            "name": "Orderer",
+            "domain": "orderer.example.com",
+            "mspName": "OrdererOrdererMSP"
+          }
+        }
+      ]
+    }
+  },
   "chaincodes": [],
   "hooks": {}
 }
@@ -190,7 +195,7 @@ orderer:
     key-path: /node-tls/server.key
     common-ca-cert-paths:
 
-      - /orderer-cas/Orderer/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+      - /orderer-cas/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
   identity:
     msp-id: Org1MSP
     msp-dir: /msp
@@ -376,7 +381,7 @@ orderer:
     key-path: /node-tls/server.key
     common-ca-cert-paths:
 
-      - /orderer-cas/Orderer/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
+      - /orderer-cas/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem
   identity:
     msp-id: Org2MSP
     msp-dir: /msp
@@ -725,8 +730,7 @@ logging:
 `;
 
 exports[`samples/fablo-config-fabric-x-2orgs.json should create proper e2e/__tmp__/samples/fablo-config-fabric-x-2orgs.json.tmpdir/fablo-target/fabric-x/configtx.yaml from samples/fablo-config-fabric-x-2orgs.json 1`] = `
-"---
-Organizations:
+"Organizations:
 
   - &OrdererOrdererMSP
     Name: Orderer
@@ -1351,8 +1355,10 @@ services:
     depends_on:
       committer-org1-coordinator:
         condition: service_healthy
+
       orderer-router:
         condition: service_healthy
+
     networks:
       - fabric-x
 
@@ -1507,8 +1513,10 @@ services:
     depends_on:
       committer-org2-coordinator:
         condition: service_healthy
+
       orderer-router:
         condition: service_healthy
+
     networks:
       - fabric-x
 
@@ -1683,14 +1691,14 @@ generateArtifacts() {
     configtxgen --channelID mychannel --profile Mychannel \\
     --outputBlock /config/crypto/config-block.pb.bin \\
     --configPath /config
-
 }
+
 networkUp() {
   local ledger_dirs=(
     "$FABRIC_X_ROOT/data/orderers/party1-router"
+    "$FABRIC_X_ROOT/data/orderers/party1-batcher"
     "$FABRIC_X_ROOT/data/orderers/party1-consenter"
     "$FABRIC_X_ROOT/data/orderers/party1-assembler"
-    "$FABRIC_X_ROOT/data/orderers/party1-batcher"
     "$FABRIC_X_ROOT/data/committer-org1/sidecar-ledger"
     "$FABRIC_X_ROOT/data/committer-org2/sidecar-ledger"
   )

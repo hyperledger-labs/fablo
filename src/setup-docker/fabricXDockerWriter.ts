@@ -3,6 +3,7 @@ import { renderTemplate, getTemplatePath, getDestinationPath } from "../utils/te
 import { shellQuote } from "../utils/shellQuote";
 import * as fs from "fs-extra";
 import * as path from "path";
+import { buildFabricXOrdererTopology, FabricXOrdererTopology } from "./fabricXOrdererTopology";
 
 export const BASE_SIDECAR_PORT = 4001;
 export const BASE_QUERY_SERVICE_PORT = 7001;
@@ -30,6 +31,7 @@ export interface FabricXOrgConfig {
 export interface FabricXTemplateModel {
   channelName: string;
   channelProfileName: string;
+  orderer: FabricXOrdererTopology;
   applicationOrgs: FabricXOrgConfig[];
 }
 
@@ -54,10 +56,10 @@ export const getFabricXTemplateModel = (configExtended: FabloConfigExtended): Fa
   return {
     channelName: channel.name,
     channelProfileName: channel.profileName,
+    orderer: buildFabricXOrdererTopology(configExtended.fabricX?.orderer.parties ?? []),
     applicationOrgs,
   };
 };
-
 export class FabricXDockerWriter {
   constructor(private templatesDir: string, private outputDir: string, private log: (msg: string) => void) {}
 
@@ -73,9 +75,26 @@ export class FabricXDockerWriter {
 
     await this.renderTemplateFile("fabric-x-docker.sh", data);
     await this.renderTemplateDirectory("fabric-x", data);
+    await this.renderOrdererNodeConfigs(fabricX.orderer, data);
     await this.renderPerOrgTemplates(fabricX.applicationOrgs, data);
 
     this.log("Fabric-X network files successfully generated under fabric-x/");
+  }
+
+  private async renderOrdererNodeConfigs(
+    orderer: FabricXOrdererTopology,
+    data: Record<string, unknown>,
+  ): Promise<void> {
+    for (const party of orderer.parties) {
+      for (const node of party.nodes) {
+        const templatePath = getTemplatePath(
+          this.templatesDir,
+          path.join("fabric-x-orderer", `orderer-${node.role}.yaml`),
+        );
+        const destPath = getDestinationPath(this.outputDir, path.join("fabric-x", node.configFile));
+        await renderTemplate(templatePath, destPath, { ...data, party, node });
+      }
+    }
   }
 
   private async renderTemplateFile(file: string, data: Record<string, unknown>, destFile?: string): Promise<void> {
