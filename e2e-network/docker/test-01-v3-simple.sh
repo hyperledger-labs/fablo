@@ -8,14 +8,14 @@ FABLO_HOME="$TEST_TMP/../../.."
 
 export FABLO_HOME
 
-# This test runs Fablo from the npm package packed from this checkout, not from
-# fablo.sh with the Docker image, to verify that both behave the same way.
+# This test runs Fablo from the npm package packed from this checkout. It does
+# not build or use the Fablo Docker image, to verify the package works without it.
 FABLO_NPM_PREFIX="$(mktemp -d -t fablo-npm.XXXXXXXX)"
 FABLO="$FABLO_NPM_PREFIX/bin/fablo"
 
 installNpmPackage() {
   (cd "$FABLO_HOME" && npm ci && npm pack --pack-destination "$FABLO_NPM_PREFIX")
-  npm install --global --prefix "$FABLO_NPM_PREFIX" "$FABLO_NPM_PREFIX"/fablo-io-fablo-*.tgz
+  npm install --global --prefix "$FABLO_NPM_PREFIX" "$FABLO_NPM_PREFIX"/fablo-*.tgz
 }
 
 networkUp() {

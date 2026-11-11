@@ -1,5 +1,5 @@
 {
-  "name": "@fablo-io/fablo",
+  "name": "fablo",
   "version": "2.6.0",
   "description": "Fablo is a simple tool to generate the Hyperledger Fabric blockchain network and run it on Docker. It supports RAFT and solo consensus protocols, multiple organizations and channels, chaincode installation and upgrade.",
   "repository": {
@@ -79,11 +79,8 @@
   },
   "files": [
     "bin/fablo.mjs",
-    "bin/run.mjs",
     "dist/",
     "docs/schema.json",
-    "/fablo.sh",
-    "/docker-entrypoint.sh",
     "/version.json",
     "samples/chaincodes/chaincode-kv-node/",
     "samples/gateway/",
@@ -94,9 +91,6 @@
   ],
   "engines": {
     "node": ">=20"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "oclif": {
     "bin": "fablo",

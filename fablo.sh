@@ -260,68 +260,16 @@ executeOnFabloDocker() {
     2>&1
 }
 
-# Set by the npm package (bin/fablo.mjs): generator commands run on the local
-# Node.js from the package directory, mirroring the Fablo Docker image layout.
-executeOnLocalFablo() {
-  local command_with_params="$1"
-  local fablo_workspace="${2:-$FABLO_TEMP_DIR}"
-  local fablo_config="$3"
-
-  if ! command -v node >/dev/null 2>&1; then
-    echo "Error: Node.js is required to run Fablo installed from npm"
-    exit 1
-  fi
-
-  fablo_workspace="$(cd "$fablo_workspace" && pwd)"
-
-  local fablo_config_env=()
-  if [ -n "$fablo_config" ]; then
-    if [ ! -f "$fablo_config" ]; then
-      echo "File $fablo_config does not exist"
-      exit 1
-    fi
-
-    fablo_config="$(cd "$(dirname "$fablo_config")" && pwd)/$(basename "$fablo_config")"
-    fablo_config_env=(
-      "FABLO_CONFIG=$fablo_config"
-      "CHAINCODES_BASE_DIR=$(dirname "$fablo_config")"
-    )
-    # The image sees the config as fablo-config.json in the workspace; keep that
-    # name, but outside the workspace so no file lands in the user's directories.
-    mkdir -p "$FABLO_TEMP_DIR/config"
-    cp "$fablo_config" "$FABLO_TEMP_DIR/config/fablo-config.json"
-    command_with_params="${command_with_params/\/network\/workspace\/fablo-config.json/$FABLO_TEMP_DIR/config/fablo-config.json}"
-    if [ "$command_with_params" = "${command_with_params%% *}" ]; then
-      command_with_params="$command_with_params $FABLO_TEMP_DIR/config/fablo-config.json"
-    fi
-  fi
-
-  env "${fablo_config_env[@]}" FABLO_WORKSPACE="$fablo_workspace" \
-    sh -c "\"$FABLO_PACKAGE_DIR/docker-entrypoint.sh\" $command_with_params" \
-    2>&1
-}
-
-executeFabloGenerator() {
-  if [ -n "$FABLO_PACKAGE_DIR" ]; then
-    executeOnLocalFablo "$@"
-  else
-    executeOnFabloDocker "$@"
-  fi
-}
-
 useVersion() {
   printSplash
   local version="$1"
 
-  if [ -n "$version" ] && [ -n "$FABLO_PACKAGE_DIR" ]; then
-    echo "Fablo is installed from npm. To switch versions, run: npm install -g @fablo-io/fablo@$version"
-    exit 1
-  elif [ -n "$version" ]; then
+  if [ -n "$version" ]; then
     echo "Updating '$0' to version $version..."
     set +e
     curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/"$version"/fablo.sh -o "$0" && chmod +x "$0"
   else
-    executeFabloGenerator "list-versions"
+    executeOnFabloDocker "list-versions"
   fi
 }
 
@@ -331,25 +279,25 @@ initConfig() {
   for arg in "$@"; do
     args="$args \"$arg\""
   done
-  executeFabloGenerator "init$args"
+  executeOnFabloDocker "init$args"
   cp -R -i "$FABLO_TEMP_DIR/." "$COMMAND_CALL_ROOT/"
 }
 
 validateConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeFabloGenerator "validate" "" "$fablo_config"
+  executeOnFabloDocker "validate" "" "$fablo_config"
 }
 
 extendConfig() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
-  executeFabloGenerator "extend-config" "" "$fablo_config"
+  executeOnFabloDocker "extend-config" "" "$fablo_config"
 }
 
 exportNetworkTopology() {
   local fablo_config=${1:-$(getDefaultFabloConfig)}
   local output_file=${2:-network-topology.mmd}
 
-  executeFabloGenerator "export-network-topology /network/workspace/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
+  executeOnFabloDocker "export-network-topology /network/workspace/fablo-config.json $output_file" "$(dirname "$output_file")" "$fablo_config"
 }
 
 generateNetworkConfig() {
@@ -363,7 +311,7 @@ generateNetworkConfig() {
   echo "    FABLO_NETWORK_ROOT: $fablo_target"
 
   mkdir -p "$fablo_target"
-  executeFabloGenerator "setup-network" "$fablo_target" "$fablo_config"
+  executeOnFabloDocker "setup-network" "$fablo_target" "$fablo_config"
   if [ -f "$fablo_target/hooks/post-generate.sh" ]; then
     chmod +x "$fablo_target/hooks/post-generate.sh" || true
     ("$fablo_target/hooks/post-generate.sh")
@@ -485,11 +433,7 @@ startMcpServer() {
   # Stdout carries the MCP protocol, so everything else goes to stderr. The
   # server, the Fablo skill, and the config schema ship in the Fablo image to
   # match this script's version.
-  if [ -n "$FABLO_PACKAGE_DIR" ]; then
-    tar -C "$FABLO_PACKAGE_DIR" -cf - mcp skills/fablo docs/schema.json | tar -xf - -C "$FABLO_TEMP_DIR" >&2
-  else
-    docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp skills/fablo docs/schema.json | tar -xf - -C "$FABLO_TEMP_DIR" >&2
-  fi
+  docker run --rm "$FABLO_IMAGE" tar -C /fablo -cf - mcp skills/fablo docs/schema.json | tar -xf - -C "$FABLO_TEMP_DIR" >&2
   if [ ! -f "$FABLO_TEMP_DIR/mcp/start.sh" ]; then
     echo "Error: Cannot read the MCP server from $FABLO_IMAGE" >&2
     exit 1
@@ -507,7 +451,7 @@ elif [ "$COMMAND" = "help" ] || [ "$COMMAND" = "--help" ]; then
   printHelp
 
 elif [ "$COMMAND" = "version" ]; then
-  executeFabloGenerator "version $2"
+  executeOnFabloDocker "version $2"
 
 elif [ "$COMMAND" = "use" ]; then
   useVersion "$2"
