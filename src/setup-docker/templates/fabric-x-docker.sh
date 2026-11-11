@@ -19,7 +19,7 @@ elif [ "$1" = "start" ]; then
 elif [ "$1" = "stop" ]; then
   stopNetwork
 elif [ "$1" = "namespace" ] && [ "$2" = "list" ]; then
-  namespaceList
+  namespaceList "${3:-}"
 elif [ "$1" = "namespace" ] && [ "$2" = "init" ]; then
   namespaceInit "${3:-}"
 elif [ "$1" = "help" ]; then

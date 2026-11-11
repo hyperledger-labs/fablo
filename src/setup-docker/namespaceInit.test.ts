@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
 import { shellQuote } from "../utils/shellQuote";
+import { buildFabricXOrdererTopology } from "./fabricXOrdererTopology";
 
 describe("fabric-x base-functions.sh namespaceInit", () => {
   const templatePath = path.join(__dirname, "templates/fabric-x/scripts/base-functions.sh");
@@ -18,12 +19,23 @@ describe("fabric-x base-functions.sh namespaceInit", () => {
     fabricX: {
       channelName: "mychannel",
       channelProfileName: "SampleFabricXChannel",
-      applicationOrg: { domain: "org1.example.com" },
-      applicationOrgSlug: "org1",
+      orderer: buildFabricXOrdererTopology([
+        { organization: { name: "Orderer", domain: "orderer.example.com", mspName: "OrdererOrdererMSP" } },
+      ]),
+      applicationOrgs: [
+        {
+          name: "Org1",
+          domain: "org1.example.com",
+          mspName: "Org1MSP",
+          slug: "org1",
+          sidecarPort: 4001,
+          queryServicePort: 7001,
+        },
+      ],
     },
     shellQuote,
   });
-  
+
   const scriptWithStub = `${rendered}\nnamespaceCreate() { echo "CALLED name=$1 policy=$2"; }\n`;
 
   const runNamespaceInit = (target: string): { stdout: string; status: number } => {

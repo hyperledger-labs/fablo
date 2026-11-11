@@ -95,6 +95,7 @@ export function generateMermaidDiagram(config: FabloConfigExtended): string {
 
   // Connect channels to orderer groups (reversed direction)
   config.channels?.forEach((channel) => {
+    if (!channel.ordererGroup) return;
     const channelIdStr = channelId(channel.name);
     const ogId = ordererGroupId(channel.ordererGroup);
     lines.push(`  ${channelIdStr} --> ${ogId}`);

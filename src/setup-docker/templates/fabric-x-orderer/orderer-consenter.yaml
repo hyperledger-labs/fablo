@@ -1,8 +1,8 @@
-PartyID: 1
+PartyID: <%= party.partyId %>
 
 General:
   ListenAddress: 0.0.0.0
-  ListenPort: 7051
+  ListenPort: <%= node.port %>
   TLS:
     Enabled: true
     PrivateKey: /node-tls/server.key
@@ -29,14 +29,12 @@ General:
     ClientCertificate: /node-tls/server.crt
     ClientPrivateKey: /node-tls/server.key
   LocalMSPDir: /node-msp
-  LocalMSPID: OrdererOrdererMSP
+  LocalMSPID: <%= party.org.mspName %>
   BCCSP:
     Default: SW
     SW:
       Hash: SHA2
       Security: 256
-      FileKeyStore:
-        KeyStore:
   LogSpec: info
 
 FileStore:
@@ -52,8 +50,5 @@ Metrics:
   Provider: prometheus
   MetricsLogInterval: 0s
 
-Batcher:
-  ShardID: 1
-  BatchSequenceGap: 10
-  MemPoolMaxSize: 1000000
-  SubmitTimeout: 500ms
+Consensus:
+  WALDir: /data/wal

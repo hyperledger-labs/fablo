@@ -19,8 +19,9 @@ import { getNetworkCapabilities } from "../../extend-config/extendGlobal";
 import { createPackageLabel } from "../../extend-config/extendChaincodesConfig";
 import { Capabilities } from "../../types/FabloConfigExtended";
 import { version } from "../../repositoryUtils";
+import { SUPPORTED_ORDERER_PARTY_COUNTS } from "../../setup-docker/fabricXOrdererTopology";
 import ListCompatibleUpdates from "../../list-compatible-updates";
-
+import defaults from "../../extend-config/defaults";
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
   const duplicates: Record<string, string[]> = {};
   const seenCounts = new Map<string, number>();
@@ -45,7 +46,14 @@ const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
 
   return duplicates;
 };
+type FabricXOrganizationField = "name" | "domain" | "mspName";
 
+interface FabricXOrganizationIdentity {
+  location: string;
+  name: string;
+  domain: string;
+  mspName: string;
+}
 const validationErrorType = {
   CRITICAL: "validation-critical",
   ERROR: "validation-error",
@@ -126,6 +134,12 @@ export default class Validate extends Command {
     if (provider === "fabric-x") {
       this._validateFabricXSettings(networkConfig);
       return;
+    }
+    if (networkConfig.fabricX !== undefined) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.GENERAL,
+        message: "The 'fabricX' section is only supported when 'global.provider' is 'fabric-x'.",
+      });
     }
     this._validateClassicFabricImages(networkConfig.global);
     networkConfig.chaincodes.forEach((chaincode) => this._validateCcaaTLS(networkConfig.global, chaincode));
@@ -586,6 +600,11 @@ export default class Validate extends Command {
         message: `fabric-x requires exactly one channel found ${channels.length}.`,
       });
     }
+
+    this._validateFabricXOrderer(networkConfig);
+    this._validateFabricXChannelOrganizations(channels, orgs);
+    this._validateFabricXNamespaces(networkConfig);
+
     const classicOnlyImages: (keyof FabricImagesJson)[] = ["peer", "ca", "ccenv", "baseos", "javaenv", "nodeenv"];
 
     classicOnlyImages.forEach((key) => {
@@ -596,11 +615,81 @@ export default class Validate extends Command {
         });
       }
     });
+  }
+
+  _validateFabricXChannelOrganizations(channels: ChannelJson[], orgs: OrgJson[]): void {
+    const channel = channels[0];
+    if (!channel) {
+      return;
+    }
+
+    const configuredOrgNames = new Set(orgs.map((org) => org.organization.name));
+    const channelOrgNames = channel.orgs.map((o) => o.name);
+
+    if (channelOrgNames.length === 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Fabric-X requires at least one organization on channel '${channel.name}'.`,
+      });
+      return;
+    }
+
+    const unknownChannelOrgs = channelOrgNames.filter((name) => !configuredOrgNames.has(name));
+    if (unknownChannelOrgs.length > 0) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.CHANNEL,
+        message: `Channel '${channel.name}' references unknown org(s): ${unknownChannelOrgs.join(", ")}.`,
+      });
+    }
+
+    const channelOrgsConfig = orgs
+      .filter((org) => channelOrgNames.includes(org.organization.name))
+      .map((org) => org.organization);
+
+    const seenSlugs = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const slug = org.name.toLowerCase();
+      if (seenSlugs.has(slug)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X generated duplicate organization slug '${slug}'. Organization names must be unique case-insensitively.`,
+        });
+      }
+      seenSlugs.add(slug);
+    }
+
+    const seenMsps = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      const msp = org.mspName ?? `${org.name}MSP`;
+      if (seenMsps.has(msp)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate MSP name '${msp}'. Organization MSP names must be unique.`,
+        });
+      }
+      seenMsps.add(msp);
+    }
+
+    const seenDomains = new Set<string>();
+    for (const org of channelOrgsConfig) {
+      if (org.domain && seenDomains.has(org.domain)) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.CHANNEL,
+          message: `Fabric-X found duplicate domain '${org.domain}'. Organization domains must be unique.`,
+        });
+      }
+      if (org.domain) {
+        seenDomains.add(org.domain);
+      }
+    }
+  }
+
+  _validateFabricXNamespaces(networkConfig: FabloConfigJson): void {
+    const channelOrgNames = new Set((networkConfig.channels[0]?.orgs ?? []).map((orgRef) => orgRef.name));
 
     const namespaceNames = new Set<string>();
     const validNamespaceId = /^[a-z0-9_]+$/;
     const maxNamespaceIdLength = 60;
-    const knownOrgNames = (channels[0]?.orgs ?? []).map((o) => o.name);
 
     const namespaces = networkConfig.namespaces ?? [];
     if (namespaces.length < 1) {
@@ -626,7 +715,7 @@ export default class Validate extends Command {
       }
       namespaceNames.add(namespace.name);
 
-      if (namespace.orgs && namespace.policy!== undefined) {
+      if (namespace.orgs && namespace.policy !== undefined) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
           message: `Namespace '${namespace.name}' defines both 'orgs' and 'policy'. Use only one.`,
@@ -640,7 +729,7 @@ export default class Validate extends Command {
         });
       }
 
-      const unknownOrgNames = (namespace.orgs ?? []).filter((n) => !knownOrgNames.includes(n));
+      const unknownOrgNames = (namespace.orgs ?? []).filter((name) => !channelOrgNames.has(name));
       if (unknownOrgNames.length > 0) {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.GENERAL,
@@ -649,7 +738,90 @@ export default class Validate extends Command {
       }
     });
   }
+  _validateFabricXOrderer(networkConfig: FabloConfigJson): void {
+    const { orgs, fabricX } = networkConfig;
 
+    this._validateNoClassicOrderersForFabricX(orgs);
+
+    const parties = fabricX?.orderer?.parties;
+    if (!parties) {
+      this.emit(validationErrorType.ERROR, {
+        category: validationCategories.ORDERER,
+        message: "fabric-x requires 'fabricX.orderer.parties' with the organizations of the orderer parties.",
+      });
+      return;
+    }
+
+    this._validateFabricXOrdererPartyCount(parties.length);
+
+    const organizations: FabricXOrganizationIdentity[] = [
+      ...orgs.map(({ organization }, index) =>
+        this._toFabricXOrganizationIdentity(organization, `orgs[${index}]`),
+      ),
+      ...parties.map(({ organization }, index) =>
+        this._toFabricXOrganizationIdentity(organization, `fabricX.orderer.parties[${index}]`),
+      ),
+    ];
+
+    this._validateUniqueFabricXOrganizationField(organizations, "name");
+    this._validateUniqueFabricXOrganizationField(organizations, "domain");
+    this._validateUniqueFabricXOrganizationField(organizations, "mspName");
+  }
+
+  _toFabricXOrganizationIdentity(
+    organization: { name: string; domain: string; mspName?: string },
+    location: string,
+  ): FabricXOrganizationIdentity {
+    return {
+      location,
+      name: organization.name,
+      domain: organization.domain,
+      mspName: organization.mspName ?? defaults.organization.mspName(organization.name),
+    };
+  }
+
+  _validateNoClassicOrderersForFabricX(orgs: OrgJson[]): void {
+    orgs
+      .filter((org) => (org.orderers?.length ?? 0) > 0)
+      .forEach((org) => {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Org '${org.organization.name}' defines 'orderers'. fabric-x does not use orderer groups, remove 'orderers' and configure the orderer in 'fabricX.orderer.parties'.`,
+        });
+      });
+  }
+
+  _validateFabricXOrdererPartyCount(partyCount: number): void {
+    if (SUPPORTED_ORDERER_PARTY_COUNTS.includes(partyCount)) return;
+
+    const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
+    this.emit(validationErrorType.ERROR, {
+      category: validationCategories.ORDERER,
+      message: `'fabricX.orderer.parties' has ${partyCount} parties. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
+    });
+  }
+
+  _validateUniqueFabricXOrganizationField(
+    organizations: FabricXOrganizationIdentity[],
+    field: FabricXOrganizationField,
+  ): void {
+    const firstLocationByValue = new Map<string, string>();
+
+    organizations.forEach((organization) => {
+      const value = organization[field];
+      const firstLocation = firstLocationByValue.get(value);
+
+      if (firstLocation !== undefined) {
+        this.emit(validationErrorType.ERROR, {
+          category: validationCategories.ORDERER,
+          message: `Organization ${field} '${value}' is used by ${firstLocation} and by ${organization.location}. Every organization needs its own ${field}.`,
+        });
+        return;
+      }
+
+      firstLocationByValue.set(value, organization.location);
+    });
+  }
   _validateClassicFabricImages(global: GlobalJson): void {
     const fabricXOnlyImages: (keyof FabricImagesJson)[] = ["committer", "postgres"];
 

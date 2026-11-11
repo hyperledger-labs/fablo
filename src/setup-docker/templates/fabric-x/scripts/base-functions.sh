@@ -18,8 +18,6 @@ TOOLS_IMAGE="${TOOLS_IMAGE:-<%= global.toolsImage %>}"
 ORDERER_IMAGE="${ORDERER_IMAGE:-<%= global.ordererImage %>}"
 NETWORK="${NETWORK:-fabric-x}"
 
-
-
 generateArtifacts() {
   if [ -f "$FABRIC_X_ROOT/crypto/config-block.pb.bin" ] &&
     [ -f "$FABRIC_X_ROOT/crypto/shared_config.binpb" ] &&
@@ -40,8 +38,7 @@ generateArtifacts() {
     -v "$FABRIC_X_ROOT:/config" \
     "$TOOLS_IMAGE" \
     sh -c 'cryptogen generate --config=/config/crypto-config.yaml --output=/config/crypto \
-      && cp /config/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem \
-            /config/crypto/client-tls-ca.pem'
+      && cat /config/crypto/peerOrganizations/*/msp/tlscacerts/*.pem > /config/crypto/client-tls-ca.pem'
 
   echo "Generating Fabric-X shared config proto..."
 
@@ -61,15 +58,19 @@ generateArtifacts() {
     configtxgen --channelID <%- fabricX.channelName %> --profile <%- fabricX.channelProfileName %> \
     --outputBlock /config/crypto/config-block.pb.bin \
     --configPath /config
-
-
 }
+
 networkUp() {
-  mkdir -p "$FABRIC_X_ROOT/data/orderers/party1-router" \
-           "$FABRIC_X_ROOT/data/orderers/party1-consenter" \
-           "$FABRIC_X_ROOT/data/orderers/party1-assembler" \
-           "$FABRIC_X_ROOT/data/orderers/party1-batcher" \
-           "$FABRIC_X_ROOT/data/committer-<%= fabricX.applicationOrgSlug %>/sidecar-ledger"
+<%_ const ledgerDirs = [
+  ...fabricX.orderer.parties.flatMap((party) => party.nodes.map((node) => node.dataDir)),
+  ...fabricX.applicationOrgs.map((org) => `data/committer-${org.slug}/sidecar-ledger`),
+]; _%>
+  local ledger_dirs=(
+<%_ ledgerDirs.forEach((dir) => { _%>
+    "$FABRIC_X_ROOT/<%= dir %>"
+<%_ }); _%>
+  )
+  mkdir -p "${ledger_dirs[@]}"
 
   generateArtifacts
   FABRIC_X_UID="$(id -u)" FABRIC_X_GID="$(id -g)" \
@@ -82,7 +83,6 @@ networkDown() {
   rm -rf "$FABRIC_X_ROOT/crypto" "$FABRIC_X_ROOT/data"
 }
 
-
 startNetwork() {
   (cd "$FABRIC_X_ROOT" && docker compose start)
 }
@@ -91,24 +91,22 @@ stopNetwork() {
   (cd "$FABRIC_X_ROOT" && docker compose stop)
 }
 
-
- 
 namespaceCreate() {
   local ns="$1"
   local policy="$2"
   docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
     --env "FX_NS=$ns" \
     --env "FX_POLICY=$policy" \
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/fxconfig-<%= fabricX.applicationOrgs[0].slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/peers/fxconfig.<%= fabricX.applicationOrgs[0].domain %>/tls:/tls:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/users/User1@<%= fabricX.applicationOrgs[0].domain %>/msp:/msp:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrgs[0].domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrgs[0].domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+    -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/<%= fabricX.orderer.parties[0].org.domain %>/msp/tlscacerts/tlsca.<%= fabricX.orderer.parties[0].org.domain %>-cert.pem:/orderer-tls-ca.pem:ro,Z" \
     "$TOOLS_IMAGE" \
     sh -c 'fxconfig namespace list --config=/config/fxconfig.yaml 2>/dev/null | grep -q ") $FX_NS:" || \
       fxconfig namespace create "$FX_NS" --policy="$FX_POLICY" --endorse --submit --wait --config=/config/fxconfig.yaml'
 }
- 
+
 namespaceInit() {
   local target="$1"
   local found=0
@@ -124,15 +122,22 @@ namespaceInit() {
     return 1
   fi
 }
- 
+
 namespaceList() {
-  docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
-    -v "$FABRIC_X_ROOT/fxconfig.yaml:/config/fxconfig.yaml:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/fxconfig.<%= fabricX.applicationOrg.domain %>/tls:/tls:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
-    -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/orderer-tls-ca.pem:ro,Z" \
-    "$TOOLS_IMAGE" \
-    fxconfig namespace list --config=/config/fxconfig.yaml
+  local org_slug="${1:-<%= fabricX.applicationOrgs[0].slug %>}"
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+  if [ "$org_slug" = "<%= org.slug %>" ] || [ "$org_slug" = "<%= org.name %>" ]; then
+    docker run --rm --network "$NETWORK" --user "$(id -u):$(id -g)" \
+      -v "$FABRIC_X_ROOT/fxconfig-<%= org.slug %>.yaml:/config/fxconfig.yaml:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/peers/fxconfig.<%= org.domain %>/tls:/tls:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/users/User1@<%= org.domain %>/msp:/msp:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z" \
+      -v "$FABRIC_X_ROOT/crypto/ordererOrganizations/<%= fabricX.orderer.parties[0].org.domain %>/msp/tlscacerts/tlsca.<%= fabricX.orderer.parties[0].org.domain %>-cert.pem:/orderer-tls-ca.pem:ro,Z" \
+      "$TOOLS_IMAGE" \
+      fxconfig namespace list --config=/config/fxconfig.yaml
+    return 0
+  fi
+<%_ }); _%>
+  echo "Organization '$org_slug' not found in fabric-x configuration." >&2
+  return 1
 }
- 
