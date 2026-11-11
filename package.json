@@ -27,7 +27,9 @@
     "lint": "eslint --fix src e2e && madge --circular --warning src e2e && ejslint src",
     "test:unit": "jest src",
     "test:e2e": "jest e2e --runInBand e2e/fabloCommands.test.ts",
-    "test:e2e-update": "./fablo-build.sh && jest e2e --runInBand --updateSnapshot && ./lint.sh"
+    "test:e2e-update": "./fablo-build.sh && jest e2e --runInBand --updateSnapshot && ./lint.sh",
+    "prepack": "npm run build:dist && npm run write-version-json",
+    "write-version-json": "echo \"{ \\\"buildInfo\\\": \\\"$(date +%Y-%m-%d-%H:%M:%S)-$(git rev-parse --short HEAD 2>/dev/null || echo unknown)\\\" }\" > version.json"
   },
   "dependencies": {
     "@oclif/core": "^4.8.0",
@@ -73,7 +75,22 @@
     "typescript": "^4.2.4"
   },
   "bin": {
-    "fablo": "./bin/run.js"
+    "fablo": "bin/fablo.mjs"
+  },
+  "files": [
+    "bin/fablo.mjs",
+    "dist/",
+    "docs/schema.json",
+    "/version.json",
+    "samples/chaincodes/chaincode-kv-node/",
+    "samples/gateway/",
+    "mcp/",
+    "skills/fablo/",
+    "!mcp/*.test.cjs",
+    "!samples/**/*.spec.js"
+  ],
+  "engines": {
+    "node": ">=20"
   },
   "oclif": {
     "bin": "fablo",
