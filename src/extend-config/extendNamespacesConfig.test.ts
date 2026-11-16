@@ -1,11 +1,11 @@
-import extendNamespacesConfig from  "./extendNamespacesConfig";
+import extendNamespacesConfig from "./extendNamespacesConfig";
 import { OrgConfig } from "../types/FabloConfigExtended";
 
 const org = (name: string, mspName: string): OrgConfig =>
-({
-  name,
-  mspName,
-} as OrgConfig);
+  ({
+    name,
+    mspName,
+  } as OrgConfig);
 
 describe("extendNamespacesConfig", () => {
   it("should derive AND(...) from 'orgs', in channel-org order", () => {
@@ -61,13 +61,13 @@ describe("extendNamespacesConfig", () => {
       ),
     ).toThrow("Namespace 'mynamespace' defines both 'orgs' and 'policy'");
   });
-  
+
   it("should throw when 'orgs' is given alongside an explicitly empty-string policy", () => {
     expect(() =>
       extendNamespacesConfig([{ name: "mynamespace", orgs: ["Org1"], policy: "" }], [org("Org1", "Org1MSP")]),
     ).toThrow("Namespace 'mynamespace' defines both 'orgs' and 'policy'");
   });
- 
+
   it("should throw when 'orgs' is an empty list", () => {
     expect(() => extendNamespacesConfig([{ name: "mynamespace", orgs: [] }], [org("Org1", "Org1MSP")])).toThrow(
       "Namespace 'mynamespace' has an empty 'orgs' list",
@@ -81,7 +81,6 @@ describe("extendNamespacesConfig", () => {
   });
 
   it("should throw when the namespace name contains a hyphen (invalid fxconfig namespace ID)", () => {
-
     expect(() => extendNamespacesConfig([{ name: "audit-ns" }], [org("Org1", "Org1MSP")])).toThrow(
       "Namespace 'audit-ns' is not a valid Fabric-X namespace ID",
     );

@@ -25,7 +25,7 @@ Commands that take an optional config path, such as `fablo up` and `fablo valida
 
 This page covers the main fields used in practice. For the full JSON Schema (including schema-only defaults), see [`schema.json`](/schema.json). Note that some schema defaults (for example Fabric `2.4.2` or a solo orderer) are stale relative to what `fablo init` generates today, so prefer the `fablo init` defaults below when starting a new network.
 
-**What `fablo init` generates today:** Fabric `3.1.0`, TLS on, engine `docker`, an `Orderer` organization with two BFT orderers in group `group1`, an `Org1` organization with two LevelDB peers, channel `my-channel1`, and empty `chaincodes` and `hooks`. The generated channel has no `ordererGroup`, so it falls back to the first orderer group. `fablo init fabric-x` writes a different starter config, described under [`global.provider`](#globalprovider).
+**What `fablo init` generates today:** Fabric `3.1.5`, TLS on, engine `docker`, an `Orderer` organization with two BFT orderers in group `group1`, an `Org1` organization with two LevelDB peers, channel `my-channel1`, and empty `chaincodes` and `hooks`. The generated channel has no `ordererGroup`, so it falls back to the first orderer group. `fablo init fabric-x` writes a different starter config, described under [`global.provider`](#globalprovider).
 
 
 ## `$schema`
@@ -49,7 +49,7 @@ Basic settings of the Hyperledger Fabric network. Type: `object`. Required field
 
 | Field | Purpose | Type | Required | Notes |
 |---|---|---|---|---|
-| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes | Must be `2.0.0` or higher. `fablo init` uses `3.1.0` |
+| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes | Must be `2.0.0` or higher. `fablo init` uses `3.1.5` |
 | `tls` | Whether TLS is used across the network | `boolean` | Yes | `fablo init` uses `true` |
 | `peerDevMode` | Start all peers in dev mode | `boolean` | No | Default `false`. Requires `tls` to be `false`, and `fablo validate` reports an error when both are `true`. Supported on Fabric v2 only, not on Fabric v3. See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md). |
 | `engine` | Engine on which the network will be deployed | `string` | No | `docker` (default) or `kubernetes` |
@@ -57,6 +57,8 @@ Basic settings of the Hyperledger Fabric network. Type: `object`. Required field
 | `fabricImages` | Optional Docker images for Hyperledger Fabric components | `object` | No | see below |
 | `monitoring` | Optional settings for monitoring purposes | `object` | No | see below |
 | `tools` | Tool toggles at the network level | `object` | No | see below |
+
+Docker Engine 29 or newer requires Fabric `2.5.15+` or `3.1.4+` when peers build and launch classic chaincode containers. Older Fabric releases can still be used with a compatible Docker Engine or with external chaincode services.
 
 ### `global.provider`
 
@@ -86,7 +88,20 @@ Optional Docker images for Hyperledger Fabric components.
 | `javaenv` | Javaenv image | `string` | No | `hyperledger/fabric-javaenv` |
 | `nodeenv` | Nodeenv image | `string` | No | `hyperledger/fabric-nodeenv` |
 
-The defaults above are repository names without a tag. When you give an image with no tag and no digest, Fablo appends a tag it derives from `fabricVersion`, so `myregistry/fabric-peer` becomes `myregistry/fabric-peer:3.1.0` on a Fabric `3.1.0` network. Give the image with a tag or a digest to pin it yourself.
+The defaults above are repository names without a tag. When you give an image with no tag and no digest, Fablo appends a tag it derives from `fabricVersion`, so `myregistry/fabric-peer` becomes `myregistry/fabric-peer:3.1.5` on a Fabric `3.1.5` network. Give the image with a tag or a digest to pin it yourself.
+
+#### Fabric-X Images (`provider: "fabric-x"`)
+
+When `provider` is set to `fabric-x`, the network uses Fabric-X microservices instead of classic peer and orderer containers. Fabric-X components use independently versioned images pinned to a tested compatible version tuple matching the [Fabric-X version compatibility matrix](https://github.com/hyperledger/fabric-x#version-compatibility-matrix):
+
+| Field | Purpose | Type | Required | Default Repository | Pinned Default Version |
+|---|---|---|---|---|---|
+| `orderer` | Orderer microservices (router, consenter, batcher, assembler) | `string` | No | `ghcr.io/hyperledger/fabric-x-orderer` | `1.0.8` |
+| `committer` | Committer microservices (coordinator, verifier, validator, sidecar) | `string` | No | `ghcr.io/hyperledger/fabric-x-committer` | `1.0.7` |
+| `tools` | Fabric-X CLI tools container (`fxconfig`, `cryptogen`) | `string` | No | `ghcr.io/hyperledger/fabric-x-tools` | `1.0.3` |
+| `postgres` | Committer PostgreSQL database | `string` | No | `docker.io/library/postgres` | `18.3-alpine3.23` |
+
+Unlike classic Fabric where untagged image overrides derive their tag from `fabricVersion`, Fabric-X untagged overrides append the pinned default tag (for example, setting `committer: "mirror.local/committer"` resolves to `mirror.local/committer:1.0.7`). Custom tags or digests (such as `myorg/committer:custom-tag` or `mirror.local/postgres@sha256:...`) are preserved as is. Classic-only image settings (`peer`, `ca`, `ccenv`, `baseos`, `javaenv`, `nodeenv`) are not used by the Fabric-X provider.
 
 ### `global.monitoring`
 
@@ -102,7 +117,7 @@ Optional settings for monitoring purposes.
 |---|---|---|---|---|
 | `explorer` | Whether Blockchain Explorer is enabled network-wide | `boolean` | No | `false` |
 
-Explorer is supported on Fabric v2 only, not on Fabric v3 (including the default `3.1.0` init config). See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md).
+Explorer is supported on Fabric v2 only, not on Fabric v3 (including the default `3.1.5` init config). See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md).
 
 When `global.tools.explorer` is `true`, Fablo runs one Explorer for the whole network and ignores the `orgs[].tools.explorer` setting on each organization. `fablo validate` warns about each organization whose setting is ignored this way.
 
@@ -110,7 +125,7 @@ When `global.tools.explorer` is `true`, Fablo runs one Explorer for the whole ne
 
 ```json
 "global": {
-  "fabricVersion": "3.1.0",
+  "fabricVersion": "3.1.5",
   "tls": true,
   "peerDevMode": false
 }

@@ -28,7 +28,7 @@ fablo init
 
 This writes a `fablo-config.json` describing a simple Hyperledger Fabric network:
 
-- Fabric version `3.1.0` with TLS enabled
+- Fabric version `3.1.5` with TLS enabled
 - an orderer organization with two BFT orderers
 - one peer organization (`Org1`) with two LevelDB peers
 - a single channel (`my-channel1`)
@@ -61,7 +61,7 @@ Fablo writes a minimal config for the experimental Fabric-X provider, with `glob
 You can also override generated fields with `--set`:
 
 ```
-fablo init --set global.fabricVersion=2.5.0
+fablo init --set global.fabricVersion=2.5.16
 fablo init --set global.monitoring.loglevel=debug --set orgs[1].peer.db=CouchDb
 fablo init node --set orgs[1].peer.instances=5
 ```

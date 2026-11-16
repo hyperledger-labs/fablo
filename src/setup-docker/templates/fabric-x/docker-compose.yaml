@@ -7,129 +7,58 @@ networks:
     driver: bridge
 
 volumes:
-  committer-<%= fabricX.applicationOrgSlug %>-db-data:
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+  committer-<%= org.slug %>-db-data:
+<%_ }); _%>
 
 services:
 
-  # ─── Orderer Party 1 ───────────────────────────────────────────────────────
-  orderer-router:
-    container_name: orderer-router
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+  # ─── Orderer Party <%= party.partyId %> ───────────────────────────────────────────────────────
+<%_ party.nodes.forEach((node) => { -%>
+  <%= node.host %>:
+    container_name: <%= node.host %>
     image: <%= global.ordererImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: router --config=/config/node_config.yaml
+    command: <%= node.command %> --config=/config/node_config.yaml
     ports:
-      - "7050:7050"
+      - "<%= node.port %>:<%= node.port %>"
     volumes:
-      - ./config/orderer-router.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/router.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./<%= node.configFile %>:/config/node_config.yaml:ro,Z
+      - ./crypto/<%= node.cryptoDir %>/tls:/node-tls:ro,Z
+      - ./crypto/<%= node.cryptoDir %>/msp:/node-msp:ro,Z
+      - ./crypto/ordererOrganizations/<%= party.org.domain %>/msp/tlscacerts/tlsca.<%= party.org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+<%_ if (node.acceptsClients) { -%>
       - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
+<%_ } -%>
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-router:/data:Z
+      - ./<%= node.dataDir %>:/data:Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 10s
+<%_ if (node.dependsOn.length > 0) { -%>
     depends_on:
-      orderer-assembler:
+<%_ node.dependsOn.forEach((dependency) => { -%>
+      <%= dependency %>:
         condition: service_healthy
+<%_ }); -%>
+<%_ } -%>
     networks:
       - fabric-x
 
-  orderer-batcher:
-    container_name: orderer-batcher
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: batcher --config=/config/node_config.yaml
-    ports:
-      - "7051:7051"
-    volumes:
-      - ./config/orderer-batcher.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/batcher1.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-batcher:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    depends_on:
-      orderer-consenter:
-        condition: service_healthy
-    networks:
-      - fabric-x
-
-  orderer-consenter:
-    container_name: orderer-consenter
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: consensus --config=/config/node_config.yaml
-    ports:
-      - "7052:7052"
-    volumes:
-      - ./config/orderer-consenter.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/consenter.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-consenter:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    networks:
-      - fabric-x
-
-  orderer-assembler:
-    container_name: orderer-assembler
-    image: <%= global.ordererImage %>
-    pull_policy: missing
-    restart: unless-stopped
-    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
-    command: assembler --config=/config/node_config.yaml
-    ports:
-      - "7053:7053"
-    volumes:
-      - ./config/orderer-assembler.yaml:/config/node_config.yaml:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/tls:/node-tls:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/orderers/party1/assembler.orderer.example.com/msp:/node-msp:ro,Z
-      - ./crypto/ordererOrganizations/orderer.example.com/msp/tlscacerts/tlsca.orderer.example.com-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/client-tls-ca.pem:/client-tls-ca.pem:ro,Z
-      - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/orderers/party1-assembler:/data:Z
-    healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:9443/metrics"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 10s
-    depends_on:
-      orderer-batcher:
-        condition: service_healthy
-    networks:
-      - fabric-x
+<%_ }); -%>
+<%_ }); -%>
 
 
+<%_ fabricX.applicationOrgs.forEach((org) => { _%>
+  # ─── <%= org.name %> Committer Stack ───────────────────────────────────────────────────
 
-
-
-  # ─── <%= fabricX.applicationOrg.name %> Committer Stack ───────────────────────────────────────────────────
-
-  committer-<%= fabricX.applicationOrgSlug %>-db:
+  committer-<%= org.slug %>-db:
     image: <%= global.postgresImage %>
     command: postgres -c max_connections=500
     pull_policy: missing
@@ -140,7 +69,7 @@ services:
       POSTGRES_PASSWORD: fabricx
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - committer-<%= fabricX.applicationOrgSlug %>-db-data:/var/lib/postgresql/data
+      - committer-<%= org.slug %>-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U fabricx -d fabricx"]
       interval: 5s
@@ -149,7 +78,19 @@ services:
     networks:
       - fabric-x
 
-  committer-<%= fabricX.applicationOrgSlug %>-verifier:
+  committer-<%= org.slug %>-init-db:
+    image: <%= global.committerImage %>
+    user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
+    command: init-db --config=/config/validator.yaml
+    volumes:
+      - ./config/committer-<%= org.slug %>-validator.yaml:/config/validator.yaml:ro,Z
+    depends_on:
+      committer-<%= org.slug %>-db:
+        condition: service_healthy
+    networks:
+      - fabric-x
+
+  committer-<%= org.slug %>-verifier:
     image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
@@ -157,8 +98,8 @@ services:
     command: start verifier --config=/config/verifier.yaml
     volumes:
       - ./config/verifier.yaml:/config/verifier.yaml:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/committer-verifier.<%= fabricX.applicationOrg.domain %>/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/peers/committer-verifier.<%= org.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2115/metrics"]
       interval: 2s
@@ -168,16 +109,16 @@ services:
     networks:
       - fabric-x
 
-  committer-<%= fabricX.applicationOrgSlug %>-validator:
+  committer-<%= org.slug %>-validator:
     image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start vc --config=/config/validator.yaml
     volumes:
-      - ./config/validator.yaml:/config/validator.yaml:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/committer-validator.<%= fabricX.applicationOrg.domain %>/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./config/committer-<%= org.slug %>-validator.yaml:/config/validator.yaml:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/peers/committer-validator.<%= org.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2116/metrics"]
       interval: 2s
@@ -185,21 +126,23 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-<%= fabricX.applicationOrgSlug %>-db:
+      committer-<%= org.slug %>-db:
         condition: service_healthy
+      committer-<%= org.slug %>-init-db:
+        condition: service_completed_successfully
     networks:
       - fabric-x
 
-  committer-<%= fabricX.applicationOrgSlug %>-coordinator:
+  committer-<%= org.slug %>-coordinator:
     image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start coordinator --config=/config/coordinator.yaml
     volumes:
-      - ./config/committer-coordinator.yaml:/config/coordinator.yaml:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/committer-coordinator.<%= fabricX.applicationOrg.domain %>/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./config/committer-<%= org.slug %>-coordinator.yaml:/config/coordinator.yaml:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/peers/committer-coordinator.<%= org.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2119/metrics"]
       interval: 2s
@@ -207,29 +150,29 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-<%= fabricX.applicationOrgSlug %>-verifier:
+      committer-<%= org.slug %>-verifier:
         condition: service_healthy
-      committer-<%= fabricX.applicationOrgSlug %>-validator:
+      committer-<%= org.slug %>-validator:
         condition: service_healthy
     networks:
       - fabric-x
 
-  committer-<%= fabricX.applicationOrgSlug %>-sidecar:
+  committer-<%= org.slug %>-sidecar:
     image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start sidecar --config=/config/sidecar.yaml
     ports:
-      - "4001:4001"
+      - "<%= org.sidecarPort %>:4001"
     volumes:
-      - ./config/sidecar.yaml:/config/sidecar.yaml:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/committer-sidecar.<%= fabricX.applicationOrg.domain %>/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/users/User1@<%= fabricX.applicationOrg.domain %>/msp:/msp:ro,Z
+      - ./config/committer-<%= org.slug %>-sidecar.yaml:/config/sidecar.yaml:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/peers/committer-sidecar.<%= org.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/users/User1@<%= org.domain %>/msp:/msp:ro,Z
       - ./crypto/ordererOrganizations:/orderer-cas:ro,Z
       - ./crypto/config-block.pb.bin:/bootstrap/genesis.block:ro,Z
-      - ./data/committer-<%= fabricX.applicationOrgSlug %>/sidecar-ledger:/ledger:Z
+      - ./data/committer-<%= org.slug %>/sidecar-ledger:/ledger:Z
     healthcheck:
       test: ["CMD", "curl", "-sk", "--cert", "/node-tls/server.crt", "--key", "/node-tls/server.key", "https://localhost:2114/metrics"]
       interval: 2s
@@ -237,30 +180,34 @@ services:
       retries: 30
       start_period: 10s
     depends_on:
-      committer-<%= fabricX.applicationOrgSlug %>-coordinator:
+      committer-<%= org.slug %>-coordinator:
         condition: service_healthy
 
-      orderer-router:
+<%_ fabricX.orderer.parties.forEach((party) => { -%>
+      <%= party.router.host %>:
         condition: service_healthy
+<%_ }); -%>
 
     networks:
       - fabric-x
 
-  committer-<%= fabricX.applicationOrgSlug %>-query-service:
+  committer-<%= org.slug %>-query-service:
     image: <%= global.committerImage %>
     pull_policy: missing
     restart: unless-stopped
     user: "${FABRIC_X_UID:-1000}:${FABRIC_X_GID:-1000}"
     command: start query --config=/config/query-service.yaml
     ports:
-      - "7001:7001"
+      - "<%= org.queryServicePort %>:7001"
     volumes:
-      - ./config/query-service.yaml:/config/query-service.yaml:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/peers/committer-query-service.<%= fabricX.applicationOrg.domain %>/tls:/node-tls:ro,Z
-      - ./crypto/peerOrganizations/<%= fabricX.applicationOrg.domain %>/msp/tlscacerts/tlsca.<%= fabricX.applicationOrg.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
+      - ./config/committer-<%= org.slug %>-query-service.yaml:/config/query-service.yaml:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/peers/committer-query-service.<%= org.domain %>/tls:/node-tls:ro,Z
+      - ./crypto/peerOrganizations/<%= org.domain %>/msp/tlscacerts/tlsca.<%= org.domain %>-cert.pem:/org-tls-ca.pem:ro,Z
     depends_on:
-      committer-<%= fabricX.applicationOrgSlug %>-db:
+      committer-<%= org.slug %>-db:
         condition: service_healthy
+      committer-<%= org.slug %>-init-db:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://localhost:2117/metrics"]
       interval: 2s
@@ -269,3 +216,4 @@ services:
       start_period: 10s
     networks:
       - fabric-x
+<%_ }); _%>

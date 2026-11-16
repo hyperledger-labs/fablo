@@ -101,7 +101,7 @@ Creates a simple network configuration file (`fablo-config.json`) in the current
 This is a good starting point for your Fablo journey or to set up a quick prototype. 
 
 The generated network configuration includes an orderer organization with two BFT orderer nodes and a peer organization with two peers.
-It uses Fabric version `3.1.0` with TLS enabled. 
+It uses Fabric version `3.1.5` with TLS enabled.
 
 The `fablo init` command accepts several optional parameters (order doesn't matter):
 * `node` - copies a sample Node.js chaincode into `chaincodes/chaincode-kv-node` and adds it to the config
@@ -129,7 +129,7 @@ You cannot combine `fabric-x` with `node`, `rest`, `dev`, `ccaas` or `gateway`.
 
 ```bash
 # Single override
-fablo init --set global.fabricVersion=2.5.0
+fablo init --set global.fabricVersion=2.5.16
 
 # Multiple overrides
 fablo init --set global.tls=false --set orgs[1].peer.db=CouchDb
@@ -539,7 +539,7 @@ Example:
 
 ```json
   "global": {
-    "fabricVersion": "2.5.12",
+    "fabricVersion": "2.5.16",
     "tls": false,
     "peerDevMode": false,
     "monitoring": {
@@ -562,6 +562,8 @@ Available fields in the `global` section are:
 * `tools.explorer` - whether to run one Blockchain Explorer for all organizations (default: `false`)
 * `fabricImages` - Docker image overrides, described below
 
+Docker Engine 29 or newer requires Fabric `2.5.15+` or `3.1.4+` when peers build and launch classic chaincode containers. Older Fabric releases require a compatible Docker Engine or external chaincode services.
+
 ### global.fabricImages
 
 `global.fabricImages` is optional and lets you replace the Docker images Fablo uses.
@@ -569,8 +571,8 @@ Example:
 
 ```json
 "fabricImages": {
-  "peer": "hyperledger/fabric-peer:3.1.0",
-  "orderer": "hyperledger/fabric-orderer:3.1.0",
+  "peer": "hyperledger/fabric-peer:3.1.5",
+  "orderer": "hyperledger/fabric-orderer:3.1.5",
   "tools": "ghcr.io/fablo-io/fabric-tools:3.1.3"
 }
 ```
@@ -740,7 +742,7 @@ Generated hooks are saved in `fablo-target/hooks`.
 ---
 "$schema": https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json
 global:
-  fabricVersion: 2.5.12
+  fabricVersion: 2.5.16
   tls: false
 orgs:
   - organization:

@@ -1,8 +1,8 @@
-PartyID: 1
+PartyID: <%= party.partyId %>
 
 General:
   ListenAddress: 0.0.0.0
-  ListenPort: 7053
+  ListenPort: <%= node.port %>
   TLS:
     Enabled: true
     PrivateKey: /node-tls/server.key
@@ -30,14 +30,12 @@ General:
     ClientCertificate: /node-tls/server.crt
     ClientPrivateKey: /node-tls/server.key
   LocalMSPDir: /node-msp
-  LocalMSPID: OrdererOrdererMSP
+  LocalMSPID: <%= party.org.mspName %>
   BCCSP:
     Default: SW
     SW:
       Hash: SHA2
       Security: 256
-      FileKeyStore:
-        KeyStore:
   LogSpec: info
 
 FileStore:

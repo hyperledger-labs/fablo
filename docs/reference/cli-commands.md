@@ -43,7 +43,7 @@ Option order does not matter. The valid options are `node`, `dev`, `ccaas`, `gat
 | `fabric-x` | No | Creates a minimal config for the experimental Fabric-X provider. Cannot be combined with `node`, `dev`, `ccaas`, `gateway` or `rest`. |
 | <code>--set &lt;path&gt;=&lt;value&gt;</code> | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
 
-`fablo init` writes the config to `fablo-config.json` in the current directory. By default the config uses Fabric `3.1.0`, TLS enabled, two BFT orderers, two `LevelDb` peers under `Org1`, and a single channel named `my-channel1`.
+`fablo init` writes the config to `fablo-config.json` in the current directory. By default the config uses Fabric `3.1.5`, TLS enabled, two BFT orderers, two `LevelDb` peers under `Org1`, and a single channel named `my-channel1`.
 
 
 ### `fablo generate`
