@@ -72,6 +72,34 @@ When `provider` is `fabric-x`, `fablo validate` reports an error for any of the 
 - Explorer or Fablo REST is enabled, in `global.tools` or in any `orgs[].tools`
 - `chaincodes` is not empty, because the Fabric-X provider does not deploy chaincodes yet
 - `channels` does not hold exactly one channel
+- `fabricX.orderer.partyCount` is not `1` or `4`
+
+#### Compact Fabric-X config
+
+A Fabric-X config can be much smaller than a classic one, because Fablo fills in what it can derive. These settings are optional when `provider` is `fabric-x`:
+
+- `global.fabricVersion` (default `3.1.0`), `global.tls` (default `true`), `global.peerDevMode` (default `false`) and `global.engine` (default `docker`)
+- `orgs[].organization.mspName` (default `<name>MSP`) and `orgs[].ca`
+- `channels[].orgs`. When omitted, all top-level organizations join the channel. When given, an entry needs only `name`, and `peers` is not needed.
+- `chaincodes` and `hooks`
+- `namespaces[].orgs`. When omitted, all organizations on the channel govern the namespace.
+- `fabricX.orderer.partyCount` (default `1`). Use `4` for the local BFT profile. Fablo derives the organizations of the orderer parties.
+
+```json
+{
+  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
+  "global": { "provider": "fabric-x" },
+  "orgs": [
+    { "organization": { "name": "Org1", "domain": "org1.example.com" } },
+    { "organization": { "name": "Org2", "domain": "org2.example.com" } }
+  ],
+  "channels": [{ "name": "mychannel" }],
+  "namespaces": [{ "name": "mynamespace" }, { "name": "audit_ns", "orgs": ["Org1"] }],
+  "fabricX": { "orderer": { "partyCount": 4 } }
+}
+```
+
+For the `fabric` provider, `global.fabricVersion`, `global.tls`, `chaincodes`, `channels[].orgs` and the `peers` of each channel organization are still required, and `fablo validate` reports them when they are missing.
 
 ### `global.fabricImages`
 

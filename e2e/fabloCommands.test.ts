@@ -305,7 +305,6 @@ describe("validate", () => {
         organization: { name: "Org2", domain: "org2.example.com", mspName: "Org2MSP" },
         ca: { prefix: "ca", db: "sqlite" },
       } as OrgJson);
-      config.channels[0].orgs.push({ name: "Org2", peers: [] });
     });
 
     it("should validate valid multi-org config with valid multi-org namespace policy", () => {
@@ -319,7 +318,10 @@ describe("validate", () => {
 
     it("should reject channel organization not in top-level orgs", () => {
       const channelName = config.channels[0].name;
-      config.channels[0].orgs.push({ name: "MissingOrg", peers: [] });
+      config.channels[0].orgs = [
+        { name: "Org1", peers: [] },
+        { name: "MissingOrg", peers: [] },
+      ];
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
       const missingOrgResult = commands.fabloExec("validate", true);
@@ -341,7 +343,6 @@ describe("validate", () => {
         organization: { name: "org1", domain: "org1-dup.example.com", mspName: "Org1DupMSP" },
         ca: { prefix: "ca", db: "sqlite" },
       } as OrgJson);
-      config.channels[0].orgs.push({ name: "org1", peers: [] });
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
       const duplicateSlugResult = commands.fabloExec("validate", true);
@@ -356,6 +357,10 @@ describe("validate", () => {
         organization: { name: "Org1", domain: "org1-alt.example.com", mspName: "Org1AltMSP" },
         ca: { prefix: "ca", db: "sqlite" },
       } as OrgJson);
+      config.channels[0].orgs = [
+        { name: "Org1", peers: [] },
+        { name: "Org2", peers: [] },
+      ];
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 
       const duplicateTopLevelResult = commands.fabloExec("validate", true);
@@ -517,7 +522,7 @@ describe("generate", () => {
   it("should generate Fabric-X network files with custom organization", () => {
     // Given
     commands.fabloExec(
-      "init fabric-x --set orgs[0].organization.name=Bank --set orgs[0].organization.domain=bank.fablo.com --set orgs[0].organization.mspName=BankMSP --set channels[0].orgs[0].name=Bank --set namespaces[0].orgs[0]=Bank",
+      "init fabric-x --set orgs[0].organization.name=Bank --set orgs[0].organization.domain=bank.fablo.com --set orgs[0].organization.mspName=BankMSP",
     );
 
     // When

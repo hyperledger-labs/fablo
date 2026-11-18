@@ -8,6 +8,7 @@ import extendHooksConfig from "./extendHooksConfig";
 import { distinctOrdererHeads, mergeOrdererGroups } from "./mergeOrdererGroups";
 import extendNamespacesConfig from "./extendNamespacesConfig";
 import extendFabricXConfig from "./extendFabricXConfig";
+import applyFabricXDefaults from "./applyFabricXDefaults";
 const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
   const {
     global: globalJson,
@@ -17,7 +18,7 @@ const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
     hooks: hooksJson,
     namespaces: namespacesJson,
     fabricX: fabricXJson,
-  } = json;
+  } = applyFabricXDefaults(json);
 
   const global = extendGlobal(globalJson);
   const orgs = extendOrgsConfig(orgsJson, global);
