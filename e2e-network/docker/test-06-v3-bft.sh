@@ -25,7 +25,7 @@ dumpLogs() {
 networkDown() {
   rm -rf "$TEST_LOGS"
   (for name in $(docker ps --format '{{.Names}}'); do dumpLogs "$name"; done)
-  dumpLogs orderer0.group1.orderer.example.com
+  dumpLogs orderer0.group1.org1.example.com
   (cd "$TEST_TMP" && "$FABLO_HOME/fablo.sh" down)
 }
 
@@ -55,18 +55,18 @@ trap 'networkDown ; echo "Test failed" ; exit 1' ERR SIGINT
 # start the network
 networkUp
 
-waitForContainer "orderer0.group1.orderer.example.com" "Channel created"
-waitForContainer "orderer1.group1.orderer.example.com" "Channel created"
-waitForContainer "orderer2.group1.orderer.example.com" "Channel created"
-waitForContainer "orderer3.group1.orderer.example.com" "Channel created"
+waitForContainer "orderer0.group1.org1.example.com" "Channel created"
+waitForContainer "orderer1.group1.org1.example.com" "Channel created"
+waitForContainer "orderer2.group1.org1.example.com" "Channel created"
+waitForContainer "orderer3.group1.org1.example.com" "Channel created"
 waitForContainer "ca.org1.example.com" "Listening on https://0.0.0.0:7054"
 waitForContainer "peer0.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer1.org1.example.com" "Joining gossip network of channel my-channel1 with 1 organizations"
 waitForContainer "peer0.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
 waitForContainer "peer0.org1.example.com" "Anchor peer.*with same endpoint, skipping connecting to myself"
-waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7042"
+waitForContainer "peer0.org1.example.com" "Membership view has changed. peers went online:.*peer1.org1.example.com:7022"
 waitForContainer "peer1.org1.example.com" "Learning about the configured anchor peers of Org1MSP for channel my-channel1"
-waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7041"
+waitForContainer "peer1.org1.example.com" "Membership view has changed. peers went online:.*peer0.org1.example.com:7021"
 
 # Test simple chaincode
 expectInvoke "peer0.org1.example.com" "my-channel1" "chaincode1" \
