@@ -25,7 +25,7 @@ export default {
     anchorPeerInstances: (peerCount: number): number => peerCount,
   },
   channel: {
-    ordererGroup: (ordererGroups: OrdererGroup[]): string => ordererGroups[0].name,
+    ordererGroup: (ordererGroups: OrdererGroup[]): string | undefined => ordererGroups[0]?.name,
   },
   chaincode: {
     init: '{"Args":[]}',

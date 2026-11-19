@@ -50,7 +50,7 @@ export interface PeerJson {
 export interface OrgJson {
   organization: OrganizationDetailsJson;
   ca: CAJson;
-  orderers: OrdererJson[] | undefined;
+  orderers?: OrdererJson[];
   peer?: PeerJson;
   tools?: { fabloRest?: boolean; explorer?: boolean };
 }
@@ -91,6 +91,12 @@ export interface NamespaceJson {
   orgs?: string[];
   policy?: string;
 }
+export interface FabricXOrdererPartyJson {
+  organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
+}
+export interface FabricXJson {
+  orderer: { parties: FabricXOrdererPartyJson[] };
+}
 export interface FabloConfigJson {
   $schema: string;
   global: GlobalJson;
@@ -99,4 +105,5 @@ export interface FabloConfigJson {
   chaincodes: ChaincodeJson[];
   hooks: HooksJson;
   namespaces?: NamespaceJson[];
+  fabricX?: FabricXJson;
 }

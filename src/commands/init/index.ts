@@ -91,14 +91,6 @@ function getDefaultFabricXConfig(): FabloConfigJson {
           prefix: "ca",
           db: "sqlite",
         },
-        orderers: [
-          {
-            groupName: "group1",
-            type: "BFT",
-            instances: 1,
-            prefix: "orderer",
-          },
-        ],
       },
     ],
     channels: [
@@ -118,6 +110,19 @@ function getDefaultFabricXConfig(): FabloConfigJson {
         orgs: ["Org1"],
       },
     ],
+    fabricX: {
+      orderer: {
+        parties: [
+          {
+            organization: {
+              name: "Orderer",
+              domain: "orderer.example.com",
+              mspName: "OrdererOrdererMSP",
+            },
+          },
+        ],
+      },
+    },
     chaincodes: [],
     hooks: {},
   };
