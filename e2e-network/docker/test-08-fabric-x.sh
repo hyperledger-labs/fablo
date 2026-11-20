@@ -111,7 +111,7 @@ fxconfig_value() {
 
 FX_ORG_DOMAIN="$(jq -r '.orgs[0].organization.domain' "$CONFIG")"
 FX_NAMESPACE="$(jq -r '.namespaces[] | select(.orgs == ["Org1"]) | .name' "$CONFIG" | head -n 1)"
-FX_MSP_NAME="$(jq -r '.orgs[0].organization.mspName' "$CONFIG")"
+FX_MSP_NAME="$(jq -r '.orgs[0].organization | .mspName // (.name + "MSP")' "$CONFIG")"
 FX_CHANNEL="$(jq -r '.channels[0].name' "$CONFIG")"
 FX_ORDERER="$(fxconfig_value orderer address)"
 FX_SIDECAR="$(fxconfig_value notifications address)"
