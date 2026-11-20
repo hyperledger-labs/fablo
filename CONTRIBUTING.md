@@ -65,4 +65,6 @@ Extra lines after that are passed to the agent as steering. The workflow verifie
 
 The Action opens a pull request with the implementation, for a maintainer to review and merge.
 
+To ask for changes, review the pull request as usual: leave comments on the lines of the diff, or a general comment. Then comment on the pull request, starting with `/implement`. Extra lines after the command are passed to the agent as steering. The agent works through the unresolved review threads and the pull request's reviews and comments, and pushes a new commit to the same branch. Resolve the threads that are done, and repeat for another round. This works on any open pull request from a branch in this repository, including one opened by hand without an issue; pull requests from forks are refused. The same permission check applies.
+
 We appreciate your contributions and look forward to working with you!
