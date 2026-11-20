@@ -254,7 +254,6 @@ exports[`schema should match snapshot 1`] = `
               },
               "required": [
                 "name",
-                "peers",
               ],
               "title": "Organization",
               "type": "object",
@@ -265,7 +264,6 @@ exports[`schema should match snapshot 1`] = `
         },
         "required": [
           "name",
-          "orgs",
         ],
         "title": "Channel",
         "type": "object",
@@ -280,71 +278,18 @@ exports[`schema should match snapshot 1`] = `
         "orderer": {
           "$id": "#/properties/fabricX/properties/orderer",
           "properties": {
-            "parties": {
-              "$id": "#/properties/fabricX/properties/orderer/properties/parties",
-              "default": [
-                {
-                  "organization": {
-                    "domain": "orderer.example.com",
-                    "mspName": "OrdererOrdererMSP",
-                    "name": "Orderer",
-                  },
-                },
-              ],
-              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
-              "items": {
-                "$id": "#/properties/fabricX/properties/orderer/properties/parties/items",
-                "properties": {
-                  "organization": {
-                    "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization",
-                    "properties": {
-                      "domain": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/domain",
-                        "pattern": "^[a-z0-9\\.\\-]+$",
-                        "title": "Domain",
-                        "type": "string",
-                      },
-                      "mspName": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/mspName",
-                        "pattern": "^[a-zA-Z0-9]+$",
-                        "title": "MSP Name",
-                        "type": "string",
-                      },
-                      "name": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/name",
-                        "pattern": "^[a-zA-Z0-9]+$",
-                        "title": "Name",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "name",
-                      "domain",
-                    ],
-                    "title": "Organization of the party",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "organization",
-                ],
-                "title": "Orderer party",
-                "type": "object",
-              },
-              "title": "Orderer parties",
-              "type": "array",
+            "partyCount": {
+              "$id": "#/properties/fabricX/properties/orderer/properties/partyCount",
+              "default": 1,
+              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo derives the organizations of the parties. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
+              "title": "Number of orderer parties",
+              "type": "integer",
             },
           },
-          "required": [
-            "parties",
-          ],
           "title": "Orderer",
           "type": "object",
         },
       },
-      "required": [
-        "orderer",
-      ],
       "title": "Fabric-X settings (EXPERIMENTAL)",
       "type": "object",
     },
@@ -496,10 +441,7 @@ exports[`schema should match snapshot 1`] = `
           "type": "object",
         },
       },
-      "required": [
-        "fabricVersion",
-        "tls",
-      ],
+      "required": [],
       "title": "Global network settings",
       "type": "object",
     },
@@ -789,7 +731,6 @@ exports[`schema should match snapshot 1`] = `
     "global",
     "orgs",
     "channels",
-    "chaincodes",
   ],
   "title": "Root",
   "type": "object",

@@ -1,6 +1,6 @@
 import { Args, Command, Flags } from "@oclif/core";
 import * as chalk from "chalk";
-import { GlobalJson, FabloConfigJson, ChaincodeJson, OrgJson } from "../../types/FabloConfigJson";
+import { GlobalJson, FabloConfigJson, FabricXConfigJson, ChaincodeJson, OrgJson } from "../../types/FabloConfigJson";
 import { Validator as SchemaValidator } from "jsonschema";
 import * as _ from "lodash";
 import * as path from "path";
@@ -70,14 +70,10 @@ function getFabricConfig(): FabloConfigJson {
   };
 }
 
-function getDefaultFabricXConfig(): FabloConfigJson {
+function getDefaultFabricXConfig(): FabricXConfigJson {
   return {
     $schema: `https://github.com/hyperledger-labs/fablo/releases/download/${version}/schema.json`,
     global: {
-      fabricVersion: "3.1.0",
-      tls: true,
-      engine: "docker",
-      peerDevMode: false,
       provider: "fabric-x",
     },
     orgs: [
@@ -85,46 +81,19 @@ function getDefaultFabricXConfig(): FabloConfigJson {
         organization: {
           name: "Org1",
           domain: "org1.example.com",
-          mspName: "Org1MSP",
-        },
-        ca: {
-          prefix: "ca",
-          db: "sqlite",
         },
       },
     ],
     channels: [
       {
         name: "mychannel",
-        orgs: [
-          {
-            name: "Org1",
-            peers: [],
-          },
-        ],
       },
     ],
     namespaces: [
       {
         name: "mynamespace",
-        orgs: ["Org1"],
       },
     ],
-    fabricX: {
-      orderer: {
-        parties: [
-          {
-            organization: {
-              name: "Orderer",
-              domain: "orderer.example.com",
-              mspName: "OrdererOrdererMSP",
-            },
-          },
-        ],
-      },
-    },
-    chaincodes: [],
-    hooks: {},
   };
 }
 
@@ -234,7 +203,8 @@ export default class Init extends Command {
       }
     }
 
-    let fabloConfigJson = flags.fabricX ? getDefaultFabricXConfig() : getDefaultFabloConfig();
+    // the compact Fabric-X config is completed with defaults when it is read, so it is kept as written
+    let fabloConfigJson = flags.fabricX ? (getDefaultFabricXConfig() as FabloConfigJson) : getDefaultFabloConfig();
 
     if (flags.fabricX) {
       this.log("Creating minimal Fabric-X starter config");
@@ -316,11 +286,13 @@ export default class Init extends Command {
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
-    const global: GlobalJson = {
-      ...fabloConfigJson.global,
-      engine: fabloConfigJson.global.engine ?? "docker",
-    };
-    fabloConfigJson = { ...fabloConfigJson, global };
+    if (!flags.fabricX) {
+      const global: GlobalJson = {
+        ...fabloConfigJson.global,
+        engine: fabloConfigJson.global.engine ?? "docker",
+      };
+      fabloConfigJson = { ...fabloConfigJson, global };
+    }
 
     if (parsed.flags.set) {
       for (const setValue of parsed.flags.set) {
