@@ -1,7 +1,7 @@
 import { FabloConfigJson, FabricXConfigJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
-// Fills in the values that a compact fabric-x config leaves out, so the rest of Fablo sees the full config.
+
 const applyFabricXDefaults = (json: FabloConfigJson | FabricXConfigJson): FabloConfigJson => {
   if (json.global?.provider !== "fabric-x") return json as FabloConfigJson;
 
