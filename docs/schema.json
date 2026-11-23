@@ -9,6 +9,59 @@
     "orgs",
     "channels"
   ],
+  "if": {
+    "properties": {
+      "global": {
+        "properties": {
+          "provider": {
+            "const": "fabric-x"
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      }
+    },
+    "required": [
+      "global"
+    ]
+  },
+  "then": {
+    "required": [
+      "namespaces"
+    ]
+  },
+  "else": {
+    "required": [
+      "chaincodes"
+    ],
+    "properties": {
+      "global": {
+        "required": [
+          "fabricVersion",
+          "tls"
+        ]
+      },
+      "channels": {
+        "items": {
+          "required": [
+            "name",
+            "orgs"
+          ],
+          "properties": {
+            "orgs": {
+              "items": {
+                "required": [
+                  "name",
+                  "peers"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "properties": {
     "$schema": {
       "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json"

@@ -15,6 +15,8 @@ title: Configuration file
 5. [`channels`](#channels) — channel definitions and organization/peer membership
 6. [`chaincodes`](#chaincodes) — chaincode definitions, endorsement, and private data collections
 7. [`hooks`](#hooks) — commands run after generate / start
+8. [`namespaces`](#namespaces) — Fabric-X namespaces (`fabric-x` provider only)
+9. [`fabricX`](#fabricx) — Fabric-X orderer settings (`fabric-x` provider only)
 
 
 ## Overview
@@ -45,12 +47,12 @@ This page covers the main fields used in practice. For the full JSON Schema (inc
 
 ## `global`
 
-Basic settings of the Hyperledger Fabric network. Type: `object`. Required fields: `fabricVersion`, `tls`.
+Basic settings of the Hyperledger Fabric network. Type: `object`. Required fields for the `fabric` provider: `fabricVersion`, `tls`. They are optional for `fabric-x`.
 
 | Field | Purpose | Type | Required | Notes |
 |---|---|---|---|---|
-| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes | Must be `2.0.0` or higher. `fablo init` uses `3.1.5` |
-| `tls` | Whether TLS is used across the network | `boolean` | Yes | `fablo init` uses `true` |
+| `fabricVersion` | Hyperledger Fabric version to use for the network | `string` | Yes (`fabric`) | Must be `2.0.0` or higher. `fablo init` uses `3.1.5`. Default `3.1.0` for `fabric-x` |
+| `tls` | Whether TLS is used across the network | `boolean` | Yes (`fabric`) | `fablo init` uses `true`. Default `true` for `fabric-x` |
 | `peerDevMode` | Start all peers in dev mode | `boolean` | No | Default `false`. Requires `tls` to be `false`, and `fablo validate` reports an error when both are `true`. Supported on Fabric v2 only, not on Fabric v3. See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md). |
 | `engine` | Engine on which the network will be deployed | `string` | No | `docker` (default) or `kubernetes` |
 | `provider` | Network provider | `string` | No | `fabric` (default) or `fabric-x`. `fabric-x` is experimental, see below |
@@ -71,35 +73,9 @@ When `provider` is `fabric-x`, `fablo validate` reports an error for any of the 
 - `peerDevMode` is `true`
 - Explorer or Fablo REST is enabled, in `global.tools` or in any `orgs[].tools`
 - `chaincodes` is not empty, because the Fabric-X provider does not deploy chaincodes yet
+- `namespaces` is missing or empty
 - `channels` does not hold exactly one channel
 - `fabricX.orderer.partyCount` is not `1` or `4`
-
-#### Compact Fabric-X config
-
-A Fabric-X config can be much smaller than a classic one, because Fablo fills in what it can derive. These settings are optional when `provider` is `fabric-x`:
-
-- `global.fabricVersion` (default `3.1.0`), `global.tls` (default `true`), `global.peerDevMode` (default `false`) and `global.engine` (default `docker`)
-- `orgs[].organization.mspName` (default `<name>MSP`) and `orgs[].ca`
-- `channels[].orgs`. When omitted, all top-level organizations join the channel. When given, an entry needs only `name`, and `peers` is not needed.
-- `chaincodes` and `hooks`
-- `namespaces[].orgs`. When omitted, all organizations on the channel govern the namespace.
-- `fabricX.orderer.partyCount` (default `1`). Use `4` for the local BFT profile. Fablo derives the organizations of the orderer parties.
-
-```json
-{
-  "$schema": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
-  "global": { "provider": "fabric-x" },
-  "orgs": [
-    { "organization": { "name": "Org1", "domain": "org1.example.com" } },
-    { "organization": { "name": "Org2", "domain": "org2.example.com" } }
-  ],
-  "channels": [{ "name": "mychannel" }],
-  "namespaces": [{ "name": "mynamespace" }, { "name": "audit_ns", "orgs": ["Org1"] }],
-  "fabricX": { "orderer": { "partyCount": 4 } }
-}
-```
-
-For the `fabric` provider, `global.fabricVersion`, `global.tls`, `chaincodes`, `channels[].orgs` and the `peers` of each channel organization are still required, and `fablo validate` reports them when they are missing.
 
 ### `global.fabricImages`
 
@@ -162,7 +138,7 @@ When `global.tools.explorer` is `true`, Fablo runs one Explorer for the whole ne
 
 ## `orgs`
 
-An array of organization definitions. Type: `array`. Each item's required field: `organization`.
+An array of organization definitions. Type: `array`. Each item's required field: `organization`. With `fabric-x`, only `name` and `domain` are needed, because `mspName` and `ca` have defaults.
 
 ### `orgs[].organization`
 
@@ -258,24 +234,24 @@ Fablo REST cannot be used together with `global.peerDevMode`, and `fablo validat
 
 ## `channels`
 
-An array of channel definitions. Type: `array`. Each item's required fields: `name`, `orgs`.
+An array of channel definitions. Type: `array`. Each item's required fields: `name`, and `orgs` for the `fabric` provider.
 
 | Field | Purpose | Type | Required | Allowed values |
 |---|---|---|---|---|
 | `name` | Channel name | `string` | Yes | pattern `^[a-z0-9_-]+$` |
 | `ordererGroup` | Name of the orderer **group** (`orgs[].orderers[].groupName`) that handles this channel | `string` | No | pattern `^[a-zA-Z0-9]+$` (defaults to the first orderer group defined in `orgs`) |
-| `orgs` | Organizations participating in the channel | `array` | Yes | see below |
+| `orgs` | Organizations participating in the channel | `array` | Yes (`fabric`) | see below. With `fabric-x`, defaults to all organizations in `orgs` |
 
 `ordererGroup` references an orderer group's `groupName`, not an organization name. `fablo validate` reports an error when the value does not match a `groupName` defined in `orgs`. The pattern for `ordererGroup` allows letters and digits only, so it cannot reference a `groupName` that contains a dot or a hyphen.
 
 ### `channels[].orgs[]`
 
-Each item requires `name` and `peers`.
+Each item requires `name`, and `peers` for the `fabric` provider.
 
 | Field | Purpose | Type | Required | Allowed values |
 |---|---|---|---|---|
 | `name` | Organization name (must match an organization defined in `orgs`) | `string` | Yes | pattern `^[a-zA-Z0-9]+$` |
-| `peers` | Peers for the organization on this channel | `array` of `string` | Yes | each item pattern `^[a-z0-9]+$` |
+| `peers` | Peers for the organization on this channel | `array` of `string` | Yes (`fabric`) | each item pattern `^[a-z0-9]+$`. Not used by `fabric-x` |
 
 Each entry in `peers` is a peer name, which is the organization's peer `prefix` followed by a zero based index, for example `peer0`. An organization listed here must have a `peer` block, so you cannot join an orderer-only organization to a channel.
 
@@ -296,7 +272,7 @@ Each entry in `peers` is a peer name, which is the organization's peer `prefix` 
 
 ## `chaincodes`
 
-An array of chaincode definitions. Type: `array`. Each item's required fields: `name`, `version`, `lang`, `channel`. Additionally, if `lang` is `ccaas`, `image` is required; otherwise `directory` is required.
+An array of chaincode definitions. Type: `array`. Required for the `fabric` provider, and optional for `fabric-x`, which does not deploy chaincodes. Each item's required fields: `name`, `version`, `lang`, `channel`. Additionally, if `lang` is `ccaas`, `image` is required; otherwise `directory` is required.
 
 | Field | Purpose | Type | Required | Allowed values |
 |---|---|---|---|---|
@@ -385,5 +361,40 @@ Fablo renders each hook into a script under `fablo-target/hooks/` and runs it fr
 "hooks": {
   "postGenerate": "npm i --prefix ./chaincodes/chaincode-kv-node",
   "postStart": "echo network is up"
+}
+```
+
+## `namespaces`
+
+An array of Fabric-X namespaces to declare and create. Type: `array`. Used only when `global.provider` is `fabric-x`, and required there. Each item's required field: `name`.
+
+| Field | Purpose | Type | Required | Allowed values |
+|---|---|---|---|---|
+| `name` | Namespace name | `string` | Yes | pattern `^[a-z0-9_]+$`, at most 60 characters |
+| `orgs` | Organizations whose MSPs govern the namespace | `array` of `string` | No | Names of organizations defined in `orgs`. Defaults to all organizations on the channel. Exclusive with `policy` |
+| `policy` | Raw Fabric policy expression, as an advanced override | `string` | No | For example `AND('Org1MSP.member')`. Exclusive with `orgs` |
+
+### Example
+
+```json
+"namespaces": [
+  { "name": "mynamespace" },
+  { "name": "audit_ns", "orgs": ["Org1"] }
+]
+```
+
+## `fabricX`
+
+Fabric-X settings. Type: `object`. Used only when `global.provider` is `fabric-x`, and optional there.
+
+| Field | Purpose | Type | Required | Allowed values |
+|---|---|---|---|---|
+| `orderer.partyCount` | Number of orderer parties | `integer` | No | `1` (default) or `4`. Use `4` for a local BFT network. Fablo derives the organization of each party |
+
+### Example
+
+```json
+"fabricX": {
+  "orderer": { "partyCount": 4 }
 }
 ```

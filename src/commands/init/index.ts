@@ -121,7 +121,7 @@ export function parseOverrideValue(raw: string): unknown {
 }
 
 export function applyOverride(
-  config: FabloConfigJson,
+  config: FabloConfigJson | FabricXConfigJson,
   rawPath: string,
   rawValue: string,
   log: (msg: string) => void,
@@ -134,7 +134,7 @@ export function applyOverride(
   log(chalk.blue(`ℹ Dynamic override: ${dottedPath} = ${displayValue}`));
 }
 
-function validateFabloConfig(configToValidate: FabloConfigJson): string[] {
+function validateFabloConfig(configToValidate: FabloConfigJson | FabricXConfigJson): string[] {
   const validator = new SchemaValidator();
   const results = validator.validate(configToValidate, schema);
   return results.errors.map((error) => `${error.property}: ${error.message}`);
@@ -186,29 +186,14 @@ export default class Init extends Command {
     };
   }
 
-  async copySampleConfig(): Promise<void> {
-    const parsed = await this.parse(Init);
-    const argv = (parsed.argv ?? []) as string[];
-
-    const unsupportedArgs = argv.filter((arg) => arg.startsWith("--"));
-    if (unsupportedArgs.length > 0) {
-      this.error(`Unknown option(s): ${unsupportedArgs.join(", ")}. ` + `Did you mean --set <path>=<value>?`);
-    }
-    const flags = this.getEffectiveFlags({ options: argv });
-
-    if (flags.fabricX) {
-      const incompatible = (["node", "dev", "ccaas", "gateway", "rest"] as const).filter((opt) => flags[opt]);
-      if (incompatible.length > 0) {
-        this.error(`Error: fabric-x cannot be used together with ${incompatible.join(", ")}`);
-      }
-    }
-
-    // the compact Fabric-X config is completed with defaults when it is read, so it is kept as written
-    let fabloConfigJson = flags.fabricX ? (getDefaultFabricXConfig() as FabloConfigJson) : getDefaultFabloConfig();
-
-    if (flags.fabricX) {
-      this.log("Creating minimal Fabric-X starter config");
-    }
+  private createClassicConfig(flags: {
+    node: boolean;
+    dev: boolean;
+    ccaas: boolean;
+    gateway: boolean;
+    rest: boolean;
+  }): FabloConfigJson {
+    let fabloConfigJson = getDefaultFabloConfig();
 
     if (flags.ccaas) {
       if (flags.dev || flags.node) {
@@ -286,12 +271,38 @@ export default class Init extends Command {
       fabloConfigJson = { ...fabloConfigJson, orgs };
     }
 
-    if (!flags.fabricX) {
-      const global: GlobalJson = {
-        ...fabloConfigJson.global,
-        engine: fabloConfigJson.global.engine ?? "docker",
-      };
-      fabloConfigJson = { ...fabloConfigJson, global };
+    const global: GlobalJson = {
+      ...fabloConfigJson.global,
+      engine: fabloConfigJson.global.engine ?? "docker",
+    };
+    fabloConfigJson = { ...fabloConfigJson, global };
+
+    return fabloConfigJson;
+  }
+
+  async copySampleConfig(): Promise<void> {
+    const parsed = await this.parse(Init);
+    const argv = (parsed.argv ?? []) as string[];
+
+    const unsupportedArgs = argv.filter((arg) => arg.startsWith("--"));
+    if (unsupportedArgs.length > 0) {
+      this.error(`Unknown option(s): ${unsupportedArgs.join(", ")}. ` + `Did you mean --set <path>=<value>?`);
+    }
+    const flags = this.getEffectiveFlags({ options: argv });
+
+    if (flags.fabricX) {
+      const incompatible = (["node", "dev", "ccaas", "gateway", "rest"] as const).filter((opt) => flags[opt]);
+      if (incompatible.length > 0) {
+        this.error(`Error: fabric-x cannot be used together with ${incompatible.join(", ")}`);
+      }
+    }
+
+    let fabloConfigJson: FabloConfigJson | FabricXConfigJson;
+    if (flags.fabricX) {
+      this.log("Creating minimal Fabric-X starter config");
+      fabloConfigJson = getDefaultFabricXConfig();
+    } else {
+      fabloConfigJson = this.createClassicConfig(flags);
     }
 
     if (parsed.flags.set) {

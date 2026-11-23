@@ -125,14 +125,14 @@ export default class Validate extends Command {
     this._validateIfConfigFileExists(this.fabloConfigPath);
 
     const configContent = fs.readFileSync(this.fabloConfigPath, "utf-8");
-    const networkConfig = applyFabricXDefaults(parseFabloConfig(configContent));
+    const rawConfig = parseFabloConfig(configContent);
+    
+    if (!this._validateJsonSchema(rawConfig)) return;
+
+    const networkConfig = applyFabricXDefaults(rawConfig);
     const provider = networkConfig.global.provider ?? "fabric";
 
-    if (provider === "fabric") {
-      this._validateClassicRequiredSettings(networkConfig);
-    }
     this._validateFabricVersion(networkConfig.global);
-    this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
 
     if (provider === "fabric-x") {
@@ -176,30 +176,6 @@ export default class Validate extends Command {
     this._validateExplorerWithFabricVersion(networkConfig.global, networkConfig.orgs);
     this._validateDevMode(networkConfig.global);
     this._validateFabloRestAndDevMode(networkConfig.global, networkConfig.orgs);
-  }
-
-  private _validateClassicRequiredSettings(networkConfig: FabloConfigJson) {
-    // the schema leaves these optional because fabric-x has defaults for them, but the fabric provider does not
-    const missing: string[] = [];
-    if (networkConfig.global.fabricVersion === undefined) missing.push("global.fabricVersion");
-    if (networkConfig.global.tls === undefined) missing.push("global.tls");
-    if (networkConfig.chaincodes === undefined) missing.push("chaincodes");
-    networkConfig.channels.forEach((channel, channelIndex) => {
-      if (channel.orgs === undefined) {
-        missing.push(`channels[${channelIndex}].orgs`);
-        return;
-      }
-      channel.orgs.forEach((org, orgIndex) => {
-        if (org.peers === undefined) missing.push(`channels[${channelIndex}].orgs[${orgIndex}].peers`);
-      });
-    });
-
-    if (missing.length > 0) {
-      this.emit(validationErrorType.CRITICAL, {
-        category: validationCategories.CRITICAL,
-        message: `Missing required setting(s) for the 'fabric' provider: ${missing.join(", ")}.`,
-      });
-    }
   }
 
   private _validateFabricVersion(global: GlobalJson) {
@@ -260,7 +236,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateJsonSchema(configToValidate: FabloConfigJson) {
+  _validateJsonSchema(configToValidate: FabloConfigJson): boolean {
     const validator = new SchemaValidator();
     const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
@@ -276,6 +252,7 @@ export default class Validate extends Command {
       this.log(chalk.bold("- Json schema validation failed!"));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
     }
+    return results.errors.length === 0;
   }
 
   _printIfNotEmpty(messages: Message[], caption: string) {

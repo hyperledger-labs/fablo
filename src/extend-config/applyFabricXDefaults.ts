@@ -1,11 +1,12 @@
 import { FabloConfigJson, FabricXConfigJson } from "../types/FabloConfigJson";
 import defaults from "./defaults";
 
+export const isFabricXConfig = (json: FabloConfigJson | FabricXConfigJson): json is FabricXConfigJson =>
+  json.global.provider === "fabric-x";
 
-const applyFabricXDefaults = (json: FabloConfigJson | FabricXConfigJson): FabloConfigJson => {
-  if (json.global?.provider !== "fabric-x") return json as FabloConfigJson;
+const applyFabricXDefaults = (config: FabloConfigJson | FabricXConfigJson): FabloConfigJson => {
+  if (!isFabricXConfig(config)) return config;
 
-  const config = json as FabricXConfigJson;
   const orgs = config.orgs.map((org) => ({
     ...org,
     organization: {

@@ -105,7 +105,7 @@ export interface FabloConfigJson {
   fabricX?: FabricXJson;
 }
 
-// Compact config accepted for the fabric-x provider. Fablo derives everything that is omitted here.
+// Config accepted for the fabric-x provider. Fablo derives everything that is omitted here.
 export interface FabricXOrgJson extends Omit<OrgJson, "organization" | "ca"> {
   organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
   ca?: CAJson;
@@ -116,8 +116,8 @@ export interface FabricXChannelJson {
 }
 export interface FabricXConfigJson
   extends Omit<FabloConfigJson, "global" | "orgs" | "channels" | "chaincodes" | "hooks"> {
-  global: Omit<GlobalJson, "fabricVersion" | "tls" | "peerDevMode"> &
-    Partial<Pick<GlobalJson, "fabricVersion" | "tls" | "peerDevMode">>;
+  global: Omit<GlobalJson, "provider" | "fabricVersion" | "tls" | "peerDevMode"> &
+    Partial<Pick<GlobalJson, "fabricVersion" | "tls" | "peerDevMode">> & { provider: "fabric-x" };
   orgs: FabricXOrgJson[];
   channels: FabricXChannelJson[];
   chaincodes?: ChaincodeJson[];
