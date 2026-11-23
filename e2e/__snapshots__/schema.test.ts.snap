@@ -5,6 +5,54 @@ exports[`schema should match snapshot 1`] = `
   "$id": "http://example.com/example.json",
   "$schema": "http://json-schema.org/draft-07/schema",
   "default": {},
+  "else": {
+    "properties": {
+      "channels": {
+        "items": {
+          "properties": {
+            "orgs": {
+              "items": {
+                "required": [
+                  "name",
+                  "peers",
+                ],
+              },
+            },
+          },
+          "required": [
+            "name",
+            "orgs",
+          ],
+        },
+      },
+      "global": {
+        "required": [
+          "fabricVersion",
+          "tls",
+        ],
+      },
+    },
+    "required": [
+      "chaincodes",
+    ],
+  },
+  "if": {
+    "properties": {
+      "global": {
+        "properties": {
+          "provider": {
+            "const": "fabric-x",
+          },
+        },
+        "required": [
+          "provider",
+        ],
+      },
+    },
+    "required": [
+      "global",
+    ],
+  },
   "properties": {
     "$schema": {
       "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
@@ -732,6 +780,11 @@ exports[`schema should match snapshot 1`] = `
     "orgs",
     "channels",
   ],
+  "then": {
+    "required": [
+      "namespaces",
+    ],
+  },
   "title": "Root",
   "type": "object",
 }
