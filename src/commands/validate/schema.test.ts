@@ -19,10 +19,10 @@ describe("schema rules per provider", () => {
   });
 
   it("should accept a fabric-x config without the values that have defaults", () => {
-    // given
+
     const json = fabricXConfig();
 
-    // then
+
     expect(json.global).toEqual({ provider: "fabric-x" });
     expect(json.channels[0].orgs).toBeUndefined();
     expect(json.chaincodes).toBeUndefined();

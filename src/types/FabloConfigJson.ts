@@ -105,7 +105,7 @@ export interface FabloConfigJson {
   fabricX?: FabricXJson;
 }
 
-// Config accepted for the fabric-x provider. Fablo derives everything that is omitted here.
+
 export interface FabricXOrgJson extends Omit<OrgJson, "organization" | "ca"> {
   organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
   ca?: CAJson;
