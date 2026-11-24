@@ -1,4 +1,4 @@
-import { FabloConfigJson } from "../types/FabloConfigJson";
+import { FabloConfigJson, FabricXConfigJson } from "../types/FabloConfigJson";
 import { FabloConfigExtended } from "../types/FabloConfigExtended";
 import { extendOrgsConfig } from "./extendOrgsConfig";
 import extendGlobal from "./extendGlobal";
@@ -9,7 +9,7 @@ import { distinctOrdererHeads, mergeOrdererGroups } from "./mergeOrdererGroups";
 import extendNamespacesConfig from "./extendNamespacesConfig";
 import extendFabricXConfig from "./extendFabricXConfig";
 import applyFabricXDefaults from "./applyFabricXDefaults";
-const extendConfig = (json: FabloConfigJson): FabloConfigExtended => {
+const extendConfig = (json: FabloConfigJson | FabricXConfigJson): FabloConfigExtended => {
   const {
     global: globalJson,
     orgs: orgsJson,

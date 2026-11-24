@@ -330,6 +330,10 @@ exports[`schema should match snapshot 1`] = `
               "$id": "#/properties/fabricX/properties/orderer/properties/partyCount",
               "default": 1,
               "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo derives the organizations of the parties. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
+              "enum": [
+                1,
+                4,
+              ],
               "title": "Number of orderer parties",
               "type": "integer",
             },
@@ -781,6 +785,11 @@ exports[`schema should match snapshot 1`] = `
     "channels",
   ],
   "then": {
+    "properties": {
+      "namespaces": {
+        "minItems": 1,
+      },
+    },
     "required": [
       "namespaces",
     ],

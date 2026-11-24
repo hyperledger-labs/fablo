@@ -29,7 +29,12 @@
   "then": {
     "required": [
       "namespaces"
-    ]
+    ],
+    "properties": {
+      "namespaces": {
+        "minItems": 1
+      }
+    }
   },
   "else": {
     "required": [
@@ -748,6 +753,10 @@
             "partyCount": {
               "$id": "#/properties/fabricX/properties/orderer/properties/partyCount",
               "type": "integer",
+              "enum": [
+                1,
+                4
+              ],
               "title": "Number of orderer parties",
               "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo derives the organizations of the parties. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
               "default": 1

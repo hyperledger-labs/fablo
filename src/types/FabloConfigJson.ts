@@ -115,11 +115,12 @@ export interface FabricXChannelJson {
   orgs?: { name: string; peers?: string[] }[];
 }
 export interface FabricXConfigJson
-  extends Omit<FabloConfigJson, "global" | "orgs" | "channels" | "chaincodes" | "hooks"> {
+  extends Omit<FabloConfigJson, "global" | "orgs" | "channels" | "chaincodes" | "hooks" | "namespaces"> {
   global: Omit<GlobalJson, "provider" | "fabricVersion" | "tls" | "peerDevMode"> &
     Partial<Pick<GlobalJson, "fabricVersion" | "tls" | "peerDevMode">> & { provider: "fabric-x" };
   orgs: FabricXOrgJson[];
   channels: FabricXChannelJson[];
+  namespaces: NamespaceJson[];
   chaincodes?: ChaincodeJson[];
   hooks?: HooksJson;
 }
