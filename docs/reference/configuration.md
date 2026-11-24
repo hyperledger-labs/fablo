@@ -15,13 +15,15 @@ title: Configuration file
 5. [`channels`](#channels) — channel definitions and organization/peer membership
 6. [`chaincodes`](#chaincodes) — chaincode definitions, endorsement, and private data collections
 7. [`hooks`](#hooks) — commands run after generate / start
-8. [`namespaces`](#namespaces) — Fabric-X namespaces (`fabric-x` provider only)
+8. [`namespaces`](#namespaces) — Fabric-X smart contract namespaces (`fabric-x` provider only)
 9. [`fabricX`](#fabricx) — Fabric-X orderer settings (`fabric-x` provider only)
 
 
 ## Overview
 
-A Fablo configuration file is a **JSON or YAML** document. Required top-level sections: `global`, `orgs`, `channels`, and `chaincodes`. Optional top-level fields: `$schema` and `hooks`.
+A Fablo configuration file is a **JSON or YAML** document. Required top-level sections depend on the network provider:
+- **Classic Hyperledger Fabric (`global.provider: "fabric"` or omitted):** requires `global`, `orgs`, `channels`, and `chaincodes` (or `chaincodes: []` if none). Optional fields: `$schema` and `hooks`.
+- **Fabric-X (`global.provider: "fabric-x"`):** requires `global`, `orgs`, `channels`, `namespaces`, and `fabricX`, and `chaincodes` is required and must be an empty array (`[]`). Optional fields: `$schema` and `hooks`.
 
 Commands that take an optional config path, such as `fablo up` and `fablo validate`, look for `fablo-config.json` in the current directory, and fall back to `fablo-config.yaml` if the JSON file is not there.
 
@@ -55,7 +57,7 @@ Basic settings of the Hyperledger Fabric network. Type: `object`. Required field
 | `tls` | Whether TLS is used across the network | `boolean` | Yes (`fabric`) | `fablo init` uses `true`. Default `true` for `fabric-x` |
 | `peerDevMode` | Start all peers in dev mode | `boolean` | No | Default `false`. Requires `tls` to be `false`, and `fablo validate` reports an error when both are `true`. Supported on Fabric v2 only, not on Fabric v3. See [SUPPORTED_FEATURES.md](https://github.com/hyperledger-labs/fablo/blob/main/SUPPORTED_FEATURES.md). |
 | `engine` | Engine on which the network will be deployed | `string` | No | `docker` (default) or `kubernetes` |
-| `provider` | Network provider | `string` | No | `fabric` (default) or `fabric-x`. `fabric-x` is experimental, see below |
+| `provider` | Network provider | `string` | No | `fabric` (default) or `fabric-x`, see below |
 | `fabricImages` | Optional Docker images for Hyperledger Fabric components | `object` | No | see below |
 | `monitoring` | Optional settings for monitoring purposes | `object` | No | see below |
 | `tools` | Tool toggles at the network level | `object` | No | see below |
@@ -64,18 +66,18 @@ Docker Engine 29 or newer requires Fabric `2.5.15+` or `3.1.4+` when peers build
 
 ### `global.provider`
 
-Selects the network provider. The default is `fabric`, which is the fully supported Hyperledger Fabric network. The value `fabric-x` selects the experimental Fabric-X provider, and `fablo init fabric-x` writes a starter config that uses it.
+Selects the network provider. The default is `fabric`, which is the classic Hyperledger Fabric network. The value `fabric-x` selects the Fabric-X provider, and `fablo init fabric-x` writes a starter config that uses it.
 
-When `provider` is `fabric-x`, `fablo validate` reports an error for any of the following:
+When `provider` is `fabric-x`, `fablo validate` enforces the following constraints:
 
-- `engine` is `kubernetes`, because Fabric-X supports `docker` only
-- `tls` is `false`, because Fabric-X requires TLS
-- `peerDevMode` is `true`
-- Explorer or Fablo REST is enabled, in `global.tools` or in any `orgs[].tools`
-- `chaincodes` is not empty, because the Fabric-X provider does not deploy chaincodes yet
-- `namespaces` is missing or empty
-- `channels` does not hold exactly one channel
-- `fabricX.orderer.partyCount` is not `1` or `4`
+- `engine` must be `docker` (`kubernetes` is not supported for Fabric-X)
+- `tls` must be `true`
+- `peerDevMode` must be `false`
+- Explorer and Fablo REST must not be enabled, in `global.tools` or in any `orgs[].tools`
+- `chaincodes` must be empty, because Fabric-X uses `namespaces` instead of classic chaincodes
+- `namespaces` must contain at least one namespace entry
+- `channels` must hold exactly one channel
+- `fabricX.orderer.partyCount` must be `1` or `4`
 
 ### `global.fabricImages`
 
@@ -374,6 +376,14 @@ An array of Fabric-X namespaces to declare and create. Type: `array`. Used only 
 | `orgs` | Organizations whose MSPs govern the namespace | `array` of `string` | No | Names of organizations defined in `orgs`. Defaults to all organizations on the channel. Exclusive with `policy` |
 | `policy` | Raw Fabric policy expression, as an advanced override | `string` | No | For example `AND('Org1MSP.member')`. Exclusive with `orgs` |
 
+### Namespace Rules and Policy Selection
+
+- **Name Syntax:** Must contain only lowercase letters, digits, and underscores (no hyphens), up to 60 characters (e.g. `mynamespace`, `audit_ns`).
+- **Policy Selection:** A namespace may define either `orgs` or `policy`, but not both.
+  - If `orgs` is provided (e.g. `["Org1", "Org2"]`), Fablo automatically derives an endorsement policy requiring endorsement by all specified organizations: `AND('Org1MSP.member','Org2MSP.member')`.
+  - If `policy` is provided (e.g. `AND('Org1MSP.member')`), Fablo passes the raw policy expression directly to `fxconfig namespace create`.
+  - If neither `orgs` nor `policy` is specified, Fablo defaults to an `AND` policy covering all organizations participating in the channel.
+
 ### Example
 
 ```json
@@ -391,6 +401,10 @@ Fabric-X settings. Type: `object`. Used only when `global.provider` is `fabric-x
 |---|---|---|---|---|
 | `orderer.partyCount` | Number of orderer parties | `integer` | No | `1` (default) or `4`. Use `4` for a local BFT network. Fablo derives the organization of each party |
 
+Fablo currently supports **1 or 4** orderer parties:
+- **1-Party Orderer (Development):** A single orderer party running PartyID 1. Generates 4 ordering cluster containers (router on port 7050, batcher on 7051, consenter on 7052, assembler on 7053).
+- **4-Party Orderer (BFT Consensus):** Four independent orderer parties (Parties 1 to 4) providing Byzantine Fault Tolerance (tolerance for up to one faulty or Byzantine node, 3f+1 = 4 nodes). Each party runs its own router, batcher, consenter, and assembler (16 ordering cluster containers total), and committer sidecars operate with `fault-tolerance-level: BFT`.
+
 ### Example
 
 ```json
@@ -398,3 +412,12 @@ Fabric-X settings. Type: `object`. Used only when `global.provider` is `fabric-x
   "orderer": { "partyCount": 4 }
 }
 ```
+
+### Committer Microservices and Port Allocation
+
+For each application organization in `channels[0].orgs`, Fablo generates a dedicated committer microservice stack:
+- **Committer Microservices:** `committer-<org>-db` (PostgreSQL), `committer-<org>-verifier`, `committer-<org>-validator`, `committer-<org>-coordinator`, `committer-<org>-sidecar`, and `committer-<org>-query-service` (plus `committer-<org>-init-db`).
+- **Sidecar Ports:** Starts at host port `4001` (incrementing per org: `4001`, `4002`, ...).
+- **Query Service Ports:** Starts at host port `7001` (incrementing per org, dynamically skipping `7050–7053` to avoid port collisions with Party 1 orderer microservices).
+
+For an end-to-end 4-party BFT orderer test script, see [test-09-fabric-x-bft.sh](https://github.com/hyperledger-labs/fablo/blob/main/e2e-network/docker/test-09-fabric-x-bft.sh).

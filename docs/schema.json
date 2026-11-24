@@ -179,8 +179,8 @@
         },
         "provider": {
           "$id": "#/properties/global/properties/provider",
-          "title": "Network provider (EXPERIMENTAL)",
-          "description": "Selects the network provider. 'fabric' is the default and fully supported. 'fabric-x' is experimental",
+          "title": "Network provider",
+          "description": "Selects the network provider. 'fabric' is the default. 'fabric-x' enables the Fabric-X provider.",
           "type": "string",
           "enum": [
             "fabric",
@@ -693,7 +693,7 @@
   "namespaces": {
     "$id": "#/properties/namespaces",
     "type": "array",
-    "title": "Fabric-X namespaces (EXPERIMENTAL)",
+    "title": "Fabric-X namespaces",
     "description": "Namespaces to declare and create for the 'fabric-x' provider. Ignored for the 'fabric' provider. Use 'orgs' to select which orgs' MSPs govern the namespace (Fablo builds the endorsement policy for you); use 'policy' only as an advanced override with a raw Fabric policy expression. A namespace must not define both.",
     "default": [
       {
@@ -742,7 +742,7 @@
       "fabricX": {
       "$id": "#/properties/fabricX",
       "type": "object",
-      "title": "Fabric-X settings (EXPERIMENTAL)",
+      "title": "Fabric-X settings",
       "description": "Settings of the 'fabric-x' provider. Ignored for the 'fabric' provider.",
       "properties": {
         "orderer": {

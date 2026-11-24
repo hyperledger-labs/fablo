@@ -17,7 +17,7 @@ export def config_schema() {
   return fablo("schema")
 }
 
-# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), dev (use with node: the sample chaincode runs as CCaaS and reloads when its source changes), ccaas, gateway, and rest (Fablo REST), or fabric-x alone for the experimental Fabric-X provider; empty for the base config. overrides sets generated fields, one <path>=<value> per line, for example global.fabricVersion=2.5.12; empty for none. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
+# Create a starter fablo-config.json in the network directory, to edit before network_up. options is a space-separated list of node (sample Node.js chaincode), dev (use with node: the sample chaincode runs as CCaaS and reloads when its source changes), ccaas, gateway, and rest (Fablo REST), or fabric-x alone for the Fabric-X provider; empty for the base config. overrides sets generated fields, one <path>=<value> per line, for example global.fabricVersion=2.5.12; empty for none. Fails if a config already exists. If the user did not describe a topology, use the starter config as is and tell the user what it contains.
 export def config_init(options, overrides) {
   return fablo("init", options, overrides)
 }
@@ -142,12 +142,12 @@ export def channel_fetch(block, channel_name, org, peer, file) {
   return fablo("channel", "fetch", block, channel_name, org, peer, file)
 }
 
-# List the namespaces on the running network. Available only for the experimental Fabric-X provider.
+# List the namespaces on the running network. Available for the Fabric-X provider.
 export def namespace_list() {
   return fablo("namespace", "list")
 }
 
-# Create the namespaces from the Fablo config, or only the named one; empty name for all. Available only for the experimental Fabric-X provider.
+# Create the namespaces from the Fablo config, or only the named one; empty name for all. Available for the Fabric-X provider.
 export def namespace_init(name) {
   return fablo("namespace", "init", name)
 }

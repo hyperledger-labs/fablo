@@ -16,6 +16,7 @@ Start with a small local network, then add collaboration, data privacy, external
   <li><a href="#ccaas-rest">CCaaS, CouchDB, and REST</a></li>
   <li><a href="#explorer">Blockchain Explorer for Fabric v2</a></li>
   <li><a href="#snapshot-restore">Snapshot and restore</a></li>
+  <li><a href="#fabric-x">Fabric-X with BFT consensus</a></li>
 </ul>
 
 <section class="example-feature" id="first-network" markdown="1">
@@ -191,6 +192,33 @@ Take the snapshot while the network is running, because Fablo copies the state o
 <div class="example-links">
   <a href="/reference/cli-commands.html#snapshot-commands">Snapshot command reference &rarr;</a>
   <a href="https://github.com/hyperledger-labs/fablo/blob/main/e2e-network/docker/test-04-v3-snapshot-ccaas.sh">See the tested workflow &rarr;</a>
+</div>
+
+</section>
+
+<section class="example-feature" id="fabric-x" markdown="1">
+
+## Run a modular Fabric-X network
+
+Deploy decoupled ordering and committer microservices, ARMA BFT consensus, and smart contract namespaces.
+{: .example-summary }
+
+<div class="example-meta"><span>Fabric-X</span><span>TLS</span><span>ARMA BFT</span><span>namespaces</span></div>
+
+### Try it
+
+```bash
+mkdir fablo-fabric-x && cd fablo-fabric-x
+fablo init fabric-x
+fablo up
+fablo namespace init
+```
+
+`fablo init fabric-x` writes a starter config with an orderer cluster party, an application organization with Certificate Authority, and default namespace `mynamespace`. `fablo up` launches the ordering and committer microservices on Docker, and `fablo namespace init` creates and commits the configured namespaces on the ledger. Query active namespaces anytime with `fablo namespace list`.
+
+<div class="example-links">
+  <a href="/getting-started.html#fabric-x-getting-started-workflow">Fabric-X getting started guide &rarr;</a>
+  <a href="https://github.com/hyperledger-labs/fablo/blob/main/samples/fablo-config-fabric-x-2orgs.json">View multi-organization sample &rarr;</a>
 </div>
 
 </section>

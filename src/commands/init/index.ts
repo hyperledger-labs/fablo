@@ -142,7 +142,7 @@ function validateFabloConfig(configToValidate: FabloConfigJson | FabricXConfigJs
 
 export default class Init extends Command {
   static override description =
-    "Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS chaincode, gateway sample, REST API and dev mode, or a minimal config for the experimental Fabric-X provider";
+    "Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS chaincode, gateway sample, REST API and dev mode, or a starter configuration for the Fabric-X provider";
 
   static args = {
     options: Args.string({
@@ -299,7 +299,7 @@ export default class Init extends Command {
 
     let fabloConfigJson: FabloConfigJson | FabricXConfigJson;
     if (flags.fabricX) {
-      this.log("Creating minimal Fabric-X starter config");
+      this.log("Creating Fabric-X starter configuration");
       fabloConfigJson = getDefaultFabricXConfig();
     } else {
       fabloConfigJson = this.createClassicConfig(flags);
