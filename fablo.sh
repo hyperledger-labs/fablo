@@ -135,7 +135,7 @@ printHelp() {
     Creates simple Fablo config in current directory with optional Node.js chaincode, CCaaS, REST API, gateway sample, and/or dev mode. Use --set to override generated fields.
 
   fablo init fabric-x [--set <path>=<value> ...]
-    Creates minimal Fablo config for the experimental Fabric-X provider. Cannot be combined with node, rest, dev, ccaas or gateway.
+    Creates starter Fablo configuration for the Fabric-X provider. Cannot be combined with node, rest, dev, ccaas or gateway.
 
   fablo generate [/path/to/fablo-config.json|yaml [/path/to/fablo/target]]
     Generates network configuration files in the given directory. Default config file path is '\$(pwd)/fablo-config.json' or '\$(pwd)/fablo-config.yaml', default (and recommended) directory '\$(pwd)/fablo-target'.
@@ -179,8 +179,11 @@ printHelp() {
   fablo channel --help
     To list available channel query options which can be executed on running network.
 
-  fablo namespace <list | init>
-    Lists namespaces on the running network, or creates the configured namespace or only the named one if a name is given. Available only for the experimental Fabric-X provider.
+  fablo namespace init [name]
+    Creates all configured namespaces on the running network, or only the named one if a name is given. Available for the Fabric-X provider.
+
+  fablo namespace list [org]
+    Lists namespaces on the running network using credentials of the specified organization (defaults to the first org). Available for the Fabric-X provider.
 
   fablo snapshot <target-snapshot-path>
     Creates a snapshot of the network. The snapshot contains all network state, including transactions and identities. It is saved as '<target-snapshot-path>.fablo.tar.gz', unless the given path already ends with 'tar.gz'.

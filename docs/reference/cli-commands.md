@@ -11,17 +11,18 @@ This reference documents the commands exposed by the Fablo CLI (`fablo`). For ea
 **Outline**
 1. [Introduction](#fablo-cli-command-reference)
 2. [Network Lifecycle Commands](#network-lifecycle-commands) — `init`, `generate`, `up`, `down` / `start` / `stop`, `reset`, `prune`, `recreate`
-3. [Chaincode Commands](#chaincode-commands) — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode dev`, `chaincode invoke`, `chaincodes list`, `chaincode query`
-4. [Channel Commands](#channel-commands) — `channel --help`, `channel list`, `channel getinfo`, `channel fetch`
-5. [Snapshot Commands](#snapshot-commands) — `snapshot`, `restore`
-6. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`, `mcp`, `use`, `help`
+3. [Namespace Commands (Fabric-X)](#namespace-commands-fabric-x) — `namespace init`, `namespace list`
+4. [Chaincode Commands](#chaincode-commands) — `chaincodes install`, `chaincode install`, `chaincode upgrade`, `chaincode dev`, `chaincode invoke`, `chaincodes list`, `chaincode query`
+5. [Channel Commands](#channel-commands) — `channel --help`, `channel list`, `channel getinfo`, `channel fetch`
+6. [Snapshot Commands](#snapshot-commands) — `snapshot`, `restore`
+7. [Utility Commands](#utility-commands) — `validate`, `version`, `export-network-topology`, `extend-config`, `mcp`, `use`, `help`
 
 
 ## Network Lifecycle Commands
 
 ### `fablo init`
 
-**Purpose:** Creates a simple Fablo config in the current directory, with optional Node.js chaincode, CCaaS sample, REST API, gateway sample, and dev mode support. It can also create a minimal config for the experimental Fabric-X provider.
+**Purpose:** Creates a simple Fablo config in the current directory, with optional Node.js chaincode, CCaaS sample, REST API, gateway sample, and dev mode support. It can also create a starter configuration for the Fabric-X provider.
 
 **Syntax:**
 ```
@@ -40,7 +41,7 @@ Option order does not matter. The valid options are `node`, `dev`, `ccaas`, `gat
 | `dev` | No | Used together with `node`. The sample chaincode is registered as a chaincode as a service that reloads when you change its source. |
 | `ccaas` | No | Adds a sample chaincode-as-a-service definition to the config. Cannot be combined with `node` or `dev`. |
 | `gateway` | No | Copies a sample Node.js gateway app into `gateway/node` (does not change the config file itself). |
-| `fabric-x` | No | Creates a minimal config for the experimental Fabric-X provider. Cannot be combined with `node`, `dev`, `ccaas`, `gateway` or `rest`. |
+| `fabric-x` | No | Creates a starter configuration for the Fabric-X provider. Cannot be combined with `node`, `dev`, `ccaas`, `gateway` or `rest`. |
 | <code>--set &lt;path&gt;=&lt;value&gt;</code> | No | Override one or more fields in the generated config (repeatable). Paths use dotted/`[]` notation, e.g. `orgs[1].peer.db=CouchDb`. |
 
 `fablo init` writes the config to `fablo-config.json` in the current directory. By default the config uses Fabric `3.1.5`, TLS enabled, two BFT orderers, two `LevelDb` peers under `Org1`, and a single channel named `my-channel1`.
@@ -135,7 +136,45 @@ fablo recreate [/path/to/fablo-config.json|yaml]
 | `/path/to/fablo-config.json\|yaml` | No | Path to the Fablo configuration file. Defaults to `$(pwd)/fablo-config.json` or `$(pwd)/fablo-config.yaml`. |
 
 
+## Namespace Commands (Fabric-X)
+
+Namespace commands manage smart contract namespaces on running networks using the Fabric-X provider (`global.provider: "fabric-x"`). In Fabric-X, namespaces replace classic chaincode lifecycle operations.
+
+### `fablo namespace init`
+
+**Purpose:** Creates and commits configured namespaces on the Fabric-X ledger using `fxconfig`. Application-level transaction submissions and queries require a committed namespace on the ledger. If a namespace is already created, the command skips it.
+
+**Syntax:**
+```
+fablo namespace init [name]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `name` | No | Name of a specific namespace declared in `fablo-config.json` (e.g. `mynamespace`). If omitted, creates all configured namespaces. |
+
+
+### `fablo namespace list`
+
+**Purpose:** Queries and displays the namespaces committed to the Fabric-X ledger.
+
+**Syntax:**
+```
+fablo namespace list [org]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|---|---|---|
+| `org` | No | Name or slug of the application organization (e.g. `Org1` or `org1`) whose client credentials to use. Defaults to the first application organization. |
+
+
 ## Chaincode Commands
+
+> **Note:** Chaincode commands apply to the default Hyperledger Fabric provider (`provider: "fabric"`). The Fabric-X provider uses namespaces rather than classic chaincode packages.
 
 ### `fablo chaincodes install`
 

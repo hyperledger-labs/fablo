@@ -6,14 +6,21 @@ Fablo allows you to start Hyperledger Fabric network from a single config file. 
 
 Fablo supports:
 
+* Network providers: Hyperledger Fabric (classic) and Fabric-X (microservices & namespaces)
 * Environment: Docker
 * RAFT, solo and BFT consensus protocols
 * Multiple organizations and channels
-* Chaincode installation and upgrade (Node, Go, Java, CCaaS)
+* Smart contracts: Chaincodes for Fabric (Node, Go, Java, CCaaS) and on-chain namespaces for Fabric-X
 * REST API client for CA and chaincodes ([Fablo REST](https://github.com/fablo-io/fablo-rest))
 * [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer) which can be enabled for each organization
 
 Visit [SUPPORTED_FEATURES.md](SUPPORTED_FEATURES.md) to see the full list of features supported by Fablo.
+
+### Supported Network Providers
+
+Fablo supports two network providers via `global.provider`:
+* **Hyperledger Fabric (`fabric`, default):** The classic Fabric architecture with monolithic peers, ordering nodes, and smart contracts deployed as chaincodes.
+* **Fabric-X (`fabric-x`):** The next-generation architecture featuring decoupled committer microservices, ARMA BFT consensus ordering clusters, and smart contracts governed via on-chain namespaces.
 
 To let AI agents start and manage a network, run `fablo mcp` and see the [Fablo MCP server](mcp/README.md), powered by Jaiph.
 
@@ -78,7 +85,7 @@ The `up` command creates the initial configuration and starts the Hyperledger Fa
 The network configuration is saved in `$(pwd)/fablo-target`.
 You can then manage the network with other commands such as `stop`, `start`, `down`, and `prune`.
 
-The Fablo configuration file describes the network topology: root organization, other organizations, channels, and chaincodes.
+The Fablo configuration file describes the network topology: root organization, other organizations, channels, and chaincodes (or namespaces for Fabric-X).
 See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) or [Fablo config](https://github.com/hyperledger-labs/fablo#fablo-config) section for examples.
 
 There are two basic use cases.
@@ -122,9 +129,36 @@ fablo init node dev
 fablo init fabric-x [--set <path>=<value> ...]
 ```
 
-Creates a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`.
-Use `--set fabricX.orderer.partyCount=4` for the four party BFT orderer.
-You cannot combine `fabric-x` with `node`, `rest`, `dev`, `ccaas` or `gateway`.
+Creates a starter configuration for the Fabric-X provider (`global.provider: "fabric-x"`), featuring an application organization (`Org1`), a single channel `mychannel`, and a smart contract namespace `mynamespace`.
+Use `--set fabricX.orderer.partyCount=4` for the four party ARMA BFT orderer profile (defaults to 1-party).
+You cannot combine `fabric-x` with `node`, `rest`, `dev`, `ccaas`, or `gateway`.
+
+**Basic Fabric-X Workflow:**
+
+```bash
+# 1. Initialize Fabric-X starter configuration
+fablo init fabric-x
+
+# 2. Validate configuration
+fablo validate
+
+# 3. Generate artifacts and launch containers
+fablo up
+
+# 4. Initialize declared namespaces on the ledger
+fablo namespace init
+
+# 5. Query active namespaces
+fablo namespace list
+
+# 6. Stop containers without destroying data
+fablo stop
+
+# 7. Reset network (wipes ledger state and restarts fresh)
+fablo reset
+```
+
+Other supported Fabric-X lifecycle commands include `fablo start` (resumes stopped containers), `fablo down` (stops containers and removes data and crypto material), and `fablo prune` (removes containers and deletes the `fablo-target` directory).
 
 #### Custom overrides
 
@@ -267,6 +301,8 @@ Essentially, `fablo` forwards the remaining commands to `fabric-docker.sh`.
 If you want to use Fablo for network configuration setup only, the `fabric-docker.sh` file allows you to manage the network.
 
 ## Managing chaincodes
+
+> **Note:** Chaincode commands apply to classic Hyperledger Fabric networks (`global.provider: "fabric"`). For Fabric-X networks, smart contracts are governed as on-chain namespaces via `fablo namespace` commands; see [Managing namespaces (Fabric-X)](#managing-namespaces-fabric-x).
 
 ### chaincode(s) install
 
@@ -438,6 +474,39 @@ This produces the following chaincode configuration:
 You can find a full end-to-end example in one of our test scripts [test-01-v3-simple.sh](e2e-network/docker/test-01-v3-simple.sh).
 
 
+## Managing namespaces (Fabric-X)
+
+For the Fabric-X provider (`global.provider: "fabric-x"`), smart contracts are managed as on-chain namespaces rather than classic chaincode packages.
+
+### namespace init
+
+Creates and commits declared namespaces on the running Fabric-X ledger using `fxconfig`:
+
+```bash
+# Create all namespaces declared in fablo-config.json
+fablo namespace init
+
+# Or initialize only a specific namespace
+fablo namespace init <namespace-name>
+```
+
+App-level submit/query transactions require an initialized namespace. If a namespace already exists, Fablo detects it and skips it.
+
+### namespace list
+
+Queries and lists committed namespaces from the running Fabric-X ledger:
+
+```bash
+# Query using the default organization (first org)
+fablo namespace list
+
+# Or query using a specific organization's credentials
+fablo namespace list [org_name_or_slug]
+```
+
+You can find a complete working multi-organization Fabric-X configuration in [samples/fablo-config-fabric-x-2orgs.json](samples/fablo-config-fabric-x-2orgs.json) and an end-to-end test script in [test-08-fabric-x.sh](e2e-network/docker/test-08-fabric-x.sh).
+
+
 ## Channel scripts
 
 ### channel help
@@ -522,7 +591,7 @@ It must be compatible with the [schema](https://github.com/hyperledger-labs/fabl
 You can generate a basic config with the `./fablo init` command.
 See the [samples](https://github.com/hyperledger-labs/fablo/blob/main/samples/) directory for more complex examples.
 
-The basic structure of Fablo config file is as follows:
+The basic structure of a Fablo configuration file is as follows:
 
 ```json
 {
@@ -530,7 +599,9 @@ The basic structure of Fablo config file is as follows:
   "global": { ... },
   "orgs": [ ... ],
   "channels": [ ... ],
-  "chaincodes": [ ... ]
+  "chaincodes": [ ... ],
+  "namespaces": [ ... ],
+  "fabricX": { ... }
 }
 ```
 
@@ -557,11 +628,13 @@ Available fields in the `global` section are:
 * `fabricVersion` - the Hyperledger Fabric version to use (required)
 * `tls` - whether to enable TLS in the network (required)
 * `engine` - `docker` (default) or `kubernetes`
-* `provider` - `fabric` (default) or `fabric-x`, which is experimental
+* `provider` - `fabric` (default) or `fabric-x`
 * `peerDevMode` - whether to run peers in dev mode (default: `false`)
 * `monitoring.loglevel` - `debug`, `info` (default) or `warn`
 * `tools.explorer` - whether to run one Blockchain Explorer for all organizations (default: `false`)
 * `fabricImages` - Docker image overrides, described below
+
+When `provider` is `fabric-x`, the network runs with the Fabric-X provider: `engine` must be `docker`, `tls` must be `true`, `peerDevMode` must be `false`, `channels` must contain exactly one channel, `chaincodes` must be empty (namespaces are used instead), and Explorer and Fablo REST are not supported.
 
 Docker Engine 29 or newer requires Fabric `2.5.15+` or `3.1.4+` when peers build and launch classic chaincode containers. Older Fabric releases require a compatible Docker Engine or external chaincode services.
 
@@ -735,6 +808,63 @@ Example `postStart` hook that waits for peers to be ready or performs any additi
 ```
 
 Generated hooks are saved in `fablo-target/hooks`.
+
+
+### namespaces (Fabric-X)
+
+For the Fabric-X provider, `namespaces` defines smart contract namespaces committed to the ledger. Each namespace requires a `name`.
+
+Policy selection: A namespace may define either `orgs` or `policy`, but not both. If neither is specified, Fablo defaults to an `AND` policy covering all channel organizations.
+
+Custom multi-organization namespace example:
+
+```json
+"namespaces": [
+  {
+    "name": "mynamespace",
+    "orgs": [
+      "Org1",
+      "Org2"
+    ]
+  },
+  {
+    "name": "audit_ns",
+    "policy": "OR('Org1MSP.member', 'Org2MSP.member')"
+  }
+]
+```
+
+- `name`: Lowercase letters, digits, and underscores only (`^[a-z0-9_]+$`), max 60 characters (no hyphens allowed).
+- `orgs`: Channel organizations whose MSPs govern this namespace (e.g. `["Org1", "Org2"]`). Fablo automatically generates an `AND` endorsement policy across all listed organizations.
+- `policy`: Raw Fabric endorsement policy expression (e.g. `AND('Org1MSP.member')`). Mutually exclusive with `orgs`.
+
+### fabricX (Fabric-X)
+
+The `fabricX` section configures provider-specific settings, including the ARMA BFT consensus ordering cluster topology.
+
+Default 1-party orderer example (scaffolded by `fablo init fabric-x`):
+
+```json
+"fabricX": {
+  "orderer": {
+    "parties": [
+      {
+        "organization": {
+          "name": "Orderer",
+          "domain": "orderer.example.com",
+          "mspName": "OrdererOrdererMSP"
+        }
+      }
+    ]
+  }
+}
+```
+
+- **Orderer Topologies:** Fablo supports **1-party** (development, PartyID 1 with 4 ordering containers) or **4-party** (Byzantine Fault Tolerant, Parties 1 to 4 with tolerance for up to one faulty or Byzantine node, 16 ordering containers total) setups.
+- **Ordering Microservices:** Each party runs a router (:7050), batcher (:7051), consenter (:7052), and assembler (:7053).
+- **Committer Stacks:** Each application organization defined on the channel runs a dedicated 6-container committer stack (coordinator, verifier, validator, sidecar on host port 4001+, query-service on host port 7001+, and a PostgreSQL 18.3 database).
+- **Scope & Boundaries:** Docker Compose only, single channel, TLS required, no classic chaincodes (namespaces are used instead), and no Explorer or Fablo REST.
+- **Full Sample:** See [samples/fablo-config-fabric-x-2orgs.json](samples/fablo-config-fabric-x-2orgs.json) for a complete working multi-organization configuration file.
 
 
 ### Sample YAML config file

@@ -595,7 +595,7 @@ export default class Validate extends Command {
     if (chaincodes.length > 0) {
       this.emit(validationErrorType.ERROR, {
         category: validationCategories.CHAINCODE,
-        message: "fabric-x does not support chaincodes in this PoC.",
+        message: "fabric-x does not support classic chaincodes.",
       });
     }
 
