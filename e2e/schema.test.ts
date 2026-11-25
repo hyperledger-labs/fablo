@@ -1,6 +1,8 @@
 import { matchers } from "jest-json-schema";
 import * as schema from "../docs/schema.json";
 import * as docsSample from "../docs/sample.json";
+import * as fabricXSample from "../samples/fablo-config-fabric-x-2orgs.json";
+import * as _ from "lodash";
 import { FabloConfigJson, PrivateDataJson } from "../src/types/FabloConfigJson";
 
 expect.extend(matchers);
@@ -338,5 +340,62 @@ describe("schema", () => {
     expect(
       withPrivateData([privateData(lettersAndNumber, validOrgName), privateData(lettersOnly, validOrgName)]),
     ).toMatchSchema(schema);
+  });
+
+  describe("provider specific rules", () => {
+    const fabricX = (update: (json: Record<string, unknown>) => void = () => undefined): Record<string, unknown> => {
+      const json = JSON.parse(JSON.stringify(fabricXSample));
+      update(json);
+      return json;
+    };
+    const classic = (update: (json: Record<string, unknown>) => void = () => undefined): Record<string, unknown> => {
+      const json = JSON.parse(JSON.stringify(docsSample));
+      update(json);
+      return json;
+    };
+
+    it("should accept the sample configs", () => {
+      expect(classic()).toMatchSchema(schema);
+      expect(fabricX()).toMatchSchema(schema);
+    });
+
+    it("should accept a fabric-x config without the values that have defaults", () => {
+      const json = fabricX();
+
+      expect(json.global).toEqual({ provider: "fabric-x" });
+      expect(json.chaincodes).toBeUndefined();
+      expect(_.get(json, "channels[0].orgs")).toBeUndefined();
+      expect(json).toMatchSchema(schema);
+    });
+
+    it("should still require the existing fields for the fabric provider", () => {
+      expect(classic((json) => _.unset(json, "chaincodes"))).not.toMatchSchema(schema);
+      expect(classic((json) => _.unset(json, "global.fabricVersion"))).not.toMatchSchema(schema);
+      expect(classic((json) => _.unset(json, "global.tls"))).not.toMatchSchema(schema);
+      expect(classic((json) => _.unset(json, "channels[0].orgs"))).not.toMatchSchema(schema);
+      expect(classic((json) => _.unset(json, "channels[0].orgs[0].peers"))).not.toMatchSchema(schema);
+    });
+
+    it("should require namespaces for the fabric-x provider", () => {
+      expect(fabricX((json) => _.unset(json, "namespaces"))).not.toMatchSchema(schema);
+      expect(fabricX((json) => _.set(json, "namespaces", []))).not.toMatchSchema(schema);
+    });
+
+    it("should validate the orderer party count for the fabric-x provider", () => {
+      const withPartyCount = (partyCount: unknown) =>
+        fabricX((json) => _.set(json, "fabricX.orderer.partyCount", partyCount));
+
+      expect(withPartyCount(1)).toMatchSchema(schema);
+      expect(withPartyCount(4)).toMatchSchema(schema);
+      expect(withPartyCount(2)).not.toMatchSchema(schema);
+      expect(withPartyCount(0)).not.toMatchSchema(schema);
+      expect(withPartyCount("4")).not.toMatchSchema(schema);
+    });
+
+    it("should reject malformed values for the fabric-x provider", () => {
+      expect(fabricX((json) => _.set(json, "orgs[0].ca", null))).not.toMatchSchema(schema);
+      expect(fabricX((json) => _.unset(json, "orgs"))).not.toMatchSchema(schema);
+      expect(fabricX((json) => _.set(json, "global.tls", "yes"))).not.toMatchSchema(schema);
+    });
   });
 });

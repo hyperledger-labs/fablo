@@ -5,6 +5,54 @@ exports[`schema should match snapshot 1`] = `
   "$id": "http://example.com/example.json",
   "$schema": "http://json-schema.org/draft-07/schema",
   "default": {},
+  "else": {
+    "properties": {
+      "channels": {
+        "items": {
+          "properties": {
+            "orgs": {
+              "items": {
+                "required": [
+                  "name",
+                  "peers",
+                ],
+              },
+            },
+          },
+          "required": [
+            "name",
+            "orgs",
+          ],
+        },
+      },
+      "global": {
+        "required": [
+          "fabricVersion",
+          "tls",
+        ],
+      },
+    },
+    "required": [
+      "chaincodes",
+    ],
+  },
+  "if": {
+    "properties": {
+      "global": {
+        "properties": {
+          "provider": {
+            "const": "fabric-x",
+          },
+        },
+        "required": [
+          "provider",
+        ],
+      },
+    },
+    "required": [
+      "global",
+    ],
+  },
   "properties": {
     "$schema": {
       "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json",
@@ -254,7 +302,6 @@ exports[`schema should match snapshot 1`] = `
               },
               "required": [
                 "name",
-                "peers",
               ],
               "title": "Organization",
               "type": "object",
@@ -265,7 +312,6 @@ exports[`schema should match snapshot 1`] = `
         },
         "required": [
           "name",
-          "orgs",
         ],
         "title": "Channel",
         "type": "object",
@@ -280,71 +326,22 @@ exports[`schema should match snapshot 1`] = `
         "orderer": {
           "$id": "#/properties/fabricX/properties/orderer",
           "properties": {
-            "parties": {
-              "$id": "#/properties/fabricX/properties/orderer/properties/parties",
-              "default": [
-                {
-                  "organization": {
-                    "domain": "orderer.example.com",
-                    "mspName": "OrdererOrdererMSP",
-                    "name": "Orderer",
-                  },
-                },
+            "partyCount": {
+              "$id": "#/properties/fabricX/properties/orderer/properties/partyCount",
+              "default": 1,
+              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo derives the organizations of the parties. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
+              "enum": [
+                1,
+                4,
               ],
-              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
-              "items": {
-                "$id": "#/properties/fabricX/properties/orderer/properties/parties/items",
-                "properties": {
-                  "organization": {
-                    "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization",
-                    "properties": {
-                      "domain": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/domain",
-                        "pattern": "^[a-z0-9\\.\\-]+$",
-                        "title": "Domain",
-                        "type": "string",
-                      },
-                      "mspName": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/mspName",
-                        "pattern": "^[a-zA-Z0-9]+$",
-                        "title": "MSP Name",
-                        "type": "string",
-                      },
-                      "name": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/name",
-                        "pattern": "^[a-zA-Z0-9]+$",
-                        "title": "Name",
-                        "type": "string",
-                      },
-                    },
-                    "required": [
-                      "name",
-                      "domain",
-                    ],
-                    "title": "Organization of the party",
-                    "type": "object",
-                  },
-                },
-                "required": [
-                  "organization",
-                ],
-                "title": "Orderer party",
-                "type": "object",
-              },
-              "title": "Orderer parties",
-              "type": "array",
+              "title": "Number of orderer parties",
+              "type": "integer",
             },
           },
-          "required": [
-            "parties",
-          ],
           "title": "Orderer",
           "type": "object",
         },
       },
-      "required": [
-        "orderer",
-      ],
       "title": "Fabric-X settings (EXPERIMENTAL)",
       "type": "object",
     },
@@ -496,10 +493,7 @@ exports[`schema should match snapshot 1`] = `
           "type": "object",
         },
       },
-      "required": [
-        "fabricVersion",
-        "tls",
-      ],
+      "required": [],
       "title": "Global network settings",
       "type": "object",
     },
@@ -789,8 +783,17 @@ exports[`schema should match snapshot 1`] = `
     "global",
     "orgs",
     "channels",
-    "chaincodes",
   ],
+  "then": {
+    "properties": {
+      "namespaces": {
+        "minItems": 1,
+      },
+    },
+    "required": [
+      "namespaces",
+    ],
+  },
   "title": "Root",
   "type": "object",
 }

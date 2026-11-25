@@ -56,7 +56,7 @@ The `fabric-x` option works differently, because you get a whole different start
 fablo init fabric-x
 ```
 
-Fablo writes a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`, a single organization (`Org1`) that has one BFT orderer and no peers, and a channel named `mychannel`. You cannot combine `fabric-x` with `node`, `dev`, `ccaas`, `gateway` or `rest`.
+Fablo writes a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`, a single organization (`Org1`), a channel named `mychannel` that all organizations join, and a namespace named `mynamespace`. The config holds only what you need to change, and Fablo derives the rest. The orderer is a single party by default, and `--set fabricX.orderer.partyCount=4` selects the four party BFT profile. You cannot combine `fabric-x` with `node`, `dev`, `ccaas`, `gateway` or `rest`.
 
 You can also override generated fields with `--set`:
 

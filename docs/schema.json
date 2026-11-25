@@ -7,9 +7,66 @@
   "required": [
     "global",
     "orgs",
-    "channels",
-    "chaincodes"
+    "channels"
   ],
+  "if": {
+    "properties": {
+      "global": {
+        "properties": {
+          "provider": {
+            "const": "fabric-x"
+          }
+        },
+        "required": [
+          "provider"
+        ]
+      }
+    },
+    "required": [
+      "global"
+    ]
+  },
+  "then": {
+    "required": [
+      "namespaces"
+    ],
+    "properties": {
+      "namespaces": {
+        "minItems": 1
+      }
+    }
+  },
+  "else": {
+    "required": [
+      "chaincodes"
+    ],
+    "properties": {
+      "global": {
+        "required": [
+          "fabricVersion",
+          "tls"
+        ]
+      },
+      "channels": {
+        "items": {
+          "required": [
+            "name",
+            "orgs"
+          ],
+          "properties": {
+            "orgs": {
+              "items": {
+                "required": [
+                  "name",
+                  "peers"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "properties": {
     "$schema": {
       "const": "https://github.com/hyperledger-labs/fablo/releases/download/2.6.0/schema.json"
@@ -19,10 +76,7 @@
       "title": "Global network settings",
       "description": "Basic settings of the Hyperledger Fabric network",
       "type": "object",
-      "required": [
-        "fabricVersion",
-        "tls"
-      ],
+      "required": [],
       "properties": {
         "fabricVersion": {
           "$id": "#/properties/global/properties/fabricVersion",
@@ -415,8 +469,7 @@
         "title": "Channel",
         "type": "object",
         "required": [
-          "name",
-          "orgs"
+          "name"
         ],
         "properties": {
           "name": {
@@ -440,8 +493,7 @@
               "title": "Organization",
               "type": "object",
               "required": [
-                "name",
-                "peers"
+                "name"
               ],
               "properties": {
                 "name": {
@@ -692,71 +744,22 @@
       "type": "object",
       "title": "Fabric-X settings (EXPERIMENTAL)",
       "description": "Settings of the 'fabric-x' provider. Ignored for the 'fabric' provider.",
-      "required": [
-        "orderer"
-      ],
       "properties": {
         "orderer": {
           "$id": "#/properties/fabricX/properties/orderer",
           "type": "object",
           "title": "Orderer",
-          "required": [
-            "parties"
-          ],
           "properties": {
-            "parties": {
-              "$id": "#/properties/fabricX/properties/orderer/properties/parties",
-              "type": "array",
-              "title": "Orderer parties",
-              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
-              "default": [
-                {
-                  "organization": {
-                    "name": "Orderer",
-                    "domain": "orderer.example.com",
-                    "mspName": "OrdererOrdererMSP"
-                  }
-                }
+            "partyCount": {
+              "$id": "#/properties/fabricX/properties/orderer/properties/partyCount",
+              "type": "integer",
+              "enum": [
+                1,
+                4
               ],
-              "items": {
-                "$id": "#/properties/fabricX/properties/orderer/properties/parties/items",
-                "title": "Orderer party",
-                "type": "object",
-                "required": [
-                  "organization"
-                ],
-                "properties": {
-                  "organization": {
-                    "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization",
-                    "title": "Organization of the party",
-                    "type": "object",
-                    "required": [
-                      "name",
-                      "domain"
-                    ],
-                    "properties": {
-                      "name": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/name",
-                        "title": "Name",
-                        "type": "string",
-                        "pattern": "^[a-zA-Z0-9]+$"
-                      },
-                      "mspName": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/mspName",
-                        "title": "MSP Name",
-                        "type": "string",
-                        "pattern": "^[a-zA-Z0-9]+$"
-                      },
-                      "domain": {
-                        "$id": "#/properties/fabricX/properties/orderer/properties/parties/items/properties/organization/properties/domain",
-                        "title": "Domain",
-                        "type": "string",
-                        "pattern": "^[a-z0-9\\.\\-]+$"
-                      }
-                    }
-                  }
-                }
-              }
+              "title": "Number of orderer parties",
+              "description": "A party is an organization of the orderer with its own router, batcher, consenter and assembler. Fablo derives the organizations of the parties. Fablo currently supports 1 party (the quick default) or 4 parties (a local profile for BFT testing).",
+              "default": 1
             }
           }
         }

@@ -22,6 +22,7 @@ import { version } from "../../repositoryUtils";
 import { SUPPORTED_ORDERER_PARTY_COUNTS } from "../../setup-docker/fabricXOrdererTopology";
 import ListCompatibleUpdates from "../../list-compatible-updates";
 import defaults from "../../extend-config/defaults";
+import applyFabricXDefaults from "../../extend-config/applyFabricXDefaults";
 const findDuplicatedItems = (arr: string[]): Record<string, string[]> => {
   const duplicates: Record<string, string[]> = {};
   const seenCounts = new Map<string, number>();
@@ -124,11 +125,14 @@ export default class Validate extends Command {
     this._validateIfConfigFileExists(this.fabloConfigPath);
 
     const configContent = fs.readFileSync(this.fabloConfigPath, "utf-8");
-    const networkConfig = parseFabloConfig(configContent);
+    const rawConfig = parseFabloConfig(configContent);
+    
+    if (!this._validateJsonSchema(rawConfig)) return;
+
+    const networkConfig = applyFabricXDefaults(rawConfig);
     const provider = networkConfig.global.provider ?? "fabric";
 
     this._validateFabricVersion(networkConfig.global);
-    this._validateJsonSchema(networkConfig);
     this._validateSupportedFabloVersion(networkConfig.$schema);
 
     if (provider === "fabric-x") {
@@ -232,7 +236,7 @@ export default class Validate extends Command {
     }
   }
 
-  _validateJsonSchema(configToValidate: FabloConfigJson) {
+  _validateJsonSchema(configToValidate: FabloConfigJson): boolean {
     const validator = new SchemaValidator();
     const results = validator.validate(configToValidate, config.schema);
     results.errors.forEach((result) => {
@@ -248,6 +252,7 @@ export default class Validate extends Command {
       this.log(chalk.bold("- Json schema validation failed!"));
       this._printIfNotEmpty(this.errors.getAllMessages(), chalk.red.bold("Errors found:"));
     }
+    return results.errors.length === 0;
   }
 
   _printIfNotEmpty(messages: Message[], caption: string) {
@@ -743,23 +748,17 @@ export default class Validate extends Command {
 
     this._validateNoClassicOrderersForFabricX(orgs);
 
-    const parties = fabricX?.orderer?.parties;
-    if (!parties) {
-      this.emit(validationErrorType.ERROR, {
-        category: validationCategories.ORDERER,
-        message: "fabric-x requires 'fabricX.orderer.parties' with the organizations of the orderer parties.",
-      });
-      return;
-    }
-
-    this._validateFabricXOrdererPartyCount(parties.length);
+    const partyCount = fabricX?.orderer?.partyCount ?? defaults.fabricX.orderer.partyCount;
+    this._validateFabricXOrdererPartyCount(partyCount);
+    if (!SUPPORTED_ORDERER_PARTY_COUNTS.includes(partyCount)) return;
 
     const organizations: FabricXOrganizationIdentity[] = [
-      ...orgs.map(({ organization }, index) =>
-        this._toFabricXOrganizationIdentity(organization, `orgs[${index}]`),
-      ),
-      ...parties.map(({ organization }, index) =>
-        this._toFabricXOrganizationIdentity(organization, `fabricX.orderer.parties[${index}]`),
+      ...orgs.map(({ organization }, index) => this._toFabricXOrganizationIdentity(organization, `orgs[${index}]`)),
+      ...Array.from({ length: partyCount }, (_, index) =>
+        this._toFabricXOrganizationIdentity(
+          defaults.fabricX.orderer.organization(index + 1, partyCount),
+          `the orderer party ${index + 1}`,
+        ),
       ),
     ];
 
@@ -786,7 +785,7 @@ export default class Validate extends Command {
       .forEach((org) => {
         this.emit(validationErrorType.ERROR, {
           category: validationCategories.ORDERER,
-          message: `Org '${org.organization.name}' defines 'orderers'. fabric-x does not use orderer groups, remove 'orderers' and configure the orderer in 'fabricX.orderer.parties'.`,
+          message: `Org '${org.organization.name}' defines 'orderers'. fabric-x does not use orderer groups, remove 'orderers', the orderer is configured with 'fabricX.orderer.partyCount'.`,
         });
       });
   }
@@ -797,7 +796,7 @@ export default class Validate extends Command {
     const supportedCounts = SUPPORTED_ORDERER_PARTY_COUNTS.join(" or ");
     this.emit(validationErrorType.ERROR, {
       category: validationCategories.ORDERER,
-      message: `'fabricX.orderer.parties' has ${partyCount} parties. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
+      message: `'fabricX.orderer.partyCount' is ${partyCount}. Fablo currently supports ${supportedCounts} fabric-x orderer parties.`,
     });
   }
 

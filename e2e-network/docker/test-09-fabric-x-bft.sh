@@ -29,8 +29,8 @@ expectCommand() {
 
 networkUp() {
   run_fablo init fabric-x
-  # four orderer parties, each with its own organization
-  jq '.fabricX.orderer.parties = [range(1;5) | {organization: {name: "OrdererOrg\(.)", domain: "orderer-org-\(.)", mspName: "OrdererOrg\(.)MSP"}}]' \
+  # four orderer parties
+  jq '.fabricX.orderer.partyCount = 4' \
     "$TEST_TMP/fablo-config.json" >"$TEST_TMP/fablo-config.json.tmp"
   mv "$TEST_TMP/fablo-config.json.tmp" "$TEST_TMP/fablo-config.json"
   run_fablo validate

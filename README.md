@@ -123,6 +123,7 @@ fablo init fabric-x [--set <path>=<value> ...]
 ```
 
 Creates a minimal config for the experimental Fabric-X provider, with `global.provider` set to `fabric-x`.
+Use `--set fabricX.orderer.partyCount=4` for the four party BFT orderer.
 You cannot combine `fabric-x` with `node`, `rest`, `dev`, `ccaas` or `gateway`.
 
 #### Custom overrides

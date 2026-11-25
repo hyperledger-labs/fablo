@@ -91,11 +91,8 @@ export interface NamespaceJson {
   orgs?: string[];
   policy?: string;
 }
-export interface FabricXOrdererPartyJson {
-  organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
-}
 export interface FabricXJson {
-  orderer: { parties: FabricXOrdererPartyJson[] };
+  orderer?: { partyCount?: number };
 }
 export interface FabloConfigJson {
   $schema: string;
@@ -106,4 +103,24 @@ export interface FabloConfigJson {
   hooks: HooksJson;
   namespaces?: NamespaceJson[];
   fabricX?: FabricXJson;
+}
+
+
+export interface FabricXOrgJson extends Omit<OrgJson, "organization" | "ca"> {
+  organization: Omit<OrganizationDetailsJson, "mspName"> & { mspName?: string };
+  ca?: CAJson;
+}
+export interface FabricXChannelJson {
+  name: string;
+  orgs?: { name: string; peers?: string[] }[];
+}
+export interface FabricXConfigJson
+  extends Omit<FabloConfigJson, "global" | "orgs" | "channels" | "chaincodes" | "hooks" | "namespaces"> {
+  global: Omit<GlobalJson, "provider" | "fabricVersion" | "tls" | "peerDevMode"> &
+    Partial<Pick<GlobalJson, "fabricVersion" | "tls" | "peerDevMode">> & { provider: "fabric-x" };
+  orgs: FabricXOrgJson[];
+  channels: FabricXChannelJson[];
+  namespaces: NamespaceJson[];
+  chaincodes?: ChaincodeJson[];
+  hooks?: HooksJson;
 }
