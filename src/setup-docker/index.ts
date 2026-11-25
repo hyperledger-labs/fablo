@@ -127,7 +127,8 @@ export default class SetupDocker extends Command {
   }
 
   async _copyGitIgnore(): Promise<void> {
-    const templatePath = getTemplatePath(this.templatesDir, "fabric-config/.gitignore");
+    // stored without the dot: npm never packs files named .gitignore
+    const templatePath = getTemplatePath(this.templatesDir, "fabric-config/gitignore");
     const destPath = getDestinationPath(this.outputDir, "fabric-config/.gitignore");
     await renderTemplate(templatePath, destPath, {});
   }
